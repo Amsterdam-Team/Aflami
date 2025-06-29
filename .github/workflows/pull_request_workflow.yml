@@ -20,6 +20,15 @@ jobs:
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
+        
+      - name: Clean Project
+        run: ./gradlew clean
+
+      - name: Compile Project
+        run: ./gradlew assemble
+
+      - name: Run Unit Tests
+        run: ./gradlew test
   
       - name: Comment on coverage for current branch
         if: github.event_name == 'pull_request' && github.base_ref == 'develop'
