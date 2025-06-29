@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101911712887",
+    "project_id": "aflami-44957",
+    "storage_bucket": "aflami-44957.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101911712887:android:c7a6b7256bc937249ce272",
+        "android_client_info": {
+          "package_name": "com.amsterdam.aflami"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtQuNMmmkQCf3O0rC5phVYOK5lRK3LU_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
