@@ -51,6 +51,15 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation("com.google.firebase:firebase-perf")
 
+    // Modules Dependencies
+    implementation(project(":designSystem"))
+    implementation(project(":ui"))
+    implementation(project(":viewModel"))
+    implementation(project(":localDatasource"))
+    implementation(project(":remoteDatasource"))
+    implementation(project(":domain"))
+    implementation(project(":entity"))
+    implementation(project(":repository"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

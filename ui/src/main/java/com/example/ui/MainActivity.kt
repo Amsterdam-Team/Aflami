@@ -1,4 +1,4 @@
-package com.amsterdam.aflami
+package com.example.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
+            
         }
     }
 }
