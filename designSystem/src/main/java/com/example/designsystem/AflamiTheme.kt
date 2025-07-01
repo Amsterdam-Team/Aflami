@@ -3,16 +3,18 @@ package com.example.designsystem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
+import com.amsterdam.aflami.AflamiColorScheme
+import com.amsterdam.aflami.localAflamiAppColors
 import com.amsterdam.aflami.theme.textStyle.AflamiTextStyle
 import com.amsterdam.aflami.theme.textStyle.LocalAflamiTextStyle
 
 typealias ColorType = @Composable () -> Color
 
 object AflamiTheme{
-// val color: AflamiAppColor
-//     @Composable @ReadOnlyComposable get() = LocalAflamiLocalColors.current
+    val color: AflamiColorScheme
+    @Composable @ReadOnlyComposable get() = localAflamiAppColors.current
 
-val textStyle: AflamiTextStyle
+    val textStyle: AflamiTextStyle
     @Composable @ReadOnlyComposable get() = LocalAflamiTextStyle.current
 //  val images: AflamiAppImages
 //      @Composable @ReadOnlyComposable get() = LocalAflamiLocalImages.current
