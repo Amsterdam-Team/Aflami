@@ -35,26 +35,26 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test
   
-      # - name: Comment on coverage for current branch
-      #   if: github.event_name == 'pull_request' && github.base_ref == 'develop'
-      #   uses: madrapps/jacoco-report@v1.7.1
-      #   with:
-      #     paths: |
-      #       build/reports/jacoco/test/jacocoTestReport.xml
-      #     token: ${{ secrets.CI_GITHUB_TOKEN }}  
-      #     min-coverage-overall: 80
-      #     min-coverage-changed-files: 80
-      #     update-comment: true
-      #     title: "🛡️ Code Coverage Report"
-      #     check-for-current-branch: true
-      #     coverage-counter-type: LINE,INSTRUCTION,BRANCH,METHOD,CLASS
-      #     include-all-sources: true
-      #     debug-mode: true
-      #     fail-if-coverage-less: true
-      #     fail-on-coverage-violation: true
-      #     failure-message: "Code coverage is currently at {coverage}%. Target is 80%."
-      #     success-message: "✅ Code coverage is at {coverage}%."
-      #     report-on-status: true
+      - name: Comment on coverage for current branch
+        if: github.event_name == 'pull_request' && github.base_ref == 'develop'
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: |
+            build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.CI_GITHUB_TOKEN }}  
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          update-comment: true
+          title: "🛡️ Code Coverage Report"
+          check-for-current-branch: true
+          coverage-counter-type: LINE,INSTRUCTION,BRANCH,METHOD,CLASS
+          include-all-sources: true
+          debug-mode: true
+          fail-if-coverage-less: true
+          fail-on-coverage-violation: true
+          failure-message: "Code coverage is currently at {coverage}%. Target is 80%."
+          success-message: "✅ Code coverage is at {coverage}%."
+          report-on-status: true
 
       - name: Build APK
         run: ./gradlew assembleDebug
