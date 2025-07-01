@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aflami</string>
+    <string name="aflami_description">More than just watching.</string>
+    <!-- - Offline messages  -->
+    <string name="offline_message">Oops! It looks like you’re offline.</string>
+    <string name="offline_description">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
+    <!-- -   -->
+    <!-- - OnBoarding messages  -->
+    <string name="skip">Skip</string>
+    <string name="onboarding1_title">Movies That Feel You</string>
+    <string name="onboarding1_description">This isn’t just a movie app — it’s a mood experience. Tap your vibe and let the story begin.</string>
+    <string name="onboarding2_title">Build Your Watchlist, show love</string>
+    <string name="onboarding2_description">Save your favorite picks, track your moods, and come back to find something new every day.</string>
+    <string name="onboarding3_title">Your Movie Journal</string>
+    <string name="onboarding3_description">Keep track of what you’ve watched, how you felt, and what you loved. Your film journey, remembered.</string>
+    <string name="onboarding4_title">Guess &amp; Play!</string>
+    <string name="onboarding4_description">Put your film knowledge to the test with exciting quizzes. Every right guess brings you closer to the next movie adventure.</string>
+    <!-- -   -->
+    <!-- - Categories  -->
+    <string name="drama">Drama</string>
+    <string name="family">Family</string>
+    <string name="fantasy">Fantasy</string>
+    <string name="comedy">Comedy</string>
+    <string name="romance">Romance</string>
+    <string name="action">Action</string>
+    <string name="western">Western</string>
+    <string name="history">History</string>
+    <string name="tv_movie">TV movie</string>
+    <string name="war">War</string>
+    <string name="mystery">Mystery</string>
+    <string name="thriller">Thriller</string>
+    <string name="documentary">Documentary</string>
+    <string name="animation">Animation</string>
+    <string name="crime">Crime</string>
+    <string name="science_fiction">Science fiction</string>
+    <string name="music">Music</string>
+    <string name="horror">Horror</string>
+    <string name="adventure">Adventure</string>
+    <string name="action_adventure">Action &amp; Adventure </string>
+    <string name="reality">Reality</string>
+    <string name="news">News</string>
+    <string name="kids">Kids</string>
+    <string name="soap">Soap</string>
+    <string name="talk">Talk</string>
+    <!-- -   -->
+    <!-- -   -->
+    <string name="continue_watching">Continue watching</string>
+    <string name="top_rating">Top rating</string>
+    <string name="popular">Popular</string>
+    <string name="movies_birthday">Movies birthday</string>
+    <string name="celebrate_message">Celebrate with movies released in this day.</string>
+    <!-- -   -->
+    <!-- - Bottom Navigation items  -->
+    <string name="home">Home</string>
+    <string name="lists">Lists</string>
+    <string name="categories">Categories</string>
+    <string name="lets_play">Let’s Play</string>
+    <string name="profile">Profile</string>
+    <!-- -   -->
+    <!-- - Login screen messages  -->
+    <string name="welcome_back">Welcome back!</string>
+    <string name="enter_info_to_login_message">please enter your information to login</string>
+    <string name="user_name_hint">User name</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="continue_as_guest">Continue as guest</string>
+    <string name="dont_have_account">Don’t have account?</string>
+    <string name="create_account">Create account</string>
+    <string name="incorrect_password">incorrect password</string>
+    <!-- -   -->
+    <!-- - Mood Picker  -->
+    <string name="mood_picker_title">Mood Picker (Get a Movie)</string>
+    <string name="mood_picker_question">What’s your vibe today?</string>
+    <string name="get_now">Get now</string>
+    <string name="mood_picker">Mood picker</string>
+    <string name="mood_picker_description">Movie that matches your mood is:</string>
+    <string name="view_details">View details</string>
+    <string name="get_another_movie">Get another movie</string>
+    <!-- -   -->
+    <!-- - Game section   -->
+    <string name="release_game_title">When Was It Released?</string>
+    <string name="release_game_description">Pick the right release year.</string>
+    <string name="guess_movie_game_title">Guess the Movie by Poster</string>
+    <string name="guess_movie_game_description">Match the poster with the right title!</string>
+    <string name="genre_game_title">Which Genre?</string>
+    <string name="genre_game_description">Which one is the real action movie?</string>
+    <string name="guess_character_game_title">Guess the Character</string>
+    <string name="guess_character_game_description">Can you tell who this character?</string>
+    <string name="play_now">Play now</string>
+    <string name="points_to_unlock">Pts. to unlock</string>
+    <string name="choose_level">Choose Difficulty Level</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="lets_start">Let’s start</string>
+    <string name="and">And</string>
+    <string name="sec">Sec</string>
+    <string name="point_per_question">point per question.</string>
+    <string name="hint">hint?</string>
+    <string name="next">Next</string>
+    <string name="back_to_menue">Back to menu</string>
+    <string name="play_again">Play again</string>
+    <string name="points_acheived">Points Achieved</string>
+    <string name="total_time">Total time</string>
+    <string name="finish_game_message">You finished the GAME!</string>
+    <!-- -   -->
+    <!-- -   -->
+    <string name="loading">Loading...</string>
+    <string name="all">All</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="world_tour_title">World Tour</string>
+    <string name="world_tour_description">Explore World Cinema</string>
+    <string name="country_tour_title">Country Tour</string>
+    <string name="country_tour_description">Start exploring the world movie by enter your favorite country in search bar</string>
+    <string name="country_name_hint">Country name</string>
+    <string name="my_account">My account</string>
+    <string name="description">Description</string>
+    <string name="cast">Cast</string>
+    <string name="search">Search</string>
+    <string name="search_hint">search...</string>
+    <string name="serach_suggestions_hub">Search Suggestions Hub</string>
+    <string name="search_description">Start exploring! Search for your favorite movies, series and shows</string>
+    <string name="clear_all">Clear all</string>
+    <string name="recent_searches">Recent Searches</string>
+    <string name="no_search_result">No search result</string>
+    <string name="no_search_result_description">please try with another keyword.</string>
+    <string name="filter_result">Filter result</string>
+    <string name="imdb_rating">IMDb rating</string>
+    <string name="genre">Genre</string>
+    <string name="apply">Apply</string>
+    <string name="clear">Clear</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="tv_shows">TV Shows</string>
+    <string name="movies">Movies</string>
+    <string name="find_by_actor">Find by actor</string>
+    <string name="find_by_actor_description_hint">Search by favorite Actor</string>
+    <string name="find_by_actor_description">Start exploring your favorite actor’s movies and enjoy it.</string>
+    <string name="find_by_actor_hint">Actor name</string>
+    <string name="my_favorite">My favorite</string>
+    <string name="kitchen_movie">kitten movies</string>
+    <string name="delete_list">Delete list</string>
+    <string name="delete_list_message">Are you sure to continue deleting?</string>
+    <string name="edit_list">Edit list</string>
+    <string name="no_saved_items">No saved items here!</string>
+    <string name="create_list">Create new list</string>
+    <string name="list_title_hint">List title</string>
+    <string name="no_list_yet">No lists yet!</string>
+    <string name="no_list_description">Our brain is still empty, Click on + and start saving your favorite items and shows you love!</string>
+    <string name="points">Pts.</string>
+    <string name="watch_history">Watch history</string>
+    <string name="my_rating">My rating</string>
+    <string name="language">Language</string>
+    <string name="app_theme">App theme</string>
+    <string name="settings">Settings</string>
+    <string name="change_password">Change password</string>
+    <string name="tired_to_watching">Tired to watching?</string>
+    <string name="logout">Logout</string>
+    <string name="logout_message">If you’re tired of us, just know we’re not, we will be here.</string>
+    <string name="login_message">Please login to access your account details and other features!</string>
+    <string name="confirm_message">Are you sure to continue?</string>
+    <string name="version">v</string>
+    <string name="profile_title">My account</string>
+    <string name="more_like_this">More like this</string>
+    <string name="reviews">Reviews</string>
+    <string name="gallary">Gallery</string>
+    <string name="company_production">Company production</string>
+    <string name="read_more">Read more</string>
+    <string name="rate">Rate</string>
+    <string name="rate_title">Rate it</string>
+    <string name="rate_message">Select how much you like it</string>
+    <string name="add_to_list">Add to list</string>
+    <string name="episodes">episodes</string>
+    <string name="season">Season</string>
+    <string name="seasons">Seasons</string>
+    <!-- -   -->
+    <!-- - Positive messages   -->
+    <string name="list_added_success_message">New list added successfully.</string>
+    <!-- -   -->
+    <!-- - Negative messages   -->
+    <string name="general_error_message">Something went wrong, please try again.</string>
+    <!-- -   -->
+</resources>
