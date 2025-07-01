@@ -60,4 +60,5 @@ jobs:
           firebase appdistribution:distribute \
             app/build/outputs/apk/debug/app-debug.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
-            --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
+            --token ${{ secrets.FIREBASE_AUTH_TOKEN }} \
+            --group ${{secrets.TESTER_GROUP}}
