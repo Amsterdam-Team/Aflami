@@ -17,6 +17,11 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           cache: gradle
+          
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.FIREBASE_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json    
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -61,4 +66,4 @@ jobs:
             app/build/outputs/apk/debug/app-debug.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --token ${{ secrets.FIREBASE_AUTH_TOKEN }} \
-            --group ${{secrets.TESTER_GROUP}}
+            --group ${{ secrets.TESTER_GROUP }}
