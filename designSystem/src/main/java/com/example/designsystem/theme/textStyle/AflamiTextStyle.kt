@@ -19,4 +19,3 @@ data class SizedTextStyle(
     val small: TextStyle,
 )
 
-internal val LocalAflamiTextStyle = staticCompositionLocalOf {defaultTextStyle  }

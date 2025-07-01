@@ -1,5 +1,6 @@
 package com.amsterdam.aflami.theme.textStyle
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -15,6 +16,7 @@ private val poppins = FontFamily(
 private val nicomoji = FontFamily(
     Font(R.font.nicomoji_regular, FontWeight.Normal),
 )
+internal val LocalAflamiTextStyle = staticCompositionLocalOf {defaultTextStyle  }
 internal val defaultTextStyle = AflamiTextStyle(
     headline = SizedTextStyle(
         large = TextStyle(
