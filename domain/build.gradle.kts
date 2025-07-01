@@ -13,4 +13,6 @@ kotlin {
 }
 dependencies {
     implementation(project(":entity"))
+    implementation(libs.kotlinx.coroutines.core)
+    implementation (libs.kotlinx.coroutines.android)
 }
