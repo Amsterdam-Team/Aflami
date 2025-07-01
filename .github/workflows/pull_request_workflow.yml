@@ -17,6 +17,11 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           cache: gradle
+          
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.FIREBASE_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json    
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -36,7 +41,7 @@ jobs:
         with:
           paths: |
             build/reports/jacoco/test/jacocoTestReport.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CI_GITHUB_TOKEN }}  
           min-coverage-overall: 80
           min-coverage-changed-files: 80
           update-comment: true
@@ -60,4 +65,5 @@ jobs:
           firebase appdistribution:distribute \
             app/build/outputs/apk/debug/app-debug.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
-            --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
+            --token ${{ secrets.FIREBASE_AUTH_TOKEN }} \
+            --groups ${{ secrets.TESTER_GROUP }}
