@@ -4,9 +4,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import com.amsterdam.aflami.darkThemeColors
-import com.amsterdam.aflami.lightThemeColors
-import com.amsterdam.aflami.localAflamiAppColors
+import com.example.designsystem.theme.colors.darkThemeColors
+import com.example.designsystem.theme.colors.lightThemeColors
+import com.example.designsystem.theme.colors.localAflamiAppColors
 
 @Composable
 fun AflamiTheme(
