@@ -1,4 +1,4 @@
-package com.amsterdam.aflami
+package com.example.designsystem.colors
 
 import androidx.compose.ui.graphics.Color
 
