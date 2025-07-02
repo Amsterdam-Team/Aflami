@@ -37,7 +37,6 @@ android {
 dependencies {
     implementation(project(":designSystem"))
     implementation(project(":viewModel"))
-    implementation(libs.androidx.foundation)
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
