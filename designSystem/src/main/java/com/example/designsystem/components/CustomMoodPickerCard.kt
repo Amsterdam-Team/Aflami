@@ -30,8 +30,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.AflamiTheme
 import com.example.designsystem.R
+import com.example.designsystem.theme.AflamiTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun CustomMoodPickerCard(
@@ -166,8 +167,7 @@ private fun BlurredBoxWithIcon(
         )
     }
 }
-
-@Preview(showBackground = true)
+@ThemeAndLocalePreviews
 @Composable
 private fun CustomMoodPickerCardPreview() {
     CustomMoodPickerCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 150.dp))
