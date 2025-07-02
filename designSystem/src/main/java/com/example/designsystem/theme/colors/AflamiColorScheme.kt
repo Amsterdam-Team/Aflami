@@ -1,4 +1,4 @@
-package com.amsterdam.aflami
+package com.example.designsystem.theme.colors
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color

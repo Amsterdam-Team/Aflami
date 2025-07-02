@@ -3,10 +3,10 @@ package com.example.designsystem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
-import com.amsterdam.aflami.AflamiColorScheme
-import com.amsterdam.aflami.localAflamiAppColors
-import com.amsterdam.aflami.theme.textStyle.AflamiTextStyle
-import com.amsterdam.aflami.theme.textStyle.LocalAflamiTextStyle
+import com.example.designsystem.theme.colors.AflamiColorScheme
+import com.example.designsystem.theme.colors.localAflamiAppColors
+import com.example.designsystem.theme.textStyle.AflamiTextStyle
+import com.example.designsystem.theme.textStyle.LocalAflamiTextStyle
 
 typealias ColorType = @Composable () -> Color
 
