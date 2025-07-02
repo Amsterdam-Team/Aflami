@@ -1,5 +1,6 @@
 package com.example.designsystem.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -90,7 +92,7 @@ private fun ParentComponent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        val color = if (isClicked) AppTheme.color.primary else AppTheme.color.disable
+        val color by animateColorAsState(if (isClicked) AppTheme.color.primary else AppTheme.color.disable)
         Text(
             modifier = Modifier.padding(12.dp),
             text = stringResource(R.string.mood_picker_question),
@@ -121,12 +123,12 @@ private fun ParentComponent(
 
 @Composable
 private fun ChildComponent(
-    modifier: Modifier = Modifier,
     iconRes: Int,
+    modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     onClick: () -> Unit = {}
 ) {
-    val color = if (isSelected) AppTheme.color.primary else AppTheme.color.body
+    val color by animateColorAsState(if (isSelected) AppTheme.color.primary else AppTheme.color.body)
     Icon(
         painter = painterResource(iconRes),
         contentDescription = null,
