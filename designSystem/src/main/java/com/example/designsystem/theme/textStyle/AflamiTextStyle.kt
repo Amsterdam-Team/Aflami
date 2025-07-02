@@ -1,6 +1,5 @@
-package com.amsterdam.aflami.theme.textStyle
+package com.example.designsystem.theme.textStyle
 
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 
 data class AflamiTextStyle(
