@@ -26,9 +26,9 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun CustomRadioButton(
     modifier: Modifier = Modifier,
-    isEnable: Boolean
+    isEnable: Boolean,
+    onClick: () -> Unit = {}
 ) {
-    var isEnable by remember { mutableStateOf(isEnable) }
     val color = if (isEnable) AflamiTheme.color.primary else AflamiTheme.color.disable
     Row(
         modifier = modifier
@@ -37,7 +37,7 @@ fun CustomRadioButton(
             .border(
                 width = 6.dp, color = color, shape = CircleShape
             )
-            .clickable(onClick = { isEnable = !isEnable })
+            .clickable(onClick = onClick)
     )
     {
     }
