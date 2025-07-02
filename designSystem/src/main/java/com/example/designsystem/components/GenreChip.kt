@@ -18,6 +18,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun GenreChip(
+    modifier: Modifier = Modifier,
     genre: String,
     selected: Boolean = false,
     onClick: () -> Unit = {}
@@ -27,7 +28,7 @@ fun GenreChip(
     val textColor = if (selected) AppTheme.color.onPrimary else AppTheme.color.primary
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 color = boxColor,
                 shape = RoundedCornerShape(8.dp)
@@ -51,6 +52,6 @@ fun GenreChip(
 @Composable
 private fun GenreChipPreview() {
     AflamiTheme {
-        GenreChip("Drama", selected = true)
+        GenreChip(modifier = Modifier.padding(8.dp), genre = "Action", selected = true)
     }
 }
