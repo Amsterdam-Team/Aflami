@@ -1,9 +1,11 @@
 package com.example.designsystem.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,11 +28,12 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun CategoryCard(
-    modifier: Modifier = Modifier,
     categoryName: String,
     categoryImage: Painter,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     Box(
@@ -49,7 +53,11 @@ fun CategoryCard(
                     shape = RoundedCornerShape(16.dp)
                 )
                 .clip(RoundedCornerShape(16.dp))
-                .clickable(onClick = onClick)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = ripple(color = AppTheme.color.hint),
+                    onClick = onClick
+                )
         )
         Row(
             modifier = Modifier
