@@ -1,4 +1,4 @@
-package com.example.designsystem
+package com.example.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -10,7 +10,7 @@ import com.example.designsystem.theme.textStyle.LocalAflamiTextStyle
 
 typealias ColorType = @Composable () -> Color
 
-object AflamiTheme{
+object AppTheme{
     val color: AflamiColorScheme
     @Composable @ReadOnlyComposable get() = localAflamiAppColors.current
 
