@@ -1,4 +1,4 @@
-package com.example.designsystem.colors
+package com.example.designsystem.theme.colors
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
