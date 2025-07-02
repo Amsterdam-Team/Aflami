@@ -44,7 +44,7 @@ fun CustomRadioButton(
 }
 @ThemeAndLocalePreviews
 @Composable
-fun CustomRadioButtonPreview() {
+private fun CustomRadioButtonPreview() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
