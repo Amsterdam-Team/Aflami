@@ -26,10 +26,10 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun Chip(
-    modifier: Modifier = Modifier,
     icon: Painter,
     label: String,
     isSelected: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val backgroundColor by animateColorAsState(
