@@ -19,7 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.AflamiTheme
+import com.example.designsystem.theme.AflamiTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -41,7 +42,7 @@ fun CustomRadioButton(
     {
     }
 }
-
+@ThemeAndLocalePreviews
 @Composable
 fun CustomRadioButtonPreview() {
     Column(
