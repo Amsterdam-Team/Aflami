@@ -1,5 +1,6 @@
 package com.example.designsystem.components
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,7 +55,6 @@ fun EpisodeCard(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier =
             modifier
@@ -128,8 +128,7 @@ private fun EpisodeBanner(
                             bottomEnd = 4.dp,
                             bottomStart = 12.dp,
                         ),
-                    )
-                    .border(
+                    ).border(
                         width = 1.dp,
                         color = AppTheme.color.stroke,
                         shape =
@@ -139,8 +138,7 @@ private fun EpisodeBanner(
                                 bottomEnd = 4.dp,
                                 bottomStart = 12.dp,
                             ),
-                    )
-                    .background(AppTheme.color.primaryVariant)
+                    ).background(AppTheme.color.primaryVariant)
                     .padding(horizontal = 8.dp, vertical = 6.dp),
         ) {
             Icon(
@@ -227,8 +225,11 @@ private fun EpisodeDescription(episodeDescription: String) {
                 .clickable(
                     interactionSource = null,
                     indication = null,
-                    enabled = isTextTruncated,
-                    onClick = { showFullDescription = !showFullDescription },
+                    enabled = if (showFullDescription) true else isTextTruncated,
+                    onClick = {
+                        Log.d("TAG", "EpisodeDescription: Clicked")
+                        showFullDescription = !showFullDescription
+                    },
                 ),
     )
 }
@@ -248,8 +249,7 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = CircleShape,
-                )
-                .size(40.dp),
+                ).size(40.dp),
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_play),
@@ -277,7 +277,7 @@ private fun PreviewEpisodeCard() {
                 episodeTitle = "Recovering a body",
                 episodeTime = 58,
                 publishedAt = "3 Sep 2020",
-                episodeDescription = "In 1935, corrections officer Paul Edgecomb oversees \"The Green Mile,\" the death row, In 1935, corrections officer Paul Edgecomb oversees \"The Green Mile,\" the death row",
+                episodeDescription = "In 1935, corrections officer Paul Edgecomb oversees ",
                 onPlayEpisodeClick = { },
             )
         }
