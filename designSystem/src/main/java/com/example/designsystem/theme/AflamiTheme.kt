@@ -1,18 +1,28 @@
 package com.example.designsystem.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import com.example.designsystem.theme.colors.AflamiColorScheme
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import com.example.designsystem.theme.colors.darkThemeColors
+import com.example.designsystem.theme.colors.lightThemeColors
 import com.example.designsystem.theme.colors.localAflamiAppColors
-import com.example.designsystem.theme.textStyle.AflamiTextStyle
-import com.example.designsystem.theme.textStyle.LocalAflamiTextStyle
 
-object AflamiTheme {
+@Composable
+fun AflamiTheme(
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    val theme = if (isDarkTheme) darkThemeColors else lightThemeColors
 
-    val color: AflamiColorScheme
-        @Composable @ReadOnlyComposable get() = localAflamiAppColors.current
+    CompositionLocalProvider(
+        localAflamiAppColors provides theme,
+        LocalIsDarkTheme provides isDarkTheme
+    ) {
+        content()
+    }
+}
 
-    val textStyle: AflamiTextStyle
-        @Composable @ReadOnlyComposable get() = LocalAflamiTextStyle.current
-
+internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
+    error("LocalIsDarkTheme not provided")
 }
