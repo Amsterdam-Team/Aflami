@@ -29,6 +29,7 @@ import com.example.designsystem.utils.dropShadow
 
 @Composable
 fun BoxScope.SnackBar(message: String, status: SnackBarStatus) {
+    val shape = RoundedCornerShape(12.dp)
     Box(
         modifier = Modifier
             .align(Alignment.TopCenter)
@@ -36,14 +37,14 @@ fun BoxScope.SnackBar(message: String, status: SnackBarStatus) {
             .fillMaxWidth()
             .dropShadow(
                 blur = 8.dp,
-                shape = RoundedCornerShape(12.dp),
+                shape = shape,
                 color = status.dropShadowColor(),
             )
             .padding(1.dp)
-            .clip(shape = RoundedCornerShape(12.dp))
+            .clip(shape = shape)
             .clipToBounds()
-            .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(12.dp))
-            .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(12.dp))
+            .background(AppTheme.color.surfaceHigh, shape = shape)
+            .border(1.dp, AppTheme.color.stroke, shape)
     ) {
         Row(
             modifier = Modifier
