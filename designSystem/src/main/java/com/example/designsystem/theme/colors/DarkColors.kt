@@ -34,4 +34,6 @@ internal val darkThemeColors = AflamiColorScheme(
     overlayGradient = listOf(Color(0x000D090B), Color(0xFF0D090B)),
     streakGradient = listOf(Color(0x80ffffff), Color(0x1fffffff)),
     pointsOverlayGradient = listOf(Color(0xFF3B0D23), Color(0xFF7D1C4A)),
+    worldTourGradient = listOf(Color(0xFFD85895), Color(0xFF803559)),
+    findByActorGradient = listOf(Color(0xFF53ABF9), Color(0xFF336490))
 )

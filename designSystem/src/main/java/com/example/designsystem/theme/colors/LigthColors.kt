@@ -35,6 +35,8 @@ internal val lightThemeColors = AflamiColorScheme(
     overlayGradient = listOf(Color(0x00faf5f7), Color(0xFFFAF5F7)),
     streakGradient = listOf(Color(0xFFD85895), Color(0x52d85895)),
     pointsOverlayGradient = listOf(Color(0xFFD02C7A), Color(0xFF7D1C4A)),
+    worldTourGradient = listOf(Color(0xFFD85895), Color(0xFF803559)),
+    findByActorGradient = listOf(Color(0xFF53ABF9), Color(0xFF336490))
 )
 
 internal val localAflamiAppColors = staticCompositionLocalOf { lightThemeColors }
