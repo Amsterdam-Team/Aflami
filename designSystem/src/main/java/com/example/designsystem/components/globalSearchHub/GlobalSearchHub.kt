@@ -1,6 +1,5 @@
 package com.example.designsystem.components.globalSearchHub
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +25,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.designsystem.theme.AflamiTheme
+import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
@@ -60,17 +59,13 @@ fun GlobalSearchHub(
             Column() {
                 Text(
                     text = stringResource(globalSearchHubUI.labelRes),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    color = Color.White.copy(alpha = 0.87f)
+                    style = AppTheme.textStyle.title.small,
+                    color = AppTheme.color.onPrimary
                 )
                 Text(
                     text = stringResource(globalSearchHubUI.descriptionRes),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 10.sp,
-                    lineHeight = 16.sp,
-                    color = Color.White.copy(alpha = 0.5f)
+                    style = AppTheme.textStyle.label.small,
+                    color = AppTheme.color.onPrimaryBody
                 )
             }
         }
@@ -88,7 +83,7 @@ fun GlobalSearchHub(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun GlobalSearchHubPreviewWorld(){
+private fun GlobalSearchHubPreviewWorld() {
     AflamiTheme {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.WORLD,
@@ -99,7 +94,7 @@ private fun GlobalSearchHubPreviewWorld(){
 
 @ThemeAndLocalePreviews
 @Composable
-private fun GlobalSearchHubPreviewActor(){
+private fun GlobalSearchHubPreviewActor() {
     AflamiTheme {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.ACTOR,
