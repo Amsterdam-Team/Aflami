@@ -37,8 +37,7 @@ fun IconButton(
     containerColor: Color = AppTheme.color.surfaceHigh,
     tint: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
-    isClickable: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: (() -> Unit)? = null
 ) {
     val borderModifier = if (withBorder) {
         Modifier.border(width = 1.dp, color = AppTheme.color.stroke, shape = shape)
@@ -46,7 +45,7 @@ fun IconButton(
         Modifier
     }
 
-    val clickableModifier = if (isClickable) {
+    val clickableModifier = if (onClick != null) {
         Modifier
             .clip(shape)
             .clickable(onClick = onClick)

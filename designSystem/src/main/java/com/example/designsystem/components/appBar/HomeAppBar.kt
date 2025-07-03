@@ -45,7 +45,6 @@ fun HomeAppBar(
                 containerColor = AppTheme.color.primaryVariant,
                 paddingValues = PaddingValues(horizontal = 6.dp, vertical = 9.dp),
                 withBorder = true,
-                isClickable = false
             )
         },
         trailingIcon = {
