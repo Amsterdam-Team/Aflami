@@ -145,8 +145,7 @@
     <string name="find_by_actor_description_hint">ابحث حسب ممثلك المفضل</string>
     <string name="find_by_actor_description">ابدأ باستكشاف أفلام ممثلك المفضل واستمتع بها.</string>
     <string name="find_by_actor_hint">اسم الممثل</string>
-    <string name="my_favorite">مفضلتي</string>
-    <string name="kitchen_movie">أفلام القطط</string>
+    <string name="list_items">%1$d عنصر</string>
     <string name="delete_list">حذف القائمة</string>
     <string name="delete_list_message">هل أنت متأكد من المتابعة بالحذف؟</string>
     <string name="edit_list">تعديل القائمة</string>
