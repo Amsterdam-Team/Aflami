@@ -36,5 +36,6 @@ data class AflamiColorScheme(
     val overlayGradient: List<Color>,
     val streakGradient: List<Color>,
     val pointsOverlayGradient: List<Color>,
+    val overlayDark : List<Color>
 )
 
