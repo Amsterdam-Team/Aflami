@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
@@ -28,6 +30,7 @@ fun IconButton(
     painter: Painter,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    iconSize: Dp = 40.dp,
     paddingValues: PaddingValues = PaddingValues(10.dp),
     withBorder: Boolean = false,
     containerColor: Color = AppTheme.color.surfaceHigh,
@@ -43,6 +46,7 @@ fun IconButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
+            .size(iconSize)
             .background(
                 shape = shape,
                 color = containerColor,
@@ -61,10 +65,27 @@ fun IconButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun IconPreview() {
+private fun SearchIconPreview() {
     AflamiTheme {
         IconButton(
             painter = painterResource(R.drawable.ic_search_normal),
+            contentDescription = stringResource(R.string.search),
+            containerColor = AppTheme.color.primaryVariant,
+            tint = AppTheme.color.body,
+            withBorder = true,
+            paddingValues = PaddingValues(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun BackIconPreview() {
+    AflamiTheme {
+        IconButton(
+            painter = painterResource(R.drawable.ic__back_arrow),
             contentDescription = stringResource(R.string.search),
             containerColor = AppTheme.color.primaryVariant,
             tint = AppTheme.color.body,
