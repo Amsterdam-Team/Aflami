@@ -38,6 +38,7 @@ internal val lightThemeColors = AflamiColorScheme(
     borderLinearGradient = listOf(Color(0x14FFFFFF), Color(0x3DFFFFFF)),
     successSnackBarShadow = Color(0x1F429946),
     failureSnackBarShadow = Color(0x1FBF434C),
+    primaryEnd = Color(0xFF973A66),
 )
 
 internal val localAflamiAppColors = staticCompositionLocalOf { lightThemeColors }

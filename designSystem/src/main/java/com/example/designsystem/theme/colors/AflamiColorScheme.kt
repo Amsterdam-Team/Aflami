@@ -39,5 +39,6 @@ data class AflamiColorScheme(
     val borderLinearGradient: List<Color>,
     val successSnackBarShadow: Color,
     val failureSnackBarShadow: Color,
+    val primaryEnd: Color,
 )
 
