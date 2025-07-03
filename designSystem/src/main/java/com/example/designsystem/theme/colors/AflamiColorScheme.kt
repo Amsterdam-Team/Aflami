@@ -37,5 +37,7 @@ data class AflamiColorScheme(
     val streakGradient: List<Color>,
     val pointsOverlayGradient: List<Color>,
     val borderLinearGradient: List<Color>,
+    val successSnackBarShadow: Color,
+    val failureSnackBarShadow: Color,
 )
 

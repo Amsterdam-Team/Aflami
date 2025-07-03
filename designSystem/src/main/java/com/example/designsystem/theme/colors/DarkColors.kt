@@ -35,4 +35,6 @@ internal val darkThemeColors = AflamiColorScheme(
     streakGradient = listOf(Color(0x80ffffff), Color(0x1fffffff)),
     pointsOverlayGradient = listOf(Color(0xFF3B0D23), Color(0xFF7D1C4A)),
     borderLinearGradient = listOf(Color(0x14FFFFFF), Color(0x3DFFFFFF)),
+    successSnackBarShadow = Color(0x1F429946),
+    failureSnackBarShadow = Color(0x1FBF434C),
 )
