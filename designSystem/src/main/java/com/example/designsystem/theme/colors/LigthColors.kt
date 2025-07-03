@@ -39,7 +39,7 @@ internal val lightThemeColors = AflamiColorScheme(
     successSnackBarShadow = Color(0x1F429946),
     failureSnackBarShadow = Color(0x1FBF434C),
     worldTourGradient = listOf(Color(0xFFD85895), Color(0xFF803559)),
-    findByActorGradient = listOf(Color(0xFF53ABF9), Color(0xFF336490))
+    findByActorGradient = listOf(Color(0xFF53ABF9), Color(0xFF336490)),
     primaryEnd = Color(0xFF973A66),
 )
 
