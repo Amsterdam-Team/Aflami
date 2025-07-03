@@ -42,7 +42,7 @@ fun RatingChip(rating: String, modifier: Modifier = Modifier) {
 
 @ThemeAndLocalePreviews
 @Composable
-fun RatingChipPreview() {
+private fun RatingChipPreview() {
     AflamiTheme {
     RatingChip("9.9")
     }

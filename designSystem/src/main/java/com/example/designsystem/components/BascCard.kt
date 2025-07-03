@@ -38,14 +38,15 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 internal fun BaseCard(
-    modifier: Modifier = Modifier, movieImage: Painter,
-    movieContentDescription: String? = null,
+    movieImage: Painter,
     movieTitle: String,
     movieType: String,
     movieYear: String,
+    contentScale: ContentScale,
+    modifier: Modifier = Modifier,
+    movieContentDescription: String? = null,
     movieRating: String? = null,
-    onClick: () -> Unit = {},
-    contentScale: ContentScale
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
