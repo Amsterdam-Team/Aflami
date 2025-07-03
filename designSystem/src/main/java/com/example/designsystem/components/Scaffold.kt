@@ -12,7 +12,7 @@ import com.example.designsystem.theme.AppTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AppScaffold(
+fun Scaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
@@ -36,7 +36,7 @@ fun AppScaffold(
 @Composable
 private fun ScaffoldPreview() {
     AflamiTheme {
-        AppScaffold(content = {
+        Scaffold(content = {
             Text("Hi")
         })
     }
