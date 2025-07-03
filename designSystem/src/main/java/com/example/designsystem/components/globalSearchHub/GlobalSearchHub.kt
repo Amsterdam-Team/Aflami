@@ -1,6 +1,6 @@
-package com.example.designsystem.components
+package com.example.designsystem.components.globalSearchHub
 
-import androidx.annotation.DrawableRes
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -23,22 +24,26 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.designsystem.theme.AflamiTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun GlobalSearchHub(
-    name: String,
-    description: String,
-    @DrawableRes icon: Int,
-    brush: Brush,
+    globalSearchHubUI: GlobalSearchHubUI,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(brush = brush)
+            .background(
+                brush = Brush.verticalGradient(globalSearchHubUI.gradient),
+                alpha = 0.8f
+            )
     ) {
         Column(
             modifier = Modifier
@@ -47,21 +52,21 @@ fun GlobalSearchHub(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Image(
-                painter = painterResource(icon),
+                painter = painterResource(globalSearchHubUI.icon),
                 contentDescription = null,
                 modifier = Modifier.height(40.dp),
                 contentScale = ContentScale.FillHeight
             )
             Column() {
                 Text(
-                    text = name,
+                    text = stringResource(globalSearchHubUI.labelRes),
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     color = Color.White.copy(alpha = 0.87f)
                 )
                 Text(
-                    text = description,
+                    text = stringResource(globalSearchHubUI.descriptionRes),
                     fontWeight = FontWeight.Medium,
                     fontSize = 10.sp,
                     lineHeight = 16.sp,
@@ -76,6 +81,18 @@ fun GlobalSearchHub(
                 .blur(56.dp, BlurredEdgeTreatment.Unbounded)
                 .background(color = Color.White.copy(alpha = 0.5f), CircleShape)
                 .align(Alignment.TopEnd)
+        )
+    }
+}
+
+
+@ThemeAndLocalePreviews
+@Composable
+fun GlobalSearchHubPreview(){
+    AflamiTheme {
+        GlobalSearchHub(
+            globalSearchHubUI = GlobalSearchHubUI.WORLD,
+            modifier = Modifier.size(160.dp, 100.dp)
         )
     }
 }
