@@ -28,19 +28,9 @@ fun ListItem(
     title: String,
     count: Int,
     modifier: Modifier = Modifier,
-    bottomLeftRadius: Float = 24f,
-    bottomRightRadius: Float = 24f,
-    topRightRadius: Float = 16f,
-    topLeftRadius: Float = 24f,
-    middleRadius: Float = 16f
+
 ) {
-    val folderShape = FolderShape(
-        bottomLeftRadius = bottomLeftRadius,
-        bottomRightRadius = bottomRightRadius,
-        topLeftRadius = topLeftRadius,
-        topRightRadius = topRightRadius,
-        middleRadius = middleRadius
-    )
+    val folderShape = FolderShape()
     BoxWithConstraints(
         modifier = modifier
             .clip(
