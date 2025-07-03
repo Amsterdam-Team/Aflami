@@ -1,5 +1,6 @@
 package com.example.designsystem.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -18,14 +20,14 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun GenreChip(
-    modifier: Modifier = Modifier,
     genre: String,
+    modifier: Modifier = Modifier,
     selected: Boolean = false,
     onClick: () -> Unit = {}
 ) {
 
-    val boxColor = if (selected) AppTheme.color.primary else AppTheme.color.surfaceHigh
-    val textColor = if (selected) AppTheme.color.onPrimary else AppTheme.color.primary
+    val boxColor by animateColorAsState(if (selected) AppTheme.color.primary else AppTheme.color.surfaceHigh)
+    val textColor by animateColorAsState(if (selected) AppTheme.color.onPrimary else AppTheme.color.primary)
 
     Box(
         modifier = modifier
@@ -39,9 +41,8 @@ fun GenreChip(
     ) {
         Text(
             text = genre,
-            style = AppTheme.textStyle.label.small.copy(
-                color = textColor
-            ),
+            style = AppTheme.textStyle.label.small,
+            color = textColor,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center
         )
