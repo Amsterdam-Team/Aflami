@@ -88,10 +88,21 @@ fun GlobalSearchHub(
 
 @ThemeAndLocalePreviews
 @Composable
-fun GlobalSearchHubPreview(){
+fun GlobalSearchHubPreviewWorld(){
     AflamiTheme {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.WORLD,
+            modifier = Modifier.size(160.dp, 100.dp)
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+fun GlobalSearchHubPreviewActor(){
+    AflamiTheme {
+        GlobalSearchHub(
+            globalSearchHubUI = GlobalSearchHubUI.ACTOR,
             modifier = Modifier.size(160.dp, 100.dp)
         )
     }
