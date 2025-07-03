@@ -63,7 +63,7 @@ fun ListItem(
 
 @ThemeAndLocalePreviews
 @Composable
-fun ListItemPreview(){
+private fun ListItemPreview(){
     AflamiTheme {
         ListItem(
             title = "My Favourites",
