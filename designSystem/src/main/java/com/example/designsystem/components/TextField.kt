@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
-import com.example.designsystem.utils.SpeechBubbleShape
+import com.example.designsystem.theme.shapes.SpeechBubbleShape
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable

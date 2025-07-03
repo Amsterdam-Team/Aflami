@@ -1,4 +1,4 @@
-package com.example.designsystem.utils
+package com.example.designsystem.theme.shapes
 
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
