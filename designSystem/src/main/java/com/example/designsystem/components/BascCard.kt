@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,7 +47,8 @@ internal fun BaseCard(
     modifier: Modifier = Modifier,
     movieContentDescription: String? = null,
     movieRating: String? = null,
-    onClick: () -> Unit = {}
+    topIcon: Painter? = null,
+    onClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
@@ -75,6 +77,23 @@ internal fun BaseCard(
                 rating = movieRating
             )
 
+        if (topIcon != null)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 4.dp, top = 4.dp)
+                    .size(32.dp)
+                    .background(
+                        color = AppTheme.color.iconBackGround,
+                        RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = topIcon, contentDescription = null, modifier = Modifier.size(20.dp),
+                    tint = AppTheme.color.redAccent
+                )
+            }
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

@@ -1,6 +1,5 @@
 package com.example.designsystem.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -30,11 +29,12 @@ fun RatingChip(rating: String, modifier: Modifier = Modifier) {
             .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
+        Icon(
             painter = painterResource(R.drawable.ic_filled_star), contentDescription = null,
             modifier = Modifier
                 .size(16.dp)
-                .padding(end = 2.dp)
+                .padding(end = 2.dp),
+            tint = AppTheme.color.yellowAccent
         )
         Text(rating, style = AppTheme.textStyle.label.small, color = AppTheme.color.body)
     }

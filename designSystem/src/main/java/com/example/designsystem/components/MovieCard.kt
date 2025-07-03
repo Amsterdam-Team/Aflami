@@ -20,6 +20,7 @@ fun MovieCard(
     modifier: Modifier = Modifier.size(156.dp, 222.dp),
     movieRating: String? = null,
     movieContentDescription: String? = null,
+    topIcon : Painter? = null,
     onClick: () -> Unit = {}
 ) {
     BaseCard(
@@ -31,10 +32,10 @@ fun MovieCard(
         movieYear = movieYear,
         movieRating = movieRating,
         contentScale = ContentScale.FillBounds,
-        onClick = onClick
+        onClick = onClick,
+        topIcon = topIcon
     )
 }
-
 
 @ThemeAndLocalePreviews
 @Composable
@@ -45,6 +46,7 @@ private fun MovieCardPreview() {
             movieType = "TV show",
             movieYear = "2016",
             movieTitle = "Your Name",
-            movieRating = "9.9")
+            movieRating = "9.9",
+            topIcon = painterResource(R.drawable.img_user_rating))
     }
 }
