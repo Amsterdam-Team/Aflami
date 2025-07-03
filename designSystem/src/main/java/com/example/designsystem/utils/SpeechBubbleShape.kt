@@ -57,16 +57,6 @@ class SpeechBubbleShape(
                 moveTo(tailBaseStart, rectHeight)
                 lineTo(tailTipX, tailTipY)
                 lineTo(tailBaseEnd, rectHeight)
-//                val tailOffsetPx = with(density) { tailOffsetDp.toPx() }
-//                val tailBaseLeft = tailOffsetPx
-//                val tailBaseRight = tailOffsetPx + tailWidthPx
-//                val tailBaseStart = if (isRtl) tailBaseRight else tailBaseLeft
-//                val tailBaseEnd = if (isRtl) tailBaseLeft else tailBaseRight
-//                val tailTipX = tailBaseStart + tailWidthPx / 2
-//                val tailTipY = rectHeight + tailHeightPx
-//                moveTo(tailBaseStart, rectHeight)
-//                lineTo(tailTipX, tailTipY)
-//                lineTo(tailBaseEnd, rectHeight)
             }
             close()
         })
