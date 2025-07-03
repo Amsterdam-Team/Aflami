@@ -302,30 +302,26 @@ private fun CustomTextFieldPreview() {
         ) {
             TextField(
                 "",
-                hintText = stringResource(R.string.hint),
+                hintText = stringResource(R.string.user_name_hint),
                 leadingIcon = R.drawable.ic_user,
             )
             TextField(
                 "",
-                hintText = stringResource(R.string.hint),
+                hintText = stringResource(R.string.password_hint),
                 leadingIcon = R.drawable.ic_user,
+                trailingIcon = R.drawable.ic_password_hide,
                 isError = true,
                 errorMessage = stringResource(R.string.general_error_message)
             )
             TextField(
-                "This is a test title for field",
+                stringResource(R.string.action_adventure),
                 hintText = stringResource(R.string.hint),
-                leadingIcon = R.drawable.ic_user,
-                maxCharacters = 32
+                trailingIcon = R.drawable.ic_filter_vertical,
+                maxCharacters = 20
             )
             TextField(
                 "",
-                hintText = stringResource(R.string.hint),
-                leadingIcon = R.drawable.ic_user,
-            )
-            TextField(
-                "",
-                hintText = stringResource(R.string.hint),
+                hintText = stringResource(R.string.country_name_hint),
             )
         }
     }
