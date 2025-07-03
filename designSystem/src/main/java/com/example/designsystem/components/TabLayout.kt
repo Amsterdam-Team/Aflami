@@ -1,4 +1,4 @@
-package com.example.designsystem.composable
+package com.example.designsystem.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
