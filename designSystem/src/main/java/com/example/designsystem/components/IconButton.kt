@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -36,6 +37,7 @@ fun IconButton(
     containerColor: Color = AppTheme.color.surfaceHigh,
     tint: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
+    isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     val borderModifier = if (withBorder) {
@@ -43,6 +45,15 @@ fun IconButton(
     } else {
         Modifier
     }
+
+    val clickableModifier = if (isClickable) {
+        Modifier
+            .clip(shape)
+            .clickable(onClick = onClick)
+    } else {
+        Modifier
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -52,7 +63,7 @@ fun IconButton(
                 color = containerColor,
             )
             .then(borderModifier)
-            .clickable(onClick = onClick),
+            .then(clickableModifier)
     ) {
         Icon(
             painter = painter,
