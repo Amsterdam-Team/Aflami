@@ -1,6 +1,5 @@
 package com.example.designsystem.components
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,8 +50,8 @@ fun EpisodeCard(
     episodeTime: Int,
     publishedAt: String,
     episodeDescription: String,
-    onPlayEpisodeClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onPlayEpisodeClick: () -> Unit = {},
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -251,7 +250,6 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_play),
             contentDescription = null,
-            modifier = Modifier.size(24.dp),
         )
     }
 }
