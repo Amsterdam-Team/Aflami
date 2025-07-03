@@ -226,10 +226,7 @@ private fun EpisodeDescription(episodeDescription: String) {
                     interactionSource = null,
                     indication = null,
                     enabled = if (showFullDescription) true else isTextTruncated,
-                    onClick = {
-                        Log.d("TAG", "EpisodeDescription: Clicked")
-                        showFullDescription = !showFullDescription
-                    },
+                    onClick = { showFullDescription = !showFullDescription },
                 ),
     )
 }
