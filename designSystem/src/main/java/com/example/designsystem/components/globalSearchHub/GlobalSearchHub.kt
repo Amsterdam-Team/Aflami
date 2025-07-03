@@ -83,7 +83,7 @@ fun GlobalSearchHub(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun GlobalSearchHubPreviewWorld() {
+private fun GlobalSearchHubWorldPreview() {
     AflamiTheme {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.WORLD,
@@ -94,7 +94,7 @@ private fun GlobalSearchHubPreviewWorld() {
 
 @ThemeAndLocalePreviews
 @Composable
-private fun GlobalSearchHubPreviewActor() {
+private fun GlobalSearchHubActorPreview() {
     AflamiTheme {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.ACTOR,
