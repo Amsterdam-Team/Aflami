@@ -40,6 +40,7 @@ data class AflamiColorScheme(
     val successSnackBarShadow: Color,
     val failureSnackBarShadow: Color,
     val overlayDark : List<Color>,
+    val softBlue: Color,
     val worldTourGradient: List<Color>,
     val findByActorGradient: List<Color>,
     val primaryEnd: Color,
