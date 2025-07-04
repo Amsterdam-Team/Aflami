@@ -91,3 +91,5 @@ google-service = { id = "com.google.gms.google-services", version.ref = "googleS
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-pref = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreferences" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+aflami-custom-plugin = { id = "com.thechance.plugin" }

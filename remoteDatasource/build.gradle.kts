@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-    id("com.thechance.plugin")
+    alias(libs.plugins.aflami.custom.plugin)
 }
 
 android {
