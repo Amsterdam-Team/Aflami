@@ -1,4 +1,4 @@
-package com.example.designsystem.components.custom_snack_bar
+package com.example.designsystem.components.customSnackBar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
