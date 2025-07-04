@@ -29,6 +29,7 @@ import com.example.designsystem.components.CategoryCard
 import com.example.designsystem.components.Chip
 import com.example.designsystem.components.CustomMoodPickerCard
 import com.example.designsystem.components.CustomRadioButton
+import com.example.designsystem.components.CustomSlider
 import com.example.designsystem.components.EpisodeCard
 import com.example.designsystem.components.GenreChip
 import com.example.designsystem.components.ListItem
@@ -71,6 +72,16 @@ fun DesignSystem(){
     ) {
         HomeAppBar()
         BottomNavBar()
+        CustomSlider(
+            aflamiImageList = listOf(
+                R.drawable.bg_man_with_popcorn,
+                R.drawable.bg_directly_shot_film,
+                R.drawable.bg_cinema_movie_theater,
+                R.drawable.bg_directly_shot_film,
+                R.drawable.bg_children_wearing_3d,
+                R.drawable.bg_children_wearing_3d,
+            )
+        )
         FloatingActionButton(
             icon = R.drawable.ic_add,
             onClick = {},
