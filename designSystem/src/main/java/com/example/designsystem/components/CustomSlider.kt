@@ -64,15 +64,11 @@ fun CustomSlider(
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-            b(
+           RatingChip(
+               rating = "9.9",
                 modifier = Modifier
                     .padding(top = 8.dp, end = 8.dp)
                     .align(Alignment.TopEnd)
-            )
-            b(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center)
             )
 
         }
