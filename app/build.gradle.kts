@@ -60,7 +60,6 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":entity"))
     implementation(project(":repository"))
-    implementation(project(":imageViewer"))
 
     // Koin
     implementation(platform(libs.koin.bom))
@@ -70,7 +69,6 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.material3.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
