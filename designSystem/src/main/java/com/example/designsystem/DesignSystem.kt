@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -240,7 +241,9 @@ fun DesignSystem(){
             label = stringResource(R.string.categories),
             isSelected = false
         )
-        CustomMoodPickerCard()
+        CustomMoodPickerCard(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
         CustomRadioButton(isEnable = true)
         CustomRadioButton(isEnable = false)
         GenreChip(
@@ -273,6 +276,7 @@ fun DesignSystem(){
             "",
             hintText = stringResource(R.string.user_name_hint),
             leadingIcon = R.drawable.ic_user,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         TextField(
             "",
@@ -280,17 +284,20 @@ fun DesignSystem(){
             leadingIcon = R.drawable.ic_user,
             trailingIcon = R.drawable.ic_password_hide,
             isError = true,
-            errorMessage = stringResource(R.string.general_error_message)
+            errorMessage = stringResource(R.string.general_error_message),
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         TextField(
             stringResource(R.string.action_adventure),
             hintText = stringResource(R.string.hint),
             trailingIcon = R.drawable.ic_filter_vertical,
-            maxCharacters = 20
+            maxCharacters = 20,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         TextField(
             "",
             hintText = stringResource(R.string.country_name_hint),
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
             title = stringResource(R.string.release_game_title),
@@ -300,7 +307,8 @@ fun DesignSystem(){
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.CALENDER,
             isPlayable = false,
-            unlockPrice = "400"
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
             title = stringResource(R.string.release_game_title),
@@ -310,7 +318,8 @@ fun DesignSystem(){
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.CALENDER,
             isPlayable = true,
-            unlockPrice = "400"
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
             title = stringResource(R.string.genre_game_title),
@@ -320,7 +329,8 @@ fun DesignSystem(){
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.LAWN_CHAIR,
             isPlayable = false,
-            unlockPrice = "400"
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
             title = stringResource(R.string.genre_game_title),
@@ -330,7 +340,8 @@ fun DesignSystem(){
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.LAWN_CHAIR,
             isPlayable = true,
-            unlockPrice = "400"
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
             title = stringResource(R.string.guess_character_game_title),
@@ -340,7 +351,8 @@ fun DesignSystem(){
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
             isPlayable = false,
-            unlockPrice = "400"
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
             title = stringResource(R.string.guess_character_game_title),
@@ -350,33 +362,38 @@ fun DesignSystem(){
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
             isPlayable = true,
-            unlockPrice = "400"
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GuessPicture(
             blurRadius = 8.dp,
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             showHint = true,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GuessPicture(
             blurRadius = 8.dp,
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             showHint = false,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GuessTitle(
             title = "The Green Mile",
             points = 10,
             showHint = true,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         GuessTitle(
             title = "The Green Mile",
             points = 10,
             showHint = false,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
