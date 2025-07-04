@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
@@ -48,13 +49,27 @@ fun GuessPicture(
 
 @ThemeAndLocalePreviews
 @Composable
-fun GuessPicturePreview(){
+private fun GuessPictureHintPreview(){
     AflamiTheme {
         GuessPicture(
             blurRadius = 8.dp,
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             showHint = true,
+            onClick = {}
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun GuessPictureNoHintPreview(){
+    AflamiTheme {
+        GuessPicture(
+            blurRadius = 8.dp,
+            points = 10,
+            painter = painterResource(R.drawable.bg_children_wearing_3d),
+            showHint = false,
             onClick = {}
         )
     }

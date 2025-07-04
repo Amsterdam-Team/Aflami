@@ -36,12 +36,25 @@ fun GuessTitle(
 
 @ThemeAndLocalePreviews
 @Composable
-fun GuessTitlePreview(){
+private fun GuessTitleHintPreview(){
     AflamiTheme {
         GuessTitle(
             title = "The Green Mile",
             points = 10,
             showHint = true,
+            onClick = {}
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun GuessTitleNoHintPreview(){
+    AflamiTheme {
+        GuessTitle(
+            title = "The Green Mile",
+            points = 10,
+            showHint = false,
             onClick = {}
         )
     }
