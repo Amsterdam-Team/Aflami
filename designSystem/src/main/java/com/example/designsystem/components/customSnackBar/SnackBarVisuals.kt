@@ -1,4 +1,4 @@
-package com.example.designsystem.components.custom_snack_bar
+package com.example.designsystem.components.customSnackBar
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarVisuals

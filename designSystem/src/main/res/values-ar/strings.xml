@@ -187,4 +187,5 @@
     <!-- - Negative messages   -->
     <string name="general_error_message">حدث خطأ ما، الرجاء المحاولة مرة أخرى.</string>
     <!-- -   -->
+    <string name="episode">الحلقه %1$d</string>
 </resources>
