@@ -3,6 +3,7 @@ package com.example.designsystem.utils
 import android.annotation.SuppressLint
 import android.graphics.BlurMaskFilter
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.CornerRadius
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -97,4 +99,9 @@ fun Modifier.dropShadow(
 fun Modifier.mirroredContent(layoutDirection: LayoutDirection): Modifier {
     val isRtl = layoutDirection == LayoutDirection.Rtl
     return this.scale(scaleX = if (isRtl) -1f else 1f, scaleY = 1f)
+}
+
+fun Modifier.autoMirroredContent(): Modifier = composed {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    this.scale(scaleX = if (isRtl) -1f else 1f, scaleY = 1f)
 }
