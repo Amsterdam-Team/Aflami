@@ -187,4 +187,5 @@
     <!-- - Negative messages   -->
     <string name="general_error_message">Something went wrong, please try again.</string>
     <!-- -   -->
+    <string name="episode">Episode %1$d</string>
 </resources>
