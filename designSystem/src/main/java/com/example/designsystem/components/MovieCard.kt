@@ -31,7 +31,7 @@ fun MovieCard(
         movieType = movieType,
         movieYear = movieYear,
         movieRating = movieRating,
-        contentScale = ContentScale.FillBounds,
+        contentScale = ContentScale.Crop,
         onClick = onClick,
         topIcon = topIcon
     )
