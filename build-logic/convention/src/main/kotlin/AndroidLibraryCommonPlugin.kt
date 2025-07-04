@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -28,7 +28,7 @@ class AndroidLibraryCommonPlugin : Plugin<Project> {
                 compileSdk = 35
 
                 defaultConfig {
-                    minSdk = 24
+                    minSdk = 29
 
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                     consumerProguardFiles("consumer-rules.pro")
