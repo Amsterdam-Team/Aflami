@@ -253,7 +253,7 @@ private fun BoxScope.RotatedPostersStack(contentDescription: String) {
                 translationX = -140f
                 rotationZ = -30f
             },
-            imagePainter = painterResource(R.drawable.img_poster_big_hero),
+            imagePainter = painterResource(R.drawable.bg_children_wearing_3d),
             contentDescription = contentDescription,
         )
 
@@ -263,12 +263,12 @@ private fun BoxScope.RotatedPostersStack(contentDescription: String) {
                 translationX = -70f
                 rotationZ = -15f
             },
-            imagePainter = painterResource(R.drawable.img_poster_luca),
+            imagePainter = painterResource(R.drawable.bg_children_wearing_3d),
             contentDescription = contentDescription,
         )
 
         RoundedBorderedImage(
-            imagePainter = painterResource(R.drawable.img_poster_coco),
+            imagePainter = painterResource(R.drawable.bg_children_wearing_3d),
             contentDescription = contentDescription,
         )
     }
