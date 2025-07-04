@@ -41,6 +41,7 @@ internal val lightThemeColors = AflamiColorScheme(
     softBlue = Color(0x80EFF9FE),
     worldTourGradient = listOf(Color(0xFFD85895), Color(0xFF803559)),
     findByActorGradient = listOf(Color(0xFF53ABF9), Color(0xFF336490)),
+    guessCardGradient = listOf(Color(0x1FD85895), Color(0xFFFAF5F7)),
     primaryEnd = Color(0xFF973A66),
     overlayDark = listOf(Color(0x000D090B), Color(0xFF0D090B))
 )

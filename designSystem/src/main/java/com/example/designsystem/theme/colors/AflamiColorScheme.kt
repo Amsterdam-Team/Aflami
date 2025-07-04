@@ -43,6 +43,7 @@ data class AflamiColorScheme(
     val softBlue: Color,
     val worldTourGradient: List<Color>,
     val findByActorGradient: List<Color>,
+    val guessCardGradient: List<Color>,
     val primaryEnd: Color,
 )
 
