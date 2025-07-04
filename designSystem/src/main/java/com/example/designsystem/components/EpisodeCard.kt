@@ -112,46 +112,12 @@ private fun EpisodeBanner(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier =
-                Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(2.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 4.dp,
-                            topEnd = 12.dp,
-                            bottomEnd = 4.dp,
-                            bottomStart = 12.dp,
-                        ),
-                    ).border(
-                        width = 1.dp,
-                        color = AppTheme.color.stroke,
-                        shape =
-                            RoundedCornerShape(
-                                topStart = 4.dp,
-                                topEnd = 12.dp,
-                                bottomEnd = 4.dp,
-                                bottomStart = 12.dp,
-                            ),
-                    ).background(AppTheme.color.primaryVariant)
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_filled_star),
-                contentDescription = null,
-                tint = AppTheme.color.yellowAccent,
-            )
-
-            Text(
-                text = episodeRate.toString(),
-                color = AppTheme.color.body,
-                style = AppTheme.textStyle.label.small,
-            )
-        }
+        RatingChip(
+            rating = episodeRate.toString(),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(2.dp)
+        )
     }
 }
 
@@ -245,7 +211,8 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = CircleShape,
-                ).size(40.dp),
+                )
+                .size(40.dp),
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_play),
