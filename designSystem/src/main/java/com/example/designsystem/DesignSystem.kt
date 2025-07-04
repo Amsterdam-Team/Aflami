@@ -29,6 +29,7 @@ import com.example.designsystem.components.CategoryCard
 import com.example.designsystem.components.Chip
 import com.example.designsystem.components.CustomMoodPickerCard
 import com.example.designsystem.components.CustomRadioButton
+import com.example.designsystem.components.EpisodeCard
 import com.example.designsystem.components.GenreChip
 import com.example.designsystem.components.ListItem
 import com.example.designsystem.components.MovieCard
@@ -43,8 +44,8 @@ import com.example.designsystem.components.buttons.FloatingActionButton
 import com.example.designsystem.components.buttons.PrimaryButton
 import com.example.designsystem.components.buttons.SecondaryButton
 import com.example.designsystem.components.buttons.TextButton
-import com.example.designsystem.components.custom_snack_bar.SnackBar
-import com.example.designsystem.components.custom_snack_bar.SnackBarStatus
+import com.example.designsystem.components.customSnackBar.SnackBar
+import com.example.designsystem.components.customSnackBar.SnackBarStatus
 import com.example.designsystem.components.gameCard.GameCard
 import com.example.designsystem.components.gameCard.GameCardImageContentType
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
@@ -322,6 +323,28 @@ fun DesignSystem(){
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         GameCard(
+            title = stringResource(R.string.guess_movie_game_title),
+            description = stringResource(R.string.guess_movie_game_description),
+            containerColor = AppTheme.color.blueCard,
+            borderColors = listOf(Color(0x05FFFFFF), Color(0x802BA3D9)),
+            onCardClick = {},
+            gameCardImageContentType = GameCardImageContentType.MANY_POSTERS,
+            isPlayable = false,
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        GameCard(
+            title = stringResource(R.string.guess_movie_game_title),
+            description = stringResource(R.string.guess_movie_game_description),
+            containerColor = AppTheme.color.blueCard,
+            borderColors = listOf(Color(0x05FFFFFF), Color(0x802BA3D9)),
+            onCardClick = {},
+            gameCardImageContentType = GameCardImageContentType.MANY_POSTERS,
+            isPlayable = true,
+            unlockPrice = "400",
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        GameCard(
             title = stringResource(R.string.genre_game_title),
             description = stringResource(R.string.genre_game_description),
             containerColor = AppTheme.color.yellowCard,
@@ -394,6 +417,16 @@ fun DesignSystem(){
             showHint = false,
             onClick = {},
             modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        EpisodeCard(
+            episodeBanner = painterResource(id = R.drawable.bg_man_with_popcorn),
+            episodeRate = 4.5,
+            episodeNumber = 1,
+            episodeTitle = "Recovering a body",
+            episodeTime = 58,
+            publishedAt = "3 Sep 2020",
+            episodeDescription = "In 1935, corrections officer Paul Edgecomb oversees ",
+            onPlayEpisodeClick = { },
         )
     }
 }
