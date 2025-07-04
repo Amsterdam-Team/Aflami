@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -83,7 +84,7 @@ fun GuessCard(
                     .clip(RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp))
                     .background(AppTheme.color.surface)
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .aspectRatio((336/32).toFloat())
                     .clickable(
                         onClick = onClick
                     ),
