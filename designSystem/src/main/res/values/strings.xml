@@ -98,7 +98,7 @@
     <string name="and">And</string>
     <string name="sec">Sec</string>
     <string name="point_per_question">point per question.</string>
-    <string name="hint">hint?</string>
+    <string name="hint">hint? %1$d Pts.</string>
     <string name="next">Next</string>
     <string name="back_to_menue">Back to menu</string>
     <string name="play_again">Play again</string>
@@ -145,8 +145,7 @@
     <string name="find_by_actor_description_hint">Search by favorite Actor</string>
     <string name="find_by_actor_description">Start exploring your favorite actor’s movies and enjoy it.</string>
     <string name="find_by_actor_hint">Actor name</string>
-    <string name="my_favorite">My favorite</string>
-    <string name="kitchen_movie">kitten movies</string>
+    <string name="list_items">%1$d item</string>
     <string name="delete_list">Delete list</string>
     <string name="delete_list_message">Are you sure to continue deleting?</string>
     <string name="edit_list">Edit list</string>
@@ -188,4 +187,5 @@
     <!-- - Negative messages   -->
     <string name="general_error_message">Something went wrong, please try again.</string>
     <!-- -   -->
+    <string name="episode">Episode %1$d</string>
 </resources>
