@@ -59,7 +59,7 @@ fun Chip(
                 .border(1.dp, borderColor, RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
                 .clickable( interactionSource =  remember { MutableInteractionSource() },
-                    indication = ripple(bounded = true)
+                    indication = ripple(color = iconColor,bounded = true)
                     ,onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
