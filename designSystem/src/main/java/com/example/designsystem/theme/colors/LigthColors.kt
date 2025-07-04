@@ -38,10 +38,11 @@ internal val lightThemeColors = AflamiColorScheme(
     borderLinearGradient = listOf(Color(0x14FFFFFF), Color(0x3DFFFFFF)),
     successSnackBarShadow = Color(0x1F429946),
     failureSnackBarShadow = Color(0x1FBF434C),
-    softBlue = Color(0x80EFF9FE)
+    softBlue = Color(0x80EFF9FE),
     worldTourGradient = listOf(Color(0xFFD85895), Color(0xFF803559)),
     findByActorGradient = listOf(Color(0xFF53ABF9), Color(0xFF336490)),
     primaryEnd = Color(0xFF973A66),
+    overlayDark = listOf(Color(0x000D090B), Color(0xFF0D090B))
 )
 
 internal val localAflamiAppColors = staticCompositionLocalOf { lightThemeColors }
