@@ -17,4 +17,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.ui.tooling.preview.android)
+    // Coil for image loading
+    implementation(libs.coil.compose)
+
+    // TensorFlow Lite for on-device ML
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.task.vision)
+    implementation(libs.tensorflow.lite.metadata)
+
 }
