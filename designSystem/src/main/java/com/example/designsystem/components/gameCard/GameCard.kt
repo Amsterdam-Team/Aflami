@@ -247,30 +247,30 @@ private fun BoxScope.RotatedPostersStack(contentDescription: String) {
             .padding(end = 8.dp)
             .mirroredContent(LocalLayoutDirection.current)
     ) {
-        RoundedBorderedImage(
-            modifier = Modifier.graphicsLayer {
-                translationY = 72f
-                translationX = -140f
-                rotationZ = -30f
-            },
-            imagePainter = painterResource(R.drawable.img_poster_big_hero),
-            contentDescription = contentDescription,
-        )
-
-        RoundedBorderedImage(
-            modifier = Modifier.graphicsLayer {
-                translationY = 24f
-                translationX = -70f
-                rotationZ = -15f
-            },
-            imagePainter = painterResource(R.drawable.img_poster_luca),
-            contentDescription = contentDescription,
-        )
-
-        RoundedBorderedImage(
-            imagePainter = painterResource(R.drawable.img_poster_coco),
-            contentDescription = contentDescription,
-        )
+//        RoundedBorderedImage(
+//            modifier = Modifier.graphicsLayer {
+//                translationY = 72f
+//                translationX = -140f
+//                rotationZ = -30f
+//            },
+//            imagePainter = painterResource(R.drawable.img_poster_big_hero),
+//            contentDescription = contentDescription,
+//        )
+//
+//        RoundedBorderedImage(
+//            modifier = Modifier.graphicsLayer {
+//                translationY = 24f
+//                translationX = -70f
+//                rotationZ = -15f
+//            },
+//            imagePainter = painterResource(R.drawable.img_poster_luca),
+//            contentDescription = contentDescription,
+//        )
+//
+//        RoundedBorderedImage(
+//            imagePainter = painterResource(R.drawable.img_poster_coco),
+//            contentDescription = contentDescription,
+//        )
     }
 }
 
