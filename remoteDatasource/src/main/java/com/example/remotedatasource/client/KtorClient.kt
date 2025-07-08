@@ -7,7 +7,6 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.utils.io.InternalAPI
 
 
 class KtorClient(
