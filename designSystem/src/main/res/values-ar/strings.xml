@@ -98,7 +98,7 @@
     <string name="and">و</string>
     <string name="sec">ثانية</string>
     <string name="point_per_question">نقطة لكل سؤال.</string>
-    <string name="hint">تلميح؟</string>
+    <string name="hint">تلميح؟ %1$d نقاط.</string>
     <string name="next">التالي</string>
     <string name="back_to_menue">العودة للقائمة</string>
     <string name="play_again">العب مرة أخرى</string>
@@ -187,4 +187,5 @@
     <!-- - Negative messages   -->
     <string name="general_error_message">حدث خطأ ما، الرجاء المحاولة مرة أخرى.</string>
     <!-- -   -->
+    <string name="episode">الحلقه %1$d</string>
 </resources>

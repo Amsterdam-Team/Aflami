@@ -21,7 +21,10 @@ fun BottomNavBar(
     selectedDestination: Destination = Destination.HOME,
     onDestinationClicked: (destination: Destination) -> Unit = {},
 ) {
-    NavigationBar(modifier = modifier) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = AppTheme.color.surface
+    ) {
         Destination.entries.forEach { destination ->
             val isSelected = selectedDestination == destination
             val labelColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.body else AppTheme.color.hint)

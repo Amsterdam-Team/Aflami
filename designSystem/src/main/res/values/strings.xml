@@ -98,7 +98,7 @@
     <string name="and">And</string>
     <string name="sec">Sec</string>
     <string name="point_per_question">point per question.</string>
-    <string name="hint">hint?</string>
+    <string name="hint">hint? %1$d Pts.</string>
     <string name="next">Next</string>
     <string name="back_to_menue">Back to menu</string>
     <string name="play_again">Play again</string>
@@ -187,4 +187,5 @@
     <!-- - Negative messages   -->
     <string name="general_error_message">Something went wrong, please try again.</string>
     <!-- -   -->
+    <string name="episode">Episode %1$d</string>
 </resources>

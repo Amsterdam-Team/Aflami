@@ -8,6 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -41,7 +45,7 @@ jobs:
         with:
           paths: |
             build/reports/jacoco/test/jacocoTestReport.xml
-          token: ${{ secrets.CI_GITHUB_TOKEN }}  
+          token: ${{ secrets.GITHUB_TOKEN }}  
           min-coverage-overall: 80
           min-coverage-changed-files: 80
           update-comment: true

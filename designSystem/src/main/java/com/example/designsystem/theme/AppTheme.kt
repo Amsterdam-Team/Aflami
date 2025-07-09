@@ -8,6 +8,8 @@ import com.example.designsystem.theme.colors.localAflamiAppColors
 import com.example.designsystem.theme.textStyle.AflamiTextStyle
 import com.example.designsystem.theme.textStyle.LocalAflamiTextStyle
 
+typealias GradientType = @Composable () -> List<Color>
+
 typealias ColorType = @Composable () -> Color
 
 object AppTheme {
