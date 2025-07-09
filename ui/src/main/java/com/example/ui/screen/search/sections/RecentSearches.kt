@@ -25,12 +25,14 @@ fun LazyListScope.RecentSearchesSection(
     onRecentSearchItemCancelClick: (title: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    if (!recentSearchItems.isEmpty()){
     stickyHeader {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .background(color = AppTheme.color.surface)
-                .padding(top = 24.dp),
+                .padding(top = 24.dp)
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -49,12 +51,15 @@ fun LazyListScope.RecentSearchesSection(
         }
     }
 
-    items(items = recentSearchItems, key = { it.title }) { recentSearchItem ->
-        RecentSearchItem(
-            modifier = Modifier.animateItem(),
-            title = recentSearchItem.title,
-            onItemClick = { onRecentSearchItemClick(recentSearchItem.title) },
-            onCancelClick = { onRecentSearchItemCancelClick(recentSearchItem.title) }
-        )
+        items(items = recentSearchItems, key = { it.title }) { recentSearchItem ->
+            RecentSearchItem(
+                modifier = Modifier.animateItem().padding(horizontal = 16.dp),
+                title = recentSearchItem.title,
+                onItemClick = { onRecentSearchItemClick(recentSearchItem.title) },
+                onCancelClick = { onRecentSearchItemCancelClick(recentSearchItem.title) }
+            )
+        }
+    } else {
+        //todo: show empty state image
     }
 }

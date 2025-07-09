@@ -23,7 +23,7 @@ fun SuggestionsHubSection(
     onFindByActorCardClick: () -> Unit
 ) {
     Text(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp, top = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp, top = 8.dp, start = 16.dp, end = 16.dp),
         text = stringResource(R.string.search_suggestions_hub),
         style = AppTheme.textStyle.title.medium,
         color = AppTheme.color.title,
@@ -31,7 +31,7 @@ fun SuggestionsHubSection(
     )
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         GlobalSearchHub(
