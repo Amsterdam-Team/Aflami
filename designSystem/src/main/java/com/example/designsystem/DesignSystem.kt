@@ -212,10 +212,10 @@ fun DesignSystem(){
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             GlobalSearchHub(
-                GlobalSearchHubUI.ACTOR
+                GlobalSearchHubUI.ACTOR,{}
             )
             GlobalSearchHub(
-                GlobalSearchHubUI.WORLD
+                GlobalSearchHubUI.WORLD, {}
             )
         }
         MovieCard(
