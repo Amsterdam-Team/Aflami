@@ -143,7 +143,7 @@ fun FilterDialog(
 }
 
 @Composable
-fun RatingBar(
+private fun RatingBar(
     modifier: Modifier = Modifier
 ) {
     var rating by remember { mutableIntStateOf(0) }
