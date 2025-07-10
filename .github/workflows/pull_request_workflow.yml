@@ -30,6 +30,18 @@ jobs:
       - name: Create local.properties
         run: |
           echo bearerToken=${{secrets.BEARER_TOKEN}} > local.properties
+          
+      - name: Debug local.properties
+        run: |
+          echo "=== local.properties contents ===" > debug-report.txt
+          cat local.properties >> debug-report.txt
+          echo "=== End of local.properties ===" >> debug-report.txt
+
+      - name: Upload debug report
+        uses: actions/upload-artifact@v3
+        with:
+          name: debug-report
+          path: debug-report.txt
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -38,7 +50,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Compile Project
-        run: cat local.properties && ./gradlew assemble
+        run:  ./gradlew assemble
 
       - name: Run Unit Tests
         run: ./gradlew test
