@@ -23,4 +23,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
+    // Date and Time
+    implementation(libs.kotlinx.datetime)
 }
