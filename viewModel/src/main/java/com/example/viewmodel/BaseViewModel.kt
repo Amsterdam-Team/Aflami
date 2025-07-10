@@ -2,10 +2,10 @@ package com.example.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.utils.AflamiException
+import com.example.domain.utils.UnknownException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,18 +38,20 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
 
 
     protected fun <T> tryToExecute(
-        function: suspend () -> T,
+        action: suspend () -> T,
         onSuccess: (T) -> Unit,
-        onError: () -> Unit,
+        onError: (AflamiException) -> Unit,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        inScope: CoroutineScope = viewModelScope
-    ): Job {
-        return inScope.launch(dispatcher) {
+    ) {
+        viewModelScope.launch(dispatcher) {
             try {
-                val result = function()
-                onSuccess(result)
-            } catch (e: Exception) {
-                onError()
+                action().also {
+                    onSuccess(it)
+                }
+            } catch (exception: AflamiException) {
+                onError(exception)
+            } catch (_: Exception) {
+                onError(UnknownException())
             }
         }
     }
