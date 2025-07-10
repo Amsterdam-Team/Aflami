@@ -25,7 +25,13 @@ jobs:
       - name: Load Google Service file
         env:
           DATA: ${{ secrets.FIREBASE_JSON }}
-        run: echo $DATA | base64 -di > app/google-services.json    
+        run: echo $DATA | base64 -di > app/google-services.json
+
+      - name: Create local.properties
+        env:
+            BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+        run: |
+          echo "bearerToken=$BEARER_TOKEN" > local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
