@@ -7,12 +7,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<S>(initialState: S) : ViewModel() {
 
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
+
+    protected fun updateState(updater: (S) -> S) {
+        _state.update(updater)
+    }
 
     protected fun <T> tryToExecute(
         action: suspend () -> T,
