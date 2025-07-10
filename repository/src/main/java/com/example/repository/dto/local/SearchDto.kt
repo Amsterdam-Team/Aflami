@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import com.example.repository.dto.local.utils.SearchType
-import java.time.Instant
+import kotlinx.datetime.Instant
 
 @Entity(
-    tableName = "search",
+    tableName = "SearchDto",
     foreignKeys = [
         ForeignKey(
             entity = LocalMovieDto::class,
@@ -21,7 +21,9 @@ import java.time.Instant
 data class SearchDto(
     val searchKeyword: String,
     val searchType: SearchType,
-    val rating:Int? = null,
+    val rating: Int?,
+    val category: String?,
     val movieId: Long,
     val saveDate: Instant
 )
+
