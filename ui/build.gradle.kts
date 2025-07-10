@@ -23,7 +23,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.foundation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
