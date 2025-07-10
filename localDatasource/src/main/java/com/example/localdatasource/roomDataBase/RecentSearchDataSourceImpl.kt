@@ -2,13 +2,13 @@ package com.example.localdatasource.roomDatabase
 
 import com.example.localdatasource.roomDatabase.daos.RecentSearchDao
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
-import com.example.repository.dto.local.SearchDto
+import com.example.repository.dto.local.LocalSearchDto
 
 class RecentSearchDataSourceImpl(
     private val dao: RecentSearchDao
 ) : LocalRecentSearchDataSource {
 
-    override suspend fun insertOrReplaceSearch(search: SearchDto) {
+    override suspend fun insertOrReplaceSearch(search: LocalSearchDto) {
         dao.insertOrReplaceSearch(search)
     }
 

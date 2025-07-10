@@ -3,13 +3,13 @@ package com.example.localdatasource.roomDatabase.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.repository.dto.local.SearchDto
+import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 
 @Dao
 interface RecentSearchDao {
     @Upsert
-    suspend fun insertOrReplaceSearch(search: SearchDto)
+    suspend fun insertOrReplaceSearch(search: LocalSearchDto)
 
     @Query("SELECT DISTINCT searchKeyword FROM SearchDto ORDER BY rowid DESC")
     suspend fun getRecentSearches(): List<String>

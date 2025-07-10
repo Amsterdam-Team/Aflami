@@ -1,19 +1,32 @@
 package com.example.localdatasource.roomDatabase
 
+import com.example.localdatasource.roomDatabase.daos.TvShowDao
 import com.example.repository.datasource.local.LocalTvShowDataSource
 import com.example.repository.dto.local.LocalTvShowDto
+import com.example.repository.dto.local.LocalTvShowWithSearchDto
 
-class LocalTvShowDataSourceImpl : LocalTvShowDataSource {
+class LocalTvShowDataSourceImpl(
+    private val dao: TvShowDao
+) : LocalTvShowDataSource {
 
-    override fun addAllTvShows(
+    override suspend fun getTvShowsBySearchKeyword(searchKeyword: String): List<LocalTvShowDto> {
+        return dao.getTvShowsBySearchKeyword(searchKeyword)
+    }
+
+    override suspend fun addAllTvShows(
         tvShows: List<LocalTvShowDto>,
         searchKeyword: String
     ) {
 
+        dao.addAllTvShows(tvShows)
+
+        val mappings = tvShows.map {
+            LocalTvShowWithSearchDto(
+                tvShowId = it.id,
+                searchKeyword = searchKeyword
+            )
+        }
+
+        dao.insertTvShowSearchMappings(mappings)
     }
-
-    override fun getTvShowsBySearchKeyword(searchKeyword: String): List<LocalTvShowDto> {
-
-    }
-
 }

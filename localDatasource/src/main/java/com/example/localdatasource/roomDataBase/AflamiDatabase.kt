@@ -1,4 +1,4 @@
-package com.example.localdatasource.roomDataBase
+package com.example.localdatasource.roomDatabase
 
 import android.content.Context
 import androidx.room.Database

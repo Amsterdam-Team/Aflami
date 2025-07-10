@@ -5,7 +5,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.example.repository.dto.local.LocalMovieDto
-import com.example.repository.dto.local.SearchDto
+import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
 
@@ -41,5 +41,5 @@ interface LocalMovieDao {
     suspend fun insertMovies(movies: List<LocalMovieDto>)
 
     @Upsert
-    suspend fun insertSearchEntries(entries: List<SearchDto>)
+    suspend fun insertSearchEntries(entries: List<LocalSearchDto>)
 }
