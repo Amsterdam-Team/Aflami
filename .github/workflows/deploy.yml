@@ -37,9 +37,6 @@ jobs:
       - name: Clean Project
         run: ./gradlew clean
 
-      - name: Build Project
-        run: ./gradlew build
-
       - name: Generate APK
         run: ./gradlew assembleDebug
 
