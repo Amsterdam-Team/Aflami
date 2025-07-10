@@ -37,9 +37,11 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
         stickyHeader {
             TextField(
                 modifier = Modifier.background(color = AppTheme.color.surface).padding(top = 8.dp).padding(horizontal = 16.dp),
-                text = "",
+                text = state.query,
                 hintText = stringResource(R.string.search_hint),
                 trailingIcon = R.drawable.ic_filter_vertical,
+                isError = state.errorUiState != null,
+                errorMessage = getErrorMessageBySearchErrorUiState(state.errorUiState),
                 maxCharacters = 100
             )
 
