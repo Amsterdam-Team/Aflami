@@ -40,10 +40,7 @@ jobs:
       - name: Build Project
         run: ./gradlew build
 
-      - name: Compile Project
-        run: ./gradlew assemble
-
-      - name: Build APK
+      - name: Generate APK
         run: ./gradlew assembleDebug
 
       - name: Upload APK to Firebase App Distribution
