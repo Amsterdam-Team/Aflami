@@ -38,7 +38,7 @@ jobs:
           echo "=== End of local.properties ===" >> debug-report.txt
 
       - name: Upload debug report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: debug-report
           path: debug-report.txt
