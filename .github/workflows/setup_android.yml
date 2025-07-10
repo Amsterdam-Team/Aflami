@@ -1,0 +1,47 @@
+name: Setup Android Environment
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        required: false
+        type: string
+        default: 'temurin'
+    secrets:
+      FIREBASE_JSON:
+        required: true
+      BEARER_TOKEN:
+        required: true
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: gradle
+
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.FIREBASE_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+
+      - name: Create local.properties
+        env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+        run: |
+          echo bearerToken=\"$BEARER_TOKEN\" > local.properties
+
+      - name: Grant execute permissions for gradlew
+        run: chmod +x gradlew

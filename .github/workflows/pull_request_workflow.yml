@@ -7,35 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup JDK 17
-        uses: actions/setup-java@v4
+      - name: Setup Android Environment
+        uses: ./.github/actions/setup-android
         with:
-          distribution: 'temurin'
-          java-version: 17
-          cache: gradle
-          
-      - name: Load Google Service file
-        env:
-          DATA: ${{ secrets.FIREBASE_JSON }}
-        run: echo $DATA | base64 -di > app/google-services.json
+          firebase-json: ${{ secrets.FIREBASE_JSON }}
+          bearer-token: ${{ secrets.BEARER_TOKEN }}
 
-      - name: Create local.properties
-        env:
-            BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
-        run: |
-          echo "bearerToken=$BEARER_TOKEN" > local.properties
-
-      - name: Grant execute permissions for gradlew
-        run: chmod +x gradlew
-        
       - name: Clean Project
         run: ./gradlew clean
 
