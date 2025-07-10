@@ -1,6 +1,7 @@
 package com.example.viewmodel.searchByActor
 
-import android.graphics.Movie
+import com.example.entity.Movie
+
 
 data class SearchByActorUiState(
     val isLoading:Boolean = false,
