@@ -18,16 +18,15 @@ import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
-import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun SearchByCriteria(
+fun SearchByCountryScreen(
     modifier: Modifier = Modifier,
 ) {
     Column {
         DefaultAppBar(
-            title = "World Tour",
+            title = stringResource(R.string.world_tour_title),
             showNavigateBackButton = true,
         )
 
@@ -65,6 +64,6 @@ fun SearchByCriteria(
 @ThemeAndLocalePreviews
 private fun SearchByCriteriaPreview() {
     AflamiTheme {
-        SearchByCriteria()
+        SearchByCountryScreen()
     }
 }
