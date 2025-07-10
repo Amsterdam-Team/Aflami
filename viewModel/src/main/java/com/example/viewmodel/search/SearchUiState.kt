@@ -12,10 +12,19 @@ data class SearchUiState(
     val movies: List<MediaItemUiState> = emptyList(),
     val tvShows: List<MediaItemUiState> = emptyList(),
     val isDialogVisible: Boolean = false,
-    val filterItemUiState: FilterItemUiState = FilterItemUiState()
+    val filterItemUiState: FilterItemUiState = FilterItemUiState(),
+    val isLoading: Boolean = false,
+    val errorUiState: SearchErrorUiState? = null,
 )
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 10,
     val genreUiStates: List<GenreItemUiState> = GenreType.toGenreItemsUiState()
 )
+
+sealed interface SearchErrorUiState {
+    object QueryTooShort : SearchErrorUiState
+    object QueryTooLong : SearchErrorUiState
+    object InvalidCharacters : SearchErrorUiState
+    object BlankQuery : SearchErrorUiState
+}
