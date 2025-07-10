@@ -2,8 +2,8 @@ package com.example.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.utils.AflamiException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -40,16 +40,16 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
     protected fun <T> tryToExecute(
         function: suspend () -> T,
         onSuccess: (T) -> Unit,
-        onError: () -> Unit,
+        onError: (AflamiException) -> Unit,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        inScope: CoroutineScope = viewModelScope
     ): Job {
-        return inScope.launch(dispatcher) {
+        return viewModelScope.launch(dispatcher) {
             try {
-                val result = function()
-                onSuccess(result)
-            } catch (e: Exception) {
-                onError()
+                function().also {
+                    onSuccess(it)
+                }
+            } catch (exception: AflamiException) {
+                onError(exception)
             }
         }
     }
