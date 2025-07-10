@@ -32,18 +32,6 @@ jobs:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
-          
-      - name: Debug local.properties
-        run: |
-          echo "=== local.properties contents ===" > debug-report.txt
-          cat local.properties >> debug-report.txt
-          echo "=== End of local.properties ===" >> debug-report.txt
-
-      - name: Upload debug report
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-report
-          path: debug-report.txt
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
