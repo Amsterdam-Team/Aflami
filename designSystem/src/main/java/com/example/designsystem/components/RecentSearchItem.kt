@@ -1,7 +1,6 @@
 package com.example.designsystem.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
-import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
 
 @Composable
@@ -24,11 +22,9 @@ fun RecentSearchItem(
     onCancelClick : () -> Unit,
     onItemClick : () -> Unit,
     modifier: Modifier = Modifier,
-    isLastItemInList: Boolean = false
 ) {
-    Column(modifier = modifier.fillMaxWidth().clickable { onItemClick() },) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            modifier = modifier.fillMaxWidth().clickable { onItemClick() }.padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -54,8 +50,4 @@ fun RecentSearchItem(
                 contentDescription = title
             )
         }
-
-    if (!isLastItemInList) HorizontalDivider()
-
-    }
 }

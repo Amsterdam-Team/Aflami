@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
@@ -18,7 +17,6 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.screen.search.sections.RecentSearchesSection
 import com.example.ui.screen.search.sections.SuggestionsHubSection
-import com.example.viewmodel.search.RecentSearchItemUiState
 import com.example.viewmodel.search.SearchUiState
 
 @Composable
@@ -45,18 +43,20 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
                 maxCharacters = 100
             )
 
-            if (!state.isSearchQueryEmpty){
+            if (!state.query.isEmpty()){
                 TabsLayout(
                     modifier = Modifier.fillMaxWidth(),
                     tabs = listOf(stringResource(R.string.movies), stringResource(R.string.tv_shows), ),
-                    selectedIndex = 0,
-                    onSelectTab = { },
+                    selectedIndex = state.selectedTabOption.index,
+                    onSelectTab = { index ->
+
+                    },
                 )
             }
         }
 
         item {
-            if (state.isSearchQueryEmpty){
+            if (state.query.isEmpty()){
                 SuggestionsHubSection(
                     onWorldTourCardClick = {},
                     onFindByActorCardClick = {}
@@ -64,10 +64,10 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
             }
         }
 
-        if (state.isSearchQueryEmpty) {
+        if (state.query.isEmpty()) {
             RecentSearchesSection(
                 onClearAllClick = {},
-                recentSearchItems = dummyRecentSearchItems,
+                recentSearchItems = emptyList(),
                 onRecentSearchItemClick = {},
                 onRecentSearchItemCancelClick = {}
             )
@@ -75,15 +75,3 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
     }
 }
 
-
-val dummyRecentSearchItems = mutableListOf<RecentSearchItemUiState>(
-    RecentSearchItemUiState(
-        title = "Recent 1"
-    ),
-    RecentSearchItemUiState(
-        title = "Recent 2"
-    ),
-    RecentSearchItemUiState(
-        title = "Recent 3"
-    ),
-)

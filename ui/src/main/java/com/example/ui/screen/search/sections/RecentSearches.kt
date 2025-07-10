@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
+import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.RecentSearchItemUiState
 
 fun LazyListScope.RecentSearchesSection(
     onClearAllClick: () -> Unit,
-    recentSearchItems: List<RecentSearchItemUiState>,
+    recentSearchItems: List<String>,
     onRecentSearchItemClick: (title: String) -> Unit,
     onRecentSearchItemCancelClick: (title: String) -> Unit,
     modifier: Modifier = Modifier
@@ -51,13 +51,14 @@ fun LazyListScope.RecentSearchesSection(
         }
     }
 
-        items(items = recentSearchItems, key = { it.title }) { recentSearchItem ->
+        items(items = recentSearchItems, key = { it }) { recentSearchItem ->
             RecentSearchItem(
-                modifier = Modifier.animateItem().padding(horizontal = 16.dp),
-                title = recentSearchItem.title,
-                onItemClick = { onRecentSearchItemClick(recentSearchItem.title) },
-                onCancelClick = { onRecentSearchItemCancelClick(recentSearchItem.title) }
+                modifier = Modifier.animateItem(),
+                title = recentSearchItem,
+                onItemClick = { onRecentSearchItemClick(recentSearchItem) },
+                onCancelClick = { onRecentSearchItemCancelClick(recentSearchItem) }
             )
+            if (recentSearchItem != recentSearchItems.last()) HorizontalDivider()
         }
     } else {
         //todo: show empty state image
