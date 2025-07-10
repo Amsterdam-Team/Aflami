@@ -38,7 +38,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Compile Project
-        run: ./gradlew assemble
+        run: cat local.properties && ./gradlew assemble
 
       - name: Run Unit Tests
         run: ./gradlew test
