@@ -40,9 +40,13 @@ fun SearchByCountryScreen(
     ) {
         viewModel.effect.collectLatest {
             when (it) {
-                SearchByCountryEffect.LoadingDataEffect -> TODO()
-                SearchByCountryEffect.NoDataFoundEffect -> TODO()
                 SearchByCountryEffect.NoInternetConnectionEffect -> TODO()
+                SearchByCountryEffect.LoadingMoviesEffect -> TODO()
+                SearchByCountryEffect.LoadingSuggestedCountriesEffect -> TODO()
+                SearchByCountryEffect.MoviesLoadedEffect -> TODO()
+                SearchByCountryEffect.NoMoviesEffect -> TODO()
+                SearchByCountryEffect.NoSuggestedCountriesEffect -> TODO()
+                SearchByCountryEffect.SuggestedCountriesLoadedEffect -> TODO()
             }
         }
     }
