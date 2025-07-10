@@ -18,7 +18,7 @@ import java.time.Instant
     ],
     indices = [Index("movieId")]
 )
-data class SearchDto(
+data class LocalSearchDto(
     val searchKeyword: String,
     val searchType: SearchType,
     val rating:Int? = null,

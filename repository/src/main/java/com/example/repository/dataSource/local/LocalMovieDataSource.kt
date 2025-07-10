@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.repository.dto.local.LocalMovieDto
-import com.example.repository.dto.local.SearchDto
+import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
 
@@ -24,5 +24,5 @@ interface LocalMovieDataSource {
     suspend fun addAllMovies(movies: List<LocalMovieDto>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMoviesWithItsSearch(searches: List<SearchDto>)
+    suspend fun insertMoviesWithItsSearch(searches: List<LocalSearchDto>)
 }
