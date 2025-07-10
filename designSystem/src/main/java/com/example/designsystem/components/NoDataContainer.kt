@@ -19,9 +19,9 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun EmptyContainer(
-    modifier: Modifier = Modifier,
+fun NoDataContainer(
     imageRes: Painter,
+    modifier: Modifier = Modifier,
     title: String = "",
     description: String = "",
 ) {
@@ -62,7 +62,7 @@ private fun EmptyContainerPreview() {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            EmptyContainer(
+            NoDataContainer(
                 imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
                 title = "No search result",
                 description = "please try with another keyword."
