@@ -22,4 +22,6 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    // Date and Time
+    implementation(libs.kotlinx.datetime)
 }
