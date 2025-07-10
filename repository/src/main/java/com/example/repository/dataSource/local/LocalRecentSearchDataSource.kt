@@ -1,4 +1,4 @@
-package com.example.repository.dataSource.local
+package com.example.repository.datasource.local
 
 import androidx.room.Dao
 import androidx.room.Insert

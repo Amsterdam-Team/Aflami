@@ -1,7 +1,7 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.RecentSearchRepository
-import com.example.repository.dataSource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.LocalRecentSearchDataSource
 
 class RecentSearchRepositoryImpl(private val localRecentSearchDataSource: LocalRecentSearchDataSource) :
     RecentSearchRepository {
