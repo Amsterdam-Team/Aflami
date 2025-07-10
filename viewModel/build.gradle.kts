@@ -9,7 +9,11 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
