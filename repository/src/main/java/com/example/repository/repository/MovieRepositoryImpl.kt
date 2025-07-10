@@ -2,8 +2,8 @@ package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
-import com.example.repository.datasource.local.LocalCategoryDataSource
-import com.example.repository.datasource.local.LocalMovieDataSource
+import com.example.repository.dataSource.local.LocalCategoryDataSource
+import com.example.repository.dataSource.local.LocalMovieDataSource
 
 class MovieRepositoryImpl(
     private val localMovieDataSource: LocalMovieDataSource,
