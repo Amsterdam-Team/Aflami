@@ -25,7 +25,7 @@ fun SearchByActorScreen(
     modifier: Modifier = Modifier,
 
 ){
-    SearchByActorContent ()
+    SearchByActorContent (modifier)
 
 }
 
