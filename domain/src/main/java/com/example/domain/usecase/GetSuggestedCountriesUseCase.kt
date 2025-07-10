@@ -5,9 +5,11 @@ import com.example.entity.Country
 
 class GetSuggestedCountriesUseCase(private val countryRepository: CountryRepository) {
 
-    suspend operator fun invoke(): List<Country> {
+    suspend operator fun invoke(keyword: String): List<Country> {
         val countries = countryRepository.getSuggestedCountries()
-        return countries.map { Country(it.countryName, it.countryIsoCode) }
+        return countries.filter {
+            it.countryName.contains(keyword, ignoreCase = true)
+        }
     }
 
 }
