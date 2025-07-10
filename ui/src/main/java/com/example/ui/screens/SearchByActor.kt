@@ -23,11 +23,23 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
+
+){
+    SearchByActorContent ()
+
+}
+
+@Composable
+fun SearchByActorContent(
+    modifier: Modifier = Modifier,
+    onNavigateBackClicked: () -> Unit = {},
+    onMovieClicked: () -> Unit = {},
+    onValueChange: (String) -> Unit = {}
 ) {
         DefaultAppBar(
             title = stringResource(R.string.find_by_actor),
             showNavigateBackButton = true,
-            onNavigateBackClicked = {}
+            onNavigateBackClicked = {onNavigateBackClicked()}
         )
         Column(
             modifier = modifier
@@ -38,7 +50,7 @@ fun SearchByActorScreen(
                 modifier= Modifier.padding(horizontal = 16.dp),
                 text="",
                 hintText ="Tom hanks",
-                onValueChange = {},
+                onValueChange = {onValueChange(it)},
 
             )
             LazyVerticalGrid(
@@ -55,6 +67,7 @@ fun SearchByActorScreen(
                         movieYear = "2016",
                         movieTitle = "Your Name",
                         movieRating = "9.9",
+                        onClick = {onMovieClicked()}
                     )
                 }
             }
@@ -64,8 +77,8 @@ fun SearchByActorScreen(
 
 @Composable
 @ThemeAndLocalePreviews
-private fun SearchByActorScreenPreview() {
+private fun SearchByActorContentPreview() {
     AflamiTheme {
-        SearchByActorScreen()
+        SearchByActorContent()
     }
 }
