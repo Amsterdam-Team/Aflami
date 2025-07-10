@@ -9,8 +9,8 @@ class GetTvShowByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
-        rating: String,
-        categoryName: String
+        rating: String = "",
+        categoryName: String = ""
     ): List<TvShow> {
         return tvShowRepository.getTvShowByKeyword(keyword)
             .filter { it.rating.toString() == rating }

@@ -9,12 +9,12 @@ class GetMoviesByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
-        rating: String,
-        categoryName: String
+        rating: Float = 0f,
+        categoryName: String = ""
     ): List<Movie> {
-       return movieRepository.getMoviesByKeyword(keyword)
-           .filter { it.rating.toString() == rating }
-           .filter { it.categories.any { category -> category.name == categoryName } }
+        return movieRepository.getMoviesByKeyword(keyword)
+            .filter { it.rating == rating }
+            .filter { it.categories.any { category -> category.name == categoryName } }
     }
 }
 
