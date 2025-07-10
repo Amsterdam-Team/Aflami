@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,10 +23,36 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
+import com.example.viewmodel.search.countrySearch.SearchByCountryUiState
+import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByCountryScreen(
     modifier: Modifier = Modifier,
+    viewModel: SearchByCountryViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(
+        viewModel.effect
+    ) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                SearchByCountryEffect.LoadingDataEffect -> TODO()
+                SearchByCountryEffect.NoDataFoundEffect -> TODO()
+                SearchByCountryEffect.NoInternetConnectionEffect -> TODO()
+            }
+        }
+    }
+    SearchByCountryScreenContent(state, modifier)
+}
+
+@Composable
+fun SearchByCountryScreenContent(
+    state: SearchByCountryUiState,
+    modifier: Modifier = Modifier
 ) {
     Column {
         DefaultAppBar(
@@ -36,7 +66,7 @@ fun SearchByCountryScreen(
                 .padding(horizontal = 16.dp)
         ) {
             TextField(
-                "",
+                state.selectedCountry,
                 hintText = stringResource(R.string.country_name_hint),
             )
             LazyVerticalGrid(
@@ -45,13 +75,16 @@ fun SearchByCountryScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(30) {
+                items(
+                    items = state.movies,
+                    key = { movie -> movie.id }
+                ) { movie ->
                     MovieCard(
                         movieImage = painterResource(R.drawable.bg_children_wearing_3d),
-                        movieType = "TV show",
-                        movieYear = "2016",
-                        movieTitle = "Your Name",
-                        movieRating = "9.9",
+                        movieType = stringResource(R.string.movie),
+                        movieYear = movie.productionYear,
+                        movieTitle = movie.name,
+                        movieRating = movie.rating,
                     )
                 }
             }
@@ -64,6 +97,8 @@ fun SearchByCountryScreen(
 @ThemeAndLocalePreviews
 private fun SearchByCriteriaPreview() {
     AflamiTheme {
-        SearchByCountryScreen()
+        SearchByCountryScreenContent(
+            SearchByCountryUiState()
+        )
     }
 }
