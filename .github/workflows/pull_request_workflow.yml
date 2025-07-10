@@ -28,8 +28,10 @@ jobs:
         run: echo $DATA | base64 -di > app/google-services.json
 
       - name: Create local.properties
+        env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
         run: |
-          echo bearerToken="${{secrets.BEARER_TOKEN}}" > local.properties
+          echo bearerToken=$BEARER_TOKEN > local.properties
           
       - name: Debug local.properties
         run: |
