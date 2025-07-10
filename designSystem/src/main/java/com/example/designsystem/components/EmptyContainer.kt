@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
@@ -20,9 +21,9 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun EmptyContainer(
     modifier: Modifier = Modifier,
-    imageRes: Int,
-    title: String,
-    description: String,
+    imageRes: Painter,
+    title: String = "",
+    description: String = "",
 ) {
     Column(
         modifier = modifier
@@ -32,20 +33,24 @@ fun EmptyContainer(
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(id = imageRes),
+            painter = imageRes,
             contentDescription = null
         )
-        Text(
-            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-            text = title,
-            style = AppTheme.textStyle.body.medium,
-            color = AppTheme.color.title
-        )
-        Text(
-            text = description,
-            style = AppTheme.textStyle.body.small,
-            color = AppTheme.color.body
-        )
+        if (title.isNotEmpty()) {
+            Text(
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                text = title,
+                style = AppTheme.textStyle.body.medium,
+                color = AppTheme.color.title
+            )
+        }
+        if (description.isNotEmpty()) {
+            Text(
+                text = description,
+                style = AppTheme.textStyle.body.small,
+                color = AppTheme.color.body
+            )
+        }
     }
 }
 
@@ -53,11 +58,13 @@ fun EmptyContainer(
 @Composable
 private fun EmptyContainerPreview() {
     AflamiTheme {
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,){
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
             EmptyContainer(
-                imageRes = R.drawable.placeholder_no_result_found,
-                title ="No search result",
+                imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
+                title = "No search result",
                 description = "please try with another keyword."
             )
         }
