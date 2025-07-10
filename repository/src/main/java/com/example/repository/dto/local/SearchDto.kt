@@ -1,12 +1,27 @@
 package com.example.repository.dto.local
 
 import androidx.room.Entity
-import com.example.repository.dto.local.relation.SearchType
+import androidx.room.ForeignKey
+import androidx.room.Index
+import com.example.repository.dto.local.utils.SearchType
+import java.time.Instant
 
-@Entity(tableName = "search")
+@Entity(
+    tableName = "search",
+    foreignKeys = [
+        ForeignKey(
+            entity = LocalMovieDto::class,
+            parentColumns = ["id"],
+            childColumns = ["movieId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("movieId")]
+)
 data class SearchDto(
     val searchKeyword: String,
     val searchType: SearchType,
-    val movieId: Long
+    val rating:Int? = null,
+    val movieId: Long,
+    val saveDate: Instant
 )
-
