@@ -28,7 +28,7 @@ fun EmptyContainer(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 144.dp, start = 24.dp, end = 24.dp),
+            .padding( start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
