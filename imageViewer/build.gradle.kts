@@ -24,7 +24,5 @@ dependencies {
     // TensorFlow Lite for on-device ML
     implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.lite.support)
-    implementation(libs.tensorflow.lite.task.vision)
-    implementation(libs.tensorflow.lite.metadata)
 
 }
