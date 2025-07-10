@@ -4,6 +4,7 @@ sealed interface SearchByActorEffect{
 
     data class ShowError(val message:String):SearchByActorEffect
         object NavigateToDetails:SearchByActorEffect
-        object NoResultsFound:SearchByActorEffect
+         object NoResultsFound:SearchByActorEffect
+         object NavigateBack:SearchByActorEffect
 
 }
