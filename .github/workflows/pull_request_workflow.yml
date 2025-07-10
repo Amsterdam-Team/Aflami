@@ -25,7 +25,13 @@ jobs:
       - name: Load Google Service file
         env:
           DATA: ${{ secrets.FIREBASE_JSON }}
-        run: echo $DATA | base64 -di > app/google-services.json    
+        run: echo $DATA | base64 -di > app/google-services.json
+
+      - name: Create local.properties
+        env:
+            BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+        run: |
+          echo "bearerToken=$BEARER_TOKEN" > local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -59,15 +65,3 @@ jobs:
           failure-message: "Code coverage is currently at {coverage}%. Target is 80%."
           success-message: "✅ Code coverage is at {coverage}%."
           report-on-status: true
-
-      - name: Build APK
-        run: ./gradlew assembleDebug
-
-      - name: Upload APK to Firebase App Distribution
-        run: |
-          npm install -g firebase-tools
-          firebase appdistribution:distribute \
-            app/build/outputs/apk/debug/app-debug.apk \
-            --app ${{ secrets.FIREBASE_APP_ID }} \
-            --token ${{ secrets.FIREBASE_AUTH_TOKEN }} \
-            --groups ${{ secrets.TESTER_GROUP }}
