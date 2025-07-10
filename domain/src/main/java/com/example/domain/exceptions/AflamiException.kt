@@ -1,4 +1,4 @@
-package com.example.domain.utils
+package com.example.domain.exceptions
 
 open class AflamiException : Exception()
 

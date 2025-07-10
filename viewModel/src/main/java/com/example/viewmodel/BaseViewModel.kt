@@ -2,8 +2,8 @@ package com.example.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.utils.AflamiException
-import com.example.domain.utils.UnknownException
+import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.UnknownException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
