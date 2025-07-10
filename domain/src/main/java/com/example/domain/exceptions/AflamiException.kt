@@ -10,3 +10,7 @@ class InvalidCharactersException : QueryValidationException()
 class BlankQueryException : QueryValidationException()
 
 class UnknownException : AflamiException()
+
+class InternetConnectionException: AflamiException()
+class NoSuggestedCountries: AflamiException()
+class NoMoviesForCountryException: AflamiException()
