@@ -29,9 +29,9 @@ jobs:
 
       - name: Create local.properties
         env:
-            BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
         run: |
-          echo "bearerToken=$BEARER_TOKEN" > local.properties
+          echo bearerToken=\"$BEARER_TOKEN\" > local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -40,7 +40,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Compile Project
-        run: ./gradlew assemble
+        run:  ./gradlew assemble
 
       - name: Run Unit Tests
         run: ./gradlew test
