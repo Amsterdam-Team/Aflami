@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,36 +12,49 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
-import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun SearchByCriteria(
+fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-) {
-    Column {
-        DefaultAppBar(
-            title = "World Tour",
-            showNavigateBackButton = true,
-        )
 
+){
+    SearchByActorContent (modifier)
+
+}
+
+@Composable
+fun SearchByActorContent(
+    modifier: Modifier = Modifier,
+    onNavigateBackClicked: () -> Unit = {},
+    onMovieClicked: () -> Unit = {},
+    onValueChange: (String) -> Unit = {}
+) {
+        DefaultAppBar(
+            title = stringResource(R.string.find_by_actor),
+            showNavigateBackButton = true,
+            onNavigateBackClicked = {onNavigateBackClicked()}
+        )
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
             TextField(
-                "",
-                hintText = stringResource(R.string.country_name_hint),
+                modifier= Modifier.padding(horizontal = 16.dp),
+                text="",
+                hintText ="Tom hanks",
+                onValueChange = {onValueChange(it)},
+
             )
             LazyVerticalGrid(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -53,18 +67,18 @@ fun SearchByCriteria(
                         movieYear = "2016",
                         movieTitle = "Your Name",
                         movieRating = "9.9",
+                        onClick = {onMovieClicked()}
                     )
                 }
             }
         }
     }
-}
 
-@Preview(showBackground = true)
+
 @Composable
 @ThemeAndLocalePreviews
-private fun SearchByCriteriaPreview() {
+private fun SearchByActorContentPreview() {
     AflamiTheme {
-        SearchByCriteria()
+        SearchByActorContent()
     }
 }
