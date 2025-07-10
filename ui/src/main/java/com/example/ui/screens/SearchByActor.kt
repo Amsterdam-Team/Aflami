@@ -21,25 +21,28 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun SearchByActor(
+fun SearchByActorScreen(
     modifier: Modifier = Modifier,
 ) {
-    Column {
         DefaultAppBar(
             title = stringResource(R.string.find_by_actor),
             showNavigateBackButton = true,
+            onNavigateBackClicked = {}
         )
-
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
             TextField(
-                "",
+                modifier= Modifier.padding(horizontal = 16.dp),
+                text="",
                 hintText ="Tom hanks",
+                onValueChange = {},
+
             )
             LazyVerticalGrid(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -57,12 +60,12 @@ fun SearchByActor(
             }
         }
     }
-}
+
 
 @Composable
 @ThemeAndLocalePreviews
-private fun SearchByActorPreview() {
+private fun SearchByActorScreenPreview() {
     AflamiTheme {
-        SearchByActor()
+        SearchByActorScreen()
     }
 }
