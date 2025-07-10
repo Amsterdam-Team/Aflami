@@ -13,5 +13,5 @@ class GlobalSearchViewModel(
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
-) : BaseViewModel<SearchUiState>(SearchUiState()) {
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()) {
 }

@@ -1,5 +1,10 @@
 package com.example.viewmodel.search
 
+import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.BlankQueryException
+import com.example.domain.exceptions.InvalidCharactersException
+import com.example.domain.exceptions.QueryTooLongException
+import com.example.domain.exceptions.QueryTooShortException
 import com.example.viewmodel.common.GenreItemUiState
 import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.MediaItemUiState
@@ -27,4 +32,15 @@ sealed interface SearchErrorUiState {
     object QueryTooLong : SearchErrorUiState
     object InvalidCharacters : SearchErrorUiState
     object BlankQuery : SearchErrorUiState
+    object UnknownException : SearchErrorUiState
+}
+
+fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorUiState {
+    return when (aflamiException) {
+        is QueryTooShortException -> SearchErrorUiState.QueryTooShort
+        is QueryTooLongException -> SearchErrorUiState.QueryTooLong
+        is InvalidCharactersException -> SearchErrorUiState.InvalidCharacters
+        is BlankQueryException -> SearchErrorUiState.BlankQuery
+        else -> SearchErrorUiState.UnknownException
+    }
 }
