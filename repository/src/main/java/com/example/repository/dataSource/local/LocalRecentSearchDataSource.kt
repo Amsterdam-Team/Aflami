@@ -4,12 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.repository.dto.local.SearchDto
+import com.example.repository.dto.local.LocalSearchDto
 
 @Dao
 interface LocalRecentSearchDataSource {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrReplaceSearch(search: SearchDto)
+    suspend fun insertOrReplaceSearch(search: LocalSearchDto)
 
     @Query("SELECT DISTINCT searchKeyword FROM search ORDER BY rowid DESC")
     suspend fun getRecentSearches(): List<String>
