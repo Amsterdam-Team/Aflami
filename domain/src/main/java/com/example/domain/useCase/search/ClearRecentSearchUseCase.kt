@@ -1,4 +1,4 @@
-package com.example.domain.usecase.search
+package com.example.domain.useCase.search
 
 import com.example.domain.repository.RecentSearchRepository
 
