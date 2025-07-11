@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -24,4 +25,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     // Date and Time
     implementation(libs.kotlinx.datetime)
+    // kotlinx.serialization
+    implementation(libs.kotlinx.serialization.json)
 }

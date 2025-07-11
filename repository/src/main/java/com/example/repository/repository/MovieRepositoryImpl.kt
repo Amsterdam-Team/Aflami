@@ -8,8 +8,7 @@ import com.example.repository.datasource.local.LocalMovieDataSource
 class MovieRepositoryImpl(
     private val localMovieDataSource: LocalMovieDataSource,
     private val localCategoryDataSource: LocalCategoryDataSource
-) :
-    MovieRepository {
+) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
         TODO("Not yet implemented")
     }
