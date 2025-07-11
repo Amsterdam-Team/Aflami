@@ -12,7 +12,7 @@ class GetSuggestedCountriesUseCase(
 
     suspend operator fun invoke(keyword: String): List<Country> {
         countryValidator.validateCountry(keyword)
-        val countries = countryRepository.getSuggestedCountries()
+        val countries = countryRepository.getAllCountries()
         return findCountryByName(countries, keyword.trim()).takeIf { it.isNotEmpty() }
             ?: throw NoSuggestedCountriesException()
     }
