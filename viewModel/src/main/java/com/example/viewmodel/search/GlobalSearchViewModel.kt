@@ -1,11 +1,11 @@
 package com.example.viewmodel.search
 
 import com.example.domain.exceptions.QueryTooShortException
-import com.example.domain.useCase.GetMoviesByKeywordUseCase
-import com.example.domain.useCase.GetTvShowByKeywordUseCase
-import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
-import com.example.domain.useCase.search.ClearRecentSearchUseCase
-import com.example.domain.useCase.search.GetRecentSearchesUseCase
+import com.example.domain.usecase.GetMoviesByKeywordUseCase
+import com.example.domain.usecase.GetTvShowByKeywordUseCase
+import com.example.domain.usecase.search.ClearAllRecentSearchesUseCase
+import com.example.domain.usecase.search.ClearRecentSearchUseCase
+import com.example.domain.usecase.search.GetRecentSearchesUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
@@ -30,8 +30,7 @@ class GlobalSearchViewModel(
 
     init {
         loadRecentSearches()
-        _query
-            .debounce(300)
+        _query.debounce(300)
             .map { it.trim() }
             .onEach {
                 if (it.length <= 3) {

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -17,15 +19,24 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.screen.search.sections.RecentSearchesSection
 import com.example.ui.screen.search.sections.SuggestionsHubSection
+import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.GlobalSearchInteractionListener
 import com.example.viewmodel.search.SearchUiState
+import org.koin.androidx.compose.koinViewModel
+import com.example.viewmodel.search.GlobalSearchViewModel
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
-    SearchContent(state = SearchUiState())
+fun SearchScreen(
+    viewModel: GlobalSearchViewModel = koinViewModel(),
+    modifier: Modifier = Modifier
+) {
+    val state by viewModel.state.collectAsState()
+
+    SearchContent(state = state, interaction = viewModel)
 }
 
 @Composable
-private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
+private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInteractionListener, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -38,6 +49,7 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
             TextField(
                 modifier = Modifier.background(color = AppTheme.color.surface).padding(top = 8.dp).padding(horizontal = 16.dp),
                 text = state.query,
+                onValueChange = interaction::onTextValuedChanged,
                 hintText = stringResource(R.string.search_hint),
                 trailingIcon = R.drawable.ic_filter_vertical,
                 isError = state.errorUiState != null,
@@ -51,7 +63,7 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
                     tabs = listOf(stringResource(R.string.movies), stringResource(R.string.tv_shows), ),
                     selectedIndex = state.selectedTabOption.index,
                     onSelectTab = { index ->
-
+                        interaction.onTabOptionClicked(TabOption.entries[index])
                     },
                 )
             }
@@ -60,20 +72,21 @@ private fun SearchContent(state: SearchUiState, modifier: Modifier = Modifier) {
         item {
             if (state.query.isEmpty()){
                 SuggestionsHubSection(
-                    onWorldTourCardClick = {},
-                    onFindByActorCardClick = {}
+                    onWorldTourCardClick = interaction::onWorldSearchCardClicked,
+                    onFindByActorCardClick = interaction::onActorSearchCardClicked
                 )
             }
         }
 
         if (state.query.isEmpty()) {
             RecentSearchesSection(
-                onClearAllClick = {},
+                onClearAllClick = interaction::onClearAllRecentSearches,
                 recentSearchItems = emptyList(),
-                onRecentSearchItemClick = {},
-                onRecentSearchItemCancelClick = {}
+                onRecentSearchItemClick = interaction::onRecentSearchClicked,
+                onRecentSearchItemCancelClick = interaction::onClearRecentSearch
             )
         }
     }
 }
+
 
