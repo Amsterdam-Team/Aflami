@@ -6,7 +6,6 @@ import com.example.domain.exceptions.InvalidCharactersException
 import com.example.domain.exceptions.QueryTooLongException
 import com.example.domain.exceptions.QueryTooShortException
 import com.example.viewmodel.common.GenreItemUiState
-import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.TabOption
 

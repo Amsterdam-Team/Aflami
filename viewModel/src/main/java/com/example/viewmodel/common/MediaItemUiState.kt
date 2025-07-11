@@ -12,7 +12,7 @@ data class MediaItemUiState(
 
 )
 
-enum class MediaType() {
+enum class MediaType {
     MOVIE,
     TV_SHOW,
 }

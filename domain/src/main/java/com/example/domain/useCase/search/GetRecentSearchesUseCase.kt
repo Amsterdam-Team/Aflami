@@ -6,6 +6,6 @@ class GetRecentSearchesUseCase(
     private val recentSearchRepository: RecentSearchRepository
 ) {
     suspend operator fun invoke(): List<String> {
-        return recentSearchRepository.getRecentSearch()
+        return recentSearchRepository.getAllRecentSearches()
     }
 }

@@ -1,5 +1,6 @@
 package com.example.designsystem.components
 
+import android.R.attr.onClick
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,35 +20,41 @@ import com.example.designsystem.theme.AppTheme
 @Composable
 fun RecentSearchItem(
     title: String,
-    onCancelClick : () -> Unit,
-    onItemClick : () -> Unit,
+    onCancelClick: (title: String) -> Unit,
+    onItemClick: (title: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-        Row(
-            modifier = modifier.fillMaxWidth().clickable { onItemClick() }.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(R.drawable.ic_clock),
-                tint = AppTheme.color.hint,
-                contentDescription = title
-            )
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onItemClick(title) }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            painter = painterResource(R.drawable.ic_clock),
+            tint = AppTheme.color.hint,
+            contentDescription = title
+        )
 
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = title,
-                style = AppTheme.textStyle.body.medium,
-                color = AppTheme.color.title
-            )
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = title,
+            style = AppTheme.textStyle.body.medium,
+            color = AppTheme.color.title
+        )
 
-            Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
 
-            Icon(
-                modifier = Modifier.size(16.dp).clip(CircleShape).clickable{ onCancelClick() },
-                painter = painterResource(R.drawable.ic_cancel),
-                tint = AppTheme.color.hint,
-                contentDescription = title
-            )
-        }
+        Icon(
+            modifier = Modifier
+                .size(16.dp)
+                .clip(CircleShape)
+                .clickable { onCancelClick(title) },
+            painter = painterResource(R.drawable.ic_cancel),
+            tint = AppTheme.color.hint,
+            contentDescription = title
+        )
+    }
 }
