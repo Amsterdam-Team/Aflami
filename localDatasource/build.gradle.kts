@@ -7,8 +7,11 @@ plugins {
 
 android {
     namespace = "com.example.localdatasource"
-}
 
+}
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
 dependencies {
     implementation(project(":repository"))
     // Room

@@ -8,6 +8,7 @@ import kotlinx.datetime.Instant
 
 @Entity(
     tableName = "SearchDto",
+    primaryKeys = ["searchKeyword", "movieId", "searchType"],
     foreignKeys = [
         ForeignKey(
             entity = LocalMovieDto::class,
@@ -26,4 +27,3 @@ data class LocalSearchDto(
     val movieId: Long,
     val saveDate: Instant
 )
-
