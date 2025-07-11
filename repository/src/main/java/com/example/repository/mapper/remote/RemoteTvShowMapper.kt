@@ -1,15 +1,14 @@
 package com.example.repository.mapper.remote
 
 import com.example.entity.Movie
-import com.example.repository.dto.remote.RemoteMovieItemDto
-import com.example.repository.dto.remote.RemoteMovieResponse
+import com.example.entity.TvShow
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
 
-class RemoteMovieMapper {
+class RemoteTvShowMapper {
 
-    fun mapToDomain(dto: RemoteMovieItemDto): Movie {
-        return Movie(
+    fun mapToDomain(dto: RemoteTvShowItemDto): TvShow {
+        return TvShow(
             id = dto.id,
             name = dto.title,
             description = dto.overview,
@@ -20,7 +19,7 @@ class RemoteMovieMapper {
         )
     }
 
-    fun mapResponseToDomain(response: RemoteMovieResponse): List<Movie> {
+    fun mapResponseToDomain(response: RemoteTvShowResponse): List<TvShow> {
         return response.results.map { mapToDomain(it) }
     }
 
@@ -28,6 +27,3 @@ class RemoteMovieMapper {
         return date.takeIf { it.length >= 4 }?.substring(0, 4)?.toIntOrNull() ?: 0
     }
 }
-
-
-

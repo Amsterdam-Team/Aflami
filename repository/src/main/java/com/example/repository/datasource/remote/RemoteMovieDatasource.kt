@@ -4,7 +4,7 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 
 interface RemoteMovieDatasource {
 
-    suspend fun getMoviesByKeywordAndSearchType(
+    suspend fun getMoviesByKeyword(
         keyword: String,
         rating: Int,
         categoryId: Long?

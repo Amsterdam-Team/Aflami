@@ -8,7 +8,7 @@ import io.ktor.client.call.body
 
 class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovieDatasource {
 
-    override suspend fun getMoviesByKeywordAndSearchType(
+    override suspend fun getMoviesByKeyword(
         keyword: String,
         rating: Int,
         categoryId: Long?
@@ -17,6 +17,4 @@ class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovi
         return ktorClient.get("$BASE_URL/discover/movie&query=$keyword&vote_average.lte=$rating&with_genres=$selectedCategoryId")
             .body()
     }
-
-
 }
