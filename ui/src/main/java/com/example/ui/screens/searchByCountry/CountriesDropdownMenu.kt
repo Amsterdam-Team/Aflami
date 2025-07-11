@@ -1,4 +1,4 @@
-package com.example.ui.screens
+package com.example.ui.screens.searchByCountry
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
