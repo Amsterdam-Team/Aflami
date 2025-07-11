@@ -1,4 +1,4 @@
-package com.example.localdatasource.roomDatabase
+package com.example.localdatasource.roomDatabase.datasource
 
 import com.example.localdatasource.roomDatabase.daos.TvShowDao
 import com.example.repository.datasource.local.LocalTvShowDataSource

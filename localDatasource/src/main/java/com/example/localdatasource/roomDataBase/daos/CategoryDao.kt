@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import com.example.repository.dto.local.LocalCategoryDto
 
 @Dao
-interface LocalCategoryDao {
+interface CategoryDao {
 
     @Upsert
     suspend fun insertOrReplaceCategory(category: LocalCategoryDto)
