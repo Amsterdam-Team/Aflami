@@ -25,5 +25,5 @@ data class LocalSearchDto(
     val rating: Int?,
     val category: String?,
     val movieId: Long,
-    val saveDate: Instant
+    val expireDate: Instant
 )

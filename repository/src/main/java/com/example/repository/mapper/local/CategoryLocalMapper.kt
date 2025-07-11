@@ -7,7 +7,7 @@ class CategoryLocalMapper {
 
     fun mapFromLocal(dto: LocalCategoryDto): Category {
         return Category(
-            id = dto.id,
+            id = dto.categoryId,
             name = dto.name,
             image = ""
         )
@@ -15,7 +15,7 @@ class CategoryLocalMapper {
 
     fun mapToLocal(domain: Category): LocalCategoryDto {
         return LocalCategoryDto(
-            id = domain.id,
+            categoryId = domain.id,
             name = domain.name,
         )
     }

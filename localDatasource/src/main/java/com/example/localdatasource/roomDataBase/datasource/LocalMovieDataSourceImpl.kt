@@ -15,11 +15,9 @@ class LocalMovieDataSourceImpl(
 
     override suspend fun getMoviesByKeywordAndSearchType(
         keyword: String,
-        searchType: SearchType,
-        rating: Int?,
-        category: String?
+        searchType: SearchType
     ): List<MovieWithCategories> {
-        return dao.getMoviesByKeywordAndSearchType(keyword, searchType, rating, category)
+        return dao.getMoviesByKeywordAndSearchType(keyword, searchType)
     }
 
     override suspend fun addAllMoviesWithSearchData(
@@ -36,9 +34,9 @@ class LocalMovieDataSourceImpl(
                 searchKeyword = searchKeyword,
                 searchType = searchType,
                 rating = rating,
-                movieId = movie.id,
+                movieId = movie.movieId,
                 category = category,
-                saveDate = Clock.System.now()
+                expireDate = Clock.System.now()
             )
         }
 
