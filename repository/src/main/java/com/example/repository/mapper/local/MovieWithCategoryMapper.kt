@@ -1,4 +1,4 @@
-package com.example.repository.mapper
+package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.Movie
