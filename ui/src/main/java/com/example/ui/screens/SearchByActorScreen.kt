@@ -8,33 +8,69 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
+import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.entity.Movie
+import com.example.viewmodel.searchByActor.SearchByActorEffect
+import com.example.viewmodel.searchByActor.SearchByActorViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.KoinApplication.Companion.init
 
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-
+    viewModel: SearchByActorViewModel=koinViewModel(),
+    navController: NavController
 ){
-    SearchByActorContent (modifier)
+    val uiState = viewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+
+                SearchByActorEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+
+                SearchByActorEffect.NoInternetConnection -> TODO()
+            }
+        }
+    }
+    SearchByActorContent (
+        modifier=modifier,
+        onNavigateBackClicked = {viewModel.onBackClicked()},
+        onValueChange = {viewModel.onQueryChange(it)}
+    )
+    if (uiState.value.movies.isEmpty()) {
+        NoDataContainer(
+            imageRes = painterResource(R.drawable.placeholder_no_result_found),
+            title = stringResource(R.string.no_search_result),
+            description = stringResource(R.string.no_search_result_description),
+        )
+    }
+    uiState.value.movies
 
 }
 
 @Composable
 fun SearchByActorContent(
     modifier: Modifier = Modifier,
-    onNavigateBackClicked: () -> Unit = {},
-    onMovieClicked: () -> Unit = {},
-    onValueChange: (String) -> Unit = {}
+    onNavigateBackClicked: () -> Unit ,
+    onValueChange: (String) -> Unit ,
+    result: List<Movie> = emptyList()
 ) {
         DefaultAppBar(
             title = stringResource(R.string.find_by_actor),
@@ -49,7 +85,7 @@ fun SearchByActorContent(
             TextField(
                 modifier= Modifier.padding(horizontal = 16.dp),
                 text="",
-                hintText ="Tom hanks",
+                hintText = stringResource(R.string.find_by_actor),
                 onValueChange = {onValueChange(it)},
 
             )
@@ -60,14 +96,13 @@ fun SearchByActorContent(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(30) {
+                items(result) {movie->
                     MovieCard(
-                        movieImage = painterResource(R.drawable.bg_children_wearing_3d),
-                        movieType = "TV show",
-                        movieYear = "2016",
-                        movieTitle = "Your Name",
-                        movieRating = "9.9",
-                        onClick = {onMovieClicked()}
+                        movieImage = painterResource(movie.poster.toInt()),
+                        movieType = "Movies",
+                        movieYear = movie.productionYear.toString(),
+                        movieTitle = movie.name,
+                        movieRating = movie.rating.toString(),
                     )
                 }
             }
@@ -79,6 +114,9 @@ fun SearchByActorContent(
 @ThemeAndLocalePreviews
 private fun SearchByActorContentPreview() {
     AflamiTheme {
-        SearchByActorContent()
+        SearchByActorContent(
+            onNavigateBackClicked = {},
+            onValueChange = {}
+        )
     }
 }
