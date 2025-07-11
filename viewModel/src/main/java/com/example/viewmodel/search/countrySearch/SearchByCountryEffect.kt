@@ -8,5 +8,6 @@ sealed interface SearchByCountryEffect {
     data object LoadingSuggestedCountriesEffect: SearchByCountryEffect
     data object MoviesLoadedEffect: SearchByCountryEffect
     data object SuggestedCountriesLoadedEffect: SearchByCountryEffect
-    data object EmptyCountryEffect: SearchByCountryEffect
+    data object InitialEffect: SearchByCountryEffect
+    data object CountryTooShortEffect: SearchByCountryEffect
 }

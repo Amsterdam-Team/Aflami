@@ -1,6 +1,7 @@
 package com.example.viewmodel.search.countrySearch
 
 import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.CountryTooShortException
 import com.example.domain.exceptions.InternetConnectionException
 import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
@@ -16,6 +17,11 @@ class SearchByCountryViewModel(
 ) : BaseViewModel<SearchByCountryUiState, SearchByCountryEffect>(
     SearchByCountryUiState()
 ) {
+
+    init {
+        sendNewEffect(SearchByCountryEffect.InitialEffect)
+    }
+
     fun onCountryNameUpdated(countryName: String) {
         updateState {
             it.copy(selectedCountry = countryName)
@@ -60,6 +66,7 @@ class SearchByCountryViewModel(
             is InternetConnectionException -> SearchByCountryEffect.NoInternetConnectionEffect
             is NoSuggestedCountriesException -> SearchByCountryEffect.NoSuggestedCountriesEffect
             is NoMoviesForCountryException -> SearchByCountryEffect.NoMoviesEffect
+            is CountryTooShortException -> SearchByCountryEffect.CountryTooShortEffect
             else -> {}
         }
     }

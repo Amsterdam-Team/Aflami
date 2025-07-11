@@ -53,7 +53,8 @@ private fun HandleUiEffects(viewModel: SearchByCountryViewModel) {
                 SearchByCountryEffect.NoMoviesEffect -> TODO()
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> TODO()
                 SearchByCountryEffect.SuggestedCountriesLoadedEffect -> TODO()
-                SearchByCountryEffect.EmptyCountryEffect -> TODO()
+                SearchByCountryEffect.InitialEffect -> TODO()
+                SearchByCountryEffect.CountryTooShortEffect -> TODO()
             }
         }
     }
