@@ -1,6 +1,6 @@
 package com.example.localdatasource.roomDataBase.datasource
 
-import com.example.localdatasource.roomDatabase.daos.RecentSearchDao
+import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
 import com.example.repository.dto.local.LocalSearchDto
 
@@ -14,6 +14,10 @@ class RecentSearchDataSourceImpl(
 
     override suspend fun getRecentSearches(): List<String> {
         return dao.getRecentSearches()
+    }
+
+    override suspend fun getSearchInfo(keyword: String): LocalSearchDto? {
+        return dao.getSearchInfo(keyword)
     }
 
     override suspend fun deleteAllSearches() {

@@ -1,6 +1,6 @@
 package com.example.localdatasource.roomDataBase.datasource
 
-import com.example.localdatasource.roomDatabase.daos.CategoryDao
+import com.example.localdatasource.roomDataBase.daos.CategoryDao
 import com.example.repository.datasource.local.LocalCategoryDataSource
 import com.example.repository.dto.local.LocalCategoryDto
 

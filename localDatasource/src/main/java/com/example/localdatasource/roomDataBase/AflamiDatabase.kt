@@ -7,11 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.localdatasource.roomDataBase.converter.SearchTypeConverter
 import com.example.localdatasource.roomDatabase.converter.InstantConverter
-import com.example.localdatasource.roomDatabase.daos.CategoryDao
-import com.example.localdatasource.roomDatabase.daos.CountryDao
-import com.example.localdatasource.roomDatabase.daos.MovieDao
-import com.example.localdatasource.roomDatabase.daos.RecentSearchDao
-import com.example.localdatasource.roomDatabase.daos.TvShowDao
+import com.example.localdatasource.roomDataBase.daos.CategoryDao
+import com.example.localdatasource.roomDataBase.daos.CountryDao
+import com.example.localdatasource.roomDataBase.daos.MovieDao
+import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
+import com.example.localdatasource.roomDataBase.daos.TvShowDao
 import com.example.repository.dto.local.LocalCategoryDto
 import com.example.repository.dto.local.LocalCountryDto
 import com.example.repository.dto.local.LocalMovieDto

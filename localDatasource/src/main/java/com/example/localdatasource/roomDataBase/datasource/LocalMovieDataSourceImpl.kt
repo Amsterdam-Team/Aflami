@@ -1,6 +1,6 @@
 package com.example.localdatasource.roomDataBase.datasource
 
-import com.example.localdatasource.roomDatabase.daos.MovieDao
+import com.example.localdatasource.roomDataBase.daos.MovieDao
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.LocalSearchDto

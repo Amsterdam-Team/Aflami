@@ -1,6 +1,6 @@
 package com.example.localdatasource.roomDataBase.datasource
 
-import com.example.localdatasource.roomDatabase.daos.TvShowDao
+import com.example.localdatasource.roomDataBase.daos.TvShowDao
 import com.example.repository.datasource.local.LocalTvShowDataSource
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto

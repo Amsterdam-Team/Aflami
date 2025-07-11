@@ -1,4 +1,4 @@
-package com.example.localdatasource.roomDatabase.daos
+package com.example.localdatasource.roomDataBase.daos
 
 import androidx.room.Dao
 import androidx.room.Query
@@ -16,6 +16,9 @@ interface RecentSearchDao {
 
     @Query("DELETE FROM SearchDto")
     suspend fun deleteAllSearches()
+
+    @Query("SELECT * FROM SearchDto WHERE searchKeyword = :keyword")
+    suspend fun getSearchInfo(keyword: String): LocalSearchDto?
 
     @Query("DELETE FROM SearchDto WHERE searchKeyword = :keyword and searchType = :searchType")
     suspend fun deleteSearchByKeyword(keyword: String,searchType: SearchType = SearchType.BY_KEYWORD)
