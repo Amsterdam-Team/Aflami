@@ -3,7 +3,7 @@ import java.util.Properties
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
 var bearerToken: String = properties.getProperty("bearerToken")?:""
-
+val baseUrl: String = properties.getProperty("baseUrl") ?: ""
 
 plugins {
     alias(libs.plugins.android.library)
@@ -24,6 +24,12 @@ android {
             "String",
             "BEARER_TOKEN",
             bearerToken
+        )
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            baseUrl
         )
     }
 }
