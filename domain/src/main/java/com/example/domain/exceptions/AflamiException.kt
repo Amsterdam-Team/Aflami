@@ -12,5 +12,6 @@ class BlankQueryException : QueryValidationException()
 class UnknownException : AflamiException()
 
 class InternetConnectionException: AflamiException()
-class NoSuggestedCountries: AflamiException()
+class NoSuggestedCountriesException: AflamiException()
 class NoMoviesForCountryException: AflamiException()
+class CountryTooShortException: AflamiException()

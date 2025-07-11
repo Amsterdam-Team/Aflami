@@ -3,7 +3,7 @@ package com.example.viewmodel.search.countrySearch
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.InternetConnectionException
 import com.example.domain.exceptions.NoMoviesForCountryException
-import com.example.domain.exceptions.NoSuggestedCountries
+import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.usecase.GetMoviesByCountryUseCase
 import com.example.domain.usecase.GetSuggestedCountriesUseCase
 import com.example.entity.Country
@@ -58,7 +58,7 @@ class SearchByCountryViewModel(
     private fun onError(exception: AflamiException) {
         when (exception) {
             is InternetConnectionException -> SearchByCountryEffect.NoInternetConnectionEffect
-            is NoSuggestedCountries -> SearchByCountryEffect.NoSuggestedCountriesEffect
+            is NoSuggestedCountriesException -> SearchByCountryEffect.NoSuggestedCountriesEffect
             is NoMoviesForCountryException -> SearchByCountryEffect.NoMoviesEffect
             else -> {}
         }
