@@ -7,15 +7,15 @@ import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.usecase.GetMoviesByCountryUseCase
 import com.example.domain.usecase.GetSuggestedCountriesUseCase
-import com.example.entity.Country
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.search.mapper.toUiState
 
 class SearchByCountryViewModel(
     private val suggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val moviesByCountryUseCase: GetMoviesByCountryUseCase,
-) : BaseViewModel<SearchByCountryUiState, SearchByCountryEffect>(
-    SearchByCountryUiState()
+) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
+    SearchByCountryScreenState()
 ) {
 
     init {
@@ -29,10 +29,17 @@ class SearchByCountryViewModel(
         getSuggestedCountries(countryName)
     }
 
-    fun getMoviesByCountry(country: Country) {
+    fun onSelectCountryName(countryName: String) {
+        val countryIsoCode =
+            state.value.suggestedCountries.find { it.countryName == countryName }?.countryIsoCode
+                ?: ""
+        getMoviesByCountry(countryIsoCode)
+    }
+
+    private fun getMoviesByCountry(countryIsoCode: String) {
         sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
         tryToExecute(
-            action = { moviesByCountryUseCase.invoke(country.countryIsoCode) },
+            action = { moviesByCountryUseCase.invoke(countryIsoCode) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
             onError = { exception -> onError(exception) }
         )
@@ -42,12 +49,12 @@ class SearchByCountryViewModel(
         sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
         tryToExecute(
             action = { suggestedCountriesUseCase.invoke(countryName) },
-            onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries) },
+            onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries.toUiState()) },
             onError = { exception -> onError(exception) }
         )
     }
 
-    private fun updateSuggestedCountries(suggestedCountries: List<Country>) {
+    private fun updateSuggestedCountries(suggestedCountries: List<CountryUiState>) {
         updateState {
             it.copy(suggestedCountries = suggestedCountries)
         }

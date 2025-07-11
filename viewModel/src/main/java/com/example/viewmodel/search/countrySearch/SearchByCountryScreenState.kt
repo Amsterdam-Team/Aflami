@@ -1,9 +1,7 @@
 package com.example.viewmodel.search.countrySearch
 
-import com.example.entity.Country
-
-data class SearchByCountryUiState(
+data class SearchByCountryScreenState(
     val selectedCountry: String = "",
-    val suggestedCountries: List<Country> = emptyList(),
+    val suggestedCountries: List<CountryUiState> = emptyList(),
     val movies: List<MovieUiState> = emptyList()
 )

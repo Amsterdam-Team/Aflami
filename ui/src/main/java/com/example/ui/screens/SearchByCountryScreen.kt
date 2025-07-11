@@ -19,9 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.LoadingIndicator
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.Text
@@ -31,7 +31,7 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
-import com.example.viewmodel.search.countrySearch.SearchByCountryUiState
+import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
@@ -90,16 +90,18 @@ fun SearchByCountryScreen(
     SearchByCountryScreenContent(
         state,
         viewModel::onCountryNameUpdated,
+        viewModel::onSelectCountryName,
         modifier,
         screenContent,
-        showLoadingCountries
+        showLoadingCountries,
     )
 }
 
 @Composable
 fun SearchByCountryScreenContent(
-    state: SearchByCountryUiState,
+    state: SearchByCountryScreenState,
     onCountryNameUpdated: (String) -> Unit,
+    onSelectCountry: (String) -> Unit,
     modifier: Modifier = Modifier,
     screenContent: ScreenContent,
     showLoadingCountries: Boolean,
@@ -120,6 +122,12 @@ fun SearchByCountryScreenContent(
                 onValueChange = { onCountryNameUpdated(it) }
             )
 
+            CountriesDropdownMenu(
+                items = state.suggestedCountries.map { it.countryName }
+            ) {
+                onSelectCountry(it)
+            }
+
             when (screenContent) {
                 ScreenContent.COUNTRY_TOUR -> ExploreCountries()
                 ScreenContent.LOADING_MOVIES -> LoadingMovies()
@@ -129,13 +137,6 @@ fun SearchByCountryScreenContent(
             }
         }
     }
-}
-
-@Composable
-private fun CountriesList(
-    modifier: Modifier = Modifier
-) {
-
 }
 
 @Composable
@@ -165,8 +166,20 @@ private fun ExploreCountries(
 }
 
 @Composable
-private fun LoadingMovies() {
-
+private fun LoadingMovies(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        LoadingIndicator()
+        Text(
+            text = stringResource(R.string.loading),
+            style = AppTheme.textStyle.label.medium,
+            color = AppTheme.color.body,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
 }
 
 @Composable
@@ -184,7 +197,7 @@ private fun NoMoviesFound() {
 }
 
 @Composable
-private fun SearchedMovies(state: SearchByCountryUiState) {
+private fun SearchedMovies(state: SearchByCountryScreenState) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(vertical = 12.dp),
@@ -214,16 +227,15 @@ enum class ScreenContent {
     MOVIES
 }
 
-@Preview(showBackground = true)
 @Composable
 @ThemeAndLocalePreviews
 private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
-            SearchByCountryUiState(),
-            {},
+            SearchByCountryScreenState(),
+            {}, {},
             screenContent = ScreenContent.COUNTRY_TOUR,
-            showLoadingCountries = false
+            showLoadingCountries = false,
         )
     }
 }
