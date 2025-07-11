@@ -130,6 +130,7 @@
     <string name="recent_searches">Recent Searches</string>
     <string name="no_search_result">No search result</string>
     <string name="no_search_result_description">please try with another keyword.</string>
+    <string name="no_search_result_for_country">please try with another country.</string>
     <string name="filter_result">Filter result</string>
     <string name="imdb_rating">IMDb rating</string>
     <string name="genre">Genre</string>
@@ -181,6 +182,7 @@
     <string name="episodes">episodes</string>
     <string name="season">Season</string>
     <string name="seasons">Seasons</string>
+    <string name="country_tour_image_description">Country tour image</string>
     <!-- -   -->
     <!-- - Positive messages   -->
     <string name="list_added_success_message">New list added successfully.</string>
