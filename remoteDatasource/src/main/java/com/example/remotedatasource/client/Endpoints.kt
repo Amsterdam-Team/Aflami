@@ -1,8 +1,9 @@
 package com.example.remotedatasource.client
 
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.url
+import com.example.remotedatasource.BuildConfig
 
-private const val BaseUrl = "https://api.themoviedb.org/3"
-fun HttpRequestBuilder.getMoviesByActorNameUrl() = url("$BaseUrl/discover/movie")
-fun HttpRequestBuilder.getActorNameByIdUrl() = url("$BaseUrl/search/person")
+object Endpoints {
+    private const val BASE_URL = BuildConfig.BASE_URL
+    const val GET_MOVIES_BY_ACTOR_NAME_URL = "$BASE_URL/discover/movie"
+    const val GET_ACTOR_NAME_BY_ID_URL = "$BASE_URL/search/person"
+}

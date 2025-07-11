@@ -1,11 +1,10 @@
-package com.example.remotedatasource.datasource.dto
-
+package com.example.repository.dto.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ActorSearchResponseDto(
+data class RemoteActorSearchResponseDto(
     @SerialName("page")
     val page: Int,
     @SerialName("results")

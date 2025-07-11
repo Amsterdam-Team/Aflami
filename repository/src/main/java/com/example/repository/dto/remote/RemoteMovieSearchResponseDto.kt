@@ -1,11 +1,10 @@
-package com.example.remotedatasource.datasource.dto
-
+package com.example.repository.dto.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovieSearchResponseDto(
+data class RemoteMovieSearchResponseDto(
     @SerialName("page")
     val page: Int,
     @SerialName("result")
@@ -18,9 +17,9 @@ data class MovieSearchResponseDto(
     @Serializable
     data class MovieSearchItem(
         @SerialName("id")
-        val id: Int,
+        val id: Long,
         @SerialName("title")
-        val title: String,
+        val name: String,
         @SerialName("original_title")
         val originalTitle: String,
         @SerialName("poster_path")
@@ -28,11 +27,11 @@ data class MovieSearchResponseDto(
         @SerialName("adult")
         val hasAdultContent: Boolean,
         @SerialName("vote_average")
-        val voteAverage: Double,
+        val rating: Double,
         @SerialName("vote_count")
         val voteCount: Int,
         @SerialName("overview")
-        val overview: String,
+        val description: String,
         @SerialName("release_date")
         val releaseDate: String,
         @SerialName("video")
