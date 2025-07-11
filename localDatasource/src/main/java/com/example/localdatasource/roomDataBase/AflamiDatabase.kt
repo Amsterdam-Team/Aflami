@@ -9,8 +9,25 @@ import com.example.localdatasource.roomDatabase.daos.CountryDao
 import com.example.localdatasource.roomDatabase.daos.MovieDao
 import com.example.localdatasource.roomDatabase.daos.RecentSearchDao
 import com.example.localdatasource.roomDatabase.daos.TvShowDao
+import com.example.repository.dto.local.LocalCategoryDto
+import com.example.repository.dto.local.LocalCountryDto
+import com.example.repository.dto.local.LocalMovieDto
+import com.example.repository.dto.local.LocalSearchDto
+import com.example.repository.dto.local.LocalTvShowDto
+import com.example.repository.dto.local.LocalTvShowWithSearchDto
+import com.example.repository.dto.local.MovieCategoryCrossRefDto
 
-@Database(entities = [], version = 1, exportSchema = true)
+@Database(
+    entities = [LocalSearchDto::class,
+        LocalCountryDto::class,
+        LocalCategoryDto::class,
+        LocalMovieDto::class,
+        LocalTvShowDto::class,
+        LocalTvShowWithSearchDto::class,
+        MovieCategoryCrossRefDto::class],
+    version = 1,
+    exportSchema = true
+)
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun recentSearchDao(): RecentSearchDao
     abstract fun countryDao(): CountryDao
