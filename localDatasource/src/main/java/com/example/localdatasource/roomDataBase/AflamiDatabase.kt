@@ -1,9 +1,12 @@
-package com.example.localdatasource.roomDatabase
+package com.example.localdatasource.roomDataBase
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.localdatasource.roomDataBase.converter.SearchTypeConverter
+import com.example.localdatasource.roomDatabase.converter.InstantConverter
 import com.example.localdatasource.roomDatabase.daos.CategoryDao
 import com.example.localdatasource.roomDatabase.daos.CountryDao
 import com.example.localdatasource.roomDatabase.daos.MovieDao
@@ -28,6 +31,7 @@ import com.example.repository.dto.local.MovieCategoryCrossRefDto
     version = 1,
     exportSchema = true
 )
+@TypeConverters(InstantConverter::class, SearchTypeConverter::class)
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun recentSearchDao(): RecentSearchDao
     abstract fun countryDao(): CountryDao

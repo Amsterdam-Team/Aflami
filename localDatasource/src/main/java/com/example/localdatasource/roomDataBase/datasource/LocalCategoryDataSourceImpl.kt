@@ -1,4 +1,4 @@
-package com.example.localdatasource.roomDatabase.datasource
+package com.example.localdatasource.roomDataBase.datasource
 
 import com.example.localdatasource.roomDatabase.daos.CategoryDao
 import com.example.repository.datasource.local.LocalCategoryDataSource
