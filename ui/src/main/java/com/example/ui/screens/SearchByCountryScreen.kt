@@ -35,6 +35,12 @@ fun SearchByCountryScreen(
     viewModel: SearchByCountryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    HandleUiEffects(viewModel)
+    SearchByCountryScreenContent(state, viewModel::onCountryNameUpdated, modifier)
+}
+
+@Composable
+private fun HandleUiEffects(viewModel: SearchByCountryViewModel) {
     LaunchedEffect(
         viewModel.effect
     ) {
@@ -47,15 +53,16 @@ fun SearchByCountryScreen(
                 SearchByCountryEffect.NoMoviesEffect -> TODO()
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> TODO()
                 SearchByCountryEffect.SuggestedCountriesLoadedEffect -> TODO()
+                SearchByCountryEffect.EmptyCountryEffect -> TODO()
             }
         }
     }
-    SearchByCountryScreenContent(state, modifier)
 }
 
 @Composable
 fun SearchByCountryScreenContent(
     state: SearchByCountryUiState,
+    onCountryNameUpdated: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -72,6 +79,7 @@ fun SearchByCountryScreenContent(
             TextField(
                 state.selectedCountry,
                 hintText = stringResource(R.string.country_name_hint),
+                onValueChange = { onCountryNameUpdated(it) }
             )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -102,7 +110,8 @@ fun SearchByCountryScreenContent(
 private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
-            SearchByCountryUiState()
+            SearchByCountryUiState(),
+            {}
         )
     }
 }
