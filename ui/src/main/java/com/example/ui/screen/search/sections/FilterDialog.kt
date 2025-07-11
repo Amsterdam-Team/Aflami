@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -50,94 +49,89 @@ fun FilterDialog(
             usePlatformDefaultWidth = false
         )
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth(0.95f)
                 .background(
                     color = AppTheme.color.surface,
                     shape = RoundedCornerShape(12.dp)
                 )
+                .padding(vertical = 12.dp),
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                Text(
+                    text = stringResource(R.string.filter_result),
+                    color = AppTheme.color.title,
+                    fontStyle = AppTheme.textStyle.title.large.fontStyle,
+                    style = AppTheme.textStyle.title.large,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.filter_result),
-                        color = AppTheme.color.title,
-                        fontStyle = AppTheme.textStyle.title.large.fontStyle,
-                        style = AppTheme.textStyle.title.large,
-                        modifier = Modifier
-                            .weight(1f)
-                    )
+                        .weight(1f)
+                )
 
-                    IconButton(
-                        painter = painterResource(R.drawable.ic_cancel),
-                        contentDescription = null,
-                        onClick = onDismiss,
-                        tint = AppTheme.color.title
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.imdb_rating),
-                    color = AppTheme.color.title,
-                    fontStyle = AppTheme.textStyle.title.small.fontStyle,
-                    style = AppTheme.textStyle.title.small,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                )
-                RatingBar(
-                    modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
-                )
-                Text(
-                    text = stringResource(R.string.genre),
-                    color = AppTheme.color.title,
-                    fontStyle = AppTheme.textStyle.title.small.fontStyle,
-                    style = AppTheme.textStyle.title.small,
-                    modifier = Modifier
-                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
-                )
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    contentPadding = PaddingValues(horizontal = 18.dp),
-                    horizontalArrangement = Arrangement.spacedBy(18.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items(10) {
-                        Chip(
-                            icon = painterResource(R.drawable.ic_cat_romance),
-                            label = stringResource(R.string.romance),
-                            isSelected = true,
-                            onClick = {}
-                        )
-                    }
-                }
-                PrimaryButton(
-                    title = stringResource(R.string.apply),
-                    onClick = onApply,
-                    isEnabled = true,
-                    isLoading = false,
-                    isNegative = false,
-                    modifier = Modifier.padding(12.dp),
-                )
-                SecondaryButton(
-                    title = stringResource(R.string.clear),
-                    onClick = onClear,
-                    isEnabled = true,
-                    isLoading = false,
-                    isNegative = false,
-                    modifier = Modifier.padding(horizontal = 12.dp),
+                IconButton(
+                    painter = painterResource(R.drawable.ic_cancel),
+                    contentDescription = null,
+                    onClick = onDismiss,
+                    tint = AppTheme.color.title
                 )
             }
+            Text(
+                text = stringResource(R.string.imdb_rating),
+                color = AppTheme.color.title,
+                fontStyle = AppTheme.textStyle.title.small.fontStyle,
+                style = AppTheme.textStyle.title.small,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+            )
+            RatingBar(
+                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
+            )
+            Text(
+                text = stringResource(R.string.genre),
+                color = AppTheme.color.title,
+                fontStyle = AppTheme.textStyle.title.small.fontStyle,
+                style = AppTheme.textStyle.title.small,
+                modifier = Modifier
+                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
+            )
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                contentPadding = PaddingValues(horizontal = 18.dp),
+                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(10) {
+                    Chip(
+                        icon = painterResource(R.drawable.ic_cat_romance),
+                        label = stringResource(R.string.romance),
+                        isSelected = true,
+                        onClick = {}
+                    )
+                }
+            }
+            PrimaryButton(
+                title = stringResource(R.string.apply),
+                onClick = onApply,
+                isEnabled = true,
+                isLoading = false,
+                isNegative = false,
+                modifier = Modifier.padding(12.dp),
+            )
+            SecondaryButton(
+                title = stringResource(R.string.clear),
+                onClick = onClear,
+                isEnabled = true,
+                isLoading = false,
+                isNegative = false,
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
         }
     }
 }
