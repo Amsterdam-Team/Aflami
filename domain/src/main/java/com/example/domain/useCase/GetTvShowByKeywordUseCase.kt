@@ -1,4 +1,4 @@
-package com.example.domain.useCase
+package com.example.domain.usecase
 
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.TvShow
