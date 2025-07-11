@@ -22,4 +22,5 @@ dependencies {
     implementation (libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.datetime)
+    testImplementation(kotlin("test"))
 }
