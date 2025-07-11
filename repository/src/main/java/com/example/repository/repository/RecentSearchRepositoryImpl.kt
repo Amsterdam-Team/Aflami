@@ -9,7 +9,7 @@ class RecentSearchRepositoryImpl(private val localRecentSearchDataSource: LocalR
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRecentSearch(): List<String> {
+    override suspend fun getAllRecentSearches(): List<String> {
         TODO("Not yet implemented")
     }
 
