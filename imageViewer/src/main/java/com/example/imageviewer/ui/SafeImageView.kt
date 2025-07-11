@@ -22,7 +22,7 @@ public fun SafeImageView(
     val context = LocalContext.current
 
     val imageLoader = remember(context) {
-        ImageLoaderFactory.create(context, SafetyPolicy.NsfwPolicy)
+        ImageLoaderFactory.create(context, SafetyPolicy.NudityPolicy)
     }
 
     AsyncImage(
