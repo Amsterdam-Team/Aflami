@@ -4,6 +4,7 @@ import com.example.entity.Movie
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.relation.SearchWithMovies
 import com.example.repository.dto.local.utils.SearchType
+import kotlinx.datetime.Instant
 
 interface LocalRecentSearchDataSource {
     suspend fun insertOrReplaceSearch(search: LocalSearchDto)
@@ -14,12 +15,14 @@ interface LocalRecentSearchDataSource {
 
     suspend fun deleteSearchByKeyword(keyword: String)
 
+    suspend fun deleteSearchByExpireDate(expireDate: Instant)
+
     suspend fun getSearchByKeyword(keyword: String): LocalSearchDto?
 
     suspend fun getSearchByKeywordAndSearchType(
         keyword: String,
         searchType: SearchType
-    ): List<SearchWithMovies>
+    ): SearchWithMovies
 
     suspend fun insertOrReplaceAllMoviesWithSearchData(
         movies: List<Movie>,

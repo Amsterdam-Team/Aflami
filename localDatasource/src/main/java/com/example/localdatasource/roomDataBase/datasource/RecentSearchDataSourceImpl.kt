@@ -29,7 +29,7 @@ class RecentSearchDataSourceImpl(
     override suspend fun getSearchByKeywordAndSearchType(
         keyword: String,
         searchType: SearchType
-    ): List<SearchWithMovies> {
+    ): SearchWithMovies {
         return dao.getSearchByKeyword(keyword, searchType)
     }
 
@@ -47,9 +47,8 @@ class RecentSearchDataSourceImpl(
                 searchType = searchType,
                 rating = rating,
                 category = category,
-                movieId = movie.id,
                 expireDate = expireDate
-            )
+            ) // todo wrong place for mapping
         }.forEach { insertOrReplaceSearch(it) }
     }
 
@@ -61,7 +60,11 @@ class RecentSearchDataSourceImpl(
         dao.deleteSearchByKeyword(keyword)
     }
 
+    override suspend fun deleteSearchByExpireDate(expireDate: Instant) {
+        dao.deleteAllSearches()
+    }
+
     private fun getExpireDate(): Instant {
-        return Clock.System.now().plus(1.hours)
+        return Clock.System.now().plus(1.hours) // todo wrong place for mapping
     }
 }
