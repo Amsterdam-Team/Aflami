@@ -17,7 +17,7 @@ enum class MediaType {
     TV_SHOW,
 }
 
-fun Movie.toMediaItemUiState(): MediaItemUiState =
+private fun Movie.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
         name = name,
         posterImage = poster,
@@ -26,7 +26,9 @@ fun Movie.toMediaItemUiState(): MediaItemUiState =
         rate = rating.toString()
     )
 
-fun TvShow.toMediaItemUiState(): MediaItemUiState =
+fun List<Movie>.toMoveUiStates() = map(Movie::toMediaItemUiState)
+
+private fun TvShow.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
         name = name,
         posterImage = poster,
@@ -34,3 +36,5 @@ fun TvShow.toMediaItemUiState(): MediaItemUiState =
         yearOfRelease = productionYear.toString(),
         rate = rating.toString()
     )
+
+fun List<TvShow>.toTvShowUiStates() = map(TvShow::toMediaItemUiState)

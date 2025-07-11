@@ -1,20 +1,24 @@
 package com.example.viewmodel.search
 
-import com.example.domain.exceptions.QueryTooShortException
+import androidx.lifecycle.viewModelScope
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
 import com.example.domain.useCase.GetTvShowByKeywordUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
+import com.example.entity.Movie
+import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.common.toMediaItemUiState
+import com.example.viewmodel.common.toMoveUiStates
+import com.example.viewmodel.common.toTvShowUiStates
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class GlobalSearchViewModel(
@@ -30,82 +34,75 @@ class GlobalSearchViewModel(
 
     init {
         loadRecentSearches()
-        _query.debounce(300)
-            .map { it.trim() }
-            .onEach {
-                if (it.length <= 3) {
-                    throw QueryTooShortException()
-                }
-                when (state.value.selectedTabOption) {
-                    TabOption.MOVIES -> fetchMoviesByQuery(it)
-                    TabOption.TV_SHOWS -> fetchTvShowsByQuery(it)
-                }
-            }
+        observeSearchQueryChanges()
     }
 
-    override fun onNavigateBackClicked() {
-        sendNewEffect(SearchUiEffect.NavigateBack)
+    private fun loadRecentSearches() {
+        updateState { it.copy(isLoading = true) }
+        tryToExecute(
+            action = { getRecentSearchesUseCase() },
+            onSuccess = ::onLoadRecentSearchesSuccess,
+            onError = ::onFetchError,
+        )
     }
 
-    override fun onTextValuedChanged(text: String) {
-        updateState {
-            it.copy(
-                query = text,
-            )
+    private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
+        updateState { it.copy(recentSearches = recentSearches, isLoading = false) }
+    }
+
+    private fun observeSearchQueryChanges() {
+        viewModelScope.launch {
+            _query.debounce(300)
+                .map(String::trim)
+                .collect(::onSearchQueryChanged)
+        }
+    }
+
+    private fun onSearchQueryChanged(trimmedQuery: String) {
+        when (state.value.selectedTabOption) {
+            TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
+            TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
         }
     }
 
     private fun fetchMoviesByQuery(keyword: String) {
         tryToExecute(
             action = { getMoviesByKeywordUseCase(keyword = keyword) },
-            onSuccess = { movies ->
-                updateState {
-                    it.copy(movies = movies.map { movie -> movie.toMediaItemUiState() })
-                }
-            },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception)
-                    )
-                }
-            },
+            onSuccess = ::onFetchMoviesSuccess,
+            onError = ::onFetchError,
         )
+    }
+
+    private fun onFetchMoviesSuccess(movies: List<Movie>) {
+        updateState { it.copy(movies = movies.toMoveUiStates()) }
     }
 
     private fun fetchTvShowsByQuery(keyword: String) {
         tryToExecute(
             action = { getTvShowByKeywordUseCase(keyword = keyword) },
-            onSuccess = { tvShows ->
-                updateState {
-                    it.copy(tvShows = tvShows.map { tvShow -> tvShow.toMediaItemUiState() })
-                }
-            },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception)
-                    )
-                }
-            },
+            onSuccess = ::onFetchTvShowsSuccess,
+            onError = ::onFetchError,
         )
     }
 
-    override fun onFilterButtonClicked() {
-        updateState {
-            it.copy(
-                isDialogVisible = true,
-            )
-        }
+    private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
+        updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
     }
 
-    override fun onWorldSearchCardClicked() {
-        sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
+    override fun onTextValuedChanged(text: String) {
+        _query.value = text
+        updateState { it.copy(query = text) }
     }
 
-    override fun onActorSearchCardClicked() {
-        sendNewEffect(SearchUiEffect.NavigateToActorSearch)
-    }
+    override fun onFilterButtonClicked() = updateState { it.copy(isDialogVisible = true) }
+
+    override fun onNavigateBackClicked() = sendNewEffect(SearchUiEffect.NavigateBack)
+
+    override fun onWorldSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
+
+    override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
+
+    override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
         updateState {
@@ -117,57 +114,35 @@ class GlobalSearchViewModel(
         }
     }
 
-    override fun onMovieCardClicked() {
-        sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
-    }
-
-    override fun onRecentSearchClicked(keyword: String) {
-        onTextValuedChanged(keyword)
-    }
+    override fun onRecentSearchClicked(keyword: String) = onTextValuedChanged(keyword)
 
     override fun onClearRecentSearch(keyword: String) {
-        updateState {
-            it.copy(isLoading = true)
-        }
+        updateState { it.copy(isLoading = true) }
+
         tryToExecute(
-            action = {
-                clearRecentSearchUseCase(searchKeyword = keyword)
-            },
+            action = { clearRecentSearchUseCase(searchKeyword = keyword) },
             onSuccess = { loadRecentSearches() },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception),
-                        isLoading = false
-                    )
-                }
-            },
+            onError = ::onFetchError,
         )
     }
 
     override fun onClearAllRecentSearches() {
-        updateState {
-            it.copy(isLoading = true)
-        }
+        updateState { it.copy(isLoading = true) }
+
         tryToExecute(
             action = { clearAllRecentSearchesUseCase() },
-            onSuccess = {
-                updateState {
-                    it.copy(
-                        recentSearches = emptyList(),
-                        isLoading = false
-                    )
-                }
-            },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception),
-                        isLoading = false
-                    )
-                }
-            },
+            onSuccess = ::onClearAllRecentSearchesSuccess,
+            onError = ::onFetchError,
         )
+    }
+
+    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
+        updateState {
+            it.copy(
+                recentSearches = emptyList(),
+                isLoading = false
+            )
+        }
     }
 
     override fun onCancelButtonClicked() {
@@ -182,9 +157,7 @@ class GlobalSearchViewModel(
     override fun onRatingStarChanged(ratingIndex: Int) {
         updateState {
             it.copy(
-                filterItemUiState = it.filterItemUiState.copy(
-                    selectedStarIndex = ratingIndex
-                )
+                filterItemUiState = it.filterItemUiState.copy(selectedStarIndex = ratingIndex)
             )
         }
     }
@@ -203,9 +176,8 @@ class GlobalSearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-        updateState {
-            it.copy(isLoading = true)
-        }
+        updateState { it.copy(isLoading = true) }
+
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> applyMoviesFilter()
             TabOption.TV_SHOWS -> applyTvShowsFilter()
@@ -221,25 +193,15 @@ class GlobalSearchViewModel(
                     categoryName = state.value.filterItemUiState.selectedGenre.type.name
                 )
             },
-            onSuccess = { filteredMovies ->
-                updateState {
-                    it.copy(
-                        movies = filteredMovies.map { movie -> movie.toMediaItemUiState() },
-                        isLoading = false,
-                        isDialogVisible = false
-                    )
-                }
-            },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception),
-                        isLoading = false,
-                        isDialogVisible = false
-                    )
-                }
-            },
+            onSuccess = ::onMoviesFilteredSuccess,
+            onError = ::onFilterError,
         )
+    }
+
+    private fun onMoviesFilteredSuccess(movies: List<Movie>) {
+        updateState {
+            it.copy(movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false)
+        }
     }
 
     private fun applyTvShowsFilter() {
@@ -251,56 +213,27 @@ class GlobalSearchViewModel(
                     categoryName = state.value.filterItemUiState.selectedGenre.type.name
                 )
             },
-            onSuccess = { filteredTvShows ->
-                updateState {
-                    it.copy(
-                        tvShows = filteredTvShows.map { tvShow -> tvShow.toMediaItemUiState() },
-                        isLoading = false
-                    )
-                }
-            },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception),
-                        isLoading = false
-                    )
-                }
-            },
+            onSuccess = ::onTvShowsFilteredSuccess,
+            onError = ::onFilterError,
         )
+    }
+
+    private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
+        updateState {
+            it.copy(tvShows = tvShows.toTvShowUiStates(), isLoading = false, isDialogVisible = false)
+        }
+    }
+
+    private fun onFilterError(exception: AflamiException) {
+        onFetchError(exception)
+        updateState { it.copy(isDialogVisible = false) }
+    }
+
+    private fun onFetchError(exception: AflamiException) {
+        updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 
     override fun onClearButtonClicked() {
-        updateState {
-            it.copy(
-                filterItemUiState = FilterItemUiState()
-            )
-        }
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
     }
-
-    private fun loadRecentSearches() {
-        updateState {
-            it.copy(isLoading = true)
-        }
-        tryToExecute(
-            action = { getRecentSearchesUseCase() },
-            onSuccess = { recentSearches ->
-                updateState {
-                    it.copy(
-                        recentSearches = recentSearches,
-                        isLoading = false
-                    )
-                }
-            },
-            onError = { exception ->
-                updateState {
-                    it.copy(
-                        errorUiState = mapToSearchUiState(exception),
-                        isLoading = false
-                    )
-                }
-            },
-        )
-    }
-
 }
