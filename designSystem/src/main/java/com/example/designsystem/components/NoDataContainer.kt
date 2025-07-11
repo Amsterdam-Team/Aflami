@@ -41,7 +41,7 @@ fun NoDataContainer(
             Text(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
                 text = title,
-                style = AppTheme.textStyle.body.medium,
+                style = AppTheme.textStyle.title.medium,
                 color = AppTheme.color.title
             )
         }

@@ -66,6 +66,7 @@
     <string name="password_hint">Password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="login">Login</string>
+    <string name="retry">Retry</string>
     <string name="continue_as_guest">Continue as guest</string>
     <string name="dont_have_account">Don’t have account?</string>
     <string name="create_account">Create account</string>

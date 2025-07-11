@@ -66,6 +66,7 @@
     <string name="password_hint">كلمة المرور</string>
     <string name="forgot_password">هل نسيت كلمة المرور؟</string>
     <string name="login">تسجيل الدخول</string>
+    <string name="retry">إعادة المحاولة</string>
     <string name="continue_as_guest">المتابعة كضيف</string>
     <string name="dont_have_account">ليس لديك حساب؟</string>
     <string name="create_account">إنشاء حساب</string>
