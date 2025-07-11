@@ -11,14 +11,14 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.example.designsystem.components.bottomNavBar.BottomNavBar
-import com.example.designsystem.components.bottomNavBar.Destination
+import com.example.designsystem.components.bottomNavBar.BottomBarItems
 
 private val navigationBarItems = mapOf(
-    Destination.HOME to Route.Tab.Home,
-    Destination.LISTS to Route.Tab.Lists,
-    Destination.CATEGORIES to Route.Tab.Categories,
-    Destination.LETS_PLAY to Route.Tab.LetsPlay,
-    Destination.PROFILE to Route.Tab.Profile
+    BottomBarItems.HOME to Route.Tab.Home,
+    BottomBarItems.LISTS to Route.Tab.Lists,
+    BottomBarItems.CATEGORIES to Route.Tab.Categories,
+    BottomBarItems.LETS_PLAY to Route.Tab.LetsPlay,
+    BottomBarItems.PROFILE to Route.Tab.Profile
 )
 
 @Composable
@@ -49,7 +49,7 @@ fun BottomNavigation(
         BottomNavBar(
             modifier = modifier,
             items = navigationBarItems,
-            selectedDestination = selectedDestination,
+            selectedBottomBarItems = selectedDestination,
             onDestinationClicked = { onNavigate(it) }
         )
     }
@@ -57,12 +57,12 @@ fun BottomNavigation(
 
 private fun getSelectedDestination(
     currentDestination: NavDestination?,
-): Destination {
+): BottomBarItems {
     return navigationBarItems.entries.find { (_, route) ->
         currentDestination?.hierarchy?.any { navDestination ->
             navDestination.hasRoute(route::class)
         } == true
-    }?.key ?: Destination.PROFILE
+    }?.key ?: BottomBarItems.PROFILE
 }
 
 private fun shouldShowBottomNavigation(currentDestination: NavDestination?): Boolean {

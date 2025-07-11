@@ -18,8 +18,8 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
-    items: Map<Destination, Any>,
-    selectedDestination: Destination,
+    items: Map<BottomBarItems, Any>,
+    selectedBottomBarItems: BottomBarItems,
     onDestinationClicked: (destination: Any) -> Unit = {},
 ) {
     NavigationBar(
@@ -27,7 +27,7 @@ fun BottomNavBar(
         containerColor = AppTheme.color.surface
     ) {
         items.entries.forEach { destination ->
-            val isSelected = selectedDestination == destination.key
+            val isSelected = selectedBottomBarItems == destination.key
             val labelColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.body else AppTheme.color.hint)
             val iconColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.primary else AppTheme.color.hint)
             NavigationBarItem(
@@ -62,13 +62,13 @@ private fun BottomNavBarPreview() {
     AflamiTheme {
         BottomNavBar(
             items = mapOf(
-                Destination.HOME to "home",
-                Destination.LISTS to "lists",
-                Destination.CATEGORIES to "categories",
-                Destination.LETS_PLAY to "letsPlay",
-                Destination.PROFILE to "profile"
+                BottomBarItems.HOME to "home",
+                BottomBarItems.LISTS to "lists",
+                BottomBarItems.CATEGORIES to "categories",
+                BottomBarItems.LETS_PLAY to "letsPlay",
+                BottomBarItems.PROFILE to "profile"
             ),
-            selectedDestination = Destination.HOME
+            selectedBottomBarItems = BottomBarItems.HOME
         )
     }
 }

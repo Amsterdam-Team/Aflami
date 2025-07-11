@@ -41,7 +41,7 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.components.UpcomingCard
 import com.example.designsystem.components.appBar.HomeAppBar
 import com.example.designsystem.components.bottomNavBar.BottomNavBar
-import com.example.designsystem.components.bottomNavBar.Destination
+import com.example.designsystem.components.bottomNavBar.BottomBarItems
 import com.example.designsystem.components.buttons.FloatingActionButton
 import com.example.designsystem.components.buttons.PrimaryButton
 import com.example.designsystem.components.buttons.SecondaryButton
@@ -74,7 +74,7 @@ fun DesignSystem(){
         HomeAppBar()
         BottomNavBar(
             items = mapOf(),
-            selectedDestination = Destination.HOME
+            selectedBottomBarItems = BottomBarItems.HOME
         )
         CustomSlider(
             aflamiImageList = listOf(

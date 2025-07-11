@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.example.designsystem.R
 
-enum class Destination(
+enum class BottomBarItems(
     @DrawableRes val icon:Int,
     @StringRes val label:Int) {
     HOME(
