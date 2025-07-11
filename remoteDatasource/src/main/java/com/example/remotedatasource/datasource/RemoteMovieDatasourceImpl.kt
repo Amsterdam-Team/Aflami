@@ -5,9 +5,8 @@ import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.client.safeCall
 import com.example.remotedatasource.utils.Constant.BASE_URL
 import com.example.repository.datasource.remote.RemoteMovieDatasource
-import com.example.repository.dto.remote.RemoteActorSearchResponseDto
+import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.RemoteMovieSearchResponseDto
 import io.ktor.client.call.body
 
 class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovieDatasource {
@@ -24,8 +23,8 @@ class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovi
 
     override suspend fun getMoviesByActorName(
         name: String
-    ): RemoteMovieSearchResponseDto {
-        return safeCall<RemoteMovieSearchResponseDto> {
+    ): RemoteMovieResponse {
+        return safeCall<RemoteMovieResponse> {
             val actorsByName = getActorIdByName(name)
                 .actors
                 .joinToString(separator = "|") { it.name }
@@ -36,8 +35,8 @@ class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovi
 
     private suspend fun getActorIdByName(
         name: String
-    ): RemoteActorSearchResponseDto {
-        return safeCall<RemoteActorSearchResponseDto> {
+    ): RemoteActorSearchResponse {
+        return safeCall<RemoteActorSearchResponse> {
             ktorClient.get("${Endpoints.GET_ACTOR_NAME_BY_ID_URL}?$QUERY_KEY=$name")
         }
     }
