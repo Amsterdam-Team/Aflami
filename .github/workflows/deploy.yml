@@ -29,7 +29,7 @@ jobs:
         env:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
         run: |
-          echo "bearerToken=$BEARER_TOKEN" > local.properties
+          echo bearerToken=\"$BEARER_TOKEN\" > local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -37,10 +37,7 @@ jobs:
       - name: Clean Project
         run: ./gradlew clean
 
-      - name: Compile Project
-        run: ./gradlew assemble
-
-      - name: Build APK
+      - name: Generate APK
         run: ./gradlew assembleDebug
 
       - name: Upload APK to Firebase App Distribution

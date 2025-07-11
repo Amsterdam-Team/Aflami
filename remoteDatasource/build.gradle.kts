@@ -1,3 +1,10 @@
+import java.util.Properties
+
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
+var bearerToken: String = properties.getProperty("bearerToken")?:""
+
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +14,18 @@ plugins {
 
 android {
     namespace = "com.example.remotedatasource"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig{
+        buildConfigField(
+            "String",
+            "BEARER_TOKEN",
+            bearerToken
+        )
+    }
 }
 
 dependencies {
