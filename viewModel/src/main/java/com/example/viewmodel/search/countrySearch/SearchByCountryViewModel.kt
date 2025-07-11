@@ -6,8 +6,8 @@ import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountries
 import com.example.domain.usecase.GetMoviesByCountryUseCase
 import com.example.domain.usecase.GetSuggestedCountriesUseCase
+import com.example.entity.Country
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.search.mapper.toListOfString
 import com.example.viewmodel.search.mapper.toListOfUiState
 
 class SearchByCountryViewModel(
@@ -23,10 +23,10 @@ class SearchByCountryViewModel(
         getSuggestedCountries(countryName)
     }
 
-    fun getMoviesByCountry(countryName: String) {
+    fun getMoviesByCountry(country: Country) {
         sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
         tryToExecute(
-            action = { moviesByCountryUseCase.invoke(countryName) },
+            action = { moviesByCountryUseCase.invoke(country.countryIsoCode) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
             onError = { exception -> onError(exception) }
         )
@@ -36,12 +36,12 @@ class SearchByCountryViewModel(
         sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
         tryToExecute(
             action = { suggestedCountriesUseCase.invoke(countryName) },
-            onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries.toListOfString()) },
+            onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries) },
             onError = { exception -> onError(exception) }
         )
     }
 
-    private fun updateSuggestedCountries(suggestedCountries: List<String>) {
+    private fun updateSuggestedCountries(suggestedCountries: List<Country>) {
         updateState {
             it.copy(suggestedCountries = suggestedCountries)
         }
