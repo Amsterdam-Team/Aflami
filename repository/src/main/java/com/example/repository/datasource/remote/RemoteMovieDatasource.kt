@@ -10,4 +10,7 @@ interface RemoteMovieDatasource {
         categoryId: Long?
     ): List<RemoteMovieResponse>
 
+    suspend fun getMoviesByActorName(
+        name: String
+    ): RemoteMovieResponse
 }

@@ -1,4 +1,4 @@
-package com.example.ui
+package com.example.ui.application
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,9 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AflamiTheme {
-                DesignSystem()
-            }
+            AflamiApp()
         }
     }
 }
