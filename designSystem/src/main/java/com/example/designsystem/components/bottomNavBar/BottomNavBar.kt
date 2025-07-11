@@ -18,38 +18,40 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
-    selectedDestination: Destination = Destination.HOME,
-    onDestinationClicked: (destination: Destination) -> Unit = {},
+    items: Map<Destination, Any>,
+    selectedDestination: Destination,
+    onDestinationClicked: (destination: Any) -> Unit = {},
 ) {
     NavigationBar(
         modifier = modifier,
         containerColor = AppTheme.color.surface
     ) {
-        Destination.entries.forEach { destination ->
-            val isSelected = selectedDestination == destination
+        items.entries.forEach { destination ->
+            val isSelected = selectedDestination == destination.key
             val labelColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.body else AppTheme.color.hint)
             val iconColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.primary else AppTheme.color.hint)
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    onDestinationClicked(destination)
+                    onDestinationClicked(destination.value)
                 },
                 label = {
                     Text(
-                        text = stringResource(destination.label),
+                        text = stringResource(destination.key.label),
                         color = labelColor,
                         style = AppTheme.textStyle.label.small
                     )
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = destination.icon),
+                        painter = painterResource(id = destination.key.icon),
                         contentDescription = null,
                         tint = iconColor
                     )
                 }, colors = NavigationBarItemDefaults.colors(
                     indicatorColor = AppTheme.color.primaryVariant
-                ))
+                )
+            )
         }
     }
 }
@@ -58,6 +60,15 @@ fun BottomNavBar(
 @Composable
 private fun BottomNavBarPreview() {
     AflamiTheme {
-            BottomNavBar()
+        BottomNavBar(
+            items = mapOf(
+                Destination.HOME to "home",
+                Destination.LISTS to "lists",
+                Destination.CATEGORIES to "categories",
+                Destination.LETS_PLAY to "letsPlay",
+                Destination.PROFILE to "profile"
+            ),
+            selectedDestination = Destination.HOME
+        )
     }
 }
