@@ -1,6 +1,6 @@
 package com.example.remotedatasource.client
 
-import com.example.domain.ServerErrorException
+import com.example.domain.exceptions.ServerErrorException
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 
