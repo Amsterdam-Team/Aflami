@@ -17,7 +17,7 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
         <activity
-            android:name="com.example.ui.MainActivity"
+            android:name="com.example.ui.application.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Aflami">

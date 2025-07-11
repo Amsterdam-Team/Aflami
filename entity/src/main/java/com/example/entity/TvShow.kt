@@ -8,4 +8,4 @@ data class TvShow (
     val productionYear : Int,
     val categories : List<Category>,
     val rating : Float
-    )
+)

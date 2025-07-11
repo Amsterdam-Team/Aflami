@@ -36,7 +36,7 @@ fun TopAppBar(
             .background(
                 color = containerColor
             )
-            .padding(PaddingValues(horizontal = 16.dp, vertical = 8.dp)),
+            .padding(PaddingValues(vertical = 8.dp)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
