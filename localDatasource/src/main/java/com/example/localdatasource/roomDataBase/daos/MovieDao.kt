@@ -10,7 +10,7 @@ import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
 
 @Dao
-interface LocalMovieDao {
+interface MovieDao {
 
     @Transaction
     @Query(

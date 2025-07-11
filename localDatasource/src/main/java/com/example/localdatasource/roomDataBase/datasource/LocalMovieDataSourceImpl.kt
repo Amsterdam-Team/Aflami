@@ -1,6 +1,6 @@
-package com.example.localdatasource.roomDatabase
+package com.example.localdatasource.roomDatabase.datasource
 
-import com.example.localdatasource.roomDatabase.daos.LocalMovieDao
+import com.example.localdatasource.roomDatabase.daos.MovieDao
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.LocalSearchDto
@@ -10,7 +10,7 @@ import kotlinx.datetime.Clock
 
 
 class LocalMovieDataSourceImpl(
-    private val dao: LocalMovieDao
+    private val dao: MovieDao
 ) : LocalMovieDataSource {
 
     override suspend fun getMoviesByKeywordAndSearchType(

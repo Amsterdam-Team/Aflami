@@ -1,11 +1,11 @@
-package com.example.localdatasource.roomDatabase
+package com.example.localdatasource.roomDatabase.datasource
 
-import com.example.localdatasource.roomDatabase.daos.LocalCategoryDao
+import com.example.localdatasource.roomDatabase.daos.CategoryDao
 import com.example.repository.datasource.local.LocalCategoryDataSource
 import com.example.repository.dto.local.LocalCategoryDto
 
 class LocalCategoryDataSourceImpl(
-    private val dao: LocalCategoryDao
+    private val dao: CategoryDao
 ) : LocalCategoryDataSource {
 
     override suspend fun insertOrReplaceCategory(category: LocalCategoryDto) {
