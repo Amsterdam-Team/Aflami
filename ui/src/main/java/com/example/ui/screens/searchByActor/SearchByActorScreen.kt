@@ -28,7 +28,7 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
-import com.example.viewmodel.searchByActor.SearchByActorUiState
+import com.example.viewmodel.searchByActor.SearchByActorScreenState
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -56,7 +56,7 @@ private fun SearchByActorContent(
     modifier: Modifier = Modifier,
     onNavigateBackClicked: () -> Unit,
     onValueChange: (String) -> Unit,
-    state: SearchByActorUiState
+    state: SearchByActorScreenState
 ) {
 
     Column(

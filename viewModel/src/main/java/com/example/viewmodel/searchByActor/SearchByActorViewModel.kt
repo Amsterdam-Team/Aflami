@@ -1,20 +1,20 @@
 package com.example.viewmodel.searchByActor
 
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.GetMoviesByActorUseCase
+import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.search.mapper.toListOfUiState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.NothingSerializer
 
 @OptIn(FlowPreview::class)
 class SearchByActorViewModel(
      private val getMoviesByActorUseCase: GetMoviesByActorUseCase
-) : BaseViewModel<SearchByActorUiState, SearchByActorEffect>(SearchByActorUiState()) {
+) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(SearchByActorScreenState()) {
 
     init {
         viewModelScope.launch {
@@ -51,7 +51,7 @@ class SearchByActorViewModel(
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
-        updateState { it.copy(movies =movies, isLoading = false) }
+        updateState { it.copy(movies =movies.toListOfUiState(), isLoading = false) }
     }
 
     fun onBackClicked() {

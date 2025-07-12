@@ -312,7 +312,7 @@ private fun SearchedMovies(state: SearchByCountryScreenState) {
             key = { movie -> movie.id }
         ) { movie ->
             MovieCard(
-                movieImage = painterResource(R.drawable.bg_children_wearing_3d),
+                movieImage = "",
                 movieType = stringResource(R.string.movie),
                 movieYear = movie.productionYear,
                 movieTitle = movie.name,
