@@ -5,10 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "movies")
 data class LocalMovieDto(
-    @PrimaryKey(autoGenerate = false) val id: Long,
+    @PrimaryKey(autoGenerate = false) val movieId: Long,
     val name: String,
     val description: String,
     val poster: String,
     val productionYear: Int,
-    val rating: Float,
+    val rating: Float
 )

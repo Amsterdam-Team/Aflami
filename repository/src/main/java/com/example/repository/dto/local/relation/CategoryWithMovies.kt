@@ -7,12 +7,12 @@ import com.example.repository.dto.local.LocalCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.MovieCategoryCrossRefDto
 
-data class MovieWithCategories(
-    @Embedded val movie: LocalMovieDto,
+data class CategoryWithMovies(
+    @Embedded val category: LocalCategoryDto,
     @Relation(
-        parentColumn = "movieId",
-        entityColumn = "categoryId",
+        parentColumn = "categoryId",
+        entityColumn = "movieId",
         associateBy = Junction(MovieCategoryCrossRefDto::class)
     )
-    val categories: List<LocalCategoryDto>
+    val movies: List<LocalMovieDto>
 )
