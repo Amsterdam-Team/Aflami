@@ -1,6 +1,7 @@
 package com.example.remotedatasource.client
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -15,6 +16,12 @@ class KtorClient(
 ){
 
     private val httpClient = HttpClient() {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30_000
+            connectTimeoutMillis = 10_000
+            socketTimeoutMillis = 30_000
+        }
+
         this.withAuthInterceptor(interceptor)
     }
 
