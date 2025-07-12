@@ -1,26 +1,28 @@
 package com.example.repository.mapper.local
 
-import com.example.entity.Category
 import com.example.entity.Movie
 import com.example.repository.dto.local.LocalMovieDto
+import com.example.repository.dto.local.relation.MovieWithCategories
 
-class MovieLocalMapper {
+class MovieLocalMapper(
+    private val categoryLocalMapper: CategoryLocalMapper
+) {
 
-    fun mapFromLocal(dto: LocalMovieDto, categories: List<Category> = emptyList()): Movie {
+    fun mapFromLocal(dto: MovieWithCategories): Movie {
         return Movie(
-            id = dto.id,
-            name = dto.name,
-            description = dto.description,
-            poster = dto.poster,
-            productionYear = dto.productionYear,
-            rating = dto.rating,
-            categories = categories
+            id = dto.movie.movieId,
+            name = dto.movie.name,
+            description = dto.movie.description,
+            poster = dto.movie.poster,
+            productionYear = dto.movie.productionYear,
+            rating = dto.movie.rating,
+            categories = categoryLocalMapper.mapListFromLocal(dto.categories)
         )
     }
 
     fun mapToLocal(domain: Movie): LocalMovieDto {
         return LocalMovieDto(
-            id = domain.id,
+            movieId = domain.id,
             name = domain.name,
             description = domain.description,
             poster = domain.poster,
@@ -29,11 +31,8 @@ class MovieLocalMapper {
         )
     }
 
-    fun mapListFromLocal(dtos: List<LocalMovieDto>, categoriesMap: Map<Long, List<Category>>): List<Movie> {
-        return dtos.map { dto ->
-            val categories = categoriesMap[dto.id] ?: emptyList()
-            mapFromLocal(dto, categories)
-        }
+    fun mapListFromLocal(dtoList: List<MovieWithCategories>): List<Movie> {
+        return dtoList.map { mapFromLocal(it) }
     }
 
     fun mapListToLocal(domains: List<Movie>): List<LocalMovieDto> {
