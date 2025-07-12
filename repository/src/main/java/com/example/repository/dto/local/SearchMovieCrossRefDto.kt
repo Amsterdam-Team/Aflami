@@ -5,7 +5,7 @@ import com.example.repository.dto.local.utils.SearchType
 
 @Entity(
     tableName = "search_movie_cross_ref",
-    primaryKeys = ["searchKeyword", "searchType"]
+    primaryKeys = ["searchKeyword", "searchType", "movieId"]
 )
 data class SearchMovieCrossRefDto(
     val searchKeyword: String,
