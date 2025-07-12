@@ -3,8 +3,6 @@ package com.example.repository.mapper.remote
 import com.example.entity.Movie
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.RemoteTvShowItemDto
-import com.example.repository.dto.remote.RemoteTvShowResponse
 
 class RemoteMovieMapper {
 
