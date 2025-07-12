@@ -9,10 +9,10 @@ import com.example.repository.dto.local.LocalTvShowCategoryDto
 @Dao
 interface CategoryDao {
     @Upsert
-    suspend fun insertOrReplaceAllMovieCategories(categories: List<LocalMovieCategoryDto>)
+    suspend fun upsertAllMovieCategories(categories: List<LocalMovieCategoryDto>)
 
     @Upsert
-    suspend fun insertOrReplaceAllTvShowCategories(categories: List<LocalTvShowCategoryDto>)
+    suspend fun upsertAllTvShowCategories(categories: List<LocalTvShowCategoryDto>)
 
     @Query("SELECT * FROM movie_categories")
     suspend fun getAllMovieCategories(): List<LocalMovieCategoryDto>

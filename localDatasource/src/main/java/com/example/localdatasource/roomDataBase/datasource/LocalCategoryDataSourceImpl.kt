@@ -8,12 +8,12 @@ import com.example.repository.dto.local.LocalTvShowCategoryDto
 class LocalCategoryDataSourceImpl(
     private val dao: CategoryDao
 ) : LocalCategoryDataSource {
-    override suspend fun insertOrReplaceAllMovieCategories(categories: List<LocalMovieCategoryDto>) {
-        dao.insertOrReplaceAllMovieCategories(categories)
+    override suspend fun upsertAllMovieCategories(categories: List<LocalMovieCategoryDto>) {
+        dao.upsertAllMovieCategories(categories)
     }
 
-    override suspend fun insertOrReplaceAllTvShowCategories(categories: List<LocalTvShowCategoryDto>) {
-        dao.insertOrReplaceAllTvShowCategories(categories)
+    override suspend fun upsertAllTvShowCategories(categories: List<LocalTvShowCategoryDto>) {
+        dao.upsertAllTvShowCategories(categories)
     }
 
     override suspend fun getAllMovieCategories(): List<LocalMovieCategoryDto> {

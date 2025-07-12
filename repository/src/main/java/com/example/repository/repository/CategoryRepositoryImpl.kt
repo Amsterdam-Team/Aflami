@@ -13,32 +13,28 @@ class CategoryRepositoryImpl(
 ) : CategoryRepository {
     override suspend fun getMovieCategories(): List<Category> {
         val localCategories = localCategoryDatasource.getAllMovieCategories()
-        val movieCategories = if (localCategories.isEmpty()) {
+        val movieCategories = localCategories.ifEmpty {
             val remoteCategories = remoteCategoryDatasource.getMovieCategories()
             remoteCategories.also {
-                localCategoryDatasource.insertOrReplaceAllMovieCategories(
+                localCategoryDatasource.upsertAllMovieCategories(
                     categoryLocalMapper.mapToLocalMovieCategories(it)
                 )
             }
             categoryLocalMapper.mapToLocalMovieCategories(remoteCategories)
-        } else {
-            localCategories
         }
         return categoryLocalMapper.mapListFromMovieLocal(movieCategories)
     }
 
     override suspend fun getTvShowCategories(): List<Category> {
         val localCategories = localCategoryDatasource.getAllTvShowCategories()
-        val movieCategories = if (localCategories.isEmpty()) {
+        val movieCategories = localCategories.ifEmpty {
             val remoteCategories = remoteCategoryDatasource.getTvShowCategories()
             remoteCategories.also {
-                localCategoryDatasource.insertOrReplaceAllTvShowCategories(
+                localCategoryDatasource.upsertAllTvShowCategories(
                     categoryLocalMapper.mapToLocalTvShowCategories(it)
                 )
             }
             categoryLocalMapper.mapToLocalTvShowCategories(remoteCategories)
-        } else {
-            localCategories
         }
         return categoryLocalMapper.mapListFromTvShowLocal(movieCategories)
     }

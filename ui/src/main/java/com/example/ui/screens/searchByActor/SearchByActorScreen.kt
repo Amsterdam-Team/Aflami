@@ -31,6 +31,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.viewmodel.search.countrySearch.MovieUiState
 import com.example.viewmodel.searchByActor.SearchByActorEffect
+import com.example.viewmodel.searchByActor.SearchByActorScreenState
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import org.koin.androidx.compose.koinViewModel
 
