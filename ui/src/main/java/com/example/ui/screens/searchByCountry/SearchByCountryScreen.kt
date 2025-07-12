@@ -109,7 +109,7 @@ fun SearchByCountryScreen(
 
                 SearchByCountryEffect.CountryTooShortEffect -> {}
                 SearchByCountryEffect.UnknownErrorEffect -> {}
-                null -> {}
+                else -> {}
             }
         }
     }
