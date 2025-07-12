@@ -16,14 +16,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
+
 class MovieRepositoryImpl(
     private val localMovieDataSource: LocalMovieDataSource,
-    private val remoteMovieDataSource: RemoteMovieDatasource,
-    private val movieLocalMapper: MovieLocalMapper,
-    private val movieRemoteMapper: RemoteMovieMapper,
-    private val recentSearchDatasource: LocalRecentSearchDataSource,
-    private val searchWithMoviesMapper: SearchWithMoviesMapper,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val remoteMovieDatasource: RemoteMovieDatasource,
+    private val remoteMovieMapper: RemoteMovieMapper,
+    private val localMovieMapper: MovieLocalMapper,
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
         return withContext(dispatcher) {
@@ -99,5 +97,10 @@ class MovieRepositoryImpl(
     private fun isSearchExpired(searchWithMovies: SearchWithMovies): Boolean {
         val currentTime = Clock.System.now()
         return currentTime > searchWithMovies.search.expireDate
+        val remoteMovies = remoteMovieDatasource
+            .getMoviesByCountryIsoCode(countryIsoCode)
+            .results
+            .map { remoteMovieMapper.mapToDomain(it) }
+        return remoteMovies
     }
 }
