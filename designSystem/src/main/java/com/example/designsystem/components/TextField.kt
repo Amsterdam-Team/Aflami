@@ -70,6 +70,7 @@ fun TextField(
     @DrawableRes leadingIcon: Int? = null,
     @DrawableRes trailingIcon: Int? = null,
     onTrailingClick: (() -> Unit)? = null,
+    isTrailingClickEnabled: Boolean = true,
     borderColor: Color = AppTheme.color.stroke,
     borderErrorColor: Color = AppTheme.color.redAccent,
     borderFocusedColor: Color = AppTheme.color.primary,
@@ -140,7 +141,7 @@ fun TextField(
                     targetValue = if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.title
                 )
                 VerticalDivider()
-                TrailingIcon(trailingIcon, imageColor, onTrailingClick)
+                TrailingIcon(trailingIcon, imageColor, isTrailingClickEnabled, onTrailingClick)
             }
         }
         AnimatedMaxCharacters(
@@ -204,7 +205,7 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Unit)? = null) {
+private fun TrailingIcon(leadingIcon: Int, imageColor: Color, isClickEnabled: Boolean = true, onClick: (() -> Unit)? = null) {
     Crossfade(targetState = leadingIcon) { state ->
         Image(
             painter = painterResource(id = state),
@@ -215,6 +216,7 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
                 .then(
                     if (onClick != null)
                         Modifier.clickable(
+                            enabled = isClickEnabled,
                             interactionSource = MutableInteractionSource(),
                             indication = ripple(color = AppTheme.color.hint),
                             onClick = onClick
