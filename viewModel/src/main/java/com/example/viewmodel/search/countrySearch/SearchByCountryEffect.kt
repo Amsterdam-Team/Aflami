@@ -9,7 +9,7 @@ sealed interface SearchByCountryEffect {
     data object ShowCountriesDropDown: SearchByCountryEffect
     data object LoadingSuggestedCountriesEffect: SearchByCountryEffect
     data object MoviesLoadedEffect: SearchByCountryEffect
-    data object SuggestedCountriesLoadedEffect: SearchByCountryEffect
     data object InitialEffect: SearchByCountryEffect
     data object CountryTooShortEffect: SearchByCountryEffect
+    data object UnknownErrorEffect : SearchByCountryEffect
 }

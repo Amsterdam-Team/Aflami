@@ -99,10 +99,6 @@ fun SearchByCountryScreen(
                     noSuggestedCountry = true
                 }
 
-                SearchByCountryEffect.SuggestedCountriesLoadedEffect -> {
-                    noSuggestedCountry = false
-                }
-
                 SearchByCountryEffect.ShowCountriesDropDown -> {
                     showCountriesDropdown = true
                 }
