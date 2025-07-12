@@ -26,7 +26,7 @@ class CategoryLocalMapperTest {
 
         val result = mapper.mapToLocal(category)
 
-        assertThat(result.id).isEqualTo(2)
+        assertThat(result.categoryId).isEqualTo(2)
         assertThat(result.name).isEqualTo("Drama")
     }
 

@@ -1,4 +1,5 @@
-package com.example.ui.screen.search.sections
+package com.example.ui.screen.search.sections.filterDialog
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,12 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,23 +33,23 @@ import com.example.designsystem.components.buttons.SecondaryButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.viewmodel.search.FilterInteractionListener
+import com.example.viewmodel.search.FilterItemUiState
 
 @Composable
 fun FilterDialog(
-    onDismiss: () -> Unit,
-    onApply: () -> Unit,
-    onClear: () -> Unit
+    state: FilterItemUiState,
+    interaction: FilterInteractionListener,
+    modifier: Modifier = Modifier
 ) {
     Dialog(
-        onDismissRequest = {
-            onDismiss()
-        },
+        onDismissRequest = { interaction::onCancelButtonClicked },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth(0.95f)
                 .background(
                     color = AppTheme.color.surface,
@@ -76,7 +75,7 @@ fun FilterDialog(
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = null,
-                    onClick = onDismiss,
+                    onClick = { interaction::onCancelButtonClicked },
                     tint = AppTheme.color.title
                 )
             }
@@ -90,6 +89,8 @@ fun FilterDialog(
             )
             RatingBar(
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
+                state = state,
+                interaction = interaction,
             )
             Text(
                 text = stringResource(R.string.genre),
@@ -105,20 +106,30 @@ fun FilterDialog(
                     .padding(bottom = 12.dp),
                 contentPadding = PaddingValues(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                items(10) {
+                items(state.genreUiStates) {
                     Chip(
-                        icon = painterResource(R.drawable.ic_cat_romance),
-                        label = stringResource(R.string.romance),
-                        isSelected = true,
-                        onClick = {}
+                        icon = painterResource(
+                            getGenreIcon(
+                                genreName = it.genreName,
+                                tabOption = it.tabOption
+                            )
+                        ),
+                        label = stringResource(
+                            getGenreLabel(
+                                genreName = it.genreName,
+                                tabOption = it.tabOption
+                            )
+                        ),
+                        isSelected = false,
+                        onClick = { interaction::onGenreButtonChanged }
                     )
                 }
             }
             PrimaryButton(
                 title = stringResource(R.string.apply),
-                onClick = onApply,
+                onClick = interaction::onApplyButtonClicked,
                 isEnabled = true,
                 isLoading = false,
                 isNegative = false,
@@ -126,7 +137,7 @@ fun FilterDialog(
             )
             SecondaryButton(
                 title = stringResource(R.string.clear),
-                onClick = onClear,
+                onClick = interaction::onClearButtonClicked,
                 isEnabled = true,
                 isLoading = false,
                 isNegative = false,
@@ -138,9 +149,10 @@ fun FilterDialog(
 
 @Composable
 private fun RatingBar(
+    state: FilterItemUiState,
+    interaction: FilterInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    var rating by remember { mutableIntStateOf(0) }
 
     Row(
         modifier = modifier.padding(horizontal = 12.dp)
@@ -149,7 +161,7 @@ private fun RatingBar(
             val starIndex = index + 1
             Icon(
                 painter = painterResource(
-                    id = if (rating >= starIndex)
+                    id = if (state.selectedStarIndex >= starIndex)
                         R.drawable.ic_filled_star
                     else
                         R.drawable.ic_outlined_star
@@ -160,7 +172,7 @@ private fun RatingBar(
                     .size(24.dp)
                     .weight(1f)
                     .clickable(
-                        onClick = { rating = starIndex },
+                        onClick = { interaction::onRatingStarChanged },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     )
@@ -174,6 +186,18 @@ private fun RatingBar(
 @ThemeAndLocalePreviews
 fun FilterDialogPreview() {
     AflamiTheme {
-        FilterDialog({}, {}, {})
+        FilterDialog(
+            state = FilterItemUiState(
+                selectedStarIndex = 5,
+                genreUiStates = emptyList()
+            ),
+            interaction = object : FilterInteractionListener {
+                override fun onCancelButtonClicked() {}
+                override fun onRatingStarChanged(ratingIndex: Int) {}
+                override fun onGenreButtonChanged(genreName: String) {}
+                override fun onApplyButtonClicked() {}
+                override fun onClearButtonClicked() {}
+            },
+        )
     }
 }

@@ -45,8 +45,6 @@ class RecentSearchDataSourceImpl(
             LocalSearchDto(
                 searchKeyword = searchKeyword,
                 searchType = searchType,
-                rating = rating,
-                category = category,
                 expireDate = expireDate
             ) // todo wrong place for mapping
         }.forEach { insertOrReplaceSearch(it) }
