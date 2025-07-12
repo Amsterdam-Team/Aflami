@@ -28,4 +28,7 @@ dependencies {
     implementation (libs.kotlinx.coroutines.android)
     // Date and Time
     implementation(libs.kotlinx.datetime)
+
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 }

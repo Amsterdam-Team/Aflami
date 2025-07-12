@@ -1,4 +1,4 @@
-package com.amsterdam.aflami.di
+package com.example.repository.di
 
 import com.example.domain.repository.CategoryRepository
 import com.example.domain.repository.CountryRepository
@@ -18,7 +18,7 @@ import com.example.repository.repository.RecentSearchRepositoryImpl
 import com.example.repository.repository.TvShowRepositoryImpl
 import org.koin.dsl.module
 
-val repositoryModule = module {
+public val repositoryModule = module {
     single { CountryLocalMapper() }
     single { RemoteCountryMapper() }
     single { CategoryLocalMapper() }
@@ -26,8 +26,12 @@ val repositoryModule = module {
     single { RemoteMovieMapper() }
     single { RecentSearchMapper() }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
+
     single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get()) }
+
     single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get()) }
+
     single<RecentSearchRepository> { RecentSearchRepositoryImpl(get(), get()) }
+
     single<TvShowRepository> { TvShowRepositoryImpl() }
 }

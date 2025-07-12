@@ -6,7 +6,6 @@ import com.example.entity.Movie
 class GetMoviesByKeywordUseCase(
     private val movieRepository: MovieRepository
 ) {
-
     suspend operator fun invoke(
         keyword: String,
         rating: Float = 0f,
@@ -14,8 +13,8 @@ class GetMoviesByKeywordUseCase(
     ): List<Movie> {
         println("use case ${movieRepository.getMoviesByKeyword(keyword)}")
         return movieRepository.getMoviesByKeyword(keyword)
-//            .filter { it.rating == rating }
-//            .filter { it.categories.any { category -> category.name == categoryName } }
+//            .filter {  if (rating != 0f) it.rating == rating else false }
+//            .filter { it.categories.any { category -> if (categoryName != "" ) category.name == categoryName else false } }
     }
 }
 

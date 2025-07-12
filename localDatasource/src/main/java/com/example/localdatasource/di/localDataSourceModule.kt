@@ -1,4 +1,4 @@
-package com.amsterdam.aflami.di
+package com.example.localdatasource.di
 
 import com.example.localdatasource.roomDataBase.AflamiDatabase
 import com.example.localdatasource.roomDataBase.daos.CategoryDao
@@ -10,12 +10,10 @@ import com.example.localdatasource.roomDataBase.datasource.LocalCategoryDataSour
 import com.example.localdatasource.roomDataBase.datasource.LocalCountryDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.LocalMovieDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.RecentSearchDataSourceImpl
-import com.example.remotedatasource.datasource.RemoteCategoryDatasourceImpl
 import com.example.repository.datasource.local.LocalCategoryDataSource
 import com.example.repository.datasource.local.LocalCountryDataSource
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
-import com.example.repository.datasource.remote.RemoteCategoryDatasource
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -31,6 +29,5 @@ val localDataSourceModule = module {
     single<LocalCountryDataSource> { LocalCountryDataSourceImpl(get()) }
     single<LocalMovieDataSource> { LocalMovieDataSourceImpl(get()) }
     single<LocalRecentSearchDataSource> { RecentSearchDataSourceImpl(get()) }
-    single<RemoteCategoryDatasource> { RemoteCategoryDatasourceImpl(get()) }
     single<LocalCategoryDataSource> { LocalCategoryDataSourceImpl(get()) }
 }
