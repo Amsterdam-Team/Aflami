@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.aflami.custom.plugin)
-    id("de.mannodermaus.android-junit5")
 }
 
 android {
@@ -14,9 +13,6 @@ dependencies {
     implementation(project(":entity"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -30,7 +26,7 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
-    testImplementation(kotlin("test"))
     //truth
     testImplementation (libs.truth)
+    testImplementation(kotlin("test"))
 }
