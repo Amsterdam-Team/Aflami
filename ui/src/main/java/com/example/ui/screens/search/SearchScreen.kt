@@ -27,7 +27,6 @@ import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
-import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.common.TabOption
@@ -39,16 +38,9 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
-import com.example.ui.screens.search.filterDialog.FilterDialog
-import com.example.viewmodel.common.MediaType
-import com.example.viewmodel.common.TabOption
+import com.example.ui.screens.search.sections.RecentSearchesSection
+import com.example.ui.screens.search.sections.filterDialog.FilterDialog
 import com.example.viewmodel.search.FilterInteractionListener
-import com.example.viewmodel.search.GlobalSearchInteractionListener
-import com.example.viewmodel.search.GlobalSearchViewModel
-import com.example.viewmodel.search.SearchUiEffect
-import com.example.viewmodel.search.SearchUiState
-import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
@@ -75,6 +67,8 @@ fun SearchScreen(
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
+
+                null -> {}
             }
         }
     }
@@ -88,7 +82,6 @@ private fun SearchContent(
     interaction: GlobalSearchInteractionListener,
     filterInteraction: FilterInteractionListener
 ) {
-private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInteractionListener) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -162,6 +155,5 @@ private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInterac
 
         RecentSearchesSection(state = state, interaction = interaction)
 
-    }
     }
 }

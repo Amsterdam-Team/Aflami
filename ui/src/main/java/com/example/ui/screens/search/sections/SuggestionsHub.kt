@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:ui/src/main/java/com/example/ui/screens/search/SuggestionsHub.kt
-package com.example.ui.screens.search
-========
 package com.example.ui.screens.search.sections
->>>>>>>> origin/feature/implement-search:ui/src/main/java/com/example/ui/screens/search/sections/SuggestionsHub.kt
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement

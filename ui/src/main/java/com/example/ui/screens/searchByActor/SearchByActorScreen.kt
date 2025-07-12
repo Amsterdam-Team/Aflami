@@ -51,6 +51,7 @@ fun SearchByActorScreen(
                 }
 
                 SearchByActorEffect.NoInternetConnection -> {}
+                null -> {}
             }
         }
     }

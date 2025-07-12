@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:ui/src/main/java/com/example/ui/screens/search/filterDialog/FilterDialog.kt
-package com.example.ui.screens.search.filterDialog
-========
 package com.example.ui.screens.search.sections.filterDialog
->>>>>>>> origin/feature/implement-search:ui/src/main/java/com/example/ui/screens/search/sections/filterDialog/FilterDialog.kt
 
 
 import androidx.compose.foundation.background
