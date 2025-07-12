@@ -1,11 +1,15 @@
 package com.example.viewmodel.common
 
+import androidx.annotation.DrawableRes
+import com.example.entity.Category
+
 data class GenreItemUiState(
-    val type: GenreType = GenreType.ALL,
-    val isSelected: Boolean = true
+    val id: String = "",
+    val genreName: String = "",
+    val tabOption: TabOption = TabOption.MOVIES
 )
 
-enum class GenreType {
+enum class MovieGenreType {
     ALL,
     ROMANCE,
     SCIENCE_FICTION,
@@ -27,14 +31,22 @@ enum class GenreType {
     DOCUMENTARY,
     ANIMATION;
 
-    companion object {
+    /*companion object {
         fun toGenreItemsUiState(): List<GenreItemUiState> {
-            return GenreType.entries.toTypedArray().mapIndexed { index, genreType ->
+            return MovieGenreType.entries.toTypedArray().mapIndexed { index, genreType ->
                 GenreItemUiState(
-                    type = genreType,
-                    isSelected = index == 0
+                    id = TODO(),
+                    selectedGenreName = TODO()
                 )
             }
         }
-    }
+    }*/
+}
+
+fun Category.toGenreUiStates(tabOption: TabOption): GenreItemUiState {
+    return GenreItemUiState(
+        id = id.toString(),
+        genreName = name,
+        tabOption = tabOption
+    )
 }

@@ -23,7 +23,8 @@ data class SearchUiState(
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,
-    val selectedGenre: GenreItemUiState = GenreItemUiState(),
+    val selectedGenreName: String = "",
+    val genreUiStates: List<GenreItemUiState> = emptyList(),
 )
 
 sealed interface SearchErrorUiState {
