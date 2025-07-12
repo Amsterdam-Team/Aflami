@@ -111,6 +111,7 @@ fun SearchByCountryScreen(
                 }
 
                 SearchByCountryEffect.CountryTooShortEffect -> {}
+                else -> {}
             }
         }
     }
@@ -210,8 +211,8 @@ private fun CountriesDropdownMenu(
                 AppTheme.color.stroke,
                 shape = RoundedCornerShape(16.dp),
             )
-            .padding(vertical = 6.dp)
             .background(AppTheme.color.surface)
+            .padding(vertical = 6.dp)
     ) {
         items.forEach { item ->
             Text(
@@ -270,7 +271,9 @@ private fun Loading(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(AppTheme.color.surface)
+            .background(AppTheme.color.surface),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         LoadingIndicator()
         Text(
@@ -309,7 +312,7 @@ private fun SearchedMovies(state: SearchByCountryScreenState) {
             key = { movie -> movie.id }
         ) { movie ->
             MovieCard(
-                movieImage = painterResource(R.drawable.bg_children_wearing_3d),
+                movieImage = "",
                 movieType = stringResource(R.string.movie),
                 movieYear = movie.productionYear,
                 movieTitle = movie.name,

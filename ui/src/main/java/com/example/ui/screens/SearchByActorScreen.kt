@@ -24,11 +24,10 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.entity.Movie
+import com.example.viewmodel.search.countrySearch.MovieUiState
 import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.KoinApplication.Companion.init
 
 @Composable
 fun SearchByActorScreen(
@@ -46,6 +45,7 @@ fun SearchByActorScreen(
                 }
 
                 SearchByActorEffect.NoInternetConnection -> TODO()
+                null -> TODO()
             }
         }
     }
@@ -70,7 +70,7 @@ fun SearchByActorContent(
     modifier: Modifier = Modifier,
     onNavigateBackClicked: () -> Unit ,
     onValueChange: (String) -> Unit ,
-    result: List<Movie> = emptyList()
+    result: List<MovieUiState> = emptyList()
 ) {
         DefaultAppBar(
             title = stringResource(R.string.find_by_actor),
@@ -98,7 +98,7 @@ fun SearchByActorContent(
             ) {
                 items(result) {movie->
                     MovieCard(
-                        movieImage = painterResource(movie.poster.toInt()),
+                        movieImage = "",
                         movieType = "Movies",
                         movieYear = movie.productionYear.toString(),
                         movieTitle = movie.name,

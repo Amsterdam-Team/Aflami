@@ -1,5 +1,6 @@
 package com.example.remotedatasource.datasource
 
+import com.example.remotedatasource.BuildConfig
 import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.client.safeCall
@@ -46,7 +47,7 @@ class RemoteMovieDatasourceImpl(
         countryIsoCode: String
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get("$BASE_URL/discover/movie?with_origin_country=$countryIsoCode")
+            val response = ktorClient.get("${BuildConfig.BASE_URL}/discover/movie?with_origin_country=$countryIsoCode")
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }

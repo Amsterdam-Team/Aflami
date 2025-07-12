@@ -1,4 +1,4 @@
-package com.example.ui.screen.search.sections.filterDialog
+package com.example.ui.screens.search.sections.filterDialog
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
