@@ -29,9 +29,10 @@ class SearchByCountryViewModel(
         getSuggestedCountries(countryName)
     }
 
-    fun onSelectCountryName(countryName: String) {
+    fun onSelectCountry(country: CountryUiState) {
+        sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
         val countryIsoCode =
-            state.value.suggestedCountries.find { it.countryName == countryName }?.countryIsoCode
+            state.value.suggestedCountries.find { it.countryName == country.countryName }?.countryIsoCode
                 ?: ""
         getMoviesByCountry(countryIsoCode)
     }
@@ -58,7 +59,8 @@ class SearchByCountryViewModel(
         updateState {
             it.copy(suggestedCountries = suggestedCountries)
         }
-        sendNewEffect(SearchByCountryEffect.SuggestedCountriesLoadedEffect)
+        if (suggestedCountries.isNotEmpty())
+            sendNewEffect(SearchByCountryEffect.ShowCountriesDropDown)
     }
 
     private fun updateMoviesForCountry(movies: List<MovieUiState>) {

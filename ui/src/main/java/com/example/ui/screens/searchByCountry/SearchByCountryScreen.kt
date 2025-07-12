@@ -1,14 +1,26 @@
 package com.example.ui.screens.searchByCountry
 
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,9 +28,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.LoadingIndicator
@@ -31,6 +47,7 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
 import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
@@ -46,7 +63,8 @@ fun SearchByCountryScreen(
 
     val state by viewModel.state.collectAsState()
     var screenContent by remember { mutableStateOf(ScreenContent.COUNTRY_TOUR) }
-    var showLoadingCountries by remember { mutableStateOf(false) }
+    var showCountriesDropdown by remember { mutableStateOf(false) }
+    var noSuggestedCountry by remember { mutableStateOf(false) }
 
     LaunchedEffect(
         viewModel.effect
@@ -61,10 +79,6 @@ fun SearchByCountryScreen(
                     screenContent = ScreenContent.LOADING_MOVIES
                 }
 
-                SearchByCountryEffect.LoadingSuggestedCountriesEffect -> {
-                    showLoadingCountries = true
-                }
-
                 SearchByCountryEffect.MoviesLoadedEffect -> {
                     screenContent = ScreenContent.MOVIES
                 }
@@ -73,12 +87,23 @@ fun SearchByCountryScreen(
                     ScreenContent.NO_MOVIES
                 }
 
+                SearchByCountryEffect.LoadingSuggestedCountriesEffect -> {
+                    showCountriesDropdown = true
+                    noSuggestedCountry = false
+                }
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> {
-                    showLoadingCountries = false
+                    noSuggestedCountry = true
+                }
+                SearchByCountryEffect.SuggestedCountriesLoadedEffect -> {
+                    noSuggestedCountry = false
                 }
 
-                SearchByCountryEffect.SuggestedCountriesLoadedEffect -> {
-                    showLoadingCountries = false
+                SearchByCountryEffect.ShowCountriesDropDown -> {
+                    showCountriesDropdown = true
+                }
+
+                SearchByCountryEffect.HideCountriesDropDown -> {
+                    showCountriesDropdown = false
                 }
 
                 SearchByCountryEffect.InitialEffect -> {
@@ -96,10 +121,10 @@ fun SearchByCountryScreen(
             navController.popBackStack()
         },
         viewModel::onCountryNameUpdated,
-        viewModel::onSelectCountryName,
+        viewModel::onSelectCountry,
         modifier,
         screenContent,
-        showLoadingCountries,
+        showCountriesDropdown,
     )
 }
 
@@ -108,41 +133,101 @@ fun SearchByCountryScreenContent(
     state: SearchByCountryScreenState,
     onNavigateBackClicked: () -> Unit,
     onCountryNameUpdated: (String) -> Unit,
-    onSelectCountry: (String) -> Unit,
+    onSelectCountry: (CountryUiState) -> Unit,
     modifier: Modifier = Modifier,
     screenContent: ScreenContent,
-    showLoadingCountries: Boolean,
+    showCountriesDropdown: Boolean,
 ) {
-    Column {
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
         DefaultAppBar(
             title = stringResource(R.string.world_tour_title),
             showNavigateBackButton = true,
             onNavigateBackClicked = onNavigateBackClicked
         )
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-        ) {
+
+        var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+
+        Column(modifier) {
             TextField(
-                state.selectedCountry,
+                text = state.selectedCountry,
                 hintText = stringResource(R.string.country_name_hint),
-                onValueChange = { onCountryNameUpdated(it) }
+                onValueChange = { onCountryNameUpdated(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned {
+                        textFieldSize = it.size
+                    }
             )
 
-            CountriesDropdownMenu(
-                items = state.suggestedCountries.map { it.countryName }
-            ) {
-                onSelectCountry(it)
+            Box {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (screenContent) {
+                        ScreenContent.COUNTRY_TOUR -> ExploreCountries()
+                        ScreenContent.LOADING_MOVIES -> Loading()
+                        ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection()
+                        ScreenContent.NO_MOVIES -> NoMoviesFound()
+                        ScreenContent.MOVIES -> SearchedMovies(state)
+                    }
+                }
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showCountriesDropdown,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    CountriesDropdownMenu(
+                        items = state.suggestedCountries.take(5),
+                        onItemClicked = {
+                            onSelectCountry(it)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AppTheme.color.profileOverlay)
+                    )
+                }
             }
+        }
+    }
+}
 
-            when (screenContent) {
-                ScreenContent.COUNTRY_TOUR -> ExploreCountries()
-                ScreenContent.LOADING_MOVIES -> LoadingMovies()
-                ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection()
-                ScreenContent.NO_MOVIES -> NoMoviesFound()
-                ScreenContent.MOVIES -> SearchedMovies(state)
-            }
+@Composable
+private fun CountriesDropdownMenu(
+    items: List<CountryUiState>,
+    onItemClicked: (CountryUiState) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .border(
+                0.5.dp,
+                AppTheme.color.stroke,
+                shape = RoundedCornerShape(16.dp),
+            )
+            .padding(vertical = 6.dp)
+            .background(AppTheme.color.surface)
+    ) {
+        items.forEach { item ->
+            Text(
+                text = item.countryName,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        onItemClicked(item)
+                    },
+                style = AppTheme.textStyle.body.small,
+                color = AppTheme.color.body
+            )
         }
     }
 }
@@ -152,33 +237,40 @@ private fun ExploreCountries(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
         Image(
-            painter = painterResource(R.drawable.img_news),
-            contentDescription = stringResource(R.string.country_tour_image_description)
+            painter = painterResource(R.drawable.tour_world_image),
+            contentDescription = stringResource(R.string.country_tour_image_description),
+            modifier = Modifier.height(82.dp)
         )
         Text(
             text = stringResource(R.string.country_tour_title),
             modifier = Modifier.padding(top = 16.dp),
             style = AppTheme.textStyle.title.medium,
-            color = AppTheme.color.title
+            color = AppTheme.color.title,
+            textAlign = TextAlign.Center
         )
         Text(
             text = stringResource(R.string.country_tour_description),
             modifier = Modifier.padding(top = 8.dp),
             style = AppTheme.textStyle.body.small,
-            color = AppTheme.color.body
+            color = AppTheme.color.body,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-private fun LoadingMovies(
+private fun Loading(
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface)
     ) {
         LoadingIndicator()
         Text(
@@ -243,7 +335,7 @@ private fun SearchByCriteriaPreview() {
             SearchByCountryScreenState(),
             {}, {}, {},
             screenContent = ScreenContent.COUNTRY_TOUR,
-            showLoadingCountries = false,
+            showCountriesDropdown = false,
         )
     }
 }
