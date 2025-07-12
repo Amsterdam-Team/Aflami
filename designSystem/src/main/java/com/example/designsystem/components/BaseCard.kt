@@ -35,11 +35,12 @@ import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.imageviewer.ui.SafeImageView
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 internal fun BaseCard(
-    movieImage: Painter,
+    movieImage: String,
     movieTitle: String,
     movieType: String,
     movieYear: String,
@@ -61,13 +62,14 @@ internal fun BaseCard(
                 onClick = onClick
             )
     ) {
-        Image(
+        SafeImageView(
             modifier = Modifier
                 .fillMaxSize()
                 .fillMaxHeight(),
-            painter = movieImage,
             contentDescription = movieContentDescription,
-            contentScale = contentScale
+            model =movieImage ,
+            placeholder = R.drawable.ic_film_roll,
+            error = R.drawable.bg_man_with_popcorn,
         )
         if (movieRating != null)
             RatingChip(
@@ -158,7 +160,7 @@ internal fun BaseCard(
 private fun BaseCardPreview() {
     AflamiTheme {
         BaseCard(
-            movieImage = painterResource(R.drawable.bg_children_wearing_3d),
+            movieImage = "",
             movieType = "TV show",
             movieYear = "2016",
             movieTitle = "Your Name",

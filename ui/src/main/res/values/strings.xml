@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="movies">Movies</string>
     <string name="search_suggestions_hub">Search Suggestions Hub</string>
 
     <!-- Search validation error messages -->
