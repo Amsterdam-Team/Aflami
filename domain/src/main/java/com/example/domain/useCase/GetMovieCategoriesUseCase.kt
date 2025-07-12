@@ -1,4 +1,4 @@
-package com.example.domain.usecase
+package com.example.domain.useCase
 
 import com.example.domain.repository.CategoryRepository
 import com.example.entity.Category

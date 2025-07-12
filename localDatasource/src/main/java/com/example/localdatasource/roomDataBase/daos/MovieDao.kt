@@ -25,7 +25,7 @@ interface MovieDao {
         AND (:category IS NULL OR id IN (
             SELECT movieId FROM movie_category_cross_ref
             WHERE categoryId IN (
-                SELECT id FROM categories WHERE name = :category
+                SELECT id FROM movie_categories WHERE name = :category
             )
         ))
         """

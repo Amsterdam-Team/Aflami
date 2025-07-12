@@ -7,13 +7,12 @@ import com.example.domain.useCase.GetTvShowByKeywordUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
-import com.example.domain.usecase.GetMovieCategoriesUseCase
-import com.example.domain.usecase.GetTvShowCategoriesUseCase
+import com.example.domain.useCase.GetMovieCategoriesUseCase
+import com.example.domain.useCase.GetTvShowCategoriesUseCase
 import com.example.entity.Category
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.common.MovieGenreType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toGenreUiStates
 import com.example.viewmodel.common.toMoveUiStates
