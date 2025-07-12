@@ -32,25 +32,61 @@ class MovieRepositoryImpl(
             )
             if (localMovies.movies.isNotEmpty()) handleLocalSearchResponse(localMovies)
             val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword)
+            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
             async {
-                //todo insert keyword
-                //    insert movie
-//                localMovieDataSource.addAllMoviesWithSearchData(
-//                    movies = ,
-//                    searchKeyword = keyword,
-//                    searchType = SearchType.BY_KEYWORD
-//                )
-            }
-            movieRemoteMapper.mapResponseToDomain(remoteMovies)
+                localMovieDataSource.addAllMoviesWithSearchData(
+                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    searchKeyword = keyword,
+                    searchType = SearchType.BY_KEYWORD
+                )
+            }.await()
+            domainMovies
         }
     }
 
     override suspend fun getMoviesByActor(actorName: String): List<Movie> {
-        TODO("Not yet implemented")
+        return withContext(dispatcher) {
+            val localMovies = recentSearchDatasource.getSearchByKeywordAndSearchType(
+                keyword = actorName,
+                searchType = SearchType.BY_ACTOR
+            )
+            if (localMovies.movies.isNotEmpty()) handleLocalSearchResponse(localMovies)
+            val remoteMovies = remoteMovieDataSource.getMoviesByActorName(actorName)
+            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            async {
+                localMovieDataSource.addAllMoviesWithSearchData(
+                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    searchKeyword = actorName,
+                    searchType = SearchType.BY_ACTOR
+                )
+            }.await()
+            domainMovies
+
+
+        }
+
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
-        TODO("Not yet implemented")
+        return withContext(dispatcher) {
+            val localMovies = recentSearchDatasource.getSearchByKeywordAndSearchType(
+                keyword = countryIsoCode,
+                searchType = SearchType.BY_COUNTRY
+            )
+
+            if (localMovies.movies.isNotEmpty()) handleLocalSearchResponse(localMovies)
+            val remoteMovies = remoteMovieDataSource.getMoviesByActorName(countryIsoCode)
+            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            async {
+                localMovieDataSource.addAllMoviesWithSearchData(
+                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    searchKeyword = countryIsoCode,
+                    searchType = SearchType.BY_COUNTRY
+                )
+            }.await()
+            domainMovies
+
+        }
     }
 
     private suspend fun handleLocalSearchResponse(searchWithMovies: SearchWithMovies) {
