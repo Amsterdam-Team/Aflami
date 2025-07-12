@@ -20,7 +20,7 @@ class MovieRepositoryImpl(
     private val localMovieDataSource: LocalMovieDataSource,
     private val remoteMovieDataSource: RemoteMovieDatasource,
     private val movieLocalMapper: MovieLocalMapper,
-    private val movieRemoteMapper: RemoteMovieMapper,
+    private val remoteMovieMapper: RemoteMovieMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val searchWithMoviesMapper: SearchWithMoviesMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -42,7 +42,7 @@ class MovieRepositoryImpl(
 //                    searchType = SearchType.BY_KEYWORD
 //                )
             }
-            movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            remoteMovieMapper.mapResponseToDomain(remoteMovies)
         }
     }
 
@@ -51,7 +51,11 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
-        TODO("Not yet implemented")
+        val remoteMovies = remoteMovieDataSource
+            .getMoviesByCountryIsoCode(countryIsoCode)
+            .results
+            .map { remoteMovieMapper.mapToDomain(it) }
+        return remoteMovies
     }
 
     private suspend fun handleLocalSearchResponse(searchWithMovies: SearchWithMovies) {
