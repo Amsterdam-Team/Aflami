@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.sections.filterDialog
+package com.example.ui.screens.search.filterDialog
 
 
 import androidx.compose.foundation.background
@@ -33,6 +33,8 @@ import com.example.designsystem.components.buttons.SecondaryButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.ui.screens.search.sections.filterDialog.getGenreIcon
+import com.example.ui.screens.search.sections.filterDialog.getGenreLabel
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.FilterItemUiState
 
@@ -43,7 +45,7 @@ fun FilterDialog(
     modifier: Modifier = Modifier
 ) {
     Dialog(
-        onDismissRequest = { interaction::onCancelButtonClicked },
+        onDismissRequest = { interaction.onCancelButtonClicked() },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
@@ -75,7 +77,7 @@ fun FilterDialog(
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = null,
-                    onClick = { interaction::onCancelButtonClicked },
+                    onClick = { interaction.onCancelButtonClicked() },
                     tint = AppTheme.color.title
                 )
             }
@@ -123,7 +125,7 @@ fun FilterDialog(
                             )
                         ),
                         isSelected = false,
-                        onClick = { interaction::onGenreButtonChanged }
+                        onClick = { interaction.onGenreButtonChanged(it.genreName) }
                     )
                 }
             }
@@ -172,7 +174,7 @@ private fun RatingBar(
                     .size(24.dp)
                     .weight(1f)
                     .clickable(
-                        onClick = { interaction::onRatingStarChanged },
+                        onClick = { interaction.onRatingStarChanged(starIndex) },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     )

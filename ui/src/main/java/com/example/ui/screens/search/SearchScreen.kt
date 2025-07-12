@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
@@ -30,8 +29,10 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
+import com.example.ui.screens.search.filterDialog.FilterDialog
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.GlobalSearchInteractionListener
 import com.example.viewmodel.search.GlobalSearchViewModel
 import com.example.viewmodel.search.SearchUiEffect
@@ -68,11 +69,15 @@ fun SearchScreen(
         }
     }
 
-    SearchContent(state = state, interaction = viewModel)
+    SearchContent(state = state, interaction = viewModel, filterInteraction = viewModel)
 }
 
 @Composable
-private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInteractionListener) {
+private fun SearchContent(
+    state: SearchUiState,
+    interaction: GlobalSearchInteractionListener,
+    filterInteraction: FilterInteractionListener
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,7 +104,12 @@ private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInterac
             errorMessage = getErrorMessageBySearchErrorUiState(state.errorUiState),
             maxCharacters = 100
         )
-
+        AnimatedVisibility(state.isDialogVisible) {
+            FilterDialog(
+                state = state.filterItemUiState,
+                interaction = filterInteraction
+            )
+        }
         AnimatedVisibility(state.query.isNotEmpty()) {
             LazyVerticalGrid(
                 modifier = Modifier.height((state.movies.count() * 222).dp),
