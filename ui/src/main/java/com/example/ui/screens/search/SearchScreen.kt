@@ -28,7 +28,6 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.application.LocalNavController
-import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.viewmodel.common.MediaType
@@ -39,6 +38,11 @@ import com.example.viewmodel.search.SearchUiEffect
 import com.example.viewmodel.search.SearchUiState
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
+import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
+import com.example.ui.screens.search.sections.RecentSearchesSection
+import com.example.ui.screens.search.sections.filterDialog.FilterDialog
+import com.example.viewmodel.search.FilterInteractionListener
 
 @Composable
 fun SearchScreen(
@@ -51,11 +55,11 @@ fun SearchScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SearchUiEffect.NavigateBack -> {
-                    Log.e("bk", "collect: NavigateBack")
+                    navController.popBackStack()
                 }
 
                 SearchUiEffect.NavigateToActorSearch -> {
-                    Log.e("bk", "collect: NavigateToActorSearch")
+                    navController.navigate(Route.SearchByActor)
                 }
 
                 SearchUiEffect.NavigateToMovieDetails -> {
@@ -66,16 +70,20 @@ fun SearchScreen(
                     navController.navigate(Route.SearchByCountry)
                 }
 
-                else -> {}
+                null -> {}
             }
         }
     }
 
-    SearchContent(state = state, interaction = viewModel)
+    SearchContent(state = state, interaction = viewModel, filterInteraction = viewModel)
 }
 
 @Composable
-private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInteractionListener) {
+private fun SearchContent(
+    state: SearchUiState,
+    interaction: GlobalSearchInteractionListener,
+    filterInteraction: FilterInteractionListener
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,7 +110,12 @@ private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInterac
             errorMessage = getErrorMessageBySearchErrorUiState(state.errorUiState),
             maxCharacters = 100
         )
-
+        AnimatedVisibility(state.isDialogVisible) {
+            FilterDialog(
+                state = state.filterItemUiState,
+                interaction = filterInteraction
+            )
+        }
         AnimatedVisibility(state.query.isNotEmpty()) {
             LazyVerticalGrid(
                 modifier = Modifier.height((state.movies.count() * 222).dp),
@@ -127,7 +140,7 @@ private fun SearchContent(state: SearchUiState, interaction: GlobalSearchInterac
                 ) { mediaItem ->
                     mediaItem.apply {
                         MovieCard(
-                            movieImage = "",
+                            movieImage = mediaItem.posterImage,
                             movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
                             else stringResource(R.string.movies),
                             movieYear = yearOfRelease,

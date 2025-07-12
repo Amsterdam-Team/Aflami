@@ -24,9 +24,7 @@ firebaseCrashlytics = "3.0.4"
 firebasePreferences = "1.4.2"
 ksp = "2.0.21-1.0.27"
 tensorflowLite = "2.15.0"
-tensorflowLiteMetadata = "0.4.3"
 tensorflowLiteSupport = "0.4.3"
-tensorflowLiteTaskVision = "0.4.3"
 uiToolingPreviewAndroid = "1.8.3"
 kotlinxDatetime = "0.5.0"
 androidJunit5 = "1.12.0.0"
@@ -70,13 +68,10 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
-tensorflow-lite-metadata = { module = "org.tensorflow:tensorflow-lite-metadata", version.ref = "tensorflowLiteMetadata" }
 tensorflow-lite-support = { module = "org.tensorflow:tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
-tensorflow-lite-task-vision = { module = "org.tensorflow:tensorflow-lite-task-vision", version.ref = "tensorflowLiteTaskVision" }
-
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterApi" }

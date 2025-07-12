@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       pull-requests: write
@@ -21,7 +20,7 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           cache: gradle
-          
+
       - name: Load Google Service file
         env:
           DATA: ${{ secrets.FIREBASE_JSON }}
@@ -30,17 +29,19 @@ jobs:
       - name: Create local.properties
         env:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          BASE_URL: ${{secrets.BASE_URL}}
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
+          echo baseUrl=\"$BASE_URL\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
-        
+
       - name: Clean Project
         run: ./gradlew clean
 
       - name: Compile Project
-        run:  ./gradlew assemble
+        run: ./gradlew assemble
 
       - name: Run Unit Tests
         run: ./gradlew test

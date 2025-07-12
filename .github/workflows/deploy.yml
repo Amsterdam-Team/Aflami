@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
     steps:
       - uses: actions/checkout@v4
 
@@ -28,8 +27,10 @@ jobs:
       - name: Create local.properties
         env:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          BASE_URL: ${{secrets.BASE_URL}}
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
+          echo baseUrl=\"$BASE_URL\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -38,13 +39,16 @@ jobs:
         run: ./gradlew clean
 
       - name: Generate APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleRelease
+
+      - name: Rename APK
+        run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/aflami-amsterdam.apk
 
       - name: Upload APK to Firebase App Distribution
         run: |
           npm install -g firebase-tools
           firebase appdistribution:distribute \
-            app/build/outputs/apk/debug/app-debug.apk \
+            app/build/outputs/apk/release/aflami-amsterdam.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --token ${{ secrets.FIREBASE_AUTH_TOKEN }} \
             --groups ${{ secrets.TESTER_GROUP }}
