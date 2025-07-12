@@ -23,7 +23,7 @@ enum class GlobalSearchHubUI(
     WORLD(
         labelRes = R.string.world_tour_title,
         descriptionRes = R.string.world_tour_description,
-        icon = R.drawable.img_news,
+        icon = R.drawable.tour_world_image,
         gradientProvider = { AppTheme.color.worldTourGradient }
     );
 

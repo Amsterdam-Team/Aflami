@@ -13,3 +13,9 @@ class BlankQueryException : QueryValidationException()
 
 class NoInternetException : NetworkException()
 class ServerErrorException : NetworkException()
+
+class InternetConnectionException: AflamiException()
+class NoSuggestedCountriesException: AflamiException()
+class NoMoviesForCountryException: AflamiException()
+class CountryTooShortException: AflamiException()
+class CountryIsEmptyException: AflamiException()
