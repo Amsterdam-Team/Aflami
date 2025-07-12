@@ -10,7 +10,7 @@ class MovieWithCategoryMapper {
 
     fun mapFromLocal(movieWithCategories: MovieWithCategories): Movie {
         return Movie(
-            id = movieWithCategories.movie.id,
+            id = movieWithCategories.movie.movieId,
             name = movieWithCategories.movie.name,
             description = movieWithCategories.movie.description,
             poster = movieWithCategories.movie.poster,
@@ -22,7 +22,7 @@ class MovieWithCategoryMapper {
 
     private fun mapCategoryFromLocal(localCategory: LocalMovieCategoryDto): Category {
         return Category(
-            id = localCategory.id,
+            id = localCategory.categoryId,
             name = localCategory.name,
             image = ""
         )
@@ -30,7 +30,7 @@ class MovieWithCategoryMapper {
 
     fun mapToLocal(movie: Movie): LocalMovieDto {
         return LocalMovieDto(
-            id = movie.id,
+            movieId = movie.id,
             name = movie.name,
             description = movie.description,
             poster = movie.poster,

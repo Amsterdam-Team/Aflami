@@ -10,7 +10,7 @@ class CategoryLocalMapper {
 
     fun mapFromMovieLocal(dto: LocalMovieCategoryDto): Category {
         return Category(
-            id = dto.id,
+            id = dto.categoryId,
             name = dto.name,
             image = ""
         )
@@ -18,7 +18,7 @@ class CategoryLocalMapper {
 
     fun mapFromTvShowLocal(dto: LocalTvShowCategoryDto): Category {
         return Category(
-            id = dto.id,
+            id = dto.categoryId,
             name = dto.name,
             image = ""
         )
@@ -26,7 +26,7 @@ class CategoryLocalMapper {
 
     fun mapToLocal(domain: Category): LocalMovieCategoryDto {
         return LocalMovieCategoryDto(
-            id = domain.id,
+            categoryId = domain.id,
             name = domain.name,
         )
     }

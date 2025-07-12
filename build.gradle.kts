@@ -10,3 +10,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.ksp) apply false
 }
+
+buildscript {
+    dependencies {
+        classpath(libs.android.junit5)
+    }
+}

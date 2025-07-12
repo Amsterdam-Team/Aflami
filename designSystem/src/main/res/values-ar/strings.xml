@@ -27,6 +27,7 @@
     <string name="western">ويسترن</string>
     <string name="history">تاريخي</string>
     <string name="tv_movie">فيلم تلفزيوني</string>
+    <string name="movie">فيلم</string>
     <string name="war">حرب</string>
     <string name="mystery">غموض</string>
     <string name="thriller">إثارة</string>
@@ -66,6 +67,7 @@
     <string name="password_hint">كلمة المرور</string>
     <string name="forgot_password">هل نسيت كلمة المرور؟</string>
     <string name="login">تسجيل الدخول</string>
+    <string name="retry">إعادة المحاولة</string>
     <string name="continue_as_guest">المتابعة كضيف</string>
     <string name="dont_have_account">ليس لديك حساب؟</string>
     <string name="create_account">إنشاء حساب</string>
@@ -130,6 +132,7 @@
     <string name="recent_searches">عمليات البحث الأخيرة</string>
     <string name="no_search_result">لا توجد نتائج بحث</string>
     <string name="no_search_result_description">الرجاء المحاولة بكلمة مفتاحية أخرى.</string>
+    <string name="no_search_result_for_country">الرجاء المحاولة ب اسم دولة أخرى.</string>
     <string name="filter_result">تصفية النتائج</string>
     <string name="imdb_rating">تقييم IMDb</string>
     <string name="genre">النوع</string>
@@ -181,6 +184,7 @@
     <string name="episodes">حلقات</string>
     <string name="season">موسم</string>
     <string name="seasons">مواسم</string>
+    <string name="country_tour_image_description">صورة جولة في البلد</string>
     <!-- -  -->
     <!-- - Positive messages  -->
     <string name="list_added_success_message">تمت إضافة القائمة الجديدة بنجاح.</string>
