@@ -84,7 +84,7 @@ fun TextField(
         else borderColor
     )
 
-    Column {
+    Column(modifier = modifier) {
         AnimatedErrorBox(isError, errorMessage, style)
         Row(
             modifier = Modifier
@@ -122,7 +122,7 @@ fun TextField(
                 },
                 maxLines = 1,
                 enabled = isEnabled,
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)

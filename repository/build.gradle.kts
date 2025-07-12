@@ -22,15 +22,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     // Room
     implementation(libs.androidx.room.runtime)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     // Date and Time

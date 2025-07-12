@@ -8,10 +8,16 @@ class LocalCountryDataSourceImpl(
     private val dao: CountryDao
 ) : LocalCountryDataSource {
     override suspend fun getAllCountries(): List<LocalCountryDto> {
-        return dao.getAll()
+        try {
+        return dao.getAllCountries()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return emptyList()
     }
 
     override suspend fun addAllCountries(countries: List<LocalCountryDto>) {
-        dao.upsertAll(countries)
+        dao.upsertAllCountries(countries)
     }
 }
