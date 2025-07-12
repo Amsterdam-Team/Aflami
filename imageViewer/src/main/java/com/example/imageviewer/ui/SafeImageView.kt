@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
@@ -18,6 +19,7 @@ public fun SafeImageView(
     @DrawableRes placeholder: Int,
     @DrawableRes error: Int,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     val context = LocalContext.current
 
@@ -31,6 +33,7 @@ public fun SafeImageView(
         contentDescription = contentDescription,
         imageLoader = imageLoader,
         modifier = modifier,
+        contentScale = contentScale,
         placeholder = painterResource(placeholder),
         error = painterResource(error),
     )
