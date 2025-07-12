@@ -9,8 +9,8 @@ import com.example.repository.dto.local.LocalCountryDto
 interface CountryDao {
 
     @Query("SELECT * FROM countries")
-   suspend fun getAll(): List<LocalCountryDto>
+   suspend fun getAllCountries(): List<LocalCountryDto>
 
     @Upsert
-    suspend fun upsertAll(countries: List<LocalCountryDto>)
+    suspend fun upsertAllCountries(countries: List<LocalCountryDto>)
 }

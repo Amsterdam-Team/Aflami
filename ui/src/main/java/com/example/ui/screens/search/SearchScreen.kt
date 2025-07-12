@@ -68,6 +68,8 @@ fun SearchScreen(
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
+
+                null -> {}
             }
         }
     }
@@ -104,8 +106,6 @@ private fun SearchContent(
             trailingIcon = R.drawable.ic_filter_vertical,
             onTrailingClick = interaction::onFilterButtonClicked,
             isTrailingClickEnabled = state.query.isNotEmpty(),
-            isError = state.errorUiState != null,
-            errorMessage = getErrorMessageBySearchErrorUiState(state.errorUiState),
             maxCharacters = 100
         )
 
@@ -134,7 +134,7 @@ private fun SearchContent(
                     mediaItem.apply {
                         MovieCard(
                             modifier = Modifier.animateItem(),
-                            movieImage = painterResource(R.drawable.img_poster_coco),
+                            movieImage = mediaItem.posterImage,
                             movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
                             else stringResource(R.string.movies),
                             movieYear = yearOfRelease,
@@ -155,9 +155,8 @@ private fun SearchContent(
             visible = state.isDialogVisible
         ) {
             FilterDialog(
-                onDismiss = filterInteraction::onCancelButtonClicked,
-                onApply = filterInteraction::onApplyButtonClicked,
-                onClear = filterInteraction::onClearButtonClicked,
+                state = state.filterItemUiState,
+                interaction = filterInteraction,
             )
         }
     }

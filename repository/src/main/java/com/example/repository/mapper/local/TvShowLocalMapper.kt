@@ -8,7 +8,7 @@ class TvShowLocalMapper {
 
     fun mapFromLocal(dto: LocalTvShowDto, categories: List<Category> = emptyList()): TvShow {
         return TvShow(
-            id = dto.id,
+            id = dto.categoryId,
             name = dto.name,
             description = dto.description,
             poster = dto.poster,
@@ -20,7 +20,7 @@ class TvShowLocalMapper {
 
     fun mapToLocal(domain: TvShow): LocalTvShowDto {
         return LocalTvShowDto(
-            id = domain.id,
+            categoryId = domain.id,
             name = domain.name,
             description = domain.description,
             poster = domain.poster,
@@ -31,7 +31,7 @@ class TvShowLocalMapper {
 
     fun mapListFromLocal(dtos: List<LocalTvShowDto>, categoriesMap: Map<Long, List<Category>>): List<TvShow> {
         return dtos.map { dto ->
-            val categories = categoriesMap[dto.id] ?: emptyList()
+            val categories = categoriesMap[dto.categoryId] ?: emptyList()
             mapFromLocal(dto, categories)
         }
     }

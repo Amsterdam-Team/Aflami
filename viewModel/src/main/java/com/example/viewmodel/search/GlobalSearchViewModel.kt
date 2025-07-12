@@ -1,5 +1,6 @@
 package com.example.viewmodel.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -165,6 +166,7 @@ class GlobalSearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
+        Log.e("bk", "${genreType.name}")
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(

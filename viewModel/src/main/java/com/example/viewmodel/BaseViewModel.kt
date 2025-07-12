@@ -25,7 +25,7 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
     val state: StateFlow<S> = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<E?>()
-    val effect = _effect.asSharedFlow().throttleFirst(500).mapNotNull { it }
+    val effect = _effect.asSharedFlow()
 
 
     protected fun updateState(updater: (S) -> S) {
@@ -54,20 +54,6 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
                 onError(exception)
             } catch (_: Exception) {
                 onError(UnknownException())
-            }
-        }
-    }
-
-    private fun <T> Flow<T>.throttleFirst(periodMillis: Long): Flow<T> {
-        require(periodMillis > 0)
-        return flow {
-            var lastTime = 0L
-            collect { value ->
-                val currentTime = Clock.System.now().toEpochMilliseconds()
-                if (currentTime - lastTime >= periodMillis) {
-                    lastTime = currentTime
-                    emit(value)
-                }
             }
         }
     }

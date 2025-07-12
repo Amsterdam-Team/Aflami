@@ -1,25 +1,81 @@
 package com.example.imageviewer.coil
 
-import com.example.imageviewer.classification.ImageClassifier
-import android.content.Context
+
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
+import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.scale
+import coil.intercept.Interceptor
 import coil.request.ErrorResult
 import coil.request.ImageResult
-import coil.request.SuccessResult
-import coil.intercept.Interceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import coil.request.SuccessResult
+import com.example.imageviewer.classification.policy.ImageClassifier
 import com.example.imageviewer.util.OpenGLBlurProcessor
 
-
 internal class SafetyInterceptor(
-    private val classifier: ImageClassifier?
+    private val classifier: ImageClassifier
 ) : Interceptor {
+    override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
+        val result = chain.proceed(chain.request)
 
-    private suspend fun applyBlur(context: Context, source: Bitmap, radius: Float): Bitmap? {
+        if (result is SuccessResult) {
+            return try {
+                val bitmap = result.drawable.toBitmap()
+                val isSafe = checkBitmapSafety(bitmap)
+                when (isSafe) {
+                    true -> {
+                        result
+                    }
+
+                    false -> {
+                        val blurredBitmap = applyBlur( bitmap, BLUR_RADIUS)
+
+                        if (blurredBitmap != null && !blurredBitmap.isRecycled) {
+                            return result.copy(
+                                drawable = blurredBitmap.toDrawable(chain.request.context.resources)
+                            )
+                        } else {
+                            return ErrorResult(
+                                chain.request.error,
+                                chain.request,
+                                RuntimeException(
+                                    "Failed to blur image after safety check",
+                                    IllegalStateException("Blur failed")
+                                )
+                            )
+                        }
+//
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "$ERROR_MSG_SAFETY_CHECK: ${e.message}", e)
+                return ErrorResult(chain.request.error, chain.request, e)
+            }
+        }
+        return result
+    }
+
+    private suspend fun checkBitmapSafety(bitmap: Bitmap): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val modelInputBitmap = if (bitmap.config == Bitmap.Config.ARGB_8888) {
+                    bitmap
+                } else {
+                    bitmap.copy(Bitmap.Config.ARGB_8888, false)
+                }
+                classifier.isImageSafe(modelInputBitmap) ?: true
+            } catch (e: Exception) {
+                Log.e(TAG, ERROR_MSG_SAFETY_CHECK, e)
+                true
+            }
+        }
+    }
+
+    private suspend fun applyBlur( source: Bitmap, radius: Float): Bitmap? {
         return withContext(Dispatchers.IO) {
             if (radius <= 0f) {
                 return@withContext source
@@ -32,7 +88,6 @@ internal class SafetyInterceptor(
             if (clampedRadius == 0.0f) {
                 return@withContext source
             }
-
             val openGlInputBitmap = try {
                 if (source.config == Bitmap.Config.ARGB_8888 && !source.isMutable) {
                     source
@@ -47,6 +102,7 @@ internal class SafetyInterceptor(
                 return@withContext null
             }
 
+
             val blurredBitmap = try {
                 OpenGLBlurProcessor.blurBitmap(openGlInputBitmap, clampedRadius)
             } catch (e: Exception) {
@@ -60,93 +116,10 @@ internal class SafetyInterceptor(
             return@withContext blurredBitmap
         }
     }
-
-
-    override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
-        val result = try {
-            chain.proceed(chain.request)
-        } catch (e: Exception) {
-            return ErrorResult(chain.request.error, chain.request, e)
-        }
-
-        if (result is SuccessResult && classifier != null) {
-            return try {
-                val originalBitmap = (result.drawable as? BitmapDrawable)?.bitmap
-                    ?: result.drawable.toBitmap()
-
-                val classifierInputBitmap = if (originalBitmap.config == Bitmap.Config.ARGB_8888) {
-                    originalBitmap
-                } else {
-                    withContext(Dispatchers.IO) {
-                        try {
-                            originalBitmap.copy(Bitmap.Config.ARGB_8888, false)
-                        } catch (e: Exception) {
-                            null
-                        }
-                    }
-                }
-
-                if (classifierInputBitmap == null) {
-                    return ErrorResult(
-                        chain.request.error,
-                        chain.request,
-                        RuntimeException(
-                            "Bitmap format error for classification",
-                            IllegalStateException("Failed to create ARGB_8888 copy")
-                        )
-                    )
-                }
-
-                val safetyResult = classifier.isImageSafeSuspend(classifierInputBitmap)
-
-                when (safetyResult) {
-                    true -> {
-                        result
-                    }
-
-                    false -> {
-                        val blurredBitmap = applyBlur(chain.request.context, originalBitmap, BLUR_RADIUS)
-
-                        if (blurredBitmap != null && !blurredBitmap.isRecycled) {
-                            result.copy(
-                                drawable = blurredBitmap.toDrawable(chain.request.context.resources)
-                            )
-                        } else {
-                            ErrorResult(
-                                chain.request.error,
-                                chain.request,
-                                RuntimeException(
-                                    "Failed to blur image after safety check",
-                                    IllegalStateException("Blur failed")
-                                )
-                            )
-                        }
-                    }
-
-                    null -> {
-                        ErrorResult(
-                            chain.request.error,
-                            chain.request,
-                            RuntimeException(
-                                "Image safety check failed",
-                                IllegalStateException("Classifier failure")
-                            )
-                        )
-                    }
-                }
-
-            } catch (e: Exception) {
-                ErrorResult(
-                    chain.request.error,
-                    chain.request,
-                    RuntimeException("Image processing error", e)
-                )
-            }
-        }
-        return result
-    }
-
     private companion object {
-        private const val BLUR_RADIUS = 15f
+        private const val TAG = "SafeImage"
+        private const val ERROR_MSG_SAFETY_CHECK = "Error during bitmap safety check."
+        private const val DOWNSCALE_FACTOR = 10
+        private const val BLUR_RADIUS = 25f
     }
 }

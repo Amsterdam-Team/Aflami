@@ -29,6 +29,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
+
         }
     }
     compileOptions {
@@ -66,7 +68,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.core)
-
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.room.runtime)
 
     testImplementation(libs.junit)
