@@ -2,7 +2,7 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.Movie
-import com.example.repository.dto.local.LocalCategoryDto
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 
@@ -20,7 +20,7 @@ class MovieWithCategoryMapper {
         )
     }
 
-    private fun mapCategoryFromLocal(localCategory: LocalCategoryDto): Category {
+    private fun mapCategoryFromLocal(localCategory: LocalMovieCategoryDto): Category {
         return Category(
             id = localCategory.id,
             name = localCategory.name,

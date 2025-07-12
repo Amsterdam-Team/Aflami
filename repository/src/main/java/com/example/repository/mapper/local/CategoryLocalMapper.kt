@@ -1,11 +1,14 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Category
-import com.example.repository.dto.local.LocalCategoryDto
+import com.example.repository.dto.local.LocalMovieCategoryDto
+import com.example.repository.dto.local.LocalTvShowCategoryDto
+import com.example.repository.dto.remote.RemoteCategoryDto
+import com.example.repository.dto.remote.RemoteCategoryResponse
 
 class CategoryLocalMapper {
 
-    fun mapFromLocal(dto: LocalCategoryDto): Category {
+    fun mapFromMovieLocal(dto: LocalMovieCategoryDto): Category {
         return Category(
             id = dto.id,
             name = dto.name,
@@ -13,18 +16,52 @@ class CategoryLocalMapper {
         )
     }
 
-    fun mapToLocal(domain: Category): LocalCategoryDto {
-        return LocalCategoryDto(
+    fun mapFromTvShowLocal(dto: LocalTvShowCategoryDto): Category {
+        return Category(
+            id = dto.id,
+            name = dto.name,
+            image = ""
+        )
+    }
+
+    fun mapToLocal(domain: Category): LocalMovieCategoryDto {
+        return LocalMovieCategoryDto(
             id = domain.id,
             name = domain.name,
         )
     }
 
-    fun mapListFromLocal(dtos: List<LocalCategoryDto>): List<Category> {
-        return dtos.map { mapFromLocal(it) }
+    fun mapListFromMovieLocal(dtos: List<LocalMovieCategoryDto>): List<Category> {
+        return dtos.map { mapFromMovieLocal(it) }
     }
 
-    fun mapListToLocal(domains: List<Category>): List<LocalCategoryDto> {
+    fun mapListFromTvShowLocal(dtos: List<LocalTvShowCategoryDto>): List<Category> {
+        return dtos.map { mapFromTvShowLocal(it) }
+    }
+
+    fun mapListToLocal(domains: List<Category>): List<LocalMovieCategoryDto> {
         return domains.map { mapToLocal(it) }
+    }
+
+    fun mapToLocalMovieCategories(remoteMovieCategoryResponse: RemoteCategoryResponse): List<LocalMovieCategoryDto> {
+        return remoteMovieCategoryResponse.genres.map { mapToLocalMovieCategory(it) }
+    }
+
+    fun mapToLocalMovieCategory(remoteMovieCategoryDto: RemoteCategoryDto): LocalMovieCategoryDto {
+        return LocalMovieCategoryDto(
+            id = remoteMovieCategoryDto.id,
+            name = remoteMovieCategoryDto.name
+        )
+    }
+
+    fun mapToLocalTvShowCategories(remoteTvShowCategoryResponse: RemoteCategoryResponse): List<LocalTvShowCategoryDto> {
+        return remoteTvShowCategoryResponse.genres.map { mapToLocalTvShowCategory(it) }
+    }
+
+    fun mapToLocalTvShowCategory(remoteTvShowCategoryDto: RemoteCategoryDto): LocalTvShowCategoryDto {
+        return LocalTvShowCategoryDto(
+            id = remoteTvShowCategoryDto.id,
+            name = remoteTvShowCategoryDto.name
+        )
     }
 }
