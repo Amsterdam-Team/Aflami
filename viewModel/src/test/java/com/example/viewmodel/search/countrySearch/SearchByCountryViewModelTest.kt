@@ -5,8 +5,8 @@ import com.example.domain.exceptions.CountryTooShortException
 import com.example.domain.exceptions.InternetConnectionException
 import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
-import com.example.domain.usecase.GetMoviesByCountryUseCase
-import com.example.domain.usecase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.GetMoviesByCountryUseCase
+import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.entity.Country
 import com.example.viewmodel.entityHelper.createMovie
 import com.example.viewmodel.search.mapper.toListOfUiState
