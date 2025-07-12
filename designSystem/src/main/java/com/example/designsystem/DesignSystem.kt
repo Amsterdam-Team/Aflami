@@ -41,6 +41,7 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.components.UpcomingCard
 import com.example.designsystem.components.appBar.HomeAppBar
 import com.example.designsystem.components.bottomNavBar.BottomNavBar
+import com.example.designsystem.components.bottomNavBar.BottomBarItems
 import com.example.designsystem.components.buttons.FloatingActionButton
 import com.example.designsystem.components.buttons.PrimaryButton
 import com.example.designsystem.components.buttons.SecondaryButton
@@ -71,7 +72,10 @@ fun DesignSystem(){
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         HomeAppBar()
-        BottomNavBar()
+        BottomNavBar(
+            items = mapOf(),
+            selectedBottomBarItems = BottomBarItems.HOME
+        )
         CustomSlider(
             aflamiImageList = listOf(
                 R.drawable.bg_man_with_popcorn,
@@ -212,14 +216,14 @@ fun DesignSystem(){
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             GlobalSearchHub(
-                GlobalSearchHubUI.ACTOR
+                GlobalSearchHubUI.ACTOR,{}
             )
             GlobalSearchHub(
-                GlobalSearchHubUI.WORLD
+                GlobalSearchHubUI.WORLD, {}
             )
         }
         MovieCard(
-            movieImage = painterResource(R.drawable.bg_man_with_popcorn),
+            movieImage = "",
             movieTitle = "Eternal Sunshine of the Spotless mind",
             movieType = "Sci-fi",
             movieYear = "2002",
@@ -227,7 +231,7 @@ fun DesignSystem(){
             movieRating = "9.8"
         )
         UpcomingCard(
-            movieImage = painterResource(R.drawable.bg_man_with_popcorn),
+            movieImage = "",
             movieTitle = "Eternal Sunshine of the Spotless mind",
             movieType = "Sci-fi",
             movieYear = "2002",

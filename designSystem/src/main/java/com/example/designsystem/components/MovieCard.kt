@@ -13,7 +13,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun MovieCard(
-    movieImage: Painter,
+    movieImage: String,
     movieTitle: String,
     movieType: String,
     movieYear: String,
@@ -42,7 +42,7 @@ fun MovieCard(
 private fun MovieCardPreview() {
     AflamiTheme {
         MovieCard(
-            movieImage = painterResource(R.drawable.bg_children_wearing_3d),
+            movieImage = "",
             movieType = "TV show",
             movieYear = "2016",
             movieTitle = "Your Name",

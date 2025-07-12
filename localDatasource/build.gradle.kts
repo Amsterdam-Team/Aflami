@@ -7,8 +7,11 @@ plugins {
 
 android {
     namespace = "com.example.localdatasource"
-}
 
+}
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
 dependencies {
     implementation(project(":repository"))
     // Room
@@ -23,4 +26,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
+    // Date and Time
+    implementation(libs.kotlinx.datetime)
 }
