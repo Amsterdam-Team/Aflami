@@ -40,8 +40,10 @@ jobs:
       - name: Create local.properties
         env:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          BASE_URL: ${{secrets.BASE_URL}}
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
+          echo baseUrl=\"$BASE_URL\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
