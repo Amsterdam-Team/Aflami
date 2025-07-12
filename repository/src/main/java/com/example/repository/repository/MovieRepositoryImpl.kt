@@ -79,15 +79,16 @@ class MovieRepositoryImpl(
                 .results
                 .map {
                     movieRemoteMapper.mapToDomain(it)
-                    launch {
-                        localMovieDataSource.addAllMoviesWithSearchData(
-                            movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
-                            searchKeyword = countryIsoCode,
-                            searchType = SearchType.BY_COUNTRY
-                        )
-                    }
-                    domainMovies
                 }
+            launch {
+                localMovieDataSource.addAllMoviesWithSearchData(
+                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    searchKeyword = countryIsoCode,
+                    searchType = SearchType.BY_COUNTRY
+                )
+            }
+            domainMovies
+        }
     }
 
     private suspend fun handleLocalSearchResponse(searchWithMovies: SearchWithMovies) {
