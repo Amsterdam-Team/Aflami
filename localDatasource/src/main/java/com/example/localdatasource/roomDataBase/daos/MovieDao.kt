@@ -16,25 +16,16 @@ interface MovieDao {
     @Query(
         """
         SELECT * FROM movies 
-        WHERE id IN (
+        WHERE movieId IN (
             SELECT movieId FROM SearchDto 
             WHERE searchKeyword = :keyword 
               AND searchType = :searchType
-              AND (:rating IS NULL OR rating = :rating)
         )
-        AND (:category IS NULL OR id IN (
-            SELECT movieId FROM movie_category_cross_ref
-            WHERE categoryId IN (
-                SELECT id FROM categories WHERE name = :category
-            )
-        ))
         """
     )
     suspend fun getMoviesByKeywordAndSearchType(
         keyword: String,
-        searchType: SearchType,
-        rating: Int?,
-        category: String?
+        searchType: SearchType
     ): List<MovieWithCategories>
 
     @Upsert

@@ -6,28 +6,32 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.localdatasource.roomDataBase.converter.SearchTypeConverter
-import com.example.localdatasource.roomDatabase.converter.InstantConverter
 import com.example.localdatasource.roomDataBase.daos.CategoryDao
 import com.example.localdatasource.roomDataBase.daos.CountryDao
 import com.example.localdatasource.roomDataBase.daos.MovieDao
 import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.example.localdatasource.roomDataBase.daos.TvShowDao
-import com.example.repository.dto.local.LocalCategoryDto
+import com.example.localdatasource.roomDatabase.converter.InstantConverter
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalCountryDto
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.LocalSearchDto
+import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
 import com.example.repository.dto.local.MovieCategoryCrossRefDto
+import com.example.repository.dto.local.SearchMovieCrossRefDto
 
 @Database(
     entities = [LocalSearchDto::class,
         LocalCountryDto::class,
-        LocalCategoryDto::class,
+        LocalMovieCategoryDto::class,
+        LocalTvShowCategoryDto::class,
         LocalMovieDto::class,
         LocalTvShowDto::class,
         LocalTvShowWithSearchDto::class,
-        MovieCategoryCrossRefDto::class],
+        MovieCategoryCrossRefDto::class,
+        SearchMovieCrossRefDto::class],
     version = 1,
     exportSchema = true
 )
@@ -55,7 +59,7 @@ abstract class AflamiDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context): AflamiDatabase {
             return Room.databaseBuilder(context, AflamiDatabase::class.java, DATABASE_NAME)
-                .createFromAsset("database/$DATABASE_NAME.db")
+                .fallbackToDestructiveMigration(false)
                 .build()
         }
     }

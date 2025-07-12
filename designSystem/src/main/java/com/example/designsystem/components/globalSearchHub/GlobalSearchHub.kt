@@ -2,9 +2,11 @@ package com.example.designsystem.components.globalSearchHub
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,7 +23,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,15 +33,19 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun GlobalSearchHub(
-    globalSearchHubUI: GlobalSearchHubUI, modifier: Modifier = Modifier
+    globalSearchHubUI: GlobalSearchHubUI,
+    onItemClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(
                 brush = Brush.verticalGradient(globalSearchHubUI.gradient), alpha = 0.8f
             )
-            .height(100.dp)
+            .aspectRatio(1.6f)
+            .clickable { onItemClick() }
     ) {
         Column(
             modifier = Modifier
@@ -83,7 +88,9 @@ fun GlobalSearchHub(
 private fun GlobalSearchHubWorldPreview() {
     AflamiTheme {
         GlobalSearchHub(
-            globalSearchHubUI = GlobalSearchHubUI.WORLD, modifier = Modifier.size(160.dp, 100.dp)
+            globalSearchHubUI = GlobalSearchHubUI.WORLD,
+            modifier = Modifier.size(160.dp, 100.dp),
+            onItemClick = {}
         )
     }
 }
@@ -93,7 +100,9 @@ private fun GlobalSearchHubWorldPreview() {
 private fun GlobalSearchHubActorPreview() {
     AflamiTheme {
         GlobalSearchHub(
-            globalSearchHubUI = GlobalSearchHubUI.ACTOR, modifier = Modifier.size(160.dp, 100.dp)
+            globalSearchHubUI = GlobalSearchHubUI.ACTOR,
+            modifier = Modifier.size(160.dp, 100.dp),
+            onItemClick = {}
         )
     }
 }
