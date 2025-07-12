@@ -12,11 +12,30 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Setup Android Environment
-        uses: ./.github/actions/setup-android
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v4
         with:
-          firebase-json: ${{ secrets.FIREBASE_JSON }}
-          bearer-token: ${{ secrets.BEARER_TOKEN }}
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: gradle
+
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.FIREBASE_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+
+      - name: Create local.properties
+        env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          BASE_URL: ${{secrets.BASE_URL}}
+        run: |
+          echo bearerToken=\"$BEARER_TOKEN\" > local.properties
+          echo baseUrl=\"$BASE_URL\" >> local.properties
+
+      - name: Grant execute permissions for gradlew
+        run: chmod +x gradlew
 
       - name: Clean Project
         run: ./gradlew clean
