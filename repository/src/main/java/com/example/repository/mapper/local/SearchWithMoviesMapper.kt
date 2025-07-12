@@ -1,6 +1,7 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Movie
+import com.example.repository.dto.local.relation.SearchWithMovies
 
 class SearchWithMoviesMapper {
     fun mapFromSearchWithMovies(searchWithMovies: SearchWithMovies): List<Movie> {
