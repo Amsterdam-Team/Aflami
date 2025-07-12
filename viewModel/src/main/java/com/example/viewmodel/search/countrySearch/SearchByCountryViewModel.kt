@@ -34,10 +34,7 @@ class SearchByCountryViewModel(
 
     fun onSelectCountry(country: CountryUiState) {
         sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
-        val countryIsoCode =
-            state.value.suggestedCountries.find { it.countryName == country.countryName }?.countryIsoCode
-                ?: ""
-        getMoviesByCountry(countryIsoCode)
+        getMoviesByCountry(country.countryIsoCode)
     }
 
     private fun getMoviesByCountry(countryIsoCode: String) {
@@ -74,12 +71,13 @@ class SearchByCountryViewModel(
     }
 
     private fun onError(exception: AflamiException) {
-        when (exception) {
+        val errorEffect =  when (exception) {
             is InternetConnectionException -> SearchByCountryEffect.NoInternetConnectionEffect
             is NoSuggestedCountriesException -> SearchByCountryEffect.NoSuggestedCountriesEffect
             is NoMoviesForCountryException -> SearchByCountryEffect.NoMoviesEffect
             is CountryTooShortException -> SearchByCountryEffect.CountryTooShortEffect
-            else -> {}
+            else -> {SearchByCountryEffect.UnknownErrorEffect}
         }
+        sendNewEffect(errorEffect)
     }
 }

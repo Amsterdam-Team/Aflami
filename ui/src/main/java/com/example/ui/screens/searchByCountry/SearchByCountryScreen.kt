@@ -94,9 +94,6 @@ fun SearchByCountryScreen(
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> {
                     noSuggestedCountry = true
                 }
-                SearchByCountryEffect.SuggestedCountriesLoadedEffect -> {
-                    noSuggestedCountry = false
-                }
 
                 SearchByCountryEffect.ShowCountriesDropDown -> {
                     showCountriesDropdown = true
@@ -111,6 +108,8 @@ fun SearchByCountryScreen(
                 }
 
                 SearchByCountryEffect.CountryTooShortEffect -> {}
+                SearchByCountryEffect.UnknownErrorEffect -> {}
+                null -> {}
             }
         }
     }
