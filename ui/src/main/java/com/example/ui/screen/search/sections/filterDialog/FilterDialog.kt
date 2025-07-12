@@ -33,8 +33,6 @@ import com.example.designsystem.components.buttons.SecondaryButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.viewmodel.common.GenreItemUiState
-import com.example.viewmodel.common.MovieGenreType
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.FilterItemUiState
 
@@ -112,8 +110,18 @@ fun FilterDialog(
             ) {
                 items(state.genreUiStates) {
                     Chip(
-                        icon = painterResource(R.drawable.ic_cat_war),
-                        label = it.genreName,
+                        icon = painterResource(
+                            getGenreIcon(
+                                genreName = it.genreName,
+                                tabOption = it.tabOption
+                            )
+                        ),
+                        label = stringResource(
+                            getGenreLabel(
+                                genreName = it.genreName,
+                                tabOption = it.tabOption
+                            )
+                        ),
                         isSelected = false,
                         onClick = { interaction::onGenreButtonChanged }
                     )
