@@ -8,16 +8,17 @@ import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
 import io.ktor.client.call.body
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
 
-class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovieDatasource {
-
+class RemoteMovieDatasourceImpl(
+    private val ktorClient: KtorClient,
+    private val json: Json,
+) : RemoteMovieDatasource {
     override suspend fun getMoviesByKeyword(
-        keyword: String,
-        rating: Int,
-        categoryId: Long?
-    ): List<RemoteMovieResponse> {
-        val selectedCategoryId: String = categoryId?.toString() ?: ""
-        return ktorClient.get("$BASE_URL/discover/movie&query=$keyword&vote_average.lte=$rating&with_genres=$selectedCategoryId")
+        keyword: String
+    ): RemoteMovieResponse {
+        return ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword")
             .body()
     }
 
@@ -29,7 +30,7 @@ class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovi
                 .actors
                 .joinToString(separator = "|") { it.name }
 
-            ktorClient.get("${Endpoints.GET_MOVIES_BY_ACTOR_NAME_URL}?$WITH_CAST_KEY=$actorsByName")
+            ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$WITH_CAST_KEY=$actorsByName")
         }
     }
 
@@ -38,6 +39,15 @@ class RemoteMovieDatasourceImpl(private val ktorClient: KtorClient) : RemoteMovi
     ): RemoteActorSearchResponse {
         return safeCall<RemoteActorSearchResponse> {
             ktorClient.get("${Endpoints.GET_ACTOR_NAME_BY_ID_URL}?$QUERY_KEY=$name")
+        }
+    }
+
+    override suspend fun getMoviesByCountryIsoCode(
+        countryIsoCode: String
+    ): RemoteMovieResponse {
+        return safeCall<RemoteMovieResponse> {
+            val response = ktorClient.get("$BASE_URL/discover/movie?with_origin_country=$countryIsoCode")
+            return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
 

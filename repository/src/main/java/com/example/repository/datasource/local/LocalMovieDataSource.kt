@@ -7,16 +7,12 @@ import com.example.repository.dto.local.utils.SearchType
 interface LocalMovieDataSource {
     suspend fun getMoviesByKeywordAndSearchType(
         keyword: String,
-        searchType: SearchType,
-        rating: Int?,
-        category: String?
+        searchType: SearchType
     ): List<MovieWithCategories>
 
     suspend fun addAllMoviesWithSearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
-        searchType: SearchType,
-        rating: Int?,
-        category: String?
+        searchType: SearchType
     )
 }

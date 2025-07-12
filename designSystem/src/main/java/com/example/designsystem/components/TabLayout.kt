@@ -1,10 +1,10 @@
 package com.example.designsystem.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
+import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -44,46 +45,49 @@ fun TabsLayout(
     indicatorColor: Color = AppTheme.color.secondary,
     dividerColor: Color = AppTheme.color.stroke
 ) {
-    ScrollableTabRow(
-        modifier = modifier,
-        containerColor = containerColor,
-        selectedTabIndex = selectedIndex,
-        edgePadding = innerPadding,
-        divider = { HorizontalDivider(thickness = 1.dp, color = dividerColor) },
-        indicator = { list ->
-            TabRowDefaults.SecondaryIndicator(
-                height = 5.dp,
-                color = indicatorColor,
-                modifier = Modifier
-                    .tabIndicatorOffset(list[selectedIndex])
-                    .padding(start = 24.dp, end = 40.dp)
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            )
-        }
-    ) {
-        tabs.fastForEachIndexed { index, text ->
-            Tab(
-                modifier = Modifier
-                    .width(tabWidth)
-                    .padding(end = if (index == tabs.lastIndex) 0.dp else tabsEndSpace),
-                selected = index == selectedIndex,
-                onClick = { onSelectTab(index) },
-                selectedContentColor = selectedTextColor,
-                unselectedContentColor = unselectedTextColor,
-            ) {
-                Text(
-                    modifier = Modifier.padding(
-                        top = tabTopPadding,
-                        bottom = tabBottomPadding
-                    ),
-                    text = text,
-                    fontSize = 14.sp,
-                    lineHeight = 22.sp,
-                    letterSpacing = 0.sp,
-                    textAlign = TextAlign.Center
+    Column(modifier = Modifier.fillMaxWidth()) {
+        ScrollableTabRow(
+            modifier = modifier.fillMaxWidth(),
+            containerColor = containerColor,
+            selectedTabIndex = selectedIndex,
+            edgePadding = innerPadding,
+            divider = {},
+            indicator = { list ->
+                TabRowDefaults.SecondaryIndicator(
+                    height = 5.dp,
+                    color = indicatorColor,
+                    modifier = Modifier
+                        .tabIndicatorOffset(list[selectedIndex])
+                        .padding(start = 24.dp, end = 40.dp)
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                 )
             }
+        ) {
+            tabs.fastForEachIndexed { index, text ->
+                Tab(
+                    modifier = Modifier
+                        .width(tabWidth)
+                        .padding(end = if (index == tabs.lastIndex) 0.dp else tabsEndSpace),
+                    selected = index == selectedIndex,
+                    onClick = { onSelectTab(index) },
+                    selectedContentColor = selectedTextColor,
+                    unselectedContentColor = unselectedTextColor,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = tabTopPadding,
+                            bottom = tabBottomPadding
+                        ),
+                        text = text,
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp,
+                        letterSpacing = 0.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
+        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = dividerColor)
     }
 }
 

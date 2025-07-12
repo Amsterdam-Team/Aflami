@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movies">Movies</string>
+    <string name="search_suggestions_hub">Search Suggestions Hub</string>
+
+    <!-- Search validation error messages -->
+    <string name="search_error_query_too_short">Too short. Enter at least 2 characters.</string>
+    <string name="search_error_query_too_long">Too long. Try a shorter search.</string>
+    <string name="search_error_invalid_characters">Invalid characters used.</string>
+    <string name="search_error_blank_query">Please enter something.</string>
+    <string name="search_error_unknown">An unknown error occurred.</string>
+</resources>
