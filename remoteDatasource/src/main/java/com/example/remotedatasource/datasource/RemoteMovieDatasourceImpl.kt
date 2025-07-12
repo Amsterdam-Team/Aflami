@@ -1,5 +1,6 @@
 package com.example.remotedatasource.datasource
 
+import android.util.Log
 import com.example.remotedatasource.BuildConfig
 import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
@@ -20,6 +21,7 @@ class RemoteMovieDatasourceImpl(
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
             val response = ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword")
+            Log.e("bk", "bodyAsText: ${response.bodyAsText()}")
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }

@@ -268,7 +268,7 @@ private fun ExploreCountries(
 }
 
 @Composable
-private fun Loading(
+internal fun Loading(
     modifier: Modifier = Modifier
 ) {
     Column(

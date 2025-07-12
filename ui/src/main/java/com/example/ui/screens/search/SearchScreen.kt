@@ -1,5 +1,6 @@
 package com.example.ui.screens.search
 
+import android.R.attr.name
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -33,6 +34,7 @@ import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.FilterDialog
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
+import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.FilterInteractionListener
@@ -68,8 +70,6 @@ fun SearchScreen(
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
-
-                null -> {}
             }
         }
     }
@@ -131,10 +131,9 @@ private fun SearchContent(
                     if (state.selectedTabOption == TabOption.MOVIES) state.movies
                     else state.tvShows,
                 ) { mediaItem ->
-                    mediaItem.apply {
+                    with(mediaItem) {
                         MovieCard(
-                            modifier = Modifier.animateItem(),
-                            movieImage = mediaItem.posterImage,
+                            movieImage = posterImage,
                             movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
                             else stringResource(R.string.movies),
                             movieYear = yearOfRelease,
@@ -158,6 +157,10 @@ private fun SearchContent(
                 state = state.filterItemUiState,
                 interaction = filterInteraction,
             )
+        }
+
+        AnimatedVisibility(state.isLoading) {
+            Loading()
         }
     }
 }

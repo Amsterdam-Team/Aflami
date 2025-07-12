@@ -17,9 +17,11 @@ import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -54,9 +56,10 @@ class GlobalSearchViewModel(
     }
 
     private fun observeSearchQueryChanges() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _query.debounce(300)
                 .map(String::trim)
+                .filter(String::isNotEmpty)
                 .collect(::onSearchQueryChanged)
         }
     }
@@ -69,6 +72,7 @@ class GlobalSearchViewModel(
     }
 
     private fun fetchMoviesByQuery(keyword: String) {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = { getMoviesByKeywordUseCase(keyword = keyword) },
             onSuccess = ::onFetchMoviesSuccess,
@@ -77,7 +81,10 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toMoveUiStates()) }
+        Log.e("bk", movies.toString())
+
+        updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
+        Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
     private fun fetchTvShowsByQuery(keyword: String) {
@@ -115,6 +122,7 @@ class GlobalSearchViewModel(
                 tvShows = state.value.tvShows,
             )
         }
+        onSearchQueryChanged(state.value.query)
     }
 
     override fun onRecentSearchClicked(keyword: String) = onTextValuedChanged(keyword)
@@ -215,7 +223,7 @@ class GlobalSearchViewModel(
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
                     rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
-                    categoryName =currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.name
+                    categoryName = currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.name
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,
@@ -239,6 +247,8 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
+        Log.e("bk", "exception: $exception")
+
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 
