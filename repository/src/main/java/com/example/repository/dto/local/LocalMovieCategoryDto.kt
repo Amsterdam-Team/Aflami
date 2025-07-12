@@ -9,6 +9,6 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["name"], unique = true)]
 )
 data class LocalMovieCategoryDto(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = false) val categoryId: Long,
     val name: String
 )

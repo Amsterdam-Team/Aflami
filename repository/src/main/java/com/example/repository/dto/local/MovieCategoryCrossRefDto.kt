@@ -9,13 +9,13 @@ import androidx.room.ForeignKey
     foreignKeys = [
         ForeignKey(
             entity = LocalMovieDto::class,
-            parentColumns = ["id"],
+            parentColumns = ["movieId"],
             childColumns = ["movieId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = LocalMovieCategoryDto::class,
-            parentColumns = ["id"],
+            parentColumns = ["categoryId"],
             childColumns = ["categoryId"],
             onDelete = ForeignKey.CASCADE
         )

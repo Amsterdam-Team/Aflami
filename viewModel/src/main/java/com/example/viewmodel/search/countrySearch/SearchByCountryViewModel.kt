@@ -5,8 +5,8 @@ import com.example.domain.exceptions.CountryTooShortException
 import com.example.domain.exceptions.InternetConnectionException
 import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
-import com.example.domain.usecase.GetMoviesByCountryUseCase
-import com.example.domain.usecase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.GetMoviesByCountryUseCase
+import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState

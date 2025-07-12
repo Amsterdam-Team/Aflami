@@ -20,6 +20,7 @@ import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
 import com.example.repository.dto.local.MovieCategoryCrossRefDto
+import com.example.repository.dto.local.SearchMovieCrossRefDto
 
 @Database(
     entities = [LocalSearchDto::class,
@@ -29,7 +30,8 @@ import com.example.repository.dto.local.MovieCategoryCrossRefDto
         LocalMovieDto::class,
         LocalTvShowDto::class,
         LocalTvShowWithSearchDto::class,
-        MovieCategoryCrossRefDto::class],
+        MovieCategoryCrossRefDto::class,
+        SearchMovieCrossRefDto::class],
     version = 1,
     exportSchema = true
 )

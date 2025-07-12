@@ -49,7 +49,7 @@ class CategoryLocalMapper {
 
     fun mapToLocalMovieCategory(remoteMovieCategoryDto: RemoteCategoryDto): LocalMovieCategoryDto {
         return LocalMovieCategoryDto(
-            id = remoteMovieCategoryDto.id,
+            categoryId = remoteMovieCategoryDto.id,
             name = remoteMovieCategoryDto.name
         )
     }
@@ -60,7 +60,7 @@ class CategoryLocalMapper {
 
     fun mapToLocalTvShowCategory(remoteTvShowCategoryDto: RemoteCategoryDto): LocalTvShowCategoryDto {
         return LocalTvShowCategoryDto(
-            id = remoteTvShowCategoryDto.id,
+            categoryId = remoteTvShowCategoryDto.id,
             name = remoteTvShowCategoryDto.name
         )
     }
