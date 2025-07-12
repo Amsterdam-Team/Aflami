@@ -10,12 +10,15 @@ import com.example.domain.usecase.GetSuggestedCountriesUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
+import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
 class SearchByCountryViewModel(
-    private val suggestedCountriesUseCase: GetSuggestedCountriesUseCase,
-    private val moviesByCountryUseCase: GetMoviesByCountryUseCase,
+    private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
+    private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
+    dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
-    SearchByCountryScreenState()
+    SearchByCountryScreenState(),
+    dispatcherProvider
 ) {
 
     init {
@@ -40,7 +43,7 @@ class SearchByCountryViewModel(
     private fun getMoviesByCountry(countryIsoCode: String) {
         sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
         tryToExecute(
-            action = { moviesByCountryUseCase.invoke(countryIsoCode) },
+            action = { getMoviesByCountryUseCase(countryIsoCode) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
             onError = { exception -> onError(exception) }
         )
@@ -49,7 +52,7 @@ class SearchByCountryViewModel(
     private fun getSuggestedCountries(countryName: String) {
         sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
         tryToExecute(
-            action = { suggestedCountriesUseCase.invoke(countryName) },
+            action = { getSuggestedCountriesUseCase(countryName) },
             onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries.toUiState()) },
             onError = { exception -> onError(exception) }
         )
