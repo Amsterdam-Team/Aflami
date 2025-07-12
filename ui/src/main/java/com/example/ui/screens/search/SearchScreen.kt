@@ -27,6 +27,8 @@ import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
+import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.viewmodel.common.MediaType
@@ -43,6 +45,7 @@ fun SearchScreen(
     viewModel: GlobalSearchViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+    val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -60,7 +63,7 @@ fun SearchScreen(
                 }
 
                 SearchUiEffect.NavigateToWorldSearch -> {
-                    Log.e("bk", "collect: NavigateToWorldSearch")
+                    navController.navigate(Route.SearchByCountry)
                 }
 
                 else -> {}
