@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 
 open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
+    interface BaseUiEffect
+
     private val _state: MutableStateFlow<S> = MutableStateFlow(initialState)
     val state: StateFlow<S> = _state.asStateFlow()
 

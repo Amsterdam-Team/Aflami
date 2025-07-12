@@ -3,17 +3,20 @@ package com.example.localdatasource.roomDataBase.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.repository.dto.local.LocalCategoryDto
+import com.example.repository.dto.local.LocalMovieCategoryDto
+import com.example.repository.dto.local.LocalTvShowCategoryDto
 
 @Dao
 interface CategoryDao {
+    @Upsert
+    suspend fun upsertAllMovieCategories(categories: List<LocalMovieCategoryDto>)
 
     @Upsert
-    suspend fun upsertCategory(category: LocalCategoryDto)
+    suspend fun upsertAllTvShowCategories(categories: List<LocalTvShowCategoryDto>)
 
-    @Upsert
-    suspend fun upsertAllCategories(categories: List<LocalCategoryDto>)
+    @Query("SELECT * FROM movie_categories")
+    suspend fun getAllMovieCategories(): List<LocalMovieCategoryDto>
 
-    @Query("SELECT * FROM categories")
-    suspend fun getAllCategories(): List<LocalCategoryDto>
+    @Query("SELECT * FROM tv_show_categories")
+    suspend fun getAllTvShowCategories(): List<LocalTvShowCategoryDto>
 }

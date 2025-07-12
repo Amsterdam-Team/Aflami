@@ -22,6 +22,7 @@ val localDataSourceModule = module {
     single<CategoryDao> { get<AflamiDatabase>().categoryDao() }
     single<MovieDao> { get<AflamiDatabase>().movieDao() }
     single<TvShowDao> { get<AflamiDatabase>().tvShowDao() }
+    single<RecentSearchDao> { get<AflamiDatabase>().recentSearchDao() }
 
     single<LocalCountryDataSource> { LocalCountryDataSourceImpl(get()) }
     single<LocalMovieDataSource> { LocalMovieDataSourceImpl(get()) }

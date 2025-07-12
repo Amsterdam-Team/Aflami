@@ -18,5 +18,5 @@ val repositoryModule = module {
     single { MovieLocalMapper(get()) }
     single { RemoteMovieMapper() }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get()) }
+    single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get(), get()) }
 }

@@ -22,7 +22,7 @@ class LocalTvShowDataSourceImpl(
 
         val mappings = tvShows.map {
             LocalTvShowWithSearchDto(
-                tvShowId = it.id,
+                tvShowId = it.categoryId,
                 searchKeyword = searchKeyword
             )
         }

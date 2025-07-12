@@ -14,7 +14,7 @@ import androidx.room.ForeignKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = LocalCategoryDto::class,
+            entity = LocalMovieCategoryDto::class,
             parentColumns = ["categoryId"],
             childColumns = ["categoryId"],
             onDelete = ForeignKey.CASCADE

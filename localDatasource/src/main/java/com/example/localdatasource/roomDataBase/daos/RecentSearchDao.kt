@@ -2,6 +2,7 @@ package com.example.localdatasource.roomDataBase.daos
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
@@ -21,6 +22,7 @@ interface RecentSearchDao {
     @Query("DELETE FROM SearchDto WHERE expireDate <= :expireDate")
     suspend fun deleteAllExpiredSearches(expireDate: Instant)
 
+    @Transaction
     @Query("SELECT * FROM SearchDto WHERE searchKeyword = :keyword and searchType = :searchType")
     suspend fun getSearchByKeywordAndType(
         keyword: String,

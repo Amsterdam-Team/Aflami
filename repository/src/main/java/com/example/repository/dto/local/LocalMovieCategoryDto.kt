@@ -5,10 +5,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "categories",
+    tableName = "movie_categories",
     indices = [Index(value = ["name"], unique = true)]
 )
-data class LocalCategoryDto(
-    @PrimaryKey val categoryId: Long,
+data class LocalMovieCategoryDto(
+    @PrimaryKey(autoGenerate = false) val categoryId: Long,
     val name: String
 )
