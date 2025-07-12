@@ -12,7 +12,7 @@ import com.example.repository.mapper.local.SearchWithMoviesMapper
 import com.example.repository.mapper.remote.RemoteMovieMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
@@ -20,7 +20,7 @@ class MovieRepositoryImpl(
     private val localMovieDataSource: LocalMovieDataSource,
     private val remoteMovieDataSource: RemoteMovieDatasource,
     private val movieLocalMapper: MovieLocalMapper,
-    private val remoteMovieMapper: RemoteMovieMapper,
+    private val movieRemoteMapper: RemoteMovieMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val searchWithMoviesMapper: SearchWithMoviesMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -33,29 +33,61 @@ class MovieRepositoryImpl(
             )
             if (localMovies.movies.isNotEmpty()) handleLocalSearchResponse(localMovies)
             val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword)
-            async {
-                //todo insert keyword
-                //    insert movie
-//                localMovieDataSource.addAllMoviesWithSearchData(
-//                    movies = ,
-//                    searchKeyword = keyword,
-//                    searchType = SearchType.BY_KEYWORD
-//                )
+            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            launch {
+                localMovieDataSource.addAllMoviesWithSearchData(
+                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    searchKeyword = keyword,
+                    searchType = SearchType.BY_KEYWORD
+                )
             }
-            remoteMovieMapper.mapResponseToDomain(remoteMovies)
+            domainMovies
         }
     }
 
     override suspend fun getMoviesByActor(actorName: String): List<Movie> {
-        TODO("Not yet implemented")
+        return withContext(dispatcher) {
+            val localMovies = recentSearchDatasource.getSearchByKeywordAndSearchType(
+                keyword = actorName,
+                searchType = SearchType.BY_ACTOR
+            )
+            if (localMovies.movies.isNotEmpty()) handleLocalSearchResponse(localMovies)
+            val remoteMovies = remoteMovieDataSource.getMoviesByActorName(actorName)
+            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            launch {
+                localMovieDataSource.addAllMoviesWithSearchData(
+                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    searchKeyword = actorName,
+                    searchType = SearchType.BY_ACTOR
+                )
+            }
+            domainMovies
+        }
+
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
-        val remoteMovies = remoteMovieDataSource
-            .getMoviesByCountryIsoCode(countryIsoCode)
-            .results
-            .map { remoteMovieMapper.mapToDomain(it) }
-        return remoteMovies
+        return withContext(dispatcher) {
+            val localMovies = recentSearchDatasource.getSearchByKeywordAndSearchType(
+                keyword = countryIsoCode,
+                searchType = SearchType.BY_COUNTRY
+            )
+
+            if (localMovies.movies.isNotEmpty()) handleLocalSearchResponse(localMovies)
+            val domainMovies = remoteMovieDataSource
+                .getMoviesByCountryIsoCode(countryIsoCode)
+                .results
+                .map {
+                    movieRemoteMapper.mapToDomain(it)
+                    launch {
+                        localMovieDataSource.addAllMoviesWithSearchData(
+                            movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                            searchKeyword = countryIsoCode,
+                            searchType = SearchType.BY_COUNTRY
+                        )
+                    }
+                    domainMovies
+                }
     }
 
     private suspend fun handleLocalSearchResponse(searchWithMovies: SearchWithMovies) {

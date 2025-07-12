@@ -6,13 +6,11 @@ import kotlinx.datetime.Instant
 
 @Entity(
     tableName = "SearchDto",
-    primaryKeys = ["searchKeyword", "movieId", "searchType"]
+    primaryKeys = ["searchKeyword", "searchType"]
 )
 data class LocalSearchDto(
     val searchKeyword: String,
     val searchType: SearchType,
-    val rating: Int?,
-    val category: String?,
     val expireDate: Instant
 )
 

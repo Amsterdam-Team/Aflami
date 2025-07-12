@@ -4,7 +4,6 @@ import com.example.entity.Movie
 import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
 import com.example.repository.dto.local.LocalSearchDto
-import com.example.repository.dto.local.relation.SearchWithMovies
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

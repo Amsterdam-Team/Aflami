@@ -10,7 +10,7 @@ import com.example.repository.dto.local.SearchMovieCrossRefDto
 data class SearchWithMovies(
     @Embedded val search: LocalSearchDto,
     @Relation(
-        parentColumn = "searchKeyword,movieId,searchType",
+        parentColumn = "searchKeyword",
         entityColumn = "movieId",
         associateBy = Junction(SearchMovieCrossRefDto::class)
     )
