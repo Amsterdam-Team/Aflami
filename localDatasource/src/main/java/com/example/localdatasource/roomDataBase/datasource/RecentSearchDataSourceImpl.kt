@@ -45,9 +45,6 @@ class RecentSearchDataSourceImpl(
             LocalSearchDto(
                 searchKeyword = searchKeyword,
                 searchType = searchType,
-                rating = rating,
-                category = category,
-                movieId = movie.id,
                 expireDate = expireDate
             )
         }.forEach { insertOrReplaceSearch(it) }

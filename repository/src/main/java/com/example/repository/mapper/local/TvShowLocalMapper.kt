@@ -1,26 +1,28 @@
 package com.example.repository.mapper.local
 
-import com.example.entity.Category
 import com.example.entity.TvShow
 import com.example.repository.dto.local.LocalTvShowDto
+import com.example.repository.dto.local.relation.TvShowWithCategories
 
-class TvShowLocalMapper {
+class TvShowLocalMapper(
+    private val categoryLocalMapper: CategoryLocalMapper
+) {
 
-    fun mapFromLocal(dto: LocalTvShowDto, categories: List<Category> = emptyList()): TvShow {
+    fun mapFromLocal(dto: TvShowWithCategories): TvShow {
         return TvShow(
-            id = dto.id,
-            name = dto.name,
-            description = dto.description,
-            poster = dto.poster,
-            productionYear = dto.productionYear,
-            rating = dto.rating,
-            categories = categories
+            id = dto.tvShow.tvId,
+            name = dto.tvShow.name,
+            description = dto.tvShow.description,
+            poster = dto.tvShow.poster,
+            productionYear = dto.tvShow.productionYear,
+            rating = dto.tvShow.rating,
+            categories = categoryLocalMapper.mapListFromLocal(dto.categories)
         )
     }
 
     fun mapToLocal(domain: TvShow): LocalTvShowDto {
         return LocalTvShowDto(
-            id = domain.id,
+            tvId = domain.id,
             name = domain.name,
             description = domain.description,
             poster = domain.poster,
@@ -29,11 +31,8 @@ class TvShowLocalMapper {
         )
     }
 
-    fun mapListFromLocal(dtos: List<LocalTvShowDto>, categoriesMap: Map<Long, List<Category>>): List<TvShow> {
-        return dtos.map { dto ->
-            val categories = categoriesMap[dto.id] ?: emptyList()
-            mapFromLocal(dto, categories)
-        }
+    fun mapListFromLocal(dtoList: List<TvShowWithCategories>): List<TvShow> {
+        return dtoList.map { mapFromLocal(it) }
     }
 
     fun mapListToLocal(domains: List<TvShow>): List<LocalTvShowDto> {

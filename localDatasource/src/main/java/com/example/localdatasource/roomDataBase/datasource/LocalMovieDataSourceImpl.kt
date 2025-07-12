@@ -33,10 +33,8 @@ class LocalMovieDataSourceImpl(
             LocalSearchDto(
                 searchKeyword = searchKeyword,
                 searchType = searchType,
-                rating = rating,
-                movieId = movie.movieId,
-                category = category,
-                expireDate = Clock.System.now()
+                expireDate = Clock.System.now(),
+
             )
         }
 

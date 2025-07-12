@@ -8,22 +8,10 @@ import kotlinx.datetime.Instant
 
 @Entity(
     tableName = "SearchDto",
-    primaryKeys = ["searchKeyword", "movieId", "searchType"],
-    foreignKeys = [
-        ForeignKey(
-            entity = LocalMovieDto::class,
-            parentColumns = ["id"],
-            childColumns = ["movieId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("movieId")]
+    primaryKeys = ["searchKeyword", "searchType"]
 )
 data class LocalSearchDto(
     val searchKeyword: String,
     val searchType: SearchType,
-    val rating: Int?,
-    val category: String?,
-    val movieId: Long,
     val expireDate: Instant
 )

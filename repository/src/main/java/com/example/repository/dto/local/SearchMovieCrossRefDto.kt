@@ -1,12 +1,14 @@
 package com.example.repository.dto.local
 
 import androidx.room.Entity
+import com.example.repository.dto.local.utils.SearchType
 
 @Entity(
     tableName = "search_movie_cross_ref",
-    primaryKeys = ["searchId", "movieId"]
+    primaryKeys = ["searchKeyword", "searchType"]
 )
 data class SearchMovieCrossRefDto(
-    val searchId: Long,
+    val searchKeyword: String,
+    val searchType: SearchType,
     val movieId: Long
 )

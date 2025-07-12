@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
     tableName = "tv_shows"
 )
 data class LocalTvShowDto(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = false) val tvId: Long,
     val name: String,
     val description: String,
     val poster: String,
