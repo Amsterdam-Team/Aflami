@@ -12,9 +12,10 @@ class GetMoviesByKeywordUseCase(
         rating: Float = 0f,
         categoryName: String = ""
     ): List<Movie> {
+        println("use case ${movieRepository.getMoviesByKeyword(keyword)}")
         return movieRepository.getMoviesByKeyword(keyword)
-            .filter { it.rating == rating }
-            .filter { it.categories.any { category -> category.name == categoryName } }
+//            .filter { it.rating == rating }
+//            .filter { it.categories.any { category -> category.name == categoryName } }
     }
 }
 

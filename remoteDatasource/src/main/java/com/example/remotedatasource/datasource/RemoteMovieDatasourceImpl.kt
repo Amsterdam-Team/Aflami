@@ -11,7 +11,6 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
-
 class RemoteMovieDatasourceImpl(
     private val ktorClient: KtorClient,
     private val json: Json,
@@ -19,8 +18,10 @@ class RemoteMovieDatasourceImpl(
     override suspend fun getMoviesByKeyword(
         keyword: String
     ): RemoteMovieResponse {
-        return ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword")
-            .body()
+        return safeCall<RemoteMovieResponse> {
+            val response = ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword")
+            return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
+        }
     }
 
     override suspend fun getMoviesByActorName(
