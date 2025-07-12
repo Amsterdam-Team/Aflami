@@ -1,5 +1,7 @@
 package com.example.repository.repository
 
+import android.R.attr.end
+import android.service.autofill.Validators.and
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 import com.example.repository.datasource.local.LocalMovieDataSource
@@ -24,31 +26,29 @@ class MovieRepositoryImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
-        return withContext(dispatcher) {
-            val recentSearch =
-                recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
-            val isExpired = !isSearchExpired(recentSearch)
-            if (!isExpired) {
-                val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
-                    keyword = keyword,
-                    searchType = SearchType.BY_KEYWORD
-                )
-                return@withContext movieLocalMapper.mapListFromLocal(localMovies)
-            }
-            deleteRecentSearch(recentSearch)
-            val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword)
-            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
-            launch {
-                localMovieDataSource.addAllMoviesWithSearchData(
-                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
-                    searchKeyword = keyword,
-                    searchType = SearchType.BY_KEYWORD,
-                    expireDate = Clock.System.now()
-                )
-            }
-            domainMovies
+        val recentSearch =
+            recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
+        val isExpired = !isSearchExpired(recentSearch)
+        if (!isExpired) {
+            val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
+                keyword = keyword,
+                searchType = SearchType.BY_KEYWORD
+            )
+            return movieLocalMapper.mapListFromLocal(localMovies)
         }
+        deleteRecentSearch(recentSearch)
+        val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword)
+        val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+
+        localMovieDataSource.addAllMoviesWithSearchData(
+            movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+            searchKeyword = keyword,
+            searchType = SearchType.BY_KEYWORD,
+            expireDate = Clock.System.now()
+        )
+
+        return domainMovies
     }
 
     override suspend fun getMoviesByActor(actorName: String): List<Movie> {
