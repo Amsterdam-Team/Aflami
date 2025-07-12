@@ -5,7 +5,6 @@ import com.example.entity.Movie
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
 import com.example.repository.datasource.remote.RemoteMovieDatasource
-import com.example.repository.dto.local.relation.SearchWithMovies
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.local.SearchWithMoviesMapper

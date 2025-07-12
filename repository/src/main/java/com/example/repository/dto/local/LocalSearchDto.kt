@@ -11,9 +11,6 @@ import kotlinx.datetime.Instant
 data class LocalSearchDto(
     val searchKeyword: String,
     val searchType: SearchType,
-    val rating: Int?,
-    val category: String?,
+    val movieId: Long,
     val expireDate: Instant
 )
-
-//
