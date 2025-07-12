@@ -1,4 +1,4 @@
-package com.example.ui.screen.search.sections
+package com.example.ui.screens.search.sections
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ fun RecentSearchesSection(
     interaction: GlobalSearchInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    AnimatedVisibility(state.recentSearches.isNotEmpty()) {
+    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isEmpty()) {
         Column {
             Row(
                 modifier = modifier
@@ -66,7 +66,6 @@ fun RecentSearchesSection(
                 }
             }
         }
-
     }
 
 

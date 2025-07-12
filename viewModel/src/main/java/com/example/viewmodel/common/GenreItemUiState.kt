@@ -1,9 +1,21 @@
 package com.example.viewmodel.common
 
+import kotlin.collections.map
+
 data class GenreItemUiState(
     val type: GenreType = GenreType.ALL,
     val isSelected: Boolean = true
-)
+){
+    companion object{
+        fun List<GenreItemUiState>.selectByType(type: GenreType): List<GenreItemUiState> {
+            return map { it.copy(isSelected = it.type == type) }
+        }
+
+        fun List<GenreItemUiState>.getSelectedOne(genres: List<GenreItemUiState>): GenreItemUiState {
+            return this.first { it.isSelected == true }
+        }
+    }
+}
 
 enum class GenreType {
     ALL,
@@ -26,15 +38,4 @@ enum class GenreType {
     DRAMA,
     DOCUMENTARY,
     ANIMATION;
-
-    companion object {
-        fun toGenreItemsUiState(): List<GenreItemUiState> {
-            return GenreType.entries.toTypedArray().mapIndexed { index, genreType ->
-                GenreItemUiState(
-                    type = genreType,
-                    isSelected = index == 0
-                )
-            }
-        }
-    }
 }

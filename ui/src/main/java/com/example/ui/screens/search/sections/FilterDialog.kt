@@ -1,4 +1,4 @@
-package com.example.ui.screen.search.sections
+package com.example.ui.screens.search.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.example.ui.screen.search
+package com.example.ui.screens.search
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

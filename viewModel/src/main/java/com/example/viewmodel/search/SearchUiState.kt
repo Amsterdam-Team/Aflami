@@ -6,6 +6,7 @@ import com.example.domain.exceptions.InvalidCharactersException
 import com.example.domain.exceptions.QueryTooLongException
 import com.example.domain.exceptions.QueryTooShortException
 import com.example.viewmodel.common.GenreItemUiState
+import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.TabOption
 
@@ -23,8 +24,17 @@ data class SearchUiState(
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,
-    val selectedGenre: GenreItemUiState = GenreItemUiState(),
-)
+    val genreItemUiStates: List<GenreItemUiState> = defaultGenreItemsUiState,
+){
+    companion object {
+        val defaultGenreItemsUiState = GenreType.entries.toTypedArray().mapIndexed { index, genreType ->
+            GenreItemUiState(
+                type = genreType,
+                isSelected = index == 0
+            )
+        }
+    }
+}
 
 sealed interface SearchErrorUiState {
     object QueryTooShort : SearchErrorUiState
