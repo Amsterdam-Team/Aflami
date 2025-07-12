@@ -13,5 +13,3 @@ data class LocalSearchDto(
     val searchType: SearchType,
     val expireDate: Instant
 )
-
-//

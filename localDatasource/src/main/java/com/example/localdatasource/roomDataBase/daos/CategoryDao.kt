@@ -9,11 +9,11 @@ import com.example.repository.dto.local.LocalCategoryDto
 interface CategoryDao {
 
     @Upsert
-    suspend fun insertOrReplaceCategory(category: LocalCategoryDto)
+    suspend fun upsertCategory(category: LocalCategoryDto)
 
     @Upsert
-    suspend fun insertOrReplaceAll(categories: List<LocalCategoryDto>)
+    suspend fun upsertAllCategories(categories: List<LocalCategoryDto>)
 
     @Query("SELECT * FROM categories")
-    suspend fun getAll(): List<LocalCategoryDto>
+    suspend fun getAllCategories(): List<LocalCategoryDto>
 }

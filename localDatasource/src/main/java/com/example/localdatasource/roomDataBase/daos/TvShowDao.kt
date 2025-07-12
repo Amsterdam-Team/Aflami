@@ -18,7 +18,7 @@ interface TvShowDao {
 
     @Query(
         """
-        SELECT * FROM LocalTvShowDto 
+        SELECT * FROM tv_shows 
         WHERE id IN (
             SELECT tvShowId FROM tvshow_search
             WHERE searchKeyword = :keyword

@@ -8,16 +8,16 @@ class LocalCategoryDataSourceImpl(
     private val dao: CategoryDao
 ) : LocalCategoryDataSource {
 
-    override suspend fun insertOrReplaceCategory(category: LocalCategoryDto) {
-        dao.insertOrReplaceCategory(category)
+    override suspend fun upsertCategory(category: LocalCategoryDto) {
+        dao.upsertCategory(category)
     }
 
-    override suspend fun insertOrReplaceAll(categories: List<LocalCategoryDto>) {
-        dao.insertOrReplaceAll(categories)
+    override suspend fun upsertAllCategories(categories: List<LocalCategoryDto>) {
+        dao.upsertAllCategories(categories)
     }
 
     override suspend fun getAllCategories(): List<LocalCategoryDto> {
-        return dao.getAll()
+        return dao.getAllCategories()
     }
 }
 
