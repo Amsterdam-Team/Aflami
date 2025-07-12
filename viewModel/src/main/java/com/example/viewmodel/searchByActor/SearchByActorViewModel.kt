@@ -5,6 +5,7 @@ import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,8 +14,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class SearchByActorViewModel(
-     private val getMoviesByActorUseCase: GetMoviesByActorUseCase
-) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(SearchByActorScreenState()) {
+    private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
+    dispatcherProvider: DispatcherProvider
+) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(SearchByActorScreenState(),dispatcherProvider) {
 
     init {
         viewModelScope.launch {
@@ -45,13 +47,13 @@ class SearchByActorViewModel(
                 updateSearchByActorResult(result)
             },
             onError = {
-                     sendNewEffect(SearchByActorEffect.NoInternetConnection)
+                sendNewEffect(SearchByActorEffect.NoInternetConnection)
             }
         )
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
-        updateState { it.copy(movies =movies.toListOfUiState(), isLoading = false) }
+        updateState { it.copy(movies = movies.toListOfUiState(), isLoading = false) }
     }
 
     fun onBackClicked() {
