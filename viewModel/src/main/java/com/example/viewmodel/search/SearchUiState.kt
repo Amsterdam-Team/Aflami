@@ -25,6 +25,7 @@ data class SearchUiState(
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,
     val genreItemUiStates: List<GenreItemUiState> = defaultGenreItemsUiState,
+    val isLoading: Boolean = false,
 ){
     companion object {
         val defaultGenreItemsUiState = GenreType.entries.toTypedArray().mapIndexed { index, genreType ->

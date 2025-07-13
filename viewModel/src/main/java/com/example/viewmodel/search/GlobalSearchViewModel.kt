@@ -160,7 +160,9 @@ class GlobalSearchViewModel(
         updateState {
             it.copy(
                 isDialogVisible = false,
-                filterItemUiState = FilterItemUiState()
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false,
+                )
             )
         }
     }
@@ -174,7 +176,7 @@ class GlobalSearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
-        Log.e("bk", "${genreType.name}")
+        Log.e("bk", genreType.name)
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -187,7 +189,13 @@ class GlobalSearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = true,
+                )
+            )
+        }
 
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> applyMoviesFilter()
@@ -201,7 +209,7 @@ class GlobalSearchViewModel(
             action = {
                 getMoviesByKeywordUseCase(
                     keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
+                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
                     categoryName = currentGenreItemUiStates.getSelectedOne(genres = currentGenreItemUiStates).type.name
                 )
             },
@@ -212,7 +220,12 @@ class GlobalSearchViewModel(
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
         updateState {
-            it.copy(movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false)
+            it.copy(
+                movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false,
+                )
+            )
         }
     }
 
@@ -222,7 +235,7 @@ class GlobalSearchViewModel(
             action = {
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
+                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
                     categoryName = currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.name
                 )
             },
@@ -236,14 +249,24 @@ class GlobalSearchViewModel(
             it.copy(
                 tvShows = tvShows.toTvShowUiStates(),
                 isLoading = false,
-                isDialogVisible = false
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false,
+                )
             )
         }
     }
 
     private fun onFilterError(exception: AflamiException) {
         onFetchError(exception)
-        updateState { it.copy(isDialogVisible = false) }
+        updateState {
+            it.copy(
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false
+                )
+            )
+        }
     }
 
     private fun onFetchError(exception: AflamiException) {
