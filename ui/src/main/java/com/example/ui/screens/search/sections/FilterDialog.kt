@@ -1,6 +1,7 @@
-package com.example.ui.screens.search.sections.filterDialog
+package com.example.ui.screens.search.sections
 
-
+import android.R.attr.label
+import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -33,6 +34,10 @@ import com.example.designsystem.components.buttons.SecondaryButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.ui.screens.search.sections.filterDialog.getGenreIcon
+import com.example.ui.screens.search.sections.filterDialog.getGenreLabel
+import com.example.viewmodel.common.GenreType
+import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.FilterItemUiState
 
@@ -43,7 +48,7 @@ fun FilterDialog(
     modifier: Modifier = Modifier
 ) {
     Dialog(
-        onDismissRequest = { interaction::onCancelButtonClicked },
+        onDismissRequest = { interaction.onCancelButtonClicked() },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
@@ -75,7 +80,7 @@ fun FilterDialog(
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = null,
-                    onClick = { interaction::onCancelButtonClicked },
+                    onClick = { interaction.onCancelButtonClicked() },
                     tint = AppTheme.color.title
                 )
             }
@@ -108,22 +113,12 @@ fun FilterDialog(
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                items(state.genreUiStates) {
+                items(state.genreItemUiStates) {
                     Chip(
-                        icon = painterResource(
-                            getGenreIcon(
-                                genreName = it.genreName,
-                                tabOption = it.tabOption
-                            )
-                        ),
-                        label = stringResource(
-                            getGenreLabel(
-                                genreName = it.genreName,
-                                tabOption = it.tabOption
-                            )
-                        ),
-                        isSelected = false,
-                        onClick = { interaction::onGenreButtonChanged }
+                        icon = getGenreIcon(it.type),
+                        label = getGenreLabel(it.type),
+                        isSelected = it.isSelected,
+                        onClick = { interaction.onGenreButtonChanged(it.type) }
                     )
                 }
             }
@@ -172,7 +167,7 @@ private fun RatingBar(
                     .size(24.dp)
                     .weight(1f)
                     .clickable(
-                        onClick = { interaction::onRatingStarChanged },
+                        onClick = { interaction.onRatingStarChanged(starIndex) },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     )
@@ -184,17 +179,16 @@ private fun RatingBar(
 
 @Composable
 @ThemeAndLocalePreviews
-fun FilterDialogPreview() {
+fun FilterDialogPreview2() {
     AflamiTheme {
         FilterDialog(
             state = FilterItemUiState(
                 selectedStarIndex = 5,
-                genreUiStates = emptyList()
             ),
             interaction = object : FilterInteractionListener {
                 override fun onCancelButtonClicked() {}
                 override fun onRatingStarChanged(ratingIndex: Int) {}
-                override fun onGenreButtonChanged(genreName: String) {}
+                override fun onGenreButtonChanged(genreType: GenreType) {}
                 override fun onApplyButtonClicked() {}
                 override fun onClearButtonClicked() {}
             },

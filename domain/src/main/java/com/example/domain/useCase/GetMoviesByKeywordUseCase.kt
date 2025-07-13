@@ -13,8 +13,8 @@ class GetMoviesByKeywordUseCase(
         categoryName: String = ""
     ): List<Movie> {
         return movieRepository.getMoviesByKeyword(keyword)
-            .filter { it.rating == rating }
-            .filter { it.categories.any { category -> category.name == categoryName } }
+//            .filter { it.rating == rating }
+//            .filter { it.categories.any { category -> category.name == categoryName } }
     }
 }
 

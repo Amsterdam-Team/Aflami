@@ -1,5 +1,6 @@
 package com.example.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
@@ -22,12 +23,14 @@ open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: D
     private val _state: MutableStateFlow<S> = MutableStateFlow(initialState)
     val state: StateFlow<S> = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<E?>()
+    private val _effect = MutableSharedFlow<E>()
     val effect = _effect.asSharedFlow()
 
 
     protected fun updateState(updater: (S) -> S) {
-        _state.update(updater)
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update(updater)
+        }
     }
 
     protected fun sendNewEffect(newEffect: E) {

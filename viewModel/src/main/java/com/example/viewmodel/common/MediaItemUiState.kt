@@ -3,15 +3,14 @@ package com.example.viewmodel.common
 import com.example.entity.Movie
 import com.example.entity.TvShow
 
-val base_image_url = "https://image.tmdb.org/t/p/w500"
+const val base_image_url = "https://image.tmdb.org/t/p/w500"
 
 data class MediaItemUiState(
     val name: String = "",
-    val posterImage: String = base_image_url,
+    val posterImage: String = "",
     val mediaType: MediaType = MediaType.MOVIE,
     val yearOfRelease: String = "",
     val rate: String = ""
-
 )
 
 enum class MediaType {

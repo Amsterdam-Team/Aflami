@@ -13,10 +13,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -91,8 +94,13 @@ fun SearchByCountryScreen(
                     showCountriesDropdown = true
                     noSuggestedCountry = false
                 }
+
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> {
                     noSuggestedCountry = true
+                }
+
+                SearchByCountryEffect.SuggestedCountriesLoadedEffect -> {
+                    noSuggestedCountry = false
                 }
 
                 SearchByCountryEffect.ShowCountriesDropDown -> {
@@ -137,10 +145,12 @@ fun SearchByCountryScreenContent(
     screenContent: ScreenContent,
     showCountriesDropdown: Boolean,
 ) {
+    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
         DefaultAppBar(
@@ -149,48 +159,44 @@ fun SearchByCountryScreenContent(
             onNavigateBackClicked = onNavigateBackClicked
         )
 
-        var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
-
-        Column(modifier) {
-            TextField(
-                text = state.selectedCountry,
-                hintText = stringResource(R.string.country_name_hint),
-                onValueChange = { onCountryNameUpdated(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onGloballyPositioned {
-                        textFieldSize = it.size
-                    }
-            )
-
-            Box {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    when (screenContent) {
-                        ScreenContent.COUNTRY_TOUR -> ExploreCountries()
-                        ScreenContent.LOADING_MOVIES -> Loading()
-                        ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection()
-                        ScreenContent.NO_MOVIES -> NoMoviesFound()
-                        ScreenContent.MOVIES -> SearchedMovies(state)
-                    }
+        TextField(
+            text = state.selectedCountry,
+            hintText = stringResource(R.string.country_name_hint),
+            onValueChange = { onCountryNameUpdated(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned {
+                    textFieldSize = it.size
                 }
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = showCountriesDropdown,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    CountriesDropdownMenu(
-                        items = state.suggestedCountries.take(5),
-                        onItemClicked = {
-                            onSelectCountry(it)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(AppTheme.color.profileOverlay)
-                    )
+        )
+
+        Box {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                when (screenContent) {
+                    ScreenContent.COUNTRY_TOUR -> ExploreCountries()
+                    ScreenContent.LOADING_MOVIES -> Loading()
+                    ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection()
+                    ScreenContent.NO_MOVIES -> NoMoviesFound()
+                    ScreenContent.MOVIES -> SearchedMovies(state)
                 }
+            }
+            androidx.compose.animation.AnimatedVisibility(
+                visible = showCountriesDropdown,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                CountriesDropdownMenu(
+                    items = state.suggestedCountries.take(5),
+                    onItemClicked = {
+                        onSelectCountry(it)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.color.profileOverlay)
+                )
             }
         }
     }
@@ -263,7 +269,7 @@ private fun ExploreCountries(
 }
 
 @Composable
-private fun Loading(
+internal fun Loading(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -314,6 +320,9 @@ private fun SearchedMovies(state: SearchByCountryScreenState) {
                 movieTitle = movie.name,
                 movieRating = movie.rating,
             )
+        }
+        item {
+            Spacer(modifier = Modifier.navigationBarsPadding())
         }
     }
 }
