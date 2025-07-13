@@ -110,7 +110,13 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
-        updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
+        updateState {
+            it.copy(
+                tvShows = tvShows.toTvShowUiStates(),
+                isLoading = false,
+                errorUiState = null
+            )
+        }
     }
 
     override fun onTextValuedChanged(text: String) {
