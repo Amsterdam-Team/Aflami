@@ -1,9 +1,8 @@
-package com.example.imageviewer.classification.policy
+package com.example.imageviewer.classification
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import com.example.imageviewer.classification.SFWClassifierConfig
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
@@ -86,7 +85,7 @@ internal class SFWImageClassifier(
     }
 
     private companion object {
-        private const val TAG = "NsfwImageClassifier"
+        private const val TAG = "SafeImage"
         private const val ERROR_MSG_MODEL_LOAD = "Error loading TFLite model file."
         private const val ERROR_MSG_INFERENCE = "Error during model inference."
     }

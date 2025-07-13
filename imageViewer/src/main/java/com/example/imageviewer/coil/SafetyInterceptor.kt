@@ -5,14 +5,13 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
-import androidx.core.graphics.scale
 import coil.intercept.Interceptor
 import coil.request.ErrorResult
 import coil.request.ImageResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import coil.request.SuccessResult
-import com.example.imageviewer.classification.policy.ImageClassifier
+import com.example.imageviewer.classification.ImageClassifier
 import com.example.imageviewer.util.OpenGLBlurProcessor
 
 internal class SafetyInterceptor(
@@ -47,7 +46,6 @@ internal class SafetyInterceptor(
                                 )
                             )
                         }
-//
                     }
                 }
 
