@@ -120,25 +120,22 @@ private fun SearchContent(
             ),
             imeAction = ImeAction.Search,
         )
+        AnimatedVisibility(!state.query.isEmpty()) {
+            TabsLayout(
+                modifier = Modifier.fillMaxWidth(),
+                tabs = listOf(stringResource(R.string.movies), stringResource(R.string.tv_shows)),
+                selectedIndex = state.selectedTabOption.index,
+                onSelectTab = { index -> interaction.onTabOptionClicked(TabOption.entries[index]) },
+            )
+        }
 
         AnimatedVisibility(!state.query.isEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(160.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
             ) {
-                stickyHeader {
-                    TabsLayout(
-                        modifier = Modifier.fillMaxWidth(),
-                        tabs = listOf(
-                            stringResource(R.string.movies),
-                            stringResource(R.string.tv_shows)
-                        ),
-                        selectedIndex = state.selectedTabOption.index,
-                        onSelectTab = { index -> interaction.onTabOptionClicked(TabOption.entries[index]) },
-                    )
-                }
                 items(
                     if (state.selectedTabOption == TabOption.MOVIES) state.movies
                     else state.tvShows,
