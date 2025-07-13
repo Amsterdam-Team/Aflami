@@ -2,7 +2,7 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.Movie
-import com.example.repository.dto.local.LocalCategoryDto
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.google.common.truth.Truth.assertThat
@@ -15,7 +15,7 @@ class MovieWithCategoryMapperTest {
     @Test
     fun `should return Movie with all fields and mapped categories when mapping from MovieWithCategories`() {
         val localMovie = LocalMovieDto(
-            id = 1L,
+            movieId = 1L,
             name = "Inception",
             description = "Dream inside a dream",
             poster = "inception.jpg",
@@ -24,8 +24,8 @@ class MovieWithCategoryMapperTest {
         )
 
         val localCategories = listOf(
-            LocalCategoryDto(1L, "Sci-Fi"),
-            LocalCategoryDto(2L, "Thriller")
+            LocalMovieCategoryDto(1L, "Sci-Fi"),
+            LocalMovieCategoryDto(2L, "Thriller")
         )
 
         val movieWithCategories = MovieWithCategories(
@@ -51,7 +51,7 @@ class MovieWithCategoryMapperTest {
     @Test
     fun `should return Movie with empty categories when MovieWithCategories has no categories`() {
         val localMovie = LocalMovieDto(
-            id = 2L,
+            movieId = 2L,
             name = "Titanic",
             description = "Romantic tragedy",
             poster = "titanic.jpg",
@@ -83,7 +83,7 @@ class MovieWithCategoryMapperTest {
 
         val result = mapper.mapToLocal(movie)
 
-        assertThat(result.id).isEqualTo(3L)
+        assertThat(result.movieId).isEqualTo(3L)
         assertThat(result.name).isEqualTo("Interstellar")
         assertThat(result.description).isEqualTo("Space travel")
         assertThat(result.poster).isEqualTo("interstellar.jpg")

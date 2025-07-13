@@ -2,27 +2,31 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.Movie
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
+import com.example.repository.dto.local.relation.MovieWithCategories
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class MovieLocalMapperTest {
 
-    private val mapper = MovieLocalMapper()
+    private val mapper = MovieLocalMapper(CategoryLocalMapper())
+
+
 
     @Test
     fun `should return Movie with all fields and categories when mapping from LocalMovieDto`() {
         val dto = LocalMovieDto(
-            id = 1L,
+            movieId = 1L,
             name = "Inception",
             description = "Dream within a dream",
             poster = "inception.jpg",
             productionYear = 2010,
             rating = 8.8f
         )
-        val categories = listOf(Category(1L, "Sci-Fi", "sci-fi.png"))
+        val categories = listOf(LocalMovieCategoryDto(1L, "Sci-Fi"))
 
-        val result = mapper.mapFromLocal(dto, categories)
+        val result = mapper.mapFromLocal(MovieWithCategories(dto, categories))
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
@@ -36,7 +40,7 @@ class MovieLocalMapperTest {
     @Test
     fun `should return Movie with empty categories when mapping from LocalMovieDto without categories`() {
         val dto = LocalMovieDto(
-            id = 2L,
+            movieId = 2L,
             name = "Titanic",
             description = "Romantic tragedy",
             poster = "titanic.jpg",
@@ -44,7 +48,7 @@ class MovieLocalMapperTest {
             rating = 7.9f
         )
 
-        val result = mapper.mapFromLocal(dto)
+        val result = mapper.mapFromLocal(MovieWithCategories(dto, emptyList()))
 
         assertThat(result.categories).isEmpty()
     }
@@ -55,12 +59,12 @@ class MovieLocalMapperTest {
             LocalMovieDto(1L, "Movie A", "Desc A", "a.jpg", 2001, 7.1f),
             LocalMovieDto(2L, "Movie B", "Desc B", "b.jpg", 2002, 7.2f)
         )
-        val categoriesMap = mapOf(
-            1L to listOf(Category(1L, "Action", "action.png")),
-            2L to listOf(Category(2L, "Drama", "drama.png"))
+        val categories = listOf(
+            listOf(LocalMovieCategoryDto(1L, "Action")),
+            listOf(LocalMovieCategoryDto(2L, "Drama" ))
         )
-
-        val result = mapper.mapListFromLocal(dtos, categoriesMap)
+        val moviesWithCategories = dtos.mapIndexed { index, localMovieDto ->  MovieWithCategories(localMovieDto, categories[index])}
+        val result = mapper.mapListFromLocal(moviesWithCategories)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].categories).containsExactly(Category(1L, "Action", "action.png"))
@@ -75,7 +79,9 @@ class MovieLocalMapperTest {
 
         val categoriesMap = emptyMap<Long, List<Category>>()
 
-        val result = mapper.mapListFromLocal(dtos, categoriesMap)
+        val moviesWithCategories = dtos.map { localMovieDto ->  MovieWithCategories(localMovieDto, emptyList())}
+
+        val result = mapper.mapListFromLocal(moviesWithCategories)
 
         assertThat(result).hasSize(1)
         assertThat(result[0].categories).isEmpty()
@@ -88,7 +94,7 @@ class MovieLocalMapperTest {
             Movie(2L, "Movie B", "Desc B", "b.jpg", 2002, emptyList(), 7.2f)
         )
 
-        val mapper = MovieLocalMapper()
+        val mapper = MovieLocalMapper(CategoryLocalMapper())
 
         val result = mapper.mapListToLocal(domains)
 
@@ -100,7 +106,7 @@ class MovieLocalMapperTest {
 
     @Test
     fun `should return empty Movie list when mapping empty LocalMovieDto list`() {
-        val result = mapper.mapListFromLocal(emptyList(), emptyMap())
+        val result = mapper.mapListFromLocal(emptyList())
 
         assertThat(result).isEmpty()
     }
