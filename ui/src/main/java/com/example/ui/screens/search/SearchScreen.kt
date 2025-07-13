@@ -163,7 +163,7 @@ private fun SearchContent(
             visible = state.isDialogVisible
         ) {
             FilterDialog(
-                state = state.filterItemUiState,
+                state = state,
                 interaction = filterInteraction,
             )
         }

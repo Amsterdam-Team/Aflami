@@ -1,7 +1,8 @@
 package com.example.viewmodel.search
 
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.mapper.CategoryType
+import com.example.viewmodel.common.categories.MovieCategoryType
+import com.example.viewmodel.common.categories.TvShowCategoryType
 
 interface GlobalSearchInteractionListener {
     fun onNavigateBackClicked()
@@ -23,7 +24,8 @@ interface GlobalSearchInteractionListener {
 interface FilterInteractionListener {
     fun onCancelButtonClicked()
     fun onRatingStarChanged(ratingIndex: Int)
-    fun onGenreButtonChanged(genreType: CategoryType)
+    fun onMovieGenreButtonChanged(genreType: MovieCategoryType)
+    fun onTvGenreButtonChanged(genreType: TvShowCategoryType)
 
     fun onApplyButtonClicked()
     fun onClearButtonClicked()

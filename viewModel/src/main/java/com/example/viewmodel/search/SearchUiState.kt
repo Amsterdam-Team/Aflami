@@ -5,10 +5,12 @@ import com.example.domain.exceptions.BlankQueryException
 import com.example.domain.exceptions.InvalidCharactersException
 import com.example.domain.exceptions.QueryTooLongException
 import com.example.domain.exceptions.QueryTooShortException
-import com.example.viewmodel.common.CategoryItemUiState
+import com.example.viewmodel.common.categories.MovieCategoryItemUiState
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.mapper.CategoryType
+import com.example.viewmodel.common.categories.TvShowCategoryItemUiState
+import com.example.viewmodel.common.categories.MovieCategoryType
+import com.example.viewmodel.common.categories.TvShowCategoryType
 
 data class SearchUiState(
     val query: String = "",
@@ -24,16 +26,24 @@ data class SearchUiState(
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,
-    val genreItemUiStates: List<CategoryItemUiState> = defaultGenreItemsUiState,
+    val movieGenreItemUiStates: List<MovieCategoryItemUiState> = defaultMovieGenreItemsUiState,
+    val tvShowGenreItemUiStates: List<TvShowCategoryItemUiState> = defaultTvShowGenreItemsUiState,
     val isLoading: Boolean = false,
 ){
     val hasFilterData: Boolean
-        get() = selectedStarIndex > 0 || genreItemUiStates.any { it.isSelected }
+        get() = selectedStarIndex > 0 || movieGenreItemUiStates.any { it.isSelected }
 
     companion object {
-        val defaultGenreItemsUiState = CategoryType.entries.toTypedArray().mapIndexed { index, genreType ->
-            CategoryItemUiState(
-                type = genreType,
+        val defaultMovieGenreItemsUiState = MovieCategoryType.entries.toTypedArray().mapIndexed { index, category ->
+            MovieCategoryItemUiState(
+                type = category,
+                isSelected = index == 0
+            )
+        }
+
+        val defaultTvShowGenreItemsUiState = TvShowCategoryType.entries.toTypedArray().mapIndexed { index, category ->
+            TvShowCategoryItemUiState(
+                type = category,
                 isSelected = index == 0
             )
         }

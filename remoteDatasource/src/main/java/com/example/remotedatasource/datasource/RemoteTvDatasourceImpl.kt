@@ -5,6 +5,7 @@ import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.client.safeCall
 import com.example.repository.datasource.remote.RemoteTvShowsDatasource
 import com.example.repository.dto.remote.RemoteTvShowResponse
+import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
@@ -16,14 +17,11 @@ class RemoteTvDatasourceImpl(private val ktorClient: KtorClient) : RemoteTvShows
         genreId: Int?
     ): RemoteTvShowResponse {
         return safeCall<RemoteTvShowResponse> {
-            val baseUrl = Endpoints.DISCOVER_TV_URL
-            val params = buildList {
-                add("$QUERY_KEY=$keyword")
-                add("$VOTE_AVERAGE_KEY=$rating")
-                if (genreId != null) add("with_genres=$genreId")
-            }.joinToString("&")
-
-            val response = ktorClient.get("$baseUrl?$params")
+            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE_URL) {
+            parameter(QUERY_KEY, keyword)
+            parameter(VOTE_AVERAGE_KEY, rating)
+            if (genreId != null) parameter(WITH_GENRES_KEY, genreId)
+        }
             return Json.decodeFromString<RemoteTvShowResponse>(response.bodyAsText())
         }
     }
@@ -31,5 +29,6 @@ class RemoteTvDatasourceImpl(private val ktorClient: KtorClient) : RemoteTvShows
     private companion object {
         const val QUERY_KEY = "query"
         const val VOTE_AVERAGE_KEY = "vote_average.gte"
+        const val WITH_GENRES_KEY = "with_genres"
     }
 }

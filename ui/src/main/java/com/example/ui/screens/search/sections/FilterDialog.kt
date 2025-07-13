@@ -29,18 +29,17 @@ import com.example.designsystem.components.IconButton
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.buttons.PrimaryButton
 import com.example.designsystem.components.buttons.SecondaryButton
-import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
-import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.ui.screens.search.sections.filterDialog.getGenreIcon
-import com.example.ui.screens.search.sections.filterDialog.getGenreLabel
+import com.example.ui.screens.search.sections.filterDialog.movieCategories
+import com.example.ui.screens.search.sections.filterDialog.tvShowCategories
+import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.FilterItemUiState
-import com.example.viewmodel.search.mapper.CategoryType
+import com.example.viewmodel.search.SearchUiState
 
 @Composable
 fun FilterDialog(
-    state: FilterItemUiState,
+    state: SearchUiState,
     interaction: FilterInteractionListener,
     modifier: Modifier = Modifier
 ) {
@@ -91,7 +90,7 @@ fun FilterDialog(
             )
             RatingBar(
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
-                state = state,
+                state = state.filterItemUiState,
                 interaction = interaction,
             )
             Text(
@@ -110,20 +109,37 @@ fun FilterDialog(
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                items(state.genreItemUiStates) {
-                    Chip(
-                        icon = getGenreIcon(it.type),
-                        label = getGenreLabel(it.type),
-                        isSelected = it.isSelected,
-                        onClick = { interaction.onGenreButtonChanged(it.type) }
-                    )
+                when (state.selectedTabOption) {
+                    TabOption.MOVIES -> {
+                        items(state.filterItemUiState.movieGenreItemUiStates) { category ->
+                            val genre = movieCategories[category.type]
+                            Chip(
+                                icon = painterResource(genre?.icon ?: R.drawable.ic_nav_categories),
+                                label = stringResource(genre?.displayableName ?: R.string.all),
+                                isSelected = category.isSelected,
+                                onClick = { interaction.onMovieGenreButtonChanged(category.type) }
+                            )
+                        }
+                    }
+
+                    TabOption.TV_SHOWS -> {
+                        items(state.filterItemUiState.tvShowGenreItemUiStates) { category ->
+                            val genre = tvShowCategories[category.type]
+                            Chip(
+                                icon = painterResource(genre?.icon ?: R.drawable.ic_nav_categories),
+                                label = stringResource(genre?.displayableName ?: R.string.all),
+                                isSelected = category.isSelected,
+                                onClick = { interaction.onTvGenreButtonChanged(category.type) }
+                            )
+                        }
+                    }
                 }
             }
             PrimaryButton(
                 title = stringResource(R.string.apply),
                 onClick = interaction::onApplyButtonClicked,
-                isEnabled = state.hasFilterData,
-                isLoading = state.isLoading,
+                isEnabled = state.filterItemUiState.hasFilterData,
+                isLoading = state.filterItemUiState.isLoading,
                 isNegative = false,
                 modifier = Modifier.padding(12.dp),
             )
@@ -173,21 +189,25 @@ private fun RatingBar(
     }
 }
 
-@Composable
-@ThemeAndLocalePreviews
-fun FilterDialogPreview2() {
-    AflamiTheme {
-        FilterDialog(
-            state = FilterItemUiState(
-                selectedStarIndex = 5,
-            ),
-            interaction = object : FilterInteractionListener {
-                override fun onCancelButtonClicked() {}
-                override fun onRatingStarChanged(ratingIndex: Int) {}
-                override fun onGenreButtonChanged(genreType: CategoryType) {}
-                override fun onApplyButtonClicked() {}
-                override fun onClearButtonClicked() {}
-            },
-        )
-    }
-}
+//@Composable
+//@ThemeAndLocalePreviews
+//fun FilterDialogPreview2() {
+//    AflamiTheme {
+//        FilterDialog(
+//            state = FilterItemUiState(
+//                selectedStarIndex = 5,
+//            ),
+//            interaction = object : FilterInteractionListener {
+//                override fun onCancelButtonClicked() {}
+//                override fun onRatingStarChanged(ratingIndex: Int) {}
+//                override fun onMovieGenreButtonChanged(genreType: MovieCategoryType) {}
+//                override fun onTvGenreButtonChanged(genreType: TvShowCategoryType) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onApplyButtonClicked() {}
+//                override fun onClearButtonClicked() {}
+//            },
+//        )
+//    }
+//}

@@ -1,6 +1,8 @@
 package com.example.domain.useCase
 
+import com.example.domain.exceptions.QueryTooShortException
 import com.example.domain.repository.MovieRepository
+import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
 
 class GetMoviesByKeywordUseCase(
@@ -10,15 +12,13 @@ class GetMoviesByKeywordUseCase(
     suspend operator fun invoke(
         keyword: String,
         rating: Float = 0f,
-        genreType: GenreType = GenreType.ALL
+        movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
-        return movieRepository.getMoviesByKeyword(keyword = keyword, rating = rating, genreType = genreType)
-        if (keyword.length < 3)
-            throw QueryTooShortException()
-
-        return movieRepository.getMoviesByKeyword(keyword)
-            .sortedByDescending { it.popularity }
-
+        return movieRepository.getMoviesByKeyword(
+            keyword = keyword,
+            rating = rating,
+            movieGenre = movieGenre
+        ).sortedByDescending { it.popularity }
     }
 }
 

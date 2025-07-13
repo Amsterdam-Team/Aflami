@@ -1,6 +1,6 @@
 package com.example.repository.mapper.remote
 
-import com.example.entity.GenreType
+import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.TvShow
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
@@ -28,21 +28,28 @@ class RemoteTvShowMapper {
         return date.takeIf { it.length >= 4 }?.substring(0, 4)?.toIntOrNull() ?: 0
     }
 
-    fun mapToTvGenreId(genreType: GenreType): Int? {
-        return when (genreType) {
-            GenreType.ANIMATION -> 16
-            GenreType.COMEDY -> 35
-            GenreType.CRIME -> 80
-            GenreType.DOCUMENTARY -> 99
-            GenreType.DRAMA -> 18
-            GenreType.FAMILY -> 10751
-            GenreType.MYSTERY -> 9648
-            GenreType.SCIENCE_FICTION -> 10765
-            GenreType.WESTERN -> 37
-            GenreType.ROMANCE -> 10749
-            GenreType.MUSIC -> 10402
-            GenreType.FANTASY -> 10765
-            else -> null
+    fun mapToShowTvGenreId(tvShowGenre: TvShowGenre): Int? {
+        return when (tvShowGenre) {
+            TvShowGenre.ALL -> null
+            TvShowGenre.ACTION_ADVENTURE -> 10759
+            TvShowGenre.ANIMATION -> 16
+            TvShowGenre.COMEDY -> 35
+            TvShowGenre.CRIME -> 80
+            TvShowGenre.DOCUMENTARY -> 99
+            TvShowGenre.DRAMA -> 18
+            TvShowGenre.FAMILY -> 10751
+            TvShowGenre.KIDS -> 10762
+            TvShowGenre.MYSTERY -> 9648
+            TvShowGenre.NEWS -> 10763
+            TvShowGenre.REALITY -> 10764
+            TvShowGenre.SCIENCE_FICTION -> 10765
+            TvShowGenre.FANTASY -> 10765
+            TvShowGenre.SOAP -> 10766
+            TvShowGenre.TALK -> 10767
+            TvShowGenre.WAR_POLITICS -> 10768
+            TvShowGenre.WESTERN -> 37
+            TvShowGenre.ROMANCE -> 10749
         }
     }
+
 }

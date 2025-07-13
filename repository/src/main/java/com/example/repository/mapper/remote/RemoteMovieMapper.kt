@@ -1,6 +1,6 @@
 package com.example.repository.mapper.remote
 
-import com.example.entity.GenreType
+import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
@@ -28,28 +28,28 @@ class RemoteMovieMapper {
         return date.takeIf { it.length >= 4 }?.substring(0, 4)?.toIntOrNull() ?: 0
     }
 
-    fun mapToGenreId(genreType: GenreType): Int? {
-        return when (genreType) {
-            GenreType.ACTION -> 28
-            GenreType.ADVENTURE -> 12
-            GenreType.ANIMATION -> 16
-            GenreType.COMEDY -> 35
-            GenreType.CRIME -> 80
-            GenreType.DOCUMENTARY -> 99
-            GenreType.DRAMA -> 18
-            GenreType.FAMILY -> 10751
-            GenreType.FANTASY -> 14
-            GenreType.HISTORY -> 36
-            GenreType.HORROR -> 27
-            GenreType.MUSIC -> 10402
-            GenreType.MYSTERY -> 9648
-            GenreType.ROMANCE -> 10749
-            GenreType.SCIENCE_FICTION -> 878
-            GenreType.TV_MOVIE -> 10770
-            GenreType.THRILLER -> 53
-            GenreType.WAR -> 10752
-            GenreType.WESTERN -> 37
-            GenreType.ALL -> null
+    fun mapToGenreId(movieGenre: MovieGenre): Int? {
+        return when (movieGenre) {
+            MovieGenre.ACTION -> 28
+            MovieGenre.ADVENTURE -> 12
+            MovieGenre.ANIMATION -> 16
+            MovieGenre.COMEDY -> 35
+            MovieGenre.CRIME -> 80
+            MovieGenre.DOCUMENTARY -> 99
+            MovieGenre.DRAMA -> 18
+            MovieGenre.FAMILY -> 10751
+            MovieGenre.FANTASY -> 14
+            MovieGenre.HISTORY -> 36
+            MovieGenre.HORROR -> 27
+            MovieGenre.MUSIC -> 10402
+            MovieGenre.MYSTERY -> 9648
+            MovieGenre.ROMANCE -> 10749
+            MovieGenre.SCIENCE_FICTION -> 878
+            MovieGenre.TV_MOVIE -> 10770
+            MovieGenre.THRILLER -> 53
+            MovieGenre.WAR -> 10752
+            MovieGenre.WESTERN -> 37
+            MovieGenre.ALL -> null
         }
     }
 

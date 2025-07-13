@@ -21,14 +21,11 @@ class RemoteMovieDatasourceImpl(
         genreId: Int?
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val baseUrl = Endpoints.DISCOVER_MOVIE_URL
-            val params = buildList {
-                add("$QUERY_KEY=$keyword")
-                add("$VOTE_AVERAGE_KEY=$rating")
-                if (genreId != null) add("with_genres=$genreId")
-            }.joinToString("&")
-
-            val response = ktorClient.get("$baseUrl?$params")
+            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE_URL) {
+                parameter(QUERY_KEY, keyword)
+                parameter(VOTE_AVERAGE_KEY, rating)
+                if (genreId != null) parameter(WITH_GENRES_KEY, genreId)
+            }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
@@ -73,6 +70,7 @@ class RemoteMovieDatasourceImpl(
         const val QUERY_KEY = "query"
 
         const val WITH_ORIGIN_COUNTRY = "with_origin_country"
+        const val WITH_GENRES_KEY = "with_genres"
         const val VOTE_AVERAGE_KEY = "vote_average.gte"
     }
 }

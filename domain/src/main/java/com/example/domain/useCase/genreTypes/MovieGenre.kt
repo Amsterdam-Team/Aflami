@@ -1,6 +1,6 @@
-package com.example.entity
+package com.example.domain.useCase.genreTypes
 
-enum class GenreType {
+enum class MovieGenre {
     ALL,
     ROMANCE,
     SCIENCE_FICTION,
@@ -20,5 +20,5 @@ enum class GenreType {
     THRILLER,
     DRAMA,
     DOCUMENTARY,
-    ANIMATION;
+    ANIMATION
 }
