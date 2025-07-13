@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -104,7 +105,7 @@ class GlobalSearchViewModel(
     }
 
     override fun onTextValuedChanged(text: String) {
-        _query.value = text
+        _query.update { oldText -> text }
         updateState { it.copy(query = text) }
     }
 
@@ -127,6 +128,7 @@ class GlobalSearchViewModel(
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
+        observeSearchQueryChanges()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
@@ -134,7 +136,6 @@ class GlobalSearchViewModel(
                 tvShows = state.value.tvShows,
             )
         }
-        onSearchQueryChanged(state.value.query)
     }
 
     override fun onRecentSearchClicked(keyword: String) = onTextValuedChanged(keyword)
