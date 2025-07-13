@@ -1,6 +1,6 @@
 package com.example.domain.useCase
 
-import com.example.domain.exceptions.QueryTooShortException
+import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
@@ -19,6 +19,8 @@ class GetMoviesByKeywordUseCase(
             rating = rating,
             movieGenre = movieGenre
         ).sortedByDescending { it.popularity }
+            .ifEmpty { throw NoSearchByKeywordResultFoundException() }
+
     }
 }
 

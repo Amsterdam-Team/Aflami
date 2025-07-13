@@ -1,5 +1,6 @@
 package com.example.viewmodel.search.countrySearch
 
+import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.CountryTooShortException
 import com.example.domain.exceptions.InternetConnectionException
@@ -7,10 +8,21 @@ import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
+import com.example.entity.Country
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 
 class SearchByCountryViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
@@ -19,28 +31,58 @@ class SearchByCountryViewModel(
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
     SearchByCountryScreenState(),
     dispatcherProvider
-) {
+), SearchByCountryInteractionListener {
+
+    private val queryFlow = MutableStateFlow("")
 
     init {
-        sendNewEffect(SearchByCountryEffect.InitialEffect)
+        observeQueryFlow()
     }
 
-    fun onCountryNameUpdated(countryName: String) {
-        updateState {
-            it.copy(selectedCountry = countryName)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    private fun observeQueryFlow() {
+        viewModelScope.launch {
+            queryFlow
+                .debounce(300)
+                .filter { it.isNotBlank() }
+                .flatMapLatest { query ->
+                    callbackFlow {
+                        sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
+                        val job = loadCountries(query)
+                        awaitClose { job.cancel() }
+                    }
+                }
+                .collect { countries ->
+                    updateSuggestedCountries(countries.toUiState())
+                }
         }
-        if (countryName.isNotEmpty()) {
-            getSuggestedCountries(countryName)
-            return
+    }
+
+    private fun ProducerScope<List<Country>>.loadCountries(
+        query: String
+    ) = tryToExecute(
+        action = { getSuggestedCountriesUseCase.invoke(query) },
+        onSuccess = { result -> trySend(result).isSuccess },
+        onError = {
+            onError(exception = it)
+            trySend(emptyList()).isSuccess
         }
+    )
+
+    override fun onCountryNameUpdated(countryName: String) {
+        queryFlow.value = countryName
+        updateState { it.copy(selectedCountry = countryName) }
+        if (countryName.isBlank()) {
+            sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
+            updateState { it.copy(suggestedCountries = emptyList()) }
+        }
+    }
+
+    override fun onSelectCountry(country: CountryUiState) {
         sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
-    }
-
-    fun onSelectCountry(country: CountryUiState) {
         updateState {
             it.copy(selectedCountry = country.countryName)
         }
-        sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
         getMoviesByCountry(country.countryIsoCode)
     }
 
@@ -49,15 +91,6 @@ class SearchByCountryViewModel(
         tryToExecute(
             action = { getMoviesByCountryUseCase.invoke(countryIsoCode) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
-            onError = { exception -> onError(exception) }
-        )
-    }
-
-    private fun getSuggestedCountries(countryName: String) {
-        sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
-        tryToExecute(
-            action = { getSuggestedCountriesUseCase.invoke(countryName) },
-            onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries.toUiState()) },
             onError = { exception -> onError(exception) }
         )
     }
