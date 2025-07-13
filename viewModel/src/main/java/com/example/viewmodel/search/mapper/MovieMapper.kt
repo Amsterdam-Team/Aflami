@@ -2,6 +2,7 @@ package com.example.viewmodel.search.mapper
 
 import com.example.entity.Movie
 import com.example.viewmodel.search.countrySearch.MovieUiState
+import java.text.DecimalFormat
 
 val base_image_url = "https://image.tmdb.org/t/p/w500"
 
@@ -11,10 +12,10 @@ fun List<Movie>.toListOfUiState(): List<MovieUiState> {
 
 fun Movie.toUiState(): MovieUiState {
     return MovieUiState(
-        id = this.id,
-        name = this.name,
-        poster = base_image_url + this.poster,
-        productionYear = this.productionYear.toString(),
-        rating = this.rating.toString(),
+        id = id,
+        name = name,
+        poster = base_image_url + poster,
+        productionYear = productionYear.toString(),
+        rating = DecimalFormat("#.#").format(rating),
     )
 }

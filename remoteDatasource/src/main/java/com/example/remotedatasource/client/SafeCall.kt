@@ -1,12 +1,15 @@
 package com.example.remotedatasource.client
 
+import android.util.Log
+import android.util.Log.e
 import com.example.domain.exceptions.AflamiException
 import io.ktor.client.statement.HttpResponse
 
 suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): T {
     val response = try {
             execute()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.e("bk", "safeCall: $e")
         throw AflamiException()
         }
 

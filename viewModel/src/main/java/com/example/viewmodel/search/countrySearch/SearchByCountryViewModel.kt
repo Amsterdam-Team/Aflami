@@ -37,6 +37,9 @@ class SearchByCountryViewModel(
     }
 
     fun onSelectCountry(country: CountryUiState) {
+        updateState {
+            it.copy(selectedCountry = country.countryName)
+        }
         sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
         getMoviesByCountry(country.countryIsoCode)
     }

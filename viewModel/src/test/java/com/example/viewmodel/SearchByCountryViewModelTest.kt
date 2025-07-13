@@ -56,6 +56,7 @@ class SearchByCountryViewModelTest {
         val countryName = "egypt"
         // act
         viewModel.onCountryNameUpdated(countryName)
+        testScope.advanceUntilIdle()
         //assert
         assertThat(viewModel.state.value.selectedCountry).isEqualTo(countryName)
     }
