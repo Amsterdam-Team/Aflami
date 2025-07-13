@@ -36,7 +36,7 @@ class GlobalSearchViewModel(
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(),dispatcherProvider),
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
     private val _query = MutableStateFlow(state.value.query)
@@ -63,7 +63,7 @@ class GlobalSearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _query.debounce(300)
                 .map(String::trim)
-                .filter(String::isNotEmpty)
+                .filter(String::isNotBlank)
                 .collect(::onSearchQueryChanged)
         }
     }
