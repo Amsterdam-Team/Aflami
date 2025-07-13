@@ -6,6 +6,7 @@ import com.example.viewmodel.common.TabOption
 interface GlobalSearchInteractionListener {
     fun onNavigateBackClicked()
     fun onTextValuedChanged(text: String)
+    fun onSearchActionClicked()
     fun onFilterButtonClicked()
     fun onWorldSearchCardClicked()
     fun onActorSearchCardClicked()
