@@ -16,7 +16,8 @@ class RemoteTvShowMapperTest {
         overview: String,
         posterPath: String? = "/poster.jpg",
         releaseDate: String = "2020-01-01",
-        voteAverage: Double = 7.0
+        voteAverage: Double = 7.0,
+        originCountry: List<String> = listOf("US")
     ): RemoteTvShowItemDto {
         return RemoteTvShowItemDto(
             adult = false,
@@ -30,8 +31,8 @@ class RemoteTvShowMapperTest {
             posterPath = posterPath,
             releaseDate = releaseDate,
             title = title,
-            video = false,
             voteAverage = voteAverage,
+            originCountry = originCountry,
             voteCount = 1234
         )
     }

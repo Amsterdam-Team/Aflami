@@ -18,6 +18,7 @@ fun createMovie(
         poster = poster,
         productionYear = productionYear,
         categories = categories,
-        rating = rating
+        rating = rating,
+        popularity = 0.0
     )
 }
