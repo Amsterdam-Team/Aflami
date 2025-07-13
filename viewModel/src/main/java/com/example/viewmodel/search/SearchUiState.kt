@@ -25,6 +25,7 @@ data class SearchUiState(
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,
     val genreItemUiStates: List<GenreItemUiState> = defaultGenreItemsUiState,
+    val isLoading: Boolean = false,
 ){
     val hasFilterData: Boolean
         get() = selectedStarIndex > 0 || genreItemUiStates.any { it.isSelected }
