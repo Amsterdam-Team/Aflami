@@ -27,11 +27,11 @@ android {
 
     productFlavors {
         flavorDimensions += "data"
-        create("real"){
+        create("Real"){
             dimension = "data"
             isDefault = true
         }
-        create("fake"){
+        create("Fake"){
             dimension = "data"
         }
     }
@@ -61,14 +61,15 @@ android {
 
 androidComponents {
     beforeVariants { variantBuilder ->
-        if (variantBuilder.productFlavors.containsAll(listOf("data" to "fake")) &&
+        if (variantBuilder.productFlavors.containsAll(listOf("data" to "Fake")) &&
             variantBuilder.buildType == "release") {
             variantBuilder.enable = false
         }
-        if (variantBuilder.productFlavors.containsAll(listOf("data" to "fake")) &&
+        if (variantBuilder.productFlavors.containsAll(listOf("data" to "Fake")) &&
             variantBuilder.buildType == "debug") {
             variantBuilder.unitTestEnabled = false
         }
+
     }
 }
 
@@ -88,8 +89,8 @@ dependencies {
     implementation(project(":remoteDatasource"))
     implementation(project(":domain"))
     implementation(project(":entity"))
-    "realImplementation"(project(":repository"))
-    "fakeImplementation"(project(":repositoryFake"))
+    "RealImplementation"(project(":repository"))
+    "FakeImplementation"(project(":repositoryFake"))
 
     // Koin
     implementation(platform(libs.koin.bom))
