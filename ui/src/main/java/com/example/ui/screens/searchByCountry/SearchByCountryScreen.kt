@@ -300,7 +300,7 @@ private fun NoMoviesFound() {
 private fun SearchedMovies(state: SearchByCountryScreenState) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(vertical = 12.dp),
+        contentPadding = PaddingValues(top = 12.dp, bottom = 36.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
