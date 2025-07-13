@@ -56,6 +56,8 @@ class GetTvShowByKeywordUseCaseTest {
     @Test
     fun `should call getTvShowByKeyword from tvShowRepository`() =
         runBlocking {
+            coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
+
             getTvShowByKeywordUseCase("keyword")
             coVerify { tvShowRepository.getTvShowByKeyword("keyword") }
         }
