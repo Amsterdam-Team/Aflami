@@ -18,7 +18,7 @@ class InternetConnectionException: AflamiException()
 class NoSuggestedCountriesException: AflamiException()
 class NoMoviesForCountryException: AflamiException()
 
-class NoMoviesByKeywordFoundException: AflamiException()
+class NoSearchByKeywordResultFoundException: AflamiException()
 
 class CountryTooShortException: AflamiException()
 class CountryIsEmptyException: AflamiException()

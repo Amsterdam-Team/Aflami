@@ -1,5 +1,6 @@
 package com.example.domain.useCase
 
+import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.TvShow
 
@@ -14,7 +15,8 @@ class GetTvShowByKeywordUseCase(
     ): List<TvShow> {
         return tvShowRepository.getTvShowByKeyword(keyword)
             .sortedByDescending { it.popularity }
-//            .filter { it.rating == rating }
-//            .filter { it.categories.any { category -> category.name == categoryName } }
+            .ifEmpty {
+                throw NoSearchByKeywordResultFoundException()
+            }
     }
 }

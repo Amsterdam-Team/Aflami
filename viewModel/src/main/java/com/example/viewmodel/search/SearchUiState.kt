@@ -3,7 +3,7 @@ package com.example.viewmodel.search
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.BlankQueryException
 import com.example.domain.exceptions.InvalidCharactersException
-import com.example.domain.exceptions.NoMoviesByKeywordFoundException
+import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.exceptions.QueryTooLongException
 import com.example.domain.exceptions.QueryTooShortException
 import com.example.viewmodel.common.GenreItemUiState
@@ -56,7 +56,7 @@ fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorUiState {
         is QueryTooLongException -> SearchErrorUiState.QueryTooLong
         is InvalidCharactersException -> SearchErrorUiState.InvalidCharacters
         is BlankQueryException -> SearchErrorUiState.BlankQuery
-        is NoMoviesByKeywordFoundException -> SearchErrorUiState.NoMoviesByKeywordFoundException
+        is NoSearchByKeywordResultFoundException -> SearchErrorUiState.NoMoviesByKeywordFoundException
         else -> SearchErrorUiState.UnknownException
     }
 }

@@ -1,6 +1,6 @@
 package com.example.domain.useCase
 
-import com.example.domain.exceptions.NoMoviesByKeywordFoundException
+import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 
@@ -17,7 +17,7 @@ class GetMoviesByKeywordUseCase(
         return movieRepository.getMoviesByKeyword(keyword)
             .sortedByDescending { it.popularity }
             .ifEmpty {
-                throw NoMoviesByKeywordFoundException()
+                throw NoSearchByKeywordResultFoundException()
             }
     }
 }
