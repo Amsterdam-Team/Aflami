@@ -12,10 +12,10 @@ class GetMoviesByKeywordUseCase(
         rating: Float = 0f,
         categoryName: String = ""
     ): List<Movie> {
-        return movieRepository.getMoviesByKeyword(keyword)
+        return movieRepository.getMoviesByKeyword(keyword = keyword, rating = rating)
+            //.filter { it.categories.any { category -> category.name == categoryName } }
             .sortedByDescending { it.popularity }
-//            .filter { it.rating == rating }
-//            .filter { it.categories.any { category -> category.name == categoryName } }
+
     }
 }
 

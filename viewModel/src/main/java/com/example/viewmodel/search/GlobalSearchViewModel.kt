@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.String
 
 @OptIn(FlowPreview::class)
 class GlobalSearchViewModel(
@@ -75,23 +76,20 @@ class GlobalSearchViewModel(
         }
     }
 
-    private fun fetchMoviesByQuery(keyword: String) {
+    private fun fetchMoviesByQuery(keyword: String, rating: Float = 0f, categoryName: String = "") {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getMoviesByKeywordUseCase(keyword = keyword) },
+            action = { getMoviesByKeywordUseCase(keyword = keyword, rating = rating, categoryName = categoryName) },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError,
         )
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        Log.e("bk", movies.toString())
-
         updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
-        Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
-    private fun fetchTvShowsByQuery(keyword: String) {
+    private fun fetchTvShowsByQuery(keyword: String, rating: Float = 0f, categoryName: String = "") {
         tryToExecute(
             action = { getTvShowByKeywordUseCase(keyword = keyword) },
             onSuccess = ::onFetchTvShowsSuccess,
@@ -186,7 +184,6 @@ class GlobalSearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
-        Log.e("bk", "${genreType.name}")
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -223,6 +220,7 @@ class GlobalSearchViewModel(
     }
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
+        Log.e("bk", "onMoviesFilteredSuccess: $movies")
         updateState {
             it.copy(movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false)
         }
@@ -259,8 +257,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
-        Log.e("bk", "exception: $exception")
-
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 

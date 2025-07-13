@@ -25,7 +25,7 @@ class MovieRepositoryImpl(
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
+    override suspend fun getMoviesByKeyword(keyword: String, rating: Float): List<Movie> {
 
         val recentSearch =
             recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
@@ -38,7 +38,7 @@ class MovieRepositoryImpl(
             return movieLocalMapper.mapListFromLocal(localMovies)
         }
         deleteRecentSearch(recentSearch)
-        val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword)
+        val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword = keyword, rating = rating)
         val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
         localMovieDataSource.addAllMoviesWithSearchData(

@@ -15,10 +15,11 @@ class RemoteMovieDatasourceImpl(
     private val json: Json,
 ) : RemoteMovieDatasource {
     override suspend fun getMoviesByKeyword(
-        keyword: String
+        keyword: String,
+        rating: Float
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword")
+            val response = ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword&$VOTE_AVERAGE_KEY=$rating")
             Log.e("bk", "bodyAsText: ${response.bodyAsText()}")
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
@@ -55,5 +56,6 @@ class RemoteMovieDatasourceImpl(
     private companion object {
         const val WITH_CAST_KEY = "with_cast"
         const val QUERY_KEY = "query"
+        const val VOTE_AVERAGE_KEY = "vote_average.gte"
     }
 }
