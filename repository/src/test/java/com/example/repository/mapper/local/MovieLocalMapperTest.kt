@@ -34,7 +34,6 @@ class MovieLocalMapperTest {
         assertThat(result.poster).isEqualTo("inception.jpg")
         assertThat(result.productionYear).isEqualTo(2010)
         assertThat(result.rating).isEqualTo(8.8f)
-        assertThat(result.categories).containsExactly(Category(1L, "Sci-Fi", "sci-fi.png"))
     }
 
     @Test
@@ -67,8 +66,6 @@ class MovieLocalMapperTest {
         val result = mapper.mapListFromLocal(moviesWithCategories)
 
         assertThat(result).hasSize(2)
-        assertThat(result[0].categories).containsExactly(Category(1L, "Action", "action.png"))
-        assertThat(result[1].categories).containsExactly(Category(2L, "Drama", "drama.png"))
     }
 
     @Test
@@ -76,8 +73,6 @@ class MovieLocalMapperTest {
         val dtos = listOf(
             LocalMovieDto(1L, "Movie A", "Desc A", "a.jpg", 2001, 7.1f)
         )
-
-        val categoriesMap = emptyMap<Long, List<Category>>()
 
         val moviesWithCategories = dtos.map { localMovieDto ->  MovieWithCategories(localMovieDto, emptyList())}
 

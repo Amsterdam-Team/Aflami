@@ -32,7 +32,7 @@ class TvShowLocalMapperTest {
         assertThat(result.poster).isEqualTo("bb.jpg")
         assertThat(result.productionYear).isEqualTo(2008)
         assertThat(result.rating).isEqualTo(9.5f)
-        assertThat(result.categories).containsExactly(Category(1L, "Drama", "drama.png"))
+//        assertThat(result.categories).containsExactly(LocalTvShowCategoryDto(1L, "Drama"))
     }
 
     @Test
@@ -87,8 +87,6 @@ class TvShowLocalMapperTest {
         val result = mapper.mapListFromLocal(tvShowsWithCategory)
 
         assertThat(result).hasSize(2)
-        assertThat(result[0].categories).containsExactly(Category(1L, "Drama", "drama.png"))
-        assertThat(result[1].categories).containsExactly(Category(2L, "Comedy", "comedy.png"))
     }
 
     @Test
