@@ -19,9 +19,8 @@ class GetMoviesByKeywordUseCase(
 
         return movieRepository.getMoviesByKeyword(keyword)
             .sortedByDescending { it.popularity }
-            .also {
-                if (it.isEmpty())
-                    throw NoMoviesByKeywordFoundException()
+            .ifEmpty {
+                throw NoMoviesByKeywordFoundException()
             }
     }
 }
