@@ -28,6 +28,6 @@ fun ErrorIndicator(
 
 @Preview
 @Composable
-private fun LoadingIndicatorPreview() {
-    LoadingIndicator()
+private fun ErrorIndicatorPreview() {
+    ErrorIndicator()
 }
