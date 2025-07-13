@@ -16,7 +16,8 @@ class TvShowLocalMapper(
             poster = dto.tvShow.poster,
             productionYear = dto.tvShow.productionYear,
             rating = dto.tvShow.rating,
-            categories = categoryLocalMapper.mapListFromTvShowLocal(dto.categories)
+            categories = categoryLocalMapper.mapListFromTvShowLocal(dto.categories),
+            popularity = dto.tvShow.popularity
         )
     }
 
