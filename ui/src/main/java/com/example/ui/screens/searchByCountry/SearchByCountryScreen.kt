@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +53,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
+import com.example.viewmodel.search.countrySearch.SearchByCountryInteractionListener
 import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -97,6 +99,7 @@ fun SearchByCountryScreen(
 
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> {
                     noSuggestedCountry = true
+                    showCountriesDropdown = false
                 }
 
                 SearchByCountryEffect.ShowCountriesDropDown -> {
@@ -107,10 +110,6 @@ fun SearchByCountryScreen(
                     showCountriesDropdown = false
                 }
 
-                SearchByCountryEffect.InitialEffect -> {
-                    screenContent = ScreenContent.COUNTRY_TOUR
-                }
-
                 SearchByCountryEffect.CountryTooShortEffect -> {}
                 else -> {}
             }
@@ -118,29 +117,28 @@ fun SearchByCountryScreen(
     }
 
     SearchByCountryScreenContent(
-        state,
+        state = state,
+        interactionListener = viewModel,
         onNavigateBackClicked = {
             navController.popBackStack()
         },
-        viewModel::onCountryNameUpdated,
-        viewModel::onSelectCountry,
-        modifier,
-        screenContent,
-        showCountriesDropdown,
+        modifier = modifier,
+        screenContent = screenContent,
+        showCountriesDropdown = showCountriesDropdown,
     )
 }
 
 @Composable
 fun SearchByCountryScreenContent(
     state: SearchByCountryScreenState,
+    interactionListener: SearchByCountryInteractionListener,
     onNavigateBackClicked: () -> Unit,
-    onCountryNameUpdated: (String) -> Unit,
-    onSelectCountry: (CountryUiState) -> Unit,
-    modifier: Modifier = Modifier,
     screenContent: ScreenContent,
     showCountriesDropdown: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+    var appBarSectionHeight by remember { mutableStateOf(0.dp) }
 
     Column(
         modifier = modifier
@@ -148,34 +146,67 @@ fun SearchByCountryScreenContent(
             .statusBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
-        DefaultAppBar(
-            title = stringResource(R.string.world_tour_title),
-            showNavigateBackButton = true,
-            onNavigateBackClicked = onNavigateBackClicked
-        )
+        Column(
+            modifier = Modifier.onSizeChanged {
+                appBarSectionHeight = it.height.dp
+            }
+        ) {
+            DefaultAppBar(
+                title = stringResource(R.string.world_tour_title),
+                showNavigateBackButton = true,
+                onNavigateBackClicked = onNavigateBackClicked,
 
-        TextField(
-            text = state.selectedCountry,
-            hintText = stringResource(R.string.country_name_hint),
-            onValueChange = { onCountryNameUpdated(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned {
-                    textFieldSize = it.size
-                }
-        )
+                )
+
+            TextField(
+                text = state.selectedCountry,
+                hintText = stringResource(R.string.country_name_hint),
+                onValueChange = { interactionListener.onCountryNameUpdated(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .onGloballyPositioned {
+                        textFieldSize = it.size
+                    }
+            )
+        }
 
         Box {
             Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize()
             ) {
                 when (screenContent) {
-                    ScreenContent.COUNTRY_TOUR -> ExploreCountries()
-                    ScreenContent.LOADING_MOVIES -> Loading()
-                    ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection()
-                    ScreenContent.NO_MOVIES -> NoMoviesFound()
-                    ScreenContent.MOVIES -> SearchedMovies(state)
+                    ScreenContent.COUNTRY_TOUR -> ExploreCountries(
+                        Modifier
+                            .fillMaxSize()
+                            .align(Alignment.Center)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
+                    )
+
+                    ScreenContent.LOADING_MOVIES -> Loading(
+                        Modifier
+                            .align(Alignment.Center)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
+                    )
+
+                    ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
+                        Modifier
+                            .align(
+                                Alignment.Center
+                            )
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
+                    )
+
+                    ScreenContent.NO_MOVIES -> NoMoviesFound(
+                        Modifier
+                            .align(Alignment.Center)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
+                    )
+
+                    ScreenContent.MOVIES -> SearchedMovies(
+                        state,
+                        Modifier.align(Alignment.TopStart)
+                    )
                 }
             }
             androidx.compose.animation.AnimatedVisibility(
@@ -186,7 +217,7 @@ fun SearchByCountryScreenContent(
                 CountriesDropdownMenu(
                     items = state.suggestedCountries.take(5),
                     onItemClicked = {
-                        onSelectCountry(it)
+                        interactionListener.onSelectCountry(it)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -285,13 +316,18 @@ internal fun Loading(
 }
 
 @Composable
-private fun NoInternetConnection() {
+private fun NoInternetConnection(
+    modifier: Modifier = Modifier
+) {
 
 }
 
 @Composable
-private fun NoMoviesFound() {
+private fun NoMoviesFound(
+    modifier: Modifier = Modifier
+) {
     NoDataContainer(
+        modifier = modifier,
         title = stringResource(R.string.no_search_result),
         description = stringResource(R.string.no_search_result_for_country),
         imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
@@ -299,8 +335,12 @@ private fun NoMoviesFound() {
 }
 
 @Composable
-private fun SearchedMovies(state: SearchByCountryScreenState) {
+private fun SearchedMovies(
+    state: SearchByCountryScreenState,
+    modifier: Modifier = Modifier
+) {
     LazyVerticalGrid(
+        modifier = modifier,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(top = 12.dp, bottom = 36.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -337,10 +377,17 @@ enum class ScreenContent {
 private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
-            SearchByCountryScreenState(),
-            {}, {}, {},
-            screenContent = ScreenContent.COUNTRY_TOUR,
+            state = SearchByCountryScreenState(),
+            interactionListener = object : SearchByCountryInteractionListener {
+                override fun onCountryNameUpdated(countryName: String) {
+                }
+
+                override fun onSelectCountry(country: CountryUiState) {
+                }
+            },
             showCountriesDropdown = false,
+            onNavigateBackClicked = {},
+            screenContent = ScreenContent.COUNTRY_TOUR
         )
     }
 }
