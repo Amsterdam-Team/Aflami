@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.amsterdam.aflami"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
