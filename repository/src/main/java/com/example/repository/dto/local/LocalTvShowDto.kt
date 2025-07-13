@@ -7,10 +7,11 @@ import androidx.room.PrimaryKey
     tableName = "tv_shows"
 )
 data class LocalTvShowDto(
-    @PrimaryKey val categoryId: Long,
+    @PrimaryKey(autoGenerate = false) val tvShowId: Long,
     val name: String,
     val description: String,
     val poster: String,
     val productionYear: Int,
-    val rating: Float
+    val rating: Float,
+    val popularity: Double
 )

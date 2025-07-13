@@ -27,6 +27,9 @@ data class FilterItemUiState(
     val genreItemUiStates: List<GenreItemUiState> = defaultGenreItemsUiState,
     val isLoading: Boolean = false,
 ){
+    val hasFilterData: Boolean
+        get() = selectedStarIndex > 0 || genreItemUiStates.any { it.isSelected }
+
     companion object {
         val defaultGenreItemsUiState = GenreType.entries.toTypedArray().mapIndexed { index, genreType ->
             GenreItemUiState(

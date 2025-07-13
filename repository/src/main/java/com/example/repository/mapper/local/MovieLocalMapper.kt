@@ -16,7 +16,8 @@ class MovieLocalMapper(
             poster = dto.movie.poster,
             productionYear = dto.movie.productionYear,
             rating = dto.movie.rating,
-            categories = categoryLocalMapper.mapListFromMovieLocal(dto.categories)
+            categories = categoryLocalMapper.mapListFromMovieLocal(dto.categories),
+            popularity = dto.movie.popularity
         )
     }
 
@@ -27,7 +28,8 @@ class MovieLocalMapper(
             description = domain.description,
             poster = domain.poster,
             productionYear = domain.productionYear,
-            rating = domain.rating
+            rating = domain.rating,
+            popularity = domain.popularity
         )
     }
 

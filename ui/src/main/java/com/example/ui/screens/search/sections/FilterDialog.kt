@@ -35,6 +35,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.screens.search.sections.filterDialog.getGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.getGenreLabel
 import com.example.viewmodel.common.GenreType
+import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.FilterItemUiState
 
@@ -122,7 +123,7 @@ fun FilterDialog(
             PrimaryButton(
                 title = stringResource(R.string.apply),
                 onClick = interaction::onApplyButtonClicked,
-                isEnabled = true,
+                isEnabled = state.hasFilterData,
                 isLoading = state.isLoading,
                 isNegative = false,
                 modifier = Modifier.padding(12.dp),

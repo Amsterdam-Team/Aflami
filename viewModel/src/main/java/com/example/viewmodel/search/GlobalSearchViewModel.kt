@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
 import com.example.domain.useCase.GetTvShowByKeywordUseCase
+import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
@@ -17,6 +18,7 @@ import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
+import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,9 +32,11 @@ class GlobalSearchViewModel(
     private val getMoviesByKeywordUseCase: GetMoviesByKeywordUseCase,
     private val getTvShowByKeywordUseCase: GetTvShowByKeywordUseCase,
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
+    private val addRecentSearchUseCase: AddRecentSearchUseCase,
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
-) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()),
+    dispatcherProvider: DispatcherProvider
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(),dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
     private val _query = MutableStateFlow(state.value.query)
@@ -102,6 +106,14 @@ class GlobalSearchViewModel(
     override fun onTextValuedChanged(text: String) {
         _query.value = text
         updateState { it.copy(query = text) }
+    }
+
+    override fun onSearchActionClicked() {
+        tryToExecute(
+            action = { addRecentSearchUseCase(state.value.query) },
+            onSuccess = { loadRecentSearches() },
+            onError = ::onFetchError,
+        )
     }
 
     override fun onFilterButtonClicked() = updateState { it.copy(isDialogVisible = true) }
