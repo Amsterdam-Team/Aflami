@@ -26,7 +26,7 @@ class SearchByCountryViewModel(
         updateState {
             it.copy(selectedCountry = countryName)
         }
-        if (countryName.isNotEmpty()){
+        if (countryName.isNotEmpty()) {
             getSuggestedCountries(countryName)
             return
         }
@@ -34,6 +34,9 @@ class SearchByCountryViewModel(
     }
 
     fun onSelectCountry(country: CountryUiState) {
+        updateState {
+            it.copy(selectedCountry = country.countryName)
+        }
         sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
         val countryIsoCode =
             state.value.suggestedCountries.find { it.countryName == country.countryName }?.countryIsoCode
