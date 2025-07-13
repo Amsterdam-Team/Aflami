@@ -4,14 +4,10 @@ plugins {
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    id("de.mannodermaus.android-junit5")
 }
 
 android {
-    namespace = "com.example.repository"
-    defaultConfig {
-        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
-    }
+    namespace = "com.mohamed.repositoryfake"
 }
 
 dependencies {
@@ -30,16 +26,4 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     // kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)
-    // junit 5
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
-    testImplementation(kotlin("test"))
-    testImplementation(libs.junit)
-    //truth
-    testImplementation (libs.truth)
-    //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
 }

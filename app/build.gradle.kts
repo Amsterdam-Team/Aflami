@@ -1,3 +1,6 @@
+import com.android.build.api.variant.HasHostTestsBuilder
+import com.android.build.api.variant.HostTestBuilder
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -20,6 +23,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    productFlavors {
+        flavorDimensions += "data"
+        create("Real"){
+            dimension = "data"
+            isDefault = true
+        }
+        create("Fake"){
+            dimension = "data"
+        }
     }
 
     buildTypes {
@@ -45,6 +59,20 @@ android {
     }
 }
 
+androidComponents {
+    beforeVariants { variantBuilder ->
+        if (variantBuilder.productFlavors.containsAll(listOf("data" to "Fake")) &&
+            variantBuilder.buildType == "release") {
+            variantBuilder.enable = false
+        }
+        if (variantBuilder.productFlavors.containsAll(listOf("data" to "Fake")) &&
+            variantBuilder.buildType == "debug") {
+            variantBuilder.unitTestEnabled = false
+        }
+
+    }
+}
+
 dependencies {
 
     // Firebase
@@ -61,7 +89,8 @@ dependencies {
     implementation(project(":remoteDatasource"))
     implementation(project(":domain"))
     implementation(project(":entity"))
-    implementation(project(":repository"))
+    "RealImplementation"(project(":repository"))
+    "FakeImplementation"(project(":repositoryFake"))
 
     // Koin
     implementation(platform(libs.koin.bom))

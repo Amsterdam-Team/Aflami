@@ -1,4 +1,4 @@
-package com.amsterdam.aflami.di
+package com.example.repository.di
 
 import com.example.domain.repository.CategoryRepository
 import com.example.domain.repository.CountryRepository

@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Compile Project
-        run: ./gradlew assemble
+        run: ./gradlew assembleReal
 
       - name: Run Unit Tests
         run: ./gradlew test
