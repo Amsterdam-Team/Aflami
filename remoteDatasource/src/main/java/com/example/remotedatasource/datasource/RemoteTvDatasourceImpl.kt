@@ -1,12 +1,10 @@
 package com.example.remotedatasource.datasource
 
-import android.util.Log
 import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.client.safeCall
-import com.example.remotedatasource.utils.Constant.BASE_URL
+import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteTvShowsDatasource
 import com.example.repository.dto.remote.RemoteTvShowResponse
-import io.ktor.client.call.body
+import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
@@ -18,10 +16,16 @@ class RemoteTvDatasourceImpl(private val ktorClient: KtorClient) : RemoteTvShows
         categoryId: Long?
     ): RemoteTvShowResponse {
         return safeCall<RemoteTvShowResponse> {
-            val selectedCategoryId: String = categoryId?.toString() ?: ""
-            val response = ktorClient.get("$BASE_URL/search/tv?query=$keyword")
-            Log.d("tv", response.bodyAsText())
+            val response = ktorClient.get(SEARCH_TV_URL) {
+                parameter(QUERY_KEY, keyword)
+            }
             return Json.decodeFromString<RemoteTvShowResponse>(response.bodyAsText())
         }
+    }
+
+
+    private companion object {
+        const val QUERY_KEY = "query"
+        const val SEARCH_TV_URL = "search/tv"
     }
 }
