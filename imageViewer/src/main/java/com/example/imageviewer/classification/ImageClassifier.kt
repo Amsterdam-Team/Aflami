@@ -1,4 +1,4 @@
-package com.example.imageviewer.classification.policy
+package com.example.imageviewer.classification
 
 import android.graphics.Bitmap
 

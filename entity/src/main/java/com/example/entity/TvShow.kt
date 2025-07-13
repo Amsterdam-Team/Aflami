@@ -7,5 +7,6 @@ data class TvShow (
     val poster : String,
     val productionYear : Int,
     val categories : List<Category>,
-    val rating : Float
+    val rating : Float,
+    val popularity: Double
 )

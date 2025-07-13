@@ -13,7 +13,8 @@ class SearchWithMoviesMapper {
                 poster = it.poster,
                 productionYear = it.productionYear,
                 rating = it.rating,
-                categories = emptyList() //todo
+                categories = emptyList(), //todo
+                popularity = it.popularity
             )
         }
     }

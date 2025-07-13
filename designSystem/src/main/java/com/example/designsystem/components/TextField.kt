@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -45,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.LayoutDirection
@@ -74,7 +77,9 @@ fun TextField(
     borderColor: Color = AppTheme.color.stroke,
     borderErrorColor: Color = AppTheme.color.redAccent,
     borderFocusedColor: Color = AppTheme.color.primary,
-    onValueChange: (String) -> Unit = {}
+    onValueChange: (String) -> Unit = {},
+    imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val canShowMaxCharacters = maxCharacters - text.length < 5
@@ -134,7 +139,11 @@ fun TextField(
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
-                }
+                },
+                keyboardActions = keyboardActions,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = imeAction,
+                )
             )
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
@@ -274,7 +283,9 @@ private fun ColumnScope.AnimatedMaxCharacters(
     style: TextStyle,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
         horizontalArrangement = Arrangement.End
     ) {
         AnimatedVisibility(visible = canShowMaxCharacters) {
