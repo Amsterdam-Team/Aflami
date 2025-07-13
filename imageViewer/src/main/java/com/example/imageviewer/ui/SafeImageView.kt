@@ -1,40 +1,35 @@
 package com.example.imageviewer.ui
 
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.imageviewer.classification.policy.SafetyPolicy
 import com.example.imageviewer.coil.ImageLoaderFactory
 
-
 @Composable
-public fun SafeImageView(
+fun SafeImageView(
     model: String,
     contentDescription: String?,
-    @DrawableRes placeholder: Int,
-    @DrawableRes error: Int,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop
+    contentScale: ContentScale = ContentScale.Crop,
+    onLoading: (@Composable () -> Unit)? = null,
+    onError: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
-
     val imageLoader = remember(context) {
-
         ImageLoaderFactory.create(context, SafetyPolicy.SFWPolicy)
     }
 
-    AsyncImage(
+    SubcomposeAsyncImage(
         model = model,
         contentDescription = contentDescription,
         imageLoader = imageLoader,
         modifier = modifier,
         contentScale = contentScale,
-        placeholder = painterResource(placeholder),
-        error = painterResource(error),
+        loading = { onLoading?.let { it() } ?: LoadingIndicator() },
+        error = { onError?.let { it -> it() } ?: ErrorIndicator() },
     )
 }
