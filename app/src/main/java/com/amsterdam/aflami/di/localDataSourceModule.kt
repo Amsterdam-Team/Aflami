@@ -9,12 +9,14 @@ import com.example.localdatasource.roomDataBase.daos.TvShowDao
 import com.example.localdatasource.roomDataBase.datasource.LocalCategoryDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.LocalCountryDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.LocalMovieDataSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.LocalTvShowDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.RecentSearchDataSourceImpl
 import com.example.remotedatasource.datasource.RemoteCategoryDatasourceImpl
 import com.example.repository.datasource.local.LocalCategoryDataSource
 import com.example.repository.datasource.local.LocalCountryDataSource
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.LocalTvShowDataSource
 import com.example.repository.datasource.remote.RemoteCategoryDatasource
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
@@ -33,4 +35,5 @@ val localDataSourceModule = module {
     single<LocalRecentSearchDataSource> { RecentSearchDataSourceImpl(get()) }
     single<RemoteCategoryDatasource> { RemoteCategoryDatasourceImpl(get()) }
     single<LocalCategoryDataSource> { LocalCategoryDataSourceImpl(get()) }
+    single<LocalTvShowDataSource> { LocalTvShowDataSourceImpl(get()) }
 }
