@@ -17,7 +17,7 @@ class RemoteTvDatasourceImpl(private val ktorClient: KtorClient) : RemoteTvShows
         genreId: Int?
     ): RemoteTvShowResponse {
         return safeCall<RemoteTvShowResponse> {
-            val response = ktorClient.get(Endpoints.DISCOVER_TV_URL) {
+            val response = ktorClient.get(Endpoints.SEARCH_TV_URL) {
             parameter(QUERY_KEY, keyword)
             parameter(VOTE_AVERAGE_KEY, rating)
             if (genreId != null) parameter(WITH_GENRES_KEY, genreId)

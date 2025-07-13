@@ -21,7 +21,7 @@ class RemoteMovieDatasourceImpl(
         genreId: Int?
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE_URL) {
+            val response = ktorClient.get(Endpoints.SEARCH_MOVIE_URL) {
                 parameter(QUERY_KEY, keyword)
                 parameter(VOTE_AVERAGE_KEY, rating)
                 if (genreId != null) parameter(WITH_GENRES_KEY, genreId)
