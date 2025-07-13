@@ -1,6 +1,5 @@
 package com.example.ui.screens.search
 
-import android.R.attr.name
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -20,7 +19,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
@@ -108,25 +106,22 @@ private fun SearchContent(
             isTrailingClickEnabled = state.query.isNotEmpty(),
             maxCharacters = 100
         )
+        AnimatedVisibility(!state.query.isEmpty()) {
+            TabsLayout(
+                modifier = Modifier.fillMaxWidth(),
+                tabs = listOf(stringResource(R.string.movies), stringResource(R.string.tv_shows)),
+                selectedIndex = state.selectedTabOption.index,
+                onSelectTab = { index -> interaction.onTabOptionClicked(TabOption.entries[index]) },
+            )
+        }
 
         AnimatedVisibility(!state.query.isEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(160.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
             ) {
-                stickyHeader {
-                    TabsLayout(
-                        modifier = Modifier.fillMaxWidth(),
-                        tabs = listOf(
-                            stringResource(R.string.movies),
-                            stringResource(R.string.tv_shows)
-                        ),
-                        selectedIndex = state.selectedTabOption.index,
-                        onSelectTab = { index -> interaction.onTabOptionClicked(TabOption.entries[index]) },
-                    )
-                }
                 items(
                     if (state.selectedTabOption == TabOption.MOVIES) state.movies
                     else state.tvShows,

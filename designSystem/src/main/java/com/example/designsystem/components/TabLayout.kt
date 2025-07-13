@@ -3,10 +3,9 @@ package com.example.designsystem.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
@@ -34,11 +33,9 @@ fun TabsLayout(
     selectedIndex: Int,
     onSelectTab: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    tabWidth: Dp = 172.dp,
     tabTopPadding: Dp = 8.dp,
     tabBottomPadding: Dp = 13.dp,
     tabsEndSpace: Dp = 16.dp,
-    innerPadding: Dp = 0.dp,
     selectedTextColor: Color = AppTheme.color.title,
     unselectedTextColor: Color = AppTheme.color.hint,
     containerColor: Color = AppTheme.color.surface,
@@ -46,11 +43,10 @@ fun TabsLayout(
     dividerColor: Color = AppTheme.color.stroke
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        ScrollableTabRow(
+        TabRow(
             modifier = modifier.fillMaxWidth(),
             containerColor = containerColor,
             selectedTabIndex = selectedIndex,
-            edgePadding = innerPadding,
             divider = {},
             indicator = { list ->
                 TabRowDefaults.SecondaryIndicator(
@@ -66,7 +62,7 @@ fun TabsLayout(
             tabs.fastForEachIndexed { index, text ->
                 Tab(
                     modifier = Modifier
-                        .width(tabWidth)
+                        .weight(1f)
                         .padding(end = if (index == tabs.lastIndex) 0.dp else tabsEndSpace),
                     selected = index == selectedIndex,
                     onClick = { onSelectTab(index) },
