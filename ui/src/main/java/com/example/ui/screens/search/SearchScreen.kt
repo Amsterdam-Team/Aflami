@@ -13,14 +13,17 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
@@ -98,6 +101,8 @@ private fun SearchContent(
             onNavigateBackClicked = interaction::onNavigateBackClicked
         )
 
+        val keyboardController = LocalSoftwareKeyboardController.current
+
         TextField(
             modifier = Modifier
                 .background(color = AppTheme.color.surface)
@@ -109,7 +114,14 @@ private fun SearchContent(
             trailingIcon = R.drawable.ic_filter_vertical,
             onTrailingClick = interaction::onFilterButtonClicked,
             isTrailingClickEnabled = state.query.isNotEmpty(),
-            maxCharacters = 100
+            maxCharacters = 100,
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    interaction.onSearchActionClicked()
+                }
+            ),
+            imeAction = ImeAction.Search,
         )
         AnimatedVisibility(!state.query.isEmpty()) {
             TabsLayout(

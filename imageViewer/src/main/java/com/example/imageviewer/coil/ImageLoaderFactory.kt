@@ -3,8 +3,8 @@ package com.example.imageviewer.coil
 
 import android.content.Context
 import coil.ImageLoader
-import com.example.imageviewer.classification.policy.ImageClassifier
-import com.example.imageviewer.classification.policy.SFWImageClassifier
+import com.example.imageviewer.classification.ImageClassifier
+import com.example.imageviewer.classification.SFWImageClassifier
 import com.example.imageviewer.classification.policy.SafetyPolicy
 
 internal object ImageLoaderFactory {
