@@ -13,7 +13,7 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return TvShow with all fields and categories when mapping from LocalTvShowDto`() {
         val dto = LocalTvShowDto(
-            categoryId = 1L,
+            tvShowId = 1L,
             name = "Breaking Bad",
             description = "Chemistry teacher becomes drug kingpin",
             poster = "bb.jpg",
@@ -36,7 +36,7 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return TvShow with empty categories when mapping from LocalTvShowDto without categories`() {
         val dto = LocalTvShowDto(
-            categoryId = 2L,
+            tvShowId = 2L,
             name = "Friends",
             description = "Six friends in NYC",
             poster = "friends.jpg",
@@ -63,7 +63,7 @@ class TvShowLocalMapperTest {
 
         val result = mapper.mapToLocal(domain)
 
-        assertThat(result.categoryId).isEqualTo(3L)
+        assertThat(result.tvShowId).isEqualTo(3L)
         assertThat(result.name).isEqualTo("Stranger Things")
         assertThat(result.description).isEqualTo("Mystery in Hawkins")
         assertThat(result.poster).isEqualTo("st.jpg")

@@ -1,10 +1,10 @@
 package com.example.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.UnknownException
+import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -19,24 +19,24 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 
-open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
+open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: DispatcherProvider) : ViewModel() {
     interface BaseUiEffect
 
     private val _state: MutableStateFlow<S> = MutableStateFlow(initialState)
     val state: StateFlow<S> = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<E>()
+    private val _effect = MutableSharedFlow<E?>()
     val effect = _effect.asSharedFlow()
 
 
     protected fun updateState(updater: (S) -> S) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.Main) {
             _state.update(updater)
         }
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.Main) {
             _effect.emit(newEffect)
         }
     }
@@ -46,7 +46,7 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
         action: suspend () -> T,
         onSuccess: (T) -> Unit,
         onError: (AflamiException) -> Unit,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        dispatcher: CoroutineDispatcher = dispatcherProvider.IO,
     ) {
         viewModelScope.launch(dispatcher) {
             try {

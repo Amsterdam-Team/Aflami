@@ -10,12 +10,15 @@ import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
+import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
 class SearchByCountryViewModel(
-    private val suggestedCountriesUseCase: GetSuggestedCountriesUseCase,
-    private val moviesByCountryUseCase: GetMoviesByCountryUseCase,
+    private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
+    private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
+    dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
-    SearchByCountryScreenState()
+    SearchByCountryScreenState(),
+    dispatcherProvider
 ) {
 
     init {
@@ -26,7 +29,7 @@ class SearchByCountryViewModel(
         updateState {
             it.copy(selectedCountry = countryName)
         }
-        if (countryName.isNotEmpty()){
+        if (countryName.isNotEmpty()) {
             getSuggestedCountries(countryName)
             return
         }
@@ -34,17 +37,17 @@ class SearchByCountryViewModel(
     }
 
     fun onSelectCountry(country: CountryUiState) {
+        updateState {
+            it.copy(selectedCountry = country.countryName)
+        }
         sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
-        val countryIsoCode =
-            state.value.suggestedCountries.find { it.countryName == country.countryName }?.countryIsoCode
-                ?: ""
-        getMoviesByCountry(countryIsoCode)
+        getMoviesByCountry(country.countryIsoCode)
     }
 
     private fun getMoviesByCountry(countryIsoCode: String) {
         sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
         tryToExecute(
-            action = { moviesByCountryUseCase.invoke(countryIsoCode) },
+            action = { getMoviesByCountryUseCase.invoke(countryIsoCode) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
             onError = { exception -> onError(exception) }
         )
@@ -53,7 +56,7 @@ class SearchByCountryViewModel(
     private fun getSuggestedCountries(countryName: String) {
         sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
         tryToExecute(
-            action = { suggestedCountriesUseCase.invoke(countryName) },
+            action = { getSuggestedCountriesUseCase.invoke(countryName) },
             onSuccess = { suggestedCountries -> updateSuggestedCountries(suggestedCountries.toUiState()) },
             onError = { exception -> onError(exception) }
         )
@@ -75,12 +78,13 @@ class SearchByCountryViewModel(
     }
 
     private fun onError(exception: AflamiException) {
-        when (exception) {
+        val errorEffect = when (exception) {
             is InternetConnectionException -> SearchByCountryEffect.NoInternetConnectionEffect
             is NoSuggestedCountriesException -> SearchByCountryEffect.NoSuggestedCountriesEffect
             is NoMoviesForCountryException -> SearchByCountryEffect.NoMoviesEffect
             is CountryTooShortException -> SearchByCountryEffect.CountryTooShortEffect
-            else -> {}
+            else -> SearchByCountryEffect.UnknownErrorEffect
         }
+        sendNewEffect(errorEffect)
     }
 }

@@ -8,6 +8,6 @@ interface RemoteTvShowsDatasource {
         keyword: String,
         rating: Int,
         categoryId: Long?
-    ): List<RemoteTvShowResponse>
+    ): RemoteTvShowResponse
 
 }
