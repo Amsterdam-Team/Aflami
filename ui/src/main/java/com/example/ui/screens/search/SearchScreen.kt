@@ -70,6 +70,8 @@ fun SearchScreen(
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
+
+                null -> {}
             }
         }
     }

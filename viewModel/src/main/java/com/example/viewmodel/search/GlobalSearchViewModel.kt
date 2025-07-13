@@ -17,6 +17,7 @@ import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
+import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,8 @@ class GlobalSearchViewModel(
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
-) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()),
+    dispatcherProvider: DispatcherProvider
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(),dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
     private val _query = MutableStateFlow(state.value.query)
