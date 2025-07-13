@@ -33,7 +33,6 @@ val localDataSourceModule = module {
     single<LocalCountryDataSource> { LocalCountryDataSourceImpl(get()) }
     single<LocalMovieDataSource> { LocalMovieDataSourceImpl(get()) }
     single<LocalRecentSearchDataSource> { RecentSearchDataSourceImpl(get()) }
-    single<RemoteCategoryDatasource> { RemoteCategoryDatasourceImpl(get()) }
     single<LocalCategoryDataSource> { LocalCategoryDataSourceImpl(get()) }
     single<LocalTvShowDataSource> { LocalTvShowDataSourceImpl(get()) }
 }
