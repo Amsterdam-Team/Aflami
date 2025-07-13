@@ -1,39 +1,40 @@
 package com.example.repository.mapper.local
 
-import com.example.entity.Category
 import com.example.entity.TvShow
 import com.example.repository.dto.local.LocalTvShowDto
+import com.example.repository.dto.local.relation.TvShowWithCategory
 
-class TvShowLocalMapper {
+class TvShowLocalMapper(
+    private val categoryLocalMapper: CategoryLocalMapper
+) {
 
-    fun mapFromLocal(dto: LocalTvShowDto, categories: List<Category> = emptyList()): TvShow {
+    fun mapFromLocal(dto: TvShowWithCategory): TvShow {
         return TvShow(
-            id = dto.categoryId,
-            name = dto.name,
-            description = dto.description,
-            poster = dto.poster,
-            productionYear = dto.productionYear,
-            rating = dto.rating,
-            categories = categories
+            id = dto.tvShow.tvShowId,
+            name = dto.tvShow.name,
+            description = dto.tvShow.description,
+            poster = dto.tvShow.poster,
+            productionYear = dto.tvShow.productionYear,
+            rating = dto.tvShow.rating,
+            categories = categoryLocalMapper.mapListFromTvShowLocal(dto.categories),
+            popularity = dto.tvShow.popularity
         )
     }
 
     fun mapToLocal(domain: TvShow): LocalTvShowDto {
         return LocalTvShowDto(
-            categoryId = domain.id,
+            tvShowId = domain.id,
             name = domain.name,
             description = domain.description,
             poster = domain.poster,
             productionYear = domain.productionYear,
-            rating = domain.rating
+            rating = domain.rating,
+            popularity = domain.popularity
         )
     }
 
-    fun mapListFromLocal(dtos: List<LocalTvShowDto>, categoriesMap: Map<Long, List<Category>>): List<TvShow> {
-        return dtos.map { dto ->
-            val categories = categoriesMap[dto.categoryId] ?: emptyList()
-            mapFromLocal(dto, categories)
-        }
+    fun mapListFromLocal(dtos: List<TvShowWithCategory>): List<TvShow> {
+        return dtos.map { mapFromLocal(it) }
     }
 
     fun mapListToLocal(domains: List<TvShow>): List<LocalTvShowDto> {

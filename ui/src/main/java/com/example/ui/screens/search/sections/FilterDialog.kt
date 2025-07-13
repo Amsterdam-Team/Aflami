@@ -125,7 +125,7 @@ fun FilterDialog(
             PrimaryButton(
                 title = stringResource(R.string.apply),
                 onClick = interaction::onApplyButtonClicked,
-                isEnabled = true,
+                isEnabled = state.hasFilterData,
                 isLoading = false,
                 isNegative = false,
                 modifier = Modifier.padding(12.dp),

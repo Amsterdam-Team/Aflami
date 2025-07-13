@@ -4,12 +4,13 @@ import com.example.localdatasource.roomDataBase.daos.TvShowDao
 import com.example.repository.datasource.local.LocalTvShowDataSource
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
+import com.example.repository.dto.local.relation.TvShowWithCategory
 
 class LocalTvShowDataSourceImpl(
     private val dao: TvShowDao
 ) : LocalTvShowDataSource {
 
-    override suspend fun getTvShowsBySearchKeyword(searchKeyword: String): List<LocalTvShowDto> {
+    override suspend fun getTvShowsBySearchKeyword(searchKeyword: String): List<TvShowWithCategory> {
         return dao.getTvShowsBySearchKeyword(searchKeyword)
     }
 
@@ -22,7 +23,7 @@ class LocalTvShowDataSourceImpl(
 
         val mappings = tvShows.map {
             LocalTvShowWithSearchDto(
-                tvShowId = it.categoryId,
+                tvShowId = it.tvShowId,
                 searchKeyword = searchKeyword
             )
         }
