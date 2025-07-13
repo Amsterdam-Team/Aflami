@@ -98,6 +98,7 @@ fun SearchByCountryScreen(
 
                 SearchByCountryEffect.NoSuggestedCountriesEffect -> {
                     noSuggestedCountry = true
+                    showCountriesDropdown = false
                 }
 
                 SearchByCountryEffect.ShowCountriesDropDown -> {
@@ -142,8 +143,7 @@ fun SearchByCountryScreenContent(
     showCountriesDropdown: Boolean,
 ) {
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
-    var appBarHeight by remember { mutableStateOf(0.dp) }
-    var searchBarHeight by remember { mutableStateOf(0.dp) }
+    var appBarSectionHeight by remember { mutableStateOf(0.dp) }
 
     Column(
         modifier = modifier
@@ -151,29 +151,30 @@ fun SearchByCountryScreenContent(
             .statusBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
-        DefaultAppBar(
-            title = stringResource(R.string.world_tour_title),
-            showNavigateBackButton = true,
-            onNavigateBackClicked = onNavigateBackClicked,
+        Column(
             modifier = Modifier.onSizeChanged {
-                appBarHeight = it.height.dp
+                appBarSectionHeight = it.height.dp
             }
-        )
+        ) {
+            DefaultAppBar(
+                title = stringResource(R.string.world_tour_title),
+                showNavigateBackButton = true,
+                onNavigateBackClicked = onNavigateBackClicked,
 
-        TextField(
-            text = state.selectedCountry,
-            hintText = stringResource(R.string.country_name_hint),
-            onValueChange = { onCountryNameUpdated(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .onGloballyPositioned {
-                    textFieldSize = it.size
-                }
-                .onSizeChanged {
-                    searchBarHeight = it.height.dp
-                }
-        )
+                )
+
+            TextField(
+                text = state.selectedCountry,
+                hintText = stringResource(R.string.country_name_hint),
+                onValueChange = { onCountryNameUpdated(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .onGloballyPositioned {
+                        textFieldSize = it.size
+                    }
+            )
+        }
 
         Box {
             Box(
@@ -182,14 +183,15 @@ fun SearchByCountryScreenContent(
                 when (screenContent) {
                     ScreenContent.COUNTRY_TOUR -> ExploreCountries(
                         Modifier
+                            .fillMaxSize()
                             .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight/2)
                     )
 
                     ScreenContent.LOADING_MOVIES -> Loading(
                         Modifier
                             .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight/2)
                     )
 
                     ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
@@ -197,13 +199,13 @@ fun SearchByCountryScreenContent(
                             .align(
                                 Alignment.Center
                             )
-                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight/2)
                     )
 
                     ScreenContent.NO_MOVIES -> NoMoviesFound(
                         Modifier
                             .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight/2)
                     )
 
                     ScreenContent.MOVIES -> SearchedMovies(
