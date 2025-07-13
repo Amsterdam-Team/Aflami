@@ -173,7 +173,6 @@ private fun RatingBar(
     }
 }
 
-
 @Composable
 @ThemeAndLocalePreviews
 fun FilterDialogPreview2() {
