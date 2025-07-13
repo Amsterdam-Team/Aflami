@@ -1,5 +1,6 @@
 package com.example.viewmodel.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -7,19 +8,20 @@ import com.example.domain.useCase.GetTvShowByKeywordUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
-import com.example.domain.useCase.GetMovieCategoriesUseCase
-import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.entity.Category
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.common.GenreItemUiState.Companion.getSelectedOne
+import com.example.viewmodel.common.GenreItemUiState.Companion.selectByType
+import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.common.toGenreUiStates
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -30,8 +32,6 @@ class GlobalSearchViewModel(
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
-    private val getMovieCategoriesUseCase: GetMovieCategoriesUseCase,
-    private val getTvShowCategoriesUseCase: GetTvShowCategoriesUseCase,
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
@@ -56,9 +56,10 @@ class GlobalSearchViewModel(
     }
 
     private fun observeSearchQueryChanges() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _query.debounce(300)
                 .map(String::trim)
+                .filter(String::isNotEmpty)
                 .collect(::onSearchQueryChanged)
         }
     }
@@ -71,6 +72,7 @@ class GlobalSearchViewModel(
     }
 
     private fun fetchMoviesByQuery(keyword: String) {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = { getMoviesByKeywordUseCase(keyword = keyword) },
             onSuccess = ::onFetchMoviesSuccess,
@@ -79,7 +81,10 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toMoveUiStates()) }
+        Log.e("bk", movies.toString())
+
+        updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
+        Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
     private fun fetchTvShowsByQuery(keyword: String) {
@@ -99,55 +104,7 @@ class GlobalSearchViewModel(
         updateState { it.copy(query = text) }
     }
 
-    override fun onFilterButtonClicked() {
-        when (state.value.selectedTabOption) {
-            TabOption.MOVIES -> fetchMovieCategories()
-            TabOption.TV_SHOWS -> fetchTvShowCategories()
-        }
-        updateState {
-            it.copy(isDialogVisible = true)
-        }
-    }
-
-    private fun fetchMovieCategories() {
-        tryToExecute(
-            action = { getMovieCategoriesUseCase() },
-            onSuccess = ::onFetchMovieCategoriesSuccess,
-            onError = ::onFetchError,
-        )
-    }
-
-    private fun onFetchMovieCategoriesSuccess(categories: List<Category>) {
-        updateState { oldState ->
-            oldState.copy(
-                filterItemUiState = oldState.filterItemUiState.copy(
-                    genreUiStates = categories.map {
-                        it.toGenreUiStates(TabOption.MOVIES)
-                    }
-                )
-            )
-        }
-    }
-
-    private fun fetchTvShowCategories() {
-        tryToExecute(
-            action = { getTvShowCategoriesUseCase() },
-            onSuccess = ::onFetchTvShowCategoriesSuccess,
-            onError = ::onFetchError,
-        )
-    }
-
-    private fun onFetchTvShowCategoriesSuccess(categories: List<Category>) {
-        updateState { oldState ->
-            oldState.copy(
-                filterItemUiState = oldState.filterItemUiState.copy(
-                    genreUiStates = categories.map {
-                        it.toGenreUiStates(TabOption.TV_SHOWS)
-                    }
-                )
-            )
-        }
-    }
+    override fun onFilterButtonClicked() = updateState { it.copy(isDialogVisible = true) }
 
     override fun onNavigateBackClicked() = sendNewEffect(SearchUiEffect.NavigateBack)
 
@@ -165,6 +122,7 @@ class GlobalSearchViewModel(
                 tvShows = state.value.tvShows,
             )
         }
+        onSearchQueryChanged(state.value.query)
     }
 
     override fun onRecentSearchClicked(keyword: String) = onTextValuedChanged(keyword)
@@ -215,11 +173,14 @@ class GlobalSearchViewModel(
         }
     }
 
-    override fun onGenreButtonChanged(genreName: String) {
+    override fun onGenreButtonChanged(genreType: GenreType) {
+        Log.e("bk", "${genreType.name}")
         updateState {
             it.copy(
-                filterItemUiState = it.filterItemUiState.copy(
-                    selectedGenreName = genreName
+                filterItemUiState = state.value.filterItemUiState.copy(
+                    genreItemUiStates = it.filterItemUiState.genreItemUiStates.selectByType(
+                        genreType
+                    )
                 )
             )
         }
@@ -235,12 +196,13 @@ class GlobalSearchViewModel(
     }
 
     private fun applyMoviesFilter() {
+        val currentGenreItemUiStates = state.value.filterItemUiState.genreItemUiStates
         tryToExecute(
             action = {
                 getMoviesByKeywordUseCase(
                     keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
-                    categoryName = state.value.filterItemUiState.selectedGenreName
+                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
+                    categoryName = currentGenreItemUiStates.getSelectedOne(genres = currentGenreItemUiStates).type.name
                 )
             },
             onSuccess = ::onMoviesFilteredSuccess,
@@ -255,12 +217,13 @@ class GlobalSearchViewModel(
     }
 
     private fun applyTvShowsFilter() {
+        val currentGenreItemUiStates = state.value.filterItemUiState.genreItemUiStates
         tryToExecute(
             action = {
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
-                    categoryName = state.value.filterItemUiState.selectedGenreName
+                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
+                    categoryName = currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.name
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,
@@ -284,6 +247,8 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
+        Log.e("bk", "exception: $exception")
+
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 
