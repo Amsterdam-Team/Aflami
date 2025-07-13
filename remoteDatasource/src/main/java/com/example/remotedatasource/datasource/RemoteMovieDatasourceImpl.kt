@@ -1,8 +1,7 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.client.safeCall
+import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
@@ -18,7 +17,7 @@ class RemoteMovieDatasourceImpl(
         keyword: String
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(Endpoints.SEARCH_MOVIE_URL) {
+            val response = ktorClient.get(SEARCH_MOVIE_URL) {
                 parameter(QUERY_KEY, keyword)
             }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
@@ -33,7 +32,7 @@ class RemoteMovieDatasourceImpl(
                 .actors
                 .joinToString(separator = "|") { it.id.toString() }
 
-            ktorClient.get(Endpoints.SEARCH_MOVIE_URL) {
+            ktorClient.get(SEARCH_MOVIE_URL) {
                 parameter(WITH_CAST_KEY, actorsByName)
             }
         }
@@ -43,7 +42,7 @@ class RemoteMovieDatasourceImpl(
         name: String
     ): RemoteActorSearchResponse {
         return safeCall<RemoteActorSearchResponse> {
-            ktorClient.get(Endpoints.GET_ACTOR_NAME_BY_ID_URL) {
+            ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) {
                 parameter(QUERY_KEY, name)
             }
         }
@@ -53,7 +52,7 @@ class RemoteMovieDatasourceImpl(
         countryIsoCode: String
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE) {
+            val response = ktorClient.get(DISCOVER_MOVIE) {
                 parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
             }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
@@ -61,6 +60,11 @@ class RemoteMovieDatasourceImpl(
     }
 
     private companion object {
+        const val SEARCH_MOVIE_URL = "search/movie"
+        const val GET_ACTOR_NAME_BY_ID_URL = "search/person"
+
+        const val DISCOVER_MOVIE = "discover/movie"
+
         const val WITH_CAST_KEY = "with_cast"
         const val QUERY_KEY = "query"
 
