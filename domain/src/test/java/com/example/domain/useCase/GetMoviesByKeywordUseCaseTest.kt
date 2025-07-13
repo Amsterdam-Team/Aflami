@@ -54,11 +54,11 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should call getMoviesByKeyword from movieRepository`() =
-        runBlocking {
-            getMoviesByKeywordUseCase("keyword")
+    fun `should call getMoviesByKeyword from movieRepository`() = runBlocking {
+        coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieList
 
-            coVerify { movieRepository.getMoviesByKeyword("keyword") }
+            getMoviesByKeywordUseCase("keyword")
+            coVerify(exactly = 1) { movieRepository.getMoviesByKeyword("keyword") }
         }
 
     @Test
