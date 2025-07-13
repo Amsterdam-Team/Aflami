@@ -1,5 +1,6 @@
 package com.example.viewmodel.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -126,6 +127,8 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
+        Log.e("bk", "tvShows: ${tvShows.toString()}")
+
         updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
     }
 
@@ -309,6 +312,8 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
+        Log.e("bk", "exception: ${exception.toString()}")
+
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 

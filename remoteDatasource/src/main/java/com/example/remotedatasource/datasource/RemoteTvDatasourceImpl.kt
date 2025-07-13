@@ -2,7 +2,7 @@ package com.example.remotedatasource.datasource
 
 import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.client.safeCall
+import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteTvShowsDatasource
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import io.ktor.client.request.parameter
@@ -17,7 +17,7 @@ class RemoteTvDatasourceImpl(private val ktorClient: KtorClient) : RemoteTvShows
         genreId: Int?
     ): RemoteTvShowResponse {
         return safeCall<RemoteTvShowResponse> {
-            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE_URL) {
+            val response = ktorClient.get(Endpoints.DISCOVER_TV_URL) {
             parameter(QUERY_KEY, keyword)
             parameter(VOTE_AVERAGE_KEY, rating)
             if (genreId != null) parameter(WITH_GENRES_KEY, genreId)
