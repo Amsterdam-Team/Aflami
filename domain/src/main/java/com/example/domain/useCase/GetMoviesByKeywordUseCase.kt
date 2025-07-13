@@ -1,6 +1,7 @@
 package com.example.domain.useCase
 
 import com.example.domain.repository.MovieRepository
+import com.example.entity.GenreType
 import com.example.entity.Movie
 
 class GetMoviesByKeywordUseCase(
@@ -10,10 +11,9 @@ class GetMoviesByKeywordUseCase(
     suspend operator fun invoke(
         keyword: String,
         rating: Float = 0f,
-        categoryName: String = ""
+        genreType: GenreType = GenreType.ALL
     ): List<Movie> {
-        return movieRepository.getMoviesByKeyword(keyword = keyword, rating = rating)
-            //.filter { it.categories.any { category -> category.name == categoryName } }
+        return movieRepository.getMoviesByKeyword(keyword = keyword, rating = rating, genreType = genreType)
             .sortedByDescending { it.popularity }
 
     }

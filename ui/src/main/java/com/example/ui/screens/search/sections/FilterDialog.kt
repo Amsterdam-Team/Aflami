@@ -1,7 +1,5 @@
 package com.example.ui.screens.search.sections
 
-import android.R.attr.label
-import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -36,10 +34,9 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.screens.search.sections.filterDialog.getGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.getGenreLabel
-import com.example.viewmodel.common.GenreType
-import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.FilterItemUiState
+import com.example.viewmodel.search.mapper.CategoryType
 
 @Composable
 fun FilterDialog(
@@ -188,7 +185,7 @@ fun FilterDialogPreview2() {
             interaction = object : FilterInteractionListener {
                 override fun onCancelButtonClicked() {}
                 override fun onRatingStarChanged(ratingIndex: Int) {}
-                override fun onGenreButtonChanged(genreType: GenreType) {}
+                override fun onGenreButtonChanged(genreType: CategoryType) {}
                 override fun onApplyButtonClicked() {}
                 override fun onClearButtonClicked() {}
             },

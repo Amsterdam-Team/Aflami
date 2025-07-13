@@ -1,6 +1,5 @@
 package com.example.viewmodel.search
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -12,12 +11,13 @@ import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.common.GenreItemUiState.Companion.getSelectedOne
-import com.example.viewmodel.common.GenreItemUiState.Companion.selectByType
-import com.example.viewmodel.common.GenreType
+import com.example.viewmodel.common.CategoryItemUiState.Companion.getSelectedOne
+import com.example.viewmodel.common.CategoryItemUiState.Companion.selectByType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
+import com.example.viewmodel.search.mapper.CategoryType
+import com.example.viewmodel.search.mapper.toGenreType
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -76,10 +76,10 @@ class GlobalSearchViewModel(
         }
     }
 
-    private fun fetchMoviesByQuery(keyword: String, rating: Float = 0f, categoryName: String = "") {
+    private fun fetchMoviesByQuery(keyword: String, rating: Float = 0f, categoryType: CategoryType = CategoryType.ALL) {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getMoviesByKeywordUseCase(keyword = keyword, rating = rating, categoryName = categoryName) },
+            action = { getMoviesByKeywordUseCase(keyword = keyword, rating = rating, genreType = categoryType.toGenreType()) },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError,
         )
@@ -89,9 +89,9 @@ class GlobalSearchViewModel(
         updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
     }
 
-    private fun fetchTvShowsByQuery(keyword: String, rating: Float = 0f, categoryName: String = "") {
+    private fun fetchTvShowsByQuery(keyword: String, rating: Float = 0f, categoryType: CategoryType = CategoryType.ALL) {
         tryToExecute(
-            action = { getTvShowByKeywordUseCase(keyword = keyword) },
+            action = { getTvShowByKeywordUseCase(keyword = keyword, rating = rating, genreType = categoryType.toGenreType()) },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
         )
@@ -183,13 +183,11 @@ class GlobalSearchViewModel(
         }
     }
 
-    override fun onGenreButtonChanged(genreType: GenreType) {
+    override fun onGenreButtonChanged(categoryType: CategoryType) {
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
-                    genreItemUiStates = it.filterItemUiState.genreItemUiStates.selectByType(
-                        genreType
-                    )
+                    genreItemUiStates = it.filterItemUiState.genreItemUiStates.selectByType(categoryType)
                 )
             )
         }
@@ -205,13 +203,13 @@ class GlobalSearchViewModel(
     }
 
     private fun applyMoviesFilter() {
-        val currentGenreItemUiStates = state.value.filterItemUiState.genreItemUiStates
+        val currentCategoryItemUiStates = state.value.filterItemUiState.genreItemUiStates
         tryToExecute(
             action = {
                 getMoviesByKeywordUseCase(
                     keyword = state.value.query,
                     rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
-                    categoryName = currentGenreItemUiStates.getSelectedOne(genres = currentGenreItemUiStates).type.name
+                    genreType = currentCategoryItemUiStates.getSelectedOne(categories = currentCategoryItemUiStates).type.toGenreType()
                 )
             },
             onSuccess = ::onMoviesFilteredSuccess,
@@ -220,7 +218,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
-        Log.e("bk", "onMoviesFilteredSuccess: $movies")
         updateState {
             it.copy(movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false)
         }
@@ -233,7 +230,7 @@ class GlobalSearchViewModel(
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
                     rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),  // TODO(format enum names)
-                    categoryName = currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.name
+                    genreType = currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.toGenreType()
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,

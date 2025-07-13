@@ -6,8 +6,8 @@ interface RemoteTvShowsDatasource {
 
     suspend fun getTvShowsByKeyword(
         keyword: String,
-        rating: Int,
-        categoryId: Long?
+        rating: Float = 0f,
+        genreId: Int? = null
     ): RemoteTvShowResponse
 
 }

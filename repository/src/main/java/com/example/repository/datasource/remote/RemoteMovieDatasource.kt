@@ -5,7 +5,8 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 interface RemoteMovieDatasource {
     suspend fun getMoviesByKeyword(
         keyword: String,
-        rating: Float = 0f
+        rating: Float = 0f,
+        genreId: Int? = null
     ): RemoteMovieResponse
 
     suspend fun getMoviesByActorName(

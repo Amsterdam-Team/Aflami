@@ -1,6 +1,7 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.TvShowRepository
+import com.example.entity.GenreType
 import com.example.entity.TvShow
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
 import com.example.repository.datasource.local.LocalTvShowDataSource
@@ -22,7 +23,7 @@ class TvShowRepositoryImpl(
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) : TvShowRepository {
-    override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
+    override suspend fun getTvShowByKeyword(keyword: String, rating: Float, genreType: GenreType): List<TvShow> {
         return withContext(dispatcher){
             val recentSearch =
                 recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
@@ -34,7 +35,7 @@ class TvShowRepositoryImpl(
                 return@withContext tvLocalMapper.mapListFromLocal(localTvShows)
             }
             deleteRecentSearch(recentSearch)
-            val remoteTvShows = remoteTvDataSource.getTvShowsByKeyword(keyword, 0, 0L)
+            val remoteTvShows = remoteTvDataSource.getTvShowsByKeyword(keyword = keyword, rating = rating, genreId = tvRemoteMapper.mapToTvGenreId(genreType))
             val domainTvShows = tvRemoteMapper.mapResponseToDomain(remoteTvShows)
 
             localTvDataSource.addAllTvShows(

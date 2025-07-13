@@ -1,6 +1,5 @@
 package com.example.remotedatasource.datasource
 
-import android.util.Log
 import com.example.remotedatasource.BuildConfig
 import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
@@ -10,17 +9,25 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
+
 class RemoteMovieDatasourceImpl(
     private val ktorClient: KtorClient,
     private val json: Json,
 ) : RemoteMovieDatasource {
     override suspend fun getMoviesByKeyword(
         keyword: String,
-        rating: Float
+        rating: Float,
+        genreId: Int?
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$QUERY_KEY=$keyword&$VOTE_AVERAGE_KEY=$rating")
-            Log.e("bk", "bodyAsText: ${response.bodyAsText()}")
+            val baseUrl = Endpoints.DISCOVER_MOVIE_URL
+            val params = buildList {
+                add("$QUERY_KEY=$keyword")
+                add("$VOTE_AVERAGE_KEY=$rating")
+                if (genreId != null) add("with_genres=$genreId")
+            }.joinToString("&")
+
+            val response = ktorClient.get("$baseUrl?$params")
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }

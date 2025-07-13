@@ -5,10 +5,10 @@ import com.example.domain.exceptions.BlankQueryException
 import com.example.domain.exceptions.InvalidCharactersException
 import com.example.domain.exceptions.QueryTooLongException
 import com.example.domain.exceptions.QueryTooShortException
-import com.example.viewmodel.common.GenreItemUiState
-import com.example.viewmodel.common.GenreType
+import com.example.viewmodel.common.CategoryItemUiState
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.mapper.CategoryType
 
 data class SearchUiState(
     val query: String = "",
@@ -24,14 +24,14 @@ data class SearchUiState(
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,
-    val genreItemUiStates: List<GenreItemUiState> = defaultGenreItemsUiState,
+    val genreItemUiStates: List<CategoryItemUiState> = defaultGenreItemsUiState,
 ){
     val hasFilterData: Boolean
         get() = selectedStarIndex > 0 || genreItemUiStates.any { it.isSelected }
 
     companion object {
-        val defaultGenreItemsUiState = GenreType.entries.toTypedArray().mapIndexed { index, genreType ->
-            GenreItemUiState(
+        val defaultGenreItemsUiState = CategoryType.entries.toTypedArray().mapIndexed { index, genreType ->
+            CategoryItemUiState(
                 type = genreType,
                 isSelected = index == 0
             )
