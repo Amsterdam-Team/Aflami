@@ -109,10 +109,6 @@ fun SearchByCountryScreen(
                     showCountriesDropdown = false
                 }
 
-                SearchByCountryEffect.InitialEffect -> {
-                    screenContent = ScreenContent.COUNTRY_TOUR
-                }
-
                 SearchByCountryEffect.CountryTooShortEffect -> {}
                 else -> {}
             }
@@ -124,7 +120,7 @@ fun SearchByCountryScreen(
         onNavigateBackClicked = {
             navController.popBackStack()
         },
-        viewModel::onCountryNameUpdated,
+        viewModel::onUserSearch,
         viewModel::onSelectCountry,
         modifier,
         screenContent,
