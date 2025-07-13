@@ -136,7 +136,7 @@ private fun SearchContent(
         AnimatedVisibility(state.query.isNotEmpty()) {
             if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(0.77f),
                     verticalArrangement = Arrangement.Center
                 ) {
                     NoDataContainer(
