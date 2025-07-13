@@ -1,0 +1,12 @@
+package com.amsterdam.entity
+
+data class Movie (
+    val id : Long,
+    val name : String ,
+    val description : String,
+    val poster : String,
+    val productionYear : Int,
+    val categories : List<Category>,
+    val rating : Float,
+    val popularity: Double,
+)

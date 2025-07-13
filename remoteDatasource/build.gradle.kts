@@ -13,7 +13,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.remotedatasource"
+    namespace = "com.amsterdam.remotedatasource"
 
     buildFeatures {
         buildConfig = true

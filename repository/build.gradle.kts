@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.repository"
+    namespace = "com.amsterdam.repository"
     defaultConfig {
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }

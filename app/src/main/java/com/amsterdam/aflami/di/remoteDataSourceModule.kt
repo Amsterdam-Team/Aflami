@@ -1,14 +1,14 @@
 package com.amsterdam.aflami.di
 
-import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.datasource.RemoteCategoryDatasourceImpl
-import com.example.remotedatasource.datasource.RemoteCountryDataSourceImpl
-import com.example.remotedatasource.datasource.RemoteMovieDatasourceImpl
-import com.example.remotedatasource.datasource.RemoteTvDatasourceImpl
-import com.example.repository.datasource.remote.RemoteCategoryDatasource
-import com.example.repository.datasource.remote.RemoteCountryDataSource
-import com.example.repository.datasource.remote.RemoteMovieDatasource
-import com.example.repository.datasource.remote.RemoteTvShowsDatasource
+import com.amsterdam.remotedatasource.client.KtorClient
+import com.amsterdam.remotedatasource.datasource.RemoteCategoryDatasourceImpl
+import com.amsterdam.remotedatasource.datasource.RemoteCountryDataSourceImpl
+import com.amsterdam.remotedatasource.datasource.RemoteMovieDatasourceImpl
+import com.amsterdam.remotedatasource.datasource.RemoteTvDatasourceImpl
+import com.amsterdam.repository.datasource.remote.RemoteCategoryDatasource
+import com.amsterdam.repository.datasource.remote.RemoteCountryDataSource
+import com.amsterdam.repository.datasource.remote.RemoteMovieDatasource
+import com.amsterdam.repository.datasource.remote.RemoteTvShowsDatasource
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 

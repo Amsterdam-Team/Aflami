@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.localdatasource"
+    namespace = "com.amsterdam.localdatasource"
 
 }
 ksp {

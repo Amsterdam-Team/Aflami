@@ -1,0 +1,31 @@
+package com.amsterdam.remotedatasource.datasource
+
+import com.amsterdam.remotedatasource.client.KtorClient
+import com.amsterdam.remotedatasource.utils.apiHandler.safeCall
+import com.amsterdam.repository.datasource.remote.RemoteTvShowsDatasource
+import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
+import io.ktor.client.request.parameter
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
+
+class RemoteTvDatasourceImpl(private val ktorClient: KtorClient) : RemoteTvShowsDatasource {
+
+    override suspend fun getTvShowsByKeyword(
+        keyword: String,
+        rating: Int,
+        categoryId: Long?
+    ): RemoteTvShowResponse {
+        return safeCall<RemoteTvShowResponse> {
+            val response = ktorClient.get(SEARCH_TV_URL) {
+                parameter(QUERY_KEY, keyword)
+            }
+            return Json.decodeFromString<RemoteTvShowResponse>(response.bodyAsText())
+        }
+    }
+
+
+    private companion object {
+        const val QUERY_KEY = "query"
+        const val SEARCH_TV_URL = "search/tv"
+    }
+}

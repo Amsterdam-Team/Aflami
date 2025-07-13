@@ -1,23 +1,23 @@
 package com.amsterdam.aflami.di
 
-import com.example.domain.repository.CategoryRepository
-import com.example.domain.repository.CountryRepository
-import com.example.domain.repository.MovieRepository
-import com.example.domain.repository.RecentSearchRepository
-import com.example.domain.repository.TvShowRepository
-import com.example.repository.mapper.local.CategoryLocalMapper
-import com.example.repository.mapper.local.CountryLocalMapper
-import com.example.repository.mapper.local.MovieLocalMapper
-import com.example.repository.mapper.local.RecentSearchMapper
-import com.example.repository.mapper.local.TvShowLocalMapper
-import com.example.repository.mapper.remote.RemoteCountryMapper
-import com.example.repository.mapper.remote.RemoteMovieMapper
-import com.example.repository.mapper.remote.RemoteTvShowMapper
-import com.example.repository.repository.CategoryRepositoryImpl
-import com.example.repository.repository.CountryRepositoryImpl
-import com.example.repository.repository.MovieRepositoryImpl
-import com.example.repository.repository.RecentSearchRepositoryImpl
-import com.example.repository.repository.TvShowRepositoryImpl
+import com.amsterdam.domain.repository.CategoryRepository
+import com.amsterdam.domain.repository.CountryRepository
+import com.amsterdam.domain.repository.MovieRepository
+import com.amsterdam.domain.repository.RecentSearchRepository
+import com.amsterdam.domain.repository.TvShowRepository
+import com.amsterdam.repository.mapper.local.CategoryLocalMapper
+import com.amsterdam.repository.mapper.local.CountryLocalMapper
+import com.amsterdam.repository.mapper.local.MovieLocalMapper
+import com.amsterdam.repository.mapper.local.RecentSearchMapper
+import com.amsterdam.repository.mapper.local.TvShowLocalMapper
+import com.amsterdam.repository.mapper.remote.RemoteCountryMapper
+import com.amsterdam.repository.mapper.remote.RemoteMovieMapper
+import com.amsterdam.repository.mapper.remote.RemoteTvShowMapper
+import com.amsterdam.repository.repository.CategoryRepositoryImpl
+import com.amsterdam.repository.repository.CountryRepositoryImpl
+import com.amsterdam.repository.repository.MovieRepositoryImpl
+import com.amsterdam.repository.repository.RecentSearchRepositoryImpl
+import com.amsterdam.repository.repository.TvShowRepositoryImpl
 import org.koin.dsl.module
 
 val repositoryModule = module {

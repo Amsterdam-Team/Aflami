@@ -1,18 +1,18 @@
 package com.amsterdam.aflami.di
 
-import com.example.domain.useCase.GetMovieCategoriesUseCase
-import com.example.domain.useCase.GetMoviesByActorUseCase
-import com.example.domain.useCase.GetMoviesByCountryUseCase
-import com.example.domain.useCase.GetMoviesByKeywordUseCase
-import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.GetTvShowByKeywordUseCase
-import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
-import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
-import com.example.domain.useCase.search.ClearRecentSearchUseCase
-import com.example.domain.useCase.search.GetRecentSearchesUseCase
-import com.example.domain.validation.CountryValidator
-import com.example.domain.validation.CountryValidatorImp
+import com.amsterdam.domain.useCase.GetMovieCategoriesUseCase
+import com.amsterdam.domain.useCase.GetMoviesByActorUseCase
+import com.amsterdam.domain.useCase.GetMoviesByCountryUseCase
+import com.amsterdam.domain.useCase.GetMoviesByKeywordUseCase
+import com.amsterdam.domain.useCase.GetSuggestedCountriesUseCase
+import com.amsterdam.domain.useCase.GetTvShowByKeywordUseCase
+import com.amsterdam.domain.useCase.GetTvShowCategoriesUseCase
+import com.amsterdam.domain.useCase.search.AddRecentSearchUseCase
+import com.amsterdam.domain.useCase.search.ClearAllRecentSearchesUseCase
+import com.amsterdam.domain.useCase.search.ClearRecentSearchUseCase
+import com.amsterdam.domain.useCase.search.GetRecentSearchesUseCase
+import com.amsterdam.domain.validation.CountryValidator
+import com.amsterdam.domain.validation.CountryValidatorImp
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

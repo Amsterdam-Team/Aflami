@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-#-keep class com.example.remotedatasource.datasource.dto.** { *; }
+#-keep class com.amsterdam.remotedatasource.datasource.dto.** { *; }

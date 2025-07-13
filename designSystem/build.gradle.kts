@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.designsystem"
+    namespace = "com.amsterdam.designsystem"
 }
 
 dependencies {

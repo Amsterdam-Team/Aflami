@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.example.convention"
+group = "com.amsterdam.convention"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11

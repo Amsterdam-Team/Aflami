@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.imageviewer"
+    namespace = "com.amsterdam.imageviewer"
 }
 
 dependencies {
