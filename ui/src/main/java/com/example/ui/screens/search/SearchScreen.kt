@@ -19,10 +19,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
+import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
@@ -38,6 +40,7 @@ import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.FilterInteractionListener
 import com.example.viewmodel.search.GlobalSearchInteractionListener
 import com.example.viewmodel.search.GlobalSearchViewModel
+import com.example.viewmodel.search.SearchErrorUiState
 import com.example.viewmodel.search.SearchUiEffect
 import com.example.viewmodel.search.SearchUiState
 import kotlinx.coroutines.flow.collectLatest
@@ -117,26 +120,39 @@ private fun SearchContent(
             )
         }
 
-        AnimatedVisibility(!state.query.isEmpty()) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(160.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
-            ) {
-                items(
-                    if (state.selectedTabOption == TabOption.MOVIES) state.movies
-                    else state.tvShows,
-                ) { mediaItem ->
-                    with(mediaItem) {
-                        MovieCard(
-                            movieImage = posterImage,
-                            movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
-                            else stringResource(R.string.movies),
-                            movieYear = yearOfRelease,
-                            movieTitle = name,
-                            movieRating = rate,
-                        )
+        AnimatedVisibility(state.query.isNotEmpty()) {
+            if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    NoDataContainer(
+                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                        title = stringResource(R.string.no_search_result),
+                        description = stringResource(R.string.no_search_result_description),
+                    )
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(160.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
+                ) {
+                    items(
+                        if (state.selectedTabOption == TabOption.MOVIES) state.movies
+                        else state.tvShows,
+                    ) { mediaItem ->
+                        with(mediaItem) {
+                            MovieCard(
+                                movieImage = posterImage,
+                                movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
+                                else stringResource(R.string.movies),
+                                movieYear = yearOfRelease,
+                                movieTitle = name,
+                                movieRating = rate,
+                            )
+                        }
                     }
                 }
             }
