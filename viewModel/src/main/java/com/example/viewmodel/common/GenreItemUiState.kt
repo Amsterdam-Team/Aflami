@@ -4,7 +4,7 @@ import kotlin.collections.map
 
 data class GenreItemUiState(
     val type: GenreType = GenreType.ALL,
-    val isSelected: Boolean = true
+    val isSelected: Boolean = false
 ){
     companion object{
         fun List<GenreItemUiState>.selectByType(type: GenreType): List<GenreItemUiState> {

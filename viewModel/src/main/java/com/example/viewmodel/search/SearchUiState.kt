@@ -35,7 +35,7 @@ data class FilterItemUiState(
         val defaultGenreItemsUiState = GenreType.entries.toTypedArray().mapIndexed { index, genreType ->
             GenreItemUiState(
                 type = genreType,
-                isSelected = index == 0
+                isSelected = false
             )
         }
     }
