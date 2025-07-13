@@ -1,6 +1,5 @@
 package com.example.ui.screens.searchByActor
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -85,53 +83,57 @@ private fun SearchByActorContent(
             onValueChange = { interactionListener.onUserSearch(it) },
 
             )
-        if (state.isLoading)
-            Loading(modifier = Modifier)
-        else
-            AnimatedContent(targetState = state.movies.isEmpty()) {
-                if (it && state.query.isEmpty())
-                    NoDataContainer(
-                        imageRes = painterResource(R.drawable.img_suggestion_magician),
-                        title = stringResource(R.string.find_by_actor),
-                        description = stringResource(R.string.find_by_actor_description),
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 144.dp)
-                    )
-                else if (it)
-                    NoDataContainer(
-                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
-                        title = stringResource(R.string.no_search_result),
-                        description = stringResource(R.string.no_search_result_description),
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 144.dp)
-                    )
-                else {
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        items(state.movies) { movie ->
-                            MovieCard(
-                                movieImage = movie.poster,
-                                movieType = "Movies",
-                                movieYear = movie.productionYear.toString(),
-                                movieTitle = movie.name,
-                                movieRating = movie.rating.toString(),
-                            )
-                        }
-                        item {
-                            Spacer(modifier = Modifier.navigationBarsPadding())
-                        }
+
+        when {
+            state.isLoading -> Loading(modifier = Modifier)
+            state.query.isBlank() -> {
+                NoDataContainer(
+                    imageRes = painterResource(R.drawable.img_suggestion_magician),
+                    title = stringResource(R.string.find_by_actor),
+                    description = stringResource(R.string.find_by_actor_description),
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 144.dp)
+                )
+            }
+
+            state.movies.isEmpty() -> {
+                NoDataContainer(
+                    imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                    title = stringResource(R.string.no_search_result),
+                    description = stringResource(R.string.no_search_result_description),
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 144.dp)
+                )
+            }
+
+            else -> {
+                LazyVerticalGrid(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(state.movies) { movie ->
+                        MovieCard(
+                            movieImage = movie.poster,
+                            movieType = "Movies",
+                            movieYear = movie.productionYear,
+                            movieTitle = movie.name,
+                            movieRating = movie.rating,
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.navigationBarsPadding())
                     }
                 }
             }
+        }
     }
 }
+
 
 @Composable
 @ThemeAndLocalePreviews

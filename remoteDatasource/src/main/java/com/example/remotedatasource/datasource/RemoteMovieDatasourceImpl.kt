@@ -1,5 +1,6 @@
 package com.example.remotedatasource.datasource
 
+import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
@@ -31,8 +32,11 @@ class RemoteMovieDatasourceImpl(
             val actorsByName = getActorIdByName(name)
                 .actors
                 .joinToString(separator = "|") { it.id.toString() }
+                .ifEmpty {
+                    throw NoSearchByActorResultFoundException()
+                }
 
-            ktorClient.get(SEARCH_MOVIE_URL) {
+            ktorClient.get(DISCOVER_MOVIE) {
                 parameter(WITH_CAST_KEY, actorsByName)
             }
         }
