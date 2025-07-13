@@ -14,12 +14,23 @@ android {
 
     defaultConfig {
         applicationId = "com.amsterdam.aflami"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    productFlavors {
+        flavorDimensions += "data"
+        create("real"){
+            dimension = "data"
+            isDefault = true
+        }
+        create("fake"){
+            dimension = "data"
+        }
     }
 
     buildTypes {
@@ -45,6 +56,15 @@ android {
     }
 }
 
+androidComponents {
+    beforeVariants { variantBuilder ->
+        if (variantBuilder.productFlavors.containsAll(listOf("data" to "fake")) &&
+            variantBuilder.buildType == "release") {
+            variantBuilder.enable = false
+        }
+    }
+}
+
 dependencies {
 
     // Firebase
@@ -61,7 +81,8 @@ dependencies {
     implementation(project(":remoteDatasource"))
     implementation(project(":domain"))
     implementation(project(":entity"))
-    implementation(project(":repository"))
+    "realImplementation"(project(":repository"))
+    "fakeImplementation"(project(":repositoryFake"))
 
     // Koin
     implementation(platform(libs.koin.bom))

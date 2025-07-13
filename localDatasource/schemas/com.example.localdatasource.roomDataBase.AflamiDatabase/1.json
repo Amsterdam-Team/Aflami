@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "73bd6e367ee5a71dca2f7d5a78a0985c",
+    "identityHash": "8732126a81b84c8bcda52c716447e414",
     "entities": [
       {
         "tableName": "SearchDto",
@@ -179,11 +179,11 @@
       },
       {
         "tableName": "tv_shows",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`categoryId` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `poster` TEXT NOT NULL, `productionYear` INTEGER NOT NULL, `rating` REAL NOT NULL, PRIMARY KEY(`categoryId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tvShowId` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `poster` TEXT NOT NULL, `productionYear` INTEGER NOT NULL, `rating` REAL NOT NULL, PRIMARY KEY(`tvShowId`))",
         "fields": [
           {
-            "fieldPath": "categoryId",
-            "columnName": "categoryId",
+            "fieldPath": "tvShowId",
+            "columnName": "tvShowId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -221,7 +221,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "categoryId"
+            "tvShowId"
           ]
         }
       },
@@ -300,6 +300,55 @@
         ]
       },
       {
+        "tableName": "tv_show_category_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tvShowId` INTEGER NOT NULL, `categoryId` INTEGER NOT NULL, PRIMARY KEY(`tvShowId`, `categoryId`), FOREIGN KEY(`tvShowId`) REFERENCES `tv_shows`(`tvShowId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`categoryId`) REFERENCES `movie_categories`(`categoryId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "tvShowId",
+            "columnName": "tvShowId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "categoryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "tvShowId",
+            "categoryId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "tv_shows",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tvShowId"
+            ],
+            "referencedColumns": [
+              "tvShowId"
+            ]
+          },
+          {
+            "table": "movie_categories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "categoryId"
+            ],
+            "referencedColumns": [
+              "categoryId"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "search_movie_cross_ref",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchKeyword` TEXT NOT NULL, `searchType` TEXT NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY(`searchKeyword`, `searchType`, `movieId`))",
         "fields": [
@@ -334,7 +383,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '73bd6e367ee5a71dca2f7d5a78a0985c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8732126a81b84c8bcda52c716447e414')"
     ]
   }
 }
