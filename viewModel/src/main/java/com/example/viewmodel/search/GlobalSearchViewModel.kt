@@ -19,13 +19,14 @@ import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -40,11 +41,11 @@ class GlobalSearchViewModel(
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
-    private val _query = MutableStateFlow(state.value.query)
+    private val queryFlow = MutableStateFlow(state.value.query)
 
     init {
         loadRecentSearches()
-        observeSearchQueryChanges()
+        observeQueryFlow()
     }
 
     private fun loadRecentSearches() {
@@ -60,15 +61,23 @@ class GlobalSearchViewModel(
         updateState { it.copy(recentSearches = recentSearches, isLoading = false) }
     }
 
-    private fun observeSearchQueryChanges() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _query.debounce(300)
-                .map(String::trim)
-                .filter(String::isNotBlank)
-                .collect(::onSearchQueryChanged)
-                .runCatching {
-                    Log.e("bk", "error: $this")
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    private fun observeQueryFlow() {
+        viewModelScope.launch {
+            queryFlow
+                .debounce(300)
+                .filter { it.isNotBlank() }
+                .flatMapLatest { query ->
+                    callbackFlow {
+                        val job = tryToExecute(
+                            action = { onSearchQueryChanged(query) },
+                            onSuccess = { result -> trySend(result).isSuccess },
+                            onError = { }
+                        )
+                        awaitClose { job.cancel() }
+                    }
                 }
+                .collect {  }
         }
     }
 
@@ -120,8 +129,12 @@ class GlobalSearchViewModel(
     }
 
     override fun onTextValuedChanged(text: String) {
-        _query.update { oldText -> text }
-        updateState { it.copy(query = text) }
+        queryFlow.value = text
+        if (text.isBlank()) {
+            updateState { it.copy(query = text, movies = emptyList(), tvShows = emptyList()) }
+        } else {
+            updateState { it.copy(query = text) }
+        }
     }
 
     override fun onSearchActionClicked() {
@@ -143,7 +156,7 @@ class GlobalSearchViewModel(
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
-        observeSearchQueryChanges()
+        observeQueryFlow()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
