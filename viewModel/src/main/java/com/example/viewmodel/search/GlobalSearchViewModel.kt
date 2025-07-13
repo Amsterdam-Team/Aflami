@@ -37,7 +37,7 @@ class GlobalSearchViewModel(
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(),dispatcherProvider),
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
     private val _query = MutableStateFlow(state.value.query)
@@ -76,10 +76,20 @@ class GlobalSearchViewModel(
         }
     }
 
-    private fun fetchMoviesByQuery(keyword: String, rating: Float = 0f, categoryType: CategoryType = CategoryType.ALL) {
+    private fun fetchMoviesByQuery(
+        keyword: String,
+        rating: Float = 0f,
+        categoryType: CategoryType = CategoryType.ALL
+    ) {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getMoviesByKeywordUseCase(keyword = keyword, rating = rating, genreType = categoryType.toGenreType()) },
+            action = {
+                getMoviesByKeywordUseCase(
+                    keyword = keyword,
+                    rating = rating,
+                    genreType = categoryType.toGenreType()
+                )
+            },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError,
         )
@@ -89,9 +99,19 @@ class GlobalSearchViewModel(
         updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
     }
 
-    private fun fetchTvShowsByQuery(keyword: String, rating: Float = 0f, categoryType: CategoryType = CategoryType.ALL) {
+    private fun fetchTvShowsByQuery(
+        keyword: String,
+        rating: Float = 0f,
+        categoryType: CategoryType = CategoryType.ALL
+    ) {
         tryToExecute(
-            action = { getTvShowByKeywordUseCase(keyword = keyword, rating = rating, genreType = categoryType.toGenreType()) },
+            action = {
+                getTvShowByKeywordUseCase(
+                    keyword = keyword,
+                    rating = rating,
+                    genreType = categoryType.toGenreType()
+                )
+            },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
         )
@@ -167,27 +187,21 @@ class GlobalSearchViewModel(
     }
 
     override fun onCancelButtonClicked() {
-        updateState {
-            it.copy(
-                isDialogVisible = false,
-                filterItemUiState = FilterItemUiState()
-            )
-        }
+        updateState { it.copy(isDialogVisible = false, filterItemUiState = FilterItemUiState()) }
+            .also { resetFilterState() }
     }
 
     override fun onRatingStarChanged(ratingIndex: Int) {
-        updateState {
-            it.copy(
-                filterItemUiState = it.filterItemUiState.copy(selectedStarIndex = ratingIndex)
-            )
-        }
+        updateState { it.copy(filterItemUiState = it.filterItemUiState.copy(selectedStarIndex = ratingIndex)) }
     }
 
     override fun onGenreButtonChanged(categoryType: CategoryType) {
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
-                    genreItemUiStates = it.filterItemUiState.genreItemUiStates.selectByType(categoryType)
+                    genreItemUiStates = it.filterItemUiState.genreItemUiStates.selectByType(
+                        categoryType
+                    )
                 )
             )
         }
@@ -214,6 +228,7 @@ class GlobalSearchViewModel(
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFilterError,
+            onCompletion = ::resetFilterState
         )
     }
 
@@ -235,6 +250,7 @@ class GlobalSearchViewModel(
             },
             onSuccess = ::onTvShowsFilteredSuccess,
             onError = ::onFilterError,
+            onCompletion = ::resetFilterState
         )
     }
 
@@ -257,7 +273,9 @@ class GlobalSearchViewModel(
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 
-    override fun onClearButtonClicked() {
+    override fun onClearButtonClicked() = resetFilterState()
+
+    private fun resetFilterState() =
         updateState { it.copy(filterItemUiState = FilterItemUiState()) }
-    }
+
 }
