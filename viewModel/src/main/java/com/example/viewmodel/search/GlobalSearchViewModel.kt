@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -36,7 +37,7 @@ class GlobalSearchViewModel(
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(),dispatcherProvider),
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
 
     private val _query = MutableStateFlow(state.value.query)
@@ -63,8 +64,11 @@ class GlobalSearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _query.debounce(300)
                 .map(String::trim)
-                .filter(String::isNotEmpty)
+                .filter(String::isNotBlank)
                 .collect(::onSearchQueryChanged)
+                .runCatching {
+                    Log.e("bk", "error: $this")
+                }
         }
     }
 
@@ -87,7 +91,13 @@ class GlobalSearchViewModel(
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
         Log.e("bk", movies.toString())
 
-        updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
+        updateState {
+            it.copy(
+                movies = movies.toMoveUiStates(),
+                isLoading = false,
+                errorUiState = null
+            )
+        }
         Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
@@ -104,7 +114,7 @@ class GlobalSearchViewModel(
     }
 
     override fun onTextValuedChanged(text: String) {
-        _query.value = text
+        _query.update { oldText -> text }
         updateState { it.copy(query = text) }
     }
 
@@ -127,6 +137,7 @@ class GlobalSearchViewModel(
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
+        observeSearchQueryChanges()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
@@ -134,7 +145,6 @@ class GlobalSearchViewModel(
                 tvShows = state.value.tvShows,
             )
         }
-        onSearchQueryChanged(state.value.query)
     }
 
     override fun onRecentSearchClicked(keyword: String) = onTextValuedChanged(keyword)
