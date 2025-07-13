@@ -1,8 +1,11 @@
 package com.example.imageviewer.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,12 +21,17 @@ fun ErrorIndicator(
     tint: Color = Color.Gray,
     size: Dp = 48.dp,
 ) {
-    Icon(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_cancel),
-        contentDescription = null,
-        tint = tint,
-        modifier = modifier.size(size),
-    )
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_cancel),
+            contentDescription = null,
+            tint = tint,
+            modifier = modifier.size(size),
+        )
+    }
 }
 
 @Preview

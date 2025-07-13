@@ -6,12 +6,15 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -26,23 +29,27 @@ fun LoadingIndicator(
     tint: Color = Color(0xFFF564A9),
     size: Dp = 48.dp,
 ) {
-    val angle by rememberInfiniteTransition().animateFloat(
+    val alpha by rememberInfiniteTransition().animateFloat(
         initialValue = 0f,
-        targetValue = 360f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+            repeatMode = RepeatMode.Reverse
         ),
     )
-
-    val steppedAngle = (angle / 45f).toInt() * 45f
-
-    Icon(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_loading),
-        contentDescription = null,
-        tint = tint,
-        modifier = modifier.size(size).rotate(steppedAngle),
-    )
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_film_roll),
+            contentDescription = null,
+            tint = tint,
+            modifier = modifier
+                .size(size)
+                .alpha(alpha),
+        )
+    }
 }
 
 @Preview
