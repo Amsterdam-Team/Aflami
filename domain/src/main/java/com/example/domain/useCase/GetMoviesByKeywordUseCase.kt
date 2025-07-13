@@ -1,6 +1,6 @@
 package com.example.domain.useCase
 
-import com.example.domain.exceptions.QueryTooShortException
+import com.example.domain.exceptions.NoMoviesByKeywordFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 
@@ -13,13 +13,12 @@ class GetMoviesByKeywordUseCase(
         rating: Float = 0f,
         categoryName: String = ""
     ): List<Movie> {
-        if (keyword.length < 3)
-            throw QueryTooShortException()
 
         return movieRepository.getMoviesByKeyword(keyword)
             .sortedByDescending { it.popularity }
-//            .filter { it.rating == rating }
-//            .filter { it.categories.any { category -> category.name == categoryName } }
+            .ifEmpty {
+                throw NoMoviesByKeywordFoundException()
+            }
     }
 }
 

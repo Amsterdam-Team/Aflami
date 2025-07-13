@@ -65,6 +65,9 @@ class GlobalSearchViewModel(
                 .map(String::trim)
                 .filter(String::isNotBlank)
                 .collect(::onSearchQueryChanged)
+                .runCatching {
+                    Log.e("bk", "error: $this")
+                }
         }
     }
 
@@ -87,7 +90,13 @@ class GlobalSearchViewModel(
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
         Log.e("bk", movies.toString())
 
-        updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
+        updateState {
+            it.copy(
+                movies = movies.toMoveUiStates(),
+                isLoading = false,
+                errorUiState = null
+            )
+        }
         Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
