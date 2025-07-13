@@ -6,18 +6,14 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.UnknownException
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 
 open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: DispatcherProvider) : ViewModel() {
     interface BaseUiEffect
@@ -47,8 +43,8 @@ open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: D
         onSuccess: (T) -> Unit,
         onError: (AflamiException) -> Unit,
         dispatcher: CoroutineDispatcher = dispatcherProvider.IO,
-    ) {
-        viewModelScope.launch(dispatcher) {
+    ) : Job {
+        return viewModelScope.launch(dispatcher) {
             try {
                 action().also {
                     onSuccess(it)

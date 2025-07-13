@@ -1,7 +1,5 @@
 package com.example.ui.screens.search.sections
 
-import android.R.attr.label
-import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -55,7 +53,7 @@ fun FilterDialog(
     ) {
         Column(
             modifier = modifier
-                .fillMaxWidth(0.95f)
+                .fillMaxWidth(0.9f)
                 .background(
                     color = AppTheme.color.surface,
                     shape = RoundedCornerShape(12.dp)
@@ -126,7 +124,7 @@ fun FilterDialog(
                 title = stringResource(R.string.apply),
                 onClick = interaction::onApplyButtonClicked,
                 isEnabled = state.hasFilterData,
-                isLoading = false,
+                isLoading = state.isLoading,
                 isNegative = false,
                 modifier = Modifier.padding(12.dp),
             )

@@ -11,7 +11,7 @@ import com.example.localdatasource.roomDataBase.daos.CountryDao
 import com.example.localdatasource.roomDataBase.daos.MovieDao
 import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.example.localdatasource.roomDataBase.daos.TvShowDao
-import com.example.localdatasource.roomDatabase.converter.InstantConverter
+import com.example.localdatasource.roomDataBase.converter.InstantConverter
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalCountryDto
 import com.example.repository.dto.local.LocalMovieDto
