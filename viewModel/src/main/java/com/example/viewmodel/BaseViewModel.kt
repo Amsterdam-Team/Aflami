@@ -6,6 +6,7 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.UnknownException
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,8 +43,8 @@ open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: D
         onError: (AflamiException) -> Unit,
         onCompletion: () -> Unit = {},
         dispatcher: CoroutineDispatcher = dispatcherProvider.IO,
-    ) {
-        viewModelScope.launch(dispatcher) {
+    ) : Job {
+        return viewModelScope.launch(dispatcher) {
             try {
                 action().also {
                     onSuccess(it)

@@ -3,7 +3,9 @@ package com.example.remotedatasource.client
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -33,8 +35,8 @@ class KtorClient(
         }
     }
 
-    suspend fun get(url: String): HttpResponse{
-        return httpClient.get(url)
+    suspend fun get(url: String, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse{
+        return httpClient.get(url, block)
     }
 
     suspend fun post(url: String, body: Any? = null): HttpResponse{

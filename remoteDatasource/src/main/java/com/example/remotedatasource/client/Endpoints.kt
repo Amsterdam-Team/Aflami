@@ -8,4 +8,6 @@ object Endpoints {
     const val DISCOVER_MOVIE_URL = "$BASE_URL/discover/movie"
     const val DISCOVER_TV_URL = "$BASE_URL/discover/tv"
     const val GET_ACTOR_NAME_BY_ID_URL = "$BASE_URL/search/person"
+
+    const val DISCOVER_MOVIE = "$BASE_URL/discover/movie"
 }

@@ -64,7 +64,7 @@ class GlobalSearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _query.debounce(300)
                 .map(String::trim)
-                .filter(String::isNotEmpty)
+                .filter(String::isNotBlank)
                 .collect(::onSearchQueryChanged)
         }
     }
@@ -208,7 +208,13 @@ class GlobalSearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = true,
+                )
+            )
+        }
 
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> applyMoviesFilter()
@@ -228,13 +234,17 @@ class GlobalSearchViewModel(
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFilterError,
-            onCompletion = ::resetFilterState
         )
     }
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
         updateState {
-            it.copy(movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false)
+            it.copy(
+                movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false,
+                )
+            )
         }
     }
 
@@ -259,14 +269,24 @@ class GlobalSearchViewModel(
             it.copy(
                 tvShows = tvShows.toTvShowUiStates(),
                 isLoading = false,
-                isDialogVisible = false
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false,
+                )
             )
         }
     }
 
     private fun onFilterError(exception: AflamiException) {
         onFetchError(exception)
-        updateState { it.copy(isDialogVisible = false) }
+        updateState {
+            it.copy(
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(
+                    isLoading = false
+                )
+            )
+        }
     }
 
     private fun onFetchError(exception: AflamiException) {

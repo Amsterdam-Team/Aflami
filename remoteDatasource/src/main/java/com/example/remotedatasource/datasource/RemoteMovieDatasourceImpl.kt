@@ -7,6 +7,7 @@ import com.example.remotedatasource.client.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
+import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
@@ -39,7 +40,10 @@ class RemoteMovieDatasourceImpl(
             val actorsByName = getActorIdByName(name)
                 .actors
                 .joinToString(separator = "|") { it.id.toString() }
-            ktorClient.get("${Endpoints.SEARCH_MOVIE_URL}?$WITH_CAST_KEY=${actorsByName}")
+
+            ktorClient.get(Endpoints.SEARCH_MOVIE_URL) {
+                parameter(WITH_CAST_KEY, actorsByName)
+            }
         }
     }
 
@@ -47,7 +51,9 @@ class RemoteMovieDatasourceImpl(
         name: String
     ): RemoteActorSearchResponse {
         return safeCall<RemoteActorSearchResponse> {
-            ktorClient.get("${Endpoints.GET_ACTOR_NAME_BY_ID_URL}?$QUERY_KEY=$name")
+            ktorClient.get(Endpoints.GET_ACTOR_NAME_BY_ID_URL) {
+                parameter(QUERY_KEY, name)
+            }
         }
     }
 
@@ -55,7 +61,9 @@ class RemoteMovieDatasourceImpl(
         countryIsoCode: String
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get("${BuildConfig.BASE_URL}/discover/movie?with_origin_country=$countryIsoCode")
+            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE) {
+                parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
+            }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
@@ -63,6 +71,8 @@ class RemoteMovieDatasourceImpl(
     private companion object {
         const val WITH_CAST_KEY = "with_cast"
         const val QUERY_KEY = "query"
+
+        const val WITH_ORIGIN_COUNTRY = "with_origin_country"
         const val VOTE_AVERAGE_KEY = "vote_average.gte"
     }
 }

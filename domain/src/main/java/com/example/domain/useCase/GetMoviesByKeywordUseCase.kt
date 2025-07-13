@@ -1,7 +1,6 @@
 package com.example.domain.useCase
 
 import com.example.domain.repository.MovieRepository
-import com.example.entity.GenreType
 import com.example.entity.Movie
 
 class GetMoviesByKeywordUseCase(
@@ -14,6 +13,10 @@ class GetMoviesByKeywordUseCase(
         genreType: GenreType = GenreType.ALL
     ): List<Movie> {
         return movieRepository.getMoviesByKeyword(keyword = keyword, rating = rating, genreType = genreType)
+        if (keyword.length < 3)
+            throw QueryTooShortException()
+
+        return movieRepository.getMoviesByKeyword(keyword)
             .sortedByDescending { it.popularity }
 
     }
