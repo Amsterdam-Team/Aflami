@@ -14,7 +14,8 @@ class TvShowLocalMapper {
             poster = dto.poster,
             productionYear = dto.productionYear,
             rating = dto.rating,
-            categories = categories
+            categories = categories,
+            popularity = dto.popularity
         )
     }
 
@@ -25,7 +26,8 @@ class TvShowLocalMapper {
             description = domain.description,
             poster = domain.poster,
             productionYear = domain.productionYear,
-            rating = domain.rating
+            rating = domain.rating,
+            popularity = domain.popularity
         )
     }
 
