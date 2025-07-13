@@ -23,16 +23,18 @@ fun AflamiTheme(
 ) {
     val theme = if (isDarkTheme) darkThemeColors else lightThemeColors
 
-    val activity = LocalContext.current as Activity
+    val activity = LocalContext.current as? Activity
     val view = LocalView.current
 
     SwitchLauncherIcon(if (isDarkTheme) LauncherIcon.DARK else LauncherIcon.LIGHT)
+    if (activity != null) {
 
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O){
-        activity.window.navigationBarColor = theme.surface.toArgb()
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+            activity.window.navigationBarColor = theme.surface.toArgb()
+        }
+        WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars =
+            !isDarkTheme
     }
-    WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars = !isDarkTheme
-
     CompositionLocalProvider(
         localAflamiAppColors provides theme,
         LocalIsDarkTheme provides isDarkTheme
