@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -135,7 +136,7 @@ private fun SearchContent(
         AnimatedVisibility(state.query.isNotEmpty()) {
             if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxHeight(0.5f),
                     verticalArrangement = Arrangement.Center
                 ) {
                     NoDataContainer(
