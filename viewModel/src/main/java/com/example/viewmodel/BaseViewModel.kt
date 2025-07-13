@@ -1,6 +1,5 @@
 package com.example.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
@@ -28,13 +27,13 @@ open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: D
 
 
     protected fun updateState(updater: (S) -> S) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.Main) {
             _state.update(updater)
         }
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        viewModelScope.launch(dispatcherProvider.IO) {
+        viewModelScope.launch(dispatcherProvider.Main) {
             _effect.emit(newEffect)
         }
     }

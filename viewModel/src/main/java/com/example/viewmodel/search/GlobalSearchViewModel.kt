@@ -1,6 +1,5 @@
 package com.example.viewmodel.search
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -10,7 +9,6 @@ import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.domain.useCase.GetMovieCategoriesUseCase
 import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.entity.Category
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
@@ -18,10 +16,10 @@ import com.example.viewmodel.common.GenreItemUiState.Companion.getSelectedOne
 import com.example.viewmodel.common.GenreItemUiState.Companion.selectByType
 import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.common.toGenreUiStates
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -88,10 +86,7 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        Log.e("bk", movies.toString())
-
         updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
-        Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
     private fun fetchTvShowsByQuery(keyword: String) {
@@ -181,7 +176,6 @@ class GlobalSearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
-        Log.e("bk", "${genreType.name}")
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -254,8 +248,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
-        Log.e("bk", "exception: $exception")
-
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 

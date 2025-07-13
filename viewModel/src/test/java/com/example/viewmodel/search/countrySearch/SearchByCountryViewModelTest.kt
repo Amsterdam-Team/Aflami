@@ -53,6 +53,7 @@ class SearchByCountryViewModelTest {
         val countryName = "egypt"
         // act
         viewModel.onCountryNameUpdated(countryName)
+        testScope.advanceUntilIdle()
         //assert
         assertThat(viewModel.state.value.selectedCountry).isEqualTo(countryName)
     }
@@ -118,6 +119,26 @@ class SearchByCountryViewModelTest {
             //assert
             assertThat(effects).doesNotContain(SearchByCountryEffect.ShowCountriesDropDown)
         }
+
+    @Test
+    fun `onCountryNameUpdated should send HideCountriesDropDown when call it with empty country name`() =
+        testScope.runTest {
+            // arrange
+            val countryName = ""
+            var effects = mutableListOf<SearchByCountryEffect?>()
+            // act
+            val collectJob = launch {
+                viewModel.effect.collect {
+                    effects.add(it)
+                }
+            }
+            viewModel.onCountryNameUpdated(countryName)
+            testScope.advanceUntilIdle()
+            collectJob.cancel()
+            //assert
+            assertThat(effects.first()).isEqualTo(SearchByCountryEffect.HideCountriesDropDown)
+        }
+
     @Test
     fun `onCountryNameUpdated should send LoadingSuggestedCountriesEffect when call getSuggestedCountriesUseCase `() =
         testScope.runTest {
