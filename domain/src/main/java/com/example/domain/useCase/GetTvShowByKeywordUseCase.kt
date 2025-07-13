@@ -13,6 +13,7 @@ class GetTvShowByKeywordUseCase(
         categoryName: String = ""
     ): List<TvShow> {
         return tvShowRepository.getTvShowByKeyword(keyword)
+            .sortedByDescending { it.popularity }
             .filter { it.rating == rating }
             .filter { it.categories.any { category -> category.name == categoryName } }
     }
