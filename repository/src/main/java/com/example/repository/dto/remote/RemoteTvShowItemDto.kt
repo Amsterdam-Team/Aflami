@@ -17,10 +17,13 @@ data class RemoteTvShowItemDto(
     @SerialName("id")
     val id: Long,
 
+    @SerialName("origin_country")
+    val originCountry: List<String>,
+
     @SerialName("original_language")
     val originalLanguage: String,
 
-    @SerialName("original_title")
+    @SerialName("original_name")
     val originalTitle: String,
 
     @SerialName("overview")
@@ -32,14 +35,11 @@ data class RemoteTvShowItemDto(
     @SerialName("poster_path")
     val posterPath: String?,
 
-    @SerialName("release_date")
+    @SerialName("first_air_date")
     val releaseDate: String,
 
-    @SerialName("title")
+    @SerialName("name")
     val title: String,
-
-    @SerialName("video")
-    val video: Boolean,
 
     @SerialName("vote_average")
     val voteAverage: Double,
