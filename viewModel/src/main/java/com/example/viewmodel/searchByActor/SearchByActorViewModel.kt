@@ -1,48 +1,71 @@
 package com.example.viewmodel.searchByActor
 
+import androidx.lifecycle.viewModelScope
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class SearchByActorViewModel(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase
 ) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(SearchByActorScreenState()),
     SearchByActorInteractionListener {
 
-    var searchJob: Job? = null
+    private val queryFlow = MutableStateFlow("")
+
+    init {
+        observeQueryFlow()
+    }
+
+    private fun observeQueryFlow() {
+        viewModelScope.launch {
+            queryFlow
+                .debounce(300)
+                .filter { it.isNotBlank() }
+                .distinctUntilChanged()
+                .flatMapLatest { query ->
+                    callbackFlow<List<Movie>> {
+                        updateState { it.copy(isLoading = true) }
+                        val job = tryToExecute(
+                            action = { getMoviesByActorUseCase(query) },
+                            onSuccess = { result -> trySend(result).isSuccess },
+                            onError = {
+                                sendNewEffect(SearchByActorEffect.NoInternetConnection)
+                                trySend(emptyList()).isSuccess
+                            }
+                        )
+                        awaitClose { job.cancel() }
+                    }
+                }
+                .collect { movies ->
+                    updateSearchByActorResult(movies)
+                }
+        }
+    }
 
     override fun onUserSearch(query: String) {
-        updateState { it.copy(query = query, isLoading = true) }
-        if (query.isEmpty()) {
+        queryFlow.value = query
+        updateState { it.copy(query = query) }
+        if (query.isBlank()) {
             updateState { it.copy(movies = emptyList(), isLoading = false) }
-            return
         }
-        launchSearchJob()
-    }
-
-    private fun launchSearchJob() {
-        searchJob?.cancel()
-        searchJob = launchDelayed(300L) { this@SearchByActorViewModel.getMoviesByActor() }
-    }
-
-    private fun getMoviesByActor() {
-        tryToExecute(action = {
-            getMoviesByActorUseCase.invoke(state.value.query)
-        }, onSuccess = { result ->
-            updateSearchByActorResult(result)
-        }, onError = {
-            sendNewEffect(SearchByActorEffect.NoInternetConnection)
-        })
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toListOfUiState(), isLoading = false) }
+        updateState {
+            it.copy(
+                movies = movies.toListOfUiState(),
+                isLoading = false
+            )
+        }
     }
 
     override fun onNavigateBackClicked() {
         sendNewEffect(SearchByActorEffect.NavigateBack)
     }
 }
-

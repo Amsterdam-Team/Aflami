@@ -1,15 +1,12 @@
 package com.example.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.UnknownException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +37,6 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
         }
     }
 
-
     protected fun <T> tryToExecute(
         action: suspend () -> T,
         onSuccess: (T) -> Unit,
@@ -59,10 +55,5 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
             }
         }
     }
-    protected fun launchDelayed(duration: Long, block: suspend CoroutineScope.() -> Unit): Job {
-        return viewModelScope.launch(Dispatchers.IO) {
-            delay(duration)
-            block()
-        }
-    }
+
 }
