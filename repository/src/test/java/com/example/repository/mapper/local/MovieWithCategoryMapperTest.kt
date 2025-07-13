@@ -20,7 +20,8 @@ class MovieWithCategoryMapperTest {
             description = "Dream inside a dream",
             poster = "inception.jpg",
             productionYear = 2010,
-            rating = 8.8f
+            rating = 8.8f,
+            popularity = 0.0
         )
 
         val localCategories = listOf(
@@ -56,7 +57,8 @@ class MovieWithCategoryMapperTest {
             description = "Romantic tragedy",
             poster = "titanic.jpg",
             productionYear = 1997,
-            rating = 7.9f
+            rating = 7.9f,
+            popularity = 0.0
         )
 
         val movieWithCategories = MovieWithCategories(
@@ -78,6 +80,7 @@ class MovieWithCategoryMapperTest {
             poster = "interstellar.jpg",
             productionYear = 2014,
             rating = 8.6f,
+            popularity = 0.0,
             categories = listOf(Category(1L, "Adventure", "adventure.png"))
         )
 

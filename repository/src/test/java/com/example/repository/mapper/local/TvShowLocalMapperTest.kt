@@ -20,7 +20,8 @@ class TvShowLocalMapperTest {
             description = "Chemistry teacher becomes drug kingpin",
             poster = "bb.jpg",
             productionYear = 2008,
-            rating = 9.5f
+            rating = 9.5f,
+            popularity = 0.0
         )
         val categories = listOf(LocalTvShowCategoryDto(1L, "Drama"))
 
@@ -43,7 +44,8 @@ class TvShowLocalMapperTest {
             description = "Six friends in NYC",
             poster = "friends.jpg",
             productionYear = 1994,
-            rating = 8.9f
+            rating = 8.9f,
+            popularity = 0.0
         )
 
         val result = mapper.mapFromLocal(TvShowWithCategory(dto, emptyList()))
@@ -60,6 +62,7 @@ class TvShowLocalMapperTest {
             poster = "st.jpg",
             productionYear = 2016,
             rating = 8.7f,
+            popularity = 0.0,
             categories = listOf(Category(1L, "Sci-Fi", ""))
         )
 
@@ -76,8 +79,8 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return list of TvShow with categories when mapping from list of LocalTvShowDto`() {
         val dtos = listOf(
-            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f),
-            LocalTvShowDto(2L, "Friends", "Desc2", "friends.jpg", 1994, 8.9f)
+            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f, 0.0),
+            LocalTvShowDto(2L, "Friends", "Desc2", "friends.jpg", 1994, 8.9f, 0.0)
         )
         val categories = listOf(
             listOf(LocalTvShowCategoryDto(1L, "Drama" )),
@@ -92,7 +95,7 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return list of TvShow with empty categories when map is empty`() {
         val dtos = listOf(
-            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f)
+            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f, 0.0)
         )
         val tvShowsWithCategory = dtos.map { TvShowWithCategory(it, emptyList()) }
         val result = mapper.mapListFromLocal(tvShowsWithCategory)
@@ -104,8 +107,8 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return list of LocalTvShowDto when mapping from list of TvShow`() {
         val domains = listOf(
-            TvShow(1L, "BB", "Desc1", "bb.jpg", 2008, emptyList(), 9.5f),
-            TvShow(2L, "Friends", "Desc2", "friends.jpg", 1994, emptyList(), 8.9f)
+            TvShow(1L, "BB", "Desc1", "bb.jpg", 2008, emptyList(), 9.5f, 0.0),
+            TvShow(2L, "Friends", "Desc2", "friends.jpg", 1994, emptyList(), 8.9f, 0.0)
         )
 
         val result = mapper.mapListToLocal(domains)

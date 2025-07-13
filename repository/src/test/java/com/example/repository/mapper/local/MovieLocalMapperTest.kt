@@ -22,7 +22,8 @@ class MovieLocalMapperTest {
             description = "Dream within a dream",
             poster = "inception.jpg",
             productionYear = 2010,
-            rating = 8.8f
+            rating = 8.8f,
+            popularity = 0.0
         )
         val categories = listOf(LocalMovieCategoryDto(1L, "Sci-Fi"))
 
@@ -44,7 +45,8 @@ class MovieLocalMapperTest {
             description = "Romantic tragedy",
             poster = "titanic.jpg",
             productionYear = 1997,
-            rating = 7.9f
+            rating = 7.9f,
+            popularity = 0.0
         )
 
         val result = mapper.mapFromLocal(MovieWithCategories(dto, emptyList()))
@@ -55,8 +57,8 @@ class MovieLocalMapperTest {
     @Test
     fun `should return list of Movies with correct categories when mapping from LocalMovieDto list`() {
         val dtos = listOf(
-            LocalMovieDto(1L, "Movie A", "Desc A", "a.jpg", 2001, 7.1f),
-            LocalMovieDto(2L, "Movie B", "Desc B", "b.jpg", 2002, 7.2f)
+            LocalMovieDto(1L, "Movie A", "Desc A", "a.jpg", 2001, popularity = 0.0, rating = 7.1f),
+            LocalMovieDto(2L, "Movie B", "Desc B", "b.jpg", 2002, popularity = 0.0, rating = 7.1f)
         )
         val categories = listOf(
             listOf(LocalMovieCategoryDto(1L, "Action")),
@@ -71,7 +73,7 @@ class MovieLocalMapperTest {
     @Test
     fun `should return list of Movies with empty categories when categories map is empty`() {
         val dtos = listOf(
-            LocalMovieDto(1L, "Movie A", "Desc A", "a.jpg", 2001, 7.1f)
+            LocalMovieDto(1L, "Movie A", "Desc A", "a.jpg", 2001, popularity = 0.0, rating = 7.1f)
         )
 
         val moviesWithCategories = dtos.map { localMovieDto ->  MovieWithCategories(localMovieDto, emptyList())}
@@ -85,8 +87,8 @@ class MovieLocalMapperTest {
     @Test
     fun `should return list of LocalMovieDto when mapping from list of Movies`() {
         val domains = listOf(
-            Movie(1L, "Movie A", "Desc A", "a.jpg", 2001, emptyList(),7.1f),
-            Movie(2L, "Movie B", "Desc B", "b.jpg", 2002, emptyList(), 7.2f)
+            Movie(1L, "Movie A", "Desc A", "a.jpg", 2001, emptyList(),7.1f, 0.0),
+            Movie(2L, "Movie B", "Desc B", "b.jpg", 2002, emptyList(), 7.2f, 0.0)
         )
 
         val mapper = MovieLocalMapper(CategoryLocalMapper())
