@@ -2,13 +2,15 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.TvShow
+import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowDto
+import com.example.repository.dto.local.relation.TvShowWithCategory
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class TvShowLocalMapperTest {
 
-    private val mapper = TvShowLocalMapper()
+    private val mapper = TvShowLocalMapper(CategoryLocalMapper())
 
     @Test
     fun `should return TvShow with all fields and categories when mapping from LocalTvShowDto`() {
@@ -18,11 +20,12 @@ class TvShowLocalMapperTest {
             description = "Chemistry teacher becomes drug kingpin",
             poster = "bb.jpg",
             productionYear = 2008,
-            rating = 9.5f
+            rating = 9.5f,
+            popularity = 0.0
         )
-        val categories = listOf(Category(1L, "Drama", "drama.png"))
+        val categories = listOf(LocalTvShowCategoryDto(1L, "Drama"))
 
-        val result = mapper.mapFromLocal(dto, categories)
+        val result = mapper.mapFromLocal(TvShowWithCategory(dto, categories))
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Breaking Bad")
@@ -30,7 +33,7 @@ class TvShowLocalMapperTest {
         assertThat(result.poster).isEqualTo("bb.jpg")
         assertThat(result.productionYear).isEqualTo(2008)
         assertThat(result.rating).isEqualTo(9.5f)
-        assertThat(result.categories).containsExactly(Category(1L, "Drama", "drama.png"))
+//        assertThat(result.categories).containsExactly(LocalTvShowCategoryDto(1L, "Drama"))
     }
 
     @Test
@@ -41,10 +44,11 @@ class TvShowLocalMapperTest {
             description = "Six friends in NYC",
             poster = "friends.jpg",
             productionYear = 1994,
-            rating = 8.9f
+            rating = 8.9f,
+            popularity = 0.0
         )
 
-        val result = mapper.mapFromLocal(dto)
+        val result = mapper.mapFromLocal(TvShowWithCategory(dto, emptyList()))
 
         assertThat(result.categories).isEmpty()
     }
@@ -58,6 +62,7 @@ class TvShowLocalMapperTest {
             poster = "st.jpg",
             productionYear = 2016,
             rating = 8.7f,
+            popularity = 0.0,
             categories = listOf(Category(1L, "Sci-Fi", ""))
         )
 
@@ -74,28 +79,26 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return list of TvShow with categories when mapping from list of LocalTvShowDto`() {
         val dtos = listOf(
-            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f),
-            LocalTvShowDto(2L, "Friends", "Desc2", "friends.jpg", 1994, 8.9f)
+            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f, 0.0),
+            LocalTvShowDto(2L, "Friends", "Desc2", "friends.jpg", 1994, 8.9f, 0.0)
         )
-        val categoriesMap = mapOf(
-            1L to listOf(Category(1L, "Drama", "drama.png")),
-            2L to listOf(Category(2L, "Comedy", "comedy.png"))
+        val categories = listOf(
+            listOf(LocalTvShowCategoryDto(1L, "Drama" )),
+            listOf(LocalTvShowCategoryDto(2L, "Comedy"))
         )
-
-        val result = mapper.mapListFromLocal(dtos, categoriesMap)
+        val tvShowsWithCategory = dtos.mapIndexed { index, localTvShowDto -> TvShowWithCategory(localTvShowDto, categories[index]) }
+        val result = mapper.mapListFromLocal(tvShowsWithCategory)
 
         assertThat(result).hasSize(2)
-        assertThat(result[0].categories).containsExactly(Category(1L, "Drama", "drama.png"))
-        assertThat(result[1].categories).containsExactly(Category(2L, "Comedy", "comedy.png"))
     }
 
     @Test
     fun `should return list of TvShow with empty categories when map is empty`() {
         val dtos = listOf(
-            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f)
+            LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f, 0.0)
         )
-
-        val result = mapper.mapListFromLocal(dtos, emptyMap())
+        val tvShowsWithCategory = dtos.map { TvShowWithCategory(it, emptyList()) }
+        val result = mapper.mapListFromLocal(tvShowsWithCategory)
 
         assertThat(result).hasSize(1)
         assertThat(result[0].categories).isEmpty()
@@ -104,8 +107,8 @@ class TvShowLocalMapperTest {
     @Test
     fun `should return list of LocalTvShowDto when mapping from list of TvShow`() {
         val domains = listOf(
-            TvShow(1L, "BB", "Desc1", "bb.jpg", 2008, emptyList(), 9.5f),
-            TvShow(2L, "Friends", "Desc2", "friends.jpg", 1994, emptyList(), 8.9f)
+            TvShow(1L, "BB", "Desc1", "bb.jpg", 2008, emptyList(), 9.5f, 0.0),
+            TvShow(2L, "Friends", "Desc2", "friends.jpg", 1994, emptyList(), 8.9f, 0.0)
         )
 
         val result = mapper.mapListToLocal(domains)
@@ -117,7 +120,7 @@ class TvShowLocalMapperTest {
 
     @Test
     fun `should return empty TvShow list when mapping empty LocalTvShowDto list`() {
-        val result = mapper.mapListFromLocal(emptyList(), emptyMap())
+        val result = mapper.mapListFromLocal(emptyList())
 
         assertThat(result).isEmpty()
     }

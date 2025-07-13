@@ -1,7 +1,6 @@
 package com.example.designsystem.components
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,11 +26,9 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -67,9 +64,8 @@ internal fun BaseCard(
                 .fillMaxSize()
                 .fillMaxHeight(),
             contentDescription = movieContentDescription,
-            model =movieImage ,
-            placeholder = R.drawable.ic_film_roll,
-            error = R.drawable.bg_man_with_popcorn,
+            model = movieImage,
+            contentScale = contentScale,
         )
         if (movieRating != null)
             RatingChip(

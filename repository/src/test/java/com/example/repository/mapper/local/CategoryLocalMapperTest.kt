@@ -1,7 +1,7 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Category
-import com.example.repository.dto.local.LocalCategoryDto
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,9 +11,9 @@ class CategoryLocalMapperTest {
 
     @Test
     fun `should return Category with same id and name and empty image when mapping from LocalCategoryDto`() {
-        val dto = LocalCategoryDto(id = 1, name = "Action")
+        val dto = LocalMovieCategoryDto(categoryId = 1, name = "Action")
 
-        val result = mapper.mapFromLocal(dto)
+        val result = mapper.mapFromMovieLocal(dto)
 
         assertThat(result.id).isEqualTo(1)
         assertThat(result.name).isEqualTo("Action")
@@ -33,11 +33,11 @@ class CategoryLocalMapperTest {
     @Test
     fun `should return list of Categories when mapping from list of LocalCategoryDto`() {
         val dtos = listOf(
-            LocalCategoryDto(id = 1, name = "Action"),
-            LocalCategoryDto(id = 2, name = "Comedy")
+            LocalMovieCategoryDto(categoryId = 1, name = "Action"),
+            LocalMovieCategoryDto(categoryId = 2, name = "Comedy")
         )
 
-        val result = mapper.mapListFromLocal(dtos)
+        val result = mapper.mapListFromMovieLocal(dtos)
 
         assertThat(result).hasSize(2)
         assertThat(result.map { it.name }).containsExactly("Action", "Comedy")
