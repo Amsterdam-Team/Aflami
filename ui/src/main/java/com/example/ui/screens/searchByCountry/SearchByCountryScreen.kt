@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -141,6 +142,8 @@ fun SearchByCountryScreenContent(
     showCountriesDropdown: Boolean,
 ) {
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+    var appBarHeight by remember { mutableStateOf(0.dp) }
+    var searchBarHeight by remember { mutableStateOf(0.dp) }
 
     Column(
         modifier = modifier
@@ -151,7 +154,10 @@ fun SearchByCountryScreenContent(
         DefaultAppBar(
             title = stringResource(R.string.world_tour_title),
             showNavigateBackButton = true,
-            onNavigateBackClicked = onNavigateBackClicked
+            onNavigateBackClicked = onNavigateBackClicked,
+            modifier = Modifier.onSizeChanged {
+                appBarHeight = it.height.dp
+            }
         )
 
         TextField(
@@ -160,8 +166,12 @@ fun SearchByCountryScreenContent(
             onValueChange = { onCountryNameUpdated(it) },
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 8.dp)
                 .onGloballyPositioned {
                     textFieldSize = it.size
+                }
+                .onSizeChanged {
+                    searchBarHeight = it.height.dp
                 }
         )
 
@@ -173,11 +183,13 @@ fun SearchByCountryScreenContent(
                     ScreenContent.COUNTRY_TOUR -> ExploreCountries(
                         Modifier
                             .align(Alignment.Center)
+                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
                     )
 
                     ScreenContent.LOADING_MOVIES -> Loading(
                         Modifier
                             .align(Alignment.Center)
+                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
                     )
 
                     ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
@@ -185,11 +197,13 @@ fun SearchByCountryScreenContent(
                             .align(
                                 Alignment.Center
                             )
+                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
                     )
 
                     ScreenContent.NO_MOVIES -> NoMoviesFound(
                         Modifier
                             .align(Alignment.Center)
+                            .padding(start = 8.dp, end = 8.dp, bottom = (searchBarHeight + appBarHeight)/2)
                     )
 
                     ScreenContent.MOVIES -> SearchedMovies(
