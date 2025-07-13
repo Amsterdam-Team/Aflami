@@ -31,7 +31,8 @@ class MovieRepositoryImpl(
                             image = ""
                         ),
                     ),
-                    rating = 9.9f
+                    rating = 9.9f,
+                    popularity = 0.0
                 )
             )
         } else emptyList()
@@ -58,7 +59,8 @@ class MovieRepositoryImpl(
                             image = ""
                         ),
                     ),
-                    rating = 9.9f
+                    rating = 9.9f,
+                    popularity = 0.0
                 )
             )
         } else emptyList()
@@ -86,7 +88,8 @@ class MovieRepositoryImpl(
                             image = ""
                         ),
                     ),
-                    rating = 9.9f
+                    rating = 9.9f,
+                    popularity = 0.0
                 )
             )
         } else emptyList()

@@ -1,3 +1,6 @@
+import com.android.build.api.variant.HasHostTestsBuilder
+import com.android.build.api.variant.HostTestBuilder
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -61,6 +64,10 @@ androidComponents {
         if (variantBuilder.productFlavors.containsAll(listOf("data" to "fake")) &&
             variantBuilder.buildType == "release") {
             variantBuilder.enable = false
+        }
+        if (variantBuilder.productFlavors.containsAll(listOf("data" to "fake")) &&
+            variantBuilder.buildType == "debug") {
+            variantBuilder.unitTestEnabled = false
         }
     }
 }

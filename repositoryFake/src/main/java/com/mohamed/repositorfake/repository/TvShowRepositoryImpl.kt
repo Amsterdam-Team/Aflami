@@ -27,7 +27,8 @@ class TvShowRepositoryImpl() : TvShowRepository {
                             image = ""
                         ),
                     ),
-                    rating = 9.9f
+                    rating = 9.9f,
+                    popularity = 0.0
                 )
             )
         } else emptyList()
