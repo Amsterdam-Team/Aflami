@@ -167,15 +167,35 @@ fun SearchByCountryScreenContent(
 
         Box {
             Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize()
             ) {
                 when (screenContent) {
-                    ScreenContent.COUNTRY_TOUR -> ExploreCountries()
-                    ScreenContent.LOADING_MOVIES -> Loading()
-                    ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection()
-                    ScreenContent.NO_MOVIES -> NoMoviesFound()
-                    ScreenContent.MOVIES -> SearchedMovies(state)
+                    ScreenContent.COUNTRY_TOUR -> ExploreCountries(
+                        Modifier
+                            .align(Alignment.Center)
+                    )
+
+                    ScreenContent.LOADING_MOVIES -> Loading(
+                        Modifier
+                            .align(Alignment.Center)
+                    )
+
+                    ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
+                        Modifier
+                            .align(
+                                Alignment.Center
+                            )
+                    )
+
+                    ScreenContent.NO_MOVIES -> NoMoviesFound(
+                        Modifier
+                            .align(Alignment.Center)
+                    )
+
+                    ScreenContent.MOVIES -> SearchedMovies(
+                        state,
+                        Modifier.align(Alignment.TopStart)
+                    )
                 }
             }
             androidx.compose.animation.AnimatedVisibility(
@@ -285,13 +305,18 @@ internal fun Loading(
 }
 
 @Composable
-private fun NoInternetConnection() {
+private fun NoInternetConnection(
+    modifier: Modifier = Modifier
+) {
 
 }
 
 @Composable
-private fun NoMoviesFound() {
+private fun NoMoviesFound(
+    modifier: Modifier = Modifier
+) {
     NoDataContainer(
+        modifier = modifier,
         title = stringResource(R.string.no_search_result),
         description = stringResource(R.string.no_search_result_for_country),
         imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
@@ -299,8 +324,12 @@ private fun NoMoviesFound() {
 }
 
 @Composable
-private fun SearchedMovies(state: SearchByCountryScreenState) {
+private fun SearchedMovies(
+    state: SearchByCountryScreenState,
+    modifier: Modifier = Modifier
+) {
     LazyVerticalGrid(
+        modifier = modifier,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(top = 12.dp, bottom = 36.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
