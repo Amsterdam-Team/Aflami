@@ -134,7 +134,13 @@ class GlobalSearchViewModel(
 
     override fun onFilterButtonClicked() = updateState { it.copy(isDialogVisible = true) }
 
-    override fun onNavigateBackClicked() = sendNewEffect(SearchUiEffect.NavigateBack)
+    override fun onNavigateBackClicked() {
+        if (state.value.query.isNotEmpty()) {
+            onClearSearch()
+        } else {
+            sendNewEffect(SearchUiEffect.NavigateBack)
+        }
+    }
 
     override fun onWorldSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
 
@@ -305,5 +311,19 @@ class GlobalSearchViewModel(
 
     override fun onClearButtonClicked() {
         updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    }
+
+    override fun onClearSearch() {
+        updateState { currentState ->
+            currentState.copy(
+                query = "",
+                movies = emptyList(),
+                tvShows = emptyList(),
+                selectedTabOption = TabOption.MOVIES,
+                errorUiState = null,
+                isDialogVisible = false,
+                filterItemUiState = FilterItemUiState()
+            )
+        }
     }
 }
