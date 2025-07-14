@@ -313,10 +313,10 @@ private fun SearchedMovies(
 ) {
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(top = 12.dp, bottom = 36.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        columns = GridCells.Adaptive(160.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(top = 12.dp, bottom = 36.dp),
     ) {
         items(
             items = state.movies,
