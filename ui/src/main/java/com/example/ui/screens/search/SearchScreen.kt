@@ -153,7 +153,7 @@ private fun SearchContent(
             }
         }
 
-        AnimatedVisibility(state.query.isNotEmpty()) {
+        AnimatedVisibility(state.query.isNotEmpty() || state.errorUiState != null) {
             if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
                 NoDataContainer(
                     imageRes = painterResource(R.drawable.placeholder_no_result_found),
@@ -198,7 +198,7 @@ private fun SearchContent(
             visible = state.isDialogVisible
         ) {
             FilterDialog(
-                state = state.filterItemUiState,
+                state = state,
                 interaction = filterInteraction,
             )
         }
