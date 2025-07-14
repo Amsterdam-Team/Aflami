@@ -1,7 +1,6 @@
 package com.example.designsystem.components.appBar
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,7 +32,7 @@ fun DefaultAppBar(
 ) {
 
     TopAppBar(
-        modifier = modifier.padding(horizontal = 16.dp),
+        modifier = modifier,
         containerColor = containerColor,
         title = title.takeIf { it.isNotBlank() }?.let { text ->
             {
