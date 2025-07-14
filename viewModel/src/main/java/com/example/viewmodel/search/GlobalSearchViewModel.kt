@@ -76,6 +76,7 @@ class GlobalSearchViewModel(
     }
 
     private fun onSearchQueryChanged(trimmedQuery: String) {
+        updateState { it.copy(isLoading = true, errorUiState = null) }
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
@@ -87,7 +88,6 @@ class GlobalSearchViewModel(
         rating: Float = 0f,
         movieCategoryType: MovieCategoryType = MovieCategoryType.ALL
     ) {
-        updateState { it.copy(isLoading = true, errorUiState = null) }
         tryToExecute(
             action = {
                 getMoviesByKeywordUseCase(
@@ -111,7 +111,6 @@ class GlobalSearchViewModel(
         rating: Float = 0f,
         movieCategoryType: TvShowCategoryType = TvShowCategoryType.ALL
     ) {
-        updateState { it.copy(isLoading = true, errorUiState = null) }
         tryToExecute(
             action = {
                 getTvShowByKeywordUseCase(
