@@ -11,17 +11,17 @@ import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.categories.MovieCategoryItemUiState.Companion.getSelectedOne
 import com.example.viewmodel.common.categories.MovieCategoryItemUiState.Companion.selectByType
-import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.getSelectedOne
-import com.example.viewmodel.common.toMoveUiStates
-import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.common.categories.MovieCategoryType
+import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.getSelectedOne
 import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.selectByType
 import com.example.viewmodel.common.categories.TvShowCategoryType
 import com.example.viewmodel.common.categories.toMovieGenreType
 import com.example.viewmodel.common.categories.toTvShowGenre
+import com.example.viewmodel.common.toMoveUiStates
+import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.String
 
 @OptIn(FlowPreview::class)
 class GlobalSearchViewModel(
@@ -76,7 +75,14 @@ class GlobalSearchViewModel(
     }
 
     private fun onSearchQueryChanged(trimmedQuery: String) {
-        updateState { it.copy(isLoading = true, errorUiState = null, movies = emptyList(), tvShows = emptyList()) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorUiState = null,
+                movies = emptyList(),
+                tvShows = emptyList()
+            )
+        }
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
@@ -211,7 +217,7 @@ class GlobalSearchViewModel(
     }
 
     override fun onCancelButtonClicked() {
-        updateState { it.copy(isDialogVisible = false) }.also { resetFilterState() }
+        updateState { it.copy(isDialogVisible = false, isLoading = false) }
     }
 
     override fun onRatingStarChanged(ratingIndex: Int) {
@@ -244,7 +250,10 @@ class GlobalSearchViewModel(
 
     override fun onApplyButtonClicked() {
         updateState {
-            it.copy(filterItemUiState = it.filterItemUiState.copy(isLoading = true))
+            it.copy(
+                filterItemUiState = it.filterItemUiState.copy(isLoading = true),
+                isDialogVisible = false,
+            )
         }
 
         when (state.value.selectedTabOption) {
@@ -270,7 +279,12 @@ class GlobalSearchViewModel(
     }
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toMoveUiStates(), isDialogVisible = false) }
+        updateState {
+            it.copy(
+                movies = movies.toMoveUiStates(),
+                isLoading = false
+            )
+        }
     }
 
     private fun applyTvShowsFilter() {
@@ -290,7 +304,12 @@ class GlobalSearchViewModel(
     }
 
     private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
-        updateState { it.copy(tvShows = tvShows.toTvShowUiStates(), isDialogVisible = false) }
+        updateState {
+            it.copy(
+                tvShows = tvShows.toTvShowUiStates(),
+                isLoading = false
+            )
+        }
     }
 
 
@@ -300,7 +319,8 @@ class GlobalSearchViewModel(
 
     override fun onClearButtonClicked() = resetFilterState()
 
-    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() =
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun stopLoading() = updateState { it.copy(isLoading = false) }
 }

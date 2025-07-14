@@ -19,6 +19,6 @@ class RemoteCategoryDatasourceImpl(
     private companion object {
         const val GET_MOVIE_GENRE_LIST = "genre/movie/list"
 
-        const val GET_TV_SHOW_GENRE_LIST = "discover/tv"
+        const val GET_TV_SHOW_GENRE_LIST = "genre/tv/list"
     }
 }

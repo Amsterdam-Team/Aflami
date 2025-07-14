@@ -6,8 +6,6 @@ interface RemoteMovieDatasource {
 
     suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse
 
-    suspend fun discoverMovies(keyword: String, rating: Float, genreId: Int?): RemoteMovieResponse
-
     suspend fun getMoviesByActorName(
         name: String
     ): RemoteMovieResponse
