@@ -1,6 +1,5 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
@@ -28,7 +27,7 @@ class RemoteMovieDatasourceImpl(
         genreId: Int?
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(Endpoints.DISCOVER_MOVIE_URL) {
+            val response = ktorClient.get(DISCOVER_MOVIE) {
                 parameter(QUERY_KEY, keyword)
                 parameter(VOTE_AVERAGE_KEY, rating)
                 if (genreId != null) parameter(WITH_GENRES_KEY, genreId)
