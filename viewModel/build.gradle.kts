@@ -21,7 +21,6 @@ dependencies {
     //mockk
     testImplementation (libs.mockk)
     testImplementation (libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
     // junit 5
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)
