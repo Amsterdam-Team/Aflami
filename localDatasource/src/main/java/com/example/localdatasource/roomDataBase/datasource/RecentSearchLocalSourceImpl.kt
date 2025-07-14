@@ -1,14 +1,14 @@
 package com.example.localdatasource.roomDataBase.datasource
 
 import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
 
-class RecentSearchDataSourceImpl(
+class RecentSearchLocalSourceImpl(
     private val dao: RecentSearchDao
-) : LocalRecentSearchDataSource {
+) : RecentSearchLocalSource {
 
     override suspend fun upsertResentSearch(search: LocalSearchDto) {
         dao.upsertRecentSearch(search)

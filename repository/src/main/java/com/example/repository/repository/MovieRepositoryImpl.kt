@@ -2,10 +2,9 @@ package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
-import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.Movie
-import com.example.repository.datasource.local.LocalMovieDataSource
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.MovieLocalSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
@@ -18,11 +17,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
-    private val localMovieDataSource: LocalMovieDataSource,
+    private val movieLocalSource: MovieLocalSource,
     private val remoteMovieDataSource: RemoteMovieDatasource,
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: RemoteMovieMapper,
-    private val recentSearchDatasource: LocalRecentSearchDataSource,
+    private val recentSearchDatasource: RecentSearchLocalSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String, rating: Float, movieGenre: MovieGenre): List<Movie> {
@@ -31,7 +30,7 @@ class MovieRepositoryImpl(
             recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
         val isExpired = !isSearchExpired(recentSearch)
         if (!isExpired) {
-            val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
+            val localMovies = movieLocalSource.getMoviesByKeywordAndSearchType(
                 keyword = keyword,
                 searchType = SearchType.BY_KEYWORD
             )
@@ -47,7 +46,7 @@ class MovieRepositoryImpl(
 
         val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
-        localMovieDataSource.addAllMoviesWithSearchData(
+        movieLocalSource.addAllMoviesWithSearchData(
             movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
             searchKeyword = keyword,
             searchType = SearchType.BY_KEYWORD,
@@ -63,7 +62,7 @@ class MovieRepositoryImpl(
                 recentSearchDatasource.getSearchByKeywordAndType(actorName, SearchType.BY_ACTOR)
             val isExpired = !isSearchExpired(recentSearch)
             if (!isExpired) {
-                val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
+                val localMovies = movieLocalSource.getMoviesByKeywordAndSearchType(
                     keyword = actorName,
                     searchType = SearchType.BY_ACTOR
                 )
@@ -74,7 +73,7 @@ class MovieRepositoryImpl(
             val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
             launch {
-                localMovieDataSource.addAllMoviesWithSearchData(
+                movieLocalSource.addAllMoviesWithSearchData(
                     movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
                     searchKeyword = actorName,
                     searchType = SearchType.BY_ACTOR,
@@ -95,7 +94,7 @@ class MovieRepositoryImpl(
                 )
             val isExpired = !isSearchExpired(recentSearch)
             if (!isExpired) {
-                val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
+                val localMovies = movieLocalSource.getMoviesByKeywordAndSearchType(
                     keyword = countryIsoCode,
                     searchType = SearchType.BY_COUNTRY
                 )
@@ -106,7 +105,7 @@ class MovieRepositoryImpl(
             val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
             launch {
-                localMovieDataSource.addAllMoviesWithSearchData(
+                movieLocalSource.addAllMoviesWithSearchData(
                     movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
                     searchKeyword = countryIsoCode,
                     searchType = SearchType.BY_COUNTRY,

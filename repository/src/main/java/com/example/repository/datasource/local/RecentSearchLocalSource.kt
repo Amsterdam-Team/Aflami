@@ -4,7 +4,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
 
-interface LocalRecentSearchDataSource {
+interface RecentSearchLocalSource {
     suspend fun upsertResentSearch(search: LocalSearchDto)
 
     suspend fun getRecentSearches(): List<LocalSearchDto>

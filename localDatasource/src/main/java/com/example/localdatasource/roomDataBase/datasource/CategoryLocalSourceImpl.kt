@@ -1,13 +1,13 @@
 package com.example.localdatasource.roomDataBase.datasource
 
 import com.example.localdatasource.roomDataBase.daos.CategoryDao
-import com.example.repository.datasource.local.LocalCategoryDataSource
+import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 
-class LocalCategoryDataSourceImpl(
+class CategoryLocalSourceImpl(
     private val dao: CategoryDao
-) : LocalCategoryDataSource {
+) : CategoryLocalSource {
     override suspend fun upsertAllMovieCategories(categories: List<LocalMovieCategoryDto>) {
         dao.upsertAllMovieCategories(categories)
     }

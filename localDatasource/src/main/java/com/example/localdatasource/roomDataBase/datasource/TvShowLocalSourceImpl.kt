@@ -1,14 +1,14 @@
 package com.example.localdatasource.roomDataBase.datasource
 
 import com.example.localdatasource.roomDataBase.daos.TvShowDao
-import com.example.repository.datasource.local.LocalTvShowDataSource
+import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
 
-class LocalTvShowDataSourceImpl(
+class TvShowLocalSourceImpl(
     private val dao: TvShowDao
-) : LocalTvShowDataSource {
+) : TvShowLocalSource {
 
     override suspend fun getTvShowsBySearchKeyword(searchKeyword: String): List<TvShowWithCategory> {
         return dao.getTvShowsBySearchKeyword(searchKeyword)

@@ -1,7 +1,7 @@
 package com.example.repository.repository
 
 import com.example.entity.Country
-import com.example.repository.datasource.local.LocalCountryDataSource
+import com.example.repository.datasource.local.CountryLocalSource
 import com.example.repository.datasource.remote.RemoteCountryDataSource
 import com.example.repository.dto.local.LocalCountryDto
 import com.example.repository.dto.remote.RemoteCountryDto
@@ -17,7 +17,7 @@ class CountryRepositoryImplTest {
 
     private lateinit var repository: CountryRepositoryImpl
 
-    private val localDataSource: LocalCountryDataSource = mockk()
+    private val localDataSource: CountryLocalSource = mockk()
     private val remoteDataSource: RemoteCountryDataSource = mockk()
     private val localMapper: CountryLocalMapper = mockk()
     private val remoteMapper: RemoteCountryMapper = mockk()

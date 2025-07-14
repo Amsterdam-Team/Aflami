@@ -3,8 +3,8 @@ package com.example.repository.repository
 import com.example.domain.repository.TvShowRepository
 import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.TvShow
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
-import com.example.repository.datasource.local.LocalTvShowDataSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
+import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.RemoteTvShowsDatasource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
@@ -16,11 +16,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class TvShowRepositoryImpl(
-    private val localTvDataSource: LocalTvShowDataSource,
+    private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: RemoteTvShowsDatasource,
     private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: RemoteTvShowMapper,
-    private val recentSearchDatasource: LocalRecentSearchDataSource,
+    private val recentSearchDatasource: RecentSearchLocalSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) : TvShowRepository {
     override suspend fun getTvShowByKeyword(keyword: String, rating: Float, tvShowGenre: TvShowGenre): List<TvShow> {

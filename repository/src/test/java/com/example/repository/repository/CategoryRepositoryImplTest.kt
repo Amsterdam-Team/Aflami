@@ -2,7 +2,7 @@ package com.example.repository.repository
 
 import com.example.domain.repository.CategoryRepository
 import com.example.entity.Category
-import com.example.repository.datasource.local.LocalCategoryDataSource
+import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.RemoteCategoryDatasource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
@@ -22,14 +22,14 @@ class CategoryRepositoryImplTest {
     private lateinit var repository: CategoryRepository
 
     private val remoteDataSource: RemoteCategoryDatasource = mockk()
-    private val localDataSource: LocalCategoryDataSource = mockk()
+    private val localDataSource: CategoryLocalSource = mockk()
     private val mapper: CategoryLocalMapper = mockk()
 
     @BeforeEach
     fun setup() {
         repository = CategoryRepositoryImpl(
             remoteCategoryDatasource = remoteDataSource,
-            localCategoryDatasource = localDataSource,
+            categoryDatasource = localDataSource,
             categoryLocalMapper = mapper
         )
     }
