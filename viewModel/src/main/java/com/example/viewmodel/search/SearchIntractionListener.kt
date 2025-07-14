@@ -18,6 +18,7 @@ interface GlobalSearchInteractionListener {
     fun onRecentSearchClicked(keyword: String)
     fun onClearRecentSearch(keyword: String)
     fun onClearAllRecentSearches()
+    fun onClearSearch()
 }
 
 
