@@ -28,4 +28,7 @@ sealed interface Route {
 
     @Serializable
     data object SearchByCountry: Route
+
+    @Serializable
+    data class MovieDetails(private val movieId : Long) : Route
 }

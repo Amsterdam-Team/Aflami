@@ -28,6 +28,7 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
@@ -59,14 +60,17 @@ fun SearchByActorScreen(
         modifier = modifier,
         state = uiState.value,
         interactionListener = viewModel
-    )
+    ){
+        navController.navigate(Route.MovieDetails(it))
+    }
 }
 
 @Composable
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
     state: SearchByActorScreenState,
-    interactionListener: SearchByActorInteractionListener
+    interactionListener: SearchByActorInteractionListener,
+    onMovieClicked : (Long)-> Unit
 ) {
     Column(
         modifier = modifier
@@ -122,7 +126,9 @@ private fun SearchByActorContent(
                                 movieYear = movie.productionYear.toString(),
                                 movieTitle = movie.name,
                                 movieRating = movie.rating.toString(),
+                                onClick =   {onMovieClicked(movie.id)}
                             )
+
                         }
                         item {
                             Spacer(modifier = Modifier.navigationBarsPadding())
@@ -147,6 +153,6 @@ private fun SearchByActorContentPreview() {
                 }
             }
 
-        )
+        ){}
     }
 }
