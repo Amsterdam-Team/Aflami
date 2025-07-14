@@ -22,7 +22,7 @@ class CategoryRepositoryImpl(
             }
             categoryLocalMapper.mapToLocalMovieCategories(remoteCategories)
         }
-        return categoryLocalMapper.mapListFromMovieLocal(movieCategories)
+        return categoryLocalMapper.mapToMovieCategories(movieCategories)
     }
 
     override suspend fun getTvShowCategories(): List<Category> {
@@ -36,6 +36,6 @@ class CategoryRepositoryImpl(
             }
             categoryLocalMapper.mapToLocalTvShowCategories(remoteCategories)
         }
-        return categoryLocalMapper.mapListFromTvShowLocal(movieCategories)
+        return categoryLocalMapper.mapToTvShowCategories(movieCategories)
     }
 }

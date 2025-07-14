@@ -9,6 +9,7 @@ import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.TvShowLocalMapper
+import com.example.repository.mapper.remote.GenreMapper
 import com.example.repository.mapper.remote.RemoteTvShowMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class TvShowRepositoryImpl(
     private val remoteTvDataSource: TvShowsRemoteSource,
     private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: RemoteTvShowMapper,
+    private val genreMapper: GenreMapper,
     private val recentSearchDatasource: RecentSearchLocalSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) : TvShowRepository {
@@ -32,20 +34,20 @@ class TvShowRepositoryImpl(
                 val localTvShows = localTvDataSource.getTvShowsBy(
                     searchKeyword = keyword
                 )
-                return@withContext tvLocalMapper.mapListFromLocal(localTvShows)
+                return@withContext tvLocalMapper.mapToTvShows(localTvShows)
             }
             deleteRecentSearch(recentSearch)
 
             val remoteTvShows = if (rating != 0f || tvShowGenre != TvShowGenre.ALL) {
-                remoteTvDataSource.discoverTvShows(keyword, rating, tvRemoteMapper.mapToShowTvGenreId(tvShowGenre))
+                remoteTvDataSource.discoverTvShows(keyword, rating, genreMapper.mapToTvShowGenreId(tvShowGenre))
             } else {
                 remoteTvDataSource.getTvShowsByKeyword(keyword)
             }
 
-            val domainTvShows = tvRemoteMapper.mapResponseToDomain(remoteTvShows)
+            val domainTvShows = tvRemoteMapper.mapToTvShows(remoteTvShows)
 
             localTvDataSource.addTvShows(
-                tvShows = domainTvShows.map { tvLocalMapper.mapToLocal(it) },
+                tvShows = domainTvShows.map { tvLocalMapper.mapToLocalTvShow(it) },
                 searchKeyword = keyword,
             )
 

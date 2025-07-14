@@ -9,6 +9,7 @@ import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
+import com.example.repository.mapper.remote.GenreMapper
 import com.example.repository.mapper.remote.RemoteMovieMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class MovieRepositoryImpl(
     private val movieDataSource: MovieRemoteSource,
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: RemoteMovieMapper,
+    private val genreMapper: GenreMapper,
     private val recentSearchDatasource: RecentSearchLocalSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
@@ -34,20 +36,20 @@ class MovieRepositoryImpl(
                 keyword = keyword,
                 searchType = SearchType.BY_KEYWORD
             )
-            return movieLocalMapper.mapListFromLocal(localMovies)
+            return movieLocalMapper.mapToMovies(localMovies)
         }
         deleteRecentSearch(recentSearch)
 
         val remoteMovies = if (rating != 0f || movieGenre != MovieGenre.ALL) {
-            movieDataSource.discoverMovies(keyword, rating, movieRemoteMapper.mapToGenreId(movieGenre))
+            movieDataSource.discoverMovies(keyword, rating, genreMapper.mapToMovieGenreId(movieGenre))
         } else {
             movieDataSource.getMoviesByKeyword(keyword)
         }
 
-        val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+        val domainMovies = movieRemoteMapper.mapToMovies(remoteMovies)
 
         movieLocalSource.addMoviesBySearchData(
-            movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+            movies = domainMovies.map { movieLocalMapper.mapToLocalMovie(it) },
             searchKeyword = keyword,
             searchType = SearchType.BY_KEYWORD,
             expireDate = Clock.System.now()
@@ -66,15 +68,15 @@ class MovieRepositoryImpl(
                     keyword = actorName,
                     searchType = SearchType.BY_ACTOR
                 )
-                return@withContext movieLocalMapper.mapListFromLocal(localMovies)
+                return@withContext movieLocalMapper.mapToMovies(localMovies)
             }
             deleteRecentSearch(recentSearch)
             val remoteMovies = movieDataSource.getMoviesByActorName(actorName)
-            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            val domainMovies = movieRemoteMapper.mapToMovies(remoteMovies)
 
             launch {
                 movieLocalSource.addMoviesBySearchData(
-                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    movies = domainMovies.map { movieLocalMapper.mapToLocalMovie(it) },
                     searchKeyword = actorName,
                     searchType = SearchType.BY_ACTOR,
                     expireDate = Clock.System.now()
@@ -98,15 +100,15 @@ class MovieRepositoryImpl(
                     keyword = countryIsoCode,
                     searchType = SearchType.BY_COUNTRY
                 )
-                return@withContext movieLocalMapper.mapListFromLocal(localMovies)
+                return@withContext movieLocalMapper.mapToMovies(localMovies)
             }
             deleteRecentSearch(recentSearch)
             val remoteMovies = movieDataSource.getMoviesByCountryIsoCode(countryIsoCode)
-            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+            val domainMovies = movieRemoteMapper.mapToMovies(remoteMovies)
 
             launch {
                 movieLocalSource.addMoviesBySearchData(
-                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
+                    movies = domainMovies.map { movieLocalMapper.mapToLocalMovie(it) },
                     searchKeyword = countryIsoCode,
                     searchType = SearchType.BY_COUNTRY,
                     expireDate = Clock.System.now()

@@ -40,7 +40,7 @@ class CategoryRepositoryImplTest {
         val mapped = listOf(Category(1, "Action", ""))
 
         coEvery { localDataSource.getMovieCategories() } returns local
-        every { mapper.mapListFromMovieLocal(local) } returns mapped
+        every { mapper.mapToMovieCategories(local) } returns mapped
 
         val result = repository.getMovieCategories()
 
@@ -58,7 +58,7 @@ class CategoryRepositoryImplTest {
         coEvery { remoteDataSource.getMovieCategories() } returns remote
         every { mapper.mapToLocalMovieCategories(remote) } returns localMapped
         coEvery { localDataSource.upsertMovieCategories(localMapped) } just Runs
-        every { mapper.mapListFromMovieLocal(localMapped) } returns finalMapped
+        every { mapper.mapToMovieCategories(localMapped) } returns finalMapped
 
         val result = repository.getMovieCategories()
 
@@ -73,7 +73,7 @@ class CategoryRepositoryImplTest {
         val mapped = listOf(Category(3, "Drama", ""))
 
         coEvery { localDataSource.getTvShowCategories() } returns local
-        every { mapper.mapListFromTvShowLocal(local) } returns mapped
+        every { mapper.mapToTvShowCategories(local) } returns mapped
 
         val result = repository.getTvShowCategories()
 
@@ -91,7 +91,7 @@ class CategoryRepositoryImplTest {
         coEvery { remoteDataSource.getTvShowCategories() } returns remote
         every { mapper.mapToLocalTvShowCategories(remote) } returns localMapped
         coEvery { localDataSource.upsertTvShowCategories(localMapped) } just Runs
-        every { mapper.mapListFromTvShowLocal(localMapped) } returns finalMapped
+        every { mapper.mapToTvShowCategories(localMapped) } returns finalMapped
 
         val result = repository.getTvShowCategories()
 

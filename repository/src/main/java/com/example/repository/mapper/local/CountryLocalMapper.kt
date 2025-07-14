@@ -5,17 +5,17 @@ import com.example.repository.dto.local.LocalCountryDto
 
 class CountryLocalMapper {
 
-    fun mapFromLocal(dto: LocalCountryDto): Country {
+    fun mapToCountry(localCountry: LocalCountryDto): Country {
         return Country(
-            countryName = dto.name,
-            countryIsoCode = dto.isoCode
+            countryName = localCountry.name,
+            countryIsoCode = localCountry.isoCode
         )
     }
 
-    fun mapToLocal(domain: Country): LocalCountryDto {
+    fun mapToLocalCountry(country: Country): LocalCountryDto {
         return LocalCountryDto(
-            name = domain.countryName,
-            isoCode = domain.countryIsoCode
+            name = country.countryName,
+            isoCode = country.countryIsoCode
         )
     }
 }

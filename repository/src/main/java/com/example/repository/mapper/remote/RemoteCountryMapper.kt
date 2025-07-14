@@ -4,10 +4,10 @@ import com.example.entity.Country
 import com.example.repository.dto.remote.RemoteCountryDto
 
 class RemoteCountryMapper {
-    fun mapToDomain(dto: RemoteCountryDto): Country {
+    fun mapToCountry(remoteCountryDto: RemoteCountryDto): Country {
         return Country(
-            countryName = dto.nativeName,
-            countryIsoCode = dto.isoCode,
+            countryName = remoteCountryDto.nativeName,
+            countryIsoCode = remoteCountryDto.isoCode,
         )
     }
 }
