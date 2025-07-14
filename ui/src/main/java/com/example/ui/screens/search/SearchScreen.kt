@@ -53,6 +53,7 @@ import com.example.viewmodel.search.SearchUiEffect
 import com.example.viewmodel.search.SearchUiState
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
+import androidx.activity.compose.BackHandler
 
 @Composable
 fun SearchScreen(
@@ -95,6 +96,9 @@ private fun SearchContent(
     interaction: GlobalSearchInteractionListener,
     filterInteraction: FilterInteractionListener
 ) {
+    BackHandler(enabled = state.query.isNotEmpty()) {
+        interaction.onClearSearch()
+    }
 
     var bottomPadding by remember { mutableStateOf(0.dp) }
     Column(
@@ -149,7 +153,7 @@ private fun SearchContent(
             }
         }
 
-        AnimatedVisibility(state.query.isNotEmpty()) {
+        AnimatedVisibility(state.query.isNotEmpty() || state.errorUiState != null) {
             if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
                 NoDataContainer(
                     imageRes = painterResource(R.drawable.placeholder_no_result_found),
@@ -194,7 +198,7 @@ private fun SearchContent(
             visible = state.isDialogVisible
         ) {
             FilterDialog(
-                state = state.filterItemUiState,
+                state = state,
                 interaction = filterInteraction,
             )
         }
