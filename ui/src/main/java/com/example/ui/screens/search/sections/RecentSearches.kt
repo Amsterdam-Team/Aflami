@@ -12,10 +12,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.divider.HorizontalDivider
@@ -60,7 +62,7 @@ fun RecentSearchesSection(
                         modifier = Modifier.animateItem(),
                         title = recentSearchItem,
                         onItemClick = interaction::onRecentSearchClicked,
-                        onCancelClick = { interaction::onClearRecentSearch }
+                        onCancelClick = { keyword->interaction.onRecentSearchClicked(keyword) }
                     )
                     if (recentSearchItem != state.recentSearches.last()) HorizontalDivider()
                 }
@@ -71,7 +73,11 @@ fun RecentSearchesSection(
 
     AnimatedVisibility(state.recentSearches.isEmpty()) {
 
-        //todo: show empty state image
+        NoDataContainer(
+            imageRes = painterResource(R.drawable.placeholder_no_result_found),
+            modifier = Modifier.padding(top=70.dp),
+            title = stringResource(R.string.search_description),
+        )
 
     }
 
