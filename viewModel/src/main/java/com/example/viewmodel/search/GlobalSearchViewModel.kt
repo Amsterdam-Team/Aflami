@@ -1,6 +1,5 @@
 package com.example.viewmodel.search
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -88,7 +87,7 @@ class GlobalSearchViewModel(
         rating: Float = 0f,
         movieCategoryType: MovieCategoryType = MovieCategoryType.ALL
     ) {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(isLoading = true, errorUiState = null) }
         tryToExecute(
             action = {
                 getMoviesByKeywordUseCase(
@@ -112,7 +111,7 @@ class GlobalSearchViewModel(
         rating: Float = 0f,
         movieCategoryType: TvShowCategoryType = TvShowCategoryType.ALL
     ) {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(isLoading = true, errorUiState = null) }
         tryToExecute(
             action = {
                 getTvShowByKeywordUseCase(
@@ -155,7 +154,7 @@ class GlobalSearchViewModel(
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
-        observeSearchQueryChanges()
+        //observeSearchQueryChanges()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
