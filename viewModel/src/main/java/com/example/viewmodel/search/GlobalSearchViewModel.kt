@@ -155,6 +155,10 @@ class GlobalSearchViewModel(
     override fun onWorldSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
 
     override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
+    override fun onRetryQuestClicked() {
+        updateState { it.copy(isLoading = true, errorUiState = null) }
+        observeSearchQueryChanges()
+    }
 
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
@@ -165,6 +169,7 @@ class GlobalSearchViewModel(
                 selectedTabOption = tabOption,
                 movies = state.value.movies,
                 tvShows = state.value.tvShows,
+                isLoading = true,
             )
         }
     }
