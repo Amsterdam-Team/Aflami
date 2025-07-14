@@ -76,7 +76,7 @@ class GlobalSearchViewModel(
     }
 
     private fun onSearchQueryChanged(trimmedQuery: String) {
-        updateState { it.copy(isLoading = true, errorUiState = null) }
+        updateState { it.copy(isLoading = true, errorUiState = null, movies = emptyList(), tvShows = emptyList()) }
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
