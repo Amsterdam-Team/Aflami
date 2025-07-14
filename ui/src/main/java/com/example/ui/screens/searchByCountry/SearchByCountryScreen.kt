@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +65,7 @@ fun SearchByCountryScreen(
     val navController = LocalNavController.current
 
     val state by viewModel.state.collectAsState()
-    var screenContent by remember { mutableStateOf(ScreenContent.COUNTRY_TOUR) }
+    var screenContent by rememberSaveable { mutableStateOf(ScreenContent.COUNTRY_TOUR) }
     var showCountriesDropdown by remember { mutableStateOf(false) }
     var noSuggestedCountry by remember { mutableStateOf(false) }
 
