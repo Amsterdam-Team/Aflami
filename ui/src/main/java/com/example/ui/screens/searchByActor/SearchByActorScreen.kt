@@ -16,6 +16,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
+import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
@@ -43,6 +49,7 @@ fun SearchByActorScreen(
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
+    var isNoInternetConnection by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -51,7 +58,9 @@ fun SearchByActorScreen(
                     navController.popBackStack()
                 }
 
-                SearchByActorEffect.NoInternetConnection -> {}
+                SearchByActorEffect.NoInternetConnection -> {
+                    isNoInternetConnection = true
+                }
                 null -> {}
             }
         }
@@ -59,7 +68,12 @@ fun SearchByActorScreen(
     SearchByActorContent(
         modifier = modifier,
         state = uiState.value,
-        interactionListener = viewModel
+        interactionListener = viewModel,
+        isNoInternetConnection = isNoInternetConnection,
+        onRetryQuestClicked = {
+            isNoInternetConnection = false
+            viewModel.onRetryQuestClicked()
+        }
     )
 }
 
@@ -67,7 +81,9 @@ fun SearchByActorScreen(
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
     state: SearchByActorScreenState,
-    interactionListener: SearchByActorInteractionListener
+    interactionListener: SearchByActorInteractionListener,
+    isNoInternetConnection: Boolean,
+    onRetryQuestClicked: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -99,6 +115,16 @@ private fun SearchByActorContent(
         ) { targetState ->
             when {
                 targetState.isLoading -> Loading(modifier = Modifier)
+
+                isNoInternetConnection -> {
+                    NoNetworkContainer(
+                        onClickRetry = onRetryQuestClicked,
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .align(Alignment.CenterHorizontally)
+                    )
+                }
 
                 targetState.query.isBlank() -> {
                     NoDataContainer(
@@ -158,8 +184,12 @@ private fun SearchByActorContentPreview() {
 
                 override fun onNavigateBackClicked() {
                 }
-            }
 
+                override fun onRetryQuestClicked() {
+                }
+            },
+            isNoInternetConnection = false,
+            onRetryQuestClicked = {}
         )
     }
 }

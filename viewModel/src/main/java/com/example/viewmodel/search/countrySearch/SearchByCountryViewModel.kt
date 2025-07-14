@@ -3,7 +3,7 @@ package com.example.viewmodel.search.countrySearch
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.CountryTooShortException
-import com.example.domain.exceptions.InternetConnectionException
+import com.example.domain.exceptions.NoInternetException
 import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
@@ -71,9 +71,14 @@ class SearchByCountryViewModel(
     override fun onSelectCountry(country: CountryUiState) {
         sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
         updateState {
-            it.copy(selectedCountry = country.countryName)
+            it.copy(selectedCountry = country.countryName, selectedCountryIsoCode = country.countryIsoCode)
         }
         getMoviesByCountry(country.countryIsoCode)
+    }
+
+    override fun onRetryQuestClicked() {
+        sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
+        getMoviesByCountry(state.value.selectedCountryIsoCode)
     }
 
     private fun getMoviesByCountry(countryIsoCode: String) {
@@ -102,7 +107,7 @@ class SearchByCountryViewModel(
 
     private fun onError(exception: AflamiException) {
         val errorEffect = when (exception) {
-            is InternetConnectionException -> SearchByCountryEffect.NoInternetConnectionEffect
+            is NoInternetException -> SearchByCountryEffect.NoInternetConnectionEffect
             is NoSuggestedCountriesException -> SearchByCountryEffect.NoSuggestedCountriesEffect
             is NoMoviesForCountryException -> SearchByCountryEffect.NoMoviesEffect
             is CountryTooShortException -> SearchByCountryEffect.CountryTooShortEffect

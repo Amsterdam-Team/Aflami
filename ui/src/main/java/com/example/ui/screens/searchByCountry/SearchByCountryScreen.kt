@@ -44,6 +44,7 @@ import com.example.designsystem.R
 import com.example.designsystem.components.LoadingIndicator
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
+import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
@@ -183,17 +184,18 @@ fun SearchByCountryScreenContent(
                             .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
                     )
 
-                    ScreenContent.LOADING_MOVIES -> Loading(
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
-
                     ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
+                        onRetryQuestClicked = interactionListener::onRetryQuestClicked,
                         Modifier
                             .align(
                                 Alignment.Center
                             )
+                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
+                    )
+
+                    ScreenContent.LOADING_MOVIES -> Loading(
+                        Modifier
+                            .align(Alignment.Center)
                             .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
                     )
 
@@ -317,9 +319,10 @@ internal fun Loading(
 
 @Composable
 private fun NoInternetConnection(
+    onRetryQuestClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
+    NoNetworkContainer(onClickRetry = onRetryQuestClicked, modifier = modifier)
 }
 
 @Composable
@@ -383,6 +386,9 @@ private fun SearchByCriteriaPreview() {
                 }
 
                 override fun onSelectCountry(country: CountryUiState) {
+                }
+
+                override fun onRetryQuestClicked() {
                 }
             },
             showCountriesDropdown = false,
