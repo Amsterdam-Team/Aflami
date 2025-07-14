@@ -1,7 +1,7 @@
 package com.example.remotedatasource.utils.apiHandler
 
 import android.util.Log.e
-import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.NoInternetException
 import io.ktor.client.statement.HttpResponse
 
 suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): T {
@@ -9,7 +9,7 @@ suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): T {
             execute()
         } catch (e: Exception) {
         e("bk", "safeCall: $e")
-        throw AflamiException()
+        throw NoInternetException()
         }
 
     return responseToResult(response)
