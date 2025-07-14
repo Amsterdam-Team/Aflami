@@ -5,7 +5,7 @@ import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.TvShow
 import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.datasource.local.TvShowLocalSource
-import com.example.repository.datasource.remote.RemoteTvShowsDatasource
+import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.TvShowLocalMapper
@@ -17,7 +17,7 @@ import kotlinx.datetime.Clock
 
 class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
-    private val remoteTvDataSource: RemoteTvShowsDatasource,
+    private val remoteTvDataSource: TvShowsRemoteSource,
     private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: RemoteTvShowMapper,
     private val recentSearchDatasource: RecentSearchLocalSource,
@@ -29,7 +29,7 @@ class TvShowRepositoryImpl(
                 recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
             val isExpired = !isSearchExpired(recentSearch)
             if (!isExpired) {
-                val localTvShows = localTvDataSource.getTvShowsBySearchKeyword(
+                val localTvShows = localTvDataSource.getTvShowsBy(
                     searchKeyword = keyword
                 )
                 return@withContext tvLocalMapper.mapListFromLocal(localTvShows)
@@ -44,7 +44,7 @@ class TvShowRepositoryImpl(
 
             val domainTvShows = tvRemoteMapper.mapResponseToDomain(remoteTvShows)
 
-            localTvDataSource.addAllTvShows(
+            localTvDataSource.addTvShows(
                 tvShows = domainTvShows.map { tvLocalMapper.mapToLocal(it) },
                 searchKeyword = keyword,
             )
@@ -56,7 +56,7 @@ class TvShowRepositoryImpl(
     private suspend fun deleteRecentSearch(
         recentSearch: LocalSearchDto?
     ) {
-        recentSearchDatasource.deleteSearchByKeywordAndType(
+        recentSearchDatasource.deleteRecentSearchByKeywordAndType(
             recentSearch?.searchKeyword ?: "",
             recentSearch?.searchType ?: SearchType.BY_KEYWORD
         )

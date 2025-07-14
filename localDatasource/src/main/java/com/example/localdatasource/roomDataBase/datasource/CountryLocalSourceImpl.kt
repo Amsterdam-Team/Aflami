@@ -7,7 +7,7 @@ import com.example.repository.dto.local.LocalCountryDto
 class CountryLocalSourceImpl(
     private val dao: CountryDao
 ) : CountryLocalSource {
-    override suspend fun getAllCountries(): List<LocalCountryDto> {
+    override suspend fun getCountries(): List<LocalCountryDto> {
         try {
         return dao.getAllCountries()
 
@@ -17,7 +17,7 @@ class CountryLocalSourceImpl(
         return emptyList()
     }
 
-    override suspend fun addAllCountries(countries: List<LocalCountryDto>) {
+    override suspend fun addCountries(countries: List<LocalCountryDto>) {
         dao.upsertAllCountries(countries)
     }
 }

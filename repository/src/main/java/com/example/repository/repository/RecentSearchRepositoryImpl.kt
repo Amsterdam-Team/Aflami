@@ -29,11 +29,11 @@ class RecentSearchRepositoryImpl(
     }
 
     override suspend fun deleteAllRecentSearches() {
-        recentSearchLocalSource.deleteAllSearches()
+        recentSearchLocalSource.deleteRecentSearches()
     }
 
     override suspend fun deleteRecentSearch(searchKeyword: String) {
-        recentSearchLocalSource.deleteSearchByKeyword(searchKeyword)
+        recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword)
     }
 
     private suspend fun upsertRecentSearch(
@@ -45,6 +45,6 @@ class RecentSearchRepositoryImpl(
             searchType = searchType,
             expireDate = Clock.System.now().plus(1.hours)
         )
-        recentSearchLocalSource.upsertResentSearch(localSearchDto)
+        recentSearchLocalSource.upsertRecentSearch(localSearchDto)
     }
 }

@@ -10,11 +10,11 @@ class TvShowLocalSourceImpl(
     private val dao: TvShowDao
 ) : TvShowLocalSource {
 
-    override suspend fun getTvShowsBySearchKeyword(searchKeyword: String): List<TvShowWithCategory> {
+    override suspend fun getTvShowsBy(searchKeyword: String): List<TvShowWithCategory> {
         return dao.getTvShowsBySearchKeyword(searchKeyword)
     }
 
-    override suspend fun addAllTvShows(
+    override suspend fun addTvShows(
         tvShows: List<LocalTvShowDto>,
         searchKeyword: String
     ) {

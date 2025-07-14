@@ -3,20 +3,20 @@ package com.example.repository.repository
 import com.example.domain.repository.CategoryRepository
 import com.example.entity.Category
 import com.example.repository.datasource.local.CategoryLocalSource
-import com.example.repository.datasource.remote.RemoteCategoryDatasource
+import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.mapper.local.CategoryLocalMapper
 
 class CategoryRepositoryImpl(
-    private val remoteCategoryDatasource: RemoteCategoryDatasource,
+    private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryDatasource: CategoryLocalSource,
     private val categoryLocalMapper: CategoryLocalMapper
 ) : CategoryRepository {
     override suspend fun getMovieCategories(): List<Category> {
-        val localCategories = categoryDatasource.getAllMovieCategories()
+        val localCategories = categoryDatasource.getMovieCategories()
         val movieCategories = localCategories.ifEmpty {
-            val remoteCategories = remoteCategoryDatasource.getMovieCategories()
+            val remoteCategories = categoryRemoteSource.getMovieCategories()
             remoteCategories.also {
-                categoryDatasource.upsertAllMovieCategories(
+                categoryDatasource.upsertMovieCategories(
                     categoryLocalMapper.mapToLocalMovieCategories(it)
                 )
             }
@@ -26,11 +26,11 @@ class CategoryRepositoryImpl(
     }
 
     override suspend fun getTvShowCategories(): List<Category> {
-        val localCategories = categoryDatasource.getAllTvShowCategories()
+        val localCategories = categoryDatasource.getTvShowCategories()
         val movieCategories = localCategories.ifEmpty {
-            val remoteCategories = remoteCategoryDatasource.getTvShowCategories()
+            val remoteCategories = categoryRemoteSource.getTvShowCategories()
             remoteCategories.also {
-                categoryDatasource.upsertAllTvShowCategories(
+                categoryDatasource.upsertTvShowCategories(
                     categoryLocalMapper.mapToLocalTvShowCategories(it)
                 )
             }

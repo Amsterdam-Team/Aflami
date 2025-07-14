@@ -5,7 +5,7 @@ import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
 import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.local.RecentSearchLocalSource
-import com.example.repository.datasource.remote.RemoteMovieDatasource
+import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
@@ -18,7 +18,7 @@ import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
     private val movieLocalSource: MovieLocalSource,
-    private val remoteMovieDataSource: RemoteMovieDatasource,
+    private val movieDataSource: MovieRemoteSource,
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: RemoteMovieMapper,
     private val recentSearchDatasource: RecentSearchLocalSource,
@@ -39,14 +39,14 @@ class MovieRepositoryImpl(
         deleteRecentSearch(recentSearch)
 
         val remoteMovies = if (rating != 0f || movieGenre != MovieGenre.ALL) {
-            remoteMovieDataSource.discoverMovies(keyword, rating, movieRemoteMapper.mapToGenreId(movieGenre))
+            movieDataSource.discoverMovies(keyword, rating, movieRemoteMapper.mapToGenreId(movieGenre))
         } else {
-            remoteMovieDataSource.getMoviesByKeyword(keyword)
+            movieDataSource.getMoviesByKeyword(keyword)
         }
 
         val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
-        movieLocalSource.addAllMoviesWithSearchData(
+        movieLocalSource.addMoviesBySearchData(
             movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
             searchKeyword = keyword,
             searchType = SearchType.BY_KEYWORD,
@@ -69,11 +69,11 @@ class MovieRepositoryImpl(
                 return@withContext movieLocalMapper.mapListFromLocal(localMovies)
             }
             deleteRecentSearch(recentSearch)
-            val remoteMovies = remoteMovieDataSource.getMoviesByActorName(actorName)
+            val remoteMovies = movieDataSource.getMoviesByActorName(actorName)
             val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
             launch {
-                movieLocalSource.addAllMoviesWithSearchData(
+                movieLocalSource.addMoviesBySearchData(
                     movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
                     searchKeyword = actorName,
                     searchType = SearchType.BY_ACTOR,
@@ -101,11 +101,11 @@ class MovieRepositoryImpl(
                 return@withContext movieLocalMapper.mapListFromLocal(localMovies)
             }
             deleteRecentSearch(recentSearch)
-            val remoteMovies = remoteMovieDataSource.getMoviesByCountryIsoCode(countryIsoCode)
+            val remoteMovies = movieDataSource.getMoviesByCountryIsoCode(countryIsoCode)
             val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
             launch {
-                movieLocalSource.addAllMoviesWithSearchData(
+                movieLocalSource.addMoviesBySearchData(
                     movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
                     searchKeyword = countryIsoCode,
                     searchType = SearchType.BY_COUNTRY,
@@ -119,7 +119,7 @@ class MovieRepositoryImpl(
     private suspend fun deleteRecentSearch(
         recentSearch: LocalSearchDto?
     ) {
-        recentSearchDatasource.deleteSearchByKeywordAndType(
+        recentSearchDatasource.deleteRecentSearchByKeywordAndType(
             recentSearch?.searchKeyword ?: "",
             recentSearch?.searchType ?: SearchType.BY_KEYWORD
         )

@@ -20,7 +20,7 @@ class MovieLocalSourceImpl(
         return dao.getMoviesByKeywordAndSearchType(keyword, searchType)
     }
 
-    override suspend fun addAllMoviesWithSearchData(
+    override suspend fun addMoviesBySearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
         searchType: SearchType,
@@ -39,7 +39,7 @@ class MovieLocalSourceImpl(
         dao.insertSearchEntries(entries)
     }
 
-    override suspend fun getSearchMovieCrossRef(searchKeyword: String, searchType: SearchType): List<SearchMovieCrossRefDto> {
+    override suspend fun getSearchMovieCrossRefs(searchKeyword: String, searchType: SearchType): List<SearchMovieCrossRefDto> {
         return dao.getSearchMoviesCrossRef(searchKeyword, searchType)
     }
 

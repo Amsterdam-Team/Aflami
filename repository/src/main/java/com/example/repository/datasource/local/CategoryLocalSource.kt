@@ -4,8 +4,9 @@ import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 
 interface CategoryLocalSource {
-    suspend fun upsertAllMovieCategories(categories: List<LocalMovieCategoryDto>)
-    suspend fun upsertAllTvShowCategories(categories: List<LocalTvShowCategoryDto>)
-    suspend fun getAllMovieCategories(): List<LocalMovieCategoryDto>
-    suspend fun getAllTvShowCategories(): List<LocalTvShowCategoryDto>
+    suspend fun upsertMovieCategories(categories: List<LocalMovieCategoryDto>)
+    suspend fun getMovieCategories(): List<LocalMovieCategoryDto>
+
+    suspend fun upsertTvShowCategories(categories: List<LocalTvShowCategoryDto>)
+    suspend fun getTvShowCategories(): List<LocalTvShowCategoryDto>
 }

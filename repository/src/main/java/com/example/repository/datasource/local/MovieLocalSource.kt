@@ -12,14 +12,14 @@ interface MovieLocalSource {
         searchType: SearchType
     ): List<MovieWithCategories>
 
-    suspend fun addAllMoviesWithSearchData(
+    suspend fun addMoviesBySearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
         searchType: SearchType,
         expireDate: Instant
     )
 
-    suspend fun getSearchMovieCrossRef(
+    suspend fun getSearchMovieCrossRefs(
         searchKeyword: String,
         searchType: SearchType,
     ): List<SearchMovieCrossRefDto>

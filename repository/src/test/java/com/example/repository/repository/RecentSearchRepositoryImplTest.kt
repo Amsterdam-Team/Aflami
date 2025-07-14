@@ -33,12 +33,12 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should upsert keyword search`() = runTest {
-        coEvery { recentSearchLocalSource.upsertResentSearch(any()) } just Runs
+        coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
         repository.upsertRecentSearch(testKeyword)
 
         coVerify {
-            recentSearchLocalSource.upsertResentSearch(
+            recentSearchLocalSource.upsertRecentSearch(
                 withArg {
                     assertThat(it.searchKeyword).isEqualTo(testKeyword)
                     assertThat(it.searchType).isEqualTo(SearchType.BY_KEYWORD)
@@ -49,12 +49,12 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should upsert actor search`() = runTest {
-        coEvery { recentSearchLocalSource.upsertResentSearch(any()) } just Runs
+        coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
         repository.upsertRecentSearchForActor(testKeyword)
 
         coVerify {
-            recentSearchLocalSource.upsertResentSearch(
+            recentSearchLocalSource.upsertRecentSearch(
                 withArg {
                     assertThat(it.searchKeyword).isEqualTo(testKeyword)
                     assertThat(it.searchType).isEqualTo(SearchType.BY_ACTOR)
@@ -65,12 +65,12 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should upsert country search`() = runTest {
-        coEvery { recentSearchLocalSource.upsertResentSearch(any()) } just Runs
+        coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
         repository.upsertRecentSearchForCountry(testKeyword)
 
         coVerify {
-            recentSearchLocalSource.upsertResentSearch(
+            recentSearchLocalSource.upsertRecentSearch(
                 withArg {
                     assertThat(it.searchKeyword).isEqualTo(testKeyword)
                     assertThat(it.searchType).isEqualTo(SearchType.BY_COUNTRY)
@@ -94,19 +94,19 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should delete all recent searches`() = runTest {
-        coEvery { recentSearchLocalSource.deleteAllSearches() } just Runs
+        coEvery { recentSearchLocalSource.deleteRecentSearches() } just Runs
 
         repository.deleteAllRecentSearches()
 
-        coVerify { recentSearchLocalSource.deleteAllSearches() }
+        coVerify { recentSearchLocalSource.deleteRecentSearches() }
     }
 
     @Test
     fun `should delete specific recent search`() = runTest {
-        coEvery { recentSearchLocalSource.deleteSearchByKeyword(testKeyword) } just Runs
+        coEvery { recentSearchLocalSource.deleteRecentSearchByKeyword(testKeyword) } just Runs
 
         repository.deleteRecentSearch(testKeyword)
 
-        coVerify { recentSearchLocalSource.deleteSearchByKeyword(testKeyword) }
+        coVerify { recentSearchLocalSource.deleteRecentSearchByKeyword(testKeyword) }
     }
 }
