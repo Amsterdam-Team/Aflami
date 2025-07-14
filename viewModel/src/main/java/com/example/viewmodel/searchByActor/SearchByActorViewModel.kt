@@ -9,6 +9,7 @@ import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -38,17 +39,14 @@ class SearchByActorViewModel(
                 .debounce(300)
                 .map(String::trim)
                 .filter(String::isNotBlank)
-                .collect(::onSearchMoviesByActor)
+                .collectLatest(::onSearchMoviesByActor)
         }
     }
 
     fun onSearchMoviesByActor(query: String) {
-        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = { getMoviesByActorUseCase(query) },
-            onSuccess = { result ->
-                updateSearchByActorResult(result)
-            },
+            onSuccess = { result -> updateSearchByActorResult(result) },
             onError = { msg ->
                 updateState {
                     it.copy(
@@ -62,14 +60,14 @@ class SearchByActorViewModel(
 
     override fun onUserSearch(query: String) {
         queryFlow.update { oldText -> query }
-        updateState { it.copy(query = query) }
+        updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
         updateState {
             it.copy(
                 movies = movies.toListOfUiState(),
-                isLoading = false,
+                isLoading = false
             )
         }
     }

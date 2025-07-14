@@ -106,9 +106,7 @@ private fun SearchByActorContent(
                         .padding(horizontal = 24.dp)
                         .padding(top = 144.dp)
                 )
-            }
-
-            else -> {
+            } else -> {
                 LazyVerticalGrid(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     columns = GridCells.Fixed(2),
