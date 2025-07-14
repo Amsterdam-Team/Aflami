@@ -14,11 +14,9 @@ class GetMoviesByKeywordUseCase(
         rating: Float = 0f,
         movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
-        return movieRepository.getMoviesByKeyword(
-            keyword = keyword,
-            rating = rating,
-            movieGenre = movieGenre
-        ).sortedByDescending { it.popularity }
+        return movieRepository
+            .getMoviesByKeyword(keyword = keyword, rating = rating, movieGenre = movieGenre)
+            .sortedByDescending { it.popularity }
             .ifEmpty { throw NoSearchByKeywordResultFoundException() }
 
     }

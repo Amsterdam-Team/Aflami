@@ -72,9 +72,6 @@ class GlobalSearchViewModel(
                 .map(String::trim)
                 .filter(String::isNotBlank)
                 .collect(::onSearchQueryChanged)
-                .runCatching {
-                    Log.e("bk", "error: $this")
-                }
         }
     }
 
@@ -113,6 +110,7 @@ class GlobalSearchViewModel(
         rating: Float = 0f,
         movieCategoryType: TvShowCategoryType = TvShowCategoryType.ALL
     ) {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = {
                 getTvShowByKeywordUseCase(
@@ -127,8 +125,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
-        Log.e("bk", "tvShows: ${tvShows.toString()}")
-
         updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
     }
 
@@ -189,12 +185,7 @@ class GlobalSearchViewModel(
     }
 
     private fun onClearAllRecentSearchesSuccess(unit: Unit) {
-        updateState {
-            it.copy(
-                recentSearches = emptyList(),
-                isLoading = false
-            )
-        }
+        updateState { it.copy(recentSearches = emptyList(), isLoading = false) }
     }
 
     override fun onCancelButtonClicked() {
@@ -231,11 +222,7 @@ class GlobalSearchViewModel(
 
     override fun onApplyButtonClicked() {
         updateState {
-            it.copy(
-                filterItemUiState = it.filterItemUiState.copy(
-                    isLoading = true,
-                )
-            )
+            it.copy(filterItemUiState = it.filterItemUiState.copy(isLoading = true))
         }
 
         when (state.value.selectedTabOption) {
@@ -256,6 +243,7 @@ class GlobalSearchViewModel(
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFilterError,
+            onCompletion = ::resetFilterState
         )
     }
 
@@ -263,9 +251,7 @@ class GlobalSearchViewModel(
         updateState {
             it.copy(
                 movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(
-                    isLoading = false,
-                )
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false,)
             )
         }
     }
@@ -292,9 +278,7 @@ class GlobalSearchViewModel(
                 tvShows = tvShows.toTvShowUiStates(),
                 isLoading = false,
                 isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(
-                    isLoading = false,
-                )
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false,)
             )
         }
     }
@@ -312,8 +296,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
-        Log.e("bk", "exception: ${exception.toString()}")
-
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 

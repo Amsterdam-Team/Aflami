@@ -35,7 +35,13 @@ class TvShowRepositoryImpl(
                 return@withContext tvLocalMapper.mapListFromLocal(localTvShows)
             }
             deleteRecentSearch(recentSearch)
-            val remoteTvShows = remoteTvDataSource.getTvShowsByKeyword(keyword = keyword, rating = rating, genreId = tvRemoteMapper.mapToShowTvGenreId(tvShowGenre))
+
+            val remoteTvShows = if (rating != 0f || tvShowGenre != TvShowGenre.ALL) {
+                remoteTvDataSource.discoverTvShows(keyword, rating, tvRemoteMapper.mapToShowTvGenreId(tvShowGenre))
+            } else {
+                remoteTvDataSource.getTvShowsByKeyword(keyword)
+            }
+
             val domainTvShows = tvRemoteMapper.mapResponseToDomain(remoteTvShows)
 
             localTvDataSource.addAllTvShows(

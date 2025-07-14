@@ -1,7 +1,6 @@
 package com.example.remotedatasource.utils.apiHandler
 
 import android.util.Log
-import android.util.Log.e
 import com.example.domain.exceptions.AflamiException
 import io.ktor.client.statement.HttpResponse
 
