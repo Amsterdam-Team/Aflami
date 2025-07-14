@@ -2,8 +2,9 @@ package com.example.repository.dto.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.repository.dto.local.utils.DatabaseContract
 
-@Entity(tableName = "movies")
+@Entity(tableName = DatabaseContract.MOVIE_TABLE)
 data class LocalMovieDto(
     @PrimaryKey(autoGenerate = false) val movieId: Long,
     val name: String,
