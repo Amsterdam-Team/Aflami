@@ -23,24 +23,25 @@ fun AflamiTheme(
 ) {
     val theme = if (isDarkTheme) darkThemeColors else lightThemeColors
 
-    val activity = LocalContext.current as Activity
+    val activity = LocalContext.current as? Activity
     val view = LocalView.current
 
     SwitchLauncherIcon(if (isDarkTheme) LauncherIcon.DARK else LauncherIcon.LIGHT)
 
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O){
-        activity.window.navigationBarColor = theme.surface.toArgb()
+    if (activity != null) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+            activity.window.navigationBarColor = theme.surface.toArgb()
+            WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars =
+                !isDarkTheme
+        }}
+        CompositionLocalProvider(
+            localAflamiAppColors provides theme,
+            LocalIsDarkTheme provides isDarkTheme
+        ) {
+            content()
+        }
     }
-    WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars = !isDarkTheme
 
-    CompositionLocalProvider(
-        localAflamiAppColors provides theme,
-        LocalIsDarkTheme provides isDarkTheme
-    ) {
-        content()
+    internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
+        error("LocalIsDarkTheme not provided")
     }
-}
-
-internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
-    error("LocalIsDarkTheme not provided")
-}
