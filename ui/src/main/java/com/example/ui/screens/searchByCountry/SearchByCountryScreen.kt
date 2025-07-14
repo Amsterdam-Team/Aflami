@@ -33,12 +33,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.LoadingIndicator
@@ -137,20 +134,12 @@ fun SearchByCountryScreenContent(
     showCountriesDropdown: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
-    var appBarSectionHeight by remember { mutableStateOf(0.dp) }
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
-        Column(
-            modifier = Modifier.onSizeChanged {
-                appBarSectionHeight = it.height.dp
-            }
-        ) {
             DefaultAppBar(
                 title = stringResource(R.string.world_tour_title),
                 showNavigateBackButton = true,
@@ -165,43 +154,25 @@ fun SearchByCountryScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
-                    .onGloballyPositioned {
-                        textFieldSize = it.size
-                    }
             )
-        }
 
         Box {
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
+                val centerContentModifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(start = 8.dp, end = 8.dp)
                 when (screenContent) {
-                    ScreenContent.COUNTRY_TOUR -> ExploreCountries(
-                        Modifier
-                            .fillMaxSize()
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
+                    ScreenContent.COUNTRY_TOUR -> ExploreCountries(centerContentModifier)
 
-                    ScreenContent.LOADING_MOVIES -> Loading(
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
+                    ScreenContent.LOADING_MOVIES -> Loading(centerContentModifier)
 
                     ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
-                        Modifier
-                            .align(
-                                Alignment.Center
-                            )
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
+                        centerContentModifier
                     )
 
-                    ScreenContent.NO_MOVIES -> NoMoviesFound(
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
+                    ScreenContent.NO_MOVIES -> NoMoviesFound(centerContentModifier)
 
                     ScreenContent.MOVIES -> SearchedMovies(
                         state,
