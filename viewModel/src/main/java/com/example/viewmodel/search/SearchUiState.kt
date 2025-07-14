@@ -3,6 +3,7 @@ package com.example.viewmodel.search
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.BlankQueryException
 import com.example.domain.exceptions.InvalidCharactersException
+import com.example.domain.exceptions.NetworkException
 import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.exceptions.QueryTooLongException
 import com.example.domain.exceptions.QueryTooShortException
@@ -48,6 +49,7 @@ sealed interface SearchErrorUiState {
     object BlankQuery : SearchErrorUiState
     object UnknownException : SearchErrorUiState
     object NoMoviesByKeywordFoundException : SearchErrorUiState
+    object NoNetworkConnection : SearchErrorUiState
 }
 
 fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorUiState {
@@ -57,6 +59,7 @@ fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorUiState {
         is InvalidCharactersException -> SearchErrorUiState.InvalidCharacters
         is BlankQueryException -> SearchErrorUiState.BlankQuery
         is NoSearchByKeywordResultFoundException -> SearchErrorUiState.NoMoviesByKeywordFoundException
+        is NetworkException -> SearchErrorUiState.NoNetworkConnection
         else -> SearchErrorUiState.UnknownException
     }
 }

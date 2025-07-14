@@ -10,6 +10,7 @@ interface GlobalSearchInteractionListener {
     fun onFilterButtonClicked()
     fun onWorldSearchCardClicked()
     fun onActorSearchCardClicked()
+    fun onRetryQuestClicked()
 
     fun onTabOptionClicked(tabOption: TabOption)
     fun onMovieCardClicked()
