@@ -19,6 +19,7 @@ class NoSuggestedCountriesException: AflamiException()
 class NoMoviesForCountryException: AflamiException()
 
 class NoSearchByKeywordResultFoundException: AflamiException()
+class NoSearchByActorResultFoundException: AflamiException()
 
 class CountryTooShortException: AflamiException()
 class CountryIsEmptyException: AflamiException()

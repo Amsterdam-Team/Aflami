@@ -40,11 +40,11 @@ open class BaseViewModel<S, E>(
         }
     }
 
-
     protected fun <T> tryToExecute(
         action: suspend () -> T,
         onSuccess: (T) -> Unit,
         onError: (AflamiException) -> Unit,
+        onCompletion: () -> Unit = {},
         dispatcher: CoroutineDispatcher = dispatcherProvider.IO,
     ): Job {
         return viewModelScope.launch(dispatcher) {
@@ -56,6 +56,8 @@ open class BaseViewModel<S, E>(
                 onError(exception)
             } catch (_: Exception) {
                 onError(UnknownException())
+            } finally {
+                onCompletion()
             }
         }
     }
