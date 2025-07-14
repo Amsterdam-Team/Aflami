@@ -59,6 +59,7 @@ class GlobalSearchViewModel(
             action = { getRecentSearchesUseCase() },
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
+            onCompletion = ::stopLoading
         )
     }
 
@@ -98,11 +99,12 @@ class GlobalSearchViewModel(
             },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError,
+            onCompletion = ::stopLoading
         )
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false) }
+        updateState { it.copy(movies = movies.toMoveUiStates()) }
     }
 
     private fun fetchTvShowsByQuery(
@@ -121,6 +123,7 @@ class GlobalSearchViewModel(
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
+            onCompletion = ::stopLoading
         )
     }
 
@@ -181,11 +184,12 @@ class GlobalSearchViewModel(
             action = { clearAllRecentSearchesUseCase() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = ::onFetchError,
+            onCompletion = ::stopLoading
         )
     }
 
     private fun onClearAllRecentSearchesSuccess(unit: Unit) {
-        updateState { it.copy(recentSearches = emptyList(), isLoading = false) }
+        updateState { it.copy(recentSearches = emptyList()) }
     }
 
     override fun onCancelButtonClicked() {
@@ -242,18 +246,13 @@ class GlobalSearchViewModel(
                 )
             },
             onSuccess = ::onMoviesFilteredSuccess,
-            onError = ::onFilterError,
+            onError = ::onFetchError,
             onCompletion = ::resetFilterState
         )
     }
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
-        updateState {
-            it.copy(
-                movies = movies.toMoveUiStates(), isLoading = false, isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false,)
-            )
-        }
+        updateState { it.copy(movies = movies.toMoveUiStates(), isDialogVisible = false) }
     }
 
     private fun applyTvShowsFilter() {
@@ -267,40 +266,24 @@ class GlobalSearchViewModel(
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,
-            onError = ::onFilterError,
+            onError = ::onFetchError,
             onCompletion = ::resetFilterState
         )
     }
 
     private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
-        updateState {
-            it.copy(
-                tvShows = tvShows.toTvShowUiStates(),
-                isLoading = false,
-                isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false,)
-            )
-        }
+        updateState { it.copy(tvShows = tvShows.toTvShowUiStates(), isDialogVisible = false) }
     }
 
-    private fun onFilterError(exception: AflamiException) {
-        onFetchError(exception)
-        updateState {
-            it.copy(
-                isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(
-                    isLoading = false
-                )
-            )
-        }
-    }
 
     private fun onFetchError(exception: AflamiException) {
-        updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
+        updateState { it.copy(errorUiState = mapToSearchUiState(exception)) }
     }
 
     override fun onClearButtonClicked() = resetFilterState()
 
     private fun resetFilterState() =
         updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+
+    private fun stopLoading() = updateState { it.copy(isLoading = false) }
 }

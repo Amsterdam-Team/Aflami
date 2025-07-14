@@ -1,13 +1,11 @@
 package com.example.remotedatasource.datasource
 
-import android.R.attr.rating
 import com.example.remotedatasource.client.Endpoints
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.RemoteTvShowResponse
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
@@ -19,7 +17,7 @@ class RemoteMovieDatasourceImpl(
 
     override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(Endpoints.SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
+            val response = ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
