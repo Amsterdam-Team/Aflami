@@ -14,16 +14,18 @@ import com.example.designsystem.theme.AppTheme
 @Composable
 fun ListsScreen(
     modifier: Modifier = Modifier
-){
+) {
     ListsScreenContent(modifier = modifier)
 }
 
 @Composable
 private fun ListsScreenContent(
     modifier: Modifier = Modifier
-){
+) {
     Column(
-        modifier = modifier.fillMaxSize().background(AppTheme.color.surface),
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -37,6 +39,6 @@ private fun ListsScreenContent(
 
 @Preview
 @Composable
-private fun ListsScreenPreview(){
+private fun ListsScreenPreview() {
     ListsScreenContent()
 }

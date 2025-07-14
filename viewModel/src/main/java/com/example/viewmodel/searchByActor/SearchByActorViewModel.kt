@@ -10,18 +10,21 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class SearchByActorViewModel(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(SearchByActorScreenState(),dispatcherProvider),
+) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(
+    SearchByActorScreenState(),
+    dispatcherProvider
+),
     SearchByActorInteractionListener {
 
     private val queryFlow = MutableStateFlow("")

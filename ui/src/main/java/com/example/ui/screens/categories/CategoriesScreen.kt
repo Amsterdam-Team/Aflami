@@ -14,16 +14,18 @@ import com.example.designsystem.theme.AppTheme
 @Composable
 fun CategoriesScreen(
     modifier: Modifier = Modifier
-){
+) {
     CategoriesScreenContent(modifier = modifier)
 }
 
 @Composable
 private fun CategoriesScreenContent(
     modifier: Modifier = Modifier
-){
+) {
     Column(
-        modifier = modifier.fillMaxSize().background(AppTheme.color.surface),
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -37,6 +39,6 @@ private fun CategoriesScreenContent(
 
 @Preview
 @Composable
-private fun CategoriesScreenPreview(){
+private fun CategoriesScreenPreview() {
     CategoriesScreenContent()
 }

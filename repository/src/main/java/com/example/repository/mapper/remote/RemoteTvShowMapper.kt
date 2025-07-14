@@ -1,6 +1,5 @@
 package com.example.repository.mapper.remote
 
-import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse

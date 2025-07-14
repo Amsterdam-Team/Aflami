@@ -38,8 +38,7 @@ class KtorClient {
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
-                }
-            )
+                })
         }
 
         defaultRequest {

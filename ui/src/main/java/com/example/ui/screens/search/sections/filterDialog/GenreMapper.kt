@@ -8,7 +8,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.designsystem.R
 import com.example.viewmodel.common.GenreType
-import com.example.viewmodel.common.TabOption
 
 data class Genre(
     val type: GenreType,
@@ -19,11 +18,23 @@ data class Genre(
 val mediaGenres: Map<GenreType, Genre> = mapOf(
     GenreType.ALL to Genre(GenreType.ALL, R.drawable.ic_nav_categories, R.string.all),
     GenreType.ACTION to Genre(GenreType.ACTION, R.drawable.ic_cat_action, R.string.action),
-    GenreType.ADVENTURE to Genre(GenreType.ADVENTURE, R.drawable.ic_cat_adventure, R.string.adventure),
-    GenreType.ANIMATION to Genre(GenreType.ANIMATION, R.drawable.ic_cat_animation, R.string.animation),
+    GenreType.ADVENTURE to Genre(
+        GenreType.ADVENTURE,
+        R.drawable.ic_cat_adventure,
+        R.string.adventure
+    ),
+    GenreType.ANIMATION to Genre(
+        GenreType.ANIMATION,
+        R.drawable.ic_cat_animation,
+        R.string.animation
+    ),
     GenreType.COMEDY to Genre(GenreType.COMEDY, R.drawable.ic_cat_comedy, R.string.comedy),
     GenreType.CRIME to Genre(GenreType.CRIME, R.drawable.ic_cat_crime, R.string.crime),
-    GenreType.DOCUMENTARY to Genre(GenreType.DOCUMENTARY, R.drawable.ic_cat_documentary, R.string.documentary),
+    GenreType.DOCUMENTARY to Genre(
+        GenreType.DOCUMENTARY,
+        R.drawable.ic_cat_documentary,
+        R.string.documentary
+    ),
     GenreType.DRAMA to Genre(GenreType.DRAMA, R.drawable.ic_cat_drama, R.string.drama),
     GenreType.FAMILY to Genre(GenreType.FAMILY, R.drawable.ic_cat_family, R.string.family),
     GenreType.FANTASY to Genre(GenreType.FANTASY, R.drawable.ic_cat_fantasy, R.string.fantasy),
@@ -32,7 +43,11 @@ val mediaGenres: Map<GenreType, Genre> = mapOf(
     GenreType.MUSIC to Genre(GenreType.MUSIC, R.drawable.ic_cat_music, R.string.music),
     GenreType.MYSTERY to Genre(GenreType.MYSTERY, R.drawable.ic_cat_mystery, R.string.mystery),
     GenreType.ROMANCE to Genre(GenreType.ROMANCE, R.drawable.ic_cat_romance, R.string.romance),
-    GenreType.SCIENCE_FICTION to Genre(GenreType.SCIENCE_FICTION, R.drawable.ic_cat_sciencefiction, R.string.science_fiction),
+    GenreType.SCIENCE_FICTION to Genre(
+        GenreType.SCIENCE_FICTION,
+        R.drawable.ic_cat_sciencefiction,
+        R.string.science_fiction
+    ),
     GenreType.TV_MOVIE to Genre(GenreType.TV_MOVIE, R.drawable.ic_cat_tvmovie, R.string.tv_movie),
     GenreType.THRILLER to Genre(GenreType.THRILLER, R.drawable.ic_cat_thriller, R.string.thriller),
     GenreType.WAR to Genre(GenreType.WAR, R.drawable.ic_cat_war, R.string.war),

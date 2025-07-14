@@ -3,29 +3,29 @@ package com.example.ui.navigation
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
-    sealed interface Tab{
+    sealed interface Tab {
         @Serializable
-        data object Home: Tab
+        data object Home : Tab
 
         @Serializable
-        data object Lists: Tab
+        data object Lists : Tab
 
         @Serializable
-        data object Categories: Tab
+        data object Categories : Tab
 
         @Serializable
-        data object LetsPlay: Tab
+        data object LetsPlay : Tab
 
         @Serializable
-        data object Profile: Tab
+        data object Profile : Tab
     }
 
     @Serializable
-    data object Search: Route
+    data object Search : Route
 
     @Serializable
-    data object SearchByActor: Route
+    data object SearchByActor : Route
 
     @Serializable
-    data object SearchByCountry: Route
+    data object SearchByCountry : Route
 }

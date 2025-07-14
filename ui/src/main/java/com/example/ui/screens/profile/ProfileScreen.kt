@@ -14,16 +14,18 @@ import com.example.designsystem.theme.AppTheme
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier
-){
+) {
     ProfileScreenContent(modifier = modifier)
 }
 
 @Composable
 private fun ProfileScreenContent(
     modifier: Modifier = Modifier
-){
+) {
     Column(
-        modifier = modifier.fillMaxSize().background(AppTheme.color.surface),
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -37,6 +39,6 @@ private fun ProfileScreenContent(
 
 @Preview
 @Composable
-private fun ProfileScreenPreview(){
+private fun ProfileScreenPreview() {
     ProfileScreenContent()
 }

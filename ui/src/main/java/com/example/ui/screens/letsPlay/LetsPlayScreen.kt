@@ -14,16 +14,18 @@ import com.example.designsystem.theme.AppTheme
 @Composable
 fun LetsPlayScreen(
     modifier: Modifier = Modifier
-){
+) {
     LetsPlayScreenContent(modifier = modifier)
 }
 
 @Composable
 private fun LetsPlayScreenContent(
     modifier: Modifier = Modifier
-){
+) {
     Column(
-        modifier = modifier.fillMaxSize().background(AppTheme.color.surface),
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -37,6 +39,6 @@ private fun LetsPlayScreenContent(
 
 @Preview
 @Composable
-private fun LetsPlayScreenPreview(){
+private fun LetsPlayScreenPreview() {
     LetsPlayScreenContent()
 }

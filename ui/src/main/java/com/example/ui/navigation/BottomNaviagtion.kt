@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.example.designsystem.components.bottomNavBar.BottomNavBar
 import com.example.designsystem.components.bottomNavBar.BottomBarItems
+import com.example.designsystem.components.bottomNavBar.BottomNavBar
 
 private val navigationBarItems = mapOf(
     BottomBarItems.HOME to Route.Tab.Home,
@@ -26,7 +26,7 @@ fun BottomNavigation(
     currentDestination: NavDestination?,
     onNavigate: (Any) -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     val visible = remember(currentDestination) {
         shouldShowBottomNavigation(currentDestination)
     }

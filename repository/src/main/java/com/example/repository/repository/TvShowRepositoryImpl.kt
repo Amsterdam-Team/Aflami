@@ -21,9 +21,9 @@ class TvShowRepositoryImpl(
     private val tvRemoteMapper: RemoteTvShowMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ) : TvShowRepository {
+) : TvShowRepository {
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
-        return withContext(dispatcher){
+        return withContext(dispatcher) {
             val recentSearch =
                 recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
             val isExpired = !isSearchExpired(recentSearch)

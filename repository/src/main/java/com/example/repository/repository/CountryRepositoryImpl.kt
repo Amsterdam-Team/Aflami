@@ -12,11 +12,16 @@ class CountryRepositoryImpl(
     private val remoteDataSource: RemoteCountryDataSource,
     private val remoteCountryMapper: RemoteCountryMapper,
     private val localCountryMapper: CountryLocalMapper,
-): CountryRepository {
+) : CountryRepository {
     override suspend fun getAllCountries(): List<Country> {
         val localCountries = localDataSource.getAllCountries()
-        if (localCountries.isNotEmpty()) return localCountries.map { localCountryMapper.mapFromLocal(it) }
-        val remoteCountries = remoteDataSource.getAllCountries().map { remoteCountryMapper.mapToDomain(it) }
+        if (localCountries.isNotEmpty()) return localCountries.map {
+            localCountryMapper.mapFromLocal(
+                it
+            )
+        }
+        val remoteCountries =
+            remoteDataSource.getAllCountries().map { remoteCountryMapper.mapToDomain(it) }
         localDataSource.addAllCountries(remoteCountries.map { localCountryMapper.mapToLocal(it) })
         return remoteCountries
     }

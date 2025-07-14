@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import com.example.ui.navigation.Route
 import com.example.ui.screens.profile.ProfileScreen
 
-fun NavGraphBuilder.letsPlayScreenRoute(){
+fun NavGraphBuilder.letsPlayScreenRoute() {
     composable<Route.Tab.LetsPlay> {
         LetsPlayScreen()
     }

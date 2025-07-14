@@ -1,11 +1,9 @@
 package com.example.ui.application
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -16,7 +14,7 @@ import com.example.ui.navigation.NavGraph
 import com.example.ui.navigation.Route
 
 @Composable
-fun AflamiApp(){
+fun AflamiApp() {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
@@ -29,7 +27,7 @@ fun AflamiApp(){
                         currentDestination = currentDestination,
                         onNavigate = { navController.navigate(it) },
 
-                    )
+                        )
                 }
             ) {
                 NavGraph(

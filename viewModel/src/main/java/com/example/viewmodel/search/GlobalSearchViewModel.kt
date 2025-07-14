@@ -1,6 +1,5 @@
 package com.example.viewmodel.search
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -66,9 +65,7 @@ class GlobalSearchViewModel(
                 .map(String::trim)
                 .filter(String::isNotBlank)
                 .collect(::onSearchQueryChanged)
-                .runCatching {
-                    Log.e("bk", "error: $this")
-                }
+
         }
     }
 
@@ -89,7 +86,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        Log.e("bk", movies.toString())
 
         updateState {
             it.copy(
@@ -98,7 +94,6 @@ class GlobalSearchViewModel(
                 errorUiState = null
             )
         }
-        Log.e("bk", "ui movies: ${state.value.movies}")
     }
 
     private fun fetchTvShowsByQuery(keyword: String) {
@@ -173,7 +168,6 @@ class GlobalSearchViewModel(
 
     override fun onClearAllRecentSearches() {
         updateState { it.copy(isLoading = true) }
-
         tryToExecute(
             action = { clearAllRecentSearchesUseCase() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
@@ -210,7 +204,6 @@ class GlobalSearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
-        Log.e("bk", genreType.name)
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -304,8 +297,6 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
-        Log.e("bk", "exception: $exception")
-
         updateState { it.copy(errorUiState = mapToSearchUiState(exception), isLoading = false) }
     }
 
