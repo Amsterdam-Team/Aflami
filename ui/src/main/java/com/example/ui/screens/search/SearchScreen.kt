@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
+import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
@@ -153,8 +154,12 @@ private fun SearchContent(
             }
         }
 
-        AnimatedVisibility(state.query.isNotEmpty() || state.errorUiState != null) {
-            if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
+        AnimatedVisibility(state.query.isNotEmpty()) {
+            if (
+                state.errorUiState == null && !state.isLoading &&
+                ((state.selectedTabOption == TabOption.MOVIES && state.movies.isEmpty()) ||
+                        (state.selectedTabOption == TabOption.TV_SHOWS && state.tvShows.isEmpty()))
+            ) {
                 NoDataContainer(
                     imageRes = painterResource(R.drawable.placeholder_no_result_found),
                     title = stringResource(R.string.no_search_result),
@@ -205,6 +210,12 @@ private fun SearchContent(
 
         AnimatedVisibility(state.isLoading) {
             Loading()
+        }
+
+        AnimatedVisibility(state.errorUiState == SearchErrorUiState.NoNetworkConnection && state.query.isNotEmpty()) {
+            NoNetworkContainer(
+                onClickRetry = interaction::onRetryQuestClicked,
+            )
         }
     }
 }
