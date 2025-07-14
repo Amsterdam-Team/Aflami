@@ -1,4 +1,4 @@
-package com.example.remotedatasource.client
+package com.example.remotedatasource.utils.apiHandler
 
 import com.example.domain.exceptions.ServerErrorException
 import io.ktor.client.call.body
@@ -15,6 +15,5 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): T =
                 throw ServerErrorException()
             }
         }
-
         else -> throw ServerErrorException()
     }

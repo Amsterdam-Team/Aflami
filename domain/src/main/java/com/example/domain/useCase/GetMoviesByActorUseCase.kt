@@ -8,5 +8,6 @@ class GetMoviesByActorUseCase(
 ) {
     suspend operator fun invoke(actorName: String): List<Movie> {
         return movieRepository.getMoviesByActor(actorName)
+            .sortedByDescending { it.popularity }
     }
 }

@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: DispatcherProvider) : ViewModel() {
+open class BaseViewModel<S, E>(
+    initialState: S,
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel() {
     interface BaseUiEffect
 
     private val _state: MutableStateFlow<S> = MutableStateFlow(initialState)
@@ -26,24 +29,24 @@ open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: D
 
 
     protected fun updateState(updater: (S) -> S) {
-        viewModelScope.launch(dispatcherProvider.Main) {
+        viewModelScope.launch(dispatcherProvider.MainImmediate) {
             _state.update(updater)
         }
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        viewModelScope.launch(dispatcherProvider.Main) {
+        viewModelScope.launch(dispatcherProvider.MainImmediate) {
             _effect.emit(newEffect)
         }
     }
-
 
     protected fun <T> tryToExecute(
         action: suspend () -> T,
         onSuccess: (T) -> Unit,
         onError: (AflamiException) -> Unit,
+        onCompletion: () -> Unit = {},
         dispatcher: CoroutineDispatcher = dispatcherProvider.IO,
-    ) : Job {
+    ): Job {
         return viewModelScope.launch(dispatcher) {
             try {
                 action().also {
@@ -53,6 +56,8 @@ open class BaseViewModel<S, E>(initialState: S,private val dispatcherProvider: D
                 onError(exception)
             } catch (_: Exception) {
                 onError(UnknownException())
+            } finally {
+                onCompletion()
             }
         }
     }

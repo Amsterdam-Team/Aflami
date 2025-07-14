@@ -1,6 +1,10 @@
 package com.example.ui.screens.searchByActor
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,7 +31,6 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
-import com.example.ui.navigation.Route
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
@@ -60,17 +62,14 @@ fun SearchByActorScreen(
         modifier = modifier,
         state = uiState.value,
         interactionListener = viewModel
-    ){
-        navController.navigate(Route.MovieDetails(it))
-    }
+    )
 }
 
 @Composable
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
     state: SearchByActorScreenState,
-    interactionListener: SearchByActorInteractionListener,
-    onMovieClicked : (Long)-> Unit
+    interactionListener: SearchByActorInteractionListener
 ) {
     Column(
         modifier = modifier
@@ -89,11 +88,19 @@ private fun SearchByActorContent(
             onValueChange = { interactionListener.onUserSearch(it) },
 
             )
-        if (state.isLoading)
-            Loading(modifier = Modifier)
-        else
-            AnimatedContent(targetState = state.movies.isEmpty()) {
-                if (it && state.query.isEmpty())
+
+        AnimatedContent(
+            targetState = state,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(300)) togetherWith
+                        fadeOut(animationSpec = tween(300))
+            },
+            label = "Content Animation"
+        ) { targetState ->
+            when {
+                targetState.isLoading -> Loading(modifier = Modifier)
+
+                targetState.query.isBlank() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.img_suggestion_magician),
                         title = stringResource(R.string.find_by_actor),
@@ -102,7 +109,9 @@ private fun SearchByActorContent(
                             .padding(horizontal = 24.dp)
                             .padding(top = 144.dp)
                     )
-                else if (it)
+                }
+
+                targetState.movies.isEmpty() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
@@ -111,7 +120,9 @@ private fun SearchByActorContent(
                             .padding(horizontal = 24.dp)
                             .padding(top = 144.dp)
                     )
-                else {
+                }
+
+                else -> {
                     LazyVerticalGrid(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         columns = GridCells.Fixed(2),
@@ -119,16 +130,14 @@ private fun SearchByActorContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        items(state.movies) { movie ->
+                        items(targetState.movies) { movie ->
                             MovieCard(
                                 movieImage = movie.poster,
                                 movieType = "Movies",
-                                movieYear = movie.productionYear.toString(),
+                                movieYear = movie.productionYear,
                                 movieTitle = movie.name,
-                                movieRating = movie.rating.toString(),
-                                onClick =   {onMovieClicked(movie.id)}
+                                movieRating = movie.rating,
                             )
-
                         }
                         item {
                             Spacer(modifier = Modifier.navigationBarsPadding())
@@ -136,8 +145,10 @@ private fun SearchByActorContent(
                     }
                 }
             }
+        }
     }
 }
+
 
 @Composable
 @ThemeAndLocalePreviews
@@ -153,6 +164,6 @@ private fun SearchByActorContentPreview() {
                 }
             }
 
-        ){}
+        )
     }
 }
