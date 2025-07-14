@@ -3,8 +3,10 @@ package com.example.ui.screens.search.sections
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,11 +27,17 @@ fun SuggestionsHubSection(
     interaction: GlobalSearchInteractionListener,
 ) {
     AnimatedVisibility(state.query.isEmpty()) {
-        Column {
+        Column(
+            modifier = Modifier.padding(
+                bottom = 12.dp,
+                top = 8.dp,
+                start = 16.dp,
+                end = 16.dp
+            )
+        ) {
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp, top = 8.dp, start = 16.dp, end = 16.dp),
+                    .fillMaxWidth(),
                 text = stringResource(R.string.search_suggestions_hub),
                 style = AppTheme.textStyle.title.medium,
                 color = AppTheme.color.title,
@@ -39,7 +47,8 @@ fun SuggestionsHubSection(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(top = 12.dp)
+                    .height(intrinsicSize = IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 GlobalSearchHub(
