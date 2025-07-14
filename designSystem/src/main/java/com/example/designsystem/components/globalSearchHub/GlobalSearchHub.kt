@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,13 +46,12 @@ fun GlobalSearchHub(
             .background(
                 brush = Brush.verticalGradient(globalSearchHubUI.gradient), alpha = 0.8f
             )
-            .aspectRatio(1.6f)
             .clickable { onItemClick() }
     ) {
         Column(
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(8.dp),
+                .fillMaxSize()
+                .padding(paddingValues = PaddingValues(8.dp)),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Image(
@@ -72,8 +73,8 @@ fun GlobalSearchHub(
         }
         Box(
             modifier = Modifier
-                .fillMaxHeight(0.38f)
                 .fillMaxWidth(0.20f)
+                .fillMaxHeight(0.45f)
                 .blur(56.dp, BlurredEdgeTreatment.Unbounded)
                 .background(color = AppTheme.color.onPrimary, CircleShape)
                 .alpha(0.12f)
