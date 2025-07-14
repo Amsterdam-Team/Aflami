@@ -8,20 +8,19 @@ import com.example.domain.exceptions.NoMoviesForCountryException
 import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.entity.Country
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchByCountryViewModel(
@@ -44,37 +43,28 @@ class SearchByCountryViewModel(
         viewModelScope.launch {
             queryFlow
                 .debounce(300)
-                .filter { it.isNotBlank() }
-                .flatMapLatest { query ->
-                    callbackFlow {
-                        sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
-                        val job = loadCountries(query)
-                        awaitClose { job.cancel() }
-                    }
-                }
-                .collect { countries ->
-                    updateSuggestedCountries(countries.toUiState())
-                }
+                .map(String::trim)
+                .filter(String::isNotBlank)
+                .collectLatest(::loadCountries)
         }
     }
 
-    private fun ProducerScope<List<Country>>.loadCountries(
-        query: String
-    ) = tryToExecute(
-        action = { getSuggestedCountriesUseCase.invoke(query) },
-        onSuccess = { result -> trySend(result).isSuccess },
-        onError = {
-            onError(exception = it)
-            trySend(emptyList()).isSuccess
-        }
-    )
+    private fun loadCountries(query: String): Job {
+        sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
+        return tryToExecute(
+            action = { getSuggestedCountriesUseCase(query) },
+            onSuccess = { countries -> updateSuggestedCountries(countries.toUiState()) },
+            onError = { onError(exception = it) }
+        )
+    }
 
     override fun onCountryNameUpdated(countryName: String) {
-        queryFlow.value = countryName
-        updateState { it.copy(selectedCountry = countryName) }
+        queryFlow.update { countryName }
         if (countryName.isBlank()) {
             sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
-            updateState { it.copy(suggestedCountries = emptyList()) }
+            updateState { it.copy(selectedCountry = countryName, suggestedCountries = emptyList()) }
+        } else {
+            updateState { it.copy(selectedCountry = countryName) }
         }
     }
 
