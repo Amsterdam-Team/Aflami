@@ -8,9 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -75,9 +73,9 @@ private fun SearchByActorContent(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
-            .padding(horizontal = 16.dp)
     ) {
         DefaultAppBar(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = stringResource(R.string.find_by_actor),
             showNavigateBackButton = true,
             onNavigateBackClicked = { interactionListener.onNavigateBackClicked() }
@@ -86,8 +84,10 @@ private fun SearchByActorContent(
             text = state.query,
             hintText = stringResource(R.string.find_by_actor),
             onValueChange = { interactionListener.onUserSearch(it) },
-
-            )
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .padding(horizontal = 16.dp),
+        )
 
         AnimatedContent(
             targetState = state,
@@ -124,11 +124,10 @@ private fun SearchByActorContent(
 
                 else -> {
                     LazyVerticalGrid(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        columns = GridCells.Adaptive(160.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
                     ) {
                         items(targetState.movies) { movie ->
                             MovieCard(
@@ -138,9 +137,6 @@ private fun SearchByActorContent(
                                 movieTitle = movie.name,
                                 movieRating = movie.rating,
                             )
-                        }
-                        item {
-                            Spacer(modifier = Modifier.navigationBarsPadding())
                         }
                     }
                 }
