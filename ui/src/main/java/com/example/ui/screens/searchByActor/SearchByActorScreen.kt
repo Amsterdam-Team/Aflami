@@ -1,5 +1,10 @@
 package com.example.ui.screens.searchByActor
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -84,47 +89,59 @@ private fun SearchByActorContent(
 
             )
 
-        when {
-            state.isLoading -> Loading(modifier = Modifier)
-            state.query.isBlank() -> {
-                NoDataContainer(
-                    imageRes = painterResource(R.drawable.img_suggestion_magician),
-                    title = stringResource(R.string.find_by_actor),
-                    description = stringResource(R.string.find_by_actor_description),
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 144.dp)
-                )
-            }
+        AnimatedContent(
+            targetState = state,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(300)) togetherWith
+                        fadeOut(animationSpec = tween(300))
+            },
+            label = "Content Animation"
+        ) { targetState ->
+            when {
+                targetState.isLoading -> Loading(modifier = Modifier)
 
-            state.movies.isEmpty() -> {
-                NoDataContainer(
-                    imageRes = painterResource(R.drawable.placeholder_no_result_found),
-                    title = stringResource(R.string.no_search_result),
-                    description = stringResource(R.string.no_search_result_description),
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 144.dp)
-                )
-            } else -> {
-                LazyVerticalGrid(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(state.movies) { movie ->
-                        MovieCard(
-                            movieImage = movie.poster,
-                            movieType = "Movies",
-                            movieYear = movie.productionYear,
-                            movieTitle = movie.name,
-                            movieRating = movie.rating,
-                        )
-                    }
-                    item {
-                        Spacer(modifier = Modifier.navigationBarsPadding())
+                targetState.query.isBlank() -> {
+                    NoDataContainer(
+                        imageRes = painterResource(R.drawable.img_suggestion_magician),
+                        title = stringResource(R.string.find_by_actor),
+                        description = stringResource(R.string.find_by_actor_description),
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 144.dp)
+                    )
+                }
+
+                targetState.movies.isEmpty() -> {
+                    NoDataContainer(
+                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                        title = stringResource(R.string.no_search_result),
+                        description = stringResource(R.string.no_search_result_description),
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 144.dp)
+                    )
+                }
+
+                else -> {
+                    LazyVerticalGrid(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(vertical = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        items(targetState.movies) { movie ->
+                            MovieCard(
+                                movieImage = movie.poster,
+                                movieType = "Movies",
+                                movieYear = movie.productionYear,
+                                movieTitle = movie.name,
+                                movieRating = movie.rating,
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.navigationBarsPadding())
+                        }
                     }
                 }
             }
