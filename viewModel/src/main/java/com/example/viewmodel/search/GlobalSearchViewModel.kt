@@ -160,7 +160,7 @@ class GlobalSearchViewModel(
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
-        //observeSearchQueryChanges()
+        observeSearchQueryChanges()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
@@ -191,6 +191,20 @@ class GlobalSearchViewModel(
             onError = ::onFetchError,
             onCompletion = ::stopLoading
         )
+    }
+
+    override fun onClearSearch() {
+        updateState { currentState ->
+            currentState.copy(
+                query = "",
+                movies = emptyList(),
+                tvShows = emptyList(),
+                selectedTabOption = TabOption.MOVIES,
+                errorUiState = null,
+                isDialogVisible = false,
+                filterItemUiState = FilterItemUiState()
+            )
+        }
     }
 
     private fun onClearAllRecentSearchesSuccess(unit: Unit) {
@@ -287,23 +301,7 @@ class GlobalSearchViewModel(
 
     override fun onClearButtonClicked() = resetFilterState()
 
-    private fun resetFilterState() =
-        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
-    }
-
-    override fun onClearSearch() {
-        updateState { currentState ->
-            currentState.copy(
-                query = "",
-                movies = emptyList(),
-                tvShows = emptyList(),
-                selectedTabOption = TabOption.MOVIES,
-                errorUiState = null,
-                isDialogVisible = false,
-                filterItemUiState = FilterItemUiState()
-            )
-        }
-    }
+    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun stopLoading() = updateState { it.copy(isLoading = false) }
 }
