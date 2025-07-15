@@ -5,6 +5,10 @@ import com.example.repository.dto.local.LocalCountryDto
 
 class CountryLocalMapper {
 
+    fun mapToCountries(localCountries: List<LocalCountryDto>): List<Country> {
+        return localCountries.map { mapToCountry(it) }
+    }
+
     fun mapToCountry(localCountry: LocalCountryDto): Country {
         return Country(
             countryName = localCountry.name,

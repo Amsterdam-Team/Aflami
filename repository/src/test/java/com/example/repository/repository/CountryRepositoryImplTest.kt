@@ -28,7 +28,7 @@ class CountryRepositoryImplTest {
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
             countryRemoteMapper = remoteMapper,
-            localCountryMapper = localMapper
+            countryLocalMapper = localMapper
         )
     }
 
