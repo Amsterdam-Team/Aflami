@@ -2,6 +2,6 @@ package com.example.domain.common.ContentFilteringExtensions
 
 import com.example.entity.common.PopularitySortable
 
-fun <T : PopularitySortable> List<T>.sortByPopularityDescending(): List<T> {
+fun <T> List<T>.sortByPopularityDescending(): List<T> where T: PopularitySortable {
     return this.sortedByDescending { it.popularity }
 }
