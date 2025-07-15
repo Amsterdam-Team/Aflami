@@ -27,16 +27,15 @@ class SearchByActorViewModel(
 ),
     SearchByActorInteractionListener {
 
-    private val queryFlow = MutableStateFlow("")
+    private val _keyword = MutableStateFlow("")
 
     init {
         observeQueryFlow()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeQueryFlow() {
         viewModelScope.launch {
-            queryFlow
+            _keyword
                 .debounce(300)
                 .map(String::trim)
                 .filter(String::isNotBlank)
@@ -63,8 +62,8 @@ class SearchByActorViewModel(
     }
 
     override fun onKeywordValueChanged(keyword: String) {
-        queryFlow.update { oldText -> keyword }
-        updateState { it.copy(query = keyword, isLoading = keyword.isNotBlank()) }
+        _keyword.update { oldText -> keyword }
+        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
