@@ -1,5 +1,6 @@
 package com.example.repository.mapper.remote
 
+import com.example.entity.Category
 import com.example.entity.Movie
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
@@ -14,7 +15,7 @@ class MovieRemoteMapper {
             description = remoteMovieItemDto.overview,
             poster = remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
-            categories = emptyList(),
+            categories = mapGenreIdsToCategories(remoteMovieItemDto.genreIds),
             rating = remoteMovieItemDto.voteAverage.toFloat(),
             popularity = remoteMovieItemDto.popularity
         )
@@ -43,5 +44,9 @@ class MovieRemoteMapper {
 
     private fun parseYear(date: String): Int {
         return date.takeIf { it.length >= 4 }?.substring(0, 4)?.toIntOrNull() ?: 0
+    }
+
+    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<Category> {
+        return genreIds.map { Category(id = it.toLong(), name = "", image = "") }
     }
 }

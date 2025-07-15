@@ -7,7 +7,6 @@ import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.example.repository.mapper.local.TvShowLocalMapper
-import com.example.repository.mapper.remote.GenreMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
@@ -19,7 +18,6 @@ class TvShowRepositoryImpl(
     private val remoteTvDataSource: TvShowsRemoteSource,
     private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
-    private val genreMapper: GenreMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) : TvShowRepository {
@@ -32,7 +30,7 @@ class TvShowRepositoryImpl(
         }
         if (tvShows.isNotEmpty()) return tvShows
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getTvShowsFromRemote(keyword, rating, tvShowGenre)
+        return getTvShowsFromRemote(keyword)
     }
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
@@ -46,8 +44,6 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowsFromRemote(
         keyword: String,
-        rating: Float,
-        genre: TvShowGenre
     ): List<TvShow> {
         return tryToExecute(
             function = {

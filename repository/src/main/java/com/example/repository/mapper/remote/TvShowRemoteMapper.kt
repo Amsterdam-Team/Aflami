@@ -1,5 +1,6 @@
 package com.example.repository.mapper.remote
 
+import com.example.entity.Category
 import com.example.entity.TvShow
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.remote.RemoteTvShowItemDto
@@ -21,7 +22,7 @@ class TvShowRemoteMapper {
             description = remoteTvShowItemDto.overview,
             poster = remoteTvShowItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteTvShowItemDto.releaseDate),
-            categories = emptyList(),
+            categories = mapGenreIdsToCategories(remoteTvShowItemDto.genreIds),
             rating = remoteTvShowItemDto.voteAverage.toFloat(),
             popularity = remoteTvShowItemDto.popularity
         )
@@ -37,6 +38,10 @@ class TvShowRemoteMapper {
             rating = remoteTvShowItemDto.voteAverage.toFloat(),
             popularity = remoteTvShowItemDto.popularity
         )
+    }
+
+    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<Category> {
+        return genreIds.map { Category(id = it.toLong(), name = "", image = "") }
     }
 
     private fun parseYear(date: String): Int {

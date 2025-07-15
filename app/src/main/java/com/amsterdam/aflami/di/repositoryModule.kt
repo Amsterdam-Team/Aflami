@@ -11,7 +11,6 @@ import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.local.RecentSearchMapper
 import com.example.repository.mapper.local.TvShowLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
-import com.example.repository.mapper.remote.GenreMapper
 import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
@@ -34,11 +33,10 @@ val repositoryModule = module {
     single { MovieRemoteMapper() }
     single { TvShowRemoteMapper() }
     single { RecentSearchMapper() }
-    single { GenreMapper() }
     single<RecentSearchHandler> { RecentSearchHandlerImpl(get()) }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get(), get()) }
+    single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get()) }
     single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get(), get()) }
     single<RecentSearchRepository> { RecentSearchRepositoryImpl(get(), get()) }
-    single<TvShowRepository> { TvShowRepositoryImpl(get(), get(), get(), get(), get(), get()) }
+    single<TvShowRepository> { TvShowRepositoryImpl(get(), get(), get(), get(), get()) }
 }

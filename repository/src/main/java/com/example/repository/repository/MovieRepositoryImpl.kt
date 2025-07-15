@@ -1,14 +1,12 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
-import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
 import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.mapper.local.MovieLocalMapper
-import com.example.repository.mapper.remote.GenreMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
@@ -21,7 +19,6 @@ class MovieRepositoryImpl(
     private val movieDataSource: MovieRemoteSource,
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: MovieRemoteMapper,
-    private val genreMapper: GenreMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
@@ -33,7 +30,7 @@ class MovieRepositoryImpl(
         }
         if (movies.isNotEmpty()) return movies
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getMoviesByKeywordFromRemote(rating, movieGenre, keyword, searchType)
+        return getMoviesByKeywordFromRemote(keyword, searchType)
     }
 
     override suspend fun getMoviesByActor(actorName: String): List<Movie> {
