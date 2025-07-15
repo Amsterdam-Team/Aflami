@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -146,6 +148,7 @@ private fun SearchContent(
                 if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onRetryQuestClicked,
+                        modifier = Modifier.verticalScroll(rememberScrollState())
                     )
                 }
 
@@ -154,6 +157,7 @@ private fun SearchContent(
                         imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
+                        modifier = Modifier.verticalScroll(rememberScrollState())
                     )
                 }
             }
