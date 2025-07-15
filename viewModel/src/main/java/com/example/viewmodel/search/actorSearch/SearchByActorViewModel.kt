@@ -62,9 +62,9 @@ class SearchByActorViewModel(
         )
     }
 
-    override fun onUserSearch(query: String) {
-        queryFlow.update { oldText -> query }
-        updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
+    override fun onKeywordValueChanged(keyword: String) {
+        queryFlow.update { oldText -> keyword }
+        updateState { it.copy(query = keyword, isLoading = keyword.isNotBlank()) }
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {

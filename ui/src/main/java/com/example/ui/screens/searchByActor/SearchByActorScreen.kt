@@ -101,7 +101,7 @@ private fun SearchByActorContent(
         TextField(
             text = state.query,
             hintText = stringResource(R.string.find_by_actor),
-            onValueChange = { interactionListener.onUserSearch(it) },
+            onValueChange = { interactionListener.onKeywordValueChanged(it) },
 
             )
 
@@ -183,7 +183,7 @@ private fun SearchByActorContentPreview() {
         SearchByActorContent(
             state = SearchByActorScreenState(),
             interactionListener = object : SearchByActorInteractionListener {
-                override fun onUserSearch(query: String) {
+                override fun onKeywordValueChanged(keyword: String) {
                 }
 
                 override fun onNavigateBackClicked() {
