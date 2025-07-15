@@ -1,4 +1,4 @@
-package com.example.viewmodel.search
+package com.example.viewmodel.search.globalSearch
 
 import com.example.viewmodel.BaseViewModel
 

@@ -1,6 +1,6 @@
 package com.amsterdam.aflami.di
 
-import com.example.viewmodel.search.GlobalSearchViewModel
+import com.example.viewmodel.search.globalSearch.GlobalSearchViewModel
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import com.example.viewmodel.utils.dispatcher.DefaultDispatcherProvider

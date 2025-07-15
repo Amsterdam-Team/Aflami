@@ -2,6 +2,7 @@ package com.example.ui.screens.search
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
@@ -39,27 +40,26 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
-import com.example.ui.screens.search.sections.FilterDialog
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
+import com.example.ui.screens.search.sections.filterDialog.FilterDialog
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.FilterInteractionListener
-import com.example.viewmodel.search.GlobalSearchInteractionListener
-import com.example.viewmodel.search.GlobalSearchViewModel
-import com.example.viewmodel.search.SearchErrorUiState
-import com.example.viewmodel.search.SearchUiEffect
-import com.example.viewmodel.search.SearchUiState
+import com.example.viewmodel.search.globalSearch.FilterInteractionListener
+import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
+import com.example.viewmodel.search.globalSearch.GlobalSearchViewModel
+import com.example.viewmodel.search.globalSearch.SearchErrorState
+import com.example.viewmodel.search.globalSearch.SearchUiEffect
+import com.example.viewmodel.search.globalSearch.SearchUiState
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
-import androidx.activity.compose.BackHandler
 
 @Composable
 fun SearchScreen(
     viewModel: GlobalSearchViewModel = koinViewModel(),
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
@@ -154,7 +154,7 @@ private fun SearchContent(
         }
 
         AnimatedVisibility(state.query.isNotEmpty() || state.errorUiState != null) {
-            if (state.errorUiState == SearchErrorUiState.NoMoviesByKeywordFoundException) {
+            if (state.errorUiState == SearchErrorState.NoMoviesByKeywordFoundException) {
                 NoDataContainer(
                     imageRes = painterResource(R.drawable.placeholder_no_result_found),
                     title = stringResource(R.string.no_search_result),
