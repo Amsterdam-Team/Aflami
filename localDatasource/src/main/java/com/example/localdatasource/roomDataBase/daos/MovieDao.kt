@@ -1,5 +1,6 @@
 package com.example.localdatasource.roomDataBase.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -46,4 +47,21 @@ interface MovieDao {
 
     @Upsert
     suspend fun insertSearchEntries(entries: List<SearchMovieCrossRefDto>)
+
+    @Query(
+        """
+    SELECT m.* FROM movies AS m
+    INNER JOIN search_movie_cross_ref AS x
+    ON m.movieId = x.movieId
+    WHERE x.searchKeyword = :keyword 
+      AND x.searchType = :searchType
+    ORDER BY m.movieId ASC
+"""
+    )
+    fun getMoviesPagingSourceByKeywordAndType(
+        keyword: String,
+        searchType: SearchType
+    ): PagingSource<Int, LocalMovieDto>
+
+
 }
