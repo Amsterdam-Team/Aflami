@@ -1,6 +1,8 @@
 package com.example.domain.useCase
 
+import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.TvShowRepository
+import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.TvShow
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -9,6 +11,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetTvShowByKeywordUseCaseTest {
     private lateinit var tvShowRepository: TvShowRepository
@@ -69,4 +72,32 @@ class GetTvShowByKeywordUseCaseTest {
             val tvShows = getTvShowByKeywordUseCase("keyword")
             assertThat(fakeTvShowList.sortedByDescending { it.popularity }).isEqualTo(tvShows)
         }
+
+    @Test
+    fun `should throw NoSearchByKeywordResultFoundException if repository returns empty list`(): Unit =
+        runBlocking {
+            coEvery { tvShowRepository.getTvShowByKeyword(any(), any(), any()) } returns emptyList()
+
+            assertThrows<NoSearchByKeywordResultFoundException> {
+                getTvShowByKeywordUseCase("nonexistent")
+            }
+        }
+
+    @Test
+    fun `should call getTvShowByKeyword with specified rating and genre`() = runBlocking {
+        val testRating = 6.5f
+        val testGenre = TvShowGenre.CRIME
+
+        coEvery { tvShowRepository.getTvShowByKeyword(any(), any(), any()) } returns fakeTvShowList
+
+        getTvShowByKeywordUseCase("crime", rating = testRating, tvShowGenre = testGenre)
+
+        coVerify(exactly = 1) {
+            tvShowRepository.getTvShowByKeyword(
+                "crime",
+                rating = testRating,
+                tvShowGenre = testGenre
+            )
+        }
+    }
 }
