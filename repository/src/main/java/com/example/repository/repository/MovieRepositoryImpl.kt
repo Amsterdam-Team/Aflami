@@ -25,7 +25,7 @@ class MovieRepositoryImpl(
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String, rating: Float, movieGenre: MovieGenre): List<Movie> {
+    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
         var movies: List<Movie> = emptyList()
         val searchType = SearchType.BY_KEYWORD
         if (!recentSearchHandler.isExpired(keyword, searchType)) {
@@ -59,21 +59,12 @@ class MovieRepositoryImpl(
     }
 
     private suspend fun getMoviesByKeywordFromRemote(
-        rating: Float,
-        movieGenre: MovieGenre,
         keyword: String,
         searchType: SearchType
     ): List<Movie> {
         return tryToExecute(
             function = {
-                if (isNoDefaultValues(rating, movieGenre)) {
-                    movieDataSource.getMoviesByKeyword(keyword)
-                }
-                movieDataSource.discoverMovies(
-                    keyword,
-                    rating,
-                    genreMapper.mapToMovieGenreId(movieGenre)
-                )
+                movieDataSource.getMoviesByKeyword(keyword)
             },
             onSuccess = { remoteMovies ->
                 saveMoviesWithSearch(
@@ -125,11 +116,6 @@ class MovieRepositoryImpl(
             dispatcher = dispatcher
         )
     }
-
-    private fun isNoDefaultValues(
-        rating: Float,
-        movieGenre: MovieGenre,
-    ) = rating != 0f || movieGenre != MovieGenre.ALL
 
     private suspend fun getMoviesFromLocal(keyword: String, searchType: SearchType): List<Movie> {
         return tryToExecute(

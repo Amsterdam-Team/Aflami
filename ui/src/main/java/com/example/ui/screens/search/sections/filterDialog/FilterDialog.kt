@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.sections
+package com.example.ui.screens.search.sections.filterDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,9 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,13 +33,20 @@ import com.example.designsystem.components.IconButton
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.buttons.PrimaryButton
 import com.example.designsystem.components.buttons.SecondaryButton
+import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
-import com.example.ui.screens.search.sections.filterDialog.movieCategories
-import com.example.ui.screens.search.sections.filterDialog.tvShowCategories
+import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.ui.screens.search.sections.filterDialog.genre.ScrollToGenreItem
+import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreIcon
+import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
+import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreIcon
+import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.FilterInteractionListener
-import com.example.viewmodel.search.FilterItemUiState
-import com.example.viewmodel.search.SearchUiState
+import com.example.viewmodel.search.globalSearch.FilterInteractionListener
+import com.example.viewmodel.search.globalSearch.FilterItemUiState
+import com.example.viewmodel.search.globalSearch.SearchUiState
+import com.example.viewmodel.search.globalSearch.genre.MovieGenre
+import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 
 @Composable
 fun FilterDialog(
@@ -43,6 +54,16 @@ fun FilterDialog(
     interaction: FilterInteractionListener,
     modifier: Modifier = Modifier
 ) {
+    val lazyState = rememberLazyListState()
+    var isFilterCleared by remember { mutableStateOf(false) }
+
+    ScrollToGenreItem(
+        lazyState = lazyState,
+        state = state,
+        isFilterCleared = isFilterCleared,
+        onFilterClearHandled = { isFilterCleared = false }
+    )
+
     Dialog(
         onDismissRequest = { interaction.onCancelButtonClicked() },
         properties = DialogProperties(
@@ -105,31 +126,39 @@ fun FilterDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
+                state = lazyState,
                 contentPadding = PaddingValues(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 when (state.selectedTabOption) {
                     TabOption.MOVIES -> {
-                        items(state.filterItemUiState.movieGenreItemUiStates) { category ->
-                            val genre = movieCategories[category.type]
+                        items(
+                            items = state.filterItemUiState.selectableMovieGenres,
+                            key = { it.selectableMovieGenre.type.name }
+                        ) { category ->
+                            val genreType = category.selectableMovieGenre.type
                             Chip(
-                                icon = painterResource(genre?.icon ?: R.drawable.ic_nav_categories),
-                                label = stringResource(genre?.displayableName ?: R.string.all),
-                                isSelected = category.isSelected,
-                                onClick = { interaction.onMovieGenreButtonChanged(category.type) }
+                                icon = getMovieGenreIcon(genreType),
+                                label = getMovieGenreLabel(genreType),
+                                isSelected = category.selectableMovieGenre.isSelected,
+                                onClick = { interaction.onMovieGenreButtonChanged(genreType) },
                             )
                         }
+
                     }
 
                     TabOption.TV_SHOWS -> {
-                        items(state.filterItemUiState.tvShowGenreItemUiStates) { category ->
-                            val genre = tvShowCategories[category.type]
+                        items(
+                            items = state.filterItemUiState.selectableTvShowGenres,
+                            key = { it.selectableTvShowGenre.type.name }
+                        ) { category ->
+                            val genreType = category.selectableTvShowGenre.type
                             Chip(
-                                icon = painterResource(genre?.icon ?: R.drawable.ic_nav_categories),
-                                label = stringResource(genre?.displayableName ?: R.string.all),
-                                isSelected = category.isSelected,
-                                onClick = { interaction.onTvGenreButtonChanged(category.type) }
+                                icon = getTvShowGenreIcon(genreType),
+                                label = getTvShowGenreLabel(genreType),
+                                isSelected = category.selectableTvShowGenre.isSelected,
+                                onClick = { interaction.onTvGenreButtonChanged(category.selectableTvShowGenre.type) },
                             )
                         }
                     }
@@ -145,7 +174,10 @@ fun FilterDialog(
             )
             SecondaryButton(
                 title = stringResource(R.string.clear),
-                onClick = interaction::onClearButtonClicked,
+                onClick = {
+                    interaction.onClearButtonClicked()
+                    isFilterCleared = true
+                },
                 isEnabled = true,
                 isLoading = false,
                 isNegative = false,
@@ -189,25 +221,20 @@ private fun RatingBar(
     }
 }
 
-//@Composable
-//@ThemeAndLocalePreviews
-//fun FilterDialogPreview2() {
-//    AflamiTheme {
-//        FilterDialog(
-//            state = FilterItemUiState(
-//                selectedStarIndex = 5,
-//            ),
-//            interaction = object : FilterInteractionListener {
-//                override fun onCancelButtonClicked() {}
-//                override fun onRatingStarChanged(ratingIndex: Int) {}
-//                override fun onMovieGenreButtonChanged(genreType: MovieCategoryType) {}
-//                override fun onTvGenreButtonChanged(genreType: TvShowCategoryType) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onApplyButtonClicked() {}
-//                override fun onClearButtonClicked() {}
-//            },
-//        )
-//    }
-//}
+@Composable
+@ThemeAndLocalePreviews
+fun FilterDialogPreview2() {
+    AflamiTheme {
+        FilterDialog(
+            state = SearchUiState(),
+            interaction = object : FilterInteractionListener {
+                override fun onCancelButtonClicked() {}
+                override fun onRatingStarChanged(ratingIndex: Int) {}
+                override fun onMovieGenreButtonChanged(genreType: MovieGenre) {}
+                override fun onTvGenreButtonChanged(genreType: TvShowGenre) {}
+                override fun onApplyButtonClicked() {}
+                override fun onClearButtonClicked() {}
+            },
+        )
+    }
+}

@@ -20,27 +20,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingIndicator
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
@@ -68,7 +70,7 @@ fun SearchByCountryScreen(
     val navController = LocalNavController.current
 
     val state by viewModel.state.collectAsState()
-    var screenContent by remember { mutableStateOf(ScreenContent.COUNTRY_TOUR) }
+    var screenContent by rememberSaveable { mutableStateOf(ScreenContent.COUNTRY_TOUR) }
     var showCountriesDropdown by remember { mutableStateOf(false) }
     var noSuggestedCountry by remember { mutableStateOf(false) }
 
@@ -138,78 +140,64 @@ fun SearchByCountryScreenContent(
     showCountriesDropdown: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
-    var appBarSectionHeight by remember { mutableStateOf(0.dp) }
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
+        var headerHeight by remember { mutableStateOf(0.dp) }
         Column(
-            modifier = Modifier.onSizeChanged {
-                appBarSectionHeight = it.height.dp
-            }
+            modifier = Modifier
+                .onSizeChanged {
+                    headerHeight = it.height.dp
+                }
         ) {
             DefaultAppBar(
                 title = stringResource(R.string.world_tour_title),
                 showNavigateBackButton = true,
                 onNavigateBackClicked = onNavigateBackClicked,
-
-                )
+            )
 
             TextField(
                 text = state.selectedCountry,
                 hintText = stringResource(R.string.country_name_hint),
                 onValueChange = { interactionListener.onCountryNameUpdated(it) },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        interactionListener.onCountryNameUpdated(state.selectedCountry)
+                    }
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
-                    .onGloballyPositioned {
-                        textFieldSize = it.size
-                    }
             )
         }
-
         Box {
-            Box(
-                modifier = Modifier.fillMaxSize()
+            CenterOfScreenContainer(
+                headerHeight,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 8.dp, end = 8.dp),
             ) {
                 when (screenContent) {
-                    ScreenContent.COUNTRY_TOUR -> ExploreCountries(
-                        Modifier
-                            .fillMaxSize()
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
-
+                    ScreenContent.COUNTRY_TOUR -> ExploreCountries()
+                    ScreenContent.LOADING_MOVIES -> Loading()
                     ScreenContent.NO_INTERNET_CONNECTION -> NoInternetConnection(
                         onRetryQuestClicked = interactionListener::onRetryQuestClicked,
-                        Modifier
-                            .align(
-                                Alignment.Center
-                            )
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
                     )
-
-                    ScreenContent.LOADING_MOVIES -> Loading(
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
-
-                    ScreenContent.NO_MOVIES -> NoMoviesFound(
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(start = 8.dp, end = 8.dp, bottom = appBarSectionHeight / 2)
-                    )
-
-                    ScreenContent.MOVIES -> SearchedMovies(
-                        state,
-                        Modifier.align(Alignment.TopStart)
-                    )
+                    ScreenContent.NO_MOVIES -> NoMoviesFound()
+                    else -> {}
                 }
+            }
+            androidx.compose.animation.AnimatedVisibility(
+                screenContent == ScreenContent.MOVIES
+            ) {
+                SearchedMovies(
+                    state,
+                    Modifier.align(Alignment.TopStart)
+                )
             }
             androidx.compose.animation.AnimatedVisibility(
                 visible = showCountriesDropdown,
@@ -269,30 +257,36 @@ private fun CountriesDropdownMenu(
 private fun ExploreCountries(
     modifier: Modifier = Modifier
 ) {
-    Column(
+    LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Image(
-            painter = painterResource(R.drawable.tour_world_image),
-            contentDescription = stringResource(R.string.country_tour_image_description),
-            modifier = Modifier.height(82.dp)
-        )
-        Text(
-            text = stringResource(R.string.country_tour_title),
-            modifier = Modifier.padding(top = 16.dp),
-            style = AppTheme.textStyle.title.medium,
-            color = AppTheme.color.title,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = stringResource(R.string.country_tour_description),
-            modifier = Modifier.padding(top = 8.dp),
-            style = AppTheme.textStyle.body.small,
-            color = AppTheme.color.body,
-            textAlign = TextAlign.Center
-        )
+        item {
+            Image(
+                painter = painterResource(R.drawable.tour_world_image),
+                contentDescription = stringResource(R.string.country_tour_image_description),
+                modifier = Modifier.height(82.dp)
+            )
+        }
+        item {
+            Text(
+                text = stringResource(R.string.country_tour_title),
+                modifier = Modifier.padding(top = 16.dp),
+                style = AppTheme.textStyle.title.medium,
+                color = AppTheme.color.title,
+                textAlign = TextAlign.Center
+            )
+        }
+        item {
+            Text(
+                text = stringResource(R.string.country_tour_description),
+                modifier = Modifier.padding(top = 8.dp),
+                style = AppTheme.textStyle.body.small,
+                color = AppTheme.color.body,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -344,10 +338,10 @@ private fun SearchedMovies(
 ) {
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(top = 12.dp, bottom = 36.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        columns = GridCells.Adaptive(160.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(top = 12.dp, bottom = 4.dp),
     ) {
         items(
             items = state.movies,

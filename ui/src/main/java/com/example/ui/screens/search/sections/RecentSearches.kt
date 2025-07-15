@@ -20,8 +20,8 @@ import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.GlobalSearchInteractionListener
-import com.example.viewmodel.search.SearchUiState
+import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
+import com.example.viewmodel.search.globalSearch.SearchUiState
 
 @Composable
 fun RecentSearchesSection(

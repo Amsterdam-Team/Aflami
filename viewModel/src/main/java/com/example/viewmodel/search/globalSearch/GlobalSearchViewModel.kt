@@ -1,4 +1,4 @@
-package com.example.viewmodel.search
+package com.example.viewmodel.search.globalSearch
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
@@ -11,17 +11,15 @@ import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.common.categories.MovieCategoryItemUiState.Companion.getSelectedOne
-import com.example.viewmodel.common.categories.MovieCategoryItemUiState.Companion.selectByType
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.getSelectedOne
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
-import com.example.viewmodel.common.categories.MovieCategoryType
-import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.selectByType
-import com.example.viewmodel.common.categories.TvShowCategoryType
-import com.example.viewmodel.common.categories.toMovieGenreType
-import com.example.viewmodel.common.categories.toTvShowGenre
+import com.example.viewmodel.search.globalSearch.genre.MovieGenre
+import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
+import com.example.viewmodel.search.mapper.getSelectedGenreType
+import com.example.viewmodel.search.mapper.mapToGenreId
+import com.example.viewmodel.search.mapper.selectByMovieGenre
+import com.example.viewmodel.search.mapper.selectByTvGenre
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -31,7 +29,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.String
 
 @OptIn(FlowPreview::class)
 class GlobalSearchViewModel(
@@ -76,7 +73,14 @@ class GlobalSearchViewModel(
     }
 
     private fun onSearchQueryChanged(trimmedQuery: String) {
-        updateState { it.copy(isLoading = true, errorUiState = null, movies = emptyList(), tvShows = emptyList()) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorUiState = null,
+                movies = emptyList(),
+                tvShows = emptyList()
+            )
+        }
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
@@ -85,15 +89,15 @@ class GlobalSearchViewModel(
 
     private fun fetchMoviesByQuery(
         keyword: String,
-        rating: Float = 0f,
-        movieCategoryType: MovieCategoryType = MovieCategoryType.ALL
+        rating: Int = 0,
+        movieGenre: MovieGenre = MovieGenre.ALL
     ) {
         tryToExecute(
             action = {
                 getMoviesByKeywordUseCase(
                     keyword = keyword,
                     rating = rating,
-                    movieGenre = movieCategoryType.toMovieGenreType()
+                    movieGenreId = movieGenre.mapToGenreId()
                 )
             },
             onSuccess = ::onFetchMoviesSuccess,
@@ -103,20 +107,21 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
+        applyMoviesFilter()
         updateState { it.copy(movies = movies.toMoveUiStates()) }
     }
 
     private fun fetchTvShowsByQuery(
         keyword: String,
         rating: Float = 0f,
-        movieCategoryType: TvShowCategoryType = TvShowCategoryType.ALL
+        tvGenre: TvShowGenre = TvShowGenre.ALL
     ) {
         tryToExecute(
             action = {
                 getTvShowByKeywordUseCase(
                     keyword = keyword,
                     rating = rating,
-                    tvShowGenre = movieCategoryType.toTvShowGenre()
+                    tvShowGenreId = tvGenre.mapToGenreId()
                 )
             },
             onSuccess = ::onFetchTvShowsSuccess,
@@ -126,6 +131,7 @@ class GlobalSearchViewModel(
     }
 
     private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
+        applyTvShowsFilter()
         updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
     }
 
@@ -142,7 +148,8 @@ class GlobalSearchViewModel(
         )
     }
 
-    override fun onFilterButtonClicked() = updateState { it.copy(isDialogVisible = true) }
+    override fun onFilterButtonClicked() =
+        updateState { it.copy(isDialogVisible = true, isLoading = false) }
 
     override fun onNavigateBackClicked() {
         if (state.value.query.isNotEmpty()) {
@@ -155,6 +162,7 @@ class GlobalSearchViewModel(
     override fun onWorldSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
 
     override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
+
     override fun onRetryQuestClicked() {
         updateState { it.copy(isLoading = true, errorUiState = null) }
         observeSearchQueryChanges()
@@ -170,6 +178,7 @@ class GlobalSearchViewModel(
                 movies = state.value.movies,
                 tvShows = state.value.tvShows,
                 isLoading = true,
+                filterItemUiState = FilterItemUiState()
             )
         }
     }
@@ -213,34 +222,40 @@ class GlobalSearchViewModel(
 
     private fun onClearAllRecentSearchesSuccess(unit: Unit) {
         updateState { it.copy(recentSearches = emptyList()) }
+        return unit
     }
 
     override fun onCancelButtonClicked() {
-        updateState { it.copy(isDialogVisible = false) }.also { resetFilterState() }
+        updateState {
+            it.copy(
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
+            )
+        }
     }
 
     override fun onRatingStarChanged(ratingIndex: Int) {
         updateState { it.copy(filterItemUiState = it.filterItemUiState.copy(selectedStarIndex = ratingIndex)) }
     }
 
-    override fun onMovieGenreButtonChanged(movieCategoryType: MovieCategoryType) {
+    override fun onMovieGenreButtonChanged(genreType: MovieGenre) {
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
-                    movieGenreItemUiStates = it.filterItemUiState.movieGenreItemUiStates.selectByType(
-                        movieCategoryType
+                    selectableMovieGenres = it.filterItemUiState.selectableMovieGenres.selectByMovieGenre(
+                        genreType
                     )
                 )
             )
         }
     }
 
-    override fun onTvGenreButtonChanged(tvShowCategoryType: TvShowCategoryType) {
+    override fun onTvGenreButtonChanged(genreType: TvShowGenre) {
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
-                    tvShowGenreItemUiStates = it.filterItemUiState.tvShowGenreItemUiStates.selectByType(
-                        tvShowCategoryType
+                    selectableTvShowGenres = it.filterItemUiState.selectableTvShowGenres.selectByTvGenre(
+                        genreType
                     )
                 )
             )
@@ -249,7 +264,10 @@ class GlobalSearchViewModel(
 
     override fun onApplyButtonClicked() {
         updateState {
-            it.copy(filterItemUiState = it.filterItemUiState.copy(isLoading = true))
+            it.copy(
+                filterItemUiState = it.filterItemUiState.copy(isLoading = true),
+                isDialogVisible = false,
+            )
         }
 
         when (state.value.selectedTabOption) {
@@ -259,43 +277,55 @@ class GlobalSearchViewModel(
     }
 
     private fun applyMoviesFilter() {
-        val currentCategoryItemUiStates = state.value.filterItemUiState.movieGenreItemUiStates
+        val currentCategoryItemUiStates = state.value.filterItemUiState.selectableMovieGenres
         tryToExecute(
             action = {
                 getMoviesByKeywordUseCase(
                     keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
-                    movieGenre = currentCategoryItemUiStates.getSelectedOne(categories = currentCategoryItemUiStates).type.toMovieGenreType()
+                    rating = state.value.filterItemUiState.selectedStarIndex,
+                    movieGenreId = currentCategoryItemUiStates.getSelectedGenreType().mapToGenreId()
                 )
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFetchError,
-            onCompletion = ::resetFilterState
+            onCompletion = ::onCancelButtonClicked
         )
     }
 
     private fun onMoviesFilteredSuccess(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toMoveUiStates(), isDialogVisible = false) }
+        updateState {
+            it.copy(
+                movies = movies.toMoveUiStates(),
+                errorUiState = null,
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
+            )
+        }
     }
 
     private fun applyTvShowsFilter() {
-        val currentGenreItemUiStates = state.value.filterItemUiState.tvShowGenreItemUiStates
+        val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
         tryToExecute(
             action = {
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
                     rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
-                    tvShowGenre = currentGenreItemUiStates.getSelectedOne(currentGenreItemUiStates).type.toTvShowGenre()
+                    tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId()
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,
             onError = ::onFetchError,
-            onCompletion = ::resetFilterState
+            onCompletion = ::onCancelButtonClicked
         )
     }
 
     private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
-        updateState { it.copy(tvShows = tvShows.toTvShowUiStates(), isDialogVisible = false) }
+        updateState {
+            it.copy(
+                tvShows = tvShows.toTvShowUiStates(),
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                errorUiState = null
+            )
+        }
     }
 
 

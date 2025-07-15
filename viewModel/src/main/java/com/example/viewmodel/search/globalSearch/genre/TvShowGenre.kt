@@ -1,8 +1,8 @@
-package com.example.domain.useCase.genreTypes
+package com.example.viewmodel.search.globalSearch.genre
 
 enum class TvShowGenre {
     ALL,
-    SCIENCE_FICTION,
+    SCIENCE_FICTION_FANTASY,
     ACTION_ADVENTURE,
     CRIME,
     FAMILY,
@@ -15,7 +15,6 @@ enum class TvShowGenre {
     KIDS,
     NEWS,
     REALITY,
-    FANTASY,
     SOAP,
     TALK,
     ROMANCE,

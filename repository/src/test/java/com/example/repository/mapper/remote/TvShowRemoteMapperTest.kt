@@ -55,7 +55,7 @@ class TvShowRemoteMapperTest {
         assertThat(result.poster).isEqualTo("/loki.jpg")
         assertThat(result.productionYear).isEqualTo(2021)
         assertThat(result.rating).isEqualTo(8.5f)
-        assertThat(result.categories).isEmpty()
+        assertThat(result.categories.map { it.id }).containsExactly(18L)
     }
 
     @Test

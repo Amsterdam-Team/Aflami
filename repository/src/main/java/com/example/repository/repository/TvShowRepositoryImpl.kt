@@ -1,7 +1,6 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.TvShowRepository
-import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.TvShow
 import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
@@ -25,7 +24,7 @@ class TvShowRepositoryImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) : TvShowRepository {
 
-    override suspend fun getTvShowByKeyword(keyword: String, rating: Float, tvShowGenre: TvShowGenre): List<TvShow> {
+    override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
         var tvShows: List<TvShow> = emptyList()
         val searchType = SearchType.BY_KEYWORD
         if (!recentSearchHandler.isExpired(keyword, searchType)) {
@@ -35,11 +34,6 @@ class TvShowRepositoryImpl(
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
         return getTvShowsFromRemote(keyword, rating, tvShowGenre)
     }
-
-    private fun isNoDefaultValues(
-        rating: Float,
-        genre: TvShowGenre,
-    ) = rating != 0f || genre != TvShowGenre.ALL
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
         return tryToExecute(
@@ -57,15 +51,7 @@ class TvShowRepositoryImpl(
     ): List<TvShow> {
         return tryToExecute(
             function = {
-                if (isNoDefaultValues(rating, genre)) {
-                    remoteTvDataSource.discoverTvShows(
-                        keyword,
-                        rating,
-                        genreMapper.mapToTvShowGenreId(genre)
-                    )
-                } else {
-                    remoteTvDataSource.getTvShowsByKeyword(keyword)
-                }
+                remoteTvDataSource.getTvShowsByKeyword(keyword)
             },
             onSuccess = { remoteTvShows ->
                 saveTvShowsToDatabase(remoteTvShows, keyword)
