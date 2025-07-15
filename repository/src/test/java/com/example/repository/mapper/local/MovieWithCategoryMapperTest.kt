@@ -34,7 +34,7 @@ class MovieWithCategoryMapperTest {
             categories = localCategories
         )
 
-        val result = mapper.mapFromLocal(movieWithCategories)
+        val result = mapper.mapToMovie(movieWithCategories)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
@@ -66,7 +66,7 @@ class MovieWithCategoryMapperTest {
             categories = emptyList()
         )
 
-        val result = mapper.mapFromLocal(movieWithCategories)
+        val result = mapper.mapToMovie(movieWithCategories)
 
         assertThat(result.categories).isEmpty()
     }
@@ -84,7 +84,7 @@ class MovieWithCategoryMapperTest {
             categories = listOf(Category(1L, "Adventure", "adventure.png"))
         )
 
-        val result = mapper.mapToLocal(movie)
+        val result = mapper.mapToLocalMovie(movie)
 
         assertThat(result.movieId).isEqualTo(3L)
         assertThat(result.name).isEqualTo("Interstellar")

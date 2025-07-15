@@ -13,7 +13,7 @@ class CategoryLocalMapperTest {
     fun `should return Category with same id and name and empty image when mapping from LocalCategoryDto`() {
         val dto = LocalMovieCategoryDto(categoryId = 1, name = "Action")
 
-        val result = mapper.mapFromMovieLocal(dto)
+        val result = mapper.mapFromLocalMovieCategory(dto)
 
         assertThat(result.id).isEqualTo(1)
         assertThat(result.name).isEqualTo("Action")
@@ -24,7 +24,7 @@ class CategoryLocalMapperTest {
     fun `should return LocalCategoryDto with same id and name when mapping from Category`() {
         val category = Category(id = 2, name = "Drama", image = "someImage.png")
 
-        val result = mapper.mapToLocal(category)
+        val result = mapper.mapToLocalMovieCategory(category)
 
         assertThat(result.categoryId).isEqualTo(2)
         assertThat(result.name).isEqualTo("Drama")
@@ -37,7 +37,7 @@ class CategoryLocalMapperTest {
             LocalMovieCategoryDto(categoryId = 2, name = "Comedy")
         )
 
-        val result = mapper.mapListFromMovieLocal(dtos)
+        val result = mapper.mapToMovieCategories(dtos)
 
         assertThat(result).hasSize(2)
         assertThat(result.map { it.name }).containsExactly("Action", "Comedy")
@@ -50,7 +50,7 @@ class CategoryLocalMapperTest {
             Category(id = 2, name = "Comedy", image = "")
         )
 
-        val result = mapper.mapListToLocal(domains)
+        val result = mapper.mapToLocalMovieCategories(domains)
 
         assertThat(result).hasSize(2)
         assertThat(result.map { it.name }).containsExactly("Action", "Comedy")

@@ -5,9 +5,9 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class RemoteMovieMapperTest {
+class MovieRemoteMapperTest {
 
-    private val mapper = RemoteMovieMapper()
+    private val mapper = MovieRemoteMapper()
 
     private fun createRemoteMovieItemDto(
         id: Long,
@@ -46,7 +46,7 @@ class RemoteMovieMapperTest {
             voteAverage = 8.8
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToMovie(dto)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
@@ -66,7 +66,7 @@ class RemoteMovieMapperTest {
             posterPath = null
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToMovie(dto)
 
         assertThat(result.poster).isEqualTo("")
     }
@@ -80,7 +80,7 @@ class RemoteMovieMapperTest {
             releaseDate = "invalid-date"
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToMovie(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -94,7 +94,7 @@ class RemoteMovieMapperTest {
             releaseDate = ""
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToMovie(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -113,7 +113,7 @@ class RemoteMovieMapperTest {
             totalResults = 2
         )
 
-        val result = mapper.mapResponseToDomain(response)
+        val result = mapper.mapToMovies(response)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("Movie A")
@@ -129,7 +129,7 @@ class RemoteMovieMapperTest {
             totalResults = 0
         )
 
-        val result = mapper.mapResponseToDomain(response)
+        val result = mapper.mapToMovies(response)
 
         assertThat(result).isEmpty()
     }

@@ -5,9 +5,9 @@ import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class RemoteTvShowMapperTest {
+class TvShowRemoteMapperTest {
 
-    private val mapper = RemoteTvShowMapper()
+    private val mapper = TvShowRemoteMapper()
 
     private fun createRemoteTvShowItemDto(
         id: Long,
@@ -47,7 +47,7 @@ class RemoteTvShowMapperTest {
             voteAverage = 8.5
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToTvShow(dto)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Loki")
@@ -67,7 +67,7 @@ class RemoteTvShowMapperTest {
             posterPath = null
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToTvShow(dto)
 
         assertThat(result.poster).isEqualTo("")
     }
@@ -81,7 +81,7 @@ class RemoteTvShowMapperTest {
             releaseDate = "abcd"
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToTvShow(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -95,7 +95,7 @@ class RemoteTvShowMapperTest {
             releaseDate = ""
         )
 
-        val result = mapper.mapToDomain(dto)
+        val result = mapper.mapToTvShow(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -114,7 +114,7 @@ class RemoteTvShowMapperTest {
             totalResults = 2
         )
 
-        val result = mapper.mapResponseToDomain(response)
+        val result = mapper.mapToTvShows(response)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("Show A")
@@ -130,7 +130,7 @@ class RemoteTvShowMapperTest {
             totalResults = 0
         )
 
-        val result = mapper.mapResponseToDomain(response)
+        val result = mapper.mapToTvShows(response)
 
         assertThat(result).isEmpty()
     }

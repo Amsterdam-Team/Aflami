@@ -3,17 +3,17 @@ package com.example.remotedatasource.datasource
 import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
-import com.example.repository.datasource.remote.RemoteMovieDatasource
+import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
-class RemoteMovieDatasourceImpl(
+class MovieRemoteSourceImpl(
     private val ktorClient: KtorClient,
     private val json: Json,
-) : RemoteMovieDatasource {
+) : MovieRemoteSource {
 
     override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {

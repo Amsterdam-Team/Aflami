@@ -8,7 +8,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -38,10 +37,10 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.ui.screens.searchByCountry.Loading
-import com.example.viewmodel.search.actorSearch.SearchByActorEffect
-import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
-import com.example.viewmodel.search.actorSearch.SearchByActorScreenState
-import com.example.viewmodel.search.actorSearch.SearchByActorViewModel
+import com.example.viewmodel.searchByActor.SearchByActorEffect
+import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
+import com.example.viewmodel.searchByActor.SearchByActorScreenState
+import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -101,9 +100,14 @@ private fun SearchByActorContent(
         TextField(
             text = state.keyword,
             hintText = stringResource(R.string.find_by_actor),
-            onValueChange = { interactionListener.onKeywordValueChanged(it) },
-
-            )
+//            onValueChange = { interactionListener.onKeywordValueChanged(it) },
+//
+//            )
+            onValueChange = { interactionListener.onUserSearch(it) },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .padding(horizontal = 16.dp),
+        )
 
         AnimatedContent(
             targetState = state,
@@ -150,11 +154,10 @@ private fun SearchByActorContent(
 
                 else -> {
                     LazyVerticalGrid(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        columns = GridCells.Adaptive(160.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
                     ) {
                         items(targetState.movies) { movie ->
                             MovieCard(
@@ -164,9 +167,6 @@ private fun SearchByActorContent(
                                 movieTitle = movie.name,
                                 movieRating = movie.rating,
                             )
-                        }
-                        item {
-                            Spacer(modifier = Modifier.navigationBarsPadding())
                         }
                     }
                 }

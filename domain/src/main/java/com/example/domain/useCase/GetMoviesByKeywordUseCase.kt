@@ -1,9 +1,12 @@
 package com.example.domain.useCase
 
+import com.example.domain.common.ContentFilteringExtensions.filterByCategory
+import com.example.domain.common.ContentFilteringExtensions.filterByMinRating
+import com.example.domain.common.ContentFilteringExtensions.sortByPopularityDescending
+import com.example.domain.common.ContentFilteringExtensions.throwIfEmpty
 import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
-import kotlin.math.roundToInt
 
 class GetMoviesByKeywordUseCase(
     private val movieRepository: MovieRepository
@@ -16,18 +19,9 @@ class GetMoviesByKeywordUseCase(
     ): List<Movie> {
         return movieRepository
             .getMoviesByKeyword(keyword = keyword)
-            .filter { movie -> movie.rating.roundToInt() >= rating }
-            .filter { movie ->
-                if (movieGenreId == 0)
-                    return@filter true
-
-                movie.categories.any { it.id == movieGenreId.toLong() }
-            }
-            .sortedByDescending {
-                it.popularity
-            }
-            .ifEmpty { throw NoSearchByKeywordResultFoundException() }
-
+            .filterByMinRating(rating)
+            .filterByCategory(movieGenreId)
+            .sortByPopularityDescending()
+            .throwIfEmpty { NoSearchByKeywordResultFoundException() }
     }
 }
-

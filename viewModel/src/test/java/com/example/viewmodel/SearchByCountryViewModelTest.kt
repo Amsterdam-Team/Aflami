@@ -1,14 +1,10 @@
 package com.example.viewmodel
 
-import com.example.domain.exceptions.AflamiException
-import com.example.domain.exceptions.CountryTooShortException
-import com.example.domain.exceptions.InternetConnectionException
-import com.example.domain.exceptions.NoMoviesForCountryException
-import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.entity.Country
 import com.example.viewmodel.search.countrySearch.CountryUiState
+import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
 import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
@@ -32,22 +28,16 @@ import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchByCountryViewModelTest {
-
     private lateinit var viewModel: SearchByCountryViewModel
-
     private val testDispatcherProvider = TestDispatcherProvider()
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase = mockk(relaxed = true)
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase = mockk(relaxed = true)
     private var testScope = TestScope(
         testDispatcherProvider.testDispatcher
     )
-
 
     @BeforeEach
     fun setUp() {
@@ -67,42 +57,35 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should update the selected country name when its call`() =
         testScope.runTest {
-            val countryName = "egypt"
+            val keyword = "egypt"
 
-            viewModel.onCountryNameUpdated(countryName)
+            viewModel.onKeywordValueChanged(keyword)
             testScope.advanceTimeBy(5000)
             testScope.advanceUntilIdle()
 
-            assertThat(viewModel.state.value.selectedCountry).isEqualTo(countryName)
+            assertThat(viewModel.state.value.keyword).isEqualTo(keyword)
         }
 
     @Test
-    fun `should send HideCountriesDropDown when call it with empty string`() =
+    fun `should hide countries dropDown when call it with empty string`() =
         testScope.runTest {
-            val countryName = ""
-            var effects = mutableListOf<SearchByCountryEffect?>()
-            val collectJob = launch {
-                viewModel.effect.collect {
-                    effects.add(it)
-                }
-            }
+            val keyword = ""
 
-            viewModel.onCountryNameUpdated(countryName)
+            viewModel.onKeywordValueChanged(keyword)
             testScope.advanceUntilIdle()
-            collectJob.cancel()
 
-            assertThat(effects.first()).isEqualTo(SearchByCountryEffect.HideCountriesDropDown)
+            assertThat(viewModel.state.value.isCountriesDropDownVisible).isFalse()
         }
 
     @Test
     fun `should take no action when debounce is running`() =
         testScope.runTest {
-            val countryName = "a"
+            val keyword = "a"
             coEvery { getSuggestedCountriesUseCase(any()) } returns emptyList()
 
-            viewModel.onCountryNameUpdated(countryName)
+            viewModel.onKeywordValueChanged(keyword)
 
-            coVerify(exactly = 0) { getSuggestedCountriesUseCase(countryName) }
+            coVerify(exactly = 0) { getSuggestedCountriesUseCase(keyword) }
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
         }
 
@@ -117,11 +100,11 @@ class SearchByCountryViewModelTest {
             coEvery { getSuggestedCountriesUseCase("au") } coAnswers { delay(500L); emptyList() }
             coEvery { getSuggestedCountriesUseCase("aus") } coAnswers { countries }
 
-            viewModel.onCountryNameUpdated("a")
+            viewModel.onKeywordValueChanged("a")
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
-            viewModel.onCountryNameUpdated("au")
+            viewModel.onKeywordValueChanged("au")
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
-            viewModel.onCountryNameUpdated("aus")
+            viewModel.onKeywordValueChanged("aus")
             testScope.advanceTimeBy(3000L)
             testScope.advanceUntilIdle()
             coVerify(exactly = 0) { getSuggestedCountriesUseCase("a") }
@@ -131,149 +114,50 @@ class SearchByCountryViewModelTest {
         }
 
     @Test
-    fun `should send ShowCountriesDropDown when getSuggestedCountriesUseCase return non empty list`() =
+    fun `should show countries dropDown when getSuggestedCountriesUseCase return non empty list`() =
         testScope.runTest {
-            val countryName = "a"
+            val keyword = "a"
             val countries = listOf(
                 Country("America", ""),
                 Country("Austria", "")
             )
-            var effects = mutableListOf<SearchByCountryEffect?>()
-            coEvery { getSuggestedCountriesUseCase(countryName) } returns countries
-            val collectJob = launch {
-                viewModel.effect.collect {
-                    effects.add(it)
-                }
-            }
-
-            viewModel.onCountryNameUpdated(countryName)
+            coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
+            viewModel.onKeywordValueChanged(keyword)
             testScope.advanceUntilIdle()
-            collectJob.cancel()
 
-            assertThat(effects.last()).isEqualTo(SearchByCountryEffect.ShowCountriesDropDown)
+            assertThat(viewModel.state.value.isCountriesDropDownVisible).isTrue()
         }
 
     @Test
-    fun `should not send ShowCountriesDropDown when getSuggestedCountriesUseCase return empty list`() =
+    fun `should not show countries dropDown when getSuggestedCountriesUseCase return empty list`() =
         testScope.runTest {
-            val countryName = "abc"
+            val keyword = "abc"
             val countries = emptyList<Country>()
-            var effects = mutableListOf<SearchByCountryEffect?>()
-            coEvery { getSuggestedCountriesUseCase(countryName) } returns countries
-            val collectJob = launch {
-                viewModel.effect.collect {
-                    effects.add(it)
-                }
-            }
+            coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
 
-            viewModel.onCountryNameUpdated(countryName)
+            viewModel.onKeywordValueChanged(keyword)
             testScope.advanceUntilIdle()
-            collectJob.cancel()
 
-            assertThat(effects).doesNotContain(SearchByCountryEffect.ShowCountriesDropDown)
+            assertThat(viewModel.state.value.isCountriesDropDownVisible).isFalse()
         }
-
-    @Test
-    fun `should send LoadingSuggestedCountriesEffect when call getSuggestedCountriesUseCase `() =
-        testScope.runTest {
-            val countryName = "a"
-            val countries = listOf(
-                Country("America", ""),
-                Country("Austria", "")
-            )
-            var effects = mutableListOf<SearchByCountryEffect?>()
-            coEvery { getSuggestedCountriesUseCase(countryName) } returns countries
-            val collectJob = launch {
-                viewModel.effect.collect {
-                    effects.add(it)
-                }
-            }
-
-            viewModel.onCountryNameUpdated(countryName)
-            delay(500L)
-            testScope.advanceUntilIdle()
-            collectJob.cancel()
-
-            assertThat(effects.first()).isEqualTo(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
-        }
-
-    @ParameterizedTest
-    @MethodSource("exceptionToEffectProvider")
-    fun `should send different Errors Effect when call getSuggestedCountriesUseCase after updating country name`(
-        exception: AflamiException,
-        expectedEffect: SearchByCountryEffect
-    ) = testScope.runTest {
-        val anyCountryName = "abc"
-        var effects = mutableListOf<SearchByCountryEffect?>()
-        coEvery { getSuggestedCountriesUseCase(anyCountryName) } throws exception
-        val collectJob = launch {
-            viewModel.effect.collect {
-                effects.add(it)
-            }
-        }
-
-        viewModel.onCountryNameUpdated(anyCountryName)
-        testScope.advanceUntilIdle()
-        collectJob.cancel()
-
-        assertThat(effects.last()).isEqualTo(expectedEffect)
-    }
-
-    @Test
-    fun `should send HideCountriesDropDown when its call`() = testScope.runTest {
-        val countryUiState = CountryUiState("a", "+20")
-        val countryName = "a"
-        val countries = listOf(Country("America", ""), Country("Austria", ""))
-        var effects = mutableListOf<SearchByCountryEffect?>()
-        coEvery { getSuggestedCountriesUseCase(countryName) } returns countries
-        val collectJob = launch {
-            viewModel.effect.collect {
-                effects.add(it)
-            }
-        }
-
-        viewModel.onCountryNameUpdated(countryName)
-        viewModel.onSelectCountry(countryUiState)
-        testScope.advanceUntilIdle()
-        collectJob.cancel()
-
-        assertThat(effects.first()).isEqualTo(SearchByCountryEffect.HideCountriesDropDown)
-    }
-
-    @Test
-    fun `should send LoadingMoviesEffect when its call`() = testScope.runTest {
-        val countryUiState = CountryUiState("eg", "+20")
-        var effects = mutableListOf<SearchByCountryEffect?>()
-        val collectJob = launch {
-            viewModel.effect.collect {
-                effects.add(it)
-            }
-        }
-
-        viewModel.onSelectCountry(countryUiState)
-        testScope.advanceUntilIdle()
-        collectJob.cancel()
-
-        assertThat(effects[1]).isEqualTo(SearchByCountryEffect.LoadingMoviesEffect)
-    }
 
     @Test
     fun `should update movies state when getMoviesByCountryUseCase return list of movie `() =
         testScope.runTest {
-            val countryUiState = CountryUiState("eg", "+20")
+            val countryUiState = CountryUiState("Egypt", "eg")
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
-            viewModel.onSelectCountry(countryUiState)
+            viewModel.onCountrySelected(countryUiState)
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.movies).isEqualTo(movies.toListOfUiState())
         }
 
     @Test
-    fun `should send MoviesLoadedEffect when getMoviesByCountryUseCase return list of movie`() =
+    fun `should set state to MOVIES_LOADED when getMoviesByCountryUseCase return list of movie`() =
         testScope.runTest {
-            val countryUiState = CountryUiState("eg", "+20")
+            val countryUiState = CountryUiState("Egypt", "eg")
             var effects = mutableListOf<SearchByCountryEffect?>()
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
@@ -283,50 +167,12 @@ class SearchByCountryViewModelTest {
                 }
             }
 
-            viewModel.onSelectCountry(countryUiState)
+            viewModel.onCountrySelected(countryUiState)
             testScope.advanceUntilIdle()
             collectJob.cancel()
 
-            assertThat(effects.last()).isEqualTo(SearchByCountryEffect.MoviesLoadedEffect)
+            assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
+                SearchByCountryContentUIState.MOVIES_LOADED
+            )
         }
-
-    @ParameterizedTest
-    @MethodSource("exceptionToEffectProvider")
-    fun `should send different Errors Effect when call getSuggestedCountriesUseCase after selecting country`(
-        exception: AflamiException,
-        expectedEffect: SearchByCountryEffect
-    ) = testScope.runTest {
-        val countryUiState = CountryUiState("eg", "+20")
-        var effects = mutableListOf<SearchByCountryEffect?>()
-        coEvery { getMoviesByCountryUseCase(any()) } throws exception
-        val collectJob = launch {
-            viewModel.effect.collect {
-                effects.add(it)
-            }
-        }
-
-        viewModel.onSelectCountry(countryUiState)
-        testScope.advanceUntilIdle()
-        collectJob.cancel()
-
-        assertThat(effects.last()).isEqualTo(expectedEffect)
-    }
-
-    companion object {
-        @JvmStatic
-        fun exceptionToEffectProvider() = listOf(
-            Arguments.of(
-                InternetConnectionException(),
-                SearchByCountryEffect.NoInternetConnectionEffect
-            ),
-            Arguments.of(
-                NoSuggestedCountriesException(),
-                SearchByCountryEffect.NoSuggestedCountriesEffect
-            ),
-            Arguments.of(NoMoviesForCountryException(), SearchByCountryEffect.NoMoviesEffect),
-            Arguments.of(CountryTooShortException(), SearchByCountryEffect.CountryTooShortEffect),
-            Arguments.of(AflamiException(), SearchByCountryEffect.UnknownErrorEffect)
-        )
-    }
-
 }

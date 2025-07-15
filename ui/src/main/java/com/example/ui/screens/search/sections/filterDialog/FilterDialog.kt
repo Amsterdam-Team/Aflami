@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,6 +79,7 @@ fun FilterDialog(
                     color = AppTheme.color.surface,
                     shape = RoundedCornerShape(12.dp)
                 )
+                .verticalScroll(rememberScrollState())
                 .padding(vertical = 12.dp),
         ) {
             Row(

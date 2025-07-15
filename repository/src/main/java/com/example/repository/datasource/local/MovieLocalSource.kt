@@ -6,20 +6,20 @@ import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
 
-interface LocalMovieDataSource {
+interface MovieLocalSource {
     suspend fun getMoviesByKeywordAndSearchType(
         keyword: String,
         searchType: SearchType
     ): List<MovieWithCategories>
 
-    suspend fun addAllMoviesWithSearchData(
+    suspend fun addMoviesBySearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
         searchType: SearchType,
         expireDate: Instant
     )
 
-    suspend fun getSearchMovieCrossRef(
+    suspend fun getSearchMovieCrossRefs(
         searchKeyword: String,
         searchType: SearchType,
     ): List<SearchMovieCrossRefDto>
