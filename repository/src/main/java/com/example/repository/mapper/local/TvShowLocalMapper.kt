@@ -8,36 +8,36 @@ class TvShowLocalMapper(
     private val categoryLocalMapper: CategoryLocalMapper
 ) {
 
-    fun mapFromLocal(dto: TvShowWithCategory): TvShow {
-        return TvShow(
-            id = dto.tvShow.tvShowId,
-            name = dto.tvShow.name,
-            description = dto.tvShow.description,
-            poster = dto.tvShow.poster,
-            productionYear = dto.tvShow.productionYear,
-            rating = dto.tvShow.rating,
-            categories = categoryLocalMapper.mapListFromTvShowLocal(dto.categories),
-            popularity = dto.tvShow.popularity
-        )
+    fun mapToTvShows(tvShowWithCategories: List<TvShowWithCategory>): List<TvShow> {
+        return tvShowWithCategories.map { mapToTvShow(it) }
     }
 
-    fun mapToLocal(domain: TvShow): LocalTvShowDto {
+    fun mapToLocalTvShows(tvShows: List<TvShow>): List<LocalTvShowDto> {
+        return tvShows.map { mapToLocalTvShow(it) }
+    }
+
+    fun mapToLocalTvShow(tvShow: TvShow): LocalTvShowDto {
         return LocalTvShowDto(
-            tvShowId = domain.id,
-            name = domain.name,
-            description = domain.description,
-            poster = domain.poster,
-            productionYear = domain.productionYear,
-            rating = domain.rating,
-            popularity = domain.popularity
+            tvShowId = tvShow.id,
+            name = tvShow.name,
+            description = tvShow.description,
+            poster = tvShow.poster,
+            productionYear = tvShow.productionYear,
+            rating = tvShow.rating,
+            popularity = tvShow.popularity
         )
     }
 
-    fun mapListFromLocal(dtos: List<TvShowWithCategory>): List<TvShow> {
-        return dtos.map { mapFromLocal(it) }
-    }
-
-    fun mapListToLocal(domains: List<TvShow>): List<LocalTvShowDto> {
-        return domains.map { mapToLocal(it) }
+    private fun mapToTvShow(tvShowWithCategory: TvShowWithCategory): TvShow {
+        return TvShow(
+            id = tvShowWithCategory.tvShow.tvShowId,
+            name = tvShowWithCategory.tvShow.name,
+            description = tvShowWithCategory.tvShow.description,
+            poster = tvShowWithCategory.tvShow.poster,
+            productionYear = tvShowWithCategory.tvShow.productionYear,
+            rating = tvShowWithCategory.tvShow.rating,
+            categories = categoryLocalMapper.mapToTvShowCategories(tvShowWithCategory.categories),
+            popularity = tvShowWithCategory.tvShow.popularity
+        )
     }
 }

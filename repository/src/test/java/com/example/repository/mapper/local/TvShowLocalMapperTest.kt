@@ -25,7 +25,7 @@ class TvShowLocalMapperTest {
         )
         val categories = listOf(LocalTvShowCategoryDto(1L, "Drama"))
 
-        val result = mapper.mapFromLocal(TvShowWithCategory(dto, categories))
+        val result = mapper.mapToTvShow(TvShowWithCategory(dto, categories))
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Breaking Bad")
@@ -48,7 +48,7 @@ class TvShowLocalMapperTest {
             popularity = 0.0
         )
 
-        val result = mapper.mapFromLocal(TvShowWithCategory(dto, emptyList()))
+        val result = mapper.mapToTvShow(TvShowWithCategory(dto, emptyList()))
 
         assertThat(result.categories).isEmpty()
     }
@@ -66,7 +66,7 @@ class TvShowLocalMapperTest {
             categories = listOf(Category(1L, "Sci-Fi", ""))
         )
 
-        val result = mapper.mapToLocal(domain)
+        val result = mapper.mapToLocalTvShow(domain)
 
         assertThat(result.tvShowId).isEqualTo(3L)
         assertThat(result.name).isEqualTo("Stranger Things")
@@ -87,7 +87,7 @@ class TvShowLocalMapperTest {
             listOf(LocalTvShowCategoryDto(2L, "Comedy"))
         )
         val tvShowsWithCategory = dtos.mapIndexed { index, localTvShowDto -> TvShowWithCategory(localTvShowDto, categories[index]) }
-        val result = mapper.mapListFromLocal(tvShowsWithCategory)
+        val result = mapper.mapToTvShows(tvShowsWithCategory)
 
         assertThat(result).hasSize(2)
     }
@@ -98,7 +98,7 @@ class TvShowLocalMapperTest {
             LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f, 0.0)
         )
         val tvShowsWithCategory = dtos.map { TvShowWithCategory(it, emptyList()) }
-        val result = mapper.mapListFromLocal(tvShowsWithCategory)
+        val result = mapper.mapToTvShows(tvShowsWithCategory)
 
         assertThat(result).hasSize(1)
         assertThat(result[0].categories).isEmpty()
@@ -111,7 +111,7 @@ class TvShowLocalMapperTest {
             TvShow(2L, "Friends", "Desc2", "friends.jpg", 1994, emptyList(), 8.9f, 0.0)
         )
 
-        val result = mapper.mapListToLocal(domains)
+        val result = mapper.mapToLocalTvShows(domains)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("BB")
@@ -120,14 +120,14 @@ class TvShowLocalMapperTest {
 
     @Test
     fun `should return empty TvShow list when mapping empty LocalTvShowDto list`() {
-        val result = mapper.mapListFromLocal(emptyList())
+        val result = mapper.mapToTvShows(emptyList())
 
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `should return empty LocalTvShowDto list when mapping empty TvShow list`() {
-        val result = mapper.mapListToLocal(emptyList())
+        val result = mapper.mapToLocalTvShows(emptyList())
 
         assertThat(result).isEmpty()
     }

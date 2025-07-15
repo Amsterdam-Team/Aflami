@@ -1,13 +1,13 @@
 package com.example.localdatasource.roomDataBase.datasource
 
 import com.example.localdatasource.roomDataBase.daos.CountryDao
-import com.example.repository.datasource.local.LocalCountryDataSource
+import com.example.repository.datasource.local.CountryLocalSource
 import com.example.repository.dto.local.LocalCountryDto
 
-class LocalCountryDataSourceImpl(
+class CountryLocalSourceImpl(
     private val dao: CountryDao
-) : LocalCountryDataSource {
-    override suspend fun getAllCountries(): List<LocalCountryDto> {
+) : CountryLocalSource {
+    override suspend fun getCountries(): List<LocalCountryDto> {
         try {
         return dao.getAllCountries()
 
@@ -17,7 +17,7 @@ class LocalCountryDataSourceImpl(
         return emptyList()
     }
 
-    override suspend fun addAllCountries(countries: List<LocalCountryDto>) {
+    override suspend fun addCountries(countries: List<LocalCountryDto>) {
         dao.upsertAllCountries(countries)
     }
 }

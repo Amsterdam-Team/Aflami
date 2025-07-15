@@ -1,13 +1,13 @@
 package com.example.remotedatasource.datasource
 
 import com.example.remotedatasource.client.KtorClient
-import com.example.repository.datasource.remote.RemoteCategoryDatasource
+import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.remote.RemoteCategoryResponse
 import io.ktor.client.call.body
 
-class RemoteCategoryDatasourceImpl(
+class CategoryRemoteSourceImpl(
     private val ktorClient: KtorClient
-) : RemoteCategoryDatasource {
+) : CategoryRemoteSource {
     override suspend fun getMovieCategories(): RemoteCategoryResponse {
         return ktorClient.get(GET_MOVIE_GENRE_LIST).body()
     }

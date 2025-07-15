@@ -1,17 +1,17 @@
 package com.example.localdatasource.roomDataBase.datasource
 
 import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
 
-class RecentSearchDataSourceImpl(
+class RecentSearchLocalSourceImpl(
     private val dao: RecentSearchDao
-) : LocalRecentSearchDataSource {
+) : RecentSearchLocalSource {
 
-    override suspend fun upsertResentSearch(search: LocalSearchDto) {
-        dao.upsertRecentSearch(search)
+    override suspend fun upsertRecentSearch(recentSearch: LocalSearchDto) {
+        dao.upsertRecentSearch(recentSearch)
     }
 
     override suspend fun getRecentSearches(): List<LocalSearchDto> {
@@ -25,21 +25,21 @@ class RecentSearchDataSourceImpl(
         return dao.getSearchByKeywordAndType(keyword)
     }
 
-    override suspend fun deleteAllSearches() {
+    override suspend fun deleteRecentSearches() {
         dao.deleteAllSearches()
     }
 
-    override suspend fun deleteSearchByKeyword(keyword: String) {
+    override suspend fun deleteRecentSearchByKeyword(keyword: String) {
         dao.deleteSearchByKeyword(keyword)
         dao.deleteSearchMovieCrossRefByKeyword(keyword)
     }
 
-    override suspend fun deleteSearchByKeywordAndType(keyword: String, searchType: SearchType) {
+    override suspend fun deleteRecentSearchByKeywordAndType(keyword: String, searchType: SearchType) {
         dao.deleteSearchByKeyword(keyword, searchType = searchType)
         dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType = searchType)
     }
 
-    override suspend fun deleteExpiredSearches(currentDate: Instant) {
-        dao.deleteAllExpiredSearches(currentDate)
+    override suspend fun deleteExpiredRecentSearches(date: Instant) {
+        dao.deleteAllExpiredSearches(date)
     }
 }

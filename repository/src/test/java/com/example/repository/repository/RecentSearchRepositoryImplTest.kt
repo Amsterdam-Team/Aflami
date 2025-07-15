@@ -1,6 +1,6 @@
 package com.example.repository.repository
 
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.RecentSearchMapper
@@ -19,7 +19,7 @@ class RecentSearchRepositoryImplTest {
 
     private lateinit var repository: RecentSearchRepository
 
-    private val localRecentSearchDataSource: LocalRecentSearchDataSource = mockk()
+    private val recentSearchLocalSource: RecentSearchLocalSource = mockk()
     private val recentSearchMapper: RecentSearchMapper = mockk()
     private val now: Instant = Clock.System.now()
 
@@ -28,17 +28,17 @@ class RecentSearchRepositoryImplTest {
 
     @BeforeEach
     fun setup() {
-        repository = RecentSearchRepositoryImpl(localRecentSearchDataSource, recentSearchMapper)
+        repository = RecentSearchRepositoryImpl(recentSearchLocalSource, recentSearchMapper)
     }
 
     @Test
     fun `should upsert keyword search`() = runTest {
-        coEvery { localRecentSearchDataSource.upsertResentSearch(any()) } just Runs
+        coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
         repository.upsertRecentSearch(testKeyword)
 
         coVerify {
-            localRecentSearchDataSource.upsertResentSearch(
+            recentSearchLocalSource.upsertRecentSearch(
                 withArg {
                     assertThat(it.searchKeyword).isEqualTo(testKeyword)
                     assertThat(it.searchType).isEqualTo(SearchType.BY_KEYWORD)
@@ -49,12 +49,12 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should upsert actor search`() = runTest {
-        coEvery { localRecentSearchDataSource.upsertResentSearch(any()) } just Runs
+        coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
         repository.upsertRecentSearchForActor(testKeyword)
 
         coVerify {
-            localRecentSearchDataSource.upsertResentSearch(
+            recentSearchLocalSource.upsertRecentSearch(
                 withArg {
                     assertThat(it.searchKeyword).isEqualTo(testKeyword)
                     assertThat(it.searchType).isEqualTo(SearchType.BY_ACTOR)
@@ -65,12 +65,12 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should upsert country search`() = runTest {
-        coEvery { localRecentSearchDataSource.upsertResentSearch(any()) } just Runs
+        coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
         repository.upsertRecentSearchForCountry(testKeyword)
 
         coVerify {
-            localRecentSearchDataSource.upsertResentSearch(
+            recentSearchLocalSource.upsertRecentSearch(
                 withArg {
                     assertThat(it.searchKeyword).isEqualTo(testKeyword)
                     assertThat(it.searchType).isEqualTo(SearchType.BY_COUNTRY)
@@ -84,7 +84,7 @@ class RecentSearchRepositoryImplTest {
         val dtos = listOf(testDto)
         val expected = listOf("Action")
 
-        coEvery { localRecentSearchDataSource.getRecentSearches() } returns dtos
+        coEvery { recentSearchLocalSource.getRecentSearches() } returns dtos
         every { recentSearchMapper.toDomainList(dtos) } returns expected
 
         val result = repository.getAllRecentSearches()
@@ -94,19 +94,19 @@ class RecentSearchRepositoryImplTest {
 
     @Test
     fun `should delete all recent searches`() = runTest {
-        coEvery { localRecentSearchDataSource.deleteAllSearches() } just Runs
+        coEvery { recentSearchLocalSource.deleteRecentSearches() } just Runs
 
         repository.deleteAllRecentSearches()
 
-        coVerify { localRecentSearchDataSource.deleteAllSearches() }
+        coVerify { recentSearchLocalSource.deleteRecentSearches() }
     }
 
     @Test
     fun `should delete specific recent search`() = runTest {
-        coEvery { localRecentSearchDataSource.deleteSearchByKeyword(testKeyword) } just Runs
+        coEvery { recentSearchLocalSource.deleteRecentSearchByKeyword(testKeyword) } just Runs
 
         repository.deleteRecentSearch(testKeyword)
 
-        coVerify { localRecentSearchDataSource.deleteSearchByKeyword(testKeyword) }
+        coVerify { recentSearchLocalSource.deleteRecentSearchByKeyword(testKeyword) }
     }
 }
