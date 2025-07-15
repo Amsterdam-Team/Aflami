@@ -1,4 +1,4 @@
-package com.example.domain.common
+package com.example.domain.common.ContentFilteringExtensions
 
 import com.example.entity.common.PopularitySortable
 
