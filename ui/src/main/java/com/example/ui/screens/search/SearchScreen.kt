@@ -4,12 +4,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -96,7 +94,7 @@ private fun SearchContent(
     filterInteraction: FilterInteractionListener
 ) {
     BackHandler(enabled = state.query.isNotEmpty()) {
-        interaction.onClearSearch()
+        interaction.onSearchCleared()
     }
     var headerHeight by remember { mutableStateOf(0.dp) }
 
