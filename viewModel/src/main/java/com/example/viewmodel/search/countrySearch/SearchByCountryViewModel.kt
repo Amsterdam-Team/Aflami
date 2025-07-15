@@ -2,14 +2,11 @@ package com.example.viewmodel.search.countrySearch
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
-import com.example.domain.exceptions.CountryTooShortException
-import com.example.domain.exceptions.NoInternetException
-import com.example.domain.exceptions.NoMoviesForCountryException
-import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,88 +28,112 @@ class SearchByCountryViewModel(
     SearchByCountryScreenState(),
     dispatcherProvider
 ), SearchByCountryInteractionListener {
-
-    private val queryFlow = MutableStateFlow("")
+    private val _keyword = MutableStateFlow("")
 
     init {
-        observeQueryFlow()
+        observeKeywordFlow()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    private fun observeQueryFlow() {
+    private fun observeKeywordFlow() {
         viewModelScope.launch {
-            queryFlow
-                .debounce(300)
+            _keyword
+                .debounce(DEBOUNCE_DURATION)
                 .map(String::trim)
                 .filter(String::isNotBlank)
-                .collectLatest(::loadCountries)
+                .collectLatest(::getCountriesByKeyword)
         }
     }
 
-    private fun loadCountries(query: String): Job {
-        sendNewEffect(SearchByCountryEffect.LoadingSuggestedCountriesEffect)
+    private fun getCountriesByKeyword(keyword: String): Job {
+        updateState { it.copy(isLoadingCountries = true) }
         return tryToExecute(
-            action = { getSuggestedCountriesUseCase(query) },
+            action = { getSuggestedCountriesUseCase(keyword) },
             onSuccess = { countries -> updateSuggestedCountries(countries.toUiState()) },
-            onError = { onError(exception = it) }
+            onError = (::onError)
         )
     }
 
-    override fun onCountryNameUpdated(countryName: String) {
-        queryFlow.update { countryName }
-        if (countryName.isBlank()) {
-            sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
-            updateState { it.copy(selectedCountry = countryName, suggestedCountries = emptyList()) }
-        } else {
-            updateState { it.copy(selectedCountry = countryName) }
-        }
-    }
-
-    override fun onSelectCountry(country: CountryUiState) {
-        sendNewEffect(SearchByCountryEffect.HideCountriesDropDown)
-        updateState {
-            it.copy(selectedCountry = country.countryName, selectedCountryIsoCode = country.countryIsoCode)
-        }
-        getMoviesByCountry(country.countryIsoCode)
-    }
-
-    override fun onRetryQuestClicked() {
-        sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
-        getMoviesByCountry(state.value.selectedCountryIsoCode)
-    }
-
-    private fun getMoviesByCountry(countryIsoCode: String) {
-        sendNewEffect(SearchByCountryEffect.LoadingMoviesEffect)
+    private fun getMoviesByCountry() {
+        updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
         tryToExecute(
-            action = { getMoviesByCountryUseCase.invoke(countryIsoCode) },
+            action = { getMoviesByCountryUseCase(state.value.selectedCountryIsoCode) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
-            onError = { exception -> onError(exception) }
+            onError = (::onError)
         )
     }
 
     private fun updateSuggestedCountries(suggestedCountries: List<CountryUiState>) {
         updateState {
-            it.copy(suggestedCountries = suggestedCountries)
+            it.copy(
+                isLoadingCountries = false,
+                suggestedCountries = suggestedCountries,
+                isCountriesDropDownVisible = suggestedCountries.isNotEmpty()
+            )
         }
-        if (suggestedCountries.isNotEmpty())
-            sendNewEffect(SearchByCountryEffect.ShowCountriesDropDown)
     }
 
     private fun updateMoviesForCountry(movies: List<MovieUiState>) {
         updateState {
-            it.copy(movies = movies)
+            it.copy(
+                movies = movies,
+                searchByCountryContentUIState =
+                    if (movies.isNotEmpty()) SearchByCountryContentUIState.MOVIES_LOADED
+                    else SearchByCountryContentUIState.NO_DATA_FOUND
+            )
         }
-        sendNewEffect(SearchByCountryEffect.MoviesLoadedEffect)
     }
 
     private fun onError(exception: AflamiException) {
-        val errorEffect = when (exception) {
-            is NoInternetException -> SearchByCountryEffect.NoInternetConnectionEffect
-            is NoSuggestedCountriesException -> SearchByCountryEffect.NoSuggestedCountriesEffect
-            is NoMoviesForCountryException -> SearchByCountryEffect.NoMoviesEffect
-            is CountryTooShortException -> SearchByCountryEffect.CountryTooShortEffect
-            else -> SearchByCountryEffect.UnknownErrorEffect
+        updateState {
+            it.copy(
+                isLoadingCountries = false,
+                suggestedCountries = emptyList(),
+                movies = emptyList(),
+                searchByCountryContentUIState = exception.toSearchByCountryState()
+            )
         }
-        sendNewEffect(errorEffect)
+    }
+
+    override fun onKeywordValueChanged(keyword: String) {
+        _keyword.update { keyword }
+        if (keyword.isBlank()) {
+            updateState {
+                it.copy(
+                    keyword = keyword,
+                    suggestedCountries = emptyList(),
+                    isCountriesDropDownVisible = false
+                )
+            }
+        } else {
+            updateState { it.copy(keyword = keyword) }
+        }
+    }
+
+    override fun onCountrySelected(country: CountryUiState) {
+        updateState {
+            it.copy(
+                keyword = country.countryName,
+                selectedCountryIsoCode = country.countryIsoCode,
+                isCountriesDropDownVisible = false
+            )
+        }
+        getMoviesByCountry()
+    }
+
+    override fun onRetryQuestClicked() {
+        if (state.value.selectedCountryIsoCode.isBlank() && state.value.keyword.isNotBlank()) {
+            updateState { it.copy(isLoadingCountries = true) }
+            getCountriesByKeyword(state.value.keyword)
+        } else if (state.value.selectedCountryIsoCode.isNotBlank()) {
+            updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
+            getMoviesByCountry()
+        } else {
+            updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR) }
+        }
+    }
+
+    companion object {
+        private const val DEBOUNCE_DURATION = 300L
     }
 }
