@@ -1,8 +1,11 @@
 package com.example.viewmodel.search
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
+import com.example.domain.useCase.GetMoviesPagingByKeywordUseCase
 import com.example.domain.useCase.GetTvShowByKeywordUseCase
 import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
@@ -11,27 +14,27 @@ import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.categories.MovieCategoryItemUiState.Companion.getSelectedOne
 import com.example.viewmodel.common.categories.MovieCategoryItemUiState.Companion.selectByType
-import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.getSelectedOne
-import com.example.viewmodel.common.toMoveUiStates
-import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.common.categories.MovieCategoryType
+import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.getSelectedOne
 import com.example.viewmodel.common.categories.TvShowCategoryItemUiState.Companion.selectByType
 import com.example.viewmodel.common.categories.TvShowCategoryType
 import com.example.viewmodel.common.categories.toMovieGenreType
 import com.example.viewmodel.common.categories.toTvShowGenre
+import com.example.viewmodel.common.toMoveUiStates
+import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.String
 
 @OptIn(FlowPreview::class)
 class GlobalSearchViewModel(
@@ -41,6 +44,8 @@ class GlobalSearchViewModel(
     private val addRecentSearchUseCase: AddRecentSearchUseCase,
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
+    private val getMoviesPagingByKeywordUseCase: GetMoviesPagingByKeywordUseCase,
+
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     GlobalSearchInteractionListener, FilterInteractionListener {
@@ -76,7 +81,14 @@ class GlobalSearchViewModel(
     }
 
     private fun onSearchQueryChanged(trimmedQuery: String) {
-        updateState { it.copy(isLoading = true, errorUiState = null, movies = emptyList(), tvShows = emptyList()) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorUiState = null,
+                movies = emptyList(),
+                tvShows = emptyList()
+            )
+        }
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
@@ -305,7 +317,13 @@ class GlobalSearchViewModel(
 
     override fun onClearButtonClicked() = resetFilterState()
 
-    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() =
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun stopLoading() = updateState { it.copy(isLoading = false) }
+
+    fun searchMovies(keyword: String): Flow<PagingData<Movie>> {
+        return getMoviesPagingByKeywordUseCase(keyword).cachedIn(viewModelScope)
+    }
+
 }
