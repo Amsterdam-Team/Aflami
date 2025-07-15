@@ -1,7 +1,14 @@
 package com.example.entity
 
-data class ActorUiState(
+data class Actor(
     val id: Long,
-    val photo: String,
-    val name: String
+    val name: String,
+    val imageUrl: String,
+    val popularity: Double,
+    val gender: Gender
 )
+
+enum class Gender {
+    Male,
+    Female,
+}

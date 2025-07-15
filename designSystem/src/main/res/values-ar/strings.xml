@@ -193,4 +193,9 @@
     <string name="general_error_message">حدث خطأ ما، الرجاء المحاولة مرة أخرى.</string>
     <!-- -   -->
     <string name="episode">الحلقه %1$d</string>
+
+    <!-- - Cast  -->
+    <string name="cast_not_available">"الممثلون غير متوفرين"</string>
+    <string name="we_could_not_find_cast_information">"لم نتمكن من العثور على معلومات الممثلين لهذا العنوان حالياً. يرجى المحاولة مرة أخرى لاحقاً."</string>
+
 </resources>

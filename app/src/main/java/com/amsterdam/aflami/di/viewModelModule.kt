@@ -2,6 +2,7 @@ package com.amsterdam.aflami.di
 
 import com.example.viewmodel.movieDetails.MovieDetailsArgs
 import com.example.viewmodel.movieDetails.MovieDetailsViewModel
+import com.example.viewmodel.cast.CastViewModel
 import com.example.viewmodel.search.GlobalSearchViewModel
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
@@ -19,4 +20,5 @@ val viewModelModule = module {
     viewModelOf(::SearchByActorViewModel)
     singleOf(::MovieDetailsArgs)
     viewModelOf(::MovieDetailsViewModel)
+    viewModelOf(::CastViewModel)
 }
