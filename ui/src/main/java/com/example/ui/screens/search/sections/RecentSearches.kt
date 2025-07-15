@@ -29,7 +29,7 @@ fun RecentSearchesSection(
     interaction: GlobalSearchInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isEmpty()) {
+    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isBlank()) {
         Column {
             Row(
                 modifier = modifier

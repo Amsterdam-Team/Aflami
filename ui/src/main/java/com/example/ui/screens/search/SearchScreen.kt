@@ -1,15 +1,15 @@
 package com.example.ui.screens.search
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,14 +24,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
+import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
@@ -74,10 +76,7 @@ fun SearchScreen(
                     navController.navigate(Route.SearchByActor)
                 }
 
-                SearchUiEffect.NavigateToMovieDetails -> {
-                    Log.e("bk", "collect: NavigateToMovieDetails")
-                }
-
+                SearchUiEffect.NavigateToMovieDetails -> {}
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
@@ -90,7 +89,6 @@ fun SearchScreen(
     SearchContent(state = state, interaction = viewModel, filterInteraction = viewModel)
 }
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun SearchContent(
     state: SearchUiState,
@@ -100,8 +98,8 @@ private fun SearchContent(
     BackHandler(enabled = state.query.isNotEmpty()) {
         interaction.onClearSearch()
     }
+    var headerHeight by remember { mutableStateOf(0.dp) }
 
-    var bottomPadding by remember { mutableStateOf(0.dp) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,85 +112,17 @@ private fun SearchContent(
             onNavigateBackClicked = interaction::onNavigateBackClicked
         )
 
-        val keyboardController = LocalSoftwareKeyboardController.current
+        SearchScreenHeader(
+            state = state,
+            interaction = interaction,
+            onHeaderSizeChanged = {
+                headerHeight = it.height.dp
+            }
+        )
 
-        Column(
-            modifier = Modifier.onGloballyPositioned { coordinates ->
-                bottomPadding = coordinates.size.height.dp
-            }
-        ) {
-            TextField(
-                modifier = Modifier
-                    .background(color = AppTheme.color.surface)
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 16.dp),
-                text = state.query,
-                onValueChange = interaction::onTextValuedChanged,
-                hintText = stringResource(R.string.search_hint),
-                trailingIcon = R.drawable.ic_filter_vertical,
-                onTrailingClick = interaction::onFilterButtonClicked,
-                isTrailingClickEnabled = state.query.isNotEmpty(),
-                maxCharacters = 100,
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        keyboardController?.hide()
-                        interaction.onSearchActionClicked()
-                    }
-                ),
-                imeAction = ImeAction.Search,
-            )
-            AnimatedVisibility(!state.query.isEmpty()) {
-                TabsLayout(
-                    modifier = Modifier.fillMaxWidth(),
-                    tabs = listOf(
-                        stringResource(R.string.movies),
-                        stringResource(R.string.tv_shows)
-                    ),
-                    selectedIndex = state.selectedTabOption.index,
-                    onSelectTab = { index -> interaction.onTabOptionClicked(TabOption.entries[index]) },
-                )
-            }
+        AnimatedVisibility(state.isLoading) {
+            Loading()
         }
-
-        AnimatedVisibility(state.query.isNotEmpty() || state.errorUiState != null) {
-            if (state.errorUiState == SearchErrorState.NoMoviesByKeywordFoundException) {
-                NoDataContainer(
-                    imageRes = painterResource(R.drawable.placeholder_no_result_found),
-                    title = stringResource(R.string.no_search_result),
-                    description = stringResource(R.string.no_search_result_description),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = bottomPadding / 2)
-                )
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(160.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
-                ) {
-                    items(
-                        if (state.selectedTabOption == TabOption.MOVIES) state.movies
-                        else state.tvShows,
-                    ) { mediaItem ->
-                        with(mediaItem) {
-                            MovieCard(
-                                movieImage = posterImage,
-                                movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
-                                else stringResource(R.string.movies),
-                                movieYear = yearOfRelease,
-                                movieTitle = name,
-                                movieRating = rate,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        SuggestionsHubSection(state = state, interaction = interaction)
-
-        RecentSearchesSection(state = state, interaction = interaction)
 
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -204,13 +134,116 @@ private fun SearchContent(
             )
         }
 
-        AnimatedVisibility(state.isLoading) {
-            Loading()
+        AnimatedVisibility(state.query.isNotBlank() && state.errorUiState == null) {
+            SuccessMediaItems(
+                state = state
+            )
         }
 
-        AnimatedVisibility(state.errorUiState == SearchErrorState.NoNetworkConnection && state.query.isNotEmpty()) {
-            NoNetworkContainer(
-                onClickRetry = interaction::onRetryQuestClicked,
+        SuggestionsHubSection(state = state, interaction = interaction)
+
+        RecentSearchesSection(state = state, interaction = interaction)
+
+        AnimatedVisibility(state.query.isNotBlank() && state.errorUiState != null) {
+            CenterOfScreenContainer(
+                unneededSpace = headerHeight,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 8.dp, end = 8.dp)
+            ) {
+                if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
+                    NoNetworkContainer(
+                        onClickRetry = interaction::onRetryQuestClicked,
+                    )
+                }
+
+                if (state.errorUiState == SearchErrorState.NoResultFoundException) {
+                    NoDataContainer(
+                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                        title = stringResource(R.string.no_search_result),
+                        description = stringResource(R.string.no_search_result_description),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SuccessMediaItems(
+    state: SearchUiState,
+    modifier: Modifier = Modifier
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(160.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+        modifier = modifier
+    ) {
+        items(
+            if (state.selectedTabOption == TabOption.MOVIES) state.movies
+            else state.tvShows,
+        ) { mediaItem ->
+            with(mediaItem) {
+                MovieCard(
+                    movieImage = posterImage,
+                    movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
+                    else stringResource(R.string.movies),
+                    movieYear = yearOfRelease,
+                    movieTitle = name,
+                    movieRating = rate,
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun SearchScreenHeader(
+    state: SearchUiState,
+    interaction: GlobalSearchInteractionListener,
+    modifier: Modifier = Modifier,
+    onHeaderSizeChanged: (IntSize) -> Unit = {}
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(
+        modifier = modifier.onSizeChanged(onSizeChanged = onHeaderSizeChanged)
+    ) {
+        TextField(
+            modifier = Modifier
+                .background(color = AppTheme.color.surface)
+                .padding(top = 8.dp)
+                .padding(horizontal = 16.dp),
+            text = state.query,
+            onValueChange = interaction::onTextValuedChanged,
+            hintText = stringResource(R.string.search_hint),
+            trailingIcon = R.drawable.ic_filter_vertical,
+            onTrailingClick = interaction::onFilterButtonClicked,
+            isTrailingClickEnabled = state.query.isNotBlank(),
+            isError = state.query.length > 100,
+            errorMessage = stringResource(R.string.search_error_query_too_long),
+            maxCharacters = 100,
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    interaction.onSearchActionClicked()
+                }
+            ),
+            imeAction = ImeAction.Search,
+        )
+        AnimatedVisibility(state.query.isNotBlank()) {
+            TabsLayout(
+                modifier = Modifier.fillMaxWidth(),
+                tabs = listOf(
+                    stringResource(R.string.movies),
+                    stringResource(R.string.tv_shows)
+                ),
+                selectedIndex = state.selectedTabOption.index,
+                onSelectTab = { index -> interaction.onTabOptionClicked(TabOption.entries[index]) },
             )
         }
     }
