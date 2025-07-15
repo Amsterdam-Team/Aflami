@@ -1,5 +1,6 @@
 package com.example.remotedatasource.datasource
 
+import android.util.Log
 import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
@@ -57,11 +58,12 @@ class RemoteMovieDatasourceImpl(
     private suspend fun getActorIdByName(
         name: String
     ): RemoteActorSearchResponse {
-        return safeCall<RemoteActorSearchResponse> {
+         return  safeCall<RemoteActorSearchResponse> {
             ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) {
                 parameter(QUERY_KEY, name)
-            }
-        }
+            }}
+
+
     }
 
     override suspend fun getMoviesByCountryIsoCode(

@@ -1,4 +1,5 @@
 package com.example.viewmodel.movieDetails
 
-interface MovieDetailsIntractionListener {
+interface MovieDetailsInteractionListener  {
+    fun onMovieExtrasClicked(movieExtras: MovieExtras)
 }

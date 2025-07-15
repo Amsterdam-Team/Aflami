@@ -37,6 +37,7 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
@@ -76,7 +77,9 @@ fun SearchByActorScreen(
             isNoInternetConnection = false
             viewModel.onRetryQuestClicked()
         }
-    )
+    ){
+        navController.navigate(Route.MovieDetails(it))
+    }
 }
 
 @Composable
@@ -86,6 +89,7 @@ private fun SearchByActorContent(
     interactionListener: SearchByActorInteractionListener,
     isNoInternetConnection: Boolean,
     onRetryQuestClicked: () -> Unit,
+    onMovieClicked : (movieId : Long) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -163,7 +167,9 @@ private fun SearchByActorContent(
                                 movieYear = movie.productionYear,
                                 movieTitle = movie.name,
                                 movieRating = movie.rating,
-                            )
+                            ){
+                                onMovieClicked(movie.id)
+                            }
                         }
                         item {
                             Spacer(modifier = Modifier.navigationBarsPadding())
@@ -193,7 +199,8 @@ private fun SearchByActorContentPreview() {
                 }
             },
             isNoInternetConnection = false,
-            onRetryQuestClicked = {}
+            onRetryQuestClicked = {},
+            onMovieClicked = {}
         )
     }
 }
