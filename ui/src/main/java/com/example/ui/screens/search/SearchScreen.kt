@@ -104,12 +104,6 @@ private fun SearchContent(
             .background(color = AppTheme.color.surface)
             .statusBarsPadding()
     ) {
-        DefaultAppBar(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            title = stringResource(R.string.search),
-            onNavigateBackClicked = interaction::onNavigateBackClicked
-        )
-
         SearchScreenHeader(
             state = state,
             interaction = interaction,
@@ -142,13 +136,13 @@ private fun SearchContent(
 
         RecentSearchesSection(state = state, interaction = interaction)
 
-        AnimatedVisibility(state.query.isNotBlank() && state.errorUiState != null) {
-            CenterOfScreenContainer(
-                unneededSpace = headerHeight,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 8.dp, end = 8.dp)
-            ) {
+        CenterOfScreenContainer(
+            unneededSpace = headerHeight / 3,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 8.dp, end = 8.dp)
+        ) {
+            AnimatedVisibility(state.query.isNotBlank() && state.errorUiState != null) {
                 if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onRetryQuestClicked,
@@ -211,6 +205,11 @@ private fun SearchScreenHeader(
     Column(
         modifier = modifier.onSizeChanged(onSizeChanged = onHeaderSizeChanged)
     ) {
+        DefaultAppBar(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            title = stringResource(R.string.search),
+            onNavigateBackClicked = interaction::onNavigateBackClicked
+        )
         TextField(
             modifier = Modifier
                 .background(color = AppTheme.color.surface)
