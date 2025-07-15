@@ -18,8 +18,8 @@ import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.R
-import com.example.viewmodel.search.GlobalSearchInteractionListener
-import com.example.viewmodel.search.SearchUiState
+import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
+import com.example.viewmodel.search.globalSearch.SearchUiState
 
 @Composable
 fun SuggestionsHubSection(

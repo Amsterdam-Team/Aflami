@@ -1,4 +1,4 @@
-package com.example.domain.useCase.genreTypes
+package com.example.viewmodel.search.globalSearch.genre
 
 enum class MovieGenre {
     ALL,
