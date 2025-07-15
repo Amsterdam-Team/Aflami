@@ -1,8 +1,6 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
-import com.example.domain.useCase.genreTypes.MovieGenre
-import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.Movie
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
@@ -25,7 +23,7 @@ class MovieRepositoryImpl(
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String, rating: Float, movieGenre: MovieGenre): List<Movie> {
+    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
 
         val recentSearch =
             recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
@@ -39,12 +37,7 @@ class MovieRepositoryImpl(
         }
         deleteRecentSearch(recentSearch)
 
-        val remoteMovies = if (rating != 0f || movieGenre != MovieGenre.ALL) {
-            remoteMovieDataSource.discoverMovies(keyword, rating, movieRemoteMapper.mapToGenreId(movieGenre))
-        } else {
-            remoteMovieDataSource.getMoviesByKeyword(keyword)
-        }
-
+        val remoteMovies = remoteMovieDataSource.getMoviesByKeyword(keyword)
         val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
 
         localMovieDataSource.addAllMoviesWithSearchData(

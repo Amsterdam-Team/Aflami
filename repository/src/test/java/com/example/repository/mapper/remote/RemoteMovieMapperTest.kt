@@ -54,7 +54,7 @@ class RemoteMovieMapperTest {
         assertThat(result.poster).isEqualTo("/inception.jpg")
         assertThat(result.productionYear).isEqualTo(2010)
         assertThat(result.rating).isEqualTo(8.8f)
-        assertThat(result.categories).isEmpty()
+        assertThat(result.categories.map { it.id }).containsExactly(28L, 12L)
     }
 
     @Test
