@@ -2,7 +2,7 @@ package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
-import com.example.domain.useCase.genreTypes.TvShowGenre
+import com.example.entity.Actor
 import com.example.entity.Movie
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
@@ -10,6 +10,7 @@ import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
+import com.example.repository.mapper.remote.RemoteCastMapper
 import com.example.repository.mapper.remote.RemoteMovieMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ class MovieRepositoryImpl(
     private val remoteMovieDataSource: RemoteMovieDatasource,
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: RemoteMovieMapper,
+    private val remoteCastMapper: RemoteCastMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
@@ -115,6 +117,10 @@ class MovieRepositoryImpl(
             }
             domainMovies
         }
+    }
+
+    override suspend fun getCastByMovieId(id: Long): List<Actor> {
+        return remoteMovieDataSource.getCastByMovieId(id).cast.map { remoteCastMapper.mapToDomain(it) }
     }
 
     private suspend fun deleteRecentSearch(
