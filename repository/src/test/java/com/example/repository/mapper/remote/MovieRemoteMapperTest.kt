@@ -5,9 +5,9 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class RemoteMovieMapperTest {
+class MovieRemoteMapperTest {
 
-    private val mapper = RemoteMovieMapper()
+    private val mapper = MovieRemoteMapper()
 
     private fun createRemoteMovieItemDto(
         id: Long,

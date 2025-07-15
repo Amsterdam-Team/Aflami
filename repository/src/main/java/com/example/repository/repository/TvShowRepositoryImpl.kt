@@ -10,7 +10,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.TvShowLocalMapper
 import com.example.repository.mapper.remote.GenreMapper
-import com.example.repository.mapper.remote.RemoteTvShowMapper
+import com.example.repository.mapper.remote.TvShowRemoteMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
     private val tvLocalMapper: TvShowLocalMapper,
-    private val tvRemoteMapper: RemoteTvShowMapper,
+    private val tvRemoteMapper: TvShowRemoteMapper,
     private val genreMapper: GenreMapper,
     private val recentSearchDatasource: RecentSearchLocalSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO

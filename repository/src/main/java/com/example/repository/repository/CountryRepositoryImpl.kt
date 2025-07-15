@@ -5,18 +5,18 @@ import com.example.entity.Country
 import com.example.repository.datasource.local.CountryLocalSource
 import com.example.repository.datasource.remote.CountryRemoteSource
 import com.example.repository.mapper.local.CountryLocalMapper
-import com.example.repository.mapper.remote.RemoteCountryMapper
+import com.example.repository.mapper.remote.CountryRemoteMapper
 
 class CountryRepositoryImpl(
     private val localDataSource: CountryLocalSource,
     private val remoteDataSource: CountryRemoteSource,
-    private val remoteCountryMapper: RemoteCountryMapper,
+    private val countryRemoteMapper: CountryRemoteMapper,
     private val localCountryMapper: CountryLocalMapper,
 ): CountryRepository {
     override suspend fun getAllCountries(): List<Country> {
         val localCountries = localDataSource.getCountries()
         if (localCountries.isNotEmpty()) return localCountries.map { localCountryMapper.mapToCountry(it) }
-        val remoteCountries = remoteDataSource.getCountries().map { remoteCountryMapper.mapToCountry(it) }
+        val remoteCountries = remoteDataSource.getCountries().map { countryRemoteMapper.mapToCountry(it) }
         localDataSource.addCountries(remoteCountries.map { localCountryMapper.mapToLocalCountry(it) })
         return remoteCountries
     }

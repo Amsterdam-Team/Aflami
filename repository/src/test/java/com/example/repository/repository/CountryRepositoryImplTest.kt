@@ -6,7 +6,7 @@ import com.example.repository.datasource.remote.CountryRemoteSource
 import com.example.repository.dto.local.LocalCountryDto
 import com.example.repository.dto.remote.RemoteCountryDto
 import com.example.repository.mapper.local.CountryLocalMapper
-import com.example.repository.mapper.remote.RemoteCountryMapper
+import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
@@ -20,14 +20,14 @@ class CountryRepositoryImplTest {
     private val localDataSource: CountryLocalSource = mockk()
     private val remoteDataSource: CountryRemoteSource = mockk()
     private val localMapper: CountryLocalMapper = mockk()
-    private val remoteMapper: RemoteCountryMapper = mockk()
+    private val remoteMapper: CountryRemoteMapper = mockk()
 
     @BeforeEach
     fun setup() {
         repository = CountryRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
-            remoteCountryMapper = remoteMapper,
+            countryRemoteMapper = remoteMapper,
             localCountryMapper = localMapper
         )
     }

@@ -5,9 +5,9 @@ import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class RemoteTvShowMapperTest {
+class TvShowRemoteMapperTest {
 
-    private val mapper = RemoteTvShowMapper()
+    private val mapper = TvShowRemoteMapper()
 
     private fun createRemoteTvShowItemDto(
         id: Long,

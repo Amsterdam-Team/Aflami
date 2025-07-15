@@ -10,7 +10,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.GenreMapper
-import com.example.repository.mapper.remote.RemoteMovieMapper
+import com.example.repository.mapper.remote.MovieRemoteMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class MovieRepositoryImpl(
     private val movieLocalSource: MovieLocalSource,
     private val movieDataSource: MovieRemoteSource,
     private val movieLocalMapper: MovieLocalMapper,
-    private val movieRemoteMapper: RemoteMovieMapper,
+    private val movieRemoteMapper: MovieRemoteMapper,
     private val genreMapper: GenreMapper,
     private val recentSearchDatasource: RecentSearchLocalSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO

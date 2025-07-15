@@ -1,11 +1,10 @@
 package com.example.repository.mapper.remote
 
-import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.TvShow
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
 
-class RemoteTvShowMapper {
+class TvShowRemoteMapper {
 
     fun mapToTvShow(remoteTvShowItemDto: RemoteTvShowItemDto): TvShow {
         return TvShow(

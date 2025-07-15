@@ -1,11 +1,10 @@
 package com.example.repository.mapper.remote
 
-import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 
-class RemoteMovieMapper {
+class MovieRemoteMapper {
 
     fun mapToMovie(remoteMovieItemDto: RemoteMovieItemDto): Movie {
         return Movie(

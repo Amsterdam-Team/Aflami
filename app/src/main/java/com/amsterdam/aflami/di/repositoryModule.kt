@@ -12,9 +12,9 @@ import com.example.repository.mapper.local.RecentSearchMapper
 import com.example.repository.mapper.local.TvShowLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
 import com.example.repository.mapper.remote.GenreMapper
-import com.example.repository.mapper.remote.RemoteCountryMapper
-import com.example.repository.mapper.remote.RemoteMovieMapper
-import com.example.repository.mapper.remote.RemoteTvShowMapper
+import com.example.repository.mapper.remote.CountryRemoteMapper
+import com.example.repository.mapper.remote.MovieRemoteMapper
+import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.repository.CategoryRepositoryImpl
 import com.example.repository.repository.CountryRepositoryImpl
 import com.example.repository.repository.MovieRepositoryImpl
@@ -24,13 +24,13 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single { CountryLocalMapper() }
-    single { RemoteCountryMapper() }
+    single { CountryRemoteMapper() }
     single { CategoryLocalMapper() }
     single { CategoryRemoteMapper() }
     single { MovieLocalMapper(get()) }
     single { TvShowLocalMapper(get()) }
-    single { RemoteMovieMapper() }
-    single { RemoteTvShowMapper() }
+    single { MovieRemoteMapper() }
+    single { TvShowRemoteMapper() }
     single { RecentSearchMapper() }
     single { GenreMapper() }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
