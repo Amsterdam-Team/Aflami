@@ -1,12 +1,16 @@
 package com.example.entity
 
-data class Movie (
-    val id : Long,
-    val name : String ,
-    val description : String,
-    val poster : String,
-    val productionYear : Int,
-    val categories : List<Category>,
-    val rating : Float,
-    val popularity: Double,
-)
+import com.example.entity.common.Categorizable
+import com.example.entity.common.PopularitySortable
+import com.example.entity.common.RatingFilterable
+
+data class Movie(
+    val id: Long,
+    val name: String,
+    val description: String,
+    val poster: String,
+    val productionYear: Int,
+    override val categories: List<Category>,
+    override val rating: Float,
+    override val popularity: Double,
+) : PopularitySortable, Categorizable, RatingFilterable
