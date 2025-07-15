@@ -1,7 +1,7 @@
 package com.example.domain.useCase
 
 import com.example.domain.common.CountryExtensions.filterByName
-import com.example.domain.common.throwIfEmpty
+import com.example.domain.common.ContentFilteringExtensions.throwIfEmpty
 import com.example.domain.exceptions.NoSuggestedCountriesException
 import com.example.domain.repository.CountryRepository
 import com.example.domain.validation.CountryValidator

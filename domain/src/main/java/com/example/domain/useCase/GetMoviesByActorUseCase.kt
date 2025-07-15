@@ -1,6 +1,6 @@
 package com.example.domain.useCase
 
-import com.example.domain.common.sortByPopularityDescending
+import com.example.domain.common.ContentFilteringExtensions.sortByPopularityDescending
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 
