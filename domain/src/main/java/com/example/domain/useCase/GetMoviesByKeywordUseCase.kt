@@ -1,5 +1,7 @@
 package com.example.domain.useCase
 
+import com.example.domain.common.sortByPopularityDescending
+import com.example.domain.common.throwIfEmpty
 import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
@@ -16,9 +18,7 @@ class GetMoviesByKeywordUseCase(
     ): List<Movie> {
         return movieRepository
             .getMoviesByKeyword(keyword = keyword, rating = rating, movieGenre = movieGenre)
-            .sortedByDescending { it.popularity }
-            .ifEmpty { throw NoSearchByKeywordResultFoundException() }
-
+            .sortByPopularityDescending()
+            .throwIfEmpty { NoSearchByKeywordResultFoundException() }
     }
 }
-
