@@ -28,4 +28,7 @@ sealed interface Route {
 
     @Serializable
     data object SearchByCountry: Route
+
+    @Serializable
+    data object Cast: Route
 }

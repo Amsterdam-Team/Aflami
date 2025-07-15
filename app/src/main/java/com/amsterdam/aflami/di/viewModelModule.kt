@@ -1,5 +1,6 @@
 package com.amsterdam.aflami.di
 
+import com.example.viewmodel.cast.CastViewModel
 import com.example.viewmodel.search.GlobalSearchViewModel
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
@@ -15,4 +16,5 @@ val viewModelModule = module {
     viewModelOf(::GlobalSearchViewModel)
     viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::SearchByActorViewModel)
+    viewModelOf(::CastViewModel)
 }

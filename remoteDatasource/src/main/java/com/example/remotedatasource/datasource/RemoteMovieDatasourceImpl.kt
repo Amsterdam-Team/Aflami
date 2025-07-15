@@ -5,6 +5,7 @@ import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
+import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
@@ -74,6 +75,15 @@ class RemoteMovieDatasourceImpl(
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
+
+    override suspend fun getCastByMovieId(id: Long): RemoteCastAndCrewResponse {
+        return safeCall<RemoteCastAndCrewResponse> {
+            val response = ktorClient.get(buildMovieCreditsEndpoint(id))
+            return json.decodeFromString<RemoteCastAndCrewResponse>(response.bodyAsText())
+        }
+    }
+
+    private fun buildMovieCreditsEndpoint(movieId: Long) = "movie/$movieId/credits"
 
     private companion object {
         const val SEARCH_MOVIE_URL = "search/movie"

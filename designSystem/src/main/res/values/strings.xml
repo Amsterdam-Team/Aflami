@@ -193,4 +193,8 @@
     <string name="general_error_message">Something went wrong, please try again.</string>
     <!-- -   -->
     <string name="episode">Episode %1$d</string>
+
+    <!-- - Cast  -->
+    <string name="cast_not_available">"Cast Not Available"</string>
+    <string name="we_could_not_find_cast_information">"We couldn't find cast information for this title right now. Please try again later."</string>
 </resources>
