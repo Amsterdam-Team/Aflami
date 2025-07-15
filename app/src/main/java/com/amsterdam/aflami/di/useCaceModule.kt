@@ -4,6 +4,7 @@ import com.example.domain.useCase.GetMovieCategoriesUseCase
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
+import com.example.domain.useCase.GetMoviesPagingByKeywordUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.domain.useCase.GetTvShowByKeywordUseCase
 import com.example.domain.useCase.GetTvShowCategoriesUseCase
@@ -34,4 +35,5 @@ val useCaseModule = module{
     single { GetMoviesByActorUseCase(get()) }
     single { GetMovieCategoriesUseCase(get()) }
     single { GetTvShowCategoriesUseCase(get()) }
+    single { GetMoviesPagingByKeywordUseCase(get()) }
 }
