@@ -14,7 +14,7 @@ class GetTvShowByKeywordUseCase(
         rating: Float = 0f,
         tvShowGenre: TvShowGenre = TvShowGenre.ALL
     ): List<TvShow> {
-        return tvShowRepository.getTvShowByKeyword(keyword = keyword, rating = rating, movieGenre = tvShowGenre)
+        return tvShowRepository.getTvShowByKeyword(keyword = keyword, rating = rating, tvShowGenre = tvShowGenre)
             .sortedByDescending { it.popularity }
             .ifEmpty {
                 throw NoSearchByKeywordResultFoundException()

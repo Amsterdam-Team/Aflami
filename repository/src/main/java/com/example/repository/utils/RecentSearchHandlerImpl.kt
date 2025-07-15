@@ -5,7 +5,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Clock
 
-internal class RecentSearchHandlerImpl(
+class RecentSearchHandlerImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource
 ) : RecentSearchHandler {
     override suspend fun isExpired(keyword: String, searchType: SearchType): Boolean {
