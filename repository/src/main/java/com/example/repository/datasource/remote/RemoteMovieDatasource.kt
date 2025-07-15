@@ -1,6 +1,7 @@
 package com.example.repository.datasource.remote
 
 import com.example.repository.dto.remote.RemoteMovieResponse
+import com.example.repository.dto.remote.review.ReviewsResponse
 
 interface RemoteMovieDatasource {
 
@@ -15,4 +16,6 @@ interface RemoteMovieDatasource {
     suspend fun getMoviesByCountryIsoCode(
         countryIsoCode: String
     ): RemoteMovieResponse
+
+    suspend fun getMovieReviews(movieId: Long): ReviewsResponse
 }

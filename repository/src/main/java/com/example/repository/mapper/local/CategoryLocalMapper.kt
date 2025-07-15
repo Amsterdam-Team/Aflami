@@ -64,4 +64,16 @@ class CategoryLocalMapper {
             name = remoteTvShowCategoryDto.name
         )
     }
+
+    fun mapLocalCategoryToDomain(localCategory : LocalMovieCategoryDto): Category {
+        return Category(
+            id = localCategory.categoryId,
+            name = localCategory.name,
+            image = ""
+        )
+    }
+
+    fun mapLocalCategoriesToDomain(localCategories: List<LocalMovieCategoryDto>)=
+        localCategories.map(::mapLocalCategoryToDomain)
+
 }

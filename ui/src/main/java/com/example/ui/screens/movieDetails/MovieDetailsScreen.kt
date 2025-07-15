@@ -2,53 +2,45 @@ package com.example.ui.screens.movieDetails
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -107,6 +99,7 @@ fun MovieContent(
         modifier = Modifier
             .fillMaxSize()
             .background(AppTheme.color.surface)
+            .navigationBarsPadding()
     ) {
         item {
             Box(
@@ -309,7 +302,8 @@ fun LazyListScope.GallerySection(gallery: List<String>) {
             rowGallery.forEach { image ->
                 SafeImageView(
                     modifier = Modifier
-                        .size(160.dp, 145.dp).clip(RoundedCornerShape(12.dp)),
+                        .size(160.dp, 145.dp)
+                        .clip(RoundedCornerShape(12.dp)),
                     contentDescription = null,
                     model = image,
                     contentScale = ContentScale.Crop,
@@ -320,31 +314,43 @@ fun LazyListScope.GallerySection(gallery: List<String>) {
 }
 
 
-
 fun LazyListScope.ReviewSection(reviews: List<Review>) {
-   itemsIndexed (reviews){ index , item ->
-       val topPadding = if(index == 0) 0 else 12
-       ReviewCard(item , modifier = Modifier.padding(top = topPadding.dp))
-   }
+    itemsIndexed(reviews) { index, item ->
+        val topPadding = if (index == 0) 0 else 12
+        ReviewCard(item, modifier = Modifier.padding(top = topPadding.dp))
+    }
 }
 
 @Composable
-fun ReviewCard(review : Review,modifier: Modifier = Modifier){
-    val configuration = LocalConfiguration.current
-    val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
-    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+fun ReviewCard(review: Review, modifier: Modifier = Modifier) {
+    val strokeColor = AppTheme.color.stroke
+    Column(modifier = modifier
+        .fillMaxWidth()
+        .drawBehind {
+            val strokeWidth = 1.dp.toPx()
+            val y = size.height - strokeWidth / 2
+            drawLine(
+                color = strokeColor,
+                start = Offset(0f, y),
+                end = Offset(size.width, y),
+                strokeWidth = strokeWidth,
+                cap = Stroke.DefaultCap
+            )
+        }
+        .padding(horizontal = 16.dp, vertical = 12.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             SafeImageView(
                 modifier = Modifier
-                    .size(48.dp).clip(RoundedCornerShape(12.dp)),
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp)),
                 contentDescription = review.author,
-                model = review.imageUrl ?:"android.resource://your.package.name/${R.drawable.ic_outlined_star}" ,
+                model = review.imageUrl
+                    ?: "android.resource://your.package.name/${R.drawable.ic_outlined_star}",
                 contentScale = ContentScale.Crop,
             )
-            Column (modifier = Modifier.padding(start = 8.dp)){
+            Column(modifier = Modifier.padding(start = 8.dp)) {
                 Text(
-                    modifier = Modifier.fillMaxWidth()
-                    ,text =
+                    modifier = Modifier.fillMaxWidth(), text =
                         review.author,
                     maxLines = 1,
                     style = AppTheme.textStyle.title.medium,
@@ -361,18 +367,17 @@ fun ReviewCard(review : Review,modifier: Modifier = Modifier){
             Spacer(Modifier.weight(1f))
             RatingChip(
                 review.rating,
-                modifier = Modifier.size(40.dp).padding(bottom = 4.dp)
-            )}
-            ExpandableText(text = review.content)
-            Text(
-                text = review.date,
-                style = AppTheme.textStyle.label.small,
-                color = AppTheme.color.hint,
-                modifier = Modifier.padding(top = 12.dp)
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(bottom = 4.dp)
             )
-            Spacer(Modifier.padding(top = 12.dp).requiredWidth(screenWidthDp)
-                .width(2.dp).background(color = AppTheme.color.primary))
-
+        }
+        ExpandableText(text = review.content)
+        Text(
+            text = review.date,
+            style = AppTheme.textStyle.label.small,
+            color = AppTheme.color.hint
+        )
     }
 }
 

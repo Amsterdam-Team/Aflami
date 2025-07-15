@@ -6,7 +6,6 @@ data class Movie (
     val description : String,
     val poster : String,
     val productionYear : Int,
-    val categories : List<Category>,
     val rating : Float,
     val popularity: Double,
 )

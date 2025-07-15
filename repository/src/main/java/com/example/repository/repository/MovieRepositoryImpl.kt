@@ -4,6 +4,7 @@ import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.Movie
+import com.example.entity.Review
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
 import com.example.repository.datasource.remote.RemoteMovieDatasource
@@ -11,6 +12,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.RemoteMovieMapper
+import com.example.repository.mapper.remote.RemoteReviewMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ class MovieRepositoryImpl(
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: RemoteMovieMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
+    private val remoteReviewMapper : RemoteReviewMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String, rating: Float, movieGenre: MovieGenre): List<Movie> {
@@ -116,6 +119,14 @@ class MovieRepositoryImpl(
             domainMovies
         }
     }
+
+    override suspend fun getMovieReviews(movieId: Long): List<Review> =
+        remoteReviewMapper.mapResponseToDomain(remoteMovieDataSource.getMovieReviews(movieId))
+
+    override suspend fun getMovieById(movieId: Long): Movie {
+     return movieLocalMapper.mapFromLocal(localMovieDataSource.getMovieById(movieId))
+    }
+
 
     private suspend fun deleteRecentSearch(
         recentSearch: LocalSearchDto?

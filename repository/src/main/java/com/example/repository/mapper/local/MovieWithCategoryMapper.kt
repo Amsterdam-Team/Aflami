@@ -16,7 +16,6 @@ class MovieWithCategoryMapper {
             poster = movieWithCategories.movie.poster,
             productionYear = movieWithCategories.movie.productionYear,
             rating = movieWithCategories.movie.rating,
-            categories = movieWithCategories.categories.map { mapCategoryFromLocal(it) },
             popularity = movieWithCategories.movie.popularity
         )
     }

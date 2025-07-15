@@ -19,4 +19,6 @@ interface CategoryDao {
 
     @Query("SELECT * FROM tv_show_categories")
     suspend fun getAllTvShowCategories(): List<LocalTvShowCategoryDto>
+    @Query("SELECT * FROM movie_categories WHERE categoryId = :movieId")
+    suspend fun getMovieCategories(movieId: Long)
 }

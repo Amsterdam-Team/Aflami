@@ -14,7 +14,6 @@ class RemoteMovieMapper {
             description = dto.overview,
             poster = dto.posterPath.orEmpty(),
             productionYear = parseYear(dto.releaseDate),
-            categories = emptyList(),
             rating = dto.voteAverage.toFloat(),
             popularity = dto.popularity
         )

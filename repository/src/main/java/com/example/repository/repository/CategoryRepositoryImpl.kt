@@ -38,4 +38,8 @@ class CategoryRepositoryImpl(
         }
         return categoryLocalMapper.mapListFromTvShowLocal(movieCategories)
     }
+
+    override suspend fun getMovieCategories(movieId: Long) : List<Category>{
+       return categoryLocalMapper.mapLocalCategoriesToDomain(localCategoryDatasource.getMovieCategories(movieId))
+    }
 }

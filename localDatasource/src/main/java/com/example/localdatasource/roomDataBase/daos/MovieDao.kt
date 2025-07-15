@@ -46,4 +46,7 @@ interface MovieDao {
 
     @Upsert
     suspend fun insertSearchEntries(entries: List<SearchMovieCrossRefDto>)
+
+    @Query(" SELECT * FROM movies WHERE movieId = :movieId")
+    fun getMovieById(movieId : Long) : LocalMovieDto
 }

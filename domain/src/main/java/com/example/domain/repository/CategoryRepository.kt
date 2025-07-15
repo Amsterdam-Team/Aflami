@@ -6,4 +6,6 @@ interface CategoryRepository {
     suspend fun getMovieCategories(): List<Category>
 
     suspend fun getTvShowCategories(): List<Category>
+
+    suspend fun getMovieCategories(movieId : Long) : List<Category>
 }

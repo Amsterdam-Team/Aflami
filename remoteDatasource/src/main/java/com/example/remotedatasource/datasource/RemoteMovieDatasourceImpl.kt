@@ -1,12 +1,12 @@
 package com.example.remotedatasource.datasource
 
-import android.util.Log
 import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteMovieResponse
+import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
@@ -77,6 +77,14 @@ class RemoteMovieDatasourceImpl(
         }
     }
 
+    override suspend fun getMovieReviews(movieId: Long): ReviewsResponse {
+        return safeCall<ReviewsResponse> {
+            val response = ktorClient.get("/movie/$movieId/reviews") {
+            }
+            return json.decodeFromString<ReviewsResponse>(response.bodyAsText())
+        }
+    }
+
     private companion object {
         const val SEARCH_MOVIE_URL = "search/movie"
         const val GET_ACTOR_NAME_BY_ID_URL = "search/person"
@@ -89,5 +97,6 @@ class RemoteMovieDatasourceImpl(
         const val WITH_ORIGIN_COUNTRY = "with_origin_country"
         const val WITH_GENRES_KEY = "with_genres"
         const val VOTE_AVERAGE_KEY = "vote_average.gte"
+
     }
 }

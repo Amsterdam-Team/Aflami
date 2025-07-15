@@ -16,7 +16,6 @@ class MovieLocalMapper(
             poster = dto.movie.poster,
             productionYear = dto.movie.productionYear,
             rating = dto.movie.rating,
-            categories = categoryLocalMapper.mapListFromMovieLocal(dto.categories),
             popularity = dto.movie.popularity
         )
     }
@@ -39,5 +38,17 @@ class MovieLocalMapper(
 
     fun mapListToLocal(domains: List<Movie>): List<LocalMovieDto> {
         return domains.map { mapToLocal(it) }
+    }
+
+    fun mapFromLocal(dto: LocalMovieDto): Movie {
+        return Movie(
+            id = dto.movieId,
+            name = dto.name,
+            description = dto.description,
+            poster = dto.poster,
+            productionYear = dto.productionYear,
+            rating = dto.rating,
+            popularity = dto.popularity
+        )
     }
 }
