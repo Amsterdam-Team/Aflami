@@ -1,6 +1,7 @@
 package com.example.viewmodel.search.actorSearch
 
 import androidx.lifecycle.viewModelScope
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
@@ -43,27 +44,24 @@ class SearchByActorViewModel(
         }
     }
 
-    fun onSearchMoviesByActor(query: String) {
+    private fun onSearchMoviesByActor(query: String) {
         tryToExecute(
             action = { getMoviesByActorUseCase(query) },
-            onSuccess = { result -> updateSearchByActorResult(result) },
-            onError = { msg ->
-                updateState {
-                    it.copy(
-                        isLoading = false,
-                        movies = emptyList()
-                    )
-                }
-                when (msg) {
-                    is NetworkException -> sendNewEffect(SearchByActorEffect.NoInternetConnection)
-                }
-            }
+            onSuccess = ::updateSearchByActorResult,
+            onError = ::searchMoviesByActorError
         )
     }
 
-    override fun onKeywordValueChanged(keyword: String) {
-        _keyword.update { oldText -> keyword }
-        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
+    private fun searchMoviesByActorError(message: AflamiException) {
+        updateState {
+            it.copy(
+                isLoading = false,
+                movies = emptyList()
+            )
+        }
+        when (message) {
+            is NetworkException -> sendNewEffect(SearchByActorEffect.NoInternetConnection)
+        }
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
@@ -73,6 +71,11 @@ class SearchByActorViewModel(
                 isLoading = false
             )
         }
+    }
+
+    override fun onKeywordValueChanged(keyword: String) {
+        _keyword.update { oldText -> keyword }
+        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
     }
 
     override fun onNavigateBackClicked() {
