@@ -1,5 +1,6 @@
 package com.example.repository.datasource.local
 
+import androidx.paging.PagingSource
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.MovieWithCategories
@@ -23,5 +24,11 @@ interface LocalMovieDataSource {
         searchKeyword: String,
         searchType: SearchType,
     ): List<SearchMovieCrossRefDto>
+
+    fun getMoviesPagingSourceByKeywordAndType(
+        keyword: String,
+        searchType: SearchType
+    ): PagingSource<Int, LocalMovieDto>
+
 
 }
