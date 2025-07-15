@@ -15,7 +15,7 @@ fun getErrorMessageBySearchErrorUiState(errorUiState: SearchErrorState?): String
         SearchErrorState.QueryTooShort -> stringResource(R.string.search_error_query_too_short)
         SearchErrorState.UnknownException -> stringResource(R.string.search_error_unknown)
         SearchErrorState.NoMoviesByKeywordFoundException -> stringResource(string.no_search_result)
-        SearchErrorUiState.NoNetworkConnection -> stringResource(string.offline_message)
+        SearchErrorState.NoNetworkConnection -> stringResource(string.offline_message)
         null -> ""
     }
 }

@@ -208,7 +208,7 @@ private fun SearchContent(
             Loading()
         }
 
-        AnimatedVisibility(state.errorUiState == SearchErrorUiState.NoNetworkConnection && state.query.isNotEmpty()) {
+        AnimatedVisibility(state.errorUiState == SearchErrorState.NoNetworkConnection && state.query.isNotEmpty()) {
             NoNetworkContainer(
                 onClickRetry = interaction::onRetryQuestClicked,
             )
