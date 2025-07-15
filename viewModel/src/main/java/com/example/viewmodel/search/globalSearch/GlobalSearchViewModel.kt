@@ -113,7 +113,7 @@ class GlobalSearchViewModel(
 
     private fun fetchTvShowsByQuery(
         keyword: String,
-        rating: Float = 0f,
+        rating: Int = 0,
         tvGenre: TvShowGenre = TvShowGenre.ALL
     ) {
         tryToExecute(
@@ -308,7 +308,7 @@ class GlobalSearchViewModel(
             action = {
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex.toFloat(),
+                    rating = state.value.filterItemUiState.selectedStarIndex,
                     tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId()
                 )
             },
