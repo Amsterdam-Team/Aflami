@@ -16,12 +16,15 @@ dependencies {
     api(project(":entity"))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.paging.common.android)
     testImplementation(libs.truth)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.engine)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    // Pagination
+    implementation("androidx.paging:paging-common:3.2.1")
 }
 
 tasks.test {

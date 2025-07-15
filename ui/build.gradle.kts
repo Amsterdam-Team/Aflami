@@ -32,4 +32,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // Pagination
+    implementation("androidx.paging:paging-compose:1.0.0-alpha20")
+    implementation("androidx.paging:paging-runtime:3.3.1")
 }

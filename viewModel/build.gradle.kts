@@ -15,18 +15,20 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.datetime)
     //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     // junit 5
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
     //truth
-    testImplementation (libs.truth)
+    testImplementation(libs.truth)
     testImplementation(kotlin("test"))
+    // Pagination
+    implementation("androidx.paging:paging-runtime:3.3.1")
 }

@@ -10,7 +10,8 @@ plugins {
 android {
     namespace = "com.example.repository"
     defaultConfig {
-        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
+        testInstrumentationRunnerArguments["runnerBuilder"] =
+            "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }
 }
 
@@ -37,9 +38,12 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
     //truth
-    testImplementation (libs.truth)
+    testImplementation(libs.truth)
     //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Pagination
+    implementation("androidx.paging:paging-runtime:3.3.1")
 
 }

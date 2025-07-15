@@ -25,7 +25,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
     // Date and Time
     implementation(libs.kotlinx.datetime)
+    // Pagination
+    implementation("androidx.paging:paging-runtime:3.3.1")
 }
