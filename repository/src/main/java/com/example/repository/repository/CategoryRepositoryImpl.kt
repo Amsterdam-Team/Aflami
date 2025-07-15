@@ -6,12 +6,14 @@ import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.remote.RemoteCategoryResponse
 import com.example.repository.mapper.local.CategoryLocalMapper
+import com.example.repository.mapper.remote.CategoryRemoteMapper
 import com.example.repository.utils.tryToExecute
 
 class CategoryRepositoryImpl(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
-    private val categoryLocalMapper: CategoryLocalMapper
+    private val categoryLocalMapper: CategoryLocalMapper,
+    private val categoryRemoteMapper: CategoryRemoteMapper
 ) : CategoryRepository {
 
     override suspend fun getMovieCategories(): List<Category> {
@@ -21,7 +23,7 @@ class CategoryRepositoryImpl(
             function = { categoryRemoteSource.getMovieCategories() },
             onSuccess = { movieCategories ->
                 saveMovieCategoriesToDatabase(movieCategories)
-                categoryLocalMapper.mapToMovieCategories(movieCategories)
+                categoryRemoteMapper.mapToCategories(movieCategories)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -34,7 +36,7 @@ class CategoryRepositoryImpl(
             function = { categoryRemoteSource.getTvShowCategories() },
             onSuccess = { tvShowCategories ->
                 saveTvShowCategoriesToDatabase(tvShowCategories)
-                categoryLocalMapper.mapToTvShowCategories(tvShowCategories)
+                categoryRemoteMapper.mapToCategories(tvShowCategories)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -56,7 +58,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertMovieCategories(
-                    categoryLocalMapper.mapToLocalMovieCategories(movieCategories)
+                    categoryRemoteMapper.mapToLocalMovieCategories(movieCategories)
                 )
             },
             onSuccess = {},
@@ -80,7 +82,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertTvShowCategories(
-                    categoryLocalMapper.mapToLocalTvShowCategories(tvShowCategories)
+                    categoryRemoteMapper.mapToLocalTvShowCategories(tvShowCategories)
                 )
             },
             onSuccess = {},
