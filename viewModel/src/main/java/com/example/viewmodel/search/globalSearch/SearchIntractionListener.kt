@@ -17,9 +17,9 @@ interface GlobalSearchInteractionListener {
     fun onMovieCardClicked()
 
     fun onRecentSearchClicked(keyword: String)
-    fun onClearRecentSearch(keyword: String)
-    fun onClearAllRecentSearches()
-    fun onClearSearch()
+    fun onRecentSearchCleared(keyword: String)
+    fun onAllRecentSearchesCleared()
+    fun onSearchCleared()
 }
 
 

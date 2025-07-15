@@ -1,11 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="search_suggestions_hub">توصيات واقتراحات للبحث</string>
-
-    <!-- Search validation error messages -->
-    <string name="search_error_query_too_short">قصير جدًا. أدخل حرفين على الأقل.</string>
-    <string name="search_error_query_too_long">طويل جدًا. جرّب بحثًا أقصر.</string>
-    <string name="search_error_invalid_characters">تم استخدام رموز غير صالحة.</string>
-    <string name="search_error_blank_query">يرجى إدخال شيء ما.</string>
-    <string name="search_error_unknown">حدث خطأ غير متوقع.</string>
 </resources>

@@ -153,7 +153,7 @@ class GlobalSearchViewModel(
 
     override fun onNavigateBackClicked() {
         if (state.value.query.isNotEmpty()) {
-            onClearSearch()
+            onSearchCleared()
         } else {
             sendNewEffect(SearchUiEffect.NavigateBack)
         }
@@ -183,9 +183,12 @@ class GlobalSearchViewModel(
         }
     }
 
-    override fun onRecentSearchClicked(keyword: String) = onTextValuedChanged(keyword)
+    override fun onRecentSearchClicked(keyword: String) {
+        onTextValuedChanged(keyword)
+        observeSearchQueryChanges()
+    }
 
-    override fun onClearRecentSearch(keyword: String) {
+    override fun onRecentSearchCleared(keyword: String) {
         updateState { it.copy(isLoading = true) }
 
         tryToExecute(
@@ -195,7 +198,7 @@ class GlobalSearchViewModel(
         )
     }
 
-    override fun onClearAllRecentSearches() {
+    override fun onAllRecentSearchesCleared() {
         updateState { it.copy(isLoading = true) }
 
         tryToExecute(
@@ -206,7 +209,7 @@ class GlobalSearchViewModel(
         )
     }
 
-    override fun onClearSearch() {
+    override fun onSearchCleared() {
         updateState { currentState ->
             currentState.copy(
                 query = "",

@@ -6,9 +6,7 @@ open class QueryValidationException() : AflamiException()
 open class NetworkException : AflamiException()
 class UnknownException : AflamiException()
 
-class QueryTooShortException : QueryValidationException()
 class QueryTooLongException : QueryValidationException()
-class InvalidCharactersException : QueryValidationException()
 class BlankQueryException : QueryValidationException()
 
 class NoInternetException : NetworkException()
