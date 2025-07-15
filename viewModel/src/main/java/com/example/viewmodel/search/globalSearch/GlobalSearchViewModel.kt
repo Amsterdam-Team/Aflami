@@ -163,6 +163,11 @@ class GlobalSearchViewModel(
 
     override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
 
+    override fun onRetryQuestClicked() {
+        updateState { it.copy(isLoading = true, errorUiState = null) }
+        observeSearchQueryChanges()
+    }
+
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
@@ -172,6 +177,7 @@ class GlobalSearchViewModel(
                 selectedTabOption = tabOption,
                 movies = state.value.movies,
                 tvShows = state.value.tvShows,
+                isLoading = true,
                 filterItemUiState = FilterItemUiState()
             )
         }
@@ -329,8 +335,7 @@ class GlobalSearchViewModel(
 
     override fun onClearButtonClicked() = resetFilterState()
 
-    private fun resetFilterState() =
-        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun stopLoading() = updateState { it.copy(isLoading = false) }
 }

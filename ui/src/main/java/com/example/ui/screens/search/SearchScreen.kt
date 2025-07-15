@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
+import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.appBar.DefaultAppBar
@@ -205,6 +206,12 @@ private fun SearchContent(
 
         AnimatedVisibility(state.isLoading) {
             Loading()
+        }
+
+        AnimatedVisibility(state.errorUiState == SearchErrorUiState.NoNetworkConnection && state.query.isNotEmpty()) {
+            NoNetworkContainer(
+                onClickRetry = interaction::onRetryQuestClicked,
+            )
         }
     }
 }

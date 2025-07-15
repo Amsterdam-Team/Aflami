@@ -2,7 +2,7 @@ package com.example.ui.screens.search
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.example.designsystem.R.*
+import com.example.designsystem.R.string
 import com.example.ui.R
 import com.example.viewmodel.search.globalSearch.SearchErrorState
 
@@ -15,6 +15,7 @@ fun getErrorMessageBySearchErrorUiState(errorUiState: SearchErrorState?): String
         SearchErrorState.QueryTooShort -> stringResource(R.string.search_error_query_too_short)
         SearchErrorState.UnknownException -> stringResource(R.string.search_error_unknown)
         SearchErrorState.NoMoviesByKeywordFoundException -> stringResource(string.no_search_result)
+        SearchErrorUiState.NoNetworkConnection -> stringResource(string.offline_message)
         null -> ""
     }
 }

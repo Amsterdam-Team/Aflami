@@ -1,6 +1,7 @@
 package com.example.viewmodel.searchByActor
 
 import androidx.lifecycle.viewModelScope
+import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
@@ -54,6 +55,9 @@ class SearchByActorViewModel(
                         movies = emptyList()
                     )
                 }
+                when (msg) {
+                    is NetworkException -> sendNewEffect(SearchByActorEffect.NoInternetConnection)
+                }
             }
         )
     }
@@ -74,5 +78,10 @@ class SearchByActorViewModel(
 
     override fun onNavigateBackClicked() {
         sendNewEffect(SearchByActorEffect.NavigateBack)
+    }
+
+    override fun onRetryQuestClicked() {
+        updateState { it.copy(isLoading = true) }
+        observeQueryFlow()
     }
 }
