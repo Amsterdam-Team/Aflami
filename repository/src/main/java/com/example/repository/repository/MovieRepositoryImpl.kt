@@ -1,8 +1,11 @@
 package com.example.repository.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
-import com.example.domain.useCase.genreTypes.TvShowGenre
 import com.example.entity.Movie
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
@@ -13,9 +16,12 @@ import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.RemoteMovieMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+
 
 class MovieRepositoryImpl(
     private val localMovieDataSource: LocalMovieDataSource,
@@ -25,7 +31,11 @@ class MovieRepositoryImpl(
     private val recentSearchDatasource: LocalRecentSearchDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String, rating: Float, movieGenre: MovieGenre): List<Movie> {
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        rating: Float,
+        movieGenre: MovieGenre
+    ): List<Movie> {
 
         val recentSearch =
             recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
@@ -40,7 +50,11 @@ class MovieRepositoryImpl(
         deleteRecentSearch(recentSearch)
 
         val remoteMovies = if (rating != 0f || movieGenre != MovieGenre.ALL) {
-            remoteMovieDataSource.discoverMovies(keyword, rating, movieRemoteMapper.mapToGenreId(movieGenre))
+            remoteMovieDataSource.discoverMovies(
+                keyword,
+                rating,
+                movieRemoteMapper.mapToGenreId(movieGenre)
+            )
         } else {
             remoteMovieDataSource.getMoviesByKeyword(keyword)
         }
@@ -129,5 +143,26 @@ class MovieRepositoryImpl(
 
     private fun isSearchExpired(recentSearch: LocalSearchDto?): Boolean {
         return recentSearch?.expireDate != null && recentSearch.expireDate < Clock.System.now()
+    }
+
+    override fun getMoviesPagingByKeyword(
+        keyword: String,
+        rating: Float,
+        movieGenre: MovieGenre
+    ): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                localMovieDataSource.getMoviesPagingSourceByKeywordAndType(
+                    keyword,
+                    SearchType.BY_KEYWORD
+                )
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { movieLocalMapper.mapFromLocal(it) }
+        }
     }
 }

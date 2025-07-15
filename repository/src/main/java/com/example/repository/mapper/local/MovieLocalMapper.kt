@@ -40,4 +40,18 @@ class MovieLocalMapper(
     fun mapListToLocal(domains: List<Movie>): List<LocalMovieDto> {
         return domains.map { mapToLocal(it) }
     }
+
+    fun mapFromLocal(dto: LocalMovieDto): Movie {
+        return Movie(
+            id = dto.movieId,
+            name = dto.name,
+            description = dto.description,
+            poster = dto.poster,
+            productionYear = dto.productionYear,
+            rating = dto.rating,
+            categories = emptyList(), // مفيش categories هنا لأننا مش عاملين JOIN
+            popularity = dto.popularity
+        )
+    }
+
 }
