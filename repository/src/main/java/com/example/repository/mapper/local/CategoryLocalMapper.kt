@@ -20,6 +20,14 @@ class CategoryLocalMapper {
         return categories.map { mapToLocalMovieCategory(it) }
     }
 
+    fun mapToMovieCategories(remoteMovieCategoryResponse: RemoteCategoryResponse): List<Category> {
+        return remoteMovieCategoryResponse.genres.map { mapToCategory(it) }
+    }
+
+    fun mapToTvShowCategories(remoteTvShowCategoryResponse: RemoteCategoryResponse): List<Category> {
+        return remoteTvShowCategoryResponse.genres.map { mapToCategory(it) }
+    }
+
     fun mapToLocalMovieCategories(remoteMovieCategoryResponse: RemoteCategoryResponse): List<LocalMovieCategoryDto> {
         return remoteMovieCategoryResponse.genres.map { mapToLocalMovieCategory(it) }
     }
@@ -32,6 +40,14 @@ class CategoryLocalMapper {
         return Category(
             id = localMovieCategory.categoryId,
             name = localMovieCategory.name,
+            image = ""
+        )
+    }
+
+    private fun mapToCategory(remoteMovieCategory: RemoteCategoryDto): Category {
+        return Category(
+            id = remoteMovieCategory.id,
+            name = remoteMovieCategory.name,
             image = ""
         )
     }
