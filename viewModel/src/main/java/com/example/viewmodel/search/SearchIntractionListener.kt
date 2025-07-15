@@ -1,7 +1,8 @@
 package com.example.viewmodel.search
 
-import com.example.viewmodel.common.GenreType
 import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.common.categories.MovieCategoryType
+import com.example.viewmodel.common.categories.TvShowCategoryType
 
 interface GlobalSearchInteractionListener {
     fun onNavigateBackClicked()
@@ -10,6 +11,7 @@ interface GlobalSearchInteractionListener {
     fun onFilterButtonClicked()
     fun onWorldSearchCardClicked()
     fun onActorSearchCardClicked()
+    fun onRetryQuestClicked()
 
     fun onTabOptionClicked(tabOption: TabOption)
     fun onMovieCardClicked()
@@ -17,13 +19,15 @@ interface GlobalSearchInteractionListener {
     fun onRecentSearchClicked(keyword: String)
     fun onClearRecentSearch(keyword: String)
     fun onClearAllRecentSearches()
+    fun onClearSearch()
 }
 
 
 interface FilterInteractionListener {
     fun onCancelButtonClicked()
     fun onRatingStarChanged(ratingIndex: Int)
-    fun onGenreButtonChanged(genreType: GenreType)
+    fun onMovieGenreButtonChanged(genreType: MovieCategoryType)
+    fun onTvGenreButtonChanged(genreType: TvShowCategoryType)
 
     fun onApplyButtonClicked()
     fun onClearButtonClicked()

@@ -1,63 +1,87 @@
 package com.example.viewmodel.searchByActor
 
 import androidx.lifecycle.viewModelScope
+import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class SearchByActorViewModel(
-     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
-     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(SearchByActorScreenState(),dispatcherProvider) {
+    private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
+    dispatcherProvider: DispatcherProvider
+) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(
+    SearchByActorScreenState(),
+    dispatcherProvider
+),
+    SearchByActorInteractionListener {
+
+    private val queryFlow = MutableStateFlow("")
 
     init {
+        observeQueryFlow()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeQueryFlow() {
         viewModelScope.launch {
-            state
-                .map { it.query }
+            queryFlow
                 .debounce(300)
-                .distinctUntilChanged()
-                .collect { query ->
-                    if (query.isNotBlank()) {
-                        getMoviesByActor(query)
-                    }
-                }
+                .map(String::trim)
+                .filter(String::isNotBlank)
+                .collectLatest(::onSearchMoviesByActor)
         }
     }
 
-
-    fun onQueryChange(query: String) {
-        updateState { it.copy(query = query) }
-    }
-
-    private fun getMoviesByActor(query: String) {
-        updateState { it.copy(isLoading = true) }
+    fun onSearchMoviesByActor(query: String) {
         tryToExecute(
-            action = {
-                getMoviesByActorUseCase.invoke(query)
-            },
-            onSuccess = { result ->
-                updateSearchByActorResult(result)
-            },
-            onError = {
-                     sendNewEffect(SearchByActorEffect.NoInternetConnection)
+            action = { getMoviesByActorUseCase(query) },
+            onSuccess = { result -> updateSearchByActorResult(result) },
+            onError = { msg ->
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        movies = emptyList()
+                    )
+                }
+                when (msg) {
+                    is NetworkException -> sendNewEffect(SearchByActorEffect.NoInternetConnection)
+                }
             }
         )
     }
 
-    private fun updateSearchByActorResult(movies: List<Movie>) {
-        updateState { it.copy(movies =movies.toListOfUiState(), isLoading = false) }
+    override fun onUserSearch(query: String) {
+        queryFlow.update { oldText -> query }
+        updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
     }
 
-    fun onBackClicked() {
+    private fun updateSearchByActorResult(movies: List<Movie>) {
+        updateState {
+            it.copy(
+                movies = movies.toListOfUiState(),
+                isLoading = false
+            )
+        }
+    }
+
+    override fun onNavigateBackClicked() {
         sendNewEffect(SearchByActorEffect.NavigateBack)
     }
-}
 
+    override fun onRetryQuestClicked() {
+        updateState { it.copy(isLoading = true) }
+        observeQueryFlow()
+    }
+}

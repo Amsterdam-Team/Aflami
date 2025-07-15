@@ -8,6 +8,8 @@ class TestDispatcherProvider : DispatcherProvider {
     val testDispatcher = StandardTestDispatcher()
     override val Main: CoroutineDispatcher
         get() = testDispatcher
+    override val MainImmediate: CoroutineDispatcher
+        get() = testDispatcher
     override val Default: CoroutineDispatcher
         get() = testDispatcher
     override val IO: CoroutineDispatcher
