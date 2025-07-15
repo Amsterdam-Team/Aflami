@@ -20,6 +20,8 @@ import com.example.repository.repository.CountryRepositoryImpl
 import com.example.repository.repository.MovieRepositoryImpl
 import com.example.repository.repository.RecentSearchRepositoryImpl
 import com.example.repository.repository.TvShowRepositoryImpl
+import com.example.repository.utils.RecentSearchHandler
+import com.example.repository.utils.RecentSearchHandlerImpl
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -33,6 +35,7 @@ val repositoryModule = module {
     single { TvShowRemoteMapper() }
     single { RecentSearchMapper() }
     single { GenreMapper() }
+    single<RecentSearchHandler> { RecentSearchHandlerImpl(get()) }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
     single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get(), get()) }
     single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get(), get()) }
