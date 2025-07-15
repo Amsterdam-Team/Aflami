@@ -1,6 +1,7 @@
 package com.example.repository.mapper.remote
 
 import com.example.entity.Movie
+import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 
@@ -21,6 +22,23 @@ class MovieRemoteMapper {
 
     fun mapToMovies(remoteMovieResponse: RemoteMovieResponse): List<Movie> {
         return remoteMovieResponse.results.map { mapToMovie(it) }
+    }
+
+    fun mapToLocalMovies(remoteMovieResponse: RemoteMovieResponse): List<LocalMovieDto> {
+        return remoteMovieResponse.results.map { mapToLocalMovie(it) }
+    }
+
+
+    private fun mapToLocalMovie(remoteMovieItemDto: RemoteMovieItemDto): LocalMovieDto {
+        return LocalMovieDto(
+            movieId = remoteMovieItemDto.id,
+            name = remoteMovieItemDto.title,
+            description = remoteMovieItemDto.overview,
+            poster = remoteMovieItemDto.posterPath.orEmpty(),
+            productionYear = parseYear(remoteMovieItemDto.releaseDate),
+            rating = remoteMovieItemDto.voteAverage.toFloat(),
+            popularity = remoteMovieItemDto.popularity
+        )
     }
 
     private fun parseYear(date: String): Int {
