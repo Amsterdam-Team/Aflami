@@ -1,4 +1,4 @@
-package com.example.viewmodel.searchByActor
+package com.example.viewmodel.search.actorSearch
 
 interface SearchByActorInteractionListener
 {

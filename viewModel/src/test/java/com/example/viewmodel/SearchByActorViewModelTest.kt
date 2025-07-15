@@ -1,12 +1,5 @@
 package com.example.viewmodel
 
-import com.example.entity.Movie
-import com.example.viewmodel.searchByActor.SearchByActorEffect
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
-import junit.framework.TestCase.assertEquals
-import org.junit.Before
-import org.junit.Test
-
 //
 //class SearchByActorViewModelTest {
 //    //lateinit var getSearchByActorUseCase: GetSearchByActorUseCase

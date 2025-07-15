@@ -1,4 +1,4 @@
-package com.example.viewmodel.searchByActor
+package com.example.viewmodel.search.actorSearch
 
 import com.example.viewmodel.search.countrySearch.MovieUiState
 
