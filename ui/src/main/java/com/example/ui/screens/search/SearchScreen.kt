@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -105,6 +106,7 @@ private fun SearchContent(
             .fillMaxSize()
             .background(color = AppTheme.color.surface)
             .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         SearchScreenHeader(
             state = state,
