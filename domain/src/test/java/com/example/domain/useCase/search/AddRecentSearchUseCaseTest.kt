@@ -18,14 +18,14 @@ class AddRecentSearchUseCaseTest {
     }
 
     @Test
-    fun `should call upsertRecentSearch from recentSearchRepository`() =
+    fun `should call upsertRecentSearch when keyword is valid`() =
         runBlocking {
             addRecentSearchUseCase("keyword")
             coVerify { recentSearchRepository.upsertRecentSearch(any()) }
         }
 
     @Test
-    fun `should not call upsertRecentSearch from recentSearchRepository when keyword is empty`() =
+    fun `should not call upsertRecentSearch when keyword is empty`() =
         runBlocking {
             addRecentSearchUseCase("")
             coVerify(exactly = 0) { recentSearchRepository.upsertRecentSearch(any()) }

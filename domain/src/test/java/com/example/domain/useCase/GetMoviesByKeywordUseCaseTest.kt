@@ -25,7 +25,7 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should call getMoviesByKeyword from movieRepository`() = runBlocking {
+    fun `should call getMoviesByKeyword when a keyword is provided`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieList
 
         getMoviesByKeywordUseCase("keyword")
@@ -33,7 +33,7 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return a list of movies sorted by popularity`() =
+    fun `should return a list of movies sorted by popularity when keyword search is successful`() =
         runBlocking {
             coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieList
 
@@ -43,7 +43,7 @@ class GetMoviesByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException if repository returns empty list`(): Unit =
+    fun `should throw NoSearchByKeywordResultFoundException when repository returns an empty list`(): Unit =
         runBlocking {
             coEvery { movieRepository.getMoviesByKeyword(any()) } returns emptyList()
 
@@ -53,7 +53,7 @@ class GetMoviesByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException if filters result in empty list`(): Unit =
+    fun `should throw NoSearchByKeywordResultFoundException when filters yield an empty list`(): Unit =
         runBlocking {
             val specificMovieList = listOf(
                 Movie(
@@ -85,7 +85,7 @@ class GetMoviesByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should filter movies by minimum rating`() = runBlocking {
+    fun `should return filtered movies when a minimum rating is specified`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithRatings
 
         val result = getMoviesByKeywordUseCase("keyword", rating = 6)
@@ -96,7 +96,7 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return all movies when rating is 0`() = runBlocking {
+    fun `should return all movies when rating filter is 0`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithRatings
 
         val result = getMoviesByKeywordUseCase("keyword", rating = 0)
@@ -105,7 +105,7 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should filter movies by genre ID`(): Unit = runBlocking {
+    fun `should return filtered movies when a genre ID is specified`(): Unit = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithCategories
 
         val result = getMoviesByKeywordUseCase("keyword", movieGenreId = 10)
@@ -118,7 +118,7 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return all movies when movieGenreId is 0`() = runBlocking {
+    fun `should return all movies when genre ID filter is 0`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithCategories
 
         val result = getMoviesByKeywordUseCase("keyword", movieGenreId = 0)
@@ -127,7 +127,7 @@ class GetMoviesByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return empty list if no movies match the genre`(): Unit = runBlocking {
+    fun `should throw NoSearchByKeywordResultFoundException when no movies match the specified genre`(): Unit = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithCategories
 
         assertThrows<NoSearchByKeywordResultFoundException> {

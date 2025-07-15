@@ -18,17 +18,6 @@ class GetSuggestedCountriesUseCaseTest {
     private lateinit var countryRepository: CountryRepository
     private lateinit var countryValidator: CountryValidator
     private lateinit var getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase
-    private val fakeCountryList =
-        listOf(
-            Country(
-                countryName = "Egypt",
-                countryIsoCode = "eg",
-            ),
-            Country(
-                countryName = "Iraq",
-                countryIsoCode = "ir",
-            ),
-        )
 
     @BeforeEach
     fun setUp() {
@@ -39,7 +28,7 @@ class GetSuggestedCountriesUseCaseTest {
     }
 
     @Test
-    fun `should return a list of suggested countries`() =
+    fun `should return a list of suggested countries when a matching keyword is provided`() =
         runBlocking {
             coEvery { countryRepository.getAllCountries() } returns fakeCountryList
 
@@ -50,7 +39,7 @@ class GetSuggestedCountriesUseCaseTest {
         }
 
     @Test
-    fun `should call validateCountry from countryValidator`() {
+    fun `should call validateCountry when a country keyword is provided`() {
         runBlocking {
             coEvery { countryValidator.validateCountry(any()) } returns Unit
             coEvery { countryRepository.getAllCountries() } returns fakeCountryList
@@ -60,7 +49,7 @@ class GetSuggestedCountriesUseCaseTest {
     }
 
     @Test
-    fun `should throw NoSuggestedCountriesException when there is no suggested countries with the given keyword`() {
+    fun `should throw NoSuggestedCountriesException when no countries match the given keyword`() {
         runBlocking {
             coEvery { countryRepository.getAllCountries() } returns fakeCountryList
 
@@ -71,7 +60,7 @@ class GetSuggestedCountriesUseCaseTest {
     }
 
     @Test
-    fun `should propagate CountryIsEmptyException from countryValidator`() =
+    fun `should throw CountryIsEmptyException when the country keyword is empty`() =
         runBlocking {
             coEvery { countryValidator.validateCountry(any()) } throws CountryIsEmptyException()
 
@@ -82,7 +71,7 @@ class GetSuggestedCountriesUseCaseTest {
         }
 
     @Test
-    fun `should return filtered countries matching keyword case-insensitively`(): Unit =
+    fun `should return filtered countries matching keyword case-insensitively when valid input is provided`(): Unit =
         runBlocking {
             val countriesWithDifferentCases =
                 listOf(
@@ -114,4 +103,16 @@ class GetSuggestedCountriesUseCaseTest {
             }
 
         }
+
+    private val fakeCountryList =
+        listOf(
+            Country(
+                countryName = "Egypt",
+                countryIsoCode = "eg",
+            ),
+            Country(
+                countryName = "Iraq",
+                countryIsoCode = "ir",
+            ),
+        )
 }

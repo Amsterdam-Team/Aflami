@@ -25,7 +25,7 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should call getTvShowByKeyword from tvShowRepository`() =
+    fun `should call getTvShowByKeyword when a keyword is provided`() =
         runBlocking {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
 
@@ -34,7 +34,7 @@ class GetTvShowByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should return a list of tv shows sorted by popularity`() =
+    fun `should return a list of tv shows sorted by popularity when keyword search is successful`() =
         runBlocking {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
             val tvShows = getTvShowByKeywordUseCase("keyword")
@@ -42,7 +42,7 @@ class GetTvShowByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException if repository returns empty list`(): Unit =
+    fun `should throw NoSearchByKeywordResultFoundException when repository returns an empty list`(): Unit =
         runBlocking {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns emptyList()
 
@@ -52,7 +52,7 @@ class GetTvShowByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException if filters result in empty list`(): Unit =
+    fun `should throw NoSearchByKeywordResultFoundException when filters yield an empty list`(): Unit =
         runBlocking {
             val specificTvShowList = listOf(
                 TvShow(
@@ -86,7 +86,7 @@ class GetTvShowByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should filter tv shows by minimum rating`() = runBlocking {
+    fun `should return filtered tv shows when a minimum rating is specified`() = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithRatings
 
         val result = getTvShowByKeywordUseCase("keyword", rating = 6)
@@ -98,7 +98,7 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return all tv shows when rating is 0`() = runBlocking {
+    fun `should return all tv shows when rating filter is 0`() = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithRatings
 
         val result = getTvShowByKeywordUseCase("keyword", rating = 0)
@@ -107,7 +107,7 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should filter tv shows by genre ID`(): Unit = runBlocking {
+    fun `should return filtered tv shows when a genre ID is specified`(): Unit = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
 
         val result = getTvShowByKeywordUseCase("keyword", tvShowGenreId = 10)
@@ -120,7 +120,7 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return all tv shows when tvShowGenreId is 0`() = runBlocking {
+    fun `should return all tv shows when genre ID filter is 0`() = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
 
 
@@ -130,7 +130,7 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return empty list if no tv shows match the genre`(): Unit = runBlocking {
+    fun `should throw NoSearchByKeywordResultFoundException when no tv shows match the specified genre`(): Unit = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
         assertThrows<NoSearchByKeywordResultFoundException> {
             getTvShowByKeywordUseCase("keyword", tvShowGenreId = 999)

@@ -21,14 +21,14 @@ class GetMoviesByActorUseCaseTest {
     }
 
     @Test
-    fun `should call getMoviesByActor from movieRepository`() =
+    fun `should call getMoviesByActor when an actor name is provided`() =
         runBlocking {
             getMoviesByActorUseCase("actorName")
             coVerify { movieRepository.getMoviesByActor(any()) }
         }
 
     @Test
-    fun `should return movies sorted by popularity descending`() = runBlocking {
+    fun `should return movies sorted by popularity descending when data is available`() = runBlocking {
         coEvery { movieRepository.getMoviesByActor("actorName") } returns fakeMovieList
 
         val result = getMoviesByActorUseCase("actorName")
@@ -36,7 +36,7 @@ class GetMoviesByActorUseCaseTest {
     }
 
     @Test
-    fun `should return an empty list when repository returns empty`() = runBlocking {
+    fun `should return an empty list when repository returns no movies`() = runBlocking {
         coEvery { movieRepository.getMoviesByActor(any()) } returns emptyList()
 
         val result = getMoviesByActorUseCase("nonexistentActor")
