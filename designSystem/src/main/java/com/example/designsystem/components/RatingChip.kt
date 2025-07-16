@@ -23,8 +23,9 @@ fun RatingChip(rating: String, modifier: Modifier = Modifier) {
         RoundedCornerShape(topStart = 4.dp, topEnd = 12.dp, bottomEnd = 4.dp, bottomStart = 12.dp)
     Row(
         modifier = modifier
-            .background(color = AppTheme.color.primaryVariant
-                , shape = roundedShape)
+            .background(
+                color = AppTheme.color.primaryVariant, shape = roundedShape
+            )
             .border(width = 1.dp, color = AppTheme.color.stroke, shape = roundedShape)
             .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -44,6 +45,6 @@ fun RatingChip(rating: String, modifier: Modifier = Modifier) {
 @Composable
 private fun RatingChipPreview() {
     AflamiTheme {
-    RatingChip("9.9")
+        RatingChip("9.9")
     }
 }

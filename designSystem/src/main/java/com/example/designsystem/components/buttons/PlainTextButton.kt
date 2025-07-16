@@ -23,7 +23,7 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun TextButton(
+fun PlainTextButton(
     title: String,
     onClick: () -> Unit,
     isLoading: Boolean,
@@ -78,9 +78,9 @@ fun TextButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun TextButtonPreview() {
+private fun PlainTextButtonPreview() {
     AflamiTheme {
-        TextButton(
+        PlainTextButton(
             title = "Button",
             onClick = {},
             isLoading = false,
