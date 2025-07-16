@@ -6,9 +6,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.designsystem.R
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
+import com.example.entity.category.MovieGenre
 
-val MovieGenre.uiModel: GenreUiModel
+internal val MovieGenre.uiModel: GenreUiModel
     get() = when (this) {
         MovieGenre.ALL -> GenreUiModel(R.drawable.ic_nav_categories, R.string.all)
         MovieGenre.ACTION -> GenreUiModel(R.drawable.ic_cat_action, R.string.action)
@@ -37,11 +37,11 @@ val MovieGenre.uiModel: GenreUiModel
     }
 
 @Composable
-fun getMovieGenreLabel(type: MovieGenre): String {
+internal fun getMovieGenreLabel(type: MovieGenre): String {
     return stringResource(id = type.uiModel.displayableName)
 }
 
 @Composable
-fun getMovieGenreIcon(type: MovieGenre): Painter {
+internal fun getMovieGenreIcon(type: MovieGenre): Painter {
     return painterResource(id = type.uiModel.icon)
 }

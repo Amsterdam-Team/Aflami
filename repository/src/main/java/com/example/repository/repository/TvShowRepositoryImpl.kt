@@ -20,7 +20,7 @@ class TvShowRepositoryImpl(
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ) : TvShowRepository {
+) : TvShowRepository {
     override suspend fun getTvShowByKeyword(
         keyword: String,
         page: Int,
@@ -37,7 +37,12 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
         return tryToExecute(
-            function = { localTvDataSource.getTvShowsBy(keyword) },
+            function = {
+                localTvDataSource.getTvShowsByKeywordAndSearchType(
+                    searchKeyword = keyword,
+                    searchType = SearchType.BY_KEYWORD
+                )
+            },
             onSuccess = { localTvShows -> tvLocalMapper.mapToTvShows(localTvShows) },
             onFailure = { emptyList() },
             dispatcher = dispatcher
