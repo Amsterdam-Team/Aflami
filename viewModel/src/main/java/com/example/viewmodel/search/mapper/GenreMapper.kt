@@ -1,56 +1,58 @@
 package com.example.viewmodel.search.mapper
 
+import com.example.entity.category.MovieCategoryType
+import com.example.entity.category.TvShowCategoryType
 import com.example.viewmodel.search.globalSearch.genre.MovieGenre
 import com.example.viewmodel.search.globalSearch.genre.MovieGenreItemUiState
 import com.example.viewmodel.search.globalSearch.genre.Selectable
 import com.example.viewmodel.search.globalSearch.genre.TvGenreItemUiState
 import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 
-fun TvShowGenre.mapToGenreId(): Int {
+fun TvShowGenre.toTvShowCategoryType(): TvShowCategoryType {
     return when (this) {
-        TvShowGenre.ACTION_ADVENTURE -> 10759
-        TvShowGenre.ANIMATION -> 16
-        TvShowGenre.COMEDY -> 35
-        TvShowGenre.CRIME -> 80
-        TvShowGenre.DOCUMENTARY -> 99
-        TvShowGenre.DRAMA -> 18
-        TvShowGenre.FAMILY -> 10751
-        TvShowGenre.KIDS -> 10762
-        TvShowGenre.MYSTERY -> 9648
-        TvShowGenre.NEWS -> 10763
-        TvShowGenre.REALITY -> 10764
-        TvShowGenre.SCIENCE_FICTION_FANTASY -> 10765
-        TvShowGenre.SOAP -> 10766
-        TvShowGenre.TALK -> 10767
-        TvShowGenre.WAR_POLITICS -> 10768
-        TvShowGenre.WESTERN -> 37
-        TvShowGenre.ROMANCE -> 10749
-        TvShowGenre.ALL -> 0
+        TvShowGenre.ACTION_ADVENTURE -> TvShowCategoryType.ACTION_ADVENTURE
+        TvShowGenre.ANIMATION -> TvShowCategoryType.ANIMATION
+        TvShowGenre.COMEDY -> TvShowCategoryType.COMEDY
+        TvShowGenre.CRIME -> TvShowCategoryType.CRIME
+        TvShowGenre.DOCUMENTARY -> TvShowCategoryType.DOCUMENTARY
+        TvShowGenre.DRAMA -> TvShowCategoryType.DRAMA
+        TvShowGenre.FAMILY -> TvShowCategoryType.FAMILY
+        TvShowGenre.SCIENCE_FICTION_FANTASY -> TvShowCategoryType.SCIENCE_FICTION_FANTASY
+        TvShowGenre.WAR_POLITICS -> TvShowCategoryType.WAR_POLITICS
+        TvShowGenre.MYSTERY -> TvShowCategoryType.MYSTERY
+        TvShowGenre.ROMANCE -> TvShowCategoryType.ROMANCE
+        TvShowGenre.WESTERN -> TvShowCategoryType.WESTERN
+        TvShowGenre.KIDS -> TvShowCategoryType.KIDS
+        TvShowGenre.NEWS -> TvShowCategoryType.NEWS
+        TvShowGenre.REALITY -> TvShowCategoryType.REALITY
+        TvShowGenre.SOAP -> TvShowCategoryType.SOAP
+        TvShowGenre.TALK -> TvShowCategoryType.TALK
+        TvShowGenre.ALL -> TvShowCategoryType.ALL
     }
 }
 
-fun MovieGenre.mapToGenreId(): Int {
+fun MovieGenre.toMovieCategoryType(): MovieCategoryType {
     return when (this) {
-        MovieGenre.ACTION -> 28
-        MovieGenre.ADVENTURE -> 12
-        MovieGenre.ANIMATION -> 16
-        MovieGenre.COMEDY -> 35
-        MovieGenre.CRIME -> 80
-        MovieGenre.DOCUMENTARY -> 99
-        MovieGenre.DRAMA -> 18
-        MovieGenre.FAMILY -> 10751
-        MovieGenre.FANTASY -> 14
-        MovieGenre.HISTORY -> 36
-        MovieGenre.HORROR -> 27
-        MovieGenre.MUSIC -> 10402
-        MovieGenre.MYSTERY -> 9648
-        MovieGenre.ROMANCE -> 10749
-        MovieGenre.SCIENCE_FICTION -> 878
-        MovieGenre.TV_MOVIE -> 10770
-        MovieGenre.THRILLER -> 53
-        MovieGenre.WAR -> 10752
-        MovieGenre.WESTERN -> 37
-        MovieGenre.ALL -> 0
+        MovieGenre.ACTION -> MovieCategoryType.ACTION
+        MovieGenre.ADVENTURE -> MovieCategoryType.ADVENTURE
+        MovieGenre.ANIMATION -> MovieCategoryType.ANIMATION
+        MovieGenre.COMEDY -> MovieCategoryType.COMEDY
+        MovieGenre.CRIME -> MovieCategoryType.CRIME
+        MovieGenre.DOCUMENTARY -> MovieCategoryType.DOCUMENTARY
+        MovieGenre.DRAMA -> MovieCategoryType.DRAMA
+        MovieGenre.FAMILY -> MovieCategoryType.FAMILY
+        MovieGenre.FANTASY -> MovieCategoryType.FANTASY
+        MovieGenre.HISTORY -> MovieCategoryType.HISTORY
+        MovieGenre.HORROR -> MovieCategoryType.HORROR
+        MovieGenre.MUSIC -> MovieCategoryType.MUSIC
+        MovieGenre.MYSTERY -> MovieCategoryType.MYSTERY
+        MovieGenre.ROMANCE -> MovieCategoryType.ROMANCE
+        MovieGenre.SCIENCE_FICTION -> MovieCategoryType.SCIENCE_FICTION
+        MovieGenre.TV_MOVIE -> MovieCategoryType.TV_MOVIE
+        MovieGenre.THRILLER -> MovieCategoryType.THRILLER
+        MovieGenre.WAR -> MovieCategoryType.WAR
+        MovieGenre.WESTERN -> MovieCategoryType.WESTERN
+        MovieGenre.ALL -> MovieCategoryType.ALL
     }
 }
 

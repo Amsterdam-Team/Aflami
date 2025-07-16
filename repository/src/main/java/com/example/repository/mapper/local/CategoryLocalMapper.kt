@@ -1,38 +1,33 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Category
+import com.example.entity.category.MovieCategoryType
+import com.example.entity.category.TvShowCategoryType
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
+import com.example.repository.mapper.shared.mapToMovieCategory
+import com.example.repository.mapper.shared.mapToTvShowCategory
 
 class CategoryLocalMapper {
 
-    fun mapToMovieCategories(localMovieCategories: List<LocalMovieCategoryDto>): List<Category> {
-        return localMovieCategories.map { mapToCategory(it) }
+    fun mapToMovieCategories(localMovieCategories: List<LocalMovieCategoryDto>): List<MovieCategoryType> {
+        return localMovieCategories.map { mapToMovieCategory(it) }
     }
 
-    fun mapToTvShowCategories(localTvShowCategories: List<LocalTvShowCategoryDto>): List<Category> {
-        return localTvShowCategories.map { mapToCategory(it) }
+    fun mapToTvShowCategories(localTvShowCategories: List<LocalTvShowCategoryDto>): List<TvShowCategoryType> {
+        return localTvShowCategories.map { mapToTvShowCategory(it) }
     }
 
     fun mapToLocalMovieCategories(categories: List<Category>): List<LocalMovieCategoryDto> {
         return categories.map { mapToLocalMovieCategory(it) }
     }
 
-
-    private fun mapToCategory(localMovieCategory: LocalMovieCategoryDto): Category {
-        return Category(
-            id = localMovieCategory.categoryId,
-            name = localMovieCategory.name,
-            image = ""
-        )
+    private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieCategoryType {
+        return localMovieCategory.categoryId.mapToMovieCategory()
     }
 
-    private fun mapToCategory(localTvShowCategory: LocalTvShowCategoryDto): Category {
-        return Category(
-            id = localTvShowCategory.categoryId,
-            name = localTvShowCategory.name,
-            image = ""
-        )
+    private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowCategoryType {
+        return localTvShowCategory.categoryId.mapToTvShowCategory()
     }
 
     private fun mapToLocalMovieCategory(category: Category): LocalMovieCategoryDto {
@@ -41,6 +36,4 @@ class CategoryLocalMapper {
             name = category.name,
         )
     }
-
-
 }

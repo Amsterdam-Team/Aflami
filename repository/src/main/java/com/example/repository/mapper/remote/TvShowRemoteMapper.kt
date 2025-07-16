@@ -1,10 +1,11 @@
 package com.example.repository.mapper.remote
 
-import com.example.entity.Category
 import com.example.entity.TvShow
+import com.example.entity.category.TvShowCategoryType
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
+import com.example.repository.mapper.shared.mapToTvShowCategory
 
 class TvShowRemoteMapper {
     fun mapToTvShows(remoteTvShowResponse: RemoteTvShowResponse): List<TvShow> {
@@ -40,8 +41,8 @@ class TvShowRemoteMapper {
         )
     }
 
-    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<Category> {
-        return genreIds.map { Category(id = it.toLong(), name = "", image = "") }
+    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<TvShowCategoryType> {
+        return genreIds.map { it.toLong().mapToTvShowCategory() }
     }
 
     private fun parseYear(date: String): Int {
