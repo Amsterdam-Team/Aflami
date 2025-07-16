@@ -1,5 +1,6 @@
 package com.example.repository.repository
 
+import android.util.Log
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 import com.example.repository.datasource.local.MovieLocalSource
@@ -22,7 +23,10 @@ class MovieRepositoryImpl(
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        page: Int,
+    ): List<Movie> {
         var movies: List<Movie> = emptyList()
         val searchType = SearchType.BY_KEYWORD
         if (!recentSearchHandler.isExpired(keyword, searchType)) {
@@ -30,7 +34,8 @@ class MovieRepositoryImpl(
         }
         if (movies.isNotEmpty()) return movies
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getMoviesByKeywordFromRemote(keyword, searchType)
+        Log.d("TAG", "CurrentRequestedPage: $page")
+        return getMoviesByKeywordFromRemote(keyword, searchType, page)
     }
 
     override suspend fun getMoviesByActor(actorName: String): List<Movie> {
@@ -57,11 +62,12 @@ class MovieRepositoryImpl(
 
     private suspend fun getMoviesByKeywordFromRemote(
         keyword: String,
-        searchType: SearchType
+        searchType: SearchType,
+        page: Int,
     ): List<Movie> {
         return tryToExecute(
             function = {
-                movieDataSource.getMoviesByKeyword(keyword)
+                movieDataSource.getMoviesByKeyword(keyword, page)
             },
             onSuccess = { remoteMovies ->
                 saveMoviesWithSearch(

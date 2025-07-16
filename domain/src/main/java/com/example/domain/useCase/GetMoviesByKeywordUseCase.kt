@@ -14,11 +14,12 @@ class GetMoviesByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
+        page: Int = 1,
         rating: Int = 0,
         movieGenreId: Int = 0
     ): List<Movie> {
         return movieRepository
-            .getMoviesByKeyword(keyword = keyword)
+            .getMoviesByKeyword(keyword = keyword, page = page)
             .filterByMinRating(rating)
             .filterByCategory(movieGenreId)
             .sortByPopularityDescending()

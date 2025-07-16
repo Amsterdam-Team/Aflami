@@ -14,10 +14,17 @@ class MovieRemoteSourceImpl(
     private val ktorClient: KtorClient,
     private val json: Json,
 ) : MovieRemoteSource {
-
-    override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        page: Int,
+    ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
+            val response =
+                ktorClient
+                    .get(SEARCH_MOVIE_URL) {
+                        parameter(QUERY_KEY, keyword)
+                        parameter(PAGE, page)
+                    }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
@@ -68,6 +75,7 @@ class MovieRemoteSourceImpl(
 
         const val WITH_CAST_KEY = "with_cast"
         const val QUERY_KEY = "query"
+        const val PAGE = "page"
 
         const val WITH_ORIGIN_COUNTRY = "with_origin_country"
     }
