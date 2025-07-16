@@ -44,30 +44,37 @@ import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLa
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
+import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.searchByKeyword.FilterItemUiState
-import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
 import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 @Composable
 fun FilterDialog(
-    state: SearchUiState,
-    interaction: FilterInteractionListener,
-    modifier: Modifier = Modifier
+    filterState: FilterItemUiState,
+    selectedTabOption: TabOption,
+    onCancelButtonClicked: () -> Unit,
+    onRatingStarChanged: (Int) -> Unit,
+    onMovieGenreButtonChanged: (MovieGenre) -> Unit,
+    onTvGenreButtonChanged: (TvShowGenre) -> Unit,
+    onApplyButtonClicked: () -> Unit,
+    onClearButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val lazyState = rememberLazyListState()
     var isFilterCleared by remember { mutableStateOf(false) }
 
     ScrollToGenreItem(
         lazyState = lazyState,
-        state = state,
+        selectedTabOption = selectedTabOption,
+        selectedMovieGenre = filterState.selectableMovieGenres.getSelectedGenreType(),
+        selectedTvGenre = filterState.selectableTvShowGenres.getSelectedGenreType(),
         isFilterCleared = isFilterCleared,
         onFilterClearHandled = { isFilterCleared = false }
     )
 
     Dialog(
-        onDismissRequest = { interaction.onCancelButtonClicked() },
+        onDismissRequest = { onCancelButtonClicked() },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
@@ -100,7 +107,7 @@ fun FilterDialog(
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = null,
-                    onClick = { interaction.onCancelButtonClicked() },
+                    onClick = { onCancelButtonClicked() },
                     tint = AppTheme.color.title
                 )
             }
@@ -114,8 +121,8 @@ fun FilterDialog(
             )
             RatingBar(
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
-                state = state.filterItemUiState,
-                interaction = interaction,
+                selectedStarIndex = filterState.selectedStarIndex,
+                onRatingStarChanged = onRatingStarChanged
             )
             Text(
                 text = stringResource(R.string.genre),
@@ -134,10 +141,10 @@ fun FilterDialog(
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                when (state.selectedTabOption) {
+                when (selectedTabOption) {
                     TabOption.MOVIES -> {
                         items(
-                            items = state.filterItemUiState.selectableMovieGenres,
+                            items = filterState.selectableMovieGenres,
                             key = { it.selectableMovieGenre.type.name }
                         ) { category ->
                             val genreType = category.selectableMovieGenre.type
@@ -145,7 +152,7 @@ fun FilterDialog(
                                 icon = getMovieGenreIcon(genreType),
                                 label = getMovieGenreLabel(genreType),
                                 isSelected = category.selectableMovieGenre.isSelected,
-                                onClick = { interaction.onMovieGenreButtonChanged(genreType) },
+                                onClick = { onMovieGenreButtonChanged(genreType) },
                             )
                         }
 
@@ -153,7 +160,7 @@ fun FilterDialog(
 
                     TabOption.TV_SHOWS -> {
                         items(
-                            items = state.filterItemUiState.selectableTvShowGenres,
+                            items = filterState.selectableTvShowGenres,
                             key = { it.selectableTvShowGenre.type.name }
                         ) { category ->
                             val genreType = category.selectableTvShowGenre.type
@@ -161,7 +168,7 @@ fun FilterDialog(
                                 icon = getTvShowGenreIcon(genreType),
                                 label = getTvShowGenreLabel(genreType),
                                 isSelected = category.selectableTvShowGenre.isSelected,
-                                onClick = { interaction.onTvGenreButtonChanged(category.selectableTvShowGenre.type) },
+                                onClick = { onTvGenreButtonChanged(category.selectableTvShowGenre.type) },
                             )
                         }
                     }
@@ -169,16 +176,16 @@ fun FilterDialog(
             }
             PrimaryButton(
                 title = stringResource(R.string.apply),
-                onClick = interaction::onApplyButtonClicked,
-                isEnabled = state.filterItemUiState.hasFilterData,
-                isLoading = state.filterItemUiState.isLoading,
+                onClick = onApplyButtonClicked,
+                isEnabled = filterState.hasFilterData,
+                isLoading = filterState.isLoading,
                 isNegative = false,
                 modifier = Modifier.padding(12.dp),
             )
             SecondaryButton(
                 title = stringResource(R.string.clear),
                 onClick = {
-                    interaction.onClearButtonClicked()
+                    onClearButtonClicked()
                     isFilterCleared = true
                 },
                 isEnabled = true,
@@ -192,8 +199,8 @@ fun FilterDialog(
 
 @Composable
 private fun RatingBar(
-    state: FilterItemUiState,
-    interaction: FilterInteractionListener,
+    selectedStarIndex: Int,
+    onRatingStarChanged: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -204,7 +211,7 @@ private fun RatingBar(
             val starIndex = index + 1
             Icon(
                 painter = painterResource(
-                    id = if (state.selectedStarIndex >= starIndex)
+                    id = if (selectedStarIndex >= starIndex)
                         R.drawable.ic_filled_star
                     else
                         R.drawable.ic_outlined_star
@@ -215,7 +222,7 @@ private fun RatingBar(
                     .size(24.dp)
                     .weight(1f)
                     .clickable(
-                        onClick = { interaction.onRatingStarChanged(starIndex) },
+                        onClick = { onRatingStarChanged(starIndex) },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     )
@@ -229,15 +236,14 @@ private fun RatingBar(
 fun FilterDialogPreview2() {
     AflamiTheme {
         FilterDialog(
-            state = SearchUiState(),
-            interaction = object : FilterInteractionListener {
-                override fun onCancelButtonClicked() {}
-                override fun onRatingStarChanged(ratingIndex: Int) {}
-                override fun onMovieGenreButtonChanged(genreType: MovieGenre) {}
-                override fun onTvGenreButtonChanged(genreType: TvShowGenre) {}
-                override fun onApplyButtonClicked() {}
-                override fun onClearButtonClicked() {}
-            },
+            filterState = FilterItemUiState(),
+            selectedTabOption = TabOption.MOVIES,
+            onCancelButtonClicked = {  },
+            onRatingStarChanged = { },
+            onMovieGenreButtonChanged = { },
+            onTvGenreButtonChanged = { },
+            onApplyButtonClicked = { },
+            onClearButtonClicked = { },
         )
     }
 }
