@@ -1,11 +1,12 @@
 package com.example.repository.dto.remote.movieGallery
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteMovieGalleryResponse(
-    val id: Long,
-    val backdrops: List<GalleryImageDto>,
-    val logos: List<GalleryImageDto>,
-    val posters: List<GalleryImageDto>
+    @SerialName("id")  val id: Long,
+    @SerialName("backdrops")  val backdrops: List<GalleryImageDto>,
+    @SerialName("logos")  val logos: List<GalleryImageDto>,
+    @SerialName("posters") val posters: List<GalleryImageDto>
 )
