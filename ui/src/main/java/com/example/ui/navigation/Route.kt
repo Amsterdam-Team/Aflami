@@ -33,5 +33,5 @@ sealed interface Route {
     data class MovieDetails(private val movieId : Long) : Route
 
     @Serializable
-    data object Cast: Route
+    data class Cast (private val movieId : Long): Route
 }
