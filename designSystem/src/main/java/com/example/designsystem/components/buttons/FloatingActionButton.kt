@@ -35,7 +35,7 @@ fun FloatingActionButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun FilledButtonPreview() {
+private fun FloatingActionButtonPreview() {
     AflamiTheme {
         Box(
             modifier = Modifier.padding(16.dp),

@@ -12,7 +12,7 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun PrimaryButton(
+fun OutlinedButton(
     title: String,
     onClick: () -> Unit,
     isEnabled: Boolean,
@@ -28,19 +28,19 @@ fun PrimaryButton(
         isLoading = isLoading,
         isEnabled = isEnabled,
         isNegative = isNegative,
-        isSecondary = false,
+        isSecondary = true,
         modifier = modifier,
     )
 }
 
 @ThemeAndLocalePreviews
 @Composable
-private fun FilledButtonPreview() {
+private fun OutlinedButtonPreview() {
     AflamiTheme {
         Box(
             modifier = Modifier.padding(16.dp),
         ) {
-            PrimaryButton(
+            OutlinedButton(
                 title = stringResource(R.string.add),
                 onClick = {},
                 isEnabled = true,

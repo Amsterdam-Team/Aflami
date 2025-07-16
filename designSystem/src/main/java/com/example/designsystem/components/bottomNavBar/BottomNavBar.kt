@@ -17,9 +17,9 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun BottomNavBar(
-    modifier: Modifier = Modifier,
     items: Map<BottomBarItems, Any>,
     selectedBottomBarItems: BottomBarItems,
+    modifier: Modifier = Modifier,
     onDestinationClicked: (destination: Any) -> Unit = {},
 ) {
     NavigationBar(

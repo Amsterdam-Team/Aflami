@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.LoadingIndicator
 import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 internal fun BaseButton(
@@ -158,4 +159,16 @@ private fun animateButtonBrush(
     )
 
     return Brush.verticalGradient(listOf(startColor, endColor))
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun BaseButtonPreview() {
+    BaseButton(
+        onClick = {},
+        isLoading = true,
+        isNegative = true,
+        isEnabled = true,
+        isSecondary = false,
+    )
 }

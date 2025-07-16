@@ -26,26 +26,30 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import kotlin.math.absoluteValue
-
 @Composable
 fun CustomSlider(
     modifier: Modifier = Modifier,
     aflamiImageList: List<Int>,
+    ratingProvider: (index: Int) -> String = { "9.9" }
 ) {
     val pagerState = rememberPagerState { aflamiImageList.size }
+
     HorizontalPager(
         state = pagerState,
         contentPadding = PaddingValues(horizontal = 46.dp),
         pageSpacing = 16.dp,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) { index ->
+
         val pageOffset =
             (pagerState.currentPage - index).toFloat() + pagerState.currentPageOffsetFraction
+
         val scaleFactor = lerp(
             start = 0.9f,
             stop = 1f,
             fraction = 1f - pageOffset.absoluteValue.coerceIn(0f, 1f)
         )
+
         Box {
             Image(
                 modifier = Modifier
@@ -64,33 +68,22 @@ fun CustomSlider(
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-           RatingChip(
-               rating = "9.9",
+
+            RatingChip(
+                rating = ratingProvider(index),
                 modifier = Modifier
                     .padding(top = 8.dp, end = 8.dp)
                     .align(Alignment.TopEnd)
             )
-
         }
     }
 }
 
-@Composable
-private fun b(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(24.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(AppTheme.color.primary)
-    ) {
-
-    }
-}
 
 
 @Composable
 @ThemeAndLocalePreviews
-private fun CustomSliserPreview() {
+private fun CustomSliderPreview() {
     AflamiTheme {
         CustomSlider(
             aflamiImageList = listOf(

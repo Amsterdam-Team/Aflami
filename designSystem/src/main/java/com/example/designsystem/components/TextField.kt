@@ -214,7 +214,12 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-private fun TrailingIcon(leadingIcon: Int, imageColor: Color, isClickEnabled: Boolean = true, onClick: (() -> Unit)? = null) {
+private fun TrailingIcon(
+    leadingIcon: Int,
+    imageColor: Color,
+    isClickEnabled: Boolean = true,
+    onClick: (() -> Unit)? = null
+) {
     Crossfade(targetState = leadingIcon) { state ->
         Image(
             painter = painterResource(id = state),

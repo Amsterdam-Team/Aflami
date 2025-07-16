@@ -14,18 +14,20 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 fun GuessTitle(
     title: String,
     points: Int,
-    showHint: Boolean,
+    isHintVisible: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
-){
+) {
     GuessCard(
         points = points,
         modifier = modifier,
         onClick = onClick,
-        showHint = showHint
+        isHintVisible = isHintVisible
     ) {
         Text(
-            modifier = Modifier.align(Alignment.Center).padding(vertical = 65.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(vertical = 65.dp),
             text = title,
             style = AppTheme.textStyle.title.large,
             color = AppTheme.color.title
@@ -36,12 +38,12 @@ fun GuessTitle(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun GuessTitleHintPreview(){
+private fun GuessTitleHintVisiblePreview() {
     AflamiTheme {
         GuessTitle(
             title = "The Green Mile",
             points = 10,
-            showHint = true,
+            isHintVisible = true,
             onClick = {}
         )
     }
@@ -49,12 +51,12 @@ private fun GuessTitleHintPreview(){
 
 @ThemeAndLocalePreviews
 @Composable
-private fun GuessTitleNoHintPreview(){
+private fun GuessTitleHintNotVisiblePreview() {
     AflamiTheme {
         GuessTitle(
             title = "The Green Mile",
             points = 10,
-            showHint = false,
+            isHintVisible = false,
             onClick = {}
         )
     }
