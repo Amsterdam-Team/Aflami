@@ -46,9 +46,14 @@ class CategoryRepositoryImpl(
         return tryToExecute(
             function = { categoryLocalSource.getMovieCategories() },
             onSuccess = { localCategories ->
-                categoryLocalMapper.mapToMovieCategories(
-                    localCategories
-                )
+                categoryLocalMapper.mapToMovieCategories(localCategories)
+                    .map { category ->
+                        Category(
+                            id = category.ordinal.toLong(),
+                            name = category.name,
+                            image = ""
+                        )
+                    }
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -72,7 +77,13 @@ class CategoryRepositoryImpl(
             onSuccess = { localCategories ->
                 categoryLocalMapper.mapToTvShowCategories(
                     localCategories
-                )
+                ).map { category ->
+                    Category(
+                        id = category.ordinal.toLong(),
+                        name = category.name,
+                        image = ""
+                    )
+                }
             },
             onFailure = { aflamiException -> throw aflamiException }
         )

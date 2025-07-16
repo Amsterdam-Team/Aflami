@@ -1,5 +1,8 @@
 package com.example.viewmodel.search.globalSearch.genre
 
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
+
 data class MovieGenreItemUiState(
     val selectableMovieGenre: Selectable<MovieGenre> = Selectable(
         type = MovieGenre.ALL,
