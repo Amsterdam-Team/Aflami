@@ -2,6 +2,7 @@ package com.amsterdam.aflami.di
 
 import com.example.domain.useCase.GetMovieCastUseCase
 import com.example.domain.useCase.GetMovieCategoriesUseCase
+import com.example.domain.useCase.GetMovieDetailsUseCase
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetMoviesByKeywordUseCase
@@ -30,6 +31,7 @@ val useCaseModule = module{
     singleOf(::ClearRecentSearchUseCase)
     singleOf(::ClearAllRecentSearchesUseCase)
     singleOf(::GetMovieCastUseCase)
+    singleOf(::GetMovieDetailsUseCase)
     single<CountryValidator> { CountryValidatorImp() }
     single { GetSuggestedCountriesUseCase(get(), get()) }
     single { GetMoviesByCountryUseCase(get()) }

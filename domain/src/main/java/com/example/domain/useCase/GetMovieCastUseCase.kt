@@ -7,7 +7,7 @@ import com.example.entity.Actor
 class GetMovieCastUseCase(private val movieRepository: MovieRepository) {
 
     suspend operator fun invoke(movieId: Long): List<Actor>{
-        return movieRepository.getCastByMovieId(movieId)
+        return movieRepository.getActorsByMovieId(movieId)
             .sortedByDescending { it.popularity }
             .ifEmpty { throw NoCastFoundException() }
     }
