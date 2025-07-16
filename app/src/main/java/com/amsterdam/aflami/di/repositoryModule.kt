@@ -21,22 +21,24 @@ import com.example.repository.repository.RecentSearchRepositoryImpl
 import com.example.repository.repository.TvShowRepositoryImpl
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.RecentSearchHandlerImpl
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { CountryLocalMapper() }
-    single { CountryRemoteMapper() }
-    single { CategoryLocalMapper() }
-    single { CategoryRemoteMapper() }
-    single { MovieLocalMapper(get()) }
-    single { TvShowLocalMapper(get()) }
-    single { MovieRemoteMapper() }
-    single { TvShowRemoteMapper() }
-    single { RecentSearchMapper() }
-    single<RecentSearchHandler> { RecentSearchHandlerImpl(get()) }
-    single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get()) }
-    single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get(), get()) }
-    single<RecentSearchRepository> { RecentSearchRepositoryImpl(get(), get()) }
-    single<TvShowRepository> { TvShowRepositoryImpl(get(), get(), get(), get(), get()) }
+    singleOf(::CountryLocalMapper)
+    singleOf(::CountryRemoteMapper)
+    singleOf(::CategoryLocalMapper)
+    singleOf(::CategoryRemoteMapper)
+    singleOf(::MovieLocalMapper)
+    singleOf(::TvShowLocalMapper)
+    singleOf(::MovieRemoteMapper)
+    singleOf(::TvShowRemoteMapper)
+    singleOf(::RecentSearchMapper)
+    singleOf(::RecentSearchHandlerImpl) { bind<RecentSearchHandler>() }
+    singleOf(::CountryRepositoryImpl) { bind<CountryRepository>() }
+    singleOf(::MovieRepositoryImpl) { bind<MovieRepository>() }
+    singleOf(::CategoryRepositoryImpl) { bind<CategoryRepository>() }
+    singleOf(::RecentSearchRepositoryImpl) { bind<RecentSearchRepository>() }
+    singleOf(::TvShowRepositoryImpl) { bind<TvShowRepository>() }
 }

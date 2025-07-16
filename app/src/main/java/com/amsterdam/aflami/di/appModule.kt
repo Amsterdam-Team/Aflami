@@ -7,4 +7,3 @@ val appModule = listOf(
     useCaseModule,
     viewModelModule,
 )
-
