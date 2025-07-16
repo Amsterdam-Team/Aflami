@@ -23,6 +23,8 @@ class GetTvShowByKeywordUseCase(
                 if (tvGenre == TvShowGenre.ALL)
                     return@filter true
 
+                println(tvGenre)
+                println(tv.categories)
                 tv.categories.any { it == tvGenre }
             }
             .sortByPopularityDescending()

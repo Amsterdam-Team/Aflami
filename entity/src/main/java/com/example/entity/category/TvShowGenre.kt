@@ -17,6 +17,5 @@ enum class TvShowGenre {
     REALITY,
     SOAP,
     TALK,
-    ROMANCE,
     WESTERN,
 }

@@ -34,7 +34,6 @@ val TvShowGenre.uiModel: GenreUiModel
         TvShowGenre.TALK -> GenreUiModel(R.drawable.ic_cat_talk, R.string.talk)
         TvShowGenre.WAR_POLITICS -> GenreUiModel(R.drawable.ic_cat_war, R.string.war)
         TvShowGenre.WESTERN -> GenreUiModel(R.drawable.ic_cat_western, R.string.western)
-        TvShowGenre.ROMANCE -> GenreUiModel(R.drawable.ic_cat_romance, R.string.romance)
     }
 
 @Composable

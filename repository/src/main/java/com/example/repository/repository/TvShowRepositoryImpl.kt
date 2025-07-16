@@ -1,5 +1,6 @@
 package com.example.repository.repository
 
+import android.util.Log
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.TvShow
 import com.example.repository.datasource.local.TvShowLocalSource
@@ -20,7 +21,7 @@ class TvShowRepositoryImpl(
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ) : TvShowRepository {
+) : TvShowRepository {
 
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
         var tvShows: List<TvShow> = emptyList()
@@ -30,12 +31,21 @@ class TvShowRepositoryImpl(
         }
         if (tvShows.isNotEmpty()) return tvShows
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getTvShowsFromRemote(keyword)
+        return getTvShowsFromRemote(keyword).also {
+            Log.d("nb", it.toString())
+        }
     }
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
         return tryToExecute(
-            function = { localTvDataSource.getTvShowsBy(keyword) },
+            function = {
+                localTvDataSource.getTvShowsByKeywordAndSearchType(
+                    searchKeyword = keyword,
+                    searchType = SearchType.BY_KEYWORD
+                ).also {
+                    Log.d("nb", it.toString())
+                }
+            },
             onSuccess = { localTvShows -> tvLocalMapper.mapToTvShows(localTvShows) },
             onFailure = { emptyList() },
             dispatcher = dispatcher

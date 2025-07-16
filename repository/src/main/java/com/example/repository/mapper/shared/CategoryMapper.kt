@@ -46,7 +46,6 @@ fun Long.mapToTvShowCategory(): TvShowGenre {
         10767L -> TvShowGenre.TALK
         10768L -> TvShowGenre.WAR_POLITICS
         37L -> TvShowGenre.WESTERN
-        10749L -> TvShowGenre.ROMANCE
         else -> TvShowGenre.ALL
     }
 }
