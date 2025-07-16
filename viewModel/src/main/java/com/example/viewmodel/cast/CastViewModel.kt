@@ -22,7 +22,7 @@ class CastViewModel(
     private fun getMovieCast() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getMovieCastUseCase(497) },
+            action = { getMovieCastUseCase(args.movieId) },
             onSuccess = ::onGetMovieCastSuccess,
             onError = ::onGetMovieCastError,
             onCompletion = ::onGetMovieCastCompletion,
