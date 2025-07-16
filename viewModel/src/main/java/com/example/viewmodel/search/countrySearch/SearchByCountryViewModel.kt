@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toSearchByCountryState
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 class SearchByCountryViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
+    private val addRecentSearchUseCase: AddRecentSearchUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
     SearchByCountryScreenState(),
@@ -118,6 +120,7 @@ class SearchByCountryViewModel(
                 isCountriesDropDownVisible = false
             )
         }
+        saveRecentSearch()
         getMoviesByCountry()
     }
 
@@ -131,6 +134,14 @@ class SearchByCountryViewModel(
         } else {
             updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR) }
         }
+    }
+
+    private fun saveRecentSearch() {
+        tryToExecute(
+            action = { addRecentSearchUseCase(state.value.selectedCountryIsoCode) },
+            onSuccess = { },
+            onError = { onError(it) },
+        )
     }
 
     companion object {

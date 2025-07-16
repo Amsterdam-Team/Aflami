@@ -11,15 +11,25 @@ class RecentSearchHandlerImpl(
     override suspend fun isExpired(keyword: String, searchType: SearchType): Boolean {
         return tryToExecute(
             function = { recentSearchLocalSource.getSearchByKeywordAndType(keyword, searchType) },
-            onSuccess = { !isSearchExpired(it) },
+            onSuccess = { isSearchExpired(it) },
             onFailure = { false }
         )
     }
 
-    override suspend fun deleteRecentSearch(keyword: String, searchType: SearchType) {
+    override suspend fun deleteRecentSearchRelationWithMovie(keyword: String, searchType: SearchType) {
         tryToExecute(
             function = {
-                recentSearchLocalSource.deleteRecentSearchByKeywordAndType(keyword, searchType)
+                recentSearchLocalSource.deleteRecentSearchRelationWithMovie(keyword, searchType)
+            },
+            onSuccess = {},
+            onFailure = {}
+        )
+    }
+
+    override suspend fun deleteExpiredRecentSearch() {
+        tryToExecute(
+            function = {
+                recentSearchLocalSource.deleteExpiredRecentSearches(Clock.System.now())
             },
             onSuccess = {},
             onFailure = {}
@@ -28,7 +38,7 @@ class RecentSearchHandlerImpl(
 
     private fun isSearchExpired(recentSearch: LocalSearchDto?): Boolean {
         if (recentSearch == null) return true
-        return recentSearch.expireDate > Clock.System.now()
+        return recentSearch.expireDate < Clock.System.now()
     }
 
 }

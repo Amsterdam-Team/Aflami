@@ -11,6 +11,6 @@ interface RecentSearchLocalSource {
 
     suspend fun deleteRecentSearches()
     suspend fun deleteRecentSearchByKeyword(keyword: String)
-    suspend fun deleteRecentSearchByKeywordAndType(keyword: String, searchType: SearchType)
+    suspend fun deleteRecentSearchRelationWithMovie(keyword: String, searchType: SearchType)
     suspend fun deleteExpiredRecentSearches(date: Instant)
 }

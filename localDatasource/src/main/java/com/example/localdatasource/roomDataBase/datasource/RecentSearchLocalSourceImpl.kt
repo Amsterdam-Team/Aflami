@@ -34,8 +34,7 @@ class RecentSearchLocalSourceImpl(
         dao.deleteSearchMovieCrossRefByKeyword(keyword)
     }
 
-    override suspend fun deleteRecentSearchByKeywordAndType(keyword: String, searchType: SearchType) {
-        dao.deleteSearchByKeyword(keyword, searchType = searchType)
+    override suspend fun deleteRecentSearchRelationWithMovie(keyword: String, searchType: SearchType) {
         dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType = searchType)
     }
 

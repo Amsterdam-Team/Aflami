@@ -3,6 +3,7 @@ package com.example.viewmodel.searchByActor
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
+import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class SearchByActorViewModel(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
+    private val addRecentSearchUseCase: AddRecentSearchUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(
     SearchByActorScreenState(),
@@ -83,5 +85,13 @@ class SearchByActorViewModel(
     override fun onRetryQuestClicked() {
         updateState { it.copy(isLoading = true) }
         observeQueryFlow()
+    }
+
+    override fun onSearchActionClicked() {
+        tryToExecute(
+            action = { addRecentSearchUseCase(state.value.query) },
+            onSuccess = { },
+            onError = {},
+        )
     }
 }

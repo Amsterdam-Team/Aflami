@@ -29,7 +29,6 @@ class MovieRepositoryImpl(
             movies = getMoviesFromLocal(keyword, searchType)
         }
         if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(keyword, searchType)
         return getMoviesByKeywordFromRemote(keyword, searchType)
     }
 
@@ -40,7 +39,6 @@ class MovieRepositoryImpl(
             movies = getMoviesFromLocal(keyword = actorName, searchType)
         }
         if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(actorName, searchType)
         return getMoviesByActorNameFromRemote(actorName, searchType)
     }
 
@@ -51,7 +49,6 @@ class MovieRepositoryImpl(
             movies = getMoviesFromLocal(countryIsoCode, searchType)
         }
         if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(countryIsoCode, searchType)
         return getMoviesByCountryIsoCodeFromRemote(countryIsoCode, searchType)
     }
 
@@ -64,6 +61,7 @@ class MovieRepositoryImpl(
                 movieDataSource.getMoviesByKeyword(keyword)
             },
             onSuccess = { remoteMovies ->
+                recentSearchHandler.deleteRecentSearchRelationWithMovie(keyword, searchType)
                 saveMoviesWithSearch(
                     remoteMovies,
                     keyword = keyword,
@@ -83,6 +81,7 @@ class MovieRepositoryImpl(
         return tryToExecute(
             function = { movieDataSource.getMoviesByActorName(actorName) },
             onSuccess = { remoteMovies ->
+                recentSearchHandler.deleteRecentSearchRelationWithMovie(actorName, searchType)
                 saveMoviesWithSearch(
                     remoteMovies = remoteMovies,
                     keyword = actorName,
@@ -102,6 +101,7 @@ class MovieRepositoryImpl(
         return tryToExecute(
             function = { movieDataSource.getMoviesByCountryIsoCode(countryIsoCode) },
             onSuccess = { remoteMovies ->
+                recentSearchHandler.deleteRecentSearchRelationWithMovie(countryIsoCode, searchType)
                 saveMoviesWithSearch(
                     remoteMovies = remoteMovies,
                     keyword = countryIsoCode,

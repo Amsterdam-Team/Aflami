@@ -29,8 +29,7 @@ class TvShowRepositoryImpl(
             tvShows = getTvShowFromLocal(keyword)
         }
         if (tvShows.isNotEmpty()) return tvShows
-        recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getTvShowsFromRemote(keyword)
+        return getTvShowsFromRemote(keyword, SearchType.BY_KEYWORD)
     }
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
@@ -49,12 +48,14 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowsFromRemote(
         keyword: String,
+        searchType: SearchType
     ): List<TvShow> {
         return tryToExecute(
             function = {
                 remoteTvDataSource.getTvShowsByKeyword(keyword)
             },
             onSuccess = { remoteTvShows ->
+                recentSearchHandler.deleteRecentSearchRelationWithMovie(keyword, searchType)
                 saveTvShowsToDatabase(remoteTvShows, keyword)
                 tvRemoteMapper.mapToTvShows(remoteTvShows)
             },

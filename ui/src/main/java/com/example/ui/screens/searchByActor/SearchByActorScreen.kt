@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,8 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
@@ -48,6 +52,7 @@ fun SearchByActorScreen(
     viewModel: SearchByActorViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
+    val keyboardController = LocalSoftwareKeyboardController.current
     val navController = LocalNavController.current
     var isNoInternetConnection by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
@@ -67,6 +72,7 @@ fun SearchByActorScreen(
     }
     SearchByActorContent(
         modifier = modifier,
+        keyboardController = keyboardController,
         state = uiState.value,
         interactionListener = viewModel,
         isNoInternetConnection = isNoInternetConnection,
@@ -80,6 +86,7 @@ fun SearchByActorScreen(
 @Composable
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
+    keyboardController: SoftwareKeyboardController?,
     state: SearchByActorScreenState,
     interactionListener: SearchByActorInteractionListener,
     isNoInternetConnection: Boolean,
@@ -103,6 +110,13 @@ private fun SearchByActorContent(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .padding(horizontal = 16.dp),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    interactionListener.onSearchActionClicked()
+                }
+            ),
+            imeAction = ImeAction.Search,
         )
 
         AnimatedContent(
@@ -187,9 +201,19 @@ private fun SearchByActorContentPreview() {
 
                 override fun onRetryQuestClicked() {
                 }
+
+                override fun onSearchActionClicked() {
+                }
             },
             isNoInternetConnection = false,
-            onRetryQuestClicked = {}
+            onRetryQuestClicked = {},
+            keyboardController = object: SoftwareKeyboardController{
+                override fun hide() {
+                }
+
+                override fun show() {
+                }
+            }
         )
     }
 }
