@@ -10,7 +10,7 @@ interface MovieRepository {
     suspend fun getMoviesByActor(actorName: String): List<Movie>
     suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie>
 
-    suspend fun getActorsByMovieId(id: Long): List<Actor>
+    suspend fun getActorsByMovieId(movieId: Long): List<Actor>
     suspend fun getMovieReviews(movieId : Long) : List<Review>
     suspend fun getMovieDetailsById(movieId : Long): Movie
     suspend fun getSimilarMovies(movieId : Long) : List<Movie>

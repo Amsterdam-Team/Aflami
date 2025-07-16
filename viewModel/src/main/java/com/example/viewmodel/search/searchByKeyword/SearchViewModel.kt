@@ -268,7 +268,7 @@ class SearchViewModel(
     }
 
     override fun onMovieClicked(movieId: Long) {
-        updateState { it.copy(movieId = movieId) }
+        updateState { it.copy(selectedMovieId = movieId) }
         sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
     }
 

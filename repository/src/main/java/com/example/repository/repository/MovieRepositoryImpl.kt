@@ -29,7 +29,6 @@ class MovieRepositoryImpl(
     private val reviewRemoteMapper: ReviewRemoteMapper,
     private val galleryRemoteMapper: GalleryRemoteMapper,
     private val remoteProductionCompanyMapper: ProductionCompanyRemoteMapper,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
         var movies: List<Movie> = emptyList()

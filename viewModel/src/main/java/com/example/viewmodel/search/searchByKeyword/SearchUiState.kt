@@ -8,7 +8,6 @@ import com.example.viewmodel.search.searchByKeyword.genre.Selectable
 import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
 
 data class SearchUiState(
-    val movieId : Long = 0,
     val keyword: String = "",
     val recentSearches: List<String> = emptyList(),
     val selectedTabOption: TabOption = TabOption.MOVIES,

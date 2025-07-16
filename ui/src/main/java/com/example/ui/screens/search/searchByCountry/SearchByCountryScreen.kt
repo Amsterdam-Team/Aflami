@@ -32,6 +32,7 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
 import com.example.ui.screens.search.searchByCountry.components.CountriesDropdownMenu
 import com.example.ui.screens.search.searchByCountry.components.CountrySearchField
 import com.example.ui.screens.search.searchByCountry.components.ExploreCountries
@@ -59,6 +60,8 @@ internal fun SearchByCountryScreen(
                 SearchByCountryEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
+                SearchByCountryEffect.NavigateToMovieDetails ->
+                    navController.navigate(Route.MovieDetails(state.selectedMovieId))
                 else -> {}
             }
         }
@@ -115,7 +118,8 @@ private fun SearchByCountryScreenContent(
             MoviesVerticalGrid(
                 state.movies,
                 state.searchByCountryContentUIState == SearchByCountryContentUIState.MOVIES_LOADED,
-                Modifier.align(Alignment.TopStart)
+                Modifier.align(Alignment.TopStart),
+                interactionListener::onMovieClicked
             )
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(4),
