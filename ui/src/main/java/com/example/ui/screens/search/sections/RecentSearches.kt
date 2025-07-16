@@ -20,8 +20,8 @@ import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.GlobalSearchInteractionListener
-import com.example.viewmodel.search.SearchUiState
+import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
+import com.example.viewmodel.search.globalSearch.SearchUiState
 
 @Composable
 fun RecentSearchesSection(
@@ -29,7 +29,7 @@ fun RecentSearchesSection(
     interaction: GlobalSearchInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isEmpty()) {
+    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isBlank()) {
         Column {
             Row(
                 modifier = modifier
@@ -47,7 +47,7 @@ fun RecentSearchesSection(
                 )
 
                 Text(
-                    modifier = modifier.clickable(onClick = interaction::onClearAllRecentSearches),
+                    modifier = modifier.clickable(onClick = interaction::onAllRecentSearchesCleared),
                     text = stringResource(R.string.clear_all),
                     style = AppTheme.textStyle.label.medium,
                     color = AppTheme.color.primary,
@@ -60,7 +60,7 @@ fun RecentSearchesSection(
                         modifier = Modifier.animateItem(),
                         title = recentSearchItem,
                         onItemClick = interaction::onRecentSearchClicked,
-                        onCancelClick = { interaction::onClearRecentSearch }
+                        onCancelClick = { interaction::onRecentSearchCleared }
                     )
                     if (recentSearchItem != state.recentSearches.last()) HorizontalDivider()
                 }

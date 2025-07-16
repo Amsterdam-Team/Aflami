@@ -1,0 +1,20 @@
+package com.example.viewmodel.search.globalSearch.genre
+
+data class MovieGenreItemUiState(
+    val selectableMovieGenre: Selectable<MovieGenre> = Selectable(
+        type = MovieGenre.ALL,
+        isSelected = false
+    )
+)
+
+data class TvGenreItemUiState(
+    val selectableTvShowGenre: Selectable<TvShowGenre> = Selectable(
+        type = TvShowGenre.ALL,
+        isSelected = false
+    )
+)
+
+data class Selectable<T>(
+    val isSelected: Boolean = true,
+    val type: T
+)

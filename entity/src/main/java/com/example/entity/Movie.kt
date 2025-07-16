@@ -11,4 +11,4 @@ data class Movie(
     val originCountry: String,
     val movieLength: Int,
     val hasVideo : Boolean
-)
+) : PopularitySortable, Categorizable, RatingFilterable

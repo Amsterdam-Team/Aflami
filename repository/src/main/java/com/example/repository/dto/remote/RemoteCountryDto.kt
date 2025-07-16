@@ -5,10 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteCountryDto(
-    @SerialName("english_name")
-    val englishName: String,
-    @SerialName("iso_3166_1")
-    val isoCode: String,
-    @SerialName("native_name")
-    val nativeName: String
+    @SerialName("english_name") val englishName: String,
+    @SerialName("iso_3166_1") val isoCode: String,
+    @SerialName("native_name") val nativeName: String
 )

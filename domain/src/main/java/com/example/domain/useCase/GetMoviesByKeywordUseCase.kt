@@ -1,8 +1,11 @@
 package com.example.domain.useCase
 
+import com.example.domain.common.ContentFilteringExtensions.filterByCategory
+import com.example.domain.common.ContentFilteringExtensions.filterByMinRating
+import com.example.domain.common.ContentFilteringExtensions.sortByPopularityDescending
+import com.example.domain.common.ContentFilteringExtensions.throwIfEmpty
 import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
-import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
 
 class GetMoviesByKeywordUseCase(
@@ -11,14 +14,14 @@ class GetMoviesByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
-        rating: Float = 0f,
-        movieGenre: MovieGenre = MovieGenre.ALL
+        rating: Int = 0,
+        movieGenreId: Int = 0
     ): List<Movie> {
         return movieRepository
-            .getMoviesByKeyword(keyword = keyword, rating = rating, movieGenre = movieGenre)
-            .sortedByDescending { it.popularity }
-            .ifEmpty { throw NoSearchByKeywordResultFoundException() }
-
+            .getMoviesByKeyword(keyword = keyword)
+            .filterByMinRating(rating)
+            .filterByCategory(movieGenreId)
+            .sortByPopularityDescending()
+            .throwIfEmpty { NoSearchByKeywordResultFoundException() }
     }
 }
-

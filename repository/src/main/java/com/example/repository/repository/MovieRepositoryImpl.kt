@@ -1,32 +1,25 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
-import com.example.domain.useCase.genreTypes.MovieGenre
-import com.example.entity.Actor
 import com.example.entity.Movie
-import com.example.entity.ProductionCompany
-import com.example.entity.Review
-import com.example.repository.datasource.local.LocalMovieDataSource
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
-import com.example.repository.datasource.remote.RemoteMovieDatasource
-import com.example.repository.dto.local.LocalSearchDto
+import com.example.repository.datasource.local.MovieLocalSource
+import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.utils.SearchType
+import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.mapper.local.MovieLocalMapper
-import com.example.repository.mapper.remote.RemoteCastMapper
-import com.example.repository.mapper.remote.RemoteGalleryMapper
-import com.example.repository.mapper.remote.RemoteMovieMapper
-import com.example.repository.mapper.remote.RemoteProductionCompanyMapper
-import com.example.repository.mapper.remote.RemoteReviewMapper
+import com.example.repository.mapper.remote.MovieRemoteMapper
+import com.example.repository.utils.RecentSearchHandler
+import com.example.repository.utils.tryToExecute
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
-    private val localMovieDataSource: LocalMovieDataSource,
-    private val remoteMovieDataSource: RemoteMovieDatasource,
+    private val movieLocalSource: MovieLocalSource,
+    private val movieDataSource: MovieRemoteSource,
     private val movieLocalMapper: MovieLocalMapper,
+    private val movieRemoteMapper: MovieRemoteMapper,
+    private val recentSearchHandler: RecentSearchHandler,
     private val movieRemoteMapper: RemoteMovieMapper,
     private val remoteCastMapper: RemoteCastMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
@@ -35,104 +28,129 @@ class MovieRepositoryImpl(
     private val remoteProductionCompanyMapper: RemoteProductionCompanyMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(
-        keyword: String,
-        rating: Float,
-        movieGenre: MovieGenre
-    ): List<Movie> {
-
-        val recentSearch =
-            recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
-        val isExpired = !isSearchExpired(recentSearch)
-        if (!isExpired) {
-            val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
-                keyword = keyword,
-                searchType = SearchType.BY_KEYWORD
-            )
-            return movieLocalMapper.mapListFromLocal(localMovies)
+    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
+        var movies: List<Movie> = emptyList()
+        val searchType = SearchType.BY_KEYWORD
+        if (!recentSearchHandler.isExpired(keyword, searchType)) {
+            movies = getMoviesFromLocal(keyword, searchType)
         }
-        deleteRecentSearch(recentSearch)
-
-        val remoteMovies = if (rating != 0f || movieGenre != MovieGenre.ALL) {
-            remoteMovieDataSource.discoverMovies(
-                keyword,
-                rating,
-                movieRemoteMapper.mapToGenreId(movieGenre)
-            )
-        } else {
-            remoteMovieDataSource.getMoviesByKeyword(keyword)
-        }
-
-        val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
-
-        localMovieDataSource.addAllMoviesWithSearchData(
-            movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
-            searchKeyword = keyword,
-            searchType = SearchType.BY_KEYWORD,
-            expireDate = Clock.System.now()
-        )
-
-        return domainMovies
+        if (movies.isNotEmpty()) return movies
+        recentSearchHandler.deleteRecentSearch(keyword, searchType)
+        return getMoviesByKeywordFromRemote(keyword, searchType)
     }
 
     override suspend fun getMoviesByActor(actorName: String): List<Movie> {
-        return withContext(dispatcher) {
-            val recentSearch =
-                recentSearchDatasource.getSearchByKeywordAndType(actorName, SearchType.BY_ACTOR)
-            val isExpired = !isSearchExpired(recentSearch)
-            if (!isExpired) {
-                val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
-                    keyword = actorName,
-                    searchType = SearchType.BY_ACTOR
-                )
-                return@withContext movieLocalMapper.mapListFromLocal(localMovies)
-            }
-            deleteRecentSearch(recentSearch)
-            val remoteMovies = remoteMovieDataSource.getMoviesByActorName(actorName)
-            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
-
-            launch {
-                localMovieDataSource.addAllMoviesWithSearchData(
-                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
-                    searchKeyword = actorName,
-                    searchType = SearchType.BY_ACTOR,
-                    expireDate = Clock.System.now()
-                )
-            }
-            domainMovies
+        var movies: List<Movie> = emptyList()
+        val searchType = SearchType.BY_ACTOR
+        if (!recentSearchHandler.isExpired(keyword = actorName, searchType)) {
+            movies = getMoviesFromLocal(keyword = actorName, searchType)
         }
-
+        if (movies.isNotEmpty()) return movies
+        recentSearchHandler.deleteRecentSearch(actorName, searchType)
+        return getMoviesByActorNameFromRemote(actorName, searchType)
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
-        return withContext(dispatcher) {
-            val recentSearch =
-                recentSearchDatasource.getSearchByKeywordAndType(
-                    countryIsoCode,
-                    SearchType.BY_COUNTRY
-                )
-            val isExpired = !isSearchExpired(recentSearch)
-            if (!isExpired) {
-                val localMovies = localMovieDataSource.getMoviesByKeywordAndSearchType(
-                    keyword = countryIsoCode,
-                    searchType = SearchType.BY_COUNTRY
-                )
-                return@withContext movieLocalMapper.mapListFromLocal(localMovies)
-            }
-            deleteRecentSearch(recentSearch)
-            val remoteMovies = remoteMovieDataSource.getMoviesByCountryIsoCode(countryIsoCode)
-            val domainMovies = movieRemoteMapper.mapResponseToDomain(remoteMovies)
+        var movies: List<Movie> = emptyList()
+        val searchType = SearchType.BY_KEYWORD
+        if (!recentSearchHandler.isExpired(countryIsoCode, searchType)) {
+            movies = getMoviesFromLocal(countryIsoCode, searchType)
+        }
+        if (movies.isNotEmpty()) return movies
+        recentSearchHandler.deleteRecentSearch(countryIsoCode, searchType)
+        return getMoviesByCountryIsoCodeFromRemote(countryIsoCode, searchType)
+    }
 
-            launch {
-                localMovieDataSource.addAllMoviesWithSearchData(
-                    movies = domainMovies.map { movieLocalMapper.mapToLocal(it) },
-                    searchKeyword = countryIsoCode,
-                    searchType = SearchType.BY_COUNTRY,
+    private suspend fun getMoviesByKeywordFromRemote(
+        keyword: String,
+        searchType: SearchType
+    ): List<Movie> {
+        return tryToExecute(
+            function = {
+                movieDataSource.getMoviesByKeyword(keyword)
+            },
+            onSuccess = { remoteMovies ->
+                saveMoviesWithSearch(
+                    remoteMovies,
+                    keyword = keyword,
+                    searchType = searchType,
+                )
+                movieRemoteMapper.mapToMovies(remoteMovies)
+            },
+            onFailure = { aflamiException -> throw aflamiException }
+        )
+    }
+
+
+    private suspend fun getMoviesByActorNameFromRemote(
+        actorName: String,
+        searchType: SearchType
+    ): List<Movie> {
+        return tryToExecute(
+            function = { movieDataSource.getMoviesByActorName(actorName) },
+            onSuccess = { remoteMovies ->
+                saveMoviesWithSearch(
+                    remoteMovies = remoteMovies,
+                    keyword = actorName,
+                    searchType = searchType
+                )
+                movieRemoteMapper.mapToMovies(remoteMovies)
+            },
+            onFailure = { aflamiException -> throw aflamiException },
+            dispatcher = dispatcher
+        )
+    }
+
+    private suspend fun getMoviesByCountryIsoCodeFromRemote(
+        countryIsoCode: String,
+        searchType: SearchType
+    ): List<Movie> {
+        return tryToExecute(
+            function = { movieDataSource.getMoviesByCountryIsoCode(countryIsoCode) },
+            onSuccess = { remoteMovies ->
+                saveMoviesWithSearch(
+                    remoteMovies = remoteMovies,
+                    keyword = countryIsoCode,
+                    searchType = searchType
+                )
+                movieRemoteMapper.mapToMovies(remoteMovies)
+            },
+            onFailure = { aflamiException -> throw aflamiException },
+            dispatcher = dispatcher
+        )
+    }
+
+    private suspend fun getMoviesFromLocal(keyword: String, searchType: SearchType): List<Movie> {
+        return tryToExecute(
+            function = {
+                movieLocalSource.getMoviesByKeywordAndSearchType(
+                    keyword = keyword,
+                    searchType = searchType
+                )
+            },
+            onSuccess = { localMovies -> movieLocalMapper.mapToMovies(localMovies) },
+            onFailure = { emptyList() },
+        )
+    }
+
+    private suspend fun saveMoviesWithSearch(
+        remoteMovies: RemoteMovieResponse,
+        keyword: String,
+        searchType: SearchType
+    ) {
+        val localMovies = movieRemoteMapper.mapToLocalMovies(remoteMovies)
+        tryToExecute(
+            function = {
+                movieLocalSource.addMoviesBySearchData(
+                    movies = localMovies,
+                    searchKeyword = keyword,
+                    searchType = searchType,
                     expireDate = Clock.System.now()
                 )
-            }
-            domainMovies
-        }
+            },
+            onSuccess = {},
+            onFailure = {}
+        )
     }
 
     override suspend fun getActorsByMovieId(id: Long): List<Actor> {
@@ -172,4 +190,5 @@ class MovieRepositoryImpl(
     private fun isSearchExpired(recentSearch: LocalSearchDto?): Boolean {
         return recentSearch?.expireDate != null && recentSearch.expireDate < Clock.System.now()
     }
+
 }

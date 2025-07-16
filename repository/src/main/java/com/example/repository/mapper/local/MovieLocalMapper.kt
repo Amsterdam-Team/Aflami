@@ -8,42 +8,43 @@ class MovieLocalMapper(
     private val categoryLocalMapper: CategoryLocalMapper
 ) {
 
-    fun mapFromLocal(dto: MovieWithCategories): Movie {
+    fun mapToMovie(movieWithCategories: MovieWithCategories): Movie {
         return Movie(
-            id = dto.movie.movieId,
-            name = dto.movie.name,
-            description = dto.movie.description,
-            poster = dto.movie.poster,
-            productionYear = dto.movie.productionYear,
-            rating = dto.movie.rating,
-            popularity = dto.movie.popularity,
-            originCountry = dto.movie.originCountry,
-            movieLength = dto.movie.movieLength,
-            hasVideo = dto.movie.hasVideo
+            id = movieWithCategories.movie.movieId,
+            name = movieWithCategories.movie.name,
+            description = movieWithCategories.movie.description,
+            poster = movieWithCategories.movie.poster,
+            productionYear = movieWithCategories.movie.productionYear,
+            rating = movieWithCategories.movie.rating,
+            categories = categoryLocalMapper.mapToMovieCategories(movieWithCategories.categories),
+            popularity = movieWithCategories.movie.popularity,
+            originCountry = movieWithCategories.movie.originCountry,
+            movieLength = movieWithCategories.movie.movieLength,
+            hasVideo = movieWithCategories.movie.hasVideo
         )
     }
 
-    fun mapToLocal(domain: Movie): LocalMovieDto {
+    fun mapToLocalMovie(movie: Movie): LocalMovieDto {
         return LocalMovieDto(
-            movieId = domain.id,
-            name = domain.name,
-            description = domain.description,
-            poster = domain.poster,
-            productionYear = domain.productionYear,
-            rating = domain.rating,
-            popularity = domain.popularity,
-            movieLength = domain.movieLength,
-            originCountry = domain.originCountry,
-            hasVideo = domain.hasVideo
+            movieId = movie.id,
+            name = movie.name,
+            description = movie.description,
+            poster = movie.poster,
+            productionYear = movie.productionYear,
+            rating = movie.rating,
+            popularity = movie.popularity,
+            movieLength = movie.movieLength,
+            originCountry = movie.originCountry,
+            hasVideo = movie.hasVideo
         )
     }
 
-    fun mapListFromLocal(dtoList: List<MovieWithCategories>): List<Movie> {
-        return dtoList.map { mapFromLocal(it) }
+    fun mapToMovies(moviesWithCategories: List<MovieWithCategories>): List<Movie> {
+        return moviesWithCategories.map { mapToMovie(it) }
     }
 
-    fun mapListToLocal(domains: List<Movie>): List<LocalMovieDto> {
-        return domains.map { mapToLocal(it) }
+    fun mapToLocalMovies(movies: List<Movie>): List<LocalMovieDto> {
+        return movies.map { mapToLocalMovie(it) }
     }
 
     fun mapFromLocal(dto: LocalMovieDto): Movie {

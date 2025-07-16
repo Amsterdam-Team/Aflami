@@ -20,13 +20,8 @@ import org.koin.dsl.module
 
 val useCaseModule = module{
     singleOf(::GetMoviesByKeywordUseCase)
-    singleOf(::GetTvShowByKeywordUseCase)
     singleOf(::GetRecentSearchesUseCase)
-    singleOf(::ClearRecentSearchUseCase)
-    singleOf(::ClearAllRecentSearchesUseCase)
-    singleOf(::GetMoviesByKeywordUseCase)
     singleOf(::GetTvShowByKeywordUseCase)
-    singleOf(::GetRecentSearchesUseCase)
     singleOf(::AddRecentSearchUseCase)
     singleOf(::ClearRecentSearchUseCase)
     singleOf(::ClearAllRecentSearchesUseCase)

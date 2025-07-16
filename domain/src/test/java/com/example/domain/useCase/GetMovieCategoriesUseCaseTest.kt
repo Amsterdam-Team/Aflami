@@ -18,7 +18,7 @@ class GetMovieCategoriesUseCaseTest {
     }
 
     @Test
-    fun `should call getMovieCategories from categoryRepository`() =
+    fun `should call getMovieCategories when executed`() =
         runBlocking {
             getMovieCategoriesUseCase()
             coVerify { categoryRepository.getMovieCategories() }

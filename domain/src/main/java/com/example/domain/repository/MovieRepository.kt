@@ -7,7 +7,7 @@ import com.example.entity.ProductionCompany
 import com.example.entity.Review
 
 interface MovieRepository {
-    suspend fun getMoviesByKeyword(keyword: String, rating: Float = 0f, movieGenre: MovieGenre = MovieGenre.ALL): List<Movie>
+    suspend fun getMoviesByKeyword(keyword: String): List<Movie>
     suspend fun getMoviesByActor(actorName: String): List<Movie>
     suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie>
 

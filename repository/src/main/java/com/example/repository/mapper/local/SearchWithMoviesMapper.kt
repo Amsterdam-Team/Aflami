@@ -4,7 +4,7 @@ import com.example.entity.Movie
 import com.example.repository.dto.local.relation.SearchWithMovies
 
 class SearchWithMoviesMapper {
-    fun mapFromSearchWithMovies(searchWithMovies: SearchWithMovies): List<Movie> {
+    fun mapToMovies(searchWithMovies: SearchWithMovies): List<Movie> {
         return searchWithMovies.movies.map {
             Movie(
                 id = it.movieId,
@@ -13,6 +13,7 @@ class SearchWithMoviesMapper {
                 poster = it.poster,
                 productionYear = it.productionYear,
                 rating = it.rating,
+                categories = emptyList(),
                 popularity = it.popularity,
                 movieLength = it.movieLength,
                 originCountry = it.originCountry,

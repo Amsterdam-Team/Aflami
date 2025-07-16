@@ -8,7 +8,7 @@ import com.example.repository.dto.local.relation.MovieWithCategories
 
 class MovieWithCategoryMapper {
 
-    fun mapFromLocal(movieWithCategories: MovieWithCategories): Movie {
+    fun mapToMovie(movieWithCategories: MovieWithCategories): Movie {
         return Movie(
             id = movieWithCategories.movie.movieId,
             name = movieWithCategories.movie.name,
@@ -16,6 +16,7 @@ class MovieWithCategoryMapper {
             poster = movieWithCategories.movie.poster,
             productionYear = movieWithCategories.movie.productionYear,
             rating = movieWithCategories.movie.rating,
+            categories = movieWithCategories.categories.map { mapToCategory(it) },
             popularity = movieWithCategories.movie.popularity,
             movieLength = movieWithCategories.movie.movieLength,
             originCountry = movieWithCategories.movie.originCountry,
@@ -23,15 +24,15 @@ class MovieWithCategoryMapper {
         )
     }
 
-    private fun mapCategoryFromLocal(localCategory: LocalMovieCategoryDto): Category {
+    private fun mapToCategory(localMovieCategory: LocalMovieCategoryDto): Category {
         return Category(
-            id = localCategory.categoryId,
-            name = localCategory.name,
+            id = localMovieCategory.categoryId,
+            name = localMovieCategory.name,
             image = ""
         )
     }
 
-    fun mapToLocal(movie: Movie): LocalMovieDto {
+    fun mapToLocalMovie(movie: Movie): LocalMovieDto {
         return LocalMovieDto(
             movieId = movie.id,
             name = movie.name,

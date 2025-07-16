@@ -10,6 +10,7 @@ import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
+import com.example.repository.dto.local.utils.DatabaseContract
 import com.example.repository.dto.local.utils.SearchType
 
 @Dao
@@ -26,7 +27,7 @@ interface TvShowDao {
         """
         SELECT * FROM tv_shows 
         WHERE tvShowId IN (
-            SELECT tvShowId FROM tvshow_search
+            SELECT tvShowId FROM ${DatabaseContract.TV_SHOW_SEARCH_TABLE}
             WHERE searchKeyword = :keyword
         )
         """

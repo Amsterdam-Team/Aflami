@@ -5,6 +5,7 @@ import com.example.viewmodel.movieDetails.MovieDetailsViewModel
 import com.example.viewmodel.cast.CastViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsUiStateMapper
 import com.example.viewmodel.search.GlobalSearchViewModel
+import com.example.viewmodel.search.globalSearch.GlobalSearchViewModel
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import com.example.viewmodel.utils.dispatcher.DefaultDispatcherProvider
