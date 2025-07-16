@@ -18,7 +18,7 @@ interface MovieDao {
         """
         SELECT * FROM movies 
         WHERE movieId IN (
-            SELECT movieId FROM ${DatabaseContract.RECENT_SEARCH_TABLE} 
+            SELECT movieId FROM ${DatabaseContract.SEARCH_MOVIE_CROSS_REF_TABLE} 
             WHERE searchKeyword = :keyword 
               AND searchType = :searchType
         )
