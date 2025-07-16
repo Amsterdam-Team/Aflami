@@ -8,6 +8,9 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        flatDir {
+            dirs ("libs")
+        }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -17,8 +20,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs("libs")
+        }
     }
 }
+
 
 rootProject.name = "Aflami"
 include(":app")
