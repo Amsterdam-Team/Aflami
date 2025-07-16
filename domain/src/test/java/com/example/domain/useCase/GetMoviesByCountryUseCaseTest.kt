@@ -18,7 +18,7 @@ class GetMoviesByCountryUseCaseTest {
     }
 
     @Test
-    fun `should call getMoviesByCountryIsoCode from movieRepository`() =
+    fun `should call getMoviesByCountryIsoCode when a country ISO code is provided`() =
         runBlocking {
             getMoviesByCountryUseCase("countryIsoCode")
             coVerify { movieRepository.getMoviesByCountryIsoCode("countryIsoCode") }

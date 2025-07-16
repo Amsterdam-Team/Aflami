@@ -2,9 +2,10 @@ package com.example.repository.dto.local
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import com.example.repository.dto.local.utils.DatabaseContract
 
 @Entity(
-    tableName = "movie_category_cross_ref",
+    tableName = DatabaseContract.MOVIE_CATEGORY_CROSS_REF_TABLE,
     primaryKeys = ["movieId", "categoryId"],
     foreignKeys = [
         ForeignKey(

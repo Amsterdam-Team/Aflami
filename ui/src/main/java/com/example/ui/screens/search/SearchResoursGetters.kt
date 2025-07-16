@@ -2,20 +2,17 @@ package com.example.ui.screens.search
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.example.designsystem.R.string
-import com.example.ui.R
-import com.example.viewmodel.search.SearchErrorUiState
+import com.example.designsystem.R
+import com.example.viewmodel.search.globalSearch.SearchErrorState
 
 @Composable
-fun getErrorMessageBySearchErrorUiState(errorUiState: SearchErrorUiState?): String {
+fun getErrorMessageBySearchErrorUiState(errorUiState: SearchErrorState?): String {
     return when (errorUiState) {
-        SearchErrorUiState.BlankQuery -> stringResource(R.string.search_error_blank_query)
-        SearchErrorUiState.InvalidCharacters -> stringResource(R.string.search_error_invalid_characters)
-        SearchErrorUiState.QueryTooLong -> stringResource(R.string.search_error_query_too_long)
-        SearchErrorUiState.QueryTooShort -> stringResource(R.string.search_error_query_too_short)
-        SearchErrorUiState.UnknownException -> stringResource(R.string.search_error_unknown)
-        SearchErrorUiState.NoMoviesByKeywordFoundException -> stringResource(string.no_search_result)
-        SearchErrorUiState.NoNetworkConnection -> stringResource(string.offline_message)
+        SearchErrorState.BlankQuery -> stringResource(R.string.search_error_blank_query)
+        SearchErrorState.QueryTooLong -> stringResource(R.string.search_error_query_too_long)
+        SearchErrorState.UnknownException -> stringResource(R.string.search_error_unknown)
+        SearchErrorState.NoResultFoundException -> stringResource(R.string.no_search_result)
+        SearchErrorState.NoNetworkConnection -> stringResource(R.string.offline_message)
         null -> ""
     }
 }

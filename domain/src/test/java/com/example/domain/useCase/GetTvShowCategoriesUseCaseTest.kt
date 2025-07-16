@@ -19,7 +19,7 @@ class GetTvShowCategoriesUseCaseTest {
     }
 
     @Test
-    fun `should call getTvShowCategories from categoryRepository`() {
+    fun `should call getTvShowCategories when executed`() {
         runBlocking {
             getTvShowCategoriesUseCase()
             coVerify { categoryRepository.getTvShowCategories() }
@@ -27,7 +27,7 @@ class GetTvShowCategoriesUseCaseTest {
     }
 
     @Test
-    fun `should return a list of categories`() {
+    fun `should return an empty list of categories when repository returns empty`() {
         runBlocking {
             coEvery { categoryRepository.getTvShowCategories() } returns listOf()
             val categories = getTvShowCategoriesUseCase()

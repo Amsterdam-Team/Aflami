@@ -6,18 +6,16 @@ import com.example.localdatasource.roomDataBase.daos.CountryDao
 import com.example.localdatasource.roomDataBase.daos.MovieDao
 import com.example.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.example.localdatasource.roomDataBase.daos.TvShowDao
-import com.example.localdatasource.roomDataBase.datasource.LocalCategoryDataSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.LocalCountryDataSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.LocalMovieDataSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.LocalTvShowDataSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.RecentSearchDataSourceImpl
-import com.example.remotedatasource.datasource.RemoteCategoryDatasourceImpl
-import com.example.repository.datasource.local.LocalCategoryDataSource
-import com.example.repository.datasource.local.LocalCountryDataSource
-import com.example.repository.datasource.local.LocalMovieDataSource
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
-import com.example.repository.datasource.local.LocalTvShowDataSource
-import com.example.repository.datasource.remote.RemoteCategoryDatasource
+import com.example.localdatasource.roomDataBase.datasource.CategoryLocalSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.CountryLocalSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.MovieLocalSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.TvShowLocalSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.RecentSearchLocalSourceImpl
+import com.example.repository.datasource.local.CategoryLocalSource
+import com.example.repository.datasource.local.CountryLocalSource
+import com.example.repository.datasource.local.MovieLocalSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
+import com.example.repository.datasource.local.TvShowLocalSource
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -30,9 +28,9 @@ val localDataSourceModule = module {
     single<TvShowDao> { get<AflamiDatabase>().tvShowDao() }
     single<RecentSearchDao> { get<AflamiDatabase>().recentSearchDao() }
 
-    single<LocalCountryDataSource> { LocalCountryDataSourceImpl(get()) }
-    single<LocalMovieDataSource> { LocalMovieDataSourceImpl(get()) }
-    single<LocalRecentSearchDataSource> { RecentSearchDataSourceImpl(get()) }
-    single<LocalCategoryDataSource> { LocalCategoryDataSourceImpl(get()) }
-    single<LocalTvShowDataSource> { LocalTvShowDataSourceImpl(get()) }
+    single<CountryLocalSource> { CountryLocalSourceImpl(get()) }
+    single<MovieLocalSource> { MovieLocalSourceImpl(get()) }
+    single<RecentSearchLocalSource> { RecentSearchLocalSourceImpl(get()) }
+    single<CategoryLocalSource> { CategoryLocalSourceImpl(get()) }
+    single<TvShowLocalSource> { TvShowLocalSourceImpl(get()) }
 }

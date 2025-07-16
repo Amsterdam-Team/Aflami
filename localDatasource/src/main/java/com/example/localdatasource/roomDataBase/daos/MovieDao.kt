@@ -7,6 +7,7 @@ import androidx.room.Upsert
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.MovieWithCategories
+import com.example.repository.dto.local.utils.DatabaseContract
 import com.example.repository.dto.local.utils.SearchType
 
 @Dao
@@ -17,7 +18,7 @@ interface MovieDao {
         """
         SELECT * FROM movies 
         WHERE movieId IN (
-            SELECT movieId FROM SearchDto 
+            SELECT movieId FROM ${DatabaseContract.SEARCH_MOVIE_CROSS_REF_TABLE} 
             WHERE searchKeyword = :keyword 
               AND searchType = :searchType
         )
@@ -31,7 +32,7 @@ interface MovieDao {
     @Transaction
     @Query(
         """
-        SELECT * FROM search_movie_cross_ref 
+        SELECT * FROM ${DatabaseContract.SEARCH_MOVIE_CROSS_REF_TABLE} 
         WHERE searchKeyword = :keyword 
         AND searchType = :searchType
         """

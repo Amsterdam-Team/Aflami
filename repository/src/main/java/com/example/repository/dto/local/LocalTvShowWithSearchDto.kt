@@ -1,9 +1,10 @@
 package com.example.repository.dto.local
 
 import androidx.room.Entity
+import com.example.repository.dto.local.utils.DatabaseContract
 
 @Entity(
-    tableName = "tvshow_search",
+    tableName = DatabaseContract.TV_SHOW_SEARCH_TABLE,
     primaryKeys = ["tvShowId", "searchKeyword"]
 )
 data class LocalTvShowWithSearchDto(

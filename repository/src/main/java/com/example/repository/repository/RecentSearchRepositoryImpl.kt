@@ -1,15 +1,16 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.RecentSearchRepository
-import com.example.repository.datasource.local.LocalRecentSearchDataSource
+import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.RecentSearchMapper
+import com.example.repository.utils.tryToExecute
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class RecentSearchRepositoryImpl(
-    private val localRecentSearchDataSource: LocalRecentSearchDataSource,
+    private val recentSearchLocalSource: RecentSearchLocalSource,
     private val recentSearchMapper: RecentSearchMapper,
 ) : RecentSearchRepository {
     override suspend fun upsertRecentSearch(searchKeyword: String) {
@@ -25,15 +26,27 @@ class RecentSearchRepositoryImpl(
     }
 
     override suspend fun getAllRecentSearches(): List<String> {
-        return recentSearchMapper.toDomainList(localRecentSearchDataSource.getRecentSearches())
+        return tryToExecute(
+            function = { recentSearchLocalSource.getRecentSearches() },
+            onSuccess = { recentSearchMapper.toDomainList(it) },
+            onFailure = { aflamiException -> throw aflamiException }
+        )
     }
 
     override suspend fun deleteAllRecentSearches() {
-        localRecentSearchDataSource.deleteAllSearches()
+        tryToExecute(
+            function = { recentSearchLocalSource.deleteRecentSearches() },
+            onSuccess = { },
+            onFailure = { aflamiException -> throw aflamiException }
+        )
     }
 
     override suspend fun deleteRecentSearch(searchKeyword: String) {
-        localRecentSearchDataSource.deleteSearchByKeyword(searchKeyword)
+        tryToExecute(
+            function = { recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword) },
+            onSuccess = { },
+            onFailure = { aflamiException -> throw aflamiException }
+        )
     }
 
     private suspend fun upsertRecentSearch(
@@ -45,6 +58,10 @@ class RecentSearchRepositoryImpl(
             searchType = searchType,
             expireDate = Clock.System.now().plus(1.hours)
         )
-        localRecentSearchDataSource.upsertResentSearch(localSearchDto)
+        tryToExecute(
+            function = { recentSearchLocalSource.upsertRecentSearch(localSearchDto) },
+            onSuccess = {},
+            onFailure = { aflamiException -> throw aflamiException }
+        )
     }
 }

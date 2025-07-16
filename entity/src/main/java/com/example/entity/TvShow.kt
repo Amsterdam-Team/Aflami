@@ -1,12 +1,16 @@
 package com.example.entity
 
-data class TvShow (
-    val id : Long,
-    val name : String ,
-    val description : String,
-    val poster : String,
-    val productionYear : Int,
-    val categories : List<Category>,
-    val rating : Float,
-    val popularity: Double
-)
+import com.example.entity.category.TvShowGenre
+import com.example.entity.common.PopularitySortable
+import com.example.entity.common.RatingFilterable
+
+data class TvShow(
+    val id: Long,
+    val name: String,
+    val description: String,
+    val poster: String,
+    val productionYear: Int,
+    val categories: List<TvShowGenre>,
+    override val rating: Float,
+    override val popularity: Double
+) : PopularitySortable, RatingFilterable

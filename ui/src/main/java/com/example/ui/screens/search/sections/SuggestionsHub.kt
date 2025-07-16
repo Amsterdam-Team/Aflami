@@ -13,20 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.R
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.theme.AppTheme
-import com.example.ui.R
-import com.example.viewmodel.search.GlobalSearchInteractionListener
-import com.example.viewmodel.search.SearchUiState
+import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
+import com.example.viewmodel.search.globalSearch.SearchUiState
 
 @Composable
 fun SuggestionsHubSection(
     state: SearchUiState,
     interaction: GlobalSearchInteractionListener,
 ) {
-    AnimatedVisibility(state.query.isEmpty()) {
+    AnimatedVisibility(state.query.isBlank()) {
         Column(
             modifier = Modifier.padding(
                 bottom = 12.dp,
@@ -38,7 +38,7 @@ fun SuggestionsHubSection(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = stringResource(R.string.search_suggestions_hub),
+                text = stringResource(R.string.serach_suggestions_hub),
                 style = AppTheme.textStyle.title.medium,
                 color = AppTheme.color.title,
                 textAlign = TextAlign.Start
