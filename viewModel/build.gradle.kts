@@ -10,22 +10,31 @@ android {
 }
 
 dependencies {
+    // Internal modules
     api(project(":domain"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
+
+    // Core & Coroutines
     implementation(libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.datetime)
-    //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
-    // junit 5
-    testImplementation(libs.junit.jupiter)
+
+    // AndroidX
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // JUnit 5 Testing
     testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
-    //truth
-    testImplementation (libs.truth)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
     testImplementation(kotlin("test"))
+
+    // Coroutine Test
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Truth assertions
+    testImplementation(libs.truth)
+
+    // Mocking
+    testImplementation(libs.mockk)
 }

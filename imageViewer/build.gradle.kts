@@ -10,14 +10,16 @@ android {
 }
 
 dependencies {
+    // Android core
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
+
+    // Material Design 3
     implementation(libs.androidx.material3)
+
+    // Jetpack Compose BOM and preview tooling
     implementation(platform(libs.androidx.compose.bom))
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.ui.tooling.preview.android)
+
     // Coil for image loading
     implementation(libs.coil.compose)
 
@@ -25,4 +27,8 @@ dependencies {
     implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.lite.support)
 
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

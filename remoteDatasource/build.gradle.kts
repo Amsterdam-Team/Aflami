@@ -1,8 +1,10 @@
 import java.util.Properties
 
-val properties = Properties()
-properties.load(project.rootProject.file("local.properties").inputStream())
-var bearerToken: String = properties.getProperty("bearerToken")?:""
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
+}
+
+val bearerToken: String = properties.getProperty("bearerToken") ?: ""
 val baseUrl: String = properties.getProperty("baseUrl") ?: ""
 
 plugins {
@@ -19,34 +21,32 @@ android {
         buildConfig = true
     }
 
-    defaultConfig{
-        buildConfigField(
-            "String",
-            "BEARER_TOKEN",
-            bearerToken
-        )
-
-        buildConfigField(
-            "String",
-            "BASE_URL",
-            baseUrl
-        )
+    defaultConfig {
+        buildConfigField("String", "BEARER_TOKEN", "\"$bearerToken\"")
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 }
 
 dependencies {
     implementation(project(":repository"))
+
+    // Ktor client setup
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
-    implementation (libs.ktor.client.serialization)
+    implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.serialization.kotlinx.json)
+
+    // JSON serialization
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Coroutines
     implementation(libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Core utils
+    implementation(libs.androidx.core.ktx)
+
+    // Unit testing
+    testImplementation(libs.junit)
 }
