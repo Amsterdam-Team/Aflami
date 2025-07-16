@@ -22,100 +22,77 @@ class MovieRepositoryImpl(
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
-        var movies: List<Movie> = emptyList()
-        val searchType = SearchType.BY_KEYWORD
-        if (!recentSearchHandler.isExpired(keyword, searchType)) {
-            movies = getMoviesFromLocal(keyword, searchType)
-        }
-        if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getMoviesByKeywordFromRemote(keyword, searchType)
-    }
+    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> =
+        recentSearchHandler.isRecentSearchExpired(keyword, SearchType.BY_KEYWORD)
+            .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
+            ?.let { getMoviesFromLocal(keyword, SearchType.BY_KEYWORD) }
+            ?: recentSearchHandler.deleteRecentSearch(keyword, SearchType.BY_KEYWORD)
+                .let { getMoviesByKeywordFromRemote(keyword, SearchType.BY_KEYWORD) }
 
-    override suspend fun getMoviesByActor(actorName: String): List<Movie> {
-        var movies: List<Movie> = emptyList()
-        val searchType = SearchType.BY_ACTOR
-        if (!recentSearchHandler.isExpired(keyword = actorName, searchType)) {
-            movies = getMoviesFromLocal(keyword = actorName, searchType)
-        }
-        if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(actorName, searchType)
-        return getMoviesByActorNameFromRemote(actorName, searchType)
-    }
 
-    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
-        var movies: List<Movie> = emptyList()
-        val searchType = SearchType.BY_COUNTRY
-        if (!recentSearchHandler.isExpired(countryIsoCode, searchType)) {
-            movies = getMoviesFromLocal(countryIsoCode, searchType)
-        }
-        if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(countryIsoCode, searchType)
-        return getMoviesByCountryIsoCodeFromRemote(countryIsoCode, searchType)
-    }
+    override suspend fun getMoviesByActor(actorName: String): List<Movie> =
+        recentSearchHandler.isRecentSearchExpired(keyword = actorName, SearchType.BY_ACTOR)
+            .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
+            ?.let { getMoviesFromLocal(keyword = actorName, SearchType.BY_ACTOR) }
+            ?: recentSearchHandler.deleteRecentSearch(actorName, SearchType.BY_ACTOR)
+                .let { getMoviesByActorNameFromRemote(actorName, SearchType.BY_ACTOR) }
+
+    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> =
+        recentSearchHandler.isRecentSearchExpired(countryIsoCode, SearchType.BY_COUNTRY)
+            .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
+            ?.let { getMoviesFromLocal(countryIsoCode, SearchType.BY_COUNTRY) }
+            ?: recentSearchHandler.deleteRecentSearch(countryIsoCode, SearchType.BY_COUNTRY)
+                .let { getMoviesByCountryIsoCodeFromRemote(countryIsoCode, SearchType.BY_COUNTRY) }
 
     private suspend fun getMoviesByKeywordFromRemote(
         keyword: String,
         searchType: SearchType
-    ): List<Movie> {
-        return tryToExecute(
-            function = {
-                movieDataSource.getMoviesByKeyword(keyword)
-            },
+    ): List<Movie> =
+        tryToExecute(
+            function = { movieDataSource.getMoviesByKeyword(keyword) },
             onSuccess = { remoteMovies ->
-                saveMoviesWithSearch(
-                    remoteMovies,
-                    keyword = keyword,
-                    searchType = searchType,
-                )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                onSuccessGetMovies(remoteMovies, keyword, searchType)
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
-    }
 
 
     private suspend fun getMoviesByActorNameFromRemote(
         actorName: String,
         searchType: SearchType
-    ): List<Movie> {
-        return tryToExecute(
+    ): List<Movie> =
+        tryToExecute(
             function = { movieDataSource.getMoviesByActorName(actorName) },
             onSuccess = { remoteMovies ->
-                saveMoviesWithSearch(
-                    remoteMovies = remoteMovies,
-                    keyword = actorName,
-                    searchType = searchType
-                )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                onSuccessGetMovies(remoteMovies, actorName, searchType)
             },
             onFailure = { aflamiException -> throw aflamiException },
             dispatcher = dispatcher
         )
-    }
 
     private suspend fun getMoviesByCountryIsoCodeFromRemote(
         countryIsoCode: String,
         searchType: SearchType
-    ): List<Movie> {
-        return tryToExecute(
+    ): List<Movie> =
+        tryToExecute(
             function = { movieDataSource.getMoviesByCountryIsoCode(countryIsoCode) },
             onSuccess = { remoteMovies ->
-                saveMoviesWithSearch(
-                    remoteMovies = remoteMovies,
-                    keyword = countryIsoCode,
-                    searchType = searchType
-                )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                onSuccessGetMovies(remoteMovies, countryIsoCode, searchType)
             },
             onFailure = { aflamiException -> throw aflamiException },
             dispatcher = dispatcher
         )
-    }
 
-    private suspend fun getMoviesFromLocal(keyword: String, searchType: SearchType): List<Movie> {
-        return tryToExecute(
+    private suspend fun MovieRepositoryImpl.onSuccessGetMovies(
+        remoteMovies: RemoteMovieResponse,
+        actorName: String,
+        searchType: SearchType
+    ): List<Movie> =
+        saveMoviesWithSearch(remoteMovies, actorName, searchType)
+            .let { movieRemoteMapper.mapToMovies(remoteMovies) }
+
+    private suspend fun getMoviesFromLocal(keyword: String, searchType: SearchType): List<Movie> =
+        tryToExecute(
             function = {
                 movieLocalSource.getMoviesByKeywordAndSearchType(
                     keyword = keyword,
@@ -125,18 +102,16 @@ class MovieRepositoryImpl(
             onSuccess = { localMovies -> movieLocalMapper.mapToMovies(localMovies) },
             onFailure = { emptyList() },
         )
-    }
 
     private suspend fun saveMoviesWithSearch(
         remoteMovies: RemoteMovieResponse,
         keyword: String,
         searchType: SearchType
-    ) {
-        val localMovies = movieRemoteMapper.mapToLocalMovies(remoteMovies)
+    ) =
         tryToExecute(
             function = {
                 movieLocalSource.addMoviesBySearchData(
-                    movies = localMovies,
+                    movies = movieRemoteMapper.mapToLocalMovies(remoteMovies),
                     searchKeyword = keyword,
                     searchType = searchType,
                     expireDate = Clock.System.now()
@@ -145,6 +120,5 @@ class MovieRepositoryImpl(
             onSuccess = {},
             onFailure = {}
         )
-    }
 
 }

@@ -16,28 +16,26 @@ class CountryRepositoryImpl(
     private val countryLocalMapper: CountryLocalMapper,
 ): CountryRepository {
 
-    override suspend fun getAllCountries(): List<Country> {
-        val countriesFromLocal = getCountriesFromLocal()
-        if (countriesFromLocal.isNotEmpty()) return countriesFromLocal
-        return tryToExecute(
-            function = { remoteDataSource.getCountries() },
-            onSuccess = { remoteCountries ->
-                saveCountries(remoteCountries)
-                countryRemoteMapper.mapToCountries(remoteCountries)
-            },
+    override suspend fun getAllCountries(): List<Country> =
+        getCountriesFromLocal()
+            .takeIf { countriesFromLocal -> countriesFromLocal.isNotEmpty() }
+            ?: tryToExecute(
+                function = { remoteDataSource.getCountries() },
+                onSuccess = { remoteCountries -> onSuccessLoadCountries(remoteCountries) },
             onFailure = { aflamiException -> throw aflamiException }
         )
-    }
 
-    private suspend fun getCountriesFromLocal(): List<Country> {
-        return tryToExecute(
+    private suspend fun onSuccessLoadCountries(
+        remoteCountries: List<RemoteCountryDto>
+    ): List<Country> = saveCountries(remoteCountries)
+        .let { countryRemoteMapper.mapToCountries(remoteCountries) }
+
+    private suspend fun getCountriesFromLocal(): List<Country> = tryToExecute(
             function = { localDataSource.getCountries() },
             onSuccess = { localCountries -> countryLocalMapper.mapToCountries(localCountries) },
             onFailure = { emptyList() }
         )
-    }
 
-    private suspend fun saveCountries(remoteCountries: List<RemoteCountryDto>) {
+    private suspend fun saveCountries(remoteCountries: List<RemoteCountryDto>) =
         localDataSource.addCountries(countryRemoteMapper.mapToLocalCountries(remoteCountries))
-    }
 }
