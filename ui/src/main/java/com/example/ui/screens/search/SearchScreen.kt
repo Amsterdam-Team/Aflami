@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
+import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
@@ -47,7 +48,6 @@ import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.ui.screens.search.sections.filterDialog.FilterDialog
-import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.globalSearch.FilterInteractionListener
@@ -117,7 +117,7 @@ private fun SearchContent(
         )
 
         AnimatedVisibility(state.isLoading) {
-            Loading()
+            LoadingContainer()
         }
 
         AnimatedVisibility(

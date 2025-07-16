@@ -8,15 +8,10 @@ import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
+import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,14 +29,9 @@ class SearchByCountryViewModel(
         observeKeywordFlow()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun observeKeywordFlow() {
         viewModelScope.launch {
-            _keyword
-                .debounce(DEBOUNCE_DURATION)
-                .map(String::trim)
-                .filter(String::isNotBlank)
-                .collectLatest(::getCountriesByKeyword)
+            _keyword.debounceSearch(::getCountriesByKeyword)
         }
     }
 
@@ -121,19 +111,13 @@ class SearchByCountryViewModel(
         getMoviesByCountry()
     }
 
-    override fun onRetryQuestClicked() {
+    override fun onRetryRequestClicked() {
         if (state.value.selectedCountryIsoCode.isBlank() && state.value.keyword.isNotBlank()) {
-            updateState { it.copy(isLoadingCountries = true) }
             getCountriesByKeyword(state.value.keyword)
         } else if (state.value.selectedCountryIsoCode.isNotBlank()) {
-            updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
             getMoviesByCountry()
         } else {
             updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR) }
         }
-    }
-
-    companion object {
-        private const val DEBOUNCE_DURATION = 300L
     }
 }
