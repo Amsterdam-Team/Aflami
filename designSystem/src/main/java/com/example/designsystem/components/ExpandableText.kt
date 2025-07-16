@@ -85,7 +85,6 @@ fun ExpandableText(
         text = annotatedText,
         modifier = modifier.fillMaxWidth().animateContentSize(),
         maxLines = if (isExpanded) Int.MAX_VALUE else minimizedMaxLines,
-        overflow = TextOverflow.Ellipsis,
         onTextLayout = { textLayoutResult ->
             if (!isExpanded && textLayoutResult.hasVisualOverflow) {
                 isClickable = true
