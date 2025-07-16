@@ -4,6 +4,7 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.entity.Country
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
@@ -38,6 +39,7 @@ class SearchByCountryViewModelTest {
     private val testDispatcherProvider = TestDispatcherProvider()
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase = mockk(relaxed = true)
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase = mockk(relaxed = true)
+    private val addRecentSearchUseCase: AddRecentSearchUseCase = mockk(relaxed = true)
     private var testScope = TestScope(
         testDispatcherProvider.testDispatcher
     )
@@ -48,6 +50,7 @@ class SearchByCountryViewModelTest {
         viewModel = SearchByCountryViewModel(
             getSuggestedCountriesUseCase = getSuggestedCountriesUseCase,
             getMoviesByCountryUseCase = getMoviesByCountryUseCase,
+            addRecentSearchUseCase = addRecentSearchUseCase,
             dispatcherProvider = testDispatcherProvider
         )
     }
@@ -58,7 +61,7 @@ class SearchByCountryViewModelTest {
     }
 
     @Test
-    fun `should update the selected country name when its call`() =
+    fun `should update the selected country name when onKeywordValueChanged`() =
         testScope.runTest {
             val keyword = "egypt"
 
@@ -67,6 +70,32 @@ class SearchByCountryViewModelTest {
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.keyword).isEqualTo(keyword)
+        }
+
+    @Test
+    fun `should add recent search when onCountrySelected called`() =
+        testScope.runTest {
+            val keyword = "eg"
+            val countryUiState = CountryUiState("Egypt", "eg")
+            coEvery { addRecentSearchUseCase(any()) } returns
+
+            viewModel.onCountrySelected(countryUiState)
+            testScope.advanceUntilIdle()
+
+            coVerify(exactly = 1) { addRecentSearchUseCase(keyword) }
+        }
+
+    @Test
+    fun `should fail to add recent search when onCountrySelected called`() =
+        testScope.runTest {
+            val keyword = "eg"
+            val countryUiState = CountryUiState("Egypt", "eg")
+            coEvery { addRecentSearchUseCase(any()) } throws AflamiException()
+
+            viewModel.onCountrySelected(countryUiState)
+            testScope.advanceUntilIdle()
+
+            coVerify(exactly = 1) { addRecentSearchUseCase(keyword) }
         }
 
     @Test
