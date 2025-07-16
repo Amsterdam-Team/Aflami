@@ -1,6 +1,5 @@
 package com.example.repository.repository
 
-import android.util.Log
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.TvShow
 import com.example.repository.datasource.local.TvShowLocalSource
@@ -31,9 +30,7 @@ class TvShowRepositoryImpl(
         }
         if (tvShows.isNotEmpty()) return tvShows
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getTvShowsFromRemote(keyword).also {
-            Log.d("nb", it.toString())
-        }
+        return getTvShowsFromRemote(keyword)
     }
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
@@ -42,9 +39,7 @@ class TvShowRepositoryImpl(
                 localTvDataSource.getTvShowsByKeywordAndSearchType(
                     searchKeyword = keyword,
                     searchType = SearchType.BY_KEYWORD
-                ).also {
-                    Log.d("nb", it.toString())
-                }
+                )
             },
             onSuccess = { localTvShows -> tvLocalMapper.mapToTvShows(localTvShows) },
             onFailure = { emptyList() },
