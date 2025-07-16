@@ -6,7 +6,7 @@ class AddRecentSearchUseCase(
     private val recentSearchRepository: RecentSearchRepository,
 ) {
     suspend operator fun invoke(keyword: String) {
-        if (keyword.isEmpty()) return
+        if (keyword.isBlank()) return
         recentSearchRepository.upsertRecentSearch(keyword)
     }
 }

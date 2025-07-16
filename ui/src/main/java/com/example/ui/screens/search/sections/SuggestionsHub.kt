@@ -18,17 +18,17 @@ import com.example.designsystem.components.Text
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
-import com.example.viewmodel.search.globalSearch.SearchUiState
 
 @Composable
-fun SuggestionsHubSection(
-    state: SearchUiState,
-    interaction: GlobalSearchInteractionListener,
+internal fun SuggestionsHubSection(
+    keyword: String,
+    onWorldSearchCardClicked: () -> Unit,
+    onActorSearchCardClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    AnimatedVisibility(state.query.isBlank()) {
+    AnimatedVisibility(keyword.isBlank()) {
         Column(
-            modifier = Modifier.padding(
+            modifier = modifier.padding(
                 bottom = 12.dp,
                 top = 8.dp,
                 start = 16.dp,
@@ -55,14 +55,14 @@ fun SuggestionsHubSection(
                     modifier = Modifier
                         .weight(1f),
                     globalSearchHubUI = GlobalSearchHubUI.WORLD,
-                    onItemClick = interaction::onWorldSearchCardClicked
+                    onItemClick = onWorldSearchCardClicked
                 )
 
                 GlobalSearchHub(
                     modifier = Modifier
                         .weight(1f),
                     globalSearchHubUI = GlobalSearchHubUI.ACTOR,
-                    onItemClick = interaction::onActorSearchCardClicked
+                    onItemClick = onActorSearchCardClicked
                 )
             }
         }

@@ -46,7 +46,7 @@ class MovieRepositoryImpl(
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
         var movies: List<Movie> = emptyList()
-        val searchType = SearchType.BY_KEYWORD
+        val searchType = SearchType.BY_COUNTRY
         if (!recentSearchHandler.isExpired(countryIsoCode, searchType)) {
             movies = getMoviesFromLocal(countryIsoCode, searchType)
         }

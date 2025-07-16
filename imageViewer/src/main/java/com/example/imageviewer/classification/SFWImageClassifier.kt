@@ -19,6 +19,7 @@ internal class SFWImageClassifier(
     modelPath: String = SFWClassifierConfig.NSFW_MODEL_PATH
 ) : ImageClassifier {
 
+
     private val safetyRules = SFWClassifierConfig.NSFW_SAFETY_RULES
 
     private val inputWidth = SFWClassifierConfig.INPUT_IMAGE_WIDTH
@@ -36,7 +37,7 @@ internal class SFWImageClassifier(
     private fun setupInterpreter(modelPath: String): Interpreter? {
         return try {
             val model = FileUtil.loadMappedFile(context, modelPath)
-            Interpreter(model, Interpreter.Options().apply { setUseNNAPI(true) })
+            Interpreter(model, Interpreter.Options().apply { useNNAPI = true })
         } catch (e: IOException) {
             Log.e(TAG, ERROR_MSG_MODEL_LOAD, e)
             null
