@@ -54,7 +54,7 @@ class CategoryRepositoryImpl(
                 )
             }
 
-    private suspend fun CategoryRepositoryImpl.onSuccessLoadMovieCategories(
+    private suspend fun onSuccessLoadMovieCategories(
         movieCategories: RemoteCategoryResponse
     ): List<Category> =
         saveMovieCategoriesToDatabase(movieCategories)
@@ -78,7 +78,7 @@ class CategoryRepositoryImpl(
             onFailure = { aflamiException -> throw aflamiException }
         )
 
-    private suspend fun CategoryRepositoryImpl.onSuccessLoadTvShowCategories(
+    private suspend fun onSuccessLoadTvShowCategories(
         tvShowCategories: RemoteCategoryResponse
     ): List<Category> =
         saveTvShowCategoriesToDatabase(tvShowCategories).let {
