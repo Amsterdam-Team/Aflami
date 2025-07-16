@@ -72,7 +72,7 @@ class GetMoviesByKeywordUseCaseTest {
                     description = "",
                     poster = "",
                     productionYear = 2023,
-                    categories = listOf(Category(id = 99, name = "Other", image = "")),
+                    categories = listOf(Category(id = 99, name = "Other", imageUrl = "")),
                     rating = 5.0f,
                     popularity = 5.0
                 )
@@ -210,7 +210,7 @@ class GetMoviesByKeywordUseCaseTest {
                 description = "",
                 poster = "",
                 productionYear = 2023,
-                categories = listOf(Category(id = 10L, name = "Action", image = "")),
+                categories = listOf(Category(id = 10L, name = "Action", imageUrl = "")),
                 rating = 8.0f,
                 popularity = 10.0
             ),
@@ -220,7 +220,7 @@ class GetMoviesByKeywordUseCaseTest {
                 description = "",
                 poster = "",
                 productionYear = 2023,
-                categories = listOf(Category(id = 20L, name = "Comedy", image = "")),
+                categories = listOf(Category(id = 20L, name = "Comedy", imageUrl = "")),
                 rating = 7.0f,
                 popularity = 9.0
             ),
@@ -231,8 +231,8 @@ class GetMoviesByKeywordUseCaseTest {
                 poster = "",
                 productionYear = 2023,
                 categories = listOf(
-                    Category(id = 10L, name = "Action", image = ""),
-                    Category(id = 30L, name = "Drama", image = "")
+                    Category(id = 10L, name = "Action", imageUrl = ""),
+                    Category(id = 30L, name = "Drama", imageUrl = "")
                 ),
                 rating = 7.5f,
                 popularity = 11.0
@@ -243,7 +243,7 @@ class GetMoviesByKeywordUseCaseTest {
                 description = "",
                 poster = "",
                 productionYear = 2023,
-                categories = listOf(Category(id = 40L, name = "Thriller", image = "")),
+                categories = listOf(Category(id = 40L, name = "Thriller", imageUrl = "")),
                 rating = 6.0f,
                 popularity = 8.0
             )

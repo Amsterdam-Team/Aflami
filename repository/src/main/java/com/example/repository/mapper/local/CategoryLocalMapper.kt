@@ -34,23 +34,14 @@ class CategoryLocalMapper {
         return localMovieCategory.categoryId.mapToMovieCategory()
     }
 
-    fun mapToLocalTvShowCategory(remoteTvShowCategoryDto: RemoteCategoryDto): LocalTvShowCategoryDto {
-        return LocalTvShowCategoryDto(
-            categoryId = remoteTvShowCategoryDto.id,
-            name = remoteTvShowCategoryDto.name
-        )
-    }
 
     fun mapLocalCategoryToDomain(localCategory : LocalMovieCategoryDto): Category {
         return Category(
             id = localCategory.categoryId,
             name = localCategory.name,
-            image = ""
+            imageUrl = ""
         )
     }
-
-    fun mapLocalCategoriesToDomain(localCategories: List<LocalMovieCategoryDto>)=
-        localCategories.map(::mapLocalCategoryToDomain)
 
     private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowGenre {
         return localTvShowCategory.categoryId.mapToTvShowCategory()

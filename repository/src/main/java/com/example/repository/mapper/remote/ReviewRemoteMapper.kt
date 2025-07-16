@@ -6,7 +6,7 @@ import com.example.repository.dto.remote.review.ReviewsResponse
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class RemoteReviewMapper {
+class ReviewRemoteMapper {
 
     fun mapResponseToDomain(response: ReviewsResponse): List<Review> {
         return response.results.map { dto ->

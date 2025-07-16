@@ -140,6 +140,8 @@ private fun SearchByCriteriaPreview() {
                 override fun onCountrySelected(country: CountryUiState) {}
                 override fun onNavigateBackClicked() {}
                 override fun onRetryRequestClicked() {}
+                override fun onMovieClicked(movieId: Long) {
+                }
             },
         )
     }

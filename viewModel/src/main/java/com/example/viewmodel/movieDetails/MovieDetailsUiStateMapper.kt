@@ -42,7 +42,7 @@ class MovieDetailsUiStateMapper {
             },
             productionCompany = productionsCompanies.map { company ->
                 ProductionCompanyUiState(
-                    image = company.image,
+                    image = company.imageUrl,
                     name = company.name,
                     country = company.country
                 )

@@ -17,17 +17,20 @@ class CastViewModel(
 ) : BaseViewModel<CastUiState, CastUiEffect>(CastUiState(), dispatcherProvider),
     CastInteractionListener {
 
-    init { getMovieCast() }
+    init { fetchMovieCast() }
 
-    private fun getMovieCast() {
+    private fun fetchMovieCast() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getMovieCastUseCase(args.movieId) },
+            action = ::executeFetchMovieCast,
             onSuccess = ::onGetMovieCastSuccess,
             onError = ::onGetMovieCastError,
             onCompletion = ::onGetMovieCastCompletion,
         )
     }
+
+    private suspend fun executeFetchMovieCast() =
+        getMovieCastUseCase(args.movieId!!)
 
     private fun onGetMovieCastSuccess(cast: List<Actor>) {
         updateState { it.copy(cast = cast.map { it.toUiState() }, errorUiState = null) }
@@ -47,6 +50,6 @@ class CastViewModel(
 
     override fun onNavigateBackClicked() = sendNewEffect(CastUiEffect.NavigateBack)
 
-    override fun onRetryQuestClicked() = getMovieCast()
+    override fun onRetryQuestClicked() = fetchMovieCast()
 
 }

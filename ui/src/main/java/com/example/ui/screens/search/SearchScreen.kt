@@ -148,8 +148,9 @@ private fun SearchContent(
 
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
-                onMovieClicked = interaction::onMovieClicked
+                onMovieClicked = interaction::onMovieClicked,
                 tvShows = state.tvShows,
+                movies = state.movies,
                 selectedTabOption = state.selectedTabOption
             )
         }

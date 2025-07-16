@@ -20,7 +20,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import com.example.designsystem.R
+import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun ExpandableText(
@@ -92,4 +94,15 @@ fun ExpandableText(
             }
         }
     )
+}
+
+@ThemeAndLocalePreviews
+@Composable
+fun ExpandableTextPreview() {
+    AflamiTheme {
+        ExpandableText(
+            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor.",
+            minimizedMaxLines = 3
+        )
+    }
 }

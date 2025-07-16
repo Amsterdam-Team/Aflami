@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
 @OptIn(FlowPreview::class)
 class SearchViewModel(
     private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
@@ -266,25 +267,13 @@ class SearchViewModel(
         }
     }
 
-    override fun onFilterButtonClicked() {
-        updateState { it.copy(isDialogVisible = true, isLoading = false) }
     override fun onMovieClicked(movieId: Long) {
-        updateState { it.copy(selectedMovieId = movieId) }
+        updateState { it.copy(movieId = movieId) }
         sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
     }
 
-    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
-        updateState { it.copy(recentSearches = emptyList()) }
-        return unit
-    }
-
-    override fun onCancelButtonClicked() {
-        updateState {
-            it.copy(
-                isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
-            )
-        }
+    override fun onFilterButtonClicked() {
+        updateState { it.copy(isDialogVisible = true, isLoading = false) }
     }
 
     override fun onRatingStarChanged(ratingIndex: Int) {

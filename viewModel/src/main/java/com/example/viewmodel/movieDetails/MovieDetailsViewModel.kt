@@ -25,14 +25,17 @@ class MovieDetailsViewModel(
     private fun loadMovieDetails(){
         updateState { it.copy(isLoading = true, networkError = false) }
         tryToExecute(
-            action ={
-                getMovieDetailsUseCase.invoke(state.value.movieId)},
-            onSuccess = { movieDetails ->
-                updateState { movieDetailsUiStateMapper.toUiState(movieDetails) }
-            },
+            action = ::getMovieDetails,
+            onSuccess =::onGetMovieDetailsSuccess,
             onError = ::onError
         )
     }
+
+    private suspend fun getMovieDetails() =
+        getMovieDetailsUseCase(state.value.movieId)
+
+    private fun onGetMovieDetailsSuccess(movieDetails: GetMovieDetailsUseCase.MovieDetails) =
+        updateState { movieDetailsUiStateMapper.toUiState(movieDetails) }
 
 
     override fun onMovieExtrasClicked(movieExtras: MovieExtras) {

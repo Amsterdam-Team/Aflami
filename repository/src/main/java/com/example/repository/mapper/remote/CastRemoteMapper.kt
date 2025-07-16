@@ -5,7 +5,7 @@ import com.example.entity.Gender
 import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteCastDto
 
-class RemoteCastMapper {
+class CastRemoteMapper {
 
     fun mapToDomain(dto: RemoteCastDto): Actor{
         return Actor(

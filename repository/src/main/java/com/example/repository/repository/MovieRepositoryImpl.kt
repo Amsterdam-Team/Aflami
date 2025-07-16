@@ -11,10 +11,10 @@ import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
-import com.example.repository.mapper.remote.RemoteCastMapper
-import com.example.repository.mapper.remote.RemoteGalleryMapper
-import com.example.repository.mapper.remote.RemoteProductionCompanyMapper
-import com.example.repository.mapper.remote.RemoteReviewMapper
+import com.example.repository.mapper.remote.CastRemoteMapper
+import com.example.repository.mapper.remote.GalleryRemoteMapper
+import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
+import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,10 +27,10 @@ class MovieRepositoryImpl(
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: MovieRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
-    private val remoteCastMapper: RemoteCastMapper,
-    private val remoteReviewMapper: RemoteReviewMapper,
-    private val remoteGalleryMapper: RemoteGalleryMapper,
-    private val remoteProductionCompanyMapper: RemoteProductionCompanyMapper,
+    private val castRemoteMapper: CastRemoteMapper,
+    private val reviewRemoteMapper: ReviewRemoteMapper,
+    private val galleryRemoteMapper: GalleryRemoteMapper,
+    private val remoteProductionCompanyMapper: ProductionCompanyRemoteMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
@@ -159,11 +159,11 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun getActorsByMovieId(id: Long): List<Actor> {
-        return movieRemoteDataSource.getCastByMovieId(id).cast.map { remoteCastMapper.mapToDomain(it) }
+        return movieRemoteDataSource.getCastByMovieId(id).cast.map { castRemoteMapper.mapToDomain(it) }
     }
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> =
-        remoteReviewMapper.mapResponseToDomain(movieRemoteDataSource.getMovieReviews(movieId))
+        reviewRemoteMapper.mapResponseToDomain(movieRemoteDataSource.getMovieReviews(movieId))
 
     override suspend fun getMovieDetailsById(movieId: Long): Movie {
         return movieRemoteMapper.mapToMovie(movieRemoteDataSource.getMovieDetailsById(movieId))
@@ -173,7 +173,7 @@ class MovieRepositoryImpl(
         movieRemoteMapper.mapToMovies(movieRemoteDataSource.getSimilarMovies(movieId))
 
     override suspend fun getMovieGallery(movieId: Long): List<String> =
-        remoteGalleryMapper.mapGalleryToDomain(movieRemoteDataSource.getMovieGallery(movieId))
+        galleryRemoteMapper.mapGalleryToDomain(movieRemoteDataSource.getMovieGallery(movieId))
 
     override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
       return  remoteProductionCompanyMapper.mapProductionCompanyToDomain(

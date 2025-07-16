@@ -51,7 +51,7 @@ class CategoryRepositoryImpl(
                         Category(
                             id = category.ordinal.toLong(),
                             name = category.name,
-                            image = ""
+                            imageUrl = ""
                         )
                     }
             },
@@ -81,7 +81,7 @@ class CategoryRepositoryImpl(
                     Category(
                         id = category.ordinal.toLong(),
                         name = category.name,
-                        image = ""
+                        imageUrl = ""
                     )
                 }
             },
@@ -101,7 +101,4 @@ class CategoryRepositoryImpl(
         )
     }
 
-    override suspend fun getMovieCategories(movieId: Long) : List<Category>{
-       return categoryLocalMapper.mapLocalCategoriesToDomain(categoryLocalSource.getCategoriesByMovieId(movieId))
-    }
 }

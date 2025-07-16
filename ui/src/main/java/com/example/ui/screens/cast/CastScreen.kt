@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.Text
@@ -38,7 +39,6 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
-import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.cast.CastErrorUiState
 import com.example.viewmodel.cast.CastInteractionListener
 import com.example.viewmodel.cast.CastUiEffect
@@ -92,7 +92,7 @@ private fun CastContent(
         ) { (isLoading, errorState, cast) ->
 
             when {
-                isLoading -> Loading()
+                isLoading -> LoadingContainer()
 
                 errorState == CastErrorUiState.NoCastFound -> {
                     NoDataContainer(

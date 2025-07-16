@@ -23,9 +23,6 @@ class CategoryLocalSourceImpl(
     override suspend fun getTvShowCategories(): List<LocalTvShowCategoryDto> {
         return dao.getAllTvShowCategories()
     }
-    override suspend fun getCategoriesByMovieId(movieId: Long): List<LocalMovieCategoryDto> {
-        return dao.getMovieCategories(movieId)
-    }
 
 }
 

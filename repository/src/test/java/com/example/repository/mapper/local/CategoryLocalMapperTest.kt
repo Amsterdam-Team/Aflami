@@ -13,7 +13,7 @@ class CategoryLocalMapperTest {
 
     @Test
     fun `should return LocalCategoryDto with same id and name when mapping from Category`() {
-        val category = Category(id = 2, name = "Drama", image = "someImage.png")
+        val category = Category(id = 2, name = "Drama", imageUrl = "someImage.png")
 
         val result = mapper.mapToLocalMovieCategory(category)
 
@@ -40,8 +40,8 @@ class CategoryLocalMapperTest {
     @Test
     fun `should return list of LocalCategoryDto when mapping from list of Category`() {
         val domains = listOf(
-            Category(id = 1, name = "Action", image = ""),
-            Category(id = 2, name = "Comedy", image = "")
+            Category(id = 1, name = "Action", imageUrl = ""),
+            Category(id = 2, name = "Comedy", imageUrl = "")
         )
 
         val result = mapper.mapToLocalMovieCategories(domains)

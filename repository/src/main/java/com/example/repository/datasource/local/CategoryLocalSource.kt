@@ -8,5 +8,4 @@ interface CategoryLocalSource {
     suspend fun getMovieCategories(): List<LocalMovieCategoryDto>
     suspend fun upsertTvShowCategories(categories: List<LocalTvShowCategoryDto>)
     suspend fun getTvShowCategories(): List<LocalTvShowCategoryDto>
-    suspend fun getCategoriesByMovieId(movieId : Long) : List<LocalMovieCategoryDto>
 }

@@ -66,6 +66,8 @@ import com.example.designsystem.R
 import com.example.designsystem.components.Chip
 import com.example.designsystem.components.ExpandableText
 import com.example.designsystem.components.Icon
+import com.example.designsystem.components.LoadingContainer
+import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.UpcomingCard
@@ -77,8 +79,6 @@ import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
-import com.example.ui.screens.searchByCountry.Loading
-import com.example.ui.screens.searchByCountry.NoInternetConnection
 import com.example.viewmodel.common.Selectable
 import com.example.viewmodel.movieDetails.ActorUiState
 import com.example.viewmodel.movieDetails.MovieDetailsEffect
@@ -127,14 +127,16 @@ fun MovieContent(
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
     ) {
-        Loading()
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            LoadingContainer()
+        }
     }
 
     AnimatedVisibility(state.networkError,  enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            NoInternetConnection(
-                onRetryQuestClicked = interactionListener::onRetryQuestClicked,
+            NoNetworkContainer(
+                onClickRetry = interactionListener::onRetryQuestClicked,
             )
         }
     }

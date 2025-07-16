@@ -9,5 +9,5 @@ data class Review(
     val rating: Float,
     val content: String,
     val date: LocalDate,
-    val imageUrl: String?,
+    val imageUrl: String,
 )

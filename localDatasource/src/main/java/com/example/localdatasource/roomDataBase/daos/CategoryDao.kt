@@ -20,6 +20,4 @@ interface CategoryDao {
 
     @Query("SELECT * FROM ${DatabaseContract.TV_SHOW_CATEGORY_TABLE}")
     suspend fun getAllTvShowCategories(): List<LocalTvShowCategoryDto>
-    @Query("SELECT * FROM movie_categories WHERE categoryId = :movieId")
-    suspend fun getMovieCategories(movieId: Long) : List<LocalMovieCategoryDto>
 }

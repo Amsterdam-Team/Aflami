@@ -14,10 +14,10 @@ import com.example.repository.mapper.remote.CategoryRemoteMapper
 import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
-import com.example.repository.mapper.remote.RemoteCastMapper
-import com.example.repository.mapper.remote.RemoteGalleryMapper
-import com.example.repository.mapper.remote.RemoteProductionCompanyMapper
-import com.example.repository.mapper.remote.RemoteReviewMapper
+import com.example.repository.mapper.remote.CastRemoteMapper
+import com.example.repository.mapper.remote.GalleryRemoteMapper
+import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
+import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.repository.CategoryRepositoryImpl
 import com.example.repository.repository.CountryRepositoryImpl
 import com.example.repository.repository.MovieRepositoryImpl
@@ -39,10 +39,10 @@ val repositoryModule = module {
     single { TvShowRemoteMapper() }
     single { RecentSearchMapper() }
     single<RecentSearchHandler> { RecentSearchHandlerImpl(get()) }
-    single { RemoteCastMapper() }
-    single {  RemoteReviewMapper() }
-    single { RemoteGalleryMapper() }
-    single { RemoteProductionCompanyMapper() }
+    single { CastRemoteMapper() }
+    single {  ReviewRemoteMapper() }
+    single { GalleryRemoteMapper() }
+    single { ProductionCompanyRemoteMapper() }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
     singleOf(::MovieRemoteMapper)
     single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get(), get()) }
