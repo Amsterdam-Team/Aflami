@@ -16,17 +16,18 @@ import com.example.domain.validation.CountryValidatorImp
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val useCaseModule = module{
+val useCaseModule = module {
+    single<CountryValidator> { CountryValidatorImp() }
+
     singleOf(::GetMoviesByKeywordUseCase)
-    singleOf(::GetRecentSearchesUseCase)
+    singleOf(::GetMoviesByCountryUseCase)
+    singleOf(::GetMoviesByActorUseCase)
+    singleOf(::GetMovieCategoriesUseCase)
     singleOf(::GetTvShowByKeywordUseCase)
+    singleOf(::GetTvShowCategoriesUseCase)
+    singleOf(::GetSuggestedCountriesUseCase)
+    singleOf(::GetRecentSearchesUseCase)
     singleOf(::AddRecentSearchUseCase)
     singleOf(::ClearRecentSearchUseCase)
     singleOf(::ClearAllRecentSearchesUseCase)
-    single<CountryValidator> { CountryValidatorImp() }
-    single { GetSuggestedCountriesUseCase(get(), get()) }
-    single { GetMoviesByCountryUseCase(get()) }
-    single { GetMoviesByActorUseCase(get()) }
-    single { GetMovieCategoriesUseCase(get()) }
-    single { GetTvShowCategoriesUseCase(get()) }
 }
