@@ -34,8 +34,9 @@ class MovieRemoteSourceImpl(
         page: Int,
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val actorsByName = getActorIdByName(name)
-                .actors
+            val actorsByName =
+                getActorIdByName(name, page)
+                    .actors
                 .joinToString(separator = "|") { it.id.toString() }
                 .ifEmpty {
                     throw NoSearchByActorResultFoundException()
@@ -43,17 +44,18 @@ class MovieRemoteSourceImpl(
 
             ktorClient.get(DISCOVER_MOVIE) {
                 parameter(WITH_CAST_KEY, actorsByName)
-                parameter(PAGE, page)
             }
         }
     }
 
     private suspend fun getActorIdByName(
-        name: String
+        name: String,
+        page: Int,
     ): RemoteActorSearchResponse {
         return safeCall<RemoteActorSearchResponse> {
             ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) {
                 parameter(QUERY_KEY, name)
+                parameter(PAGE, page)
             }
         }
     }
