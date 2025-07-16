@@ -31,7 +31,12 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
         return tryToExecute(
-            function = { localTvDataSource.getTvShowsBy(keyword) },
+            function = {
+                localTvDataSource.getTvShowsByKeywordAndSearchType(
+                    searchKeyword = keyword,
+                    searchType = SearchType.BY_KEYWORD
+                )
+            },
             onSuccess = { localTvShows -> tvLocalMapper.mapToTvShows(localTvShows) },
             onFailure = { emptyList() },
         )
