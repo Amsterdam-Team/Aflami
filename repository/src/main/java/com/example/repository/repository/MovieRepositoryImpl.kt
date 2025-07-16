@@ -61,7 +61,7 @@ class MovieRepositoryImpl(
                 movieDataSource.getMoviesByKeyword(keyword)
             },
             onSuccess = { remoteMovies ->
-                recentSearchHandler.deleteRecentSearchRelationWithMovie(keyword, searchType)
+                recentSearchHandler.deleteExpiredRecentSearch(keyword, searchType)
                 saveMoviesWithSearch(
                     remoteMovies,
                     keyword = keyword,
@@ -81,7 +81,7 @@ class MovieRepositoryImpl(
         return tryToExecute(
             function = { movieDataSource.getMoviesByActorName(actorName) },
             onSuccess = { remoteMovies ->
-                recentSearchHandler.deleteRecentSearchRelationWithMovie(actorName, searchType)
+                recentSearchHandler.deleteExpiredRecentSearch(actorName, searchType)
                 saveMoviesWithSearch(
                     remoteMovies = remoteMovies,
                     keyword = actorName,
@@ -101,7 +101,7 @@ class MovieRepositoryImpl(
         return tryToExecute(
             function = { movieDataSource.getMoviesByCountryIsoCode(countryIsoCode) },
             onSuccess = { remoteMovies ->
-                recentSearchHandler.deleteRecentSearchRelationWithMovie(countryIsoCode, searchType)
+                recentSearchHandler.deleteExpiredRecentSearch(countryIsoCode, searchType)
                 saveMoviesWithSearch(
                     remoteMovies = remoteMovies,
                     keyword = countryIsoCode,

@@ -55,7 +55,7 @@ class TvShowRepositoryImpl(
                 remoteTvDataSource.getTvShowsByKeyword(keyword)
             },
             onSuccess = { remoteTvShows ->
-                recentSearchHandler.deleteRecentSearchRelationWithMovie(keyword, searchType)
+                recentSearchHandler.deleteExpiredRecentSearch(keyword, searchType)
                 saveTvShowsToDatabase(remoteTvShows, keyword)
                 tvRemoteMapper.mapToTvShows(remoteTvShows)
             },
