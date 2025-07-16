@@ -1,11 +1,14 @@
 package com.example.viewmodel.search.actorSearch
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
+import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.search.globalSearch.mapToSearchUiState
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.FlowPreview
@@ -39,49 +42,58 @@ class SearchByActorViewModel(
                 .debounce(DEBOUNCE_DURATION)
                 .map(String::trim)
                 .filter(String::isNotBlank)
-                .collectLatest(::getActorsMoviesByKeyword)
+                .collectLatest(::onGetActorsMoviesSuccess)
         }
     }
 
-    private fun getActorsMoviesByKeyword(keyword: String) {
+    private fun onGetActorsMoviesSuccess(keyword: String) {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = { getMoviesByActorUseCase(keyword) },
             onSuccess = ::updateSearchByActorResult,
-            onError = ::searchMoviesByActorError
+            onError = ::onGetActorsMoviesError
         )
     }
 
-    private fun searchMoviesByActorError(message: AflamiException) {
+    private fun onGetActorsMoviesError(message: AflamiException) {
+        Log.d("actor","${message}  ,,, ${message::class.simpleName}")
         updateState {
             it.copy(
                 isLoading = false,
-                movies = emptyList()
+                movies = emptyList(),
+                noInternetException = message is NoInternetException
             )
         }
-        when (message) {
-            is NetworkException -> updateState {
-                it.copy(
-                    isLoading = false,
-                    movies = emptyList(),
-                    noInternetException = true
-                )
-            }
-        }
     }
-
+    private fun onFetchError(exception: AflamiException) {
+        updateState { it.copy(errorUiState = mapToActorSearchUiState(exception)) }
+    }
     private fun updateSearchByActorResult(movies: List<Movie>) {
         updateState {
             it.copy(
                 movies = movies.toListOfUiState(),
-                isLoading = false
+                isLoading = false,
+                noInternetException = false
             )
         }
     }
 
     override fun onKeywordValueChanged(keyword: String) {
         _keyword.update { keyword }
-        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
+        if (keyword.isBlank()) {
+            updateState { it.copy(
+                keyword = "",
+                isLoading = false,
+                movies = emptyList(),
+                noInternetException = false
+            ) }
+        } else {
+            updateState { it.copy(
+                keyword = keyword,
+                isLoading = true,
+                noInternetException = false
+            ) }
+        }
     }
 
     override fun onNavigateBackClicked() {
@@ -89,7 +101,7 @@ class SearchByActorViewModel(
     }
 
     override fun onRetryQuestClicked() {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(isLoading = true,noInternetException = false) }
         observeKeywordFlow()
     }
 

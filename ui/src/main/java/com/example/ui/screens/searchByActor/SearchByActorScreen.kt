@@ -54,9 +54,8 @@ fun SearchByActorScreen(
     modifier: Modifier = Modifier,
     viewModel: SearchByActorViewModel = koinViewModel(),
 ) {
-    val uiState = viewModel.state.collectAsStateWithLifecycle()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-    var isNoInternetConnection by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -69,13 +68,9 @@ fun SearchByActorScreen(
     }
     SearchByActorContent(
         modifier = modifier,
-        state = uiState.value,
+        state = state.value,
         interactionListener = viewModel,
-        onRetryQuestClicked = {
-            isNoInternetConnection = false
-            viewModel.onRetryQuestClicked()
-        }
-    )
+        onRetryQuestClicked = {viewModel.onRetryQuestClicked()})
 }
 
 @Composable
@@ -120,18 +115,18 @@ private fun SearchByActorContent(
                 fadeIn(animationSpec = tween(300)) togetherWith
                         fadeOut(animationSpec = tween(300))
             },
-        ) { targetState ->
+        ) { state ->
             CenterOfScreenContainer(
                 unneededSpace = headerHeight,
                 modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             ) {
                 when {
-                    targetState.isLoading -> Loading(modifier = Modifier)
-                    targetState.noInternetException -> NoNetworkContainer(
+                    state.isLoading -> Loading(modifier = Modifier)
+                    state.noInternetException -> NoNetworkContainer(
                         onClickRetry = onRetryQuestClicked,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    targetState.keyword.isBlank() -> {
+                    state.keyword.isBlank() -> {
                         NoDataContainer(
                             imageRes = painterResource(R.drawable.img_suggestion_magician),
                             title = stringResource(R.string.find_by_actor),
@@ -139,7 +134,7 @@ private fun SearchByActorContent(
                             modifier = Modifier.padding(horizontal = 24.dp)
                         )
                     }
-                    targetState.movies.isEmpty() -> {
+                    state.movies.isEmpty() && state.keyword.isNotBlank() && !state.isLoading && !state.noInternetException -> {
                         NoDataContainer(
                             imageRes = painterResource(R.drawable.placeholder_no_result_found),
                             title = stringResource(R.string.no_search_result),
@@ -150,14 +145,14 @@ private fun SearchByActorContent(
                     else -> {}
                 }
             }
-            if (targetState.movies.isNotEmpty() && !targetState.isLoading) {
+            if (state.movies.isNotEmpty() && !state.isLoading) {
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(160.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(vertical = 12.dp),
                 ) {
-                    items(targetState.movies) { movie ->
+                    items(state.movies) { movie ->
                         MovieCard(
                             movieImage = movie.poster,
                             movieType = stringResource(R.string.movie),
