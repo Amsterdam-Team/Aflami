@@ -13,13 +13,11 @@ import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
-import com.example.entity.TvShow
 import com.example.paging.PagingSource
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMediaItemUiState
-import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.search.globalSearch.genre.MovieGenre
 import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 import com.example.viewmodel.search.mapper.getSelectedGenreType
@@ -87,7 +85,7 @@ class GlobalSearchViewModel(
                 isLoading = true,
                 errorUiState = null,
                 movies = emptyFlow(),
-                tvShows = emptyList(),
+                tvShows = emptyFlow(),
             )
         }
         when (state.value.selectedTabOption) {
@@ -137,11 +135,19 @@ class GlobalSearchViewModel(
     ) {
         tryToExecute(
             action = {
-                getTvShowByKeywordUseCase(
-                    keyword = keyword,
-                    rating = rating,
-                    tvShowGenreId = tvGenre.mapToGenreId(),
-                )
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getTvShowByKeywordUseCase(
+                                keyword = keyword,
+                                page = page,
+                                rating = rating,
+                                tvShowGenreId = tvGenre.mapToGenreId(),
+                            )
+                        }
+                    },
+                ).flow.map { it.map { tvShow -> tvShow.toMediaItemUiState() } }.cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
@@ -149,9 +155,9 @@ class GlobalSearchViewModel(
         )
     }
 
-    private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
+    private fun onFetchTvShowsSuccess(tvShows: Flow<PagingData<MediaItemUiState>>) {
         applyTvShowsFilter()
-        updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
+        updateState { it.copy(tvShows = tvShows) }
     }
 
     override fun onTextValuedChanged(text: String) {
@@ -195,7 +201,7 @@ class GlobalSearchViewModel(
                 selectedTabOption = tabOption,
                 movies = state.value.movies,
                 tvShows = state.value.tvShows,
-                isLoading = true,
+                isLoading = false,
                 filterItemUiState = FilterItemUiState(),
             )
         }
@@ -232,7 +238,7 @@ class GlobalSearchViewModel(
             currentState.copy(
                 query = "",
                 movies = emptyFlow(),
-                tvShows = emptyList(),
+                tvShows = emptyFlow(),
                 selectedTabOption = TabOption.MOVIES,
                 errorUiState = null,
                 isDialogVisible = false,
@@ -339,11 +345,19 @@ class GlobalSearchViewModel(
         val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
         tryToExecute(
             action = {
-                getTvShowByKeywordUseCase(
-                    keyword = state.value.query,
-                    rating = state.value.filterItemUiState.selectedStarIndex,
-                    tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId(),
-                )
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getTvShowByKeywordUseCase(
+                                keyword = state.value.query,
+                                page = page,
+                                rating = state.value.filterItemUiState.selectedStarIndex,
+                                tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId(),
+                            )
+                        }
+                    },
+                ).flow.map { it.map { tvShow -> tvShow.toMediaItemUiState() } }.cachedIn(viewModelScope)
             },
             onSuccess = ::onTvShowsFilteredSuccess,
             onError = ::onFetchError,
@@ -351,10 +365,10 @@ class GlobalSearchViewModel(
         )
     }
 
-    private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
+    private fun onTvShowsFilteredSuccess(tvShows: Flow<PagingData<MediaItemUiState>>) {
         updateState {
             it.copy(
-                tvShows = tvShows.toTvShowUiStates(),
+                tvShows = tvShows,
                 filterItemUiState = it.filterItemUiState.copy(isLoading = false),
                 errorUiState = null,
             )

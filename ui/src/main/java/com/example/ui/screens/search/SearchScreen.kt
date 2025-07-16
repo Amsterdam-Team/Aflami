@@ -1,6 +1,5 @@
 package com.example.ui.screens.search
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -67,6 +66,7 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchScreen(viewModel: GlobalSearchViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movieFlow = state.movies.collectAsLazyPagingItems()
+    val tvShowFlow = state.tvShows.collectAsLazyPagingItems()
     val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
@@ -90,13 +90,20 @@ fun SearchScreen(viewModel: GlobalSearchViewModel = koinViewModel()) {
         }
     }
 
-    SearchContent(state = state, movies = movieFlow, interaction = viewModel, filterInteraction = viewModel)
+    SearchContent(
+        state = state,
+        movies = movieFlow,
+        tvShows = tvShowFlow,
+        interaction = viewModel,
+        filterInteraction = viewModel,
+    )
 }
 
 @Composable
 private fun SearchContent(
     state: SearchUiState,
     movies: LazyPagingItems<MediaItemUiState>,
+    tvShows: LazyPagingItems<MediaItemUiState>,
     interaction: GlobalSearchInteractionListener,
     filterInteraction: FilterInteractionListener,
 ) {
@@ -140,6 +147,7 @@ private fun SearchContent(
             SuccessMediaItems(
                 state = state,
                 moviesFlow = movies,
+                tvShowsFlow = tvShows,
                 onPageLoading = { isPageStillLoading = it },
             )
         }
@@ -180,6 +188,7 @@ private fun SearchContent(
 fun SuccessMediaItems(
     state: SearchUiState,
     moviesFlow: LazyPagingItems<MediaItemUiState>,
+    tvShowsFlow: LazyPagingItems<MediaItemUiState>,
     onPageLoading: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -190,10 +199,11 @@ fun SuccessMediaItems(
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
         modifier = modifier,
     ) {
-//        if (state.selectedTabOption == TabOption.MOVIES) state.movies
-//    else state.tvShows
-        items(moviesFlow.itemCount) { index ->
-            val mediaItem = moviesFlow[index] ?: return@items
+        val mediaData =
+            if (state.selectedTabOption == TabOption.MOVIES) moviesFlow else tvShowsFlow
+
+        items(mediaData.itemCount) { index ->
+            val mediaItem = mediaData[index] ?: return@items
             with(mediaItem) {
                 MovieCard(
                     movieImage = posterImage,
@@ -209,9 +219,8 @@ fun SuccessMediaItems(
                 )
             }
         }
-        Log.d("TAG", "SuccessMediaItems: ${moviesFlow.loadState}")
 
-        moviesFlow.apply {
+        mediaData.apply {
             when {
                 loadState.refresh is LoadState.Loading -> {
                     onPageLoading(true)

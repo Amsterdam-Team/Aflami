@@ -16,7 +16,7 @@ data class SearchUiState(
     val recentSearches: List<String> = emptyList(),
     val selectedTabOption: TabOption = TabOption.MOVIES,
     val movies: Flow<PagingData<MediaItemUiState>> = emptyFlow(),
-    val tvShows: List<MediaItemUiState> = emptyList(),
+    val tvShows: Flow<PagingData<MediaItemUiState>> = emptyFlow(),
     val isDialogVisible: Boolean = false,
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,
