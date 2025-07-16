@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProductionCompanyDto(
     @SerialName("id")
-    val id: Long,
+    val id:  Long,
     @SerialName("logo_path")
     val logoPath: String?,
     @SerialName("name")
