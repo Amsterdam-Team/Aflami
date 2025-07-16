@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -59,11 +58,9 @@ fun SearchByActorScreen(
                     navController.popBackStack()
                 }
 
-//                SearchByActorEffect.NoInternetConnection -> {
-//                    isNoInternetConnection = true
-//                }
-                null -> {}
                 SearchByActorEffect.NavigateBack -> {}
+
+                null -> {}
             }
         }
     }
@@ -71,7 +68,6 @@ fun SearchByActorScreen(
         modifier = modifier,
         state = uiState.value,
         interactionListener = viewModel,
-        isNoInternetConnection = isNoInternetConnection,
         onRetryQuestClicked = {
             isNoInternetConnection = false
             viewModel.onRetryQuestClicked()
@@ -84,7 +80,6 @@ private fun SearchByActorContent(
     modifier: Modifier = Modifier,
     state: SearchByActorScreenState,
     interactionListener: SearchByActorInteractionListener,
-    isNoInternetConnection: Boolean,
     onRetryQuestClicked: () -> Unit,
 ) {
     Column(
@@ -188,7 +183,6 @@ private fun SearchByActorContentPreview() {
                 override fun onRetryQuestClicked() {
                 }
             },
-            isNoInternetConnection = false,
             onRetryQuestClicked = {}
         )
     }

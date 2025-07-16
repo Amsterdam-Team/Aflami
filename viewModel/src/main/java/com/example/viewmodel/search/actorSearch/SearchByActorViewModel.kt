@@ -60,7 +60,7 @@ class SearchByActorViewModel(
             )
         }
         when (message) {
-            is NetworkException ->    updateState {
+            is NetworkException -> updateState {
                 it.copy(
                     isLoading = false,
                     movies = emptyList(),
@@ -92,6 +92,7 @@ class SearchByActorViewModel(
         updateState { it.copy(isLoading = true) }
         observeKeywordFlow()
     }
+
     companion object {
         private const val DEBOUNCE_DURATION = 300L
     }
