@@ -1,6 +1,5 @@
 package com.example.designsystem.components
 
-import android.R.attr.onClick
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun RecentSearchItem(
@@ -56,5 +57,17 @@ fun RecentSearchItem(
             tint = AppTheme.color.hint,
             contentDescription = title
         )
+    }
+}
+@ThemeAndLocalePreviews
+@Composable
+private fun RecentSearchItemPreview(){
+    AflamiTheme {
+        RecentSearchItem(
+            title = "Recent Search",
+            onCancelClick = {},
+            onItemClick = {}
+        )
+
     }
 }

@@ -18,8 +18,8 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun DefaultAppBar(
-    modifier: Modifier = Modifier,
     title: String = "",
+    modifier: Modifier = Modifier,
     showNavigateBackButton: Boolean = true,
     firstOption: Painter? = null,
     firstOptionContentDescription: String? = null,

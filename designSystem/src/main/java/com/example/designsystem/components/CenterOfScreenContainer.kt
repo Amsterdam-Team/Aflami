@@ -18,6 +18,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.theme.AflamiTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun CenterOfScreenContainer(
@@ -29,7 +31,7 @@ fun CenterOfScreenContainer(
     var containerHeight by remember { mutableStateOf(0.dp) }
     val screenHeight = getAppScreenHeight()
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(bottom = paddingValueDp),
         contentAlignment = Alignment.Center,
@@ -79,4 +81,13 @@ private fun getContainerSize(
             headerHeight / 2
         else 0.dp
     return paddingValueDp1
+}
+@ThemeAndLocalePreviews
+@Composable
+private fun CenterOfScreenContainerPreview(){
+    AflamiTheme {
+        CenterOfScreenContainer(unneededSpace = 5.dp) {
+        }
+
+    }
 }

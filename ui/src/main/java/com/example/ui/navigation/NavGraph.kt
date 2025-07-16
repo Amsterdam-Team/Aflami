@@ -13,7 +13,7 @@ import com.example.ui.screens.lists.listsScreenRoute
 import com.example.ui.screens.profile.profileScreenRoute
 import com.example.ui.screens.search.searchScreenRoute
 import com.example.ui.screens.searchByActor.searchByActorScreenRoute
-import com.example.ui.screens.searchByCountry.searchByCountryScreenRoute
+import com.example.ui.screens.search.searchByCountry.searchByCountryScreenRoute
 
 @Composable
 fun NavGraph(

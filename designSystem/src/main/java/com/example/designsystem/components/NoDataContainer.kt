@@ -59,7 +59,7 @@ fun NoDataContainer(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun EmptyContainerPreview() {
+private fun NoDataContainerPreview() {
     AflamiTheme {
         Box(
             modifier = Modifier.fillMaxSize(),
