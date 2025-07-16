@@ -1,4 +1,7 @@
-package com.example.viewmodel.search.globalSearch.genre
+package com.example.viewmodel.search.searchByKeyword.genre
+
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre

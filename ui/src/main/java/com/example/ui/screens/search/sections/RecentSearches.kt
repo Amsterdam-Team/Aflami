@@ -20,16 +20,17 @@ import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
-import com.example.viewmodel.search.globalSearch.SearchUiState
 
 @Composable
-fun RecentSearchesSection(
-    state: SearchUiState,
-    interaction: GlobalSearchInteractionListener,
-    modifier: Modifier = Modifier
+internal fun RecentSearchesSection(
+    keyword: String,
+    recentSearches: List<String>,
+    onAllRecentSearchesCleared: () -> Unit,
+    onRecentSearchClicked: (String) -> Unit,
+    onRecentSearchCleared: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isBlank()) {
+    AnimatedVisibility(recentSearches.isNotEmpty() && keyword.isBlank()) {
         Column {
             Row(
                 modifier = modifier
@@ -47,7 +48,7 @@ fun RecentSearchesSection(
                 )
 
                 Text(
-                    modifier = modifier.clickable(onClick = interaction::onAllRecentSearchesCleared),
+                    modifier = modifier.clickable(onClick = onAllRecentSearchesCleared),
                     text = stringResource(R.string.clear_all),
                     style = AppTheme.textStyle.label.medium,
                     color = AppTheme.color.primary,
@@ -55,24 +56,22 @@ fun RecentSearchesSection(
             }
 
             LazyColumn {
-                items(items = state.recentSearches, key = { it }) { recentSearchItem ->
+                items(items = recentSearches, key = { it }) { recentSearchItem ->
                     RecentSearchItem(
                         modifier = Modifier.animateItem(),
                         title = recentSearchItem,
-                        onItemClick = interaction::onRecentSearchClicked,
-                        onCancelClick = { interaction::onRecentSearchCleared }
+                        onItemClick = onRecentSearchClicked,
+                        onCancelClick = onRecentSearchCleared
                     )
-                    if (recentSearchItem != state.recentSearches.last()) HorizontalDivider()
+                    if (recentSearchItem != recentSearches.last()) HorizontalDivider()
                 }
             }
         }
     }
 
 
-    AnimatedVisibility(state.recentSearches.isEmpty()) {
-
+    AnimatedVisibility(recentSearches.isEmpty()) {
         //todo: show empty state image
-
     }
 
 }

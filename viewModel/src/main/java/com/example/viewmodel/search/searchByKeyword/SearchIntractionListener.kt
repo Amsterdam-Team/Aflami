@@ -1,12 +1,11 @@
-package com.example.viewmodel.search.globalSearch
+package com.example.viewmodel.search.searchByKeyword
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.common.TabOption
 
-interface GlobalSearchInteractionListener {
+interface SearchInteractionListener {
     fun onNavigateBackClicked()
-    fun onTextValuedChanged(text: String)
+    fun onKeywordValuedChanged(keyword: String)
     fun onSearchActionClicked()
     fun onFilterButtonClicked()
     fun onWorldSearchCardClicked()

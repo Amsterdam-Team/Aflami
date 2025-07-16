@@ -1,4 +1,4 @@
-package com.example.viewmodel.common
+package com.example.viewmodel.search.searchByKeyword
 
 enum class TabOption(val index: Int) {
     MOVIES(index = 0),

@@ -4,28 +4,27 @@ import com.example.domain.common.ContentFilteringExtensions.filterByMinRating
 import com.example.domain.common.ContentFilteringExtensions.sortByPopularityDescending
 import com.example.domain.common.ContentFilteringExtensions.throwIfEmpty
 import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
-import com.example.domain.repository.TvShowRepository
-import com.example.entity.TvShow
-import com.example.entity.category.TvShowGenre
+import com.example.domain.repository.MovieRepository
+import com.example.entity.Movie
+import com.example.entity.category.MovieGenre
 
-class GetTvShowByKeywordUseCase(
-    private val tvShowRepository: TvShowRepository
+class GetAndFilterMoviesByKeywordUseCase(
+    private val movieRepository: MovieRepository
 ) {
 
     suspend operator fun invoke(
         keyword: String,
         rating: Int = 0,
-        tvGenre: TvShowGenre
-    ): List<TvShow> {
-        return tvShowRepository.getTvShowByKeyword(keyword = keyword)
+        movieGenre: MovieGenre = MovieGenre.ALL
+    ): List<Movie> {
+        return movieRepository
+            .getMoviesByKeyword(keyword = keyword)
             .filterByMinRating(rating)
-            .filter { tv ->
-                if (tvGenre == TvShowGenre.ALL)
+            .filter { movie ->
+                if (movieGenre == MovieGenre.ALL)
                     return@filter true
 
-                println(tvGenre)
-                println(tv.categories)
-                tv.categories.any { it == tvGenre }
+                movie.categories.any { it == movieGenre }
             }
             .sortByPopularityDescending()
             .throwIfEmpty { NoSearchByKeywordResultFoundException() }
