@@ -15,12 +15,9 @@ import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remote.RemoteCastMapper
-import com.example.repository.mapper.remote.RemoteCountryMapper
 import com.example.repository.mapper.remote.RemoteGalleryMapper
-import com.example.repository.mapper.remote.RemoteMovieMapper
 import com.example.repository.mapper.remote.RemoteProductionCompanyMapper
 import com.example.repository.mapper.remote.RemoteReviewMapper
-import com.example.repository.mapper.remote.RemoteTvShowMapper
 import com.example.repository.repository.CategoryRepositoryImpl
 import com.example.repository.repository.CountryRepositoryImpl
 import com.example.repository.repository.MovieRepositoryImpl
@@ -28,6 +25,7 @@ import com.example.repository.repository.RecentSearchRepositoryImpl
 import com.example.repository.repository.TvShowRepositoryImpl
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.RecentSearchHandlerImpl
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -46,10 +44,9 @@ val repositoryModule = module {
     single { RemoteGalleryMapper() }
     single { RemoteProductionCompanyMapper() }
     single<CountryRepository> { CountryRepositoryImpl(get(), get(), get(), get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get()) }
+    singleOf(::MovieRemoteMapper)
     single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get(), get()) }
     single<MovieRepository> { MovieRepositoryImpl(get(), get(), get(), get(), get(), get(),get(),get(),get()) }
-    single<CategoryRepository> { CategoryRepositoryImpl(get(), get(), get()) }
     single<RecentSearchRepository> { RecentSearchRepositoryImpl(get(), get()) }
     single<TvShowRepository> { TvShowRepositoryImpl(get(), get(), get(), get(), get()) }
 }

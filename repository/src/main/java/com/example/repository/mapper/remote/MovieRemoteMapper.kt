@@ -2,6 +2,7 @@ package com.example.repository.mapper.remote
 
 import com.example.entity.Category
 import com.example.entity.Movie
+import com.example.repository.BuildConfig
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
@@ -13,11 +14,14 @@ class MovieRemoteMapper {
             id = remoteMovieItemDto.id,
             name = remoteMovieItemDto.title,
             description = remoteMovieItemDto.overview,
-            poster = remoteMovieItemDto.posterPath.orEmpty(),
+            poster = BuildConfig.BASE_IMAGE_URL + remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
             categories = mapGenreIdsToCategories(remoteMovieItemDto.genreIds),
             rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity
+            popularity = remoteMovieItemDto.popularity,
+            originCountry = remoteMovieItemDto.originCountry.firstOrNull()?:"",
+            movieLength = remoteMovieItemDto.runtime,
+            hasVideo = remoteMovieItemDto.video
         )
     }
 
@@ -38,7 +42,10 @@ class MovieRemoteMapper {
             poster = remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
             rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity
+            popularity = remoteMovieItemDto.popularity,
+            movieLength = remoteMovieItemDto.runtime,
+            originCountry = remoteMovieItemDto.originCountry.firstOrNull()?:"",
+            hasVideo = remoteMovieItemDto.video
         )
     }
 

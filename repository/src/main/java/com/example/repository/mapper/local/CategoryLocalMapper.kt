@@ -3,6 +3,7 @@ package com.example.repository.mapper.local
 import com.example.entity.Category
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
+import com.example.repository.dto.remote.RemoteCategoryDto
 
 class CategoryLocalMapper {
 

@@ -47,18 +47,4 @@ class MovieLocalMapper(
         return movies.map { mapToLocalMovie(it) }
     }
 
-    fun mapFromLocal(dto: LocalMovieDto): Movie {
-        return Movie(
-            id = dto.movieId,
-            name = dto.name,
-            description = dto.description,
-            poster = dto.poster,
-            productionYear = dto.productionYear,
-            rating = dto.rating,
-            popularity = dto.popularity,
-            originCountry = dto.originCountry,
-            movieLength = dto.movieLength,
-            hasVideo = dto.hasVideo
-        )
-    }
 }

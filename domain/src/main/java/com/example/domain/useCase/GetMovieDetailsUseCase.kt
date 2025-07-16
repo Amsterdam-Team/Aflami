@@ -20,7 +20,6 @@ class GetMovieDetailsUseCase(
         val similarMovies = movieRepository.getSimilarMovies(movieId)
         val movieGallery = movieRepository.getMovieGallery(movieId)
         val productionsCompanies = movieRepository.getProductionCompany(movieId)
-       println(categoriesForMovie)
         return MovieDetails(
             movie = movie,
             reviews = reviews,

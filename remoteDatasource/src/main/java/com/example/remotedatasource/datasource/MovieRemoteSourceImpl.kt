@@ -4,7 +4,6 @@ import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.MovieRemoteSource
-import com.example.repository.datasource.remote.RemoteMovieDatasource
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse

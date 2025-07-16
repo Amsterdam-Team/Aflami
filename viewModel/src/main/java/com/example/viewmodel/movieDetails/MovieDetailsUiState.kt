@@ -13,6 +13,7 @@ data class MovieDetailsUiState(
     val originCountry: String = "",
     val description: String = "",
     val hasVideo : Boolean = false,
+    val isUnknownError: Boolean = false,
     val actors: List<ActorUiState> = emptyList(),
     val extraItem: List<Selectable<MovieExtras>> = listOf(
         Selectable(isSelected = true, MovieExtras.MORE_LIKE_THIS),

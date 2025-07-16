@@ -5,7 +5,6 @@ import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMovieDetailsUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.delay
 
 class MovieDetailsViewModel(
     private val args: MovieDetailsArgs,
@@ -61,7 +60,7 @@ class MovieDetailsViewModel(
     private fun onError(exception: AflamiException) {
          when (exception) {
             is NoInternetException -> updateState { it.copy(isLoading = false , networkError = true) }
-            else -> {}
+            else -> updateState { it.copy(isLoading = false , isUnknownError = true) }
         }
     }
 }

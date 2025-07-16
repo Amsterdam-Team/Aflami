@@ -1,6 +1,5 @@
 package com.example.domain.repository
 
-import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Actor
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany

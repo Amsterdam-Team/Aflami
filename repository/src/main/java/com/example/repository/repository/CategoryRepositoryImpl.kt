@@ -91,6 +91,6 @@ class CategoryRepositoryImpl(
     }
 
     override suspend fun getMovieCategories(movieId: Long) : List<Category>{
-       return categoryLocalMapper.mapLocalCategoriesToDomain(localCategoryDatasource.getMovieCategories(movieId))
+       return categoryLocalMapper.mapLocalCategoriesToDomain(categoryLocalSource.getCategoriesByMovieId(movieId))
     }
 }

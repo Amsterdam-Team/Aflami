@@ -138,7 +138,17 @@ fun MovieContent(
         }
     }
 
-    AnimatedVisibility(!state.isLoading && !state.networkError,
+
+    AnimatedVisibility(state.isUnknownError,  enter = fadeIn(tween(animationDuration)),
+        exit = fadeOut(tween(animationDuration))) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            NoInternetConnection(
+                onRetryQuestClicked = interactionListener::onRetryQuestClicked,
+            )
+        }
+    }
+
+    AnimatedVisibility(!state.isLoading && !state.networkError && !state.isUnknownError,
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
         ) {
