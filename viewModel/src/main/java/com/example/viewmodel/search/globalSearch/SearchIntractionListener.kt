@@ -1,8 +1,8 @@
 package com.example.viewmodel.search.globalSearch
 
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 
 interface GlobalSearchInteractionListener {
     fun onNavigateBackClicked()

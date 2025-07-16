@@ -38,6 +38,8 @@ import com.example.designsystem.components.buttons.OutlinedButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.ui.screens.search.sections.filterDialog.genre.ScrollToGenreItem
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
@@ -47,8 +49,6 @@ import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.globalSearch.FilterInteractionListener
 import com.example.viewmodel.search.globalSearch.FilterItemUiState
 import com.example.viewmodel.search.globalSearch.SearchUiState
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 
 @Composable
 fun FilterDialog(

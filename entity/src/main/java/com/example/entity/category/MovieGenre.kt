@@ -1,4 +1,4 @@
-package com.example.viewmodel.search.globalSearch.genre
+package com.example.entity.category
 
 enum class MovieGenre {
     ALL,
