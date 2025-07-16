@@ -5,10 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
-import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
 import com.example.repository.dto.local.utils.DatabaseContract
 import com.example.repository.dto.local.utils.SearchType
@@ -27,10 +25,11 @@ interface TvShowDao {
         """
         SELECT * FROM tv_shows 
         WHERE tvShowId IN (
-            SELECT tvShowId FROM ${DatabaseContract.TV_SHOW_SEARCH_TABLE}
+            SELECT tvShowId FROM ${DatabaseContract.RECENT_SEARCH_TABLE}
             WHERE searchKeyword = :keyword
+            AND searchType = :searchType
         )
         """
     )
-    suspend fun getTvShowsBySearchKeyword(keyword: String): List<TvShowWithCategory>
+    suspend fun getTvShowsBySearchKeyword(keyword: String, searchType: SearchType): List<TvShowWithCategory>
 }
