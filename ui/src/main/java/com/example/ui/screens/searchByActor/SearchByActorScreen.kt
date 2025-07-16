@@ -147,7 +147,7 @@ private fun SearchByActorContent(
                     )
                 }
 
-                targetState.isLoading || moviesFlow.loadState.refresh is LoadState.Loading -> Loading()
+                moviesFlow.loadState.refresh is LoadState.Loading -> LoadingContainer()
 
                 moviesFlow.itemSnapshotList.isEmpty() -> {
                     NoDataContainer(

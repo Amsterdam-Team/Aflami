@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingContainer
@@ -113,7 +114,7 @@ private fun SearchByCountryScreenContent(
                 }
             }
             MoviesVerticalGrid(
-                state.movies,
+                state.movies.collectAsLazyPagingItems(),
                 state.searchByCountryContentUIState == SearchByCountryContentUIState.MOVIES_LOADED,
                 Modifier.align(Alignment.TopStart)
             )

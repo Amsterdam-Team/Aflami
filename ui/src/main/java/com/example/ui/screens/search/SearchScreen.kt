@@ -134,7 +134,9 @@ private fun SearchContent(
             },
         )
 
-        AnimatedVisibility((state.isLoading || isPageStillLoading) && state.query.isNotBlank() && state.errorUiState == null) {
+        AnimatedVisibility(
+            (state.isLoading || isPageStillLoading) && state.keyword.isNotBlank() && state.errorUiState == null,
+        ) {
             LoadingContainer()
         }
 
@@ -156,9 +158,9 @@ private fun SearchContent(
 
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
+                selectedTabOption = state.selectedTabOption,
                 moviesFlow = movies,
                 tvShowsFlow = tvShows,
-                selectedTabOption = state.selectedTabOption,
                 onPageLoading = { isPageStillLoading = it },
                 )
         }

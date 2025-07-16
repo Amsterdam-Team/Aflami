@@ -1,19 +1,12 @@
 package com.example.viewmodel.search.searchByKeyword
 
+import androidx.paging.PagingData
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import androidx.paging.PagingData
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.Selectable
-import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
-import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.MovieGenreItemUiState
-import com.example.viewmodel.search.globalSearch.genre.Selectable
-import com.example.viewmodel.search.globalSearch.genre.TvGenreItemUiState
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
