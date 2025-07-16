@@ -19,7 +19,7 @@ interface MovieRemoteSource {
         countryIsoCode: String
     ): RemoteMovieResponse
 
-    suspend fun getCastByMovieId(id: Long): RemoteCastAndCrewResponse
+    suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse
 
     suspend fun getMovieReviews(movieId: Long): ReviewsResponse
     suspend fun getSimilarMovies(movieId: Long): RemoteMovieResponse

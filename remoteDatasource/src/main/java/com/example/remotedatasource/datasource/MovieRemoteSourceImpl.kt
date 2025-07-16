@@ -49,9 +49,9 @@ class MovieRemoteSourceImpl(
         }
     }
 
-    override suspend fun getCastByMovieId(id: Long): RemoteCastAndCrewResponse {
+    override suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse {
         return safeCall {
-            val response = ktorClient.get(buildMovieCreditsEndpoint(id))
+            val response = ktorClient.get(buildMovieCreditsEndpoint(movieId))
             return json.decodeFromString<RemoteCastAndCrewResponse>(response.bodyAsText())
         }
     }
