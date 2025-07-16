@@ -7,8 +7,10 @@ import com.example.entity.Movie
 class GetMoviesByActorUseCase(
     private val movieRepository: MovieRepository,
 ) {
-    suspend operator fun invoke(actorName: String): List<Movie> {
-        return movieRepository.getMoviesByActor(actorName)
+    suspend operator fun invoke(
+        actorName: String,
+        page: Int = 1,
+    ): List<Movie> =
+        movieRepository.getMoviesByActor(actorName)
             .sortByPopularityDescending()
-    }
 }

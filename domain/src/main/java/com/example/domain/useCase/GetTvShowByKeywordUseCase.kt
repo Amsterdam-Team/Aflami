@@ -14,6 +14,7 @@ class GetTvShowByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
+        page: Int = 1,
         rating: Int = 0,
         tvShowGenreId: Int = 0
     ): List<TvShow> {
