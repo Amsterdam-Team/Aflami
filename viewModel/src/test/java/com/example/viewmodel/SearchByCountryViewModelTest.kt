@@ -8,6 +8,7 @@ import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.entity.Country
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
+import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
@@ -20,6 +21,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -59,6 +61,23 @@ class SearchByCountryViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun `should nav back when onNavigateBackClicked`() =
+        testScope.runTest {
+            var effects = mutableListOf<SearchByCountryEffect?>()
+            val collectJob = testScope.launch {
+                viewModel.effect.collect {
+                    effects.add(it)
+                }
+            }
+
+            viewModel.onNavigateBackClicked()
+            testScope.advanceUntilIdle()
+            collectJob.cancel()
+
+            assertThat(effects).containsExactly(SearchByCountryEffect.NavigateBack)
+        }
 
     @Test
     fun `should update the selected country name when onKeywordValueChanged`() =
