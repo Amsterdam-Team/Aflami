@@ -13,8 +13,6 @@ import androidx.core.view.WindowCompat
 import com.example.designsystem.theme.colors.darkThemeColors
 import com.example.designsystem.theme.colors.lightThemeColors
 import com.example.designsystem.theme.colors.localAflamiAppColors
-import com.example.designsystem.utils.LauncherIcon
-import com.example.designsystem.utils.SwitchLauncherIcon
 
 @Composable
 fun AflamiTheme(
@@ -26,7 +24,6 @@ fun AflamiTheme(
     val activity = LocalContext.current as? Activity
     val view = LocalView.current
 
-    SwitchLauncherIcon(if (isDarkTheme) LauncherIcon.DARK else LauncherIcon.LIGHT)
     if (activity != null) {
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {

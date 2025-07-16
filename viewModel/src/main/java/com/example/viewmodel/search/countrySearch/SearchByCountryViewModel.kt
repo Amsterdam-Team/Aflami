@@ -9,13 +9,13 @@ import androidx.paging.map
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.paging.PagingSource
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
+import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 class SearchByCountryViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
+    private val addRecentSearchUseCase: AddRecentSearchUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
     SearchByCountryScreenState(),
@@ -41,14 +42,9 @@ class SearchByCountryViewModel(
         observeKeywordFlow()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun observeKeywordFlow() {
         viewModelScope.launch {
-            _keyword
-                .debounce(DEBOUNCE_DURATION)
-                .map(String::trim)
-                .filter(String::isNotBlank)
-                .collectLatest(::getCountriesByKeyword)
+            _keyword.debounceSearch(::getCountriesByKeyword)
         }
     }
 
@@ -63,6 +59,7 @@ class SearchByCountryViewModel(
 
     private fun getMoviesByCountry() {
         updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
+        addRecentSearch()
         tryToExecute(
             action = {
                 Pager(
@@ -76,6 +73,14 @@ class SearchByCountryViewModel(
             },
             onSuccess = { movies -> updateMoviesForCountry(movies) },
             onError = (::onError)
+        )
+    }
+
+    private fun addRecentSearch() {
+        tryToExecute(
+            action = { addRecentSearchUseCase(state.value.selectedCountryIsoCode) },
+            onSuccess = { },
+            onError = { }
         )
     }
 
@@ -135,19 +140,17 @@ class SearchByCountryViewModel(
         getMoviesByCountry()
     }
 
-    override fun onRetryQuestClicked() {
+    override fun onNavigateBackClicked() {
+        sendNewEffect(SearchByCountryEffect.NavigateBack)
+    }
+
+    override fun onRetryRequestClicked() {
         if (state.value.selectedCountryIsoCode.isBlank() && state.value.keyword.isNotBlank()) {
-            updateState { it.copy(isLoadingCountries = true) }
             getCountriesByKeyword(state.value.keyword)
         } else if (state.value.selectedCountryIsoCode.isNotBlank()) {
-            updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
             getMoviesByCountry()
         } else {
             updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR) }
         }
-    }
-
-    companion object {
-        private const val DEBOUNCE_DURATION = 300L
     }
 }

@@ -1,4 +1,4 @@
-package com.example.designsystem.components.gameCard
+package com.example.designsystem.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -29,6 +30,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -40,11 +43,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.designsystem.R
 import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.designsystem.utils.dropShadow
 import com.example.designsystem.utils.mirroredContent
 
@@ -337,5 +342,63 @@ private fun PlayLockContent(modifier: Modifier = Modifier) {
         painter = painterResource(R.drawable.ic_circle_lock),
         tint = AppTheme.color.title,
         contentDescription = stringResource(R.string.play_now)
+    )
+}
+@Composable
+private fun CircularButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    clickable: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .wrapContentSize()
+            .background(color = AppTheme.color.onPrimaryButton, shape = CircleShape)
+            .border(
+                width = .5.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        AppTheme.color.onPrimaryButton, AppTheme.color.onPrimaryButton.copy(alpha = .24f)
+                    )
+                ),
+                shape = CircleShape
+            )
+            .clickable(enabled = clickable, onClick = onClick)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun BlurredContent(
+    modifier: Modifier = Modifier,
+    blurRadius: Dp = 4.dp,
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .blur(radius = blurRadius, edgeTreatment = BlurredEdgeTreatment.Unbounded),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+    }
+}
+@ThemeAndLocalePreviews
+@Composable
+private fun GameCardPreview() {
+    GameCard(
+        title = "Guess Game",
+        description = "Try to guess the movie preparation time!",
+        containerColor = Color.White,
+        borderColors = listOf(Color.Red, Color.Blue),
+        onCardClick = {},
+        gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
+        isPlayable = false,
+        unlockPrice = "120"
     )
 }

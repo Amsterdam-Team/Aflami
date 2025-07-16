@@ -30,6 +30,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
+import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
@@ -38,7 +39,6 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
-import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.search.countrySearch.MovieUiState
 import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
@@ -124,6 +124,7 @@ private fun SearchByActorContent(
             label = "Content Animation",
         ) { targetState ->
             when {
+                targetState.isLoading -> LoadingContainer(modifier = Modifier)
                 targetState.query.isBlank() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.img_suggestion_magician),

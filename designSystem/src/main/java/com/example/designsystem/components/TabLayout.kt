@@ -83,7 +83,11 @@ fun TabsLayout(
                 }
             }
         }
-        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = dividerColor)
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 1.dp,
+            color = dividerColor
+        )
     }
 }
 

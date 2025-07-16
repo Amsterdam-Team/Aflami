@@ -37,6 +37,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
+import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
@@ -49,7 +50,6 @@ import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.ui.screens.search.sections.filterDialog.FilterDialog
-import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
@@ -135,7 +135,7 @@ private fun SearchContent(
         )
 
         AnimatedVisibility((state.isLoading || isPageStillLoading) && state.query.isNotBlank() && state.errorUiState == null) {
-            Loading()
+            LoadingContainer()
         }
 
         AnimatedVisibility(
@@ -156,11 +156,11 @@ private fun SearchContent(
 
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
-                state = state,
                 moviesFlow = movies,
                 tvShowsFlow = tvShows,
+                selectedTabOption = state.selectedTabOption,
                 onPageLoading = { isPageStillLoading = it },
-            )
+                )
         }
 
         SuggestionsHubSection(
@@ -207,8 +207,6 @@ private fun SearchContent(
 
 @Composable
 private fun SuccessMediaItems(
-    movies: List<MediaItemUiState>,
-    tvShows: List<MediaItemUiState>,
     selectedTabOption: TabOption,
     moviesFlow: LazyPagingItems<MediaItemUiState>,
     tvShowsFlow: LazyPagingItems<MediaItemUiState>,
@@ -223,7 +221,7 @@ private fun SuccessMediaItems(
         modifier = modifier,
     ) {
         val mediaData =
-            if (state.selectedTabOption == TabOption.MOVIES) moviesFlow else tvShowsFlow
+            if (selectedTabOption == TabOption.MOVIES) moviesFlow else tvShowsFlow
 
         items(mediaData.itemCount) { index ->
             val mediaItem = mediaData[index] ?: return@items
