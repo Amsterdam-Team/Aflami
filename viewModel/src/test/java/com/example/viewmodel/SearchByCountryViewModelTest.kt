@@ -1,11 +1,12 @@
 package com.example.viewmodel
 
+import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.entity.Country
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
-import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
@@ -18,7 +19,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -28,6 +28,9 @@ import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchByCountryViewModelTest {
@@ -142,6 +145,33 @@ class SearchByCountryViewModelTest {
         }
 
     @Test
+    fun `should show countries dropDown when onKeywordValueChanged called`() = testScope.runTest {
+        val countryUiState = CountryUiState("Egypt", "eg")
+        val keyword = "eg"
+        val countries = listOf(Country("Egypt", "eg"), Country("Senegal", "sg"))
+        coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
+
+        viewModel.onKeywordValueChanged(keyword)
+        testScope.advanceTimeBy(500)
+        viewModel.onCountrySelected(countryUiState)
+        testScope.advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isCountriesDropDownVisible).isFalse()
+    }
+
+    @Test
+    fun `should set state to LOADING_MOVIES when call getMoviesByCountry`() = testScope.runTest {
+        val countryUiState = CountryUiState("Egypt", "eg")
+
+        viewModel.onCountrySelected(countryUiState)
+        testScope.advanceUntilIdle()
+
+        assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
+            SearchByCountryContentUIState.NO_DATA_FOUND
+        )
+    }
+
+    @Test
     fun `should update movies state when getMoviesByCountryUseCase return list of movie `() =
         testScope.runTest {
             val countryUiState = CountryUiState("Egypt", "eg")
@@ -158,21 +188,85 @@ class SearchByCountryViewModelTest {
     fun `should set state to MOVIES_LOADED when getMoviesByCountryUseCase return list of movie`() =
         testScope.runTest {
             val countryUiState = CountryUiState("Egypt", "eg")
-            var effects = mutableListOf<SearchByCountryEffect?>()
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
-            val collectJob = launch {
-                viewModel.effect.collect {
-                    effects.add(it)
-                }
-            }
 
             viewModel.onCountrySelected(countryUiState)
             testScope.advanceUntilIdle()
-            collectJob.cancel()
 
             assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
                 SearchByCountryContentUIState.MOVIES_LOADED
             )
         }
+
+    @Test
+    fun `should reload countries when onRetryRequestClicked calls getCountriesByKeyword`() =
+        testScope.runTest {
+            val keyword = "eg"
+            val countriesUiState =
+                listOf(CountryUiState("Egypt", "eg"), CountryUiState("Senegal", "sg"))
+            val countries = listOf(Country("Egypt", "eg"), Country("Senegal", "sg"))
+            coEvery { getSuggestedCountriesUseCase(any()) } returns countries
+
+            viewModel.onKeywordValueChanged(keyword)
+            testScope.advanceUntilIdle()
+            viewModel.onRetryRequestClicked()
+            testScope.advanceUntilIdle()
+
+            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(countriesUiState)
+        }
+
+    @Test
+    fun `should reload movies when onRetryRequestClicked calls getMoviesByCountry`() =
+        testScope.runTest {
+            val countryUiState = CountryUiState("Egypt", "eg")
+            val movies = listOf(createMovie())
+            coEvery { getMoviesByCountryUseCase(any()) } returns movies
+
+            viewModel.onCountrySelected(countryUiState)
+            testScope.advanceUntilIdle()
+            viewModel.onRetryRequestClicked()
+            testScope.advanceUntilIdle()
+
+            assertThat(viewModel.state.value.movies).isEqualTo(movies.toListOfUiState())
+        }
+
+    @Test
+    fun `should set content ui state to COUNTRY_TOUR when onRetryRequestClicked cannot reload`() =
+        testScope.runTest {
+            viewModel.onRetryRequestClicked()
+            testScope.advanceUntilIdle()
+
+            assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
+                SearchByCountryContentUIState.COUNTRY_TOUR
+            )
+        }
+
+    @ParameterizedTest
+    @MethodSource("exceptionToStateProvider")
+    fun `should set different error state when throw exception from getSuggestedCountriesUseCase after selecting country`(
+        exception: Exception,
+        expectedState: SearchByCountryContentUIState,
+    ) = testScope.runTest {
+        val countryUiState = CountryUiState("Egypt", "eg")
+        coEvery { getMoviesByCountryUseCase(any()) } throws exception
+
+        viewModel.onCountrySelected(countryUiState)
+        testScope.advanceUntilIdle()
+
+        val res = viewModel.state.value.searchByCountryContentUIState
+        assertThat(res).isEqualTo(expectedState)
+    }
+
+    companion object {
+        @JvmStatic
+        fun exceptionToStateProvider() = listOf(
+            Arguments.of(
+                NoInternetException(),
+                SearchByCountryContentUIState.NO_INTERNET_CONNECTION
+            ),
+            Arguments.of(AflamiException(), SearchByCountryContentUIState.NO_DATA_FOUND)
+        )
+    }
+
 }
