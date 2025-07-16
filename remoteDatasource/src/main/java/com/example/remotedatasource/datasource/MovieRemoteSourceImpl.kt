@@ -30,7 +30,8 @@ class MovieRemoteSourceImpl(
     }
 
     override suspend fun getMoviesByActorName(
-        name: String
+        name: String,
+        page: Int,
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
             val actorsByName = getActorIdByName(name)
@@ -42,6 +43,7 @@ class MovieRemoteSourceImpl(
 
             ktorClient.get(DISCOVER_MOVIE) {
                 parameter(WITH_CAST_KEY, actorsByName)
+                parameter(PAGE, page)
             }
         }
     }
@@ -57,12 +59,16 @@ class MovieRemoteSourceImpl(
     }
 
     override suspend fun getMoviesByCountryIsoCode(
-        countryIsoCode: String
+        countryIsoCode: String,
+        page: Int,
     ): RemoteMovieResponse {
         return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(DISCOVER_MOVIE) {
-                parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
-            }
+            val response =
+                ktorClient
+                    .get(DISCOVER_MOVIE) {
+                        parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
+                        parameter(PAGE, page)
+                    }
             return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
         }
     }
