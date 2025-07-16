@@ -3,7 +3,6 @@ package com.example.designsystem.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -13,9 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
@@ -29,7 +26,7 @@ fun ListItem(
     count: Int,
     modifier: Modifier = Modifier,
 
-) {
+    ) {
     val folderShape = FolderShape()
     BoxWithConstraints(
         modifier = modifier
@@ -37,15 +34,16 @@ fun ListItem(
                 folderShape
             )
             .background(AppTheme.color.surfaceHigh)
-            .clipToBounds()
-        ,
+            .clipToBounds(),
         contentAlignment = Alignment.BottomStart
     ) {
         val size = Size(maxWidth.value, maxHeight.value)
         val dynamicBottomPadding = folderShape.getBottomPadding(size)
 
         Column(
-            modifier = Modifier.padding(bottom = dynamicBottomPadding).padding(horizontal = 8.dp)
+            modifier = Modifier
+                .padding(bottom = dynamicBottomPadding)
+                .padding(horizontal = 8.dp)
         ) {
             Text(
                 text = title,
@@ -63,7 +61,7 @@ fun ListItem(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun ListItemPreview(){
+private fun ListItemPreview() {
     AflamiTheme {
         ListItem(
             title = "My Favourites",

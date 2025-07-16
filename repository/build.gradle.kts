@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    id("de.mannodermaus.android-junit5")
+    alias(libs.plugins.android.junit5)
 }
 
 android {
@@ -34,10 +34,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
     // Room
     implementation(libs.androidx.room.runtime)
-    testImplementation(libs.jupiter.junit.jupiter)
+    testImplementation(libs.junit.jupiter)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     // Date and Time

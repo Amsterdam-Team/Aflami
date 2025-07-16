@@ -1,5 +1,5 @@
 plugins {
-    id("java-library")
+    alias(libs.plugins.android.java.library)
     alias(libs.plugins.jetbrains.kotlin.jvm)
     jacoco
 }

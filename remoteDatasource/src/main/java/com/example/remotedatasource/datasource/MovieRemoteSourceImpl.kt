@@ -2,7 +2,6 @@ package com.example.remotedatasource.datasource
 
 import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
@@ -12,56 +11,37 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
-import io.ktor.client.statement.bodyAsText
-import kotlinx.serialization.json.Json
 
 class MovieRemoteSourceImpl(
     private val ktorClient: KtorClient,
-    private val json: Json,
 ) : MovieRemoteSource {
 
     override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
-        return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
-            return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
         }
     }
 
-    override suspend fun getMoviesByActorName(
-        name: String
-    ): RemoteMovieResponse {
-        return safeCall<RemoteMovieResponse> {
-            val actorsByName = getActorIdByName(name)
-                .actors
-                .joinToString(separator = "|") { it.id.toString() }
-                .ifEmpty {
-                    throw NoSearchByActorResultFoundException()
-                }
+    override suspend fun getMoviesByActorName(name: String): RemoteMovieResponse {
+        val actorsByName = getActorIdByName(name)
+            .actors
+            .joinToString(separator = "|") { it.id.toString() }
+            .ifEmpty { throw NoSearchByActorResultFoundException() }
 
-            ktorClient.get(DISCOVER_MOVIE) {
-                parameter(WITH_CAST_KEY, actorsByName)
-            }
+        return ktorClient.tryToExecute {
+            ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
         }
     }
 
-    private suspend fun getActorIdByName(
-        name: String
-    ): RemoteActorSearchResponse {
-        return safeCall<RemoteActorSearchResponse> {
-            ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) {
-                parameter(QUERY_KEY, name)
-            }
+    private suspend fun getActorIdByName(name: String): RemoteActorSearchResponse {
+        return ktorClient.tryToExecute {
+            ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) { parameter(QUERY_KEY, name) }
         }
     }
 
-    override suspend fun getMoviesByCountryIsoCode(
-        countryIsoCode: String
-    ): RemoteMovieResponse {
-        return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get(DISCOVER_MOVIE) {
-                parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
-            }
-            return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
+    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse {
+        return ktorClient.tryToExecute {
+            ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_ORIGIN_COUNTRY, countryIsoCode) }
         }
     }
 

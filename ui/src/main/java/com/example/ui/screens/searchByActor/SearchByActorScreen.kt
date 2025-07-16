@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
+import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
@@ -117,7 +118,7 @@ private fun SearchByActorContent(
             label = "Content Animation"
         ) { targetState ->
             when {
-                targetState.isLoading -> Loading(modifier = Modifier)
+                targetState.isLoading -> LoadingContainer(modifier = Modifier)
 
                 isNoInternetConnection -> {
                     NoNetworkContainer(
