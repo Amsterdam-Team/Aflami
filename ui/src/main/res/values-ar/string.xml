@@ -8,4 +8,6 @@
     <string name="search_error_invalid_characters">تم استخدام رموز غير صالحة.</string>
     <string name="search_error_blank_query">يرجى إدخال شيء ما.</string>
     <string name="search_error_unknown">حدث خطأ غير متوقع.</string>
+    <string name="there_is_no_production_company">لا توجد شركة إنتاج!</string>
+    <string name="there_is_no_reviews">لا توجد مراجعات!</string>
 </resources>
