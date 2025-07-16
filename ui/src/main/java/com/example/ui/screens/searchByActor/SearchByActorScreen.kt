@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
+import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.components.NoNetworkContainer
@@ -39,7 +40,6 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
-import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
 import com.example.viewmodel.searchByActor.SearchByActorScreenState
@@ -128,7 +128,7 @@ private fun SearchByActorContent(
             label = "Content Animation"
         ) { targetState ->
             when {
-                targetState.isLoading -> Loading(modifier = Modifier)
+                targetState.isLoading -> LoadingContainer(modifier = Modifier)
 
                 isNoInternetConnection -> {
                     NoNetworkContainer(
