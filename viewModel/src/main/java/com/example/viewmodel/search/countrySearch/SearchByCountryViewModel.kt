@@ -138,7 +138,7 @@ class SearchByCountryViewModel(
 
     private fun saveRecentSearch() {
         tryToExecute(
-            action = { addRecentSearchUseCase(state.value.selectedCountryIsoCode) },
+            action = { addRecentSearchUseCase.addRecentSearchForCountry(state.value.selectedCountryIsoCode) },
             onSuccess = { },
             onError = { onError(it) },
         )

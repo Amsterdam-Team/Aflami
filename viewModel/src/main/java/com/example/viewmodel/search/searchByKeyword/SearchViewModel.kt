@@ -191,7 +191,7 @@ class SearchViewModel(
     override fun onSearchActionClicked() {
         onKeywordValuedChanged(state.value.keyword)
         tryToExecute(
-            action = { addRecentSearchUseCase(state.value.keyword) },
+            action = { addRecentSearchUseCase.addRecentSearchForKeyword(state.value.keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
             onCompletion = ::onCompletion

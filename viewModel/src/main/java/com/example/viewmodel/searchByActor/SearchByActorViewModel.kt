@@ -89,7 +89,7 @@ class SearchByActorViewModel(
 
     override fun onSearchActionClicked() {
         tryToExecute(
-            action = { addRecentSearchUseCase(state.value.query) },
+            action = { addRecentSearchUseCase.addRecentSearchForActor(state.value.query) },
             onSuccess = { },
             onError = {},
         )
