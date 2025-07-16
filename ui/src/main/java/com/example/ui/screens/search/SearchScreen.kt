@@ -1,5 +1,6 @@
 package com.example.ui.screens.search
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -171,6 +172,7 @@ private fun SearchContent(
                 .padding(start = 8.dp, end = 8.dp)
         ) {
             AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState != null) {
+                Log.e("nb", "reached error place")
                 if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onRetryQuestClicked,

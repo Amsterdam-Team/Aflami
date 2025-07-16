@@ -49,89 +49,142 @@ class SearchViewModel(
     }
 
     private fun loadRecentSearches() {
-        updateState { it.copy(isLoading = true) }
+        startLoading()
         tryToExecute(
             action = { getRecentSearchesUseCase() },
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
-            onCompletion = ::stopLoading
+            onCompletion = ::onCompletion
         )
     }
 
     private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
-        updateState { it.copy(recentSearches = recentSearches, isLoading = false) }
+        updateState { it.copy(recentSearches = recentSearches, errorUiState = null) }
     }
+
+    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
+        updateState { it.copy(recentSearches = emptyList()) }
+        return unit
+    }
+
 
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch(Dispatchers.IO) {
-            _keyword.debounce(300)
-                .map(String::trim)
+            _keyword.map(String::trim)
+                .debounce(300)
                 .filter(String::isNotBlank)
                 .collect(::onSearchKeywordChanged)
         }
     }
 
     private fun onSearchKeywordChanged(keyword: String) {
-        updateState {
-            it.copy(
-                isLoading = true,
-                errorUiState = null,
-                movies = emptyList(),
-                tvShows = emptyList()
-            )
-        }
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByKeyword(keyword)
             TabOption.TV_SHOWS -> fetchTvShowsByKeyword(keyword)
         }
     }
 
-    private fun fetchMoviesByKeyword(
-        keyword: String,
-        rating: Int = 0,
-        movieGenre: MovieGenre = MovieGenre.ALL
-    ) {
+    private fun fetchMoviesByKeyword(keyword: String) {
+        startLoading()
         tryToExecute(
-            action = {
-                getAndFilterMoviesByKeywordUseCase(
-                    keyword = keyword,
-                    rating = rating,
-                    movieGenreId = movieGenre.mapToGenreId()
-                )
-            },
+            action = { getAndFilterMoviesByKeywordUseCase(keyword = keyword) },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError,
-            onCompletion = ::stopLoading
+            onCompletion = ::onCompletion
         )
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        applyMoviesFilter()
-        updateState { it.copy(movies = movies.toMoveUiStates()) }
+        updateState { it.copy(movies = movies.toMoveUiStates(), errorUiState = null) }
     }
 
     private fun fetchTvShowsByKeyword(
         keyword: String,
-        rating: Int = 0,
-        tvGenre: TvShowGenre = TvShowGenre.ALL
     ) {
+        startLoading()
         tryToExecute(
             action = {
                 getAndFilterTvShowsByKeywordUseCase(
                     keyword = keyword,
-                    rating = rating,
-                    tvShowGenreId = tvGenre.mapToGenreId()
                 )
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
-            onCompletion = ::stopLoading
+            onCompletion = ::onCompletion
         )
     }
 
     private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
-        applyTvShowsFilter()
-        updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
+        updateState { it.copy(tvShows = tvShows.toTvShowUiStates(), errorUiState = null) }
+    }
+
+    private fun applyMoviesFilter() {
+        val currentCategoryItemUiStates = state.value.filterItemUiState.selectableMovieGenres
+        tryToExecute(
+            action = {
+                getAndFilterMoviesByKeywordUseCase(
+                    keyword = state.value.keyword,
+                    rating = state.value.filterItemUiState.selectedStarIndex,
+                    movieGenreId = currentCategoryItemUiStates.getSelectedGenreType().mapToGenreId()
+                )
+            },
+            onSuccess = ::onMoviesFilteredSuccess,
+            onError = ::onFetchError,
+            onCompletion = ::onCancelButtonClicked
+        )
+    }
+
+    private fun onMoviesFilteredSuccess(movies: List<Movie>) {
+        updateState {
+            it.copy(
+                movies = movies.toMoveUiStates(),
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                errorUiState = null
+            )
+        }
+    }
+
+    private fun applyTvShowsFilter() {
+        val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
+        tryToExecute(
+            action = {
+                getAndFilterTvShowsByKeywordUseCase(
+                    keyword = state.value.keyword,
+                    rating = state.value.filterItemUiState.selectedStarIndex,
+                    tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId()
+                )
+            },
+            onSuccess = ::onTvShowsFilteredSuccess,
+            onError = ::onFetchError,
+            onCompletion = ::onCancelButtonClicked
+        )
+    }
+
+    private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
+        updateState {
+            it.copy(
+                tvShows = tvShows.toTvShowUiStates(),
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                errorUiState = null
+            )
+        }
+    }
+
+    private fun onFetchError(exception: AflamiException) {
+        updateState { it.copy(errorUiState = mapToSearchUiState(exception)) }
+    }
+
+    private fun resetFilterState() =
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+
+    private fun onCompletion() = updateState { it.copy(isLoading = false) }
+
+    private fun startLoading() {
+        updateState {
+            it.copy(
+                isLoading = true,
+            )
+        }
     }
 
     override fun onKeywordValuedChanged(keyword: String) {
@@ -140,15 +193,14 @@ class SearchViewModel(
     }
 
     override fun onSearchActionClicked() {
+        onKeywordValuedChanged(state.value.keyword)
         tryToExecute(
             action = { addRecentSearchUseCase(state.value.keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
+            onCompletion = ::onCompletion
         )
     }
-
-    override fun onFilterButtonClicked() =
-        updateState { it.copy(isDialogVisible = true, isLoading = false) }
 
     override fun onNavigateBackClicked() {
         if (state.value.keyword.isNotEmpty()) {
@@ -163,8 +215,8 @@ class SearchViewModel(
     override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
 
     override fun onRetryQuestClicked() {
-        updateState { it.copy(isLoading = true, errorUiState = null) }
         observeSearchKeywordChanges()
+        updateState { it.copy(isLoading = true, errorUiState = null) }
     }
 
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
@@ -204,7 +256,7 @@ class SearchViewModel(
             action = { clearAllRecentSearchesUseCase() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = ::onFetchError,
-            onCompletion = ::stopLoading
+            onCompletion = ::onCompletion
         )
     }
 
@@ -212,28 +264,14 @@ class SearchViewModel(
         updateState { currentState ->
             currentState.copy(
                 keyword = "",
-                movies = emptyList(),
-                tvShows = emptyList(),
-                selectedTabOption = TabOption.MOVIES,
-                errorUiState = null,
                 isDialogVisible = false,
                 filterItemUiState = FilterItemUiState()
             )
         }
     }
 
-    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
-        updateState { it.copy(recentSearches = emptyList()) }
-        return unit
-    }
-
-    override fun onCancelButtonClicked() {
-        updateState {
-            it.copy(
-                isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
-            )
-        }
+    override fun onFilterButtonClicked() {
+        updateState { it.copy(isDialogVisible = true, isLoading = false) }
     }
 
     override fun onRatingStarChanged(ratingIndex: Int) {
@@ -264,6 +302,16 @@ class SearchViewModel(
         }
     }
 
+    override fun onCancelButtonClicked() {
+        updateState {
+            it.copy(
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                errorUiState = null
+            )
+        }
+    }
+
     override fun onApplyButtonClicked() {
         updateState {
             it.copy(
@@ -278,67 +326,5 @@ class SearchViewModel(
         }
     }
 
-    private fun applyMoviesFilter() {
-        val currentCategoryItemUiStates = state.value.filterItemUiState.selectableMovieGenres
-        tryToExecute(
-            action = {
-                getAndFilterMoviesByKeywordUseCase(
-                    keyword = state.value.keyword,
-                    rating = state.value.filterItemUiState.selectedStarIndex,
-                    movieGenreId = currentCategoryItemUiStates.getSelectedGenreType().mapToGenreId()
-                )
-            },
-            onSuccess = ::onMoviesFilteredSuccess,
-            onError = ::onFetchError,
-            onCompletion = ::onCancelButtonClicked
-        )
-    }
-
-    private fun onMoviesFilteredSuccess(movies: List<Movie>) {
-        updateState {
-            it.copy(
-                movies = movies.toMoveUiStates(),
-                errorUiState = null,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
-            )
-        }
-    }
-
-    private fun applyTvShowsFilter() {
-        val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
-        tryToExecute(
-            action = {
-                getAndFilterTvShowsByKeywordUseCase(
-                    keyword = state.value.keyword,
-                    rating = state.value.filterItemUiState.selectedStarIndex,
-                    tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId()
-                )
-            },
-            onSuccess = ::onTvShowsFilteredSuccess,
-            onError = ::onFetchError,
-            onCompletion = ::onCancelButtonClicked
-        )
-    }
-
-    private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
-        updateState {
-            it.copy(
-                tvShows = tvShows.toTvShowUiStates(),
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
-                errorUiState = null
-            )
-        }
-    }
-
-
-    private fun onFetchError(exception: AflamiException) {
-        updateState { it.copy(errorUiState = mapToSearchUiState(exception)) }
-    }
-
     override fun onClearButtonClicked() = resetFilterState()
-
-    private fun resetFilterState() =
-        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
-
-    private fun stopLoading() = updateState { it.copy(isLoading = false) }
 }
