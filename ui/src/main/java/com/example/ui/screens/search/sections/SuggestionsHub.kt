@@ -18,15 +18,15 @@ import com.example.designsystem.components.Text
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
-import com.example.viewmodel.search.globalSearch.SearchUiState
+import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
+import com.example.viewmodel.search.searchByKeyword.SearchUiState
 
 @Composable
 fun SuggestionsHubSection(
     state: SearchUiState,
-    interaction: GlobalSearchInteractionListener,
+    interaction: SearchInteractionListener,
 ) {
-    AnimatedVisibility(state.query.isBlank()) {
+    AnimatedVisibility(state.keyword.isBlank()) {
         Column(
             modifier = Modifier.padding(
                 bottom = 12.dp,

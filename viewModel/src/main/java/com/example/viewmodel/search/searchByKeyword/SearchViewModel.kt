@@ -1,9 +1,9 @@
-package com.example.viewmodel.search.globalSearch
+package com.example.viewmodel.search.searchByKeyword
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
-import com.example.domain.useCase.GetMoviesByKeywordUseCase
-import com.example.domain.useCase.GetTvShowByKeywordUseCase
+import com.example.domain.useCase.GetAndFilterMoviesByKeywordUseCase
+import com.example.domain.useCase.GetAndFilterTvShowsByKeywordUseCase
 import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
@@ -14,12 +14,12 @@ import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.mapToGenreId
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
+import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
+import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -31,22 +31,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
-class GlobalSearchViewModel(
-    private val getMoviesByKeywordUseCase: GetMoviesByKeywordUseCase,
-    private val getTvShowByKeywordUseCase: GetTvShowByKeywordUseCase,
+class SearchViewModel(
+    private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
+    private val getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase,
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val addRecentSearchUseCase: AddRecentSearchUseCase,
     private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
     private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
-    GlobalSearchInteractionListener, FilterInteractionListener {
+    SearchInteractionListener, FilterInteractionListener {
 
-    private val _query = MutableStateFlow(state.value.query)
+    private val _keyword = MutableStateFlow(state.value.keyword)
 
     init {
         loadRecentSearches()
-        observeSearchQueryChanges()
+        observeSearchKeywordChanges()
     }
 
     private fun loadRecentSearches() {
@@ -63,16 +63,16 @@ class GlobalSearchViewModel(
         updateState { it.copy(recentSearches = recentSearches, isLoading = false) }
     }
 
-    private fun observeSearchQueryChanges() {
+    private fun observeSearchKeywordChanges() {
         viewModelScope.launch(Dispatchers.IO) {
-            _query.debounce(300)
+            _keyword.debounce(300)
                 .map(String::trim)
                 .filter(String::isNotBlank)
-                .collect(::onSearchQueryChanged)
+                .collect(::onSearchKeywordChanged)
         }
     }
 
-    private fun onSearchQueryChanged(trimmedQuery: String) {
+    private fun onSearchKeywordChanged(keyword: String) {
         updateState {
             it.copy(
                 isLoading = true,
@@ -82,19 +82,19 @@ class GlobalSearchViewModel(
             )
         }
         when (state.value.selectedTabOption) {
-            TabOption.MOVIES -> fetchMoviesByQuery(trimmedQuery)
-            TabOption.TV_SHOWS -> fetchTvShowsByQuery(trimmedQuery)
+            TabOption.MOVIES -> fetchMoviesByKeyword(keyword)
+            TabOption.TV_SHOWS -> fetchTvShowsByKeyword(keyword)
         }
     }
 
-    private fun fetchMoviesByQuery(
+    private fun fetchMoviesByKeyword(
         keyword: String,
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
     ) {
         tryToExecute(
             action = {
-                getMoviesByKeywordUseCase(
+                getAndFilterMoviesByKeywordUseCase(
                     keyword = keyword,
                     rating = rating,
                     movieGenreId = movieGenre.mapToGenreId()
@@ -111,14 +111,14 @@ class GlobalSearchViewModel(
         updateState { it.copy(movies = movies.toMoveUiStates()) }
     }
 
-    private fun fetchTvShowsByQuery(
+    private fun fetchTvShowsByKeyword(
         keyword: String,
         rating: Int = 0,
         tvGenre: TvShowGenre = TvShowGenre.ALL
     ) {
         tryToExecute(
             action = {
-                getTvShowByKeywordUseCase(
+                getAndFilterTvShowsByKeywordUseCase(
                     keyword = keyword,
                     rating = rating,
                     tvShowGenreId = tvGenre.mapToGenreId()
@@ -135,14 +135,14 @@ class GlobalSearchViewModel(
         updateState { it.copy(tvShows = tvShows.toTvShowUiStates()) }
     }
 
-    override fun onTextValuedChanged(text: String) {
-        _query.update { oldText -> text }
-        updateState { it.copy(query = text) }
+    override fun onKeywordValuedChanged(keyword: String) {
+        _keyword.update { oldText -> keyword }
+        updateState { it.copy(keyword = keyword) }
     }
 
     override fun onSearchActionClicked() {
         tryToExecute(
-            action = { addRecentSearchUseCase(state.value.query) },
+            action = { addRecentSearchUseCase(state.value.keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
         )
@@ -152,7 +152,7 @@ class GlobalSearchViewModel(
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
 
     override fun onNavigateBackClicked() {
-        if (state.value.query.isNotEmpty()) {
+        if (state.value.keyword.isNotEmpty()) {
             onSearchCleared()
         } else {
             sendNewEffect(SearchUiEffect.NavigateBack)
@@ -165,13 +165,13 @@ class GlobalSearchViewModel(
 
     override fun onRetryQuestClicked() {
         updateState { it.copy(isLoading = true, errorUiState = null) }
-        observeSearchQueryChanges()
+        observeSearchKeywordChanges()
     }
 
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
-        observeSearchQueryChanges()
+        observeSearchKeywordChanges()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
@@ -184,8 +184,8 @@ class GlobalSearchViewModel(
     }
 
     override fun onRecentSearchClicked(keyword: String) {
-        onTextValuedChanged(keyword)
-        observeSearchQueryChanges()
+        onKeywordValuedChanged(keyword)
+        observeSearchKeywordChanges()
     }
 
     override fun onRecentSearchCleared(keyword: String) {
@@ -212,7 +212,7 @@ class GlobalSearchViewModel(
     override fun onSearchCleared() {
         updateState { currentState ->
             currentState.copy(
-                query = "",
+                keyword = "",
                 movies = emptyList(),
                 tvShows = emptyList(),
                 selectedTabOption = TabOption.MOVIES,
@@ -283,8 +283,8 @@ class GlobalSearchViewModel(
         val currentCategoryItemUiStates = state.value.filterItemUiState.selectableMovieGenres
         tryToExecute(
             action = {
-                getMoviesByKeywordUseCase(
-                    keyword = state.value.query,
+                getAndFilterMoviesByKeywordUseCase(
+                    keyword = state.value.keyword,
                     rating = state.value.filterItemUiState.selectedStarIndex,
                     movieGenreId = currentCategoryItemUiStates.getSelectedGenreType().mapToGenreId()
                 )
@@ -309,8 +309,8 @@ class GlobalSearchViewModel(
         val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
         tryToExecute(
             action = {
-                getTvShowByKeywordUseCase(
-                    keyword = state.value.query,
+                getAndFilterTvShowsByKeywordUseCase(
+                    keyword = state.value.keyword,
                     rating = state.value.filterItemUiState.selectedStarIndex,
                     tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId()
                 )
@@ -338,7 +338,8 @@ class GlobalSearchViewModel(
 
     override fun onClearButtonClicked() = resetFilterState()
 
-    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() =
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun stopLoading() = updateState { it.copy(isLoading = false) }
 }

@@ -44,11 +44,11 @@ import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLa
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.globalSearch.FilterInteractionListener
-import com.example.viewmodel.search.globalSearch.FilterItemUiState
-import com.example.viewmodel.search.globalSearch.SearchUiState
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
+import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
+import com.example.viewmodel.search.searchByKeyword.FilterItemUiState
+import com.example.viewmodel.search.searchByKeyword.SearchUiState
+import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
+import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 @Composable
 fun FilterDialog(

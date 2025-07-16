@@ -1,4 +1,4 @@
-package com.example.viewmodel.search.globalSearch
+package com.example.viewmodel.search.searchByKeyword
 
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.BlankQueryException

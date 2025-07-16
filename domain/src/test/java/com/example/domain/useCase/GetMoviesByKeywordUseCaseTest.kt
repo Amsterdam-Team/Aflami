@@ -15,20 +15,20 @@ import org.junit.jupiter.api.assertThrows
 
 class GetMoviesByKeywordUseCaseTest {
     private lateinit var movieRepository: MovieRepository
-    private lateinit var getMoviesByKeywordUseCase: GetMoviesByKeywordUseCase
+    private lateinit var getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase
 
 
     @BeforeEach
     fun setUp() {
         movieRepository = mockk(relaxed = true)
-        getMoviesByKeywordUseCase = GetMoviesByKeywordUseCase(movieRepository)
+        getAndFilterMoviesByKeywordUseCase = GetAndFilterMoviesByKeywordUseCase(movieRepository)
     }
 
     @Test
     fun `should call getMoviesByKeyword when a keyword is provided`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieList
 
-        getMoviesByKeywordUseCase("keyword")
+        getAndFilterMoviesByKeywordUseCase("keyword")
         coVerify(exactly = 1) { movieRepository.getMoviesByKeyword("keyword") }
     }
 
@@ -37,7 +37,7 @@ class GetMoviesByKeywordUseCaseTest {
         runBlocking {
             coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieList
 
-            val movies = getMoviesByKeywordUseCase("keyword")
+            val movies = getAndFilterMoviesByKeywordUseCase("keyword")
 
             assertThat(fakeMovieList.sortedByDescending { it.popularity }).isEqualTo(movies)
         }
@@ -48,7 +48,7 @@ class GetMoviesByKeywordUseCaseTest {
             coEvery { movieRepository.getMoviesByKeyword(any()) } returns emptyList()
 
             assertThrows<NoSearchByKeywordResultFoundException> {
-                getMoviesByKeywordUseCase("nonexistentKeyword")
+                getAndFilterMoviesByKeywordUseCase("nonexistentKeyword")
             }
         }
 
@@ -80,7 +80,7 @@ class GetMoviesByKeywordUseCaseTest {
             coEvery { movieRepository.getMoviesByKeyword(any()) } returns specificMovieList
 
             assertThrows<NoSearchByKeywordResultFoundException> {
-                getMoviesByKeywordUseCase("keyword", rating = 10, movieGenreId = 1)
+                getAndFilterMoviesByKeywordUseCase("keyword", rating = 10, movieGenreId = 1)
             }
         }
 
@@ -88,7 +88,7 @@ class GetMoviesByKeywordUseCaseTest {
     fun `should return filtered movies when a minimum rating is specified`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithRatings
 
-        val result = getMoviesByKeywordUseCase("keyword", rating = 6)
+        val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 6)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].id).isEqualTo(1)
@@ -99,7 +99,7 @@ class GetMoviesByKeywordUseCaseTest {
     fun `should return all movies when rating filter is 0`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithRatings
 
-        val result = getMoviesByKeywordUseCase("keyword", rating = 0)
+        val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 0)
 
         assertThat(result).isEqualTo(fakeMovieListWithRatings.sortedByDescending { it.popularity })
     }
@@ -108,7 +108,7 @@ class GetMoviesByKeywordUseCaseTest {
     fun `should return filtered movies when a genre ID is specified`(): Unit = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithCategories
 
-        val result = getMoviesByKeywordUseCase("keyword", movieGenreId = 10)
+        val result = getAndFilterMoviesByKeywordUseCase("keyword", movieGenreId = 10)
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(
@@ -121,7 +121,7 @@ class GetMoviesByKeywordUseCaseTest {
     fun `should return all movies when genre ID filter is 0`() = runBlocking {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithCategories
 
-        val result = getMoviesByKeywordUseCase("keyword", movieGenreId = 0)
+        val result = getAndFilterMoviesByKeywordUseCase("keyword", movieGenreId = 0)
 
         assertThat(result).isEqualTo(fakeMovieListWithCategories.sortedByDescending { it.popularity })
     }
@@ -131,7 +131,7 @@ class GetMoviesByKeywordUseCaseTest {
         coEvery { movieRepository.getMoviesByKeyword(any()) } returns fakeMovieListWithCategories
 
         assertThrows<NoSearchByKeywordResultFoundException> {
-            getMoviesByKeywordUseCase("keyword", movieGenreId = 999)
+            getAndFilterMoviesByKeywordUseCase("keyword", movieGenreId = 999)
         }
     }
 

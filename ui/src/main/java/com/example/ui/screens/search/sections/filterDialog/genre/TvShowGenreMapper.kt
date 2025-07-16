@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.designsystem.R
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
+import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 val TvShowGenre.uiModel: GenreUiModel
     get() = when (this) {

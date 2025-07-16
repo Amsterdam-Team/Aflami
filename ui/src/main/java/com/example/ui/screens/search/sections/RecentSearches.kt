@@ -20,16 +20,16 @@ import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
-import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
-import com.example.viewmodel.search.globalSearch.SearchUiState
+import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
+import com.example.viewmodel.search.searchByKeyword.SearchUiState
 
 @Composable
 fun RecentSearchesSection(
     state: SearchUiState,
-    interaction: GlobalSearchInteractionListener,
+    interaction: SearchInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.query.isBlank()) {
+    AnimatedVisibility(state.recentSearches.isNotEmpty() && state.keyword.isBlank()) {
         Column {
             Row(
                 modifier = modifier

@@ -50,18 +50,18 @@ import com.example.ui.screens.search.sections.filterDialog.FilterDialog
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaType
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.globalSearch.FilterInteractionListener
-import com.example.viewmodel.search.globalSearch.GlobalSearchInteractionListener
-import com.example.viewmodel.search.globalSearch.GlobalSearchViewModel
-import com.example.viewmodel.search.globalSearch.SearchErrorState
-import com.example.viewmodel.search.globalSearch.SearchUiEffect
-import com.example.viewmodel.search.globalSearch.SearchUiState
+import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
+import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
+import com.example.viewmodel.search.searchByKeyword.SearchViewModel
+import com.example.viewmodel.search.searchByKeyword.SearchErrorState
+import com.example.viewmodel.search.searchByKeyword.SearchUiEffect
+import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    viewModel: GlobalSearchViewModel = koinViewModel(),
+    viewModel: SearchViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
@@ -93,10 +93,10 @@ fun SearchScreen(
 @Composable
 private fun SearchContent(
     state: SearchUiState,
-    interaction: GlobalSearchInteractionListener,
+    interaction: SearchInteractionListener,
     filterInteraction: FilterInteractionListener
 ) {
-    BackHandler(enabled = state.query.isNotEmpty()) {
+    BackHandler(enabled = state.keyword.isNotEmpty()) {
         interaction.onSearchCleared()
     }
     var headerHeight by remember { mutableStateOf(0.dp) }
@@ -130,7 +130,7 @@ private fun SearchContent(
             )
         }
 
-        AnimatedVisibility(state.query.isNotBlank() && state.errorUiState == null) {
+        AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
                 state = state
             )
@@ -146,7 +146,7 @@ private fun SearchContent(
                 .fillMaxSize()
                 .padding(start = 8.dp, end = 8.dp)
         ) {
-            AnimatedVisibility(state.query.isNotBlank() && state.errorUiState != null) {
+            AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState != null) {
                 if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onRetryQuestClicked,
@@ -168,7 +168,7 @@ private fun SearchContent(
 }
 
 @Composable
-fun SuccessMediaItems(
+private fun SuccessMediaItems(
     state: SearchUiState,
     modifier: Modifier = Modifier
 ) {
@@ -201,7 +201,7 @@ fun SuccessMediaItems(
 @Composable
 private fun SearchScreenHeader(
     state: SearchUiState,
-    interaction: GlobalSearchInteractionListener,
+    interaction: SearchInteractionListener,
     modifier: Modifier = Modifier,
     onHeaderSizeChanged: (IntSize) -> Unit = {}
 ) {
@@ -221,13 +221,13 @@ private fun SearchScreenHeader(
                 .background(color = AppTheme.color.surface)
                 .padding(top = 8.dp)
                 .padding(horizontal = 16.dp),
-            text = state.query,
-            onValueChange = interaction::onTextValuedChanged,
+            text = state.keyword,
+            onValueChange = interaction::onKeywordValuedChanged,
             hintText = stringResource(R.string.search_hint),
             trailingIcon = R.drawable.ic_filter_vertical,
             onTrailingClick = interaction::onFilterButtonClicked,
-            isTrailingClickEnabled = state.query.isNotBlank(),
-            isError = state.query.length > 100,
+            isTrailingClickEnabled = state.keyword.isNotBlank(),
+            isError = state.keyword.length > 100,
             errorMessage = stringResource(R.string.search_error_query_too_long),
             maxCharacters = 100,
             keyboardActions = KeyboardActions(
@@ -238,7 +238,7 @@ private fun SearchScreenHeader(
             ),
             imeAction = ImeAction.Search,
         )
-        AnimatedVisibility(state.query.isNotBlank()) {
+        AnimatedVisibility(state.keyword.isNotBlank()) {
             TabsLayout(
                 modifier = Modifier.fillMaxWidth(),
                 tabs = listOf(

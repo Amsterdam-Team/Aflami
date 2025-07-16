@@ -8,7 +8,7 @@ import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 
-class GetMoviesByKeywordUseCase(
+class GetAndFilterMoviesByKeywordUseCase(
     private val movieRepository: MovieRepository
 ) {
 

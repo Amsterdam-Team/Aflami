@@ -4,7 +4,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.example.viewmodel.common.TabOption
-import com.example.viewmodel.search.globalSearch.SearchUiState
+import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 
 @Composable

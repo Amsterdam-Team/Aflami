@@ -1,10 +1,10 @@
 package com.example.viewmodel.search.mapper
 
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.MovieGenreItemUiState
-import com.example.viewmodel.search.globalSearch.genre.Selectable
-import com.example.viewmodel.search.globalSearch.genre.TvGenreItemUiState
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
+import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
+import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
+import com.example.viewmodel.search.searchByKeyword.genre.Selectable
+import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
+import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 fun TvShowGenre.mapToGenreId(): Int {
     return when (this) {

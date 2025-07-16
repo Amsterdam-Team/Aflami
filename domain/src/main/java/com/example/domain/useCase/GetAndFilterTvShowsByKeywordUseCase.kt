@@ -8,7 +8,7 @@ import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.TvShow
 
-class GetTvShowByKeywordUseCase(
+class GetAndFilterTvShowsByKeywordUseCase(
     private val tvShowRepository: TvShowRepository
 ) {
 
