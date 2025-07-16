@@ -29,7 +29,7 @@ fun CenterOfScreenContainer(
     var containerHeight by remember { mutableStateOf(0.dp) }
     val screenHeight = getAppScreenHeight()
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(bottom = paddingValueDp),
         contentAlignment = Alignment.Center,
