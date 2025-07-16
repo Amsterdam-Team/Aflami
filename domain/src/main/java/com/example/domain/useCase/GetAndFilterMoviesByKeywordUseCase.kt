@@ -14,11 +14,12 @@ class GetAndFilterMoviesByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
+        page: Int = 1,
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
         return movieRepository
-            .getMoviesByKeyword(keyword = keyword)
+            .getMoviesByKeyword(keyword = keyword, page = page)
             .filterByMinRating(rating)
             .filter { movie ->
                 if (movieGenre == MovieGenre.ALL)

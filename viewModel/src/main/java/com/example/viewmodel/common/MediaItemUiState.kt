@@ -19,7 +19,7 @@ enum class MediaType {
     TV_SHOW,
 }
 
-private fun Movie.toMediaItemUiState(): MediaItemUiState =
+fun Movie.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
         name = name,
         posterImage = base_image_url + poster,
@@ -30,7 +30,7 @@ private fun Movie.toMediaItemUiState(): MediaItemUiState =
 
 fun List<Movie>.toMoveUiStates() = map(Movie::toMediaItemUiState)
 
-private fun TvShow.toMediaItemUiState(): MediaItemUiState =
+fun TvShow.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
         name = name,
         posterImage = base_image_url + poster,

@@ -1,18 +1,29 @@
 package com.example.viewmodel.search.countrySearch
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.domain.useCase.search.AddRecentSearchUseCase
+import com.example.paging.PagingSource
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -50,8 +61,17 @@ class SearchByCountryViewModel(
         updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
         addRecentSearch()
         tryToExecute(
-            action = { getMoviesByCountryUseCase(state.value.selectedCountryIsoCode) },
-            onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
+            action = {
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getMoviesByCountryUseCase(state.value.selectedCountryIsoCode, page)
+                        }
+                    },
+                ).flow.map { pagingData -> pagingData.map { it.toUiState() } }.cachedIn(viewModelScope)
+            },
+            onSuccess = { movies -> updateMoviesForCountry(movies) },
             onError = (::onError)
         )
     }
@@ -74,13 +94,11 @@ class SearchByCountryViewModel(
         }
     }
 
-    private fun updateMoviesForCountry(movies: List<MovieUiState>) {
+    private fun updateMoviesForCountry(movies: Flow<PagingData<MovieUiState>>) {
         updateState {
             it.copy(
                 movies = movies,
-                searchByCountryContentUIState =
-                    if (movies.isNotEmpty()) SearchByCountryContentUIState.MOVIES_LOADED
-                    else SearchByCountryContentUIState.NO_DATA_FOUND
+                searchByCountryContentUIState = SearchByCountryContentUIState.MOVIES_LOADED,
             )
         }
     }
@@ -90,7 +108,7 @@ class SearchByCountryViewModel(
             it.copy(
                 isLoadingCountries = false,
                 suggestedCountries = emptyList(),
-                movies = emptyList(),
+                movies = emptyFlow(),
                 searchByCountryContentUIState = exception.toSearchByCountryState()
             )
         }

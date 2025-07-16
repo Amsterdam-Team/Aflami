@@ -1,19 +1,21 @@
 package com.example.viewmodel.search.searchByKeyword
 
+import androidx.paging.PagingData
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.Selectable
-import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 data class SearchUiState(
     val keyword: String = "",
     val recentSearches: List<String> = emptyList(),
     val selectedTabOption: TabOption = TabOption.MOVIES,
-    val movies: List<MediaItemUiState> = emptyList(),
-    val tvShows: List<MediaItemUiState> = emptyList(),
+    val movies: Flow<PagingData<MediaItemUiState>> = emptyFlow(),
+    val tvShows: Flow<PagingData<MediaItemUiState>> = emptyFlow(),
     val isDialogVisible: Boolean = false,
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,

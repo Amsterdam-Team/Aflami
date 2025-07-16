@@ -17,7 +17,11 @@ dependencies {
     implementation (libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.datetime)
-    //mockk
+
+    // page 3
+    implementation(libs.androidx.paging.runtime)
+
+    // mockk
     testImplementation (libs.mockk)
     testImplementation (libs.kotlinx.coroutines.test)
     // junit 5

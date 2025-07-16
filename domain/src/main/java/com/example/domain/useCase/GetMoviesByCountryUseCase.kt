@@ -4,9 +4,8 @@ import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 
 class GetMoviesByCountryUseCase(private val movieRepository: MovieRepository) {
-
-    suspend operator fun invoke(countryIsoCode: String): List<Movie> {
-        return movieRepository.getMoviesByCountryIsoCode(countryIsoCode)
-    }
-
+    suspend operator fun invoke(
+        countryIsoCode: String,
+        page: Int = 1,
+    ): List<Movie> = movieRepository.getMoviesByCountryIsoCode(countryIsoCode, page)
 }

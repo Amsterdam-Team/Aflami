@@ -14,10 +14,12 @@ class GetAndFilterTvShowsByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
+        page: Int = 1,
         rating: Int = 0,
         tvGenre: TvShowGenre = TvShowGenre.ALL
     ): List<TvShow> {
-        return tvShowRepository.getTvShowByKeyword(keyword = keyword)
+        return tvShowRepository
+            .getTvShowByKeyword(keyword = keyword, page = page)
             .filterByMinRating(rating)
             .filter { tv ->
                 if (tvGenre == TvShowGenre.ALL)

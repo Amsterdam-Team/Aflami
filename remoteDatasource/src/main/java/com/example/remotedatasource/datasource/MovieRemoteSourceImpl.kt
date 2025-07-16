@@ -10,15 +10,23 @@ import io.ktor.client.request.parameter
 class MovieRemoteSourceImpl(
     private val ktorClient: KtorClient,
 ) : MovieRemoteSource {
-
-    override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        page: Int,
+    ): RemoteMovieResponse {
         return ktorClient.tryToExecute {
-            ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
+
+                ktorClient
+                    .get(SEARCH_MOVIE_URL) {
+                        parameter(QUERY_KEY, keyword)
+                        parameter(PAGE, page)
+                    }
+
         }
     }
 
-    override suspend fun getMoviesByActorName(name: String): RemoteMovieResponse {
-        val actorsByName = getActorIdByName(name)
+    override suspend fun getMoviesByActorName(name: String, page: Int): RemoteMovieResponse {
+        val actorsByName = getActorIdByName(name, page)
             .actors
             .joinToString(separator = "|") { it.id.toString() }
             .ifEmpty { throw NoSearchByActorResultFoundException() }
@@ -28,15 +36,25 @@ class MovieRemoteSourceImpl(
         }
     }
 
-    private suspend fun getActorIdByName(name: String): RemoteActorSearchResponse {
+    private suspend fun getActorIdByName(
+        name: String,
+        page: Int,
+    ): RemoteActorSearchResponse {
         return ktorClient.tryToExecute {
-            ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) { parameter(QUERY_KEY, name) }
+            ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) {
+                parameter(QUERY_KEY, name)
+                parameter(PAGE, page)
+            }
         }
     }
 
-    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse {
+    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String, page: Int, ): RemoteMovieResponse {
         return ktorClient.tryToExecute {
-            ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_ORIGIN_COUNTRY, countryIsoCode) }
+            ktorClient
+                .get(DISCOVER_MOVIE) {
+                    parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
+                    parameter(PAGE, page)
+                }
         }
     }
 
@@ -48,6 +66,7 @@ class MovieRemoteSourceImpl(
 
         const val WITH_CAST_KEY = "with_cast"
         const val QUERY_KEY = "query"
+        const val PAGE = "page"
 
         const val WITH_ORIGIN_COUNTRY = "with_origin_country"
     }

@@ -14,6 +14,7 @@ appcompat = "1.7.1"
 jetbrainsKotlinJvm = "2.0.21"
 koin = "4.0.3"
 navigationCompose = "2.9.0"
+pagingRuntime = "3.3.6"
 roomRuntime = "2.7.1"
 ktorClientCio = "3.1.2"
 ktorClientCore = "3.1.2"
@@ -42,6 +43,8 @@ junitJupiter = "5.8.1"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingRuntime" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

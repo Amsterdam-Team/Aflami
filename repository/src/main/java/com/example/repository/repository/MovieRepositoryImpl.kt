@@ -22,7 +22,10 @@ class MovieRepositoryImpl(
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        page: Int,
+    ): List<Movie> {
         var movies: List<Movie> = emptyList()
         val searchType = SearchType.BY_KEYWORD
         if (!recentSearchHandler.isExpired(keyword, searchType)) {
@@ -30,10 +33,13 @@ class MovieRepositoryImpl(
         }
         if (movies.isNotEmpty()) return movies
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getMoviesByKeywordFromRemote(keyword, searchType)
+        return getMoviesByKeywordFromRemote(keyword, searchType, page)
     }
 
-    override suspend fun getMoviesByActor(actorName: String): List<Movie> {
+    override suspend fun getMoviesByActor(
+        actorName: String,
+        page: Int,
+    ): List<Movie> {
         var movies: List<Movie> = emptyList()
         val searchType = SearchType.BY_ACTOR
         if (!recentSearchHandler.isExpired(keyword = actorName, searchType)) {
@@ -41,10 +47,12 @@ class MovieRepositoryImpl(
         }
         if (movies.isNotEmpty()) return movies
         recentSearchHandler.deleteRecentSearch(actorName, searchType)
-        return getMoviesByActorNameFromRemote(actorName, searchType)
+        return getMoviesByActorNameFromRemote(actorName, searchType, page)
     }
 
-    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
+    override suspend fun getMoviesByCountryIsoCode(
+        countryIsoCode: String,
+        page: Int): List<Movie> {
         var movies: List<Movie> = emptyList()
         val searchType = SearchType.BY_COUNTRY
         if (!recentSearchHandler.isExpired(countryIsoCode, searchType)) {
@@ -52,16 +60,17 @@ class MovieRepositoryImpl(
         }
         if (movies.isNotEmpty()) return movies
         recentSearchHandler.deleteRecentSearch(countryIsoCode, searchType)
-        return getMoviesByCountryIsoCodeFromRemote(countryIsoCode, searchType)
+        return getMoviesByCountryIsoCodeFromRemote(countryIsoCode, searchType, page)
     }
 
     private suspend fun getMoviesByKeywordFromRemote(
         keyword: String,
-        searchType: SearchType
+        searchType: SearchType,
+        page: Int,
     ): List<Movie> {
         return tryToExecute(
             function = {
-                movieDataSource.getMoviesByKeyword(keyword)
+                movieDataSource.getMoviesByKeyword(keyword, page)
             },
             onSuccess = { remoteMovies ->
                 saveMoviesWithSearch(
@@ -78,10 +87,11 @@ class MovieRepositoryImpl(
 
     private suspend fun getMoviesByActorNameFromRemote(
         actorName: String,
-        searchType: SearchType
-    ): List<Movie> {
-        return tryToExecute(
-            function = { movieDataSource.getMoviesByActorName(actorName) },
+        searchType: SearchType,
+        page: Int,
+    ): List<Movie> =
+        tryToExecute(
+            function = { movieDataSource.getMoviesByActorName(actorName, page) },
             onSuccess = { remoteMovies ->
                 saveMoviesWithSearch(
                     remoteMovies = remoteMovies,
@@ -93,14 +103,14 @@ class MovieRepositoryImpl(
             onFailure = { aflamiException -> throw aflamiException },
             dispatcher = dispatcher
         )
-    }
 
     private suspend fun getMoviesByCountryIsoCodeFromRemote(
         countryIsoCode: String,
-        searchType: SearchType
+        searchType: SearchType,
+        page: Int,
     ): List<Movie> {
         return tryToExecute(
-            function = { movieDataSource.getMoviesByCountryIsoCode(countryIsoCode) },
+            function = { movieDataSource.getMoviesByCountryIsoCode(countryIsoCode, page) },
             onSuccess = { remoteMovies ->
                 saveMoviesWithSearch(
                     remoteMovies = remoteMovies,

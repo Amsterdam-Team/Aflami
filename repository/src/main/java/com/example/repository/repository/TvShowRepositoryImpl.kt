@@ -21,8 +21,10 @@ class TvShowRepositoryImpl(
     private val recentSearchHandler: RecentSearchHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : TvShowRepository {
-
-    override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
+    override suspend fun getTvShowByKeyword(
+        keyword: String,
+        page: Int,
+    ): List<TvShow> {
         var tvShows: List<TvShow> = emptyList()
         val searchType = SearchType.BY_KEYWORD
         if (!recentSearchHandler.isExpired(keyword, searchType)) {
@@ -30,7 +32,7 @@ class TvShowRepositoryImpl(
         }
         if (tvShows.isNotEmpty()) return tvShows
         recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getTvShowsFromRemote(keyword)
+        return getTvShowsFromRemote(keyword, page)
     }
 
     private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
@@ -49,10 +51,11 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowsFromRemote(
         keyword: String,
+        page: Int,
     ): List<TvShow> {
         return tryToExecute(
             function = {
-                remoteTvDataSource.getTvShowsByKeyword(keyword)
+                remoteTvDataSource.getTvShowsByKeyword(keyword, page)
             },
             onSuccess = { remoteTvShows ->
                 saveTvShowsToDatabase(remoteTvShows, keyword)
