@@ -133,6 +133,11 @@ class SearchByCountryViewModel(
         }
     }
 
+    override fun onMovieClicked(movieId: Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(SearchByCountryEffect.NavigateToMovieDetails)
+    }
+
     companion object {
         private const val DEBOUNCE_DURATION = 300L
     }

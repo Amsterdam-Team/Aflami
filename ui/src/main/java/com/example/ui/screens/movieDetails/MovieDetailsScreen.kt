@@ -76,6 +76,7 @@ import com.example.designsystem.utils.dropShadow
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
+import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.ui.screens.searchByCountry.NoInternetConnection
 import com.example.viewmodel.common.Selectable
@@ -138,17 +139,7 @@ fun MovieContent(
         }
     }
 
-
-    AnimatedVisibility(state.isUnknownError,  enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration))) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            NoInternetConnection(
-                onRetryQuestClicked = interactionListener::onRetryQuestClicked,
-            )
-        }
-    }
-
-    AnimatedVisibility(!state.isLoading && !state.networkError && !state.isUnknownError,
+    AnimatedVisibility(!state.isLoading && !state.networkError,
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
         ) {
@@ -219,8 +210,8 @@ fun MovieContent(
                                 .padding(top = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(state.categoriesNames) {
-                                CategoryChip(categoryName = it)
+                            items(state.categories) {
+                                CategoryChip(categoryName = getMovieGenreLabel(it))
                             }
                         }
                         MovieInfoSection(
@@ -554,8 +545,7 @@ fun MovieInfoSection(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {

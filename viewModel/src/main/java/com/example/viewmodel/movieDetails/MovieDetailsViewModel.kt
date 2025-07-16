@@ -60,7 +60,7 @@ class MovieDetailsViewModel(
     private fun onError(exception: AflamiException) {
          when (exception) {
             is NoInternetException -> updateState { it.copy(isLoading = false , networkError = true) }
-            else -> updateState { it.copy(isLoading = false , isUnknownError = true) }
+            else -> {}
         }
     }
 }

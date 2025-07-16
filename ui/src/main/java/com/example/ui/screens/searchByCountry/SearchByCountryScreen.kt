@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,11 +56,14 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
+import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
 import com.example.viewmodel.search.countrySearch.SearchByCountryInteractionListener
 import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -77,6 +81,17 @@ internal fun SearchByCountryScreen(
         onNavigateBackClicked = (navController::popBackStack),
         modifier = modifier,
     )
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                SearchByCountryEffect.NavigateToMovieDetails -> {
+                    navController.navigate(Route.MovieDetails(state.selectedMovieId))
+                }
+
+                null -> {}
+            }
+        }
+    }
 }
 
 @Composable
@@ -106,7 +121,9 @@ private fun SearchByCountryScreenContent(
         Box {
             CenterOfScreenContainer(
                 headerHeight,
-                modifier = Modifier.fillMaxSize().padding(start = 8.dp, end = 8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 8.dp, end = 8.dp),
             ) {
                 when (state.searchByCountryContentUIState) {
                     SearchByCountryContentUIState.COUNTRY_TOUR -> ExploreCountries()
@@ -114,16 +131,20 @@ private fun SearchByCountryScreenContent(
                     SearchByCountryContentUIState.NO_INTERNET_CONNECTION -> NoInternetConnection(
                         onRetryQuestClicked = interactionListener::onRetryQuestClicked,
                     )
+
                     SearchByCountryContentUIState.NO_DATA_FOUND -> NoMoviesFound()
                     else -> {}
                 }
             }
-            SearchedMovies(state, Modifier.align(Alignment.TopStart))
+            SearchedMovies(state, Modifier.align(Alignment.TopStart),
+                onMovieClicked = interactionListener::onMovieClicked)
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(5),
                 isVisible = state.isCountriesDropDownVisible,
                 onItemClicked = (interactionListener::onCountrySelected),
-                modifier = Modifier.fillMaxWidth().background(AppTheme.color.profileOverlay)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(AppTheme.color.profileOverlay)
             )
         }
     }
@@ -200,7 +221,9 @@ private fun ExploreCountries(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -254,7 +277,9 @@ fun NoInternetConnection(
 ) {
     NoNetworkContainer(
         onClickRetry = onRetryQuestClicked,
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .verticalScroll(rememberScrollState()),
     )
 }
 
@@ -263,7 +288,9 @@ private fun NoMoviesFound(
     modifier: Modifier = Modifier
 ) {
     NoDataContainer(
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .verticalScroll(rememberScrollState()),
         title = stringResource(R.string.no_search_result),
         description = stringResource(R.string.no_search_result_for_country),
         imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
@@ -273,7 +300,8 @@ private fun NoMoviesFound(
 @Composable
 private fun SearchedMovies(
     state: SearchByCountryScreenState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMovieClicked: (movieId: Long) -> Unit
 ) {
     androidx.compose.animation.AnimatedVisibility(
         state.searchByCountryContentUIState == SearchByCountryContentUIState.MOVIES_LOADED
@@ -295,6 +323,7 @@ private fun SearchedMovies(
                     movieYear = movie.productionYear,
                     movieTitle = movie.name,
                     movieRating = movie.rating,
+                    onClick = {onMovieClicked(movie.id)}
                 )
             }
             item {
@@ -315,6 +344,7 @@ private fun SearchByCriteriaPreview() {
                 override fun onKeywordValueChanged(keyword: String) {}
                 override fun onCountrySelected(country: CountryUiState) {}
                 override fun onRetryQuestClicked() {}
+                override fun onMovieClicked(movieId: Long) {}
             },
         )
     }

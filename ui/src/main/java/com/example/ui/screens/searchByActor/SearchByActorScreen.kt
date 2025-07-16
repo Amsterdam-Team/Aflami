@@ -62,6 +62,8 @@ fun SearchByActorScreen(
                 SearchByActorEffect.NoInternetConnection -> {
                     isNoInternetConnection = true
                 }
+                SearchByActorEffect.NavigateToDetailsScreen ->
+                    navController.navigate(Route.MovieDetails(uiState.value.selectedMovieId))
                 null -> {}
             }
         }
@@ -75,9 +77,7 @@ fun SearchByActorScreen(
             isNoInternetConnection = false
             viewModel.onRetryQuestClicked()
         }
-    ){
-        navController.navigate(Route.MovieDetails(it))
-    }
+    )
 }
 
 @Composable
@@ -87,7 +87,6 @@ private fun SearchByActorContent(
     interactionListener: SearchByActorInteractionListener,
     isNoInternetConnection: Boolean,
     onRetryQuestClicked: () -> Unit,
-    onMovieClicked : (movieId : Long) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -167,7 +166,7 @@ private fun SearchByActorContent(
                                 movieTitle = movie.name,
                                 movieRating = movie.rating,
                             ){
-                                onMovieClicked(movie.id)
+                                interactionListener.onMovieClicked(movie.id)
                             }
                         }
                     }
@@ -187,16 +186,14 @@ private fun SearchByActorContentPreview() {
             interactionListener = object : SearchByActorInteractionListener {
                 override fun onUserSearch(query: String) {
                 }
-
                 override fun onNavigateBackClicked() {
                 }
-
                 override fun onRetryQuestClicked() {
+                }
+                override fun onMovieClicked(movieId: Long) {
                 }
             },
             isNoInternetConnection = false,
-            onRetryQuestClicked = {},
-            onMovieClicked = {}
-        )
+            onRetryQuestClicked = {})
     }
 }

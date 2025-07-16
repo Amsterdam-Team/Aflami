@@ -223,6 +223,11 @@ class GlobalSearchViewModel(
         }
     }
 
+    override fun onMovieClicked(movieId: Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
+    }
+
     private fun onClearAllRecentSearchesSuccess(unit: Unit) {
         updateState { it.copy(recentSearches = emptyList()) }
         return unit

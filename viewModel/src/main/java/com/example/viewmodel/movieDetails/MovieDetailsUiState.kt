@@ -1,5 +1,6 @@
 package com.example.viewmodel.movieDetails
 
+import com.example.entity.category.MovieGenre
 import com.example.viewmodel.common.Selectable
 
 data class MovieDetailsUiState(
@@ -7,13 +8,12 @@ data class MovieDetailsUiState(
     val posterUrl: String = "",
     val rating: String = "",
     val movieTitle: String = "",
-    val categoriesNames: List<String> = emptyList(),
+    val categories: List<MovieGenre> = emptyList(),
     val releaseDate: String = "",
     val movieLength: String = "",
     val originCountry: String = "",
     val description: String = "",
     val hasVideo : Boolean = false,
-    val isUnknownError: Boolean = false,
     val actors: List<ActorUiState> = emptyList(),
     val extraItem: List<Selectable<MovieExtras>> = listOf(
         Selectable(isSelected = true, MovieExtras.MORE_LIKE_THIS),

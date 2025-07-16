@@ -18,6 +18,7 @@ data class SearchUiState(
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
+    val selectedMovieId : Long = 0
 )
 
 data class FilterItemUiState(

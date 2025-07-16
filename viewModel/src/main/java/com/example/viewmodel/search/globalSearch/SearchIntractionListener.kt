@@ -20,6 +20,7 @@ interface GlobalSearchInteractionListener {
     fun onRecentSearchCleared(keyword: String)
     fun onAllRecentSearchesCleared()
     fun onSearchCleared()
+    fun onMovieClicked(movieId : Long)
 }
 
 

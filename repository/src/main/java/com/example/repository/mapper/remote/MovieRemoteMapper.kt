@@ -11,16 +11,19 @@ import com.example.repository.mapper.shared.mapToMovieCategory
 class MovieRemoteMapper {
 
     fun mapToMovie(remoteMovieItemDto: RemoteMovieItemDto): Movie {
+        val genresIds = if (remoteMovieItemDto.genreIds.isNotEmpty())
+            remoteMovieItemDto.genreIds
+        else remoteMovieItemDto.genres.map { it.id }
         return Movie(
             id = remoteMovieItemDto.id,
             name = remoteMovieItemDto.title,
             description = remoteMovieItemDto.overview,
             poster = BuildConfig.BASE_IMAGE_URL + remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
-            categories = mapGenreIdsToCategories(remoteMovieItemDto.genreIds),
+            categories = mapGenreIdsToCategories(genresIds),
             rating = remoteMovieItemDto.voteAverage.toFloat(),
             popularity = remoteMovieItemDto.popularity,
-            originCountry = remoteMovieItemDto.originCountry.firstOrNull()?:"",
+            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
             movieLength = remoteMovieItemDto.runtime,
             hasVideo = remoteMovieItemDto.video
         )
@@ -45,7 +48,7 @@ class MovieRemoteMapper {
             rating = remoteMovieItemDto.voteAverage.toFloat(),
             popularity = remoteMovieItemDto.popularity,
             movieLength = remoteMovieItemDto.runtime,
-            originCountry = remoteMovieItemDto.originCountry.firstOrNull()?:"",
+            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
             hasVideo = remoteMovieItemDto.video
         )
     }

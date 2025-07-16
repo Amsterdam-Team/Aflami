@@ -14,7 +14,7 @@ class MovieDetailsUiStateMapper {
             posterUrl = movie.poster,
             rating = ratingToRatingString(movie.rating),
             movieTitle = movie.name,
-            categoriesNames = categories.map { it.name },
+            categories = categories,
             releaseDate = productionYearToDate(movie.productionYear),
             movieLength = movieLengthToHourMinuteString(movie.movieLength),
             originCountry = movie.originCountry,

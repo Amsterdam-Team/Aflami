@@ -77,7 +77,9 @@ fun SearchScreen(
                     navController.navigate(Route.SearchByActor)
                 }
 
-                SearchUiEffect.NavigateToMovieDetails -> {}
+                SearchUiEffect.NavigateToMovieDetails -> {
+                    navController.navigate(Route.MovieDetails(state.selectedMovieId))
+                }
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
@@ -132,7 +134,8 @@ private fun SearchContent(
 
         AnimatedVisibility(state.query.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
-                state = state
+                state = state,
+                onMovieClicked = interaction::onMovieClicked
             )
         }
 
@@ -170,7 +173,8 @@ private fun SearchContent(
 @Composable
 fun SuccessMediaItems(
     state: SearchUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMovieClicked : (movieId:Long)->Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
@@ -191,6 +195,7 @@ fun SuccessMediaItems(
                     movieYear = yearOfRelease,
                     movieTitle = name,
                     movieRating = rate,
+                    onClick ={ if (mediaType == MediaType.MOVIE) onMovieClicked(id) }
                 )
             }
         }

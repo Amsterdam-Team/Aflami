@@ -51,5 +51,8 @@ data class RemoteMovieItemDto(
     val originCountry: List<String> = emptyList(),
 
     @SerialName("runtime")
-    val runtime: Int = 0
+    val runtime: Int = 0,
+
+    @SerialName("genres")
+    val genres: List<GenreDto> = emptyList()
 )

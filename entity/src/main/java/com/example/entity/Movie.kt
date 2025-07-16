@@ -1,6 +1,6 @@
 package com.example.entity
 
-import com.example.entity.common.Categorizable
+import com.example.entity.category.MovieGenre
 import com.example.entity.common.PopularitySortable
 import com.example.entity.common.RatingFilterable
 
