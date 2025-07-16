@@ -1,5 +1,10 @@
 package com.amsterdam.aflami.di
 
+import com.example.domain.repository.CategoryRepository
+import com.example.domain.repository.CountryRepository
+import com.example.domain.repository.MovieRepository
+import com.example.domain.repository.RecentSearchRepository
+import com.example.domain.repository.TvShowRepository
 import com.example.repository.mapper.local.CategoryLocalMapper
 import com.example.repository.mapper.local.CountryLocalMapper
 import com.example.repository.mapper.local.MovieLocalMapper
@@ -30,12 +35,10 @@ val repositoryModule = module {
     singleOf(::MovieRemoteMapper)
     singleOf(::TvShowRemoteMapper)
     singleOf(::RecentSearchMapper)
-
     singleOf(::RecentSearchHandlerImpl) { bind<RecentSearchHandler>() }
-
-    singleOf(::CountryRepositoryImpl)
-    singleOf(::MovieRepositoryImpl)
-    singleOf(::CategoryRepositoryImpl)
-    singleOf(::RecentSearchRepositoryImpl)
-    singleOf(::TvShowRepositoryImpl)
+    singleOf(::CountryRepositoryImpl) { bind<CountryRepository>() }
+    singleOf(::MovieRepositoryImpl) { bind<MovieRepository>() }
+    singleOf(::CategoryRepositoryImpl) { bind<CategoryRepository>() }
+    singleOf(::RecentSearchRepositoryImpl) { bind<RecentSearchRepository>() }
+    singleOf(::TvShowRepositoryImpl) { bind<TvShowRepository>() }
 }
