@@ -10,15 +10,16 @@ import com.example.repository.datasource.remote.CountryRemoteSource
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val remoteDataSourceModule = module {
-    single { Json { ignoreUnknownKeys = true; isLenient = true } }
+    single { Json { prettyPrint = true; isLenient = true; ignoreUnknownKeys = true } }
 
-    single<KtorClient> { KtorClient() }
-
-    single<CategoryRemoteSource> { CategoryRemoteSourceImpl(get()) }
-    single<CountryRemoteSource> { CountryRemoteSourceImpl(get(), get()) }
-    single<MovieRemoteSource> { MovieRemoteSourceImpl(get(), get()) }
-    single<TvShowsRemoteSource> { TvRemoteSourceImpl(get()) }
+    singleOf(::KtorClient)
+    singleOf(::CategoryRemoteSourceImpl) { bind<CategoryRemoteSource>() }
+    singleOf(::CountryRemoteSourceImpl) { bind<CountryRemoteSource>() }
+    singleOf(::MovieRemoteSourceImpl) { bind<MovieRemoteSource>() }
+    singleOf(::TvRemoteSourceImpl) { bind<TvShowsRemoteSource>() }
 }
