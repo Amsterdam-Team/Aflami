@@ -17,8 +17,6 @@ import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
@@ -102,7 +100,6 @@ class MovieRepositoryImpl(
                 movieRemoteMapper.mapToMovies(remoteMovies)
             },
             onFailure = { aflamiException -> throw aflamiException },
-            dispatcher = dispatcher
         )
     }
 
@@ -121,7 +118,6 @@ class MovieRepositoryImpl(
                 movieRemoteMapper.mapToMovies(remoteMovies)
             },
             onFailure = { aflamiException -> throw aflamiException },
-            dispatcher = dispatcher
         )
     }
 
