@@ -37,10 +37,10 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.ui.screens.searchByCountry.Loading
-import com.example.viewmodel.searchByActor.SearchByActorEffect
-import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
-import com.example.viewmodel.searchByActor.SearchByActorScreenState
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
+import com.example.viewmodel.search.actorSearch.SearchByActorEffect
+import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
+import com.example.viewmodel.search.actorSearch.SearchByActorScreenState
+import com.example.viewmodel.search.actorSearch.SearchByActorViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -63,6 +63,8 @@ fun SearchByActorScreen(
                     isNoInternetConnection = true
                 }
                 null -> {}
+                SearchByActorEffect.NavigateBack -> {}
+                SearchByActorEffect.NoInternetConnection -> {}
             }
         }
     }
@@ -103,7 +105,7 @@ private fun SearchByActorContent(
 //            onValueChange = { interactionListener.onKeywordValueChanged(it) },
 //
 //            )
-            onValueChange = { interactionListener.onUserSearch(it) },
+            onValueChange = { interactionListener.onKeywordValueChanged(it) },
             modifier = Modifier
                 .padding(top = 8.dp)
                 .padding(horizontal = 16.dp),
