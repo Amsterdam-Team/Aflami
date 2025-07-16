@@ -11,6 +11,6 @@ class GetMoviesByActorUseCase(
         actorName: String,
         page: Int = 1,
     ): List<Movie> =
-        movieRepository.getMoviesByActor(actorName)
+        movieRepository.getMoviesByActor(actorName, page)
             .sortByPopularityDescending()
 }

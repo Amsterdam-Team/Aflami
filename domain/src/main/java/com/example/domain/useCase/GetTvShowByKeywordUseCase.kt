@@ -18,7 +18,8 @@ class GetTvShowByKeywordUseCase(
         rating: Int = 0,
         tvShowGenreId: Int = 0
     ): List<TvShow> {
-        return tvShowRepository.getTvShowByKeyword(keyword = keyword)
+        return tvShowRepository
+            .getTvShowByKeyword(keyword = keyword, page = page)
             .filterByMinRating(rating)
             .filterByCategory(tvShowGenreId)
             .sortByPopularityDescending()

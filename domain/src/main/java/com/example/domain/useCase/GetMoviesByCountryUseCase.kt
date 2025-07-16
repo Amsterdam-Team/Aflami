@@ -7,6 +7,5 @@ class GetMoviesByCountryUseCase(private val movieRepository: MovieRepository) {
     suspend operator fun invoke(
         countryIsoCode: String,
         page: Int = 1,
-    ): List<Movie> = movieRepository.getMoviesByCountryIsoCode(countryIsoCode)
-
+    ): List<Movie> = movieRepository.getMoviesByCountryIsoCode(countryIsoCode, page)
 }
