@@ -3,9 +3,9 @@ package com.amsterdam.aflami.di
 import com.example.domain.useCase.GetMovieCategoriesUseCase
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.domain.useCase.GetMoviesByCountryUseCase
-import com.example.domain.useCase.GetMoviesByKeywordUseCase
+import com.example.domain.useCase.GetAndFilterMoviesByKeywordUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.GetTvShowByKeywordUseCase
+import com.example.domain.useCase.GetAndFilterTvShowsByKeywordUseCase
 import com.example.domain.useCase.GetTvShowCategoriesUseCase
 import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
@@ -17,9 +17,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module{
-    singleOf(::GetMoviesByKeywordUseCase)
+    singleOf(::GetAndFilterMoviesByKeywordUseCase)
     singleOf(::GetRecentSearchesUseCase)
-    singleOf(::GetTvShowByKeywordUseCase)
+    singleOf(::GetAndFilterTvShowsByKeywordUseCase)
     singleOf(::AddRecentSearchUseCase)
     singleOf(::ClearRecentSearchUseCase)
     singleOf(::ClearAllRecentSearchesUseCase)
