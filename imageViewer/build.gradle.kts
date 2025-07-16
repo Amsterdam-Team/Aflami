@@ -14,9 +14,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.ui.tooling.preview.android)
     // Coil for image loading
     implementation(libs.coil.compose)
