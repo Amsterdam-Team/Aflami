@@ -8,11 +8,11 @@ class CategoryRemoteSourceImpl(
     private val ktorClient: KtorClient
 ) : CategoryRemoteSource {
     override suspend fun getMovieCategories(): RemoteCategoryResponse {
-        return ktorClient.safeCall { ktorClient.get(GET_MOVIE_GENRE_LIST) }
+        return ktorClient.tryToExecute { ktorClient.get(GET_MOVIE_GENRE_LIST) }
     }
 
     override suspend fun getTvShowCategories(): RemoteCategoryResponse {
-        return ktorClient.safeCall { ktorClient.get(GET_TV_SHOW_GENRE_LIST) }
+        return ktorClient.tryToExecute { ktorClient.get(GET_TV_SHOW_GENRE_LIST) }
     }
 
     private companion object {

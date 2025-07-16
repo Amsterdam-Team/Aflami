@@ -12,7 +12,7 @@ class MovieRemoteSourceImpl(
 ) : MovieRemoteSource {
 
     override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
-        return ktorClient.safeCall {
+        return ktorClient.tryToExecute {
             ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
         }
     }
@@ -23,19 +23,19 @@ class MovieRemoteSourceImpl(
             .joinToString(separator = "|") { it.id.toString() }
             .ifEmpty { throw NoSearchByActorResultFoundException() }
 
-        return ktorClient.safeCall {
+        return ktorClient.tryToExecute {
             ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
         }
     }
 
     private suspend fun getActorIdByName(name: String): RemoteActorSearchResponse {
-        return ktorClient.safeCall {
+        return ktorClient.tryToExecute {
             ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) { parameter(QUERY_KEY, name) }
         }
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse {
-        return ktorClient.safeCall {
+        return ktorClient.tryToExecute {
             ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_ORIGIN_COUNTRY, countryIsoCode) }
         }
     }

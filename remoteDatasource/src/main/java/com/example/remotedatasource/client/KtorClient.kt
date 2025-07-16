@@ -64,7 +64,7 @@ class KtorClient(
     }
 
 
-    internal suspend inline fun <reified T> safeCall(
+    internal suspend inline fun <reified T> tryToExecute(
         crossinline block: suspend () -> HttpResponse
     ): T {
         val response = executeSafely { block() }

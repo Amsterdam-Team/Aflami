@@ -8,7 +8,7 @@ class CountryRemoteSourceImpl(
     private val ktorClient: KtorClient,
 ) : CountryRemoteSource {
     override suspend fun getCountries(): List<RemoteCountryDto> {
-        return ktorClient.safeCall { ktorClient.get(GET_COUNTRIES) }
+        return ktorClient.tryToExecute { ktorClient.get(GET_COUNTRIES) }
     }
 
     private companion object {
