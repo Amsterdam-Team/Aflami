@@ -11,12 +11,14 @@ import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
 import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
+import com.example.domain.validation.CountryValidator
 import com.example.domain.validation.CountryValidatorImp
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    singleOf(::CountryValidatorImp)
+    singleOf(::CountryValidatorImp) { bind<CountryValidator>() }
     singleOf(::GetMoviesByKeywordUseCase)
     singleOf(::GetMoviesByCountryUseCase)
     singleOf(::GetMoviesByActorUseCase)
