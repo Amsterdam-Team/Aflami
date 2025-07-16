@@ -302,8 +302,7 @@ class SearchViewModel(
         updateState {
             it.copy(
                 isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
-                errorUiState = null
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
             )
         }
     }

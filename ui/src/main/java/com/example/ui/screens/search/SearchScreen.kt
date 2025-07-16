@@ -1,6 +1,5 @@
 package com.example.ui.screens.search
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -51,13 +50,13 @@ import com.example.ui.screens.search.sections.filterDialog.FilterDialog
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.MediaType
-import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchErrorState
 import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchUiEffect
 import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import com.example.viewmodel.search.searchByKeyword.SearchViewModel
+import com.example.viewmodel.search.searchByKeyword.TabOption
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -172,7 +171,6 @@ private fun SearchContent(
                 .padding(start = 8.dp, end = 8.dp)
         ) {
             AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState != null) {
-                Log.e("nb", "reached error place")
                 if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onRetryQuestClicked,
