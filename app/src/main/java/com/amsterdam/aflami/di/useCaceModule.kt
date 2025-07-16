@@ -19,7 +19,6 @@ import org.koin.dsl.module
 
 val useCaseModule = module {
     singleOf(::CountryValidatorImp) { bind<CountryValidator>() }
-    singleOf(::GetMoviesByKeywordUseCase)
     singleOf(::CountryValidatorImp)
     singleOf(::GetAndFilterMoviesByKeywordUseCase)
     singleOf(::GetMoviesByCountryUseCase)
