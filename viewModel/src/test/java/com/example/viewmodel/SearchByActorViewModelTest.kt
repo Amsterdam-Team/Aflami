@@ -24,10 +24,10 @@ import org.junit.Test
 //    }
 //
 //    @Test
-//    fun `should update query state when onQueryChange is called`() {
-//        val query = "Tom Hanks"
-//        viewModel.onQueryChange(query)
-//        assert(viewModel.state.value.query == query)
+//    fun `should update keyword state when onQueryChange is called`() {
+//        val keyword = "Tom Hanks"
+//        viewModel.onQueryChange(keyword)
+//        assert(viewModel.state.value.keyword == keyword)
 //    }
 //
 //    @Test
@@ -37,18 +37,18 @@ import org.junit.Test
 //    }
 //
 //    @Test
-//    fun `should get movies by actor when query is not blank `() {
-//        val query = "Tom Hanks"
-//        viewModel.onQueryChange(query)
-//      //  viewModel.getMoviesByActor(query)
+//    fun `should get movies by actor when keyword is not blank `() {
+//        val keyword = "Tom Hanks"
+//        viewModel.onQueryChange(keyword)
+//      //  viewModel.getMoviesByActor(keyword)
 //        assert(viewModel.state.value.movies.isNotEmpty())
 //    }
 //
 //    @Test
-//    fun `should not get movies by actor when query is blank `() {
-//        val query = ""
-//        viewModel.onQueryChange(query)
-//      //  viewModel.getMoviesByActor(query)
+//    fun `should not get movies by actor when keyword is blank `() {
+//        val keyword = ""
+//        viewModel.onQueryChange(keyword)
+//      //  viewModel.getMoviesByActor(keyword)
 //        assert(viewModel.state.value.movies.isEmpty())
 //    }
 //

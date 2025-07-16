@@ -15,17 +15,15 @@ dependencies {
 
     // Material Design 3
     implementation(libs.androidx.material3)
-
     // Jetpack Compose BOM and preview tooling
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui.tooling.preview.android)
-
     // Coil for image loading
     implementation(libs.coil.compose)
-
     // TensorFlow Lite for on-device ML
-    implementation(libs.tensorflow.lite)
-    implementation(libs.tensorflow.lite.support)
+    implementation(files("libs/tensorflow-lite.aar"))
+    implementation(files("libs/tensorflowlite_support_java.aar"))
+
 
     // Testing
     testImplementation(libs.junit)

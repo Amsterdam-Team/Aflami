@@ -24,8 +24,6 @@ googleService = "4.4.3"
 firebaseCrashlytics = "3.0.4"
 firebasePreferences = "1.4.2"
 ksp = "2.0.21-1.0.27"
-tensorflowLiteSupport = "0.5.0"
-tensorflowLite = "2.17.0"
 uiToolingPreviewAndroid = "1.8.3"
 kotlinxDatetime = "0.5.0"
 androidJunit5 = "1.12.0.0"
@@ -40,6 +38,7 @@ ktorClientContentNegotiation = "3.0.3"
 ktorVersion = "3.0.3"
 navigationCommonAndroid = "2.9.1"
 junitJupiter = "5.8.1"
+lifecycleViewmodelAndroid = "2.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,8 +72,6 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJson" }
-tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
-tensorflow-lite-support = { module = "org.tensorflow:tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -97,6 +94,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorVersion" }
 jupiter-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -109,5 +107,4 @@ google-service = { id = "com.google.gms.google-services", version.ref = "googleS
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-pref = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreferences" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
 aflami-custom-plugin = { id = "com.thechance.plugin" }
