@@ -6,7 +6,7 @@ import com.example.viewmodel.search.searchByKeyword.genre.Selectable
 import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
-fun TvShowGenre.mapToGenreId(): Int {
+internal fun TvShowGenre.mapToGenreId(): Int {
     return when (this) {
         TvShowGenre.ACTION_ADVENTURE -> 10759
         TvShowGenre.ANIMATION -> 16
@@ -29,7 +29,7 @@ fun TvShowGenre.mapToGenreId(): Int {
     }
 }
 
-fun MovieGenre.mapToGenreId(): Int {
+internal fun MovieGenre.mapToGenreId(): Int {
     return when (this) {
         MovieGenre.ACTION -> 28
         MovieGenre.ADVENTURE -> 12
@@ -55,7 +55,7 @@ fun MovieGenre.mapToGenreId(): Int {
 }
 
 
-fun List<MovieGenreItemUiState>.selectByMovieGenre(movieGenre: MovieGenre): List<MovieGenreItemUiState> {
+internal fun List<MovieGenreItemUiState>.selectByMovieGenre(movieGenre: MovieGenre): List<MovieGenreItemUiState> {
     return this.map { movies ->
         movies.copy(
             selectableMovieGenre = Selectable(
@@ -66,7 +66,7 @@ fun List<MovieGenreItemUiState>.selectByMovieGenre(movieGenre: MovieGenre): List
     }
 }
 
-fun List<TvGenreItemUiState>.selectByTvGenre(tvGenre: TvShowGenre): List<TvGenreItemUiState> {
+internal fun List<TvGenreItemUiState>.selectByTvGenre(tvGenre: TvShowGenre): List<TvGenreItemUiState> {
     return this.map { tvShows ->
         tvShows.copy(
             selectableTvShowGenre = Selectable(

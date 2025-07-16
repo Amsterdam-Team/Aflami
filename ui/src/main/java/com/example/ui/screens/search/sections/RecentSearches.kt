@@ -22,7 +22,7 @@ import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
 
 @Composable
-fun RecentSearchesSection(
+internal fun RecentSearchesSection(
     keyword: String,
     recentSearches: List<String>,
     onAllRecentSearchesCleared: () -> Unit,

@@ -14,7 +14,7 @@ sealed interface SearchErrorState {
     object NoNetworkConnection : SearchErrorState
 }
 
-fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorState {
+internal fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorState {
     return when (aflamiException) {
         is QueryTooLongException -> SearchErrorState.QueryTooLong
         is BlankQueryException -> SearchErrorState.BlankQuery

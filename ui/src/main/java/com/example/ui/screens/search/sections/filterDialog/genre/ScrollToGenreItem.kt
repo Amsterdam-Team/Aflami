@@ -3,12 +3,12 @@ package com.example.ui.screens.search.sections.filterDialog.genre
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
 import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 @Composable
-fun ScrollToGenreItem(
+internal fun ScrollToGenreItem(
     lazyState: LazyListState,
     selectedTabOption: TabOption,
     selectedMovieGenre: MovieGenre,

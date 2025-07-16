@@ -7,7 +7,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.designsystem.R
 import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
-val TvShowGenre.uiModel: GenreUiModel
+internal val TvShowGenre.uiModel: GenreUiModel
     get() = when (this) {
         TvShowGenre.ALL -> GenreUiModel(R.drawable.ic_nav_categories, R.string.all)
         TvShowGenre.ACTION_ADVENTURE -> GenreUiModel(
@@ -38,11 +38,11 @@ val TvShowGenre.uiModel: GenreUiModel
     }
 
 @Composable
-fun getTvShowGenreLabel(type: TvShowGenre): String {
+internal fun getTvShowGenreLabel(type: TvShowGenre): String {
     return stringResource(id = type.uiModel.displayableName)
 }
 
 @Composable
-fun getTvShowGenreIcon(type: TvShowGenre): Painter {
+internal fun getTvShowGenreIcon(type: TvShowGenre): Painter {
     return painterResource(id = type.uiModel.icon)
 }

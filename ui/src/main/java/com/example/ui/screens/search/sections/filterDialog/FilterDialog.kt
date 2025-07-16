@@ -43,14 +43,14 @@ import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreIc
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
-import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.searchByKeyword.FilterItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
 import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 @Composable
-fun FilterDialog(
+internal fun FilterDialog(
     filterState: FilterItemUiState,
     selectedTabOption: TabOption,
     onCancelButtonClicked: () -> Unit,
@@ -233,7 +233,7 @@ private fun RatingBar(
 
 @Composable
 @ThemeAndLocalePreviews
-fun FilterDialogPreview2() {
+private fun FilterDialogPreview() {
     AflamiTheme {
         FilterDialog(
             filterState = FilterItemUiState(),

@@ -1,6 +1,6 @@
 package com.example.viewmodel.search.searchByKeyword
 
-import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
 import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 

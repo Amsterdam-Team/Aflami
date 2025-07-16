@@ -20,7 +20,7 @@ import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.theme.AppTheme
 
 @Composable
-fun SuggestionsHubSection(
+internal fun SuggestionsHubSection(
     keyword: String,
     onWorldSearchCardClicked: () -> Unit,
     onActorSearchCardClicked: () -> Unit,

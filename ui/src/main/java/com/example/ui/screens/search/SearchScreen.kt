@@ -50,7 +50,7 @@ import com.example.ui.screens.search.sections.filterDialog.FilterDialog
 import com.example.ui.screens.searchByCountry.Loading
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.common.MediaType
-import com.example.viewmodel.common.TabOption
+import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchErrorState
 import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
@@ -61,7 +61,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SearchScreen(
+internal fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
