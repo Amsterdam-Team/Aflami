@@ -59,12 +59,11 @@ fun SearchByActorScreen(
                     navController.popBackStack()
                 }
 
-                SearchByActorEffect.NoInternetConnection -> {
-                    isNoInternetConnection = true
-                }
+//                SearchByActorEffect.NoInternetConnection -> {
+//                    isNoInternetConnection = true
+//                }
                 null -> {}
                 SearchByActorEffect.NavigateBack -> {}
-                SearchByActorEffect.NoInternetConnection -> {}
             }
         }
     }
@@ -102,9 +101,6 @@ private fun SearchByActorContent(
         TextField(
             text = state.keyword,
             hintText = stringResource(R.string.find_by_actor),
-//            onValueChange = { interactionListener.onKeywordValueChanged(it) },
-//
-//            )
             onValueChange = { interactionListener.onKeywordValueChanged(it) },
             modifier = Modifier
                 .padding(top = 8.dp)
@@ -121,16 +117,14 @@ private fun SearchByActorContent(
         ) { targetState ->
             when {
                 targetState.isLoading -> Loading(modifier = Modifier)
+                targetState.noInternetException -> NoNetworkContainer(
+                    onClickRetry = onRetryQuestClicked,
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .align(Alignment.CenterHorizontally)
+                )
 
-                isNoInternetConnection -> {
-                    NoNetworkContainer(
-                        onClickRetry = onRetryQuestClicked,
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally)
-                    )
-                }
 
                 targetState.keyword.isBlank() -> {
                     NoDataContainer(

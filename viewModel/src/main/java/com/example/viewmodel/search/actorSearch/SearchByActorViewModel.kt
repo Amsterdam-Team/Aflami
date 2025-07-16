@@ -8,7 +8,6 @@ import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -31,22 +30,23 @@ class SearchByActorViewModel(
     private val _keyword = MutableStateFlow("")
 
     init {
-        observeQueryFlow()
+        observeKeywordFlow()
     }
 
-    private fun observeQueryFlow() {
+    private fun observeKeywordFlow() {
         viewModelScope.launch {
             _keyword
-                .debounce(300)
+                .debounce(DEBOUNCE_DURATION)
                 .map(String::trim)
                 .filter(String::isNotBlank)
-                .collectLatest(::onSearchMoviesByActor)
+                .collectLatest(::getActorsMoviesByKeyword)
         }
     }
 
-    private fun onSearchMoviesByActor(query: String) {
+    private fun getActorsMoviesByKeyword(keyword: String) {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getMoviesByActorUseCase(query) },
+            action = { getMoviesByActorUseCase(keyword) },
             onSuccess = ::updateSearchByActorResult,
             onError = ::searchMoviesByActorError
         )
@@ -60,7 +60,13 @@ class SearchByActorViewModel(
             )
         }
         when (message) {
-            is NetworkException -> sendNewEffect(SearchByActorEffect.NoInternetConnection)
+            is NetworkException ->    updateState {
+                it.copy(
+                    isLoading = false,
+                    movies = emptyList(),
+                    noInternetException = true
+                )
+            }
         }
     }
 
@@ -74,7 +80,7 @@ class SearchByActorViewModel(
     }
 
     override fun onKeywordValueChanged(keyword: String) {
-        _keyword.update { oldText -> keyword }
+        _keyword.update { keyword }
         updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
     }
 
@@ -84,6 +90,9 @@ class SearchByActorViewModel(
 
     override fun onRetryQuestClicked() {
         updateState { it.copy(isLoading = true) }
-        observeQueryFlow()
+        observeKeywordFlow()
+    }
+    companion object {
+        private const val DEBOUNCE_DURATION = 300L
     }
 }
