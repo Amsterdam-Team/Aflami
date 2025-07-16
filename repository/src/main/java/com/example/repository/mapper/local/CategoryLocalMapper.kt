@@ -22,18 +22,18 @@ class CategoryLocalMapper {
         return categories.map { mapToLocalMovieCategory(it) }
     }
 
+    fun mapToLocalMovieCategory(category: Category): LocalMovieCategoryDto {
+        return LocalMovieCategoryDto(
+            categoryId = category.id,
+            name = category.name,
+        )
+    }
+
     private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieCategoryType {
         return localMovieCategory.categoryId.mapToMovieCategory()
     }
 
     private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowCategoryType {
         return localTvShowCategory.categoryId.mapToTvShowCategory()
-    }
-
-    private fun mapToLocalMovieCategory(category: Category): LocalMovieCategoryDto {
-        return LocalMovieCategoryDto(
-            categoryId = category.id,
-            name = category.name,
-        )
     }
 }

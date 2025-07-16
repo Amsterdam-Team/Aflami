@@ -16,7 +16,7 @@ class TvShowRemoteMapper {
         return remoteTvShowResponse.results.map { mapToLocalTvShow(it) }
     }
 
-    private fun mapToTvShow(remoteTvShowItemDto: RemoteTvShowItemDto): TvShow {
+    fun mapToTvShow(remoteTvShowItemDto: RemoteTvShowItemDto): TvShow {
         return TvShow(
             id = remoteTvShowItemDto.id,
             name = remoteTvShowItemDto.title,

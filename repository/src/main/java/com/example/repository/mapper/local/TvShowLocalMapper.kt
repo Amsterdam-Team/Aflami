@@ -28,7 +28,7 @@ class TvShowLocalMapper(
         )
     }
 
-    private fun mapToTvShow(tvShowWithCategory: TvShowWithCategory): TvShow {
+    fun mapToTvShow(tvShowWithCategory: TvShowWithCategory): TvShow {
         return TvShow(
             id = tvShowWithCategory.tvShow.tvShowId,
             name = tvShowWithCategory.tvShow.name,

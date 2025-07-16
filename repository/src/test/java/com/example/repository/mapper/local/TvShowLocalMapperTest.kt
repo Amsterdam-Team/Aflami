@@ -2,6 +2,7 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.TvShow
+import com.example.entity.category.TvShowCategoryType
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
@@ -63,7 +64,7 @@ class TvShowLocalMapperTest {
             productionYear = 2016,
             rating = 8.7f,
             popularity = 0.0,
-            categories = listOf(Category(1L, "Sci-Fi", ""))
+            categories = listOf(TvShowCategoryType.SCIENCE_FICTION_FANTASY)
         )
 
         val result = mapper.mapToLocalTvShow(domain)
