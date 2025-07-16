@@ -312,7 +312,7 @@ internal fun Loading(
 }
 
 @Composable
-private fun NoInternetConnection(
+fun NoInternetConnection(
     onRetryQuestClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {

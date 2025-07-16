@@ -16,7 +16,10 @@ class MovieWithCategoryMapper {
             poster = movieWithCategories.movie.poster,
             productionYear = movieWithCategories.movie.productionYear,
             rating = movieWithCategories.movie.rating,
-            popularity = movieWithCategories.movie.popularity
+            popularity = movieWithCategories.movie.popularity,
+            movieLength = movieWithCategories.movie.movieLength,
+            originCountry = movieWithCategories.movie.originCountry,
+            hasVideo = movieWithCategories.movie.hasVideo
         )
     }
 
@@ -36,7 +39,10 @@ class MovieWithCategoryMapper {
             poster = movie.poster,
             productionYear = movie.productionYear,
             rating = movie.rating,
-            popularity = movie.popularity
+            popularity = movie.popularity,
+            movieLength = movie.movieLength,
+            originCountry = movie.originCountry,
+            hasVideo = movie.hasVideo
         )
     }
 }

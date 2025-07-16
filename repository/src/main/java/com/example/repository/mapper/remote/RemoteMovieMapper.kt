@@ -2,6 +2,7 @@ package com.example.repository.mapper.remote
 
 import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Movie
+import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 
@@ -12,10 +13,13 @@ class RemoteMovieMapper {
             id = dto.id,
             name = dto.title,
             description = dto.overview,
-            poster = dto.posterPath.orEmpty(),
+            poster =  BuildConfig.BASE_IMAGE_URL+dto.posterPath.orEmpty(),
             productionYear = parseYear(dto.releaseDate),
             rating = dto.voteAverage.toFloat(),
-            popularity = dto.popularity
+            popularity = dto.popularity,
+            movieLength = dto.runtime,
+            originCountry = dto.originCountry.firstOrNull()?:"",
+            hasVideo = dto.video
         )
     }
 

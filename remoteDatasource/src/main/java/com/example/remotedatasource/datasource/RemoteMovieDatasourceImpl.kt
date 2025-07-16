@@ -4,9 +4,12 @@ import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.RemoteMovieDatasource
+import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
+import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
+import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
@@ -89,9 +92,41 @@ class RemoteMovieDatasourceImpl(
 
     override suspend fun getMovieReviews(movieId: Long): ReviewsResponse {
         return safeCall<ReviewsResponse> {
-            val response = ktorClient.get("/movie/$movieId/reviews") {
+            val response = ktorClient.get("movie/$movieId/reviews") {
             }
             return json.decodeFromString<ReviewsResponse>(response.bodyAsText())
+        }
+    }
+
+    override suspend fun getSimilarMovies(movieId: Long): RemoteMovieResponse {
+        return safeCall<RemoteMovieResponse> {
+            val response = ktorClient.get("movie/$movieId/similar") {
+            }
+            return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
+        }
+    }
+
+    override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
+        return safeCall<RemoteMovieGalleryResponse> {
+            val response = ktorClient.get("movie/$movieId/images") {
+            }
+            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+        }
+    }
+
+    override suspend fun getProductionCompany(movieId: Long): ProductionCompanyResponse {
+        return safeCall<ProductionCompanyResponse> {
+            val response = ktorClient.get("movie/$movieId") {
+            }
+            return json.decodeFromString<ProductionCompanyResponse>(response.bodyAsText())
+        }
+    }
+
+    override suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto {
+        return safeCall<RemoteMovieItemDto> {
+            val response = ktorClient.get("movie/$movieId") {
+            }
+            return json.decodeFromString<RemoteMovieItemDto>(response.bodyAsText())
         }
     }
 

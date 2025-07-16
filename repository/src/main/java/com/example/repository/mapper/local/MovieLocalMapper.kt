@@ -16,7 +16,10 @@ class MovieLocalMapper(
             poster = dto.movie.poster,
             productionYear = dto.movie.productionYear,
             rating = dto.movie.rating,
-            popularity = dto.movie.popularity
+            popularity = dto.movie.popularity,
+            originCountry = dto.movie.originCountry,
+            movieLength = dto.movie.movieLength,
+            hasVideo = dto.movie.hasVideo
         )
     }
 
@@ -28,7 +31,10 @@ class MovieLocalMapper(
             poster = domain.poster,
             productionYear = domain.productionYear,
             rating = domain.rating,
-            popularity = domain.popularity
+            popularity = domain.popularity,
+            movieLength = domain.movieLength,
+            originCountry = domain.originCountry,
+            hasVideo = domain.hasVideo
         )
     }
 
@@ -48,7 +54,10 @@ class MovieLocalMapper(
             poster = dto.poster,
             productionYear = dto.productionYear,
             rating = dto.rating,
-            popularity = dto.popularity
+            popularity = dto.popularity,
+            originCountry = dto.originCountry,
+            movieLength = dto.movieLength,
+            hasVideo = dto.hasVideo
         )
     }
 }

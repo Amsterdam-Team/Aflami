@@ -4,6 +4,7 @@ import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.genreTypes.MovieGenre
 import com.example.entity.Actor
 import com.example.entity.Movie
+import com.example.entity.ProductionCompany
 import com.example.entity.Review
 import com.example.repository.datasource.local.LocalMovieDataSource
 import com.example.repository.datasource.local.LocalRecentSearchDataSource
@@ -12,7 +13,9 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.RemoteCastMapper
+import com.example.repository.mapper.remote.RemoteGalleryMapper
 import com.example.repository.mapper.remote.RemoteMovieMapper
+import com.example.repository.mapper.remote.RemoteProductionCompanyMapper
 import com.example.repository.mapper.remote.RemoteReviewMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +30,16 @@ class MovieRepositoryImpl(
     private val movieRemoteMapper: RemoteMovieMapper,
     private val remoteCastMapper: RemoteCastMapper,
     private val recentSearchDatasource: LocalRecentSearchDataSource,
-    private val remoteReviewMapper : RemoteReviewMapper,
+    private val remoteReviewMapper: RemoteReviewMapper,
+    private val remoteGalleryMapper: RemoteGalleryMapper,
+    private val remoteProductionCompanyMapper: RemoteProductionCompanyMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String, rating: Float, movieGenre: MovieGenre): List<Movie> {
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        rating: Float,
+        movieGenre: MovieGenre
+    ): List<Movie> {
 
         val recentSearch =
             recentSearchDatasource.getSearchByKeywordAndType(keyword, SearchType.BY_KEYWORD)
@@ -45,7 +54,11 @@ class MovieRepositoryImpl(
         deleteRecentSearch(recentSearch)
 
         val remoteMovies = if (rating != 0f || movieGenre != MovieGenre.ALL) {
-            remoteMovieDataSource.discoverMovies(keyword, rating, movieRemoteMapper.mapToGenreId(movieGenre))
+            remoteMovieDataSource.discoverMovies(
+                keyword,
+                rating,
+                movieRemoteMapper.mapToGenreId(movieGenre)
+            )
         } else {
             remoteMovieDataSource.getMoviesByKeyword(keyword)
         }
@@ -122,15 +135,27 @@ class MovieRepositoryImpl(
         }
     }
 
-    override suspend fun getCastByMovieId(id: Long): List<Actor> {
+    override suspend fun getActorsByMovieId(id: Long): List<Actor> {
         return remoteMovieDataSource.getCastByMovieId(id).cast.map { remoteCastMapper.mapToDomain(it) }
     }
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> =
         remoteReviewMapper.mapResponseToDomain(remoteMovieDataSource.getMovieReviews(movieId))
 
-    override suspend fun getMovieById(movieId: Long): Movie {
-     return movieLocalMapper.mapFromLocal(localMovieDataSource.getMovieById(movieId))
+    override suspend fun getMovieDetailsById(movieId: Long): Movie {
+        return movieRemoteMapper.mapToDomain(remoteMovieDataSource.getMovieDetailsById(movieId))
+    }
+
+    override suspend fun getSimilarMovies(movieId: Long): List<Movie> =
+        movieRemoteMapper.mapResponseToDomain(remoteMovieDataSource.getSimilarMovies(movieId))
+
+    override suspend fun getMovieGallery(movieId: Long): List<String> =
+        remoteGalleryMapper.mapGalleryToDomain(remoteMovieDataSource.getMovieGallery(movieId))
+
+    override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
+      return  remoteProductionCompanyMapper.mapProductionCompanyToDomain(
+            remoteMovieDataSource.getProductionCompany(movieId)
+        )
     }
 
 

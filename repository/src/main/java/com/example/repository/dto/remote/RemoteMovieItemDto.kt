@@ -12,7 +12,7 @@ data class RemoteMovieItemDto(
     val backdropPath: String?,
 
     @SerialName("genre_ids")
-    val genreIds: List<Int>,
+    val genreIds: List<Int> = emptyList(),
 
     @SerialName("id")
     val id: Long,
@@ -45,5 +45,11 @@ data class RemoteMovieItemDto(
     val voteAverage: Double,
 
     @SerialName("vote_count")
-    val voteCount: Int
+    val voteCount: Int,
+
+    @SerialName("origin_country")
+    val originCountry: List<String> = emptyList(),
+
+    @SerialName("runtime")
+    val runtime: Int = 0
 )
