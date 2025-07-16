@@ -1,5 +1,6 @@
 package com.example.ui.screens.searchByCountry
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -22,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -42,6 +42,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingIndicator
@@ -56,23 +60,27 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.viewmodel.search.countrySearch.CountryUiState
+import com.example.viewmodel.search.countrySearch.MovieUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
 import com.example.viewmodel.search.countrySearch.SearchByCountryInteractionListener
 import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
+import kotlinx.coroutines.flow.emptyFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SearchByCountryScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchByCountryViewModel = koinViewModel()
+    viewModel: SearchByCountryViewModel = koinViewModel(),
 ) {
     val navController = LocalNavController.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val movies = state.movies.collectAsLazyPagingItems()
 
     SearchByCountryScreenContent(
         state = state,
+        movies = movies,
         interactionListener = viewModel,
         onNavigateBackClicked = (navController::popBackStack),
         modifier = modifier,
@@ -82,16 +90,18 @@ internal fun SearchByCountryScreen(
 @Composable
 private fun SearchByCountryScreenContent(
     state: SearchByCountryScreenState,
+    movies: LazyPagingItems<MovieUiState>,
     interactionListener: SearchByCountryInteractionListener,
     onNavigateBackClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp),
     ) {
         var headerHeight by remember { mutableStateOf(0.dp) }
         val focusManager = LocalFocusManager.current
@@ -106,24 +116,36 @@ private fun SearchByCountryScreenContent(
         Box {
             CenterOfScreenContainer(
                 headerHeight,
-                modifier = Modifier.fillMaxSize().padding(start = 8.dp, end = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 8.dp, end = 8.dp),
             ) {
-                when (state.searchByCountryContentUIState) {
-                    SearchByCountryContentUIState.COUNTRY_TOUR -> ExploreCountries()
-                    SearchByCountryContentUIState.LOADING_MOVIES -> Loading()
-                    SearchByCountryContentUIState.NO_INTERNET_CONNECTION -> NoInternetConnection(
-                        onRetryQuestClicked = interactionListener::onRetryQuestClicked,
-                    )
-                    SearchByCountryContentUIState.NO_DATA_FOUND -> NoMoviesFound()
+                @Suppress("ktlint:standard:max-line-length")
+                when {
+                    state.searchByCountryContentUIState == SearchByCountryContentUIState.COUNTRY_TOUR -> ExploreCountries()
+                    state.searchByCountryContentUIState == SearchByCountryContentUIState.LOADING_MOVIES ||
+                        movies.loadState.refresh is LoadState.Loading -> Loading()
+
+                    state.searchByCountryContentUIState == SearchByCountryContentUIState.NO_INTERNET_CONNECTION ->
+                        NoInternetConnection(
+                            onRetryQuestClicked = interactionListener::onRetryQuestClicked,
+                        )
+
+                    state.searchByCountryContentUIState == SearchByCountryContentUIState.NO_DATA_FOUND ||
+                        movies.itemSnapshotList.isEmpty() -> NoMoviesFound()
                     else -> {}
                 }
             }
-            SearchedMovies(state, Modifier.align(Alignment.TopStart))
+            SearchedMovies(movies, Modifier.align(Alignment.TopStart))
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(5),
                 isVisible = state.isCountriesDropDownVisible,
                 onItemClicked = (interactionListener::onCountrySelected),
-                modifier = Modifier.fillMaxWidth().background(AppTheme.color.profileOverlay)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.color.profileOverlay),
             )
         }
     }
@@ -133,21 +155,23 @@ private fun SearchByCountryScreenContent(
 private fun CountrySearchField(
     state: SearchByCountryScreenState,
     interactionListener: SearchByCountryInteractionListener,
-    focusManager: FocusManager
+    focusManager: FocusManager,
 ) {
     TextField(
         text = state.keyword,
         hintText = stringResource(R.string.country_name_hint),
         onValueChange = { interactionListener.onKeywordValueChanged(it) },
-        keyboardActions = KeyboardActions(
-            onDone = {
-                interactionListener.onKeywordValueChanged(state.keyword)
-                focusManager.clearFocus()
-            }
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    interactionListener.onKeywordValueChanged(state.keyword)
+                    focusManager.clearFocus()
+                },
+            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
     )
 }
 
@@ -156,39 +180,40 @@ private fun CountriesDropdownMenu(
     items: List<CountryUiState>,
     onItemClicked: (CountryUiState) -> Unit,
     isVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
-    androidx.compose.animation.AnimatedVisibility(
+    AnimatedVisibility(
         visible = isVisible,
         enter = expandVertically() + fadeIn(),
-        exit = shrinkVertically() + fadeOut()
+        exit = shrinkVertically() + fadeOut(),
     ) {
         Column(
-            modifier = modifier
-                .border(
-                    0.5.dp,
-                    AppTheme.color.stroke,
-                    shape = RoundedCornerShape(16.dp),
-                )
-                .background(AppTheme.color.surface)
-                .padding(vertical = 6.dp)
+            modifier =
+                modifier
+                    .border(
+                        0.5.dp,
+                        AppTheme.color.stroke,
+                        shape = RoundedCornerShape(16.dp),
+                    ).background(AppTheme.color.surface)
+                    .padding(vertical = 6.dp),
         ) {
             items.forEach { item ->
                 Text(
                     text = item.countryName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            focusManager.clearFocus()
-                            onItemClicked(item)
-                        },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) {
+                                focusManager.clearFocus()
+                                onItemClicked(item)
+                            },
                     style = AppTheme.textStyle.body.small,
-                    color = AppTheme.color.body
+                    color = AppTheme.color.body,
                 )
             }
         }
@@ -196,53 +221,53 @@ private fun CountriesDropdownMenu(
 }
 
 @Composable
-private fun ExploreCountries(
-    modifier: Modifier = Modifier
-) {
+private fun ExploreCountries(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .padding(vertical = 8.dp)
+                .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Image(
             painter = painterResource(R.drawable.tour_world_image),
             contentDescription = stringResource(R.string.country_tour_image_description),
-            modifier = Modifier.height(82.dp)
+            modifier = Modifier.height(82.dp),
         )
         Text(
             text = stringResource(R.string.country_tour_title),
             modifier = Modifier.padding(top = 16.dp),
             style = AppTheme.textStyle.title.medium,
             color = AppTheme.color.title,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Text(
             text = stringResource(R.string.country_tour_description),
             modifier = Modifier.padding(top = 8.dp),
             style = AppTheme.textStyle.body.small,
             color = AppTheme.color.body,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
 
 @Composable
-internal fun Loading(
-    modifier: Modifier = Modifier
-) {
+internal fun Loading(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AppTheme.color.surface),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(AppTheme.color.surface),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         LoadingIndicator()
         Text(
             text = stringResource(R.string.loading),
             style = AppTheme.textStyle.label.medium,
             color = AppTheme.color.body,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
         )
     }
 }
@@ -250,20 +275,24 @@ internal fun Loading(
 @Composable
 private fun NoInternetConnection(
     onRetryQuestClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NoNetworkContainer(
         onClickRetry = onRetryQuestClicked,
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .padding(vertical = 8.dp)
+                .verticalScroll(rememberScrollState()),
     )
 }
 
 @Composable
-private fun NoMoviesFound(
-    modifier: Modifier = Modifier
-) {
+private fun NoMoviesFound(modifier: Modifier = Modifier) {
     NoDataContainer(
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .padding(vertical = 8.dp)
+                .verticalScroll(rememberScrollState()),
         title = stringResource(R.string.no_search_result),
         description = stringResource(R.string.no_search_result_for_country),
         imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
@@ -272,11 +301,11 @@ private fun NoMoviesFound(
 
 @Composable
 private fun SearchedMovies(
-    state: SearchByCountryScreenState,
-    modifier: Modifier = Modifier
+    movies: LazyPagingItems<MovieUiState>,
+    modifier: Modifier = Modifier,
 ) {
-    androidx.compose.animation.AnimatedVisibility(
-        state.searchByCountryContentUIState == SearchByCountryContentUIState.MOVIES_LOADED
+    AnimatedVisibility(
+        movies.itemSnapshotList.isNotEmpty(),
     ) {
         LazyVerticalGrid(
             modifier = modifier,
@@ -285,10 +314,8 @@ private fun SearchedMovies(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(top = 12.dp, bottom = 4.dp),
         ) {
-            items(
-                items = state.movies,
-                key = { movie -> movie.id }
-            ) { movie ->
+            items(movies.itemCount) { index ->
+                val movie = movies[index] ?: return@items
                 MovieCard(
                     movieImage = movie.poster,
                     movieType = stringResource(R.string.movie),
@@ -310,12 +337,16 @@ private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
             state = SearchByCountryScreenState(),
+            interactionListener =
+                object : SearchByCountryInteractionListener {
+                    override fun onKeywordValueChanged(keyword: String) {}
+
+                    override fun onCountrySelected(country: CountryUiState) {}
+
+                    override fun onRetryQuestClicked() {}
+                },
             onNavigateBackClicked = {},
-            interactionListener = object : SearchByCountryInteractionListener {
-                override fun onKeywordValueChanged(keyword: String) {}
-                override fun onCountrySelected(country: CountryUiState) {}
-                override fun onRetryQuestClicked() {}
-            },
+            movies = emptyFlow<PagingData<MovieUiState>>().collectAsLazyPagingItems(),
         )
     }
 }
