@@ -1,6 +1,4 @@
-
 package com.example.entity.category
-
 
 enum class TvShowGenre {
     ALL,
