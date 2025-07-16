@@ -18,6 +18,10 @@ class RecentSearchLocalSourceImpl(
         return dao.getRecentSearches()
     }
 
+    override suspend fun getRecentSearchesByKeyword(): List<LocalSearchDto> {
+        return dao.getRecentSearchesByKeyword()
+    }
+
     override suspend fun getSearchByKeywordAndType(
         keyword: String,
         searchType: SearchType

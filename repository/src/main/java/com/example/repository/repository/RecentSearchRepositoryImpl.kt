@@ -33,6 +33,14 @@ class RecentSearchRepositoryImpl(
         )
     }
 
+    override suspend fun getRecentSearchesByKeyword(): List<String> {
+        return tryToExecute(
+            function = { recentSearchLocalSource.getRecentSearchesByKeyword() },
+            onSuccess = { recentSearchMapper.toDomainList(it) },
+            onFailure = { aflamiException -> throw aflamiException }
+        )
+    }
+
     override suspend fun deleteAllRecentSearches() {
         tryToExecute(
             function = { recentSearchLocalSource.deleteRecentSearches() },

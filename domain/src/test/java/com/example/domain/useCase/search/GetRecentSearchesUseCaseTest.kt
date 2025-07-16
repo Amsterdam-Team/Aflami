@@ -20,7 +20,7 @@ class GetRecentSearchesUseCaseTest {
     @Test
     fun `should call getAllRecentSearches when executed`() =
         runBlocking {
-            getRecentSearchesUseCase()
+            getRecentSearchesUseCase.getAllRecentSearches()
             coVerify { recentSearchRepository.getAllRecentSearches() }
         }
 }

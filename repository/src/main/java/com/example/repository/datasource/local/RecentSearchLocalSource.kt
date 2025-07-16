@@ -8,6 +8,7 @@ interface RecentSearchLocalSource {
     suspend fun upsertRecentSearch(recentSearch: LocalSearchDto)
     suspend fun getRecentSearches(): List<LocalSearchDto>
     suspend fun getSearchByKeywordAndType(keyword: String, searchType: SearchType): LocalSearchDto?
+    suspend fun getRecentSearchesByKeyword(): List<LocalSearchDto>
 
     suspend fun deleteRecentSearches()
     suspend fun deleteRecentSearchByKeyword(keyword: String)

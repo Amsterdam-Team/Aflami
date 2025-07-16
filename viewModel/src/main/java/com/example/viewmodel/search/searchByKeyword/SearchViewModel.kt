@@ -51,7 +51,7 @@ class SearchViewModel(
     private fun loadRecentSearches() {
         startLoading()
         tryToExecute(
-            action = { getRecentSearchesUseCase() },
+            action = { getRecentSearchesUseCase.getRecentSearchesByKeyWord() },
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion

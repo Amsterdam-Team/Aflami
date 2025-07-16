@@ -17,6 +17,9 @@ interface RecentSearchDao {
     @Query("SELECT* FROM ${DatabaseContract.RECENT_SEARCH_TABLE} ORDER BY rowid DESC")
     suspend fun getRecentSearches(): List<LocalSearchDto>
 
+    @Query("SELECT* FROM ${DatabaseContract.RECENT_SEARCH_TABLE} WHERE searchType = :searchType ORDER BY rowid DESC")
+    suspend fun getRecentSearchesByKeyword(searchType: SearchType = SearchType.BY_KEYWORD): List<LocalSearchDto>
+
     @Query("DELETE FROM ${DatabaseContract.RECENT_SEARCH_TABLE}")
     suspend fun deleteAllSearches()
 
