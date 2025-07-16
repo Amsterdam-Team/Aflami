@@ -10,19 +10,19 @@ import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.search.mapper.getSelectedGenreType
-import com.example.viewmodel.search.mapper.mapToGenreId
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
-import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -73,7 +73,7 @@ class SearchViewModel(
             _keyword.map(String::trim)
                 .debounce(300)
                 .filter(String::isNotBlank)
-                .collect(::onSearchKeywordChanged)
+                .collectLatest(::onSearchKeywordChanged)
         }
     }
 
@@ -98,15 +98,11 @@ class SearchViewModel(
         updateState { it.copy(movies = movies.toMoveUiStates(), errorUiState = null) }
     }
 
-    private fun fetchTvShowsByKeyword(
-        keyword: String,
-    ) {
+    private fun fetchTvShowsByKeyword(keyword: String) {
         startLoading()
         tryToExecute(
             action = {
-                getAndFilterTvShowsByKeywordUseCase(
-                    keyword = keyword,
-                )
+                getAndFilterTvShowsByKeywordUseCase(keyword = keyword)
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
@@ -125,7 +121,7 @@ class SearchViewModel(
                 getAndFilterMoviesByKeywordUseCase(
                     keyword = state.value.keyword,
                     rating = state.value.filterItemUiState.selectedStarIndex,
-                    movieGenreId = currentCategoryItemUiStates.getSelectedGenreType().mapToGenreId()
+                    movieGenre = currentCategoryItemUiStates.getSelectedGenreType()
                 )
             },
             onSuccess = ::onMoviesFilteredSuccess,
@@ -151,7 +147,7 @@ class SearchViewModel(
                 getAndFilterTvShowsByKeywordUseCase(
                     keyword = state.value.keyword,
                     rating = state.value.filterItemUiState.selectedStarIndex,
-                    tvShowGenreId = currentGenreItemUiStates.getSelectedGenreType().mapToGenreId()
+                    tvGenre = currentGenreItemUiStates.getSelectedGenreType()
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,

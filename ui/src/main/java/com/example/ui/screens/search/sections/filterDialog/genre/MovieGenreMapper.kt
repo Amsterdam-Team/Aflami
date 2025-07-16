@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.designsystem.R
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
+import com.example.entity.category.MovieGenre
 
 internal val MovieGenre.uiModel: GenreUiModel
     get() = when (this) {

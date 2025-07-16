@@ -1,12 +1,12 @@
 package com.example.viewmodel.search.searchByKeyword
 
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.common.MediaItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.Selectable
 import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
-import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
 
 data class SearchUiState(
     val keyword: String = "",

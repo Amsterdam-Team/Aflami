@@ -38,16 +38,16 @@ import com.example.designsystem.components.buttons.SecondaryButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.ui.screens.search.sections.filterDialog.genre.ScrollToGenreItem
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreIcon
 import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
-import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.searchByKeyword.FilterItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenre
-import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
+import com.example.viewmodel.search.searchByKeyword.TabOption
 
 @Composable
 internal fun FilterDialog(
@@ -238,7 +238,7 @@ private fun FilterDialogPreview() {
         FilterDialog(
             filterState = FilterItemUiState(),
             selectedTabOption = TabOption.MOVIES,
-            onCancelButtonClicked = {  },
+            onCancelButtonClicked = { },
             onRatingStarChanged = { },
             onMovieGenreButtonChanged = { },
             onTvGenreButtonChanged = { },

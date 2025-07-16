@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.designsystem.R
-import com.example.viewmodel.search.searchByKeyword.genre.TvShowGenre
+import com.example.entity.category.TvShowGenre
 
 internal val TvShowGenre.uiModel: GenreUiModel
     get() = when (this) {
@@ -34,7 +34,6 @@ internal val TvShowGenre.uiModel: GenreUiModel
         TvShowGenre.TALK -> GenreUiModel(R.drawable.ic_cat_talk, R.string.talk)
         TvShowGenre.WAR_POLITICS -> GenreUiModel(R.drawable.ic_cat_war, R.string.war)
         TvShowGenre.WESTERN -> GenreUiModel(R.drawable.ic_cat_western, R.string.western)
-        TvShowGenre.ROMANCE -> GenreUiModel(R.drawable.ic_cat_romance, R.string.romance)
     }
 
 @Composable
