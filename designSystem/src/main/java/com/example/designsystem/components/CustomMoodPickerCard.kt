@@ -5,20 +5,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -35,14 +27,15 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 fun CustomMoodPickerCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMoodSelected: (Int) -> Unit = {}
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(
-                brush = Brush.horizontalGradient(
+                Brush.horizontalGradient(
                     colors = listOf(
                         AppTheme.color.primary,
                         AppTheme.color.redAccent,
@@ -50,9 +43,7 @@ fun CustomMoodPickerCard(
                     )
                 )
             )
-            .border(
-                width = 1.dp, color = AppTheme.color.stroke, shape = RoundedCornerShape(24.dp)
-            ),
+            .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp))
     ) {
         Image(
             painter = painterResource(R.drawable.img_mood_fun_clown),
@@ -63,7 +54,8 @@ fun CustomMoodPickerCard(
                 .align(Alignment.TopEnd)
                 .height(121.dp)
         )
-        Column{
+
+        Column {
             BlurredBoxWithIcon()
             Text(
                 text = stringResource(R.string.mood_picker_title),
@@ -72,67 +64,89 @@ fun CustomMoodPickerCard(
                 modifier = Modifier.padding(start = 12.dp)
             )
         }
-        ParentComponent(
-            modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp)
+
+        MoodOptionsSection(
+            modifier = Modifier
+                .padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
+            onMoodSelected = onMoodSelected
         )
     }
 }
 
 @Composable
-private fun ParentComponent(
+private fun MoodOptionsSection(
     modifier: Modifier = Modifier,
-    isClicked: Boolean = false,
-    onClick: () -> Unit = {}
+    onMoodSelected: (Int) -> Unit = {}
 ) {
+    var selectedIndex by remember { mutableStateOf(-1) }
+
+    val moodIcons = listOf(
+        R.drawable.ic_mood_sad,
+        R.drawable.ic_mood_lookup,
+        R.drawable.ic_mood_inlove,
+        R.drawable.ic_mood_angry,
+        R.drawable.ic_mood_unhappy,
+        R.drawable.ic_mood_saddizzy
+    )
+
+    val buttonColor by animateColorAsState(
+        if (selectedIndex != -1) AppTheme.color.primary else AppTheme.color.disable
+    )
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
             .background(AppTheme.color.surface),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ) {
-        val color by animateColorAsState(if (isClicked) AppTheme.color.primary else AppTheme.color.disable)
         Text(
-            modifier = Modifier.padding(12.dp),
             text = stringResource(R.string.mood_picker_question),
             color = AppTheme.color.body,
             style = AppTheme.textStyle.body.small,
+            modifier = Modifier.padding(12.dp)
         )
+
         Row(
             modifier = Modifier.padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
-
         ) {
-            ChildComponent(iconRes = R.drawable.ic_mood_sad, onClick = onClick)
-            ChildComponent(iconRes = R.drawable.ic_mood_lookup, onClick = onClick)
-            ChildComponent(iconRes = R.drawable.ic_mood_inlove, onClick = onClick)
-            ChildComponent(iconRes = R.drawable.ic_mood_angry, onClick = onClick)
-            ChildComponent(iconRes = R.drawable.ic_mood_unhappy, onClick = onClick)
-            ChildComponent(iconRes = R.drawable.ic_mood_saddizzy, onClick = onClick)
-
+            moodIcons.forEachIndexed { index, iconRes ->
+                MoodIcon(
+                    iconRes = iconRes,
+                    isSelected = selectedIndex == index,
+                    onClick = {
+                        selectedIndex = index
+                        onMoodSelected(index)
+                    }
+                )
+            }
         }
+
         Text(
-            modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
             text = stringResource(R.string.get_now),
             style = AppTheme.textStyle.body.medium,
-            color = color,
+            color = buttonColor,
+            modifier = Modifier.padding(vertical = 12.dp)
         )
     }
 }
 
 @Composable
-private fun ChildComponent(
+private fun MoodIcon(
     iconRes: Int,
-    modifier: Modifier = Modifier,
-    isSelected: Boolean = false,
-    onClick: () -> Unit = {}
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
-    val color by animateColorAsState(if (isSelected) AppTheme.color.primary else AppTheme.color.body)
+    val tint by animateColorAsState(
+        if (isSelected) AppTheme.color.primary else AppTheme.color.body
+    )
+
     Icon(
         painter = painterResource(iconRes),
         contentDescription = null,
-        tint = color,
+        tint = tint,
         modifier = Modifier
             .padding(4.dp)
             .size(24.dp)
@@ -141,9 +155,7 @@ private fun ChildComponent(
 }
 
 @Composable
-private fun BlurredBoxWithIcon(
-    modifier: Modifier = Modifier
-) {
+private fun BlurredBoxWithIcon(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(start = 12.dp, top = 12.dp, bottom = 8.dp)
@@ -152,11 +164,11 @@ private fun BlurredBoxWithIcon(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(color = AppTheme.color.onPrimaryButton, shape = CircleShape)
+                .background(AppTheme.color.onPrimaryButton, CircleShape)
                 .border(
-                    width = 0.5.dp, brush = Brush.linearGradient(
-                        colors = AppTheme.color.borderLinearGradient
-                    ), shape = CircleShape
+                    width = 0.5.dp,
+                    brush = Brush.linearGradient(AppTheme.color.borderLinearGradient),
+                    shape = CircleShape
                 )
                 .blur(8.dp)
         )
@@ -175,6 +187,8 @@ private fun BlurredBoxWithIcon(
 @Composable
 private fun CustomMoodPickerCardPreview() {
     AflamiTheme {
-        CustomMoodPickerCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 100.dp))
+        CustomMoodPickerCard(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 100.dp)
+        )
     }
 }

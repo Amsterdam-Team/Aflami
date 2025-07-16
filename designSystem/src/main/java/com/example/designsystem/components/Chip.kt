@@ -58,9 +58,10 @@ fun Chip(
                 )
                 .border(1.dp, borderColor, RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
-                .clickable( interactionSource =  remember { MutableInteractionSource() },
-                    indication = ripple(color = iconColor,bounded = true)
-                    ,onClick = onClick),
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(color = iconColor, bounded = true), onClick = onClick
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -80,12 +81,12 @@ fun Chip(
 @Composable
 private fun ChipPreview() {
     AflamiTheme {
-            Chip(
-                icon = painterResource(
-                    R.drawable.ic_menu_square
-                ),
-                label = "All",
-                isSelected = true
-            )
+        Chip(
+            icon = painterResource(
+                R.drawable.ic_menu_square
+            ),
+            label = "All",
+            isSelected = true
+        )
     }
 }

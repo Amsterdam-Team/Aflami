@@ -12,7 +12,7 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun SecondaryButton(
+fun ConfirmButton(
     title: String,
     onClick: () -> Unit,
     isEnabled: Boolean,
@@ -28,19 +28,19 @@ fun SecondaryButton(
         isLoading = isLoading,
         isEnabled = isEnabled,
         isNegative = isNegative,
-        isSecondary = true,
+        isSecondary = false,
         modifier = modifier,
     )
 }
 
 @ThemeAndLocalePreviews
 @Composable
-private fun FilledButtonPreview() {
+private fun ConfirmButtonPreview() {
     AflamiTheme {
         Box(
             modifier = Modifier.padding(16.dp),
         ) {
-            SecondaryButton(
+            ConfirmButton(
                 title = stringResource(R.string.add),
                 onClick = {},
                 isEnabled = true,

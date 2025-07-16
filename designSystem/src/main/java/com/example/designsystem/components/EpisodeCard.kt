@@ -223,7 +223,7 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
 
 @ThemeAndLocalePreviews
 @Composable
-private fun PreviewEpisodeCard() {
+private fun EpisodeCardPreview() {
     AflamiTheme {
         Box(
             contentAlignment = Alignment.Center,

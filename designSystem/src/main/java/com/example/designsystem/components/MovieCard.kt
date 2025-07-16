@@ -17,14 +17,14 @@ fun MovieCard(
     movieTitle: String,
     movieType: String,
     movieYear: String,
-    modifier: Modifier = Modifier.size(156.dp, 222.dp),
+    modifier: Modifier = Modifier,
     movieRating: String? = null,
     movieContentDescription: String? = null,
-    topIcon : Painter? = null,
+    topIcon: Painter? = null,
     onClick: () -> Unit = {}
 ) {
     BaseCard(
-        modifier = modifier,
+        modifier = modifier.size(156.dp, 222.dp),
         movieImage = movieImage,
         movieContentDescription = movieContentDescription,
         movieTitle = movieTitle,
@@ -47,6 +47,7 @@ private fun MovieCardPreview() {
             movieYear = "2016",
             movieTitle = "Your Name",
             movieRating = "9.9",
-            topIcon = painterResource(R.drawable.img_user_rating))
+            topIcon = painterResource(R.drawable.img_user_rating)
+        )
     }
 }

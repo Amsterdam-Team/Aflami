@@ -33,8 +33,8 @@ import com.example.designsystem.components.Chip
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.IconButton
 import com.example.designsystem.components.Text
-import com.example.designsystem.components.buttons.PrimaryButton
-import com.example.designsystem.components.buttons.SecondaryButton
+import com.example.designsystem.components.buttons.ConfirmButton
+import com.example.designsystem.components.buttons.OutlinedButton
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -174,7 +174,7 @@ internal fun FilterDialog(
                     }
                 }
             }
-            PrimaryButton(
+            ConfirmButton(
                 title = stringResource(R.string.apply),
                 onClick = onApplyButtonClicked,
                 isEnabled = filterState.hasFilterData,
@@ -182,7 +182,7 @@ internal fun FilterDialog(
                 isNegative = false,
                 modifier = Modifier.padding(12.dp),
             )
-            SecondaryButton(
+            OutlinedButton(
                 title = stringResource(R.string.clear),
                 onClick = {
                     onClearButtonClicked()
