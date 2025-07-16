@@ -4,6 +4,7 @@ import com.example.domain.repository.CategoryRepository
 import com.example.entity.Category
 import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.remote.RemoteCategoryResponse
 import com.example.repository.mapper.local.CategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
@@ -16,50 +17,50 @@ class CategoryRepositoryImpl(
     private val categoryRemoteMapper: CategoryRemoteMapper
 ) : CategoryRepository {
 
-    override suspend fun getMovieCategories(): List<Category> {
-        val categoriesFromLocal = getMovieCategoriesFromLocal()
-        if (categoriesFromLocal.isNotEmpty()) return categoriesFromLocal
-        return tryToExecute(
+    override suspend fun getMovieCategories(): List<Category> =
+        getMovieCategoriesFromLocal()
+            .takeIf { localMovieCategories -> localMovieCategories.isNotEmpty() }
+            ?: tryToExecute(
             function = { categoryRemoteSource.getMovieCategories() },
-            onSuccess = { movieCategories ->
-                saveMovieCategoriesToDatabase(movieCategories)
-                categoryRemoteMapper.mapToCategories(movieCategories)
-            },
+                onSuccess = { movieCategories -> onSuccessLoadMovieCategories(movieCategories) },
             onFailure = { aflamiException -> throw aflamiException },
         )
-    }
 
-    override suspend fun getTvShowCategories(): List<Category> {
-        val categoriesFromLocal = getTvShowCategoriesFromLocal()
-        if (categoriesFromLocal.isNotEmpty()) return categoriesFromLocal
-        return tryToExecute(
+
+    override suspend fun getTvShowCategories(): List<Category> =
+        getTvShowCategoriesFromLocal()
+            .takeIf { localTvShowCategories -> localTvShowCategories.isNotEmpty() }
+            ?: tryToExecute(
             function = { categoryRemoteSource.getTvShowCategories() },
-            onSuccess = { tvShowCategories ->
-                saveTvShowCategoriesToDatabase(tvShowCategories)
-                categoryRemoteMapper.mapToCategories(tvShowCategories)
-            },
+                onSuccess = { tvShowCategories -> onSuccessLoadTvShowCategories(tvShowCategories) },
             onFailure = { aflamiException -> throw aflamiException },
         )
-    }
 
-    private suspend fun getMovieCategoriesFromLocal(): List<Category> {
-        return tryToExecute(
+    private suspend fun getMovieCategoriesFromLocal(): List<Category> =
+        tryToExecute(
             function = { categoryLocalSource.getMovieCategories() },
-            onSuccess = { localCategories ->
-                categoryLocalMapper.mapToMovieCategories(localCategories)
-                    .map { category ->
-                        Category(
-                            id = category.ordinal.toLong(),
-                            name = category.name,
-                            image = ""
-                        )
-                    }
-            },
+            onSuccess = { localCategories -> onSuccessGetMovieCategoriesFromLocal(localCategories) },
             onFailure = { aflamiException -> throw aflamiException }
         )
-    }
 
-    private suspend fun saveMovieCategoriesToDatabase(movieCategories: RemoteCategoryResponse) {
+
+    private fun onSuccessGetMovieCategoriesFromLocal(localCategories: List<LocalMovieCategoryDto>) =
+        categoryLocalMapper.mapToMovieCategories(localCategories)
+            .map { category ->
+                Category(
+                    id = category.ordinal.toLong(),
+                    name = category.name,
+                    image = ""
+                )
+            }
+
+    private suspend fun CategoryRepositoryImpl.onSuccessLoadMovieCategories(
+        movieCategories: RemoteCategoryResponse
+    ): List<Category> =
+        saveMovieCategoriesToDatabase(movieCategories)
+            .let { categoryRemoteMapper.mapToCategories(movieCategories) }
+
+    private suspend fun saveMovieCategoriesToDatabase(movieCategories: RemoteCategoryResponse) =
         tryToExecute(
             function = {
                 categoryLocalSource.upsertMovieCategories(
@@ -69,27 +70,22 @@ class CategoryRepositoryImpl(
             onSuccess = {},
             onFailure = {}
         )
-    }
 
-    private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
-        return tryToExecute(
+    private suspend fun getTvShowCategoriesFromLocal(): List<Category> =
+        tryToExecute(
             function = { categoryLocalSource.getTvShowCategories() },
-            onSuccess = { localCategories ->
-                categoryLocalMapper.mapToTvShowCategories(
-                    localCategories
-                ).map { category ->
-                    Category(
-                        id = category.ordinal.toLong(),
-                        name = category.name,
-                        image = ""
-                    )
-                }
-            },
+            onSuccess = { localCategories -> categoryLocalMapper.mapToCategories(localCategories) },
             onFailure = { aflamiException -> throw aflamiException }
         )
-    }
 
-    private suspend fun saveTvShowCategoriesToDatabase(tvShowCategories: RemoteCategoryResponse) {
+    private suspend fun CategoryRepositoryImpl.onSuccessLoadTvShowCategories(
+        tvShowCategories: RemoteCategoryResponse
+    ): List<Category> =
+        saveTvShowCategoriesToDatabase(tvShowCategories).let {
+            categoryRemoteMapper.mapToCategories(tvShowCategories)
+        }
+
+    private suspend fun saveTvShowCategoriesToDatabase(tvShowCategories: RemoteCategoryResponse) =
         tryToExecute(
             function = {
                 categoryLocalSource.upsertTvShowCategories(
@@ -99,5 +95,4 @@ class CategoryRepositoryImpl(
             onSuccess = {},
             onFailure = {}
         )
-    }
 }

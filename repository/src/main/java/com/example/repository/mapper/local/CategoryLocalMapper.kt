@@ -29,6 +29,18 @@ class CategoryLocalMapper {
         )
     }
 
+    fun mapToCategories(localTvShowCategories: List<LocalTvShowCategoryDto>): List<Category> {
+        return mapToTvShowCategories(localTvShowCategories).map { mapToCategory(it) }
+    }
+
+    private fun mapToCategory(tvShowGenre: TvShowGenre): Category {
+        return Category(
+            id = tvShowGenre.ordinal.toLong(),
+            name = tvShowGenre.name,
+            image = ""
+        )
+    }
+
     private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieGenre {
         return localMovieCategory.categoryId.mapToMovieCategory()
     }
