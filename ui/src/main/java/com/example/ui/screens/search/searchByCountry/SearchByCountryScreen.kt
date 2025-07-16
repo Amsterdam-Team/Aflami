@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,7 @@ import com.example.ui.screens.search.searchByCountry.components.MoviesVerticalGr
 import com.example.ui.screens.search.searchByCountry.components.NoMoviesFound
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
+import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
 import com.example.viewmodel.search.countrySearch.SearchByCountryInteractionListener
 import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
 import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
@@ -49,13 +51,21 @@ internal fun SearchByCountryScreen(
     viewModel: SearchByCountryViewModel = koinViewModel()
 ) {
     val navController = LocalNavController.current
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                SearchByCountryEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+                else -> {}
+            }
+        }
+    }
     SearchByCountryScreenContent(
         state = state,
         interactionListener = viewModel,
-        onNavigateBackClicked = (navController::popBackStack),
         modifier = modifier,
     )
 }
@@ -64,7 +74,6 @@ internal fun SearchByCountryScreen(
 private fun SearchByCountryScreenContent(
     state: SearchByCountryScreenState,
     interactionListener: SearchByCountryInteractionListener,
-    onNavigateBackClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -80,14 +89,16 @@ private fun SearchByCountryScreenContent(
             DefaultAppBar(
                 title = stringResource(R.string.world_tour_title),
                 showNavigateBackButton = true,
-                onNavigateBackClicked = onNavigateBackClicked,
+                onNavigateBackClicked = { interactionListener.onNavigateBackClicked() },
             )
             CountrySearchField(state.keyword, interactionListener::onKeywordValueChanged, focusManager)
         }
         Box {
             CenterOfScreenContainer(
                 headerHeight,
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
             ) {
                 when (state.searchByCountryContentUIState) {
                     SearchByCountryContentUIState.COUNTRY_TOUR -> ExploreCountries()
@@ -124,10 +135,10 @@ private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
             state = SearchByCountryScreenState(),
-            onNavigateBackClicked = {},
             interactionListener = object : SearchByCountryInteractionListener {
                 override fun onKeywordValueChanged(keyword: String) {}
                 override fun onCountrySelected(country: CountryUiState) {}
+                override fun onNavigateBackClicked() {}
                 override fun onRetryRequestClicked() {}
             },
         )

@@ -122,6 +122,10 @@ class SearchByCountryViewModel(
         getMoviesByCountry()
     }
 
+    override fun onNavigateBackClicked() {
+        sendNewEffect(SearchByCountryEffect.NavigateBack)
+    }
+
     override fun onRetryRequestClicked() {
         if (state.value.selectedCountryIsoCode.isBlank() && state.value.keyword.isNotBlank()) {
             getCountriesByKeyword(state.value.keyword)
