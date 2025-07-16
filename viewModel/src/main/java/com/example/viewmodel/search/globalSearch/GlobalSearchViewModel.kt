@@ -10,17 +10,15 @@ import com.example.domain.useCase.search.ClearRecentSearchUseCase
 import com.example.domain.useCase.search.GetRecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.common.toMoveUiStates
 import com.example.viewmodel.common.toTvShowUiStates
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
-import com.example.viewmodel.search.mapper.toMovieCategoryType
-import com.example.viewmodel.search.mapper.toTvShowCategoryType
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -99,7 +97,7 @@ class GlobalSearchViewModel(
                 getMoviesByKeywordUseCase(
                     keyword = keyword,
                     rating = rating,
-                    movieGenre = movieGenre.toMovieCategoryType()
+                    movieGenre = movieGenre
                 )
             },
             onSuccess = ::onFetchMoviesSuccess,
@@ -123,7 +121,7 @@ class GlobalSearchViewModel(
                 getTvShowByKeywordUseCase(
                     keyword = keyword,
                     rating = rating,
-                    tvGenre = tvGenre.toTvShowCategoryType()
+                    tvGenre = tvGenre
                 )
             },
             onSuccess = ::onFetchTvShowsSuccess,
@@ -289,7 +287,6 @@ class GlobalSearchViewModel(
                     keyword = state.value.query,
                     rating = state.value.filterItemUiState.selectedStarIndex,
                     movieGenre = currentCategoryItemUiStates.getSelectedGenreType()
-                        .toMovieCategoryType()
                 )
             },
             onSuccess = ::onMoviesFilteredSuccess,
@@ -315,7 +312,7 @@ class GlobalSearchViewModel(
                 getTvShowByKeywordUseCase(
                     keyword = state.value.query,
                     rating = state.value.filterItemUiState.selectedStarIndex,
-                    tvGenre = currentGenreItemUiStates.getSelectedGenreType().toTvShowCategoryType()
+                    tvGenre = currentGenreItemUiStates.getSelectedGenreType()
                 )
             },
             onSuccess = ::onTvShowsFilteredSuccess,

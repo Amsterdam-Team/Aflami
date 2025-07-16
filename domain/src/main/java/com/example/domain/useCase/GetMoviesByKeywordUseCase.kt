@@ -6,7 +6,7 @@ import com.example.domain.common.ContentFilteringExtensions.throwIfEmpty
 import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
-import com.example.entity.category.MovieCategoryType
+import com.example.entity.category.MovieGenre
 
 class GetMoviesByKeywordUseCase(
     private val movieRepository: MovieRepository
@@ -15,13 +15,13 @@ class GetMoviesByKeywordUseCase(
     suspend operator fun invoke(
         keyword: String,
         rating: Int = 0,
-        movieGenre: MovieCategoryType = MovieCategoryType.ALL
+        movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
         return movieRepository
             .getMoviesByKeyword(keyword = keyword)
             .filterByMinRating(rating)
             .filter { movie ->
-                if (movieGenre == MovieCategoryType.ALL)
+                if (movieGenre == MovieGenre.ALL)
                     return@filter true
 
                 movie.categories.any { it == movieGenre }

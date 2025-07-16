@@ -1,7 +1,7 @@
 package com.example.repository.mapper.remote
 
 import com.example.entity.TvShow
-import com.example.entity.category.TvShowCategoryType
+import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
@@ -41,7 +41,7 @@ class TvShowRemoteMapper {
         )
     }
 
-    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<TvShowCategoryType> {
+    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<TvShowGenre> {
         return genreIds.map { it.toLong().mapToTvShowCategory() }
     }
 

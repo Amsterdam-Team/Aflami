@@ -1,7 +1,7 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Category
-import com.example.entity.category.MovieCategoryType
+import com.example.entity.category.MovieGenre
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
@@ -32,8 +32,8 @@ class CategoryLocalMapperTest {
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(
-            MovieCategoryType.ACTION,
-            MovieCategoryType.COMEDY
+            MovieGenre.ACTION,
+            MovieGenre.COMEDY
         )
     }
 

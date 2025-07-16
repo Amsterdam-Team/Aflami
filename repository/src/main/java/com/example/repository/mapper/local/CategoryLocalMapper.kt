@@ -1,8 +1,8 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Category
-import com.example.entity.category.MovieCategoryType
-import com.example.entity.category.TvShowCategoryType
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.mapper.shared.mapToMovieCategory
@@ -10,11 +10,11 @@ import com.example.repository.mapper.shared.mapToTvShowCategory
 
 class CategoryLocalMapper {
 
-    fun mapToMovieCategories(localMovieCategories: List<LocalMovieCategoryDto>): List<MovieCategoryType> {
+    fun mapToMovieCategories(localMovieCategories: List<LocalMovieCategoryDto>): List<MovieGenre> {
         return localMovieCategories.map { mapToMovieCategory(it) }
     }
 
-    fun mapToTvShowCategories(localTvShowCategories: List<LocalTvShowCategoryDto>): List<TvShowCategoryType> {
+    fun mapToTvShowCategories(localTvShowCategories: List<LocalTvShowCategoryDto>): List<TvShowGenre> {
         return localTvShowCategories.map { mapToTvShowCategory(it) }
     }
 
@@ -29,11 +29,11 @@ class CategoryLocalMapper {
         )
     }
 
-    private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieCategoryType {
+    private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieGenre {
         return localMovieCategory.categoryId.mapToMovieCategory()
     }
 
-    private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowCategoryType {
+    private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowGenre {
         return localTvShowCategory.categoryId.mapToTvShowCategory()
     }
 }

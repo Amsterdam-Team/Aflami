@@ -1,12 +1,12 @@
 package com.example.viewmodel.search.globalSearch
 
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.common.MediaItemUiState
+import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.globalSearch.genre.MovieGenreItemUiState
 import com.example.viewmodel.search.globalSearch.genre.Selectable
-import com.example.viewmodel.common.TabOption
 import com.example.viewmodel.search.globalSearch.genre.TvGenreItemUiState
-import com.example.viewmodel.search.globalSearch.genre.MovieGenre
-import com.example.viewmodel.search.globalSearch.genre.TvShowGenre
 
 data class SearchUiState(
     val query: String = "",

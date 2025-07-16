@@ -2,17 +2,14 @@ package com.example.repository.repository
 
 import com.example.domain.repository.CategoryRepository
 import com.example.entity.Category
-import com.example.entity.category.MovieCategoryType
-import com.example.entity.category.TvShowCategoryType
+import com.example.entity.category.MovieGenre
+import com.example.entity.category.TvShowGenre
 import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
-import com.example.repository.dto.remote.RemoteCategoryDto
-import com.example.repository.dto.remote.RemoteCategoryResponse
 import com.example.repository.mapper.local.CategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
-import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,13 +42,13 @@ class CategoryRepositoryImplTest {
         val local = listOf(LocalMovieCategoryDto(1, "Action"))
         val mapped = listOf(
             Category(
-                MovieCategoryType.ACTION.ordinal.toLong(),
-                MovieCategoryType.ACTION.name, ""
+                MovieGenre.ACTION.ordinal.toLong(),
+                MovieGenre.ACTION.name, ""
             )
         )
 
         coEvery { localDataSource.getMovieCategories() } returns local
-        every { localMapper.mapToMovieCategories(local) } returns listOf(MovieCategoryType.ACTION)
+        every { localMapper.mapToMovieCategories(local) } returns listOf(MovieGenre.ACTION)
 
         val result = repository.getMovieCategories()
 
@@ -64,14 +61,14 @@ class CategoryRepositoryImplTest {
         val local = listOf(LocalTvShowCategoryDto(3, "Drama"))
         val mapped = listOf(
             Category(
-                TvShowCategoryType.DRAMA.ordinal.toLong(),
-                TvShowCategoryType.DRAMA.name,
+                TvShowGenre.DRAMA.ordinal.toLong(),
+                TvShowGenre.DRAMA.name,
                 ""
             )
         )
 
         coEvery { localDataSource.getTvShowCategories() } returns local
-        every { localMapper.mapToTvShowCategories(local) } returns listOf(TvShowCategoryType.DRAMA)
+        every { localMapper.mapToTvShowCategories(local) } returns listOf(TvShowGenre.DRAMA)
 
         val result = repository.getTvShowCategories()
 

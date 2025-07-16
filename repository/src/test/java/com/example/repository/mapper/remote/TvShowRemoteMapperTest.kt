@@ -1,6 +1,6 @@
 package com.example.repository.mapper.remote
 
-import com.example.entity.category.TvShowCategoryType
+import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.google.common.truth.Truth.assertThat
@@ -56,7 +56,7 @@ class TvShowRemoteMapperTest {
         assertThat(result.poster).isEqualTo("/loki.jpg")
         assertThat(result.productionYear).isEqualTo(2021)
         assertThat(result.rating).isEqualTo(8.5f)
-        assertThat(result.categories).containsExactly(TvShowCategoryType.ANIMATION)
+        assertThat(result.categories).containsExactly(TvShowGenre.ANIMATION)
     }
 
     @Test

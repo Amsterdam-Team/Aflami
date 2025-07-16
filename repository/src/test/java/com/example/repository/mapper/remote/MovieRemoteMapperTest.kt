@@ -1,6 +1,6 @@
 package com.example.repository.mapper.remote
 
-import com.example.entity.category.MovieCategoryType
+import com.example.entity.category.MovieGenre
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.google.common.truth.Truth.assertThat
@@ -55,7 +55,7 @@ class MovieRemoteMapperTest {
         assertThat(result.poster).isEqualTo("/inception.jpg")
         assertThat(result.productionYear).isEqualTo(2010)
         assertThat(result.rating).isEqualTo(8.8f)
-        assertThat(result.categories).containsExactly(MovieCategoryType.ACTION, MovieCategoryType.ADVENTURE)
+        assertThat(result.categories).containsExactly(MovieGenre.ACTION, MovieGenre.ADVENTURE)
     }
 
     @Test

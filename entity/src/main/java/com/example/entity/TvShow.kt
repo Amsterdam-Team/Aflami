@@ -1,6 +1,6 @@
 package com.example.entity
 
-import com.example.entity.category.TvShowCategoryType
+import com.example.entity.category.TvShowGenre
 import com.example.entity.common.PopularitySortable
 import com.example.entity.common.RatingFilterable
 
@@ -10,7 +10,7 @@ data class TvShow(
     val description: String,
     val poster: String,
     val productionYear: Int,
-    val categories: List<TvShowCategoryType>,
+    val categories: List<TvShowGenre>,
     override val rating: Float,
     override val popularity: Double
 ) : PopularitySortable, RatingFilterable

@@ -1,7 +1,7 @@
 package com.example.repository.mapper.remote
 
 import com.example.entity.Movie
-import com.example.entity.category.MovieCategoryType
+import com.example.entity.category.MovieGenre
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
@@ -47,7 +47,7 @@ class MovieRemoteMapper {
         return date.takeIf { it.length >= 4 }?.substring(0, 4)?.toIntOrNull() ?: 0
     }
 
-    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieCategoryType> {
+    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieGenre> {
         return genreIds.map { it.toLong().mapToMovieCategory() }
     }
 }
