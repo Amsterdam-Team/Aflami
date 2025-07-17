@@ -1,43 +1,24 @@
-package com.example.repository.mapper.local
+package com.example.repository.mapper
 
 import com.example.entity.TvShow
-import com.example.repository.dto.local.LocalTvShowDto
+import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.local.relation.TvShowWithCategory
 
-class TvShowLocalMapper(
-    private val categoryLocalMapper: CategoryLocalMapper
-) {
-
-    fun mapToTvShows(tvShowWithCategories: List<TvShowWithCategory>): List<TvShow> {
-        return tvShowWithCategories.map { mapToTvShow(it) }
-    }
-
-    fun mapToLocalTvShows(tvShows: List<TvShow>): List<LocalTvShowDto> {
-        return tvShows.map { mapToLocalTvShow(it) }
-    }
-
-    fun mapToLocalTvShow(tvShow: TvShow): LocalTvShowDto {
-        return LocalTvShowDto(
-            tvShowId = tvShow.id,
-            name = tvShow.name,
-            description = tvShow.description,
-            poster = tvShow.poster,
-            productionYear = tvShow.productionYear,
-            rating = tvShow.rating,
-            popularity = tvShow.popularity
-        )
-    }
-
-    fun mapToTvShow(tvShowWithCategory: TvShowWithCategory): TvShow {
-        return TvShow(
-            id = tvShowWithCategory.tvShow.tvShowId,
-            name = tvShowWithCategory.tvShow.name,
-            description = tvShowWithCategory.tvShow.description,
-            poster = tvShowWithCategory.tvShow.poster,
-            productionYear = tvShowWithCategory.tvShow.productionYear,
-            rating = tvShowWithCategory.tvShow.rating,
-            categories = categoryLocalMapper.mapToTvShowCategories(tvShowWithCategory.categories),
-            popularity = tvShowWithCategory.tvShow.popularity
-        )
-    }
+fun TvShowWithCategory.toDomain(): TvShow {
+    return TvShow(
+        id = tvShow.tvShowId,
+        name = tvShow.name,
+        description = tvShow.description,
+        poster = tvShow.poster,
+        productionYear = tvShow.productionYear,
+        rating = tvShow.rating,
+        popularity = tvShow.popularity,
+        categories = categories.mapNotNull { category ->
+            try {
+                TvShowGenre.valueOf(category.name.uppercase())
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+        }
+    )
 }
