@@ -13,18 +13,20 @@ class GetAndFilterTvShowsByKeywordUseCase(
         keyword: String,
         rating: Int = 0,
         tvGenre: TvShowGenre = TvShowGenre.ALL
-    ): List<TvShow> =
-        tvShowRepository.getTvShowByKeyword(keyword = keyword)
+    ): List<TvShow> {
+        return tvShowRepository.getTvShowByKeyword(keyword = keyword)
             .filterMoviesWithRatingAndGenre(rating, genre = tvGenre)
+    }
 
 
     private fun List<TvShow>.filterMoviesWithRatingAndGenre(
         rating: Int,
         genre: TvShowGenre
-    ): List<TvShow> =
-        this.filter { item -> floor(item.rating) >= rating }
+    ): List<TvShow> {
+        return this.filter { item -> floor(item.rating) >= rating }
             .filter { tv ->
                 if (genre == TvShowGenre.ALL) return@filter true
                 tv.categories.any { it == genre }
             }
+    }
 }

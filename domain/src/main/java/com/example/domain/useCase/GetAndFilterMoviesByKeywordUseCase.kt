@@ -13,19 +13,21 @@ class GetAndFilterMoviesByKeywordUseCase(
         keyword: String,
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
-    ): List<Movie> =
-        movieRepository
-            .getMoviesByKeyword(keyword = keyword)
-            .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
+    ): List<Movie> {
+       return movieRepository
+           .getMoviesByKeyword(keyword = keyword)
+           .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
+    }
 
 
     private fun List<Movie>.filterMoviesWithRatingAndGenre(
         rating: Int,
         genre: MovieGenre
-    ): List<Movie> =
-        this.filter { item -> floor(item.rating) >= rating }
+    ): List<Movie> {
+        return this.filter { item -> floor(item.rating) >= rating }
             .filter { movie ->
                 if (genre == MovieGenre.ALL) return@filter true
                 movie.categories.any { it == genre }
             }
+    }
 }

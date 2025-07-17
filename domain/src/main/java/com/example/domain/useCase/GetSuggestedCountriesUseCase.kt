@@ -7,9 +7,10 @@ class GetSuggestedCountriesUseCase(
     private val countryRepository: CountryRepository
 ) {
 
-    suspend operator fun invoke(keyword: String): List<Country> =
-        countryRepository.getCountries()
+    suspend operator fun invoke(keyword: String): List<Country> {
+        return countryRepository.getCountries()
             .filter {
                 it.countryName.contains(keyword, ignoreCase = true)
             }
+    }
 }
