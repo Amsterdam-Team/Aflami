@@ -37,7 +37,7 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun CustomMoodPickerCard(
+fun MoodPickerCard(
     modifier: Modifier = Modifier,
     onMoodSelected: (Int) -> Unit = {},
 ) {
@@ -55,7 +55,8 @@ fun CustomMoodPickerCard(
                                 AppTheme.color.yellowAccent,
                             ),
                     ),
-                ).border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp)),
+                )
+                .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp)),
     ) {
         Image(
             painter = painterResource(R.drawable.img_mood_fun_clown),
@@ -188,7 +189,8 @@ private fun BlurredBoxWithIcon(modifier: Modifier = Modifier) {
                         width = 0.5.dp,
                         brush = Brush.linearGradient(AppTheme.color.borderLinearGradient),
                         shape = CircleShape,
-                    ).blur(8.dp),
+                    )
+                    .blur(8.dp),
         )
         Icon(
             painter = painterResource(R.drawable.ic_filled_favourite),
@@ -206,7 +208,7 @@ private fun BlurredBoxWithIcon(modifier: Modifier = Modifier) {
 @Composable
 private fun CustomMoodPickerCardPreview() {
     AflamiTheme {
-        CustomMoodPickerCard(
+        MoodPickerCard(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 100.dp),
         )
     }

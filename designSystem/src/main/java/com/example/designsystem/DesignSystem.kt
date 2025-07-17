@@ -26,19 +26,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.chip.Chip
 import com.example.designsystem.components.CategoryCard
-import com.example.designsystem.components.CustomMoodPickerCard
-import com.example.designsystem.components.CustomRadioButton
-import com.example.designsystem.components.CustomSlider
 import com.example.designsystem.components.EpisodeCard
 import com.example.designsystem.components.GameCard
 import com.example.designsystem.components.GameCardImageContentType
 import com.example.designsystem.components.GenreChip
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.ListItem
+import com.example.designsystem.components.MoodPickerCard
 import com.example.designsystem.components.MovieCard
+import com.example.designsystem.components.RadioButton
 import com.example.designsystem.components.RadioState
 import com.example.designsystem.components.Score
 import com.example.designsystem.components.SectionTitle
+import com.example.designsystem.components.Slider
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.UpcomingCard
@@ -79,7 +79,7 @@ fun DesignSystem() {
             items = mapOf(),
             selectedBottomBarItems = BottomBarItems.HOME,
         )
-        CustomSlider(
+        Slider(
             aflamiImageList =
                 listOf(
                     R.drawable.bg_man_with_popcorn,
@@ -276,11 +276,11 @@ fun DesignSystem() {
             label = stringResource(R.string.categories),
             isSelected = false,
         )
-        CustomMoodPickerCard(
+        MoodPickerCard(
             modifier = Modifier.padding(horizontal = 16.dp),
         )
-        CustomRadioButton(state = RadioState.Selected)
-        CustomRadioButton(state = RadioState.Unselected)
+        RadioButton(state = RadioState.Selected)
+        RadioButton(state = RadioState.Unselected)
         GenreChip(
             genre = stringResource(R.string.action),
             selected = false,

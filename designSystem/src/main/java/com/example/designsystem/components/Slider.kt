@@ -26,9 +26,9 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import kotlin.math.absoluteValue
 
 @Composable
-fun CustomSlider(
-    modifier: Modifier = Modifier,
+fun Slider(
     aflamiImageList: List<Int>,
+    modifier: Modifier = Modifier,
     ratingProvider: (index: Int) -> String = { "9.9" },
 ) {
     val pagerState = rememberPagerState { aflamiImageList.size }
@@ -57,11 +57,13 @@ fun CustomSlider(
                         .graphicsLayer {
                             scaleX = scaleFactor
                             scaleY = scaleFactor
-                        }.border(
+                        }
+                        .border(
                             width = 1.dp,
                             color = AppTheme.color.stroke,
                             shape = RoundedCornerShape(24.dp),
-                        ).aspectRatio(0.81f)
+                        )
+                        .aspectRatio(0.81f)
                         .clip(RoundedCornerShape(24.dp)),
                 painter = painterResource(id = aflamiImageList[index]),
                 contentDescription = null,
@@ -83,7 +85,7 @@ fun CustomSlider(
 @ThemeAndLocalePreviews
 private fun CustomSliderPreview() {
     AflamiTheme {
-        CustomSlider(
+        Slider(
             aflamiImageList =
                 listOf(
                     R.drawable.bg_man_with_popcorn,

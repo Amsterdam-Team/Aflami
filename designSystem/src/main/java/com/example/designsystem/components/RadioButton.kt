@@ -26,7 +26,7 @@ enum class RadioState {
 }
 
 @Composable
-fun CustomRadioButton(
+fun RadioButton(
     state: RadioState,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
@@ -47,7 +47,8 @@ fun CustomRadioButton(
                     width = borderWidth,
                     color = borderColor,
                     shape = CircleShape,
-                ).clickable(
+                )
+                .clickable(
                     onClick = onClick,
                     role = Role.RadioButton,
                 ),
@@ -63,15 +64,15 @@ private fun CustomRadioButtonPreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CustomRadioButton(
+            RadioButton(
                 modifier = Modifier.padding(bottom = 16.dp),
                 state = RadioState.Default,
             )
-            CustomRadioButton(
+            RadioButton(
                 modifier = Modifier.padding(bottom = 16.dp),
                 state = RadioState.Selected,
             )
-            CustomRadioButton(
+            RadioButton(
                 state = RadioState.Unselected,
             )
         }
