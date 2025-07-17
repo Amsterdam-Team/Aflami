@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
+import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.R
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -382,7 +384,7 @@ private fun BlurredContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .blur(radius = blurRadius, edgeTreatment = BlurredEdgeTreatment.Unbounded),
+            .blur(radius = blurRadius.value, edgeTreatment = BlurEdgeTreatment.UNBOUNDED),
         contentAlignment = Alignment.Center
     ) {
         content()

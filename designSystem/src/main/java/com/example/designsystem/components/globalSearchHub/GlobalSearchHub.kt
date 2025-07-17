@@ -28,6 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
+import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -74,7 +76,7 @@ fun GlobalSearchHub(
             modifier = Modifier
                 .fillMaxWidth(0.20f)
                 .fillMaxHeight(0.45f)
-                .blur(56.dp, BlurredEdgeTreatment.Unbounded)
+                .blur(56f, BlurEdgeTreatment.UNBOUNDED)
                 .background(color = AppTheme.color.onPrimary, CircleShape)
                 .alpha(0.12f)
                 .align(Alignment.TopEnd)
