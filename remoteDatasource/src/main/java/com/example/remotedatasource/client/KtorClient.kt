@@ -1,9 +1,14 @@
 package com.example.remotedatasource.client
 
 import com.example.domain.exceptions.NoInternetException
+import com.example.domain.exceptions.ServerErrorException
+import com.example.domain.exceptions.UnknownException
 import com.example.remotedatasource.BuildConfig
 import io.ktor.client.HttpClient
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
@@ -13,11 +18,13 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
+import java.net.ConnectException
 import java.util.Locale
 
 class KtorClient(
-    val json: Json
+    private val json: Json
 ) {
     private val languageTag = Locale.getDefault().toLanguageTag()
 
@@ -53,8 +60,18 @@ class KtorClient(
     private suspend fun executeSafely(block: suspend () -> HttpResponse): HttpResponse {
         return try {
             block()
-        } catch (_: Exception) {
+        } catch (e: ConnectException) {
             throw NoInternetException()
+        } catch (e: SocketTimeoutException) {
+            throw NoInternetException()
+        } catch (e: IOException) {
+            throw NoInternetException()
+        } catch (e: ClientRequestException) {
+            throw ServerErrorException()
+        } catch (e: ServerResponseException) {
+            throw ServerErrorException()
+        } catch (e: Exception) {
+            throw UnknownException()
         }
     }
 
