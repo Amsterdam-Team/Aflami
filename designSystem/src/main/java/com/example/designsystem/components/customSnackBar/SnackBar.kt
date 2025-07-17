@@ -25,7 +25,7 @@ import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.designsystem.utils.dropShadow
+import com.example.designsystem.utils.modifierExtensions.dropShadow
 
 @Composable
 fun BoxScope.SnackBar(message: String, status: SnackBarStatus) {

@@ -35,7 +35,7 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.shapes.SkewedRectangleShape
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.designsystem.utils.autoMirroredContent
+import com.example.designsystem.utils.modifierExtensions.autoMirroredContent
 
 @Composable
 fun GuessCard(

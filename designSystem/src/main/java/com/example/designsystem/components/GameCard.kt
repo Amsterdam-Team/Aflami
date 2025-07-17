@@ -50,8 +50,8 @@ import androidx.compose.ui.zIndex
 import com.example.designsystem.R
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.designsystem.utils.dropShadow
-import com.example.designsystem.utils.mirroredContent
+import com.example.designsystem.utils.modifierExtensions.dropShadow
+import com.example.designsystem.utils.modifierExtensions.mirroredContent
 
 @Composable
 fun GameCard(
