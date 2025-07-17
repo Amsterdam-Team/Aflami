@@ -12,7 +12,10 @@ val specificMovieList = listOf(
         productionYear = (2023).toUInt(),
         categories = listOf(),
         rating = 1.0f,
-        popularity = 5.0
+        popularity = 5.0,
+        originCountry = "",
+        runTime = 1,
+        hasVideo = true
     ),
     Movie(
         id = 2,
@@ -22,7 +25,10 @@ val specificMovieList = listOf(
         productionYear = (2023).toUInt(),
         categories = listOf(MovieGenre.TV_MOVIE),
         rating = 5.0f,
-        popularity = 5.0
+        popularity = 5.0,
+        originCountry = "",
+        runTime = 1,
+        hasVideo = true
     )
 )
 
@@ -36,7 +42,10 @@ val fakeMovieListWithCategories =
             productionYear = (2023).toUInt(),
             categories = listOf(MovieGenre.ACTION),
             rating = 8.0f,
-            popularity = 10.0
+            popularity = 10.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
         Movie(
             id = 2,
@@ -46,7 +55,10 @@ val fakeMovieListWithCategories =
             productionYear = (2023).toUInt(),
             categories = listOf(MovieGenre.COMEDY),
             rating = 7.0f,
-            popularity = 9.0
+            popularity = 9.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
         Movie(
             id = 3,
@@ -59,7 +71,10 @@ val fakeMovieListWithCategories =
                 MovieGenre.DRAMA,
             ),
             rating = 7.5f,
-            popularity = 11.0
+            popularity = 11.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
         Movie(
             id = 4,
@@ -69,7 +84,10 @@ val fakeMovieListWithCategories =
             productionYear = (2023).toUInt(),
             categories = listOf(MovieGenre.THRILLER),
             rating = 6.0f,
-            popularity = 8.0
+            popularity = 8.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         )
     )
 
@@ -85,6 +103,9 @@ val fakeMovieList =
             categories = emptyList(),
             rating = 2.5f,
             popularity = 10.2,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
         Movie(
             id = 2,
@@ -95,6 +116,9 @@ val fakeMovieList =
             categories = emptyList(),
             rating = 2.5f,
             popularity = 11.2,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
         Movie(
             id = 3,
@@ -105,6 +129,9 @@ val fakeMovieList =
             categories = emptyList(),
             rating = 2.5f,
             popularity = 0.2,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
     )
 val fakeMovieListWithRatings =
@@ -117,7 +144,10 @@ val fakeMovieListWithRatings =
             productionYear = (2023).toUInt(),
             categories = emptyList(),
             rating = 8.0f,
-            popularity = 10.0
+            popularity = 10.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
         Movie(
             id = 2,
@@ -127,7 +157,10 @@ val fakeMovieListWithRatings =
             productionYear = (2023).toUInt(),
             categories = emptyList(),
             rating = 5.5f,
-            popularity = 9.0
+            popularity = 9.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),  // Rounds to 6
         Movie(
             id = 3,
@@ -137,6 +170,9 @@ val fakeMovieListWithRatings =
             productionYear = (2023).toUInt(),
             categories = emptyList(),
             rating = 3.0f,
-            popularity = 8.0
+            popularity = 8.0,
+            originCountry = "",
+            runTime = 1,
+            hasVideo = true
         ),
     )
