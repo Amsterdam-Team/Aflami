@@ -1,7 +1,7 @@
 package com.example.viewmodel.movieDetails
 
 import com.example.entity.category.MovieGenre
-import com.example.viewmodel.common.Selectable
+import com.example.viewmodel.shared.Selectable
 
 data class MovieDetailsUiState(
     val movieId: Long = 0,

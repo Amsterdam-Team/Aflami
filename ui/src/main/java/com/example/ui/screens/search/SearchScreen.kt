@@ -48,8 +48,8 @@ import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.ui.screens.search.sections.filterDialog.FilterDialog
-import com.example.viewmodel.common.MediaItemUiState
-import com.example.viewmodel.common.MediaType
+import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.shared.MediaType
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchErrorState
 import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener

@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.Chip
 import com.example.ui.screens.movieDetails.getExtrasSectionItemInfo
-import com.example.viewmodel.common.Selectable
+import com.example.viewmodel.shared.Selectable
 import com.example.viewmodel.movieDetails.MovieExtras
 
 @Composable

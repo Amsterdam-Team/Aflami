@@ -1,7 +1,7 @@
 package com.example.viewmodel.movieDetails
 
 import com.example.domain.useCase.GetMovieDetailsUseCase
-import com.example.viewmodel.common.Selectable
+import com.example.viewmodel.shared.Selectable
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 import kotlin.math.roundToInt
