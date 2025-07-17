@@ -8,15 +8,15 @@ class RecentSearchesUseCase(
 ) {
     suspend fun addRecentSearch(keyword: String) =
         keyword.takeIf { it.isNotBlank() }
-            ?.let { recentSearchRepository.addRecentSearch(keyword) }
+            ?.let { recentSearchRepository.addRecentSearch(it) }
 
     suspend fun addRecentSearchForCountry(country: Country) =
         country.countryIsoCode.takeIf { it.isNotBlank() }
-            ?.let { recentSearchRepository.addRecentSearchForCountry(country.countryIsoCode) }
+            ?.let { recentSearchRepository.addRecentSearchForCountry(it) }
 
     suspend fun addRecentSearchForActor(actorName: String) =
         actorName.takeIf { it.isNotBlank() }
-            ?.let { recentSearchRepository.addRecentSearchForActor(actorName) }
+            ?.let { recentSearchRepository.addRecentSearchForActor(it) }
 
     suspend fun getRecentSearches(): List<String> =
         recentSearchRepository.getRecentSearches()
