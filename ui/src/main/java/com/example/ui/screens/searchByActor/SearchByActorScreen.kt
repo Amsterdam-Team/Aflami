@@ -36,8 +36,7 @@ import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
 import com.example.viewmodel.search.actorSearch.SearchByActorEffect
 import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
-import com.example.viewmodel.searchByActor.SearchByActorEffect
-import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
+
 import com.example.viewmodel.search.actorSearch.SearchByActorScreenState
 import com.example.viewmodel.search.actorSearch.SearchByActorViewModel
 import org.koin.androidx.compose.koinViewModel
