@@ -22,7 +22,7 @@ enum class MediaType {
 private fun Movie.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
         name = name,
-        posterImage = base_image_url + poster,
+        posterImage = base_image_url + posterUrl,
         mediaType = MediaType.MOVIE,
         yearOfRelease = productionYear.toString(),
         rate = DecimalFormat("#.#").format(rating).toString()
@@ -33,7 +33,7 @@ fun List<Movie>.toMoveUiStates() = map(Movie::toMediaItemUiState)
 private fun TvShow.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
         name = name,
-        posterImage = base_image_url + poster,
+        posterImage = base_image_url + posterUrl,
         mediaType = MediaType.TV_SHOW,
         yearOfRelease = productionYear.toString(),
         rate = DecimalFormat("#.#").format(rating).toString()

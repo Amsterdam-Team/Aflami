@@ -14,7 +14,7 @@ class MovieRemoteMapper {
             id = remoteMovieItemDto.id,
             name = remoteMovieItemDto.title,
             description = remoteMovieItemDto.overview,
-            poster = remoteMovieItemDto.posterPath.orEmpty(),
+            posterUrl = remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
             categories = mapGenreIdsToCategories(remoteMovieItemDto.genreIds),
             rating = remoteMovieItemDto.voteAverage.toFloat(),

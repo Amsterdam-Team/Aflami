@@ -13,7 +13,7 @@ class MovieLocalMapper(
             id = movieWithCategories.movie.movieId,
             name = movieWithCategories.movie.name,
             description = movieWithCategories.movie.description,
-            poster = movieWithCategories.movie.poster,
+            posterUrl = movieWithCategories.movie.poster,
             productionYear = movieWithCategories.movie.productionYear,
             rating = movieWithCategories.movie.rating,
             categories = categoryLocalMapper.mapToMovieCategories(movieWithCategories.categories),
@@ -26,7 +26,7 @@ class MovieLocalMapper(
             movieId = movie.id,
             name = movie.name,
             description = movie.description,
-            poster = movie.poster,
+            poster = movie.posterUrl,
             productionYear = movie.productionYear,
             rating = movie.rating,
             popularity = movie.popularity

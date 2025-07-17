@@ -31,7 +31,7 @@ class MovieLocalMapperTest {
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
         assertThat(result.description).isEqualTo("Dream within a dream")
-        assertThat(result.poster).isEqualTo("inception.jpg")
+        assertThat(result.posterUrl).isEqualTo("inception.jpg")
         assertThat(result.productionYear).isEqualTo(2010)
         assertThat(result.rating).isEqualTo(8.8f)
     }

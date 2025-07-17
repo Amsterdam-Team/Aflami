@@ -10,7 +10,7 @@ class SearchWithMoviesMapper {
                 id = it.movieId,
                 name = it.name,
                 description = it.description,
-                poster = it.poster,
+                posterUrl = it.poster,
                 productionYear = it.productionYear,
                 rating = it.rating,
                 categories = emptyList(),

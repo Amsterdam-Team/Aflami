@@ -15,7 +15,7 @@ fun createMovie(
         id = id,
         name = name,
         description = description,
-        poster = poster,
+        posterUrl = poster,
         productionYear = productionYear,
         categories = genres,
         rating = rating,

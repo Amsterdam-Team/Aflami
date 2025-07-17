@@ -30,7 +30,7 @@ class TvShowLocalMapperTest {
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Breaking Bad")
         assertThat(result.description).isEqualTo("Chemistry teacher becomes drug kingpin")
-        assertThat(result.poster).isEqualTo("bb.jpg")
+        assertThat(result.posterUrl).isEqualTo("bb.jpg")
         assertThat(result.productionYear).isEqualTo(2008)
         assertThat(result.rating).isEqualTo(9.5f)
 //        assertThat(result.categories).containsExactly(LocalTvShowCategoryDto(1L, "Drama"))
@@ -59,7 +59,7 @@ class TvShowLocalMapperTest {
             id = 3L,
             name = "Stranger Things",
             description = "Mystery in Hawkins",
-            poster = "st.jpg",
+            posterUrl = "st.jpg",
             productionYear = 2016,
             rating = 8.7f,
             popularity = 0.0,

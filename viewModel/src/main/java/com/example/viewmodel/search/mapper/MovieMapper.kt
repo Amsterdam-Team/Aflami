@@ -14,7 +14,7 @@ fun Movie.toUiState(): MovieUiState {
     return MovieUiState(
         id = id,
         name = name,
-        poster = BASE_IMAGE_URL + poster,
+        poster = BASE_IMAGE_URL + posterUrl,
         productionYear = productionYear.toString(),
         rating = DecimalFormat("#.#").format(rating),
     )
