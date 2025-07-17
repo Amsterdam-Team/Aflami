@@ -18,14 +18,10 @@ import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
+import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -41,17 +37,17 @@ class SearchViewModel(
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     SearchInteractionListener, FilterInteractionListener {
 
-    private val _keyword = MutableStateFlow(state.value.keyword)
+    private val _keyword = MutableStateFlow("")
 
     init {
-        loadRecentSearches()
+        fetchRecentSearches()
         observeSearchKeywordChanges()
     }
 
-    private fun loadRecentSearches() {
+    private fun fetchRecentSearches() {
         startLoading()
         tryToExecute(
-            action = { getRecentSearchesUseCase() },
+            action = getRecentSearchesUseCase::invoke,
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion
@@ -62,19 +58,8 @@ class SearchViewModel(
         updateState { it.copy(recentSearches = recentSearches, errorUiState = null) }
     }
 
-    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
-        updateState { it.copy(recentSearches = emptyList()) }
-        return unit
-    }
-
-
     private fun observeSearchKeywordChanges() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _keyword.map(String::trim)
-                .debounce(300)
-                .filter(String::isNotBlank)
-                .collectLatest(::onSearchKeywordChanged)
-        }
+        viewModelScope.launch { _keyword.debounceSearch(::onSearchKeywordChanged) }
     }
 
     private fun onSearchKeywordChanged(keyword: String) {
@@ -101,9 +86,7 @@ class SearchViewModel(
     private fun fetchTvShowsByKeyword(keyword: String) {
         startLoading()
         tryToExecute(
-            action = {
-                getAndFilterTvShowsByKeywordUseCase(keyword = keyword)
-            },
+            action = { getAndFilterTvShowsByKeywordUseCase(keyword = keyword) },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion
@@ -175,13 +158,7 @@ class SearchViewModel(
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }
 
-    private fun startLoading() {
-        updateState {
-            it.copy(
-                isLoading = true,
-            )
-        }
-    }
+    private fun startLoading() = updateState { it.copy(isLoading = true) }
 
     override fun onKeywordValuedChanged(keyword: String) {
         _keyword.update { oldText -> keyword }
@@ -192,7 +169,7 @@ class SearchViewModel(
         onKeywordValuedChanged(state.value.keyword)
         tryToExecute(
             action = { addRecentSearchUseCase(state.value.keyword) },
-            onSuccess = { loadRecentSearches() },
+            onSuccess = { fetchRecentSearches() },
             onError = ::onFetchError,
             onCompletion = ::onCompletion
         )
@@ -211,14 +188,12 @@ class SearchViewModel(
     override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
 
     override fun onRetryQuestClicked() {
-        observeSearchKeywordChanges()
         updateState { it.copy(isLoading = true, errorUiState = null) }
     }
 
     override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onTabOptionClicked(tabOption: TabOption) {
-        observeSearchKeywordChanges()
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
@@ -230,30 +205,30 @@ class SearchViewModel(
         }
     }
 
-    override fun onRecentSearchClicked(keyword: String) {
-        onKeywordValuedChanged(keyword)
-        observeSearchKeywordChanges()
-    }
+    override fun onRecentSearchClicked(keyword: String) = onKeywordValuedChanged(keyword)
+
 
     override fun onRecentSearchCleared(keyword: String) {
-        updateState { it.copy(isLoading = true) }
-
+        startLoading()
         tryToExecute(
             action = { clearRecentSearchUseCase(searchKeyword = keyword) },
-            onSuccess = { loadRecentSearches() },
+            onSuccess = { fetchRecentSearches() },
             onError = ::onFetchError,
         )
     }
 
     override fun onAllRecentSearchesCleared() {
-        updateState { it.copy(isLoading = true) }
-
+        startLoading()
         tryToExecute(
             action = { clearAllRecentSearchesUseCase() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion
         )
+    }
+
+    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
+        updateState { it.copy(recentSearches = emptyList()) }
     }
 
     override fun onSearchCleared() {

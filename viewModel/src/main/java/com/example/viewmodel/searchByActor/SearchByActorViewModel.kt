@@ -6,14 +6,10 @@ import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -27,21 +23,14 @@ class SearchByActorViewModel(
 ),
     SearchByActorInteractionListener {
 
-    private val queryFlow = MutableStateFlow("")
+    private val _keyword = MutableStateFlow("")
 
     init {
         observeQueryFlow()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeQueryFlow() {
-        viewModelScope.launch {
-            queryFlow
-                .debounce(300)
-                .map(String::trim)
-                .filter(String::isNotBlank)
-                .collectLatest(::onSearchMoviesByActor)
-        }
+        viewModelScope.launch { _keyword.debounceSearch(::onSearchMoviesByActor) }
     }
 
     fun onSearchMoviesByActor(query: String) {
@@ -63,8 +52,8 @@ class SearchByActorViewModel(
     }
 
     override fun onUserSearch(query: String) {
-        queryFlow.update { oldText -> query }
-        updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
+        _keyword.update { oldText -> query }
+        updateState { it.copy(keyword = query, isLoading = query.isNotBlank()) }
     }
 
     private fun updateSearchByActorResult(movies: List<Movie>) {
