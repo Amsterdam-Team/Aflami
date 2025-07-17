@@ -80,7 +80,7 @@ private fun CastContent(
     ) {
         DefaultAppBar(
             title = stringResource(R.string.cast),
-            onNavigateBackClicked = interaction::onNavigateBackClicked
+            onNavigateBackClicked = interaction::onClickNavigateBack
         )
 
         AnimatedContent(
@@ -106,7 +106,7 @@ private fun CastContent(
                 errorState == CastErrorUiState.NoNetworkConnection -> {
                     NoNetworkContainer(
                         modifier = Modifier.fillMaxSize(),
-                        onClickRetry = interaction::onRetrySearchClick
+                        onClickRetry = interaction::onClickRetrySearch
                     )
                 }
 

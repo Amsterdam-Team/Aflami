@@ -47,8 +47,8 @@ class CastViewModel(
 
     private fun onGetMovieCastCompletion() = updateState { it.copy(isLoading = false) }
 
-    override fun onNavigateBackClicked() = sendNewEffect(CastUiEffect.NavigateBack)
+    override fun onClickNavigateBack() = sendNewEffect(CastUiEffect.NavigateBack)
 
-    override fun onRetrySearchClick() = fetchMovieCast()
+    override fun onClickRetrySearch() = fetchMovieCast()
 
 }
