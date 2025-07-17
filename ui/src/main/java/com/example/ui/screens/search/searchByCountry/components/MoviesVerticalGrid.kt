@@ -14,11 +14,11 @@ import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.shared.MovieItemUiState
 
 @Composable
 internal fun MoviesVerticalGrid(
-    movies: List<MediaItemUiState>,
+    movies: List<MovieItemUiState>,
     isVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -51,7 +51,7 @@ internal fun MoviesVerticalGrid(
 private fun MoviesVerticalGridPreview() {
     AflamiTheme {
         MoviesVerticalGrid(
-            movies = buildList(4) { MediaItemUiState(
+            movies = buildList(4) { MovieItemUiState(
                 id = 1,
                 name = stringResource(R.string.movie),
                 posterImageUrl = "https://unsplash.com/s/photos/free-images",

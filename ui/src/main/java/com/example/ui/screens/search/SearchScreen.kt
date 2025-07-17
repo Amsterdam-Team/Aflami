@@ -48,8 +48,6 @@ import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.ui.screens.search.sections.filterDialog.FilterDialog
-import com.example.viewmodel.shared.MediaItemUiState
-import com.example.viewmodel.shared.MediaType
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchErrorState
 import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
@@ -57,6 +55,8 @@ import com.example.viewmodel.search.searchByKeyword.SearchUiEffect
 import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import com.example.viewmodel.search.searchByKeyword.SearchViewModel
 import com.example.viewmodel.search.searchByKeyword.TabOption
+import com.example.viewmodel.shared.MovieItemUiState
+import com.example.viewmodel.shared.TvShowItemUiState
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -180,7 +180,13 @@ private fun SearchContent(
                     )
                 }
 
-                if (state.errorUiState == SearchErrorState.NoResultFoundException) {
+                val isSelectedTabSearchResultEmpty = if (state.selectedTabOption == TabOption.MOVIES) {
+                    state.movies.isEmpty()
+                } else {
+                    state.tvShows.isEmpty()
+                }
+
+                if (isSelectedTabSearchResultEmpty) {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
@@ -195,11 +201,17 @@ private fun SearchContent(
 
 @Composable
 private fun SuccessMediaItems(
-    movies: List<MediaItemUiState>,
-    tvShows: List<MediaItemUiState>,
+    movies: List<MovieItemUiState>,
+    tvShows: List<TvShowItemUiState>,
     selectedTabOption: TabOption,
     modifier: Modifier = Modifier
 ) {
+    val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
+        movies
+    } else {
+        tvShows
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -207,19 +219,27 @@ private fun SuccessMediaItems(
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
         modifier = modifier
     ) {
-        items(
-            if (selectedTabOption == TabOption.MOVIES) movies
-            else tvShows,
-        ) { mediaItem ->
-            with(mediaItem) {
-                MovieCard(
-                    movieImage = posterImageUrl,
-                    movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
-                    else stringResource(R.string.movies),
-                    movieYear = yearOfRelease,
-                    movieTitle = name,
-                    movieRating = rate,
-                )
+        items(selectedItems) { mediaItem ->
+            when (mediaItem) {
+                is MovieItemUiState -> {
+                    MovieCard(
+                        movieImage = mediaItem.posterImageUrl,
+                        movieType = stringResource(R.string.movies),
+                        movieYear = mediaItem.yearOfRelease,
+                        movieTitle = mediaItem.name,
+                        movieRating = mediaItem.rate,
+                    )
+                }
+
+                is TvShowItemUiState -> {
+                    MovieCard(
+                        movieImage = mediaItem.posterImageUrl,
+                        movieType = stringResource(R.string.tv_shows),
+                        movieYear = mediaItem.yearOfRelease,
+                        movieTitle = mediaItem.name,
+                        movieRating = mediaItem.rate,
+                    )
+                }
             }
         }
     }

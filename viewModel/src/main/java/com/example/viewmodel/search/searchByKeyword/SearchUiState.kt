@@ -2,15 +2,16 @@ package com.example.viewmodel.search.searchByKeyword
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.shared.MovieItemUiState
 import com.example.viewmodel.shared.Selectable
+import com.example.viewmodel.shared.TvShowItemUiState
 
 data class SearchUiState(
     val keyword: String = "",
     val recentSearches: List<String> = emptyList(),
     val selectedTabOption: TabOption = TabOption.MOVIES,
-    val movies: List<MediaItemUiState> = emptyList(),
-    val tvShows: List<MediaItemUiState> = emptyList(),
+    val movies: List<MovieItemUiState> = emptyList(),
+    val tvShows: List<TvShowItemUiState> = emptyList(),
     val isDialogVisible: Boolean = false,
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,

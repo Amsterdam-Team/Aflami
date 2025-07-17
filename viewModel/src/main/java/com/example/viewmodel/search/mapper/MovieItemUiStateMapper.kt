@@ -1,11 +1,11 @@
 package com.example.viewmodel.search.mapper
 
 import android.icu.text.DecimalFormat
-import com.example.entity.TvShow
-import com.example.viewmodel.shared.TvShowItemUiState
+import com.example.entity.Movie
+import com.example.viewmodel.shared.MovieItemUiState
 
-private fun TvShow.toMediaItemUiState(): TvShowItemUiState =
-    TvShowItemUiState(
+private fun Movie.toMediaItemUiState(): MovieItemUiState =
+    MovieItemUiState(
         id = id,
         name = name,
         posterImageUrl = poster,
@@ -13,4 +13,4 @@ private fun TvShow.toMediaItemUiState(): TvShowItemUiState =
         rate = DecimalFormat("#.#").format(rating).toString()
     )
 
-fun List<TvShow>.toTvShowUiStates() = map(TvShow::toMediaItemUiState)
+fun List<Movie>.toMoveUiStates() = map(Movie::toMediaItemUiState)
