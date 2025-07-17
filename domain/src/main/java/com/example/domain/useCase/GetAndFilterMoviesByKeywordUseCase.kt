@@ -3,7 +3,7 @@ package com.example.domain.useCase
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
-import kotlin.math.roundToInt
+import kotlin.math.floor
 
 class GetAndFilterMoviesByKeywordUseCase(
     private val movieRepository: MovieRepository
@@ -13,13 +13,19 @@ class GetAndFilterMoviesByKeywordUseCase(
         keyword: String,
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
-    ): List<Movie> {
-        return movieRepository
+    ): List<Movie> =
+        movieRepository
             .getMoviesByKeyword(keyword = keyword)
-            .filter { item -> item.rating.roundToInt() >= rating }
+            .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
+
+
+    private fun List<Movie>.filterMoviesWithRatingAndGenre(
+        rating: Int,
+        genre: MovieGenre
+    ): List<Movie> =
+        this.filter { item -> floor(item.rating) >= rating }
             .filter { movie ->
-                if (movieGenre == MovieGenre.ALL) return@filter true
-                movie.categories.any { it == movieGenre }
+                if (genre == MovieGenre.ALL) return@filter true
+                movie.categories.any { it == genre }
             }
-    }
 }

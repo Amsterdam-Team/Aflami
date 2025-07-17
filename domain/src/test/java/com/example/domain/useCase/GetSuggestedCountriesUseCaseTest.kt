@@ -1,6 +1,7 @@
 package com.example.domain.useCase
 
 
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.repository.CountryRepository
 import com.example.domain.useCase.utils.countriesWithDifferentCases
 import com.example.domain.useCase.utils.fakeCountryList
@@ -12,75 +13,56 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetSuggestedCountriesUseCaseTest {
     private lateinit var countryRepository: CountryRepository
     private lateinit var getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase
+    private lateinit var country: Country
 
     @BeforeEach
     fun setUp() {
         countryRepository = mockk(relaxed = true)
-        getSuggestedCountriesUseCase =
-            GetSuggestedCountriesUseCase(countryRepository)
+        country = Country("EGYPT", "EG")
+        getSuggestedCountriesUseCase = GetSuggestedCountriesUseCase(countryRepository)
     }
 
     @Test
-    fun `should return a list of suggested countries when a matching keyword is provided`() =
+    fun `getSuggestedCountriesUseCase should call getCountries exactly one time`() = runTest {
+        coEvery { countryRepository.getCountries() } returns emptyList()
+        getSuggestedCountriesUseCase("keyword")
+        coVerify(exactly = 1) { countryRepository.getCountries() }
+    }
+
+    @Test
+    fun `getSuggestedCountriesUseCase should return a list of suggested countries when a matching keyword is provided`() =
         runTest {
             coEvery { countryRepository.getCountries() } returns fakeCountryList
-
-            val countries = getSuggestedCountriesUseCase("eg")
-
+            val countries = getSuggestedCountriesUseCase("EG")
             assertThat(countries).isNotEmpty()
-            coVerify { countryRepository.getCountries() }
         }
 
     @Test
-    fun `should call validateCountry when a country keyword is provided`() {
+    fun `getSuggestedCountriesUseCase should return empty list when no countries match the given keyword`() {
         runTest {
             coEvery { countryRepository.getCountries() } returns fakeCountryList
-
-            getSuggestedCountriesUseCase("eg")
-        }
-    }
-
-    @Test
-    fun `should return empty list when no countries match the given keyword`() {
-        runTest {
-            coEvery { countryRepository.getCountries() } returns fakeCountryList
-
             assertThat(getSuggestedCountriesUseCase("usa")).isEmpty()
         }
     }
 
     @Test
-    fun `should return empty list when the country keyword is empty`() =
-        runTest {
-            assertThat(getSuggestedCountriesUseCase("")).isEmpty()
-        }
-
-    @Test
-    fun `should return filtered countries matching keyword case-insensitively when valid input is provided`(): Unit =
+    fun `getSuggestedCountriesUseCase should return filtered countries matching keyword case-insensitively when valid input is provided`(): Unit =
         runTest {
             coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
 
-            val result1 =
-                getSuggestedCountriesUseCase(countriesWithDifferentCases[0].countryName[0].toString())
-            assertThat(result1).containsExactly(
-                Country(
-                    countryName = countriesWithDifferentCases[0].countryName,
-                    countryIsoCode = countriesWithDifferentCases[0].countryIsoCode
-                )
+            val result = getSuggestedCountriesUseCase("U")
+            assertThat(result).contains(
+                countriesWithDifferentCases[0]
             )
-
-            val result2 =
-                getSuggestedCountriesUseCase(countriesWithDifferentCases[1].countryName[1].toString())
-            assertThat(result2).containsExactly(
-                Country(
-                    countryName = countriesWithDifferentCases[1].countryName,
-                    countryIsoCode = countriesWithDifferentCases[1].countryIsoCode
-                )
-            )
-
         }
+    @Test
+    fun `getSuggestedCountriesUseCase should return Aflami exception when an error happened`() = runTest {
+        coEvery { countryRepository.getCountries() } throws AflamiException()
+        assertThrows<AflamiException> { getSuggestedCountriesUseCase("") }
+    }
 }

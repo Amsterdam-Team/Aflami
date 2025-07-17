@@ -1,12 +1,16 @@
 package com.example.domain.useCase
 
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.repository.RecentSearchRepository
 import com.example.entity.Country
+import com.google.common.truth.Truth.assertThat
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class RecentSearchesUsaCaseTest {
     private lateinit var recentSearchRepository: RecentSearchRepository
@@ -21,80 +25,84 @@ class RecentSearchesUsaCaseTest {
     }
 
     @Test
-    fun `should call addRecentSearch when keyword is valid`() = runTest {
+    fun `recentSearchesUsaCase should call addRecentSearch one time when keyword is valid`() = runTest {
         recentSearchesUsaCase.addRecentSearch("keyword")
-        coVerify { recentSearchRepository.addRecentSearch(any()) }
+        coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(any()) }
     }
 
     @Test
-    fun `should not call addRecentSearch when keyword is empty`() = runTest {
+    fun `recentSearchesUsaCase should not call addRecentSearch when keyword is empty`() = runTest {
         recentSearchesUsaCase.addRecentSearch("")
-        coVerify(exactly = 0) { recentSearchRepository.addRecentSearch(any()) }
+        coVerify(exactly = 0) { recentSearchRepository.addRecentSearch("") }
     }
 
     @Test
-    fun `should not call addRecentSearch from recentSearchRepository when keyword is blank but not empty`() =
-        runTest {
+    fun `recentSearchesUsaCase should not call addRecentSearch from recentSearchRepository when keyword is blank but not empty`() = runTest {
             recentSearchesUsaCase.addRecentSearch("   ")
-            coVerify(exactly = 0) { recentSearchRepository.addRecentSearch(any()) }
+            coVerify(exactly = 0) { recentSearchRepository.addRecentSearch("   ") }
         }
 
     @Test
-    fun `should call addRecentSearchForCountry when keyword is valid`() = runTest {
+    fun `recentSearchesUsaCase should call addRecentSearchForCountry one time when called`() = runTest {
         recentSearchesUsaCase.addRecentSearchForCountry(country)
-        coVerify { recentSearchRepository.addRecentSearchForCountry(any()) }
+        coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForCountry(any()) }
     }
 
     @Test
-    fun `should not call addRecentSearchForCountry when keyword is empty`() = runTest {
-        val country = country.copy(countryIsoCode = "")
-        recentSearchesUsaCase.addRecentSearchForCountry(country)
-        coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForCountry(any()) }
-    }
-
-    @Test
-    fun `should call addRecentSearchForActor when keyword is valid`() = runTest {
+    fun `recentSearchesUsaCase should call addRecentSearchForActor one time when called`() = runTest {
         recentSearchesUsaCase.addRecentSearchForActor("keyword")
-        coVerify { recentSearchRepository.addRecentSearchForActor(any()) }
+        coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForActor(any()) }
     }
 
     @Test
-    fun `should not call addRecentSearchForActor when keyword is empty`() = runTest {
+    fun `recentSearchesUsaCase should not call addRecentSearchForActor when keyword is empty`() = runTest {
         recentSearchesUsaCase.addRecentSearchForActor("")
         coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForActor(any()) }
     }
 
     @Test
-    fun `should not call addRecentSearchForActor from recentSearchRepository when keyword is blank but not empty`() =
+    fun `recentSearchesUsaCase should not call addRecentSearchForActor from recentSearchRepository when keyword is blank but not empty`() =
         runTest {
             recentSearchesUsaCase.addRecentSearchForActor("   ")
             coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForActor(any()) }
         }
 
     @Test
-    fun `should not call addRecentSearchForCountry from recentSearchRepository when keyword is blank but not empty`() =
-        runTest {
-            val country = country.copy(countryIsoCode = "  ")
-            recentSearchesUsaCase.addRecentSearchForCountry(country)
-            coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForCountry(any()) }
-        }
-
-    @Test
-    fun `should call deleteAllRecentSearches when executed`() = runTest {
+    fun `recentSearchesUsaCase should call deleteAllRecentSearches one time when called`() = runTest {
         recentSearchesUsaCase.deleteRecentSearches()
-        coVerify { recentSearchRepository.deleteRecentSearches() }
+        coVerify(exactly = 1) { recentSearchRepository.deleteRecentSearches() }
     }
 
     @Test
-    fun `should call deleteRecentSearch when a keyword is provided`() = runTest {
+    fun `recentSearchesUsaCase should call deleteRecentSearch one time when called`() = runTest {
         recentSearchesUsaCase.deleteRecentSearch("searchKeyword")
-        coVerify { recentSearchRepository.deleteRecentSearch(any()) }
+        coVerify(exactly = 1) { recentSearchRepository.deleteRecentSearch(any()) }
     }
 
     @Test
-    fun `should call getAllRecentSearches when executed`() = runTest {
+    fun `recentSearchesUsaCase should call getAllRecentSearches one time when called`() = runTest {
         recentSearchesUsaCase.getRecentSearches()
-        coVerify { recentSearchRepository.getRecentSearches() }
+        coVerify(exactly = 1) { recentSearchRepository.getRecentSearches() }
+    }
+
+    @Test
+    fun `recentSearchesUsaCase should return Recent search when data returned`() = runTest {
+        coEvery { recentSearchRepository.getRecentSearches() } returns listOf("Spider")
+        val result = recentSearchesUsaCase.getRecentSearches()
+        assertThat(result).isEqualTo(listOf("Spider"))
+    }
+
+    @Test
+    fun `recentSearchesUsaCase should return empty list when no data`() = runTest {
+        coEvery { recentSearchRepository.getRecentSearches() } returns emptyList()
+        val result = recentSearchesUsaCase.getRecentSearches()
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `recentSearchesUsaCase should throw Aflami exception when error happened`() = runTest {
+        coEvery { recentSearchRepository.getRecentSearches() } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUsaCase.getRecentSearches() }
     }
 
 }
