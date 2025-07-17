@@ -203,6 +203,7 @@ class SearchViewModel(
                 filterItemUiState = FilterItemUiState()
             )
         }
+        onSearchKeywordChanged(_keyword.value)
     }
 
     override fun onClickRecentSearch(keyword: String) = onChangeSearchKeyword(keyword)
