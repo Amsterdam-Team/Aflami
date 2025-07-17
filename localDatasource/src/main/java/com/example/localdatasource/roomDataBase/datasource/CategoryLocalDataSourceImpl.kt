@@ -5,7 +5,7 @@ import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 
-class CategoryLocalSourceImpl(
+class CategoryLocalDataSourceImpl(
     private val dao: CategoryDao
 ) : CategoryLocalSource {
     override suspend fun upsertMovieCategories(categories: List<LocalMovieCategoryDto>) {

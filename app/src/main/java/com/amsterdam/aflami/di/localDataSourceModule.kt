@@ -1,11 +1,11 @@
 package com.amsterdam.aflami.di
 
 import com.example.localdatasource.roomDataBase.AflamiDatabase
-import com.example.localdatasource.roomDataBase.datasource.CategoryLocalSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.CountryLocalSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.MovieLocalSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.RecentSearchLocalSourceImpl
-import com.example.localdatasource.roomDataBase.datasource.TvShowLocalSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.CategoryLocalDataSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
 import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.local.CountryLocalSource
 import com.example.repository.datasource.local.MovieLocalSource
@@ -23,9 +23,9 @@ val localDataSourceModule = module {
     single { get<AflamiDatabase>().movieDao() }
     single { get<AflamiDatabase>().tvShowDao() }
     single { get<AflamiDatabase>().recentSearchDao() }
-    singleOf(::CategoryLocalSourceImpl) { bind<CategoryLocalSource>() }
-    singleOf(::CountryLocalSourceImpl) { bind<CountryLocalSource>() }
-    singleOf(::MovieLocalSourceImpl) { bind<MovieLocalSource>() }
-    singleOf(::TvShowLocalSourceImpl) { bind<TvShowLocalSource>() }
-    singleOf(::RecentSearchLocalSourceImpl) { bind<RecentSearchLocalSource>() }
+    singleOf(::CategoryLocalDataSourceImpl) { bind<CategoryLocalSource>() }
+    singleOf(::CountryLocalDataSourceImpl) { bind<CountryLocalSource>() }
+    singleOf(::MovieLocalDataSourceImpl) { bind<MovieLocalSource>() }
+    singleOf(::TvShowLocalDataSourceImpl) { bind<TvShowLocalSource>() }
+    singleOf(::RecentSearchLocalDataSourceImpl) { bind<RecentSearchLocalSource>() }
 }

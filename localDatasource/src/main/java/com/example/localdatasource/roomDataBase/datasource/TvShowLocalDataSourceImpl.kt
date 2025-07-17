@@ -7,7 +7,7 @@ import com.example.repository.dto.local.LocalTvShowWithSearchDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
 import com.example.repository.dto.local.utils.SearchType
 
-class TvShowLocalSourceImpl(
+class TvShowLocalDataSourceImpl(
     private val dao: TvShowDao
 ) : TvShowLocalSource {
 
