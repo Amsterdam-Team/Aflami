@@ -10,8 +10,6 @@ import com.example.repository.mapper.local.TvShowLocalMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
@@ -19,7 +17,6 @@ class TvShowRepositoryImpl(
     private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : TvShowRepository {
 
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> =
@@ -37,7 +34,6 @@ class TvShowRepositoryImpl(
             },
             onSuccess = { localTvShows -> tvLocalMapper.mapToTvShows(localTvShows) },
             onFailure = { emptyList() },
-            dispatcher = dispatcher
         )
 
     private suspend fun getTvShowsFromRemote(
@@ -49,7 +45,6 @@ class TvShowRepositoryImpl(
                 tvRemoteMapper.mapToTvShows(remoteTvShows)
             },
             onFailure = { aflamiException -> throw aflamiException },
-            dispatcher = dispatcher
         )
 
     private suspend fun saveTvShowsToDatabase(
@@ -64,6 +59,5 @@ class TvShowRepositoryImpl(
             },
             onSuccess = {},
             onFailure = {},
-            dispatcher = dispatcher
         )
 }

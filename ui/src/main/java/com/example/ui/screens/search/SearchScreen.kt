@@ -123,7 +123,9 @@ private fun SearchContent(
         )
 
         AnimatedVisibility(state.isLoading && state.errorUiState == null) {
-            LoadingContainer()
+            CenterOfScreenContainer(unneededSpace = headerHeight,) {
+                LoadingContainer()
+            }
         }
 
         AnimatedVisibility(
@@ -165,7 +167,7 @@ private fun SearchContent(
         )
 
         CenterOfScreenContainer(
-            unneededSpace = headerHeight / 3,
+            unneededSpace = headerHeight,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 8.dp, end = 8.dp)

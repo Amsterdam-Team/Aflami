@@ -37,7 +37,6 @@ espressoCore = "3.6.1"
 ktorClientContentNegotiation = "3.0.3"
 ktorVersion = "3.0.3"
 navigationCommonAndroid = "2.9.1"
-junitJupiter = "5.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -85,14 +84,12 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomRuntime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorVersion" }
-jupiter-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -106,3 +103,5 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 firebase-pref = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreferences" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 aflami-custom-plugin = { id = "com.thechance.plugin" }
+android-junit5 = { id = "de.mannodermaus.android-junit5" }
+android-java-library = { id = "java-library" }

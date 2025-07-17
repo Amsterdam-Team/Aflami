@@ -10,8 +10,6 @@ import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
@@ -20,7 +18,6 @@ class MovieRepositoryImpl(
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: MovieRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> =
         recentSearchHandler.isRecentSearchExpired(keyword, SearchType.BY_KEYWORD)
@@ -67,7 +64,6 @@ class MovieRepositoryImpl(
                 onSuccessGetMovies(remoteMovies, actorName, searchType)
             },
             onFailure = { aflamiException -> throw aflamiException },
-            dispatcher = dispatcher
         )
 
     private suspend fun getMoviesByCountryIsoCodeFromRemote(
@@ -80,7 +76,6 @@ class MovieRepositoryImpl(
                 onSuccessGetMovies(remoteMovies, countryIsoCode, searchType)
             },
             onFailure = { aflamiException -> throw aflamiException },
-            dispatcher = dispatcher
         )
 
     private suspend fun MovieRepositoryImpl.onSuccessGetMovies(
