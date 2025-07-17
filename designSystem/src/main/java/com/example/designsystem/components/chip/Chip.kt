@@ -1,4 +1,4 @@
-package com.example.designsystem.chip
+package com.example.designsystem.components.chip
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -58,8 +58,7 @@ fun Chip(
                     .background(
                         backgroundColor,
                         RoundedCornerShape(16.dp),
-                    )
-                    .border(1.dp, borderColor, RoundedCornerShape(16.dp))
+                    ).border(1.dp, borderColor, RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },

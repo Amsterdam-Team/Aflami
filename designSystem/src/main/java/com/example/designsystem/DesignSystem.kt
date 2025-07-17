@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.chip.Chip
 import com.example.designsystem.components.CategoryCard
 import com.example.designsystem.components.EpisodeCard
 import com.example.designsystem.components.GameCard
@@ -49,6 +48,7 @@ import com.example.designsystem.components.buttons.ConfirmButton
 import com.example.designsystem.components.buttons.FloatingActionButton
 import com.example.designsystem.components.buttons.OutlinedButton
 import com.example.designsystem.components.buttons.PlainTextButton
+import com.example.designsystem.components.chip.Chip
 import com.example.designsystem.components.customSnackBar.SnackBar
 import com.example.designsystem.components.customSnackBar.SnackBarStatus
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHub

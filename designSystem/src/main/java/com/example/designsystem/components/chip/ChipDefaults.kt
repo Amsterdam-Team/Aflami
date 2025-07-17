@@ -1,4 +1,4 @@
-package com.example.designsystem.chip
+package com.example.designsystem.components.chip
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
