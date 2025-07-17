@@ -17,7 +17,10 @@ class MovieLocalMapper(
             productionYear = movieWithCategories.movie.productionYear,
             rating = movieWithCategories.movie.rating,
             categories = categoryLocalMapper.mapToMovieCategories(movieWithCategories.categories),
-            popularity = movieWithCategories.movie.popularity
+            popularity = movieWithCategories.movie.popularity,
+            originCountry = movieWithCategories.movie.originCountry,
+            movieLength = movieWithCategories.movie.movieLength,
+            hasVideo = movieWithCategories.movie.hasVideo
         )
     }
 
@@ -29,7 +32,10 @@ class MovieLocalMapper(
             poster = movie.poster,
             productionYear = movie.productionYear,
             rating = movie.rating,
-            popularity = movie.popularity
+            popularity = movie.popularity,
+            movieLength = movie.movieLength,
+            originCountry = movie.originCountry,
+            hasVideo = movie.hasVideo
         )
     }
 
@@ -40,4 +46,5 @@ class MovieLocalMapper(
     fun mapToLocalMovies(movies: List<Movie>): List<LocalMovieDto> {
         return movies.map { mapToLocalMovie(it) }
     }
+
 }

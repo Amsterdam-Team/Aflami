@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.CategoryCard
 import com.example.designsystem.components.Chip
@@ -31,34 +30,36 @@ import com.example.designsystem.components.CustomMoodPickerCard
 import com.example.designsystem.components.CustomRadioButton
 import com.example.designsystem.components.CustomSlider
 import com.example.designsystem.components.EpisodeCard
+import com.example.designsystem.components.GameCard
+import com.example.designsystem.components.GameCardImageContentType
 import com.example.designsystem.components.GenreChip
 import com.example.designsystem.components.ListItem
 import com.example.designsystem.components.MovieCard
+import com.example.designsystem.components.RadioState
 import com.example.designsystem.components.Score
 import com.example.designsystem.components.SectionTitle
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.UpcomingCard
 import com.example.designsystem.components.appBar.HomeAppBar
-import com.example.designsystem.components.bottomNavBar.BottomNavBar
 import com.example.designsystem.components.bottomNavBar.BottomBarItems
+import com.example.designsystem.components.bottomNavBar.BottomNavBar
+import com.example.designsystem.components.buttons.ConfirmButton
 import com.example.designsystem.components.buttons.FloatingActionButton
-import com.example.designsystem.components.buttons.PrimaryButton
-import com.example.designsystem.components.buttons.SecondaryButton
-import com.example.designsystem.components.buttons.TextButton
+import com.example.designsystem.components.buttons.OutlinedButton
+import com.example.designsystem.components.buttons.PlainTextButton
 import com.example.designsystem.components.customSnackBar.SnackBar
 import com.example.designsystem.components.customSnackBar.SnackBarStatus
-import com.example.designsystem.components.gameCard.GameCard
-import com.example.designsystem.components.gameCard.GameCardImageContentType
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
 import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.components.guessGame.GuessPicture
 import com.example.designsystem.components.guessGame.GuessTitle
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun DesignSystem(){
+fun DesignSystem() {
     val scrollState = rememberScrollState()
     var selectedIndex by remember { mutableIntStateOf(0) }
     Column(
@@ -104,7 +105,7 @@ fun DesignSystem(){
             isNegative = false,
             isLoading = true
         )
-        PrimaryButton(
+        ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -112,7 +113,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = true
         )
-        PrimaryButton(
+        ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -120,7 +121,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = true
         )
-        PrimaryButton(
+        ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -128,7 +129,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = false
         )
-        PrimaryButton(
+        ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -136,7 +137,7 @@ fun DesignSystem(){
             isLoading = true,
             isEnabled = true
         )
-        SecondaryButton(
+        OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -144,7 +145,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = true
         )
-        SecondaryButton(
+        OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -152,7 +153,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = true
         )
-        SecondaryButton(
+        OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -160,7 +161,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = false
         )
-        SecondaryButton(
+        OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -168,7 +169,7 @@ fun DesignSystem(){
             isLoading = true,
             isEnabled = true
         )
-        TextButton(
+        PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -176,7 +177,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = true
         )
-        TextButton(
+        PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -184,7 +185,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = true
         )
-        TextButton(
+        PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -192,7 +193,7 @@ fun DesignSystem(){
             isLoading = false,
             isEnabled = false
         )
-        TextButton(
+        PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
             title = stringResource(R.string.add),
             onClick = {},
@@ -216,7 +217,7 @@ fun DesignSystem(){
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             GlobalSearchHub(
-                GlobalSearchHubUI.ACTOR,{}
+                GlobalSearchHubUI.ACTOR, {}
             )
             GlobalSearchHub(
                 GlobalSearchHubUI.WORLD, {}
@@ -260,8 +261,8 @@ fun DesignSystem(){
         CustomMoodPickerCard(
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-        CustomRadioButton(isEnable = true)
-        CustomRadioButton(isEnable = false)
+        CustomRadioButton(state = RadioState.Selected)
+        CustomRadioButton(state = RadioState.Unselected)
         GenreChip(
             genre = stringResource(R.string.action),
             selected = false
@@ -407,7 +408,7 @@ fun DesignSystem(){
             blurRadius = 8.dp,
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
-            showHint = true,
+            isHintVisible = true,
             onClick = {},
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -415,21 +416,21 @@ fun DesignSystem(){
             blurRadius = 8.dp,
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
-            showHint = false,
+            isHintVisible = false,
             onClick = {},
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         GuessTitle(
             title = "The Green Mile",
             points = 10,
-            showHint = true,
+            isHintVisible = true,
             onClick = {},
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         GuessTitle(
             title = "The Green Mile",
             points = 10,
-            showHint = false,
+            isHintVisible = false,
             onClick = {},
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -446,9 +447,9 @@ fun DesignSystem(){
     }
 }
 
-@Preview(heightDp = 2000)
+@ThemeAndLocalePreviews
 @Composable
-fun DesignSystemPreview(){
+private fun DesignSystemPreview() {
     AflamiTheme(isDarkTheme = true) {
         DesignSystem()
     }

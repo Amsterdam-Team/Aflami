@@ -17,13 +17,13 @@ fun UpcomingCard(
     movieTitle: String,
     movieType: String,
     movieYear: String,
-    modifier: Modifier = Modifier.size(328.dp, 196.dp),
+    modifier: Modifier = Modifier,
     movieRating: String? = null,
     movieContentDescription: String? = null,
     onClick: () -> Unit = {}
 ) {
     BaseCard(
-        modifier = modifier,
+        modifier = modifier.size(328.dp, 196.dp),
         movieImage = movieImage,
         movieContentDescription = movieContentDescription,
         movieTitle = movieTitle,

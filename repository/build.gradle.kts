@@ -1,16 +1,31 @@
+import java.util.Properties
+
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
+val baseImageUrl: String = properties.getProperty("baseImageUrl") ?: ""
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    id("de.mannodermaus.android-junit5")
+    alias(libs.plugins.android.junit5)
 }
 
 android {
     namespace = "com.example.repository"
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
+
+        buildConfigField(
+            "String",
+            "BASE_IMAGE_URL",
+            baseImageUrl
+        )
     }
 }
 
@@ -19,10 +34,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
     // Room
     implementation(libs.androidx.room.runtime)
-    testImplementation(libs.jupiter.junit.jupiter)
+    testImplementation(libs.junit.jupiter)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     // Date and Time

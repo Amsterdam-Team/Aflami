@@ -12,5 +12,5 @@ kotlin {
     }
 }
 dependencies{
-
+    implementation(libs.kotlinx.datetime)
 }

@@ -1,32 +1,31 @@
 package com.amsterdam.aflami.di
 
-import com.example.domain.useCase.GetMovieCategoriesUseCase
-import com.example.domain.useCase.GetMoviesByActorUseCase
-import com.example.domain.useCase.GetMoviesByCountryUseCase
-import com.example.domain.useCase.GetMoviesByKeywordUseCase
-import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.GetTvShowByKeywordUseCase
-import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
-import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
-import com.example.domain.useCase.search.ClearRecentSearchUseCase
-import com.example.domain.useCase.search.GetRecentSearchesUseCase
+import com.example.domain.useCase.*
+import com.example.domain.useCase.search.*
 import com.example.domain.validation.CountryValidator
 import com.example.domain.validation.CountryValidatorImp
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val useCaseModule = module{
-    singleOf(::GetMoviesByKeywordUseCase)
+val useCaseModule = module {
+    // Validators
+    singleOf(::CountryValidatorImp) { bind<CountryValidator>() }
+
+    // Use Cases
+    singleOf(::GetAndFilterMoviesByKeywordUseCase)
+    singleOf(::GetAndFilterTvShowsByKeywordUseCase)
+    singleOf(::GetMovieCastUseCase)
+    singleOf(::GetMovieDetailsUseCase)
+    singleOf(::GetMoviesByActorUseCase)
+    singleOf(::GetMoviesByCountryUseCase)
+    singleOf(::GetMovieCategoriesUseCase)
+    singleOf(::GetTvShowCategoriesUseCase)
+    singleOf(::GetSuggestedCountriesUseCase)
+
+    // Recent Search Use Cases
     singleOf(::GetRecentSearchesUseCase)
-    singleOf(::GetTvShowByKeywordUseCase)
     singleOf(::AddRecentSearchUseCase)
     singleOf(::ClearRecentSearchUseCase)
     singleOf(::ClearAllRecentSearchesUseCase)
-    single<CountryValidator> { CountryValidatorImp() }
-    single { GetSuggestedCountriesUseCase(get(), get()) }
-    single { GetMoviesByCountryUseCase(get()) }
-    single { GetMoviesByActorUseCase(get()) }
-    single { GetMovieCategoriesUseCase(get()) }
-    single { GetTvShowCategoriesUseCase(get()) }
 }

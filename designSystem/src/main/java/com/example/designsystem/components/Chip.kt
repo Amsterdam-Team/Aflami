@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
@@ -45,12 +46,12 @@ fun Chip(
     val iconColor = if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint
     val labelColor = if (isSelected) AppTheme.color.body else AppTheme.color.hint
     val borderColor = if (isSelected) AppTheme.color.stroke else AppTheme.color.surfaceHigh
-    Column(
+    Column(modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .size(56.dp)
                 .background(
                     backgroundColor,
@@ -58,9 +59,10 @@ fun Chip(
                 )
                 .border(1.dp, borderColor, RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
-                .clickable( interactionSource =  remember { MutableInteractionSource() },
-                    indication = ripple(color = iconColor,bounded = true)
-                    ,onClick = onClick),
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(color = iconColor, bounded = true), onClick = onClick
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -72,6 +74,7 @@ fun Chip(
             text = label,
             color = labelColor,
             style = AppTheme.textStyle.label.small,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -80,12 +83,12 @@ fun Chip(
 @Composable
 private fun ChipPreview() {
     AflamiTheme {
-            Chip(
-                icon = painterResource(
-                    R.drawable.ic_menu_square
-                ),
-                label = "All",
-                isSelected = true
-            )
+        Chip(
+            icon = painterResource(
+                R.drawable.ic_menu_square
+            ),
+            label = "All",
+            isSelected = true
+        )
     }
 }

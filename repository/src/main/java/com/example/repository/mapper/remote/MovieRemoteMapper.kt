@@ -2,6 +2,7 @@ package com.example.repository.mapper.remote
 
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
+import com.example.repository.BuildConfig
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
@@ -10,15 +11,21 @@ import com.example.repository.mapper.shared.mapToMovieCategory
 class MovieRemoteMapper {
 
     fun mapToMovie(remoteMovieItemDto: RemoteMovieItemDto): Movie {
+        val genresIds = if (remoteMovieItemDto.genreIds.isNotEmpty())
+            remoteMovieItemDto.genreIds
+        else remoteMovieItemDto.genres.map { it.id }
         return Movie(
             id = remoteMovieItemDto.id,
             name = remoteMovieItemDto.title,
             description = remoteMovieItemDto.overview,
-            poster = remoteMovieItemDto.posterPath.orEmpty(),
+            poster = BuildConfig.BASE_IMAGE_URL + remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
-            categories = mapGenreIdsToCategories(remoteMovieItemDto.genreIds),
+            categories = mapGenreIdsToCategories(genresIds),
             rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity
+            popularity = remoteMovieItemDto.popularity,
+            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
+            movieLength = remoteMovieItemDto.runtime,
+            hasVideo = remoteMovieItemDto.video
         )
     }
 
@@ -39,7 +46,10 @@ class MovieRemoteMapper {
             poster = remoteMovieItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteMovieItemDto.releaseDate),
             rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity
+            popularity = remoteMovieItemDto.popularity,
+            movieLength = remoteMovieItemDto.runtime,
+            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
+            hasVideo = remoteMovieItemDto.video
         )
     }
 

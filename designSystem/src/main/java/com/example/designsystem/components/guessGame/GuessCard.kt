@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,24 +41,25 @@ import com.example.designsystem.utils.autoMirroredContent
 fun GuessCard(
     points: Int,
     modifier: Modifier = Modifier,
-    showHint: Boolean,
+    isHintVisible: Boolean,
     onClick: () -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
 
     val cornerRadius by animateDpAsState(
-        targetValue = if (showHint) 0.dp else 24.dp,
+        targetValue = if (isHintVisible) 0.dp else 24.dp,
         animationSpec = tween(300)
     )
 
     Column {
         Box(
             modifier = modifier
-                .clip(RoundedCornerShape(
-                    topEnd = 24.dp,
-                    topStart = 24.dp,
-                    bottomStart = cornerRadius,
-                    bottomEnd = cornerRadius
+                .clip(
+                    RoundedCornerShape(
+                        topEnd = 24.dp,
+                        topStart = 24.dp,
+                        bottomStart = cornerRadius,
+                        bottomEnd = cornerRadius
                     )
                 )
                 .background(AppTheme.color.surface)
@@ -76,7 +76,7 @@ fun GuessCard(
         }
 
         AnimatedVisibility(
-            visible =  showHint,
+            visible = isHintVisible,
             exit = fadeOut(tween(800)) + shrinkVertically(tween(600))
         ) {
             BoxWithConstraints(
@@ -84,7 +84,7 @@ fun GuessCard(
                     .clip(RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp))
                     .background(AppTheme.color.surface)
                     .fillMaxWidth()
-                    .aspectRatio((336/32).toFloat())
+                    .aspectRatio((336 / 32).toFloat())
                     .clickable(
                         onClick = onClick
                     ),
@@ -134,7 +134,7 @@ private fun GuessCardPreview() {
     AflamiTheme {
         GuessCard(
             points = 10,
-            showHint = true,
+            isHintVisible = true,
             onClick = {}
         ) {
 

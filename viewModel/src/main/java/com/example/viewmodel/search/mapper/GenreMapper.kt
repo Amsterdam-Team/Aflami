@@ -2,9 +2,9 @@ package com.example.viewmodel.search.mapper
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.search.globalSearch.genre.MovieGenreItemUiState
-import com.example.viewmodel.search.globalSearch.genre.Selectable
-import com.example.viewmodel.search.globalSearch.genre.TvGenreItemUiState
+import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
+import com.example.viewmodel.search.searchByKeyword.genre.Selectable
+import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
 
 
 fun List<MovieGenreItemUiState>.selectByMovieGenre(movieGenre: MovieGenre): List<MovieGenreItemUiState> {

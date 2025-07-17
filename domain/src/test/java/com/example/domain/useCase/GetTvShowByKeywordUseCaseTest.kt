@@ -15,13 +15,13 @@ import org.junit.jupiter.api.assertThrows
 
 class GetTvShowByKeywordUseCaseTest {
     private lateinit var tvShowRepository: TvShowRepository
-    private lateinit var getTvShowByKeywordUseCase: GetTvShowByKeywordUseCase
+    private lateinit var getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase
 
 
     @BeforeEach
     fun setUp() {
         tvShowRepository = mockk(relaxed = true)
-        getTvShowByKeywordUseCase = GetTvShowByKeywordUseCase(tvShowRepository)
+        getAndFilterTvShowsByKeywordUseCase = GetAndFilterTvShowsByKeywordUseCase(tvShowRepository)
     }
 
     @Test
@@ -29,7 +29,7 @@ class GetTvShowByKeywordUseCaseTest {
         runBlocking {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
 
-            getTvShowByKeywordUseCase("keyword")
+            getAndFilterTvShowsByKeywordUseCase("keyword")
             coVerify { tvShowRepository.getTvShowByKeyword("keyword") }
         }
 
@@ -37,7 +37,7 @@ class GetTvShowByKeywordUseCaseTest {
     fun `should return a list of tv shows sorted by popularity when keyword search is successful`() =
         runBlocking {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
-            val tvShows = getTvShowByKeywordUseCase("keyword")
+            val tvShows = getAndFilterTvShowsByKeywordUseCase("keyword")
             assertThat(fakeTvShowList.sortedByDescending { it.popularity }).isEqualTo(tvShows)
         }
 
@@ -47,7 +47,7 @@ class GetTvShowByKeywordUseCaseTest {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns emptyList()
 
             assertThrows<NoSearchByKeywordResultFoundException> {
-                getTvShowByKeywordUseCase("nonexistentKeyword")
+                getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")
             }
         }
 
@@ -72,7 +72,7 @@ class GetTvShowByKeywordUseCaseTest {
                     poster = "",
                     productionYear = 2023,
                     categories = listOf(
-                        Category(id = 99, name = "Other", image = "")
+                        Category(id = 99, name = "Other", imageUrl = "")
                     ),
                     rating = 5.0f,
                     popularity = 5.0
@@ -81,7 +81,7 @@ class GetTvShowByKeywordUseCaseTest {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns specificTvShowList
 
             assertThrows<NoSearchByKeywordResultFoundException> {
-                getTvShowByKeywordUseCase("keyword", rating = 10, tvShowGenreId = 1)
+                getAndFilterTvShowsByKeywordUseCase("keyword", rating = 10, tvShowGenreId = 1)
             }
         }
 
@@ -89,7 +89,7 @@ class GetTvShowByKeywordUseCaseTest {
     fun `should return filtered tv shows when a minimum rating is specified`() = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithRatings
 
-        val result = getTvShowByKeywordUseCase("keyword", rating = 6)
+        val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 6)
 
         assertThat(result).hasSize(2)
 
@@ -101,7 +101,7 @@ class GetTvShowByKeywordUseCaseTest {
     fun `should return all tv shows when rating filter is 0`() = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithRatings
 
-        val result = getTvShowByKeywordUseCase("keyword", rating = 0)
+        val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 0)
 
         assertThat(result).isEqualTo(fakeTvShowListWithRatings.sortedByDescending { it.popularity })
     }
@@ -110,7 +110,7 @@ class GetTvShowByKeywordUseCaseTest {
     fun `should return filtered tv shows when a genre ID is specified`(): Unit = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
 
-        val result = getTvShowByKeywordUseCase("keyword", tvShowGenreId = 10)
+        val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvShowGenreId = 10)
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(
@@ -124,7 +124,7 @@ class GetTvShowByKeywordUseCaseTest {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
 
 
-        val result = getTvShowByKeywordUseCase("keyword", tvShowGenreId = 0)
+        val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvShowGenreId = 0)
 
         assertThat(result).isEqualTo(fakeTvShowListWithCategories.sortedByDescending { it.popularity })
     }
@@ -133,7 +133,7 @@ class GetTvShowByKeywordUseCaseTest {
     fun `should throw NoSearchByKeywordResultFoundException when no tv shows match the specified genre`(): Unit = runBlocking {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
         assertThrows<NoSearchByKeywordResultFoundException> {
-            getTvShowByKeywordUseCase("keyword", tvShowGenreId = 999)
+            getAndFilterTvShowsByKeywordUseCase("keyword", tvShowGenreId = 999)
         }
     }
 
@@ -212,7 +212,7 @@ class GetTvShowByKeywordUseCaseTest {
                 description = "",
                 poster = "",
                 productionYear = 2023,
-                categories = listOf(Category(id = 10L, name = "Action", image = "")),
+                categories = listOf(Category(id = 10L, name = "Action", imageUrl = "")),
                 rating = 8.0f,
                 popularity = 10.0
             ),
@@ -222,7 +222,7 @@ class GetTvShowByKeywordUseCaseTest {
                 description = "",
                 poster = "",
                 productionYear = 2023,
-                categories = listOf(Category(id = 20L, name = "Comedy", image = "")),
+                categories = listOf(Category(id = 20L, name = "Comedy", imageUrl = "")),
                 rating = 7.0f,
                 popularity = 9.0
             ),
@@ -233,8 +233,8 @@ class GetTvShowByKeywordUseCaseTest {
                 poster = "",
                 productionYear = 2023,
                 categories = listOf(
-                    Category(id = 10L, name = "Action", image = ""),
-                    Category(id = 30L, name = "Drama", image = "")
+                    Category(id = 10L, name = "Action", imageUrl = ""),
+                    Category(id = 30L, name = "Drama", imageUrl = "")
                 ),
                 rating = 7.5f,
                 popularity = 11.0
@@ -245,7 +245,7 @@ class GetTvShowByKeywordUseCaseTest {
                 description = "",
                 poster = "",
                 productionYear = 2023,
-                categories = listOf(Category(id = 40L, name = "Thriller", image = "")),
+                categories = listOf(Category(id = 40L, name = "Thriller", imageUrl = "")),
                 rating = 6.0f,
                 popularity = 8.0
             )

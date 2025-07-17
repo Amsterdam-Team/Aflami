@@ -99,4 +99,9 @@ class SearchByActorViewModel(
             }
         }
     }
+
+    override fun onMovieClicked(movieId : Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(SearchByActorEffect.NavigateToDetailsScreen)
+    }
 }

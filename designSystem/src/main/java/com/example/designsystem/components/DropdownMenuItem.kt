@@ -9,8 +9,8 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun DropdownMenuItem(
     text: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
 ) {
     androidx.compose.material3.DropdownMenuItem(
         text = {
