@@ -9,7 +9,7 @@ import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.domain.useCase.RecentSearchesUsaCase
+import com.example.domain.useCase.RecentSearchesUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -22,6 +22,6 @@ val useCaseModule = module {
     singleOf(::GetMovieCategoriesUseCase)
     singleOf(::GetTvShowCategoriesUseCase)
     singleOf(::GetSuggestedCountriesUseCase)
-    singleOf(::RecentSearchesUsaCase)
+    singleOf(::RecentSearchesUseCase)
     singleOf(::GetAndFilterTvShowsByKeywordUseCase)
 }

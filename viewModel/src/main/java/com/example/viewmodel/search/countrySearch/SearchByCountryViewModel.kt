@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.RecentSearchesUsaCase
+import com.example.domain.useCase.RecentSearchesUseCase
 import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.search.mapper.toCountry
 import com.example.viewmodel.search.mapper.toListOfUiState
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class SearchByCountryViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
-    private val recentSearchUseCase: RecentSearchesUsaCase,
+    private val recentSearchUseCase: RecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
     SearchByCountryScreenState(),

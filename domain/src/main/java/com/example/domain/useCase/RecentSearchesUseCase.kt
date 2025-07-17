@@ -3,7 +3,7 @@ package com.example.domain.useCase
 import com.example.domain.repository.RecentSearchRepository
 import com.example.entity.Country
 
-class RecentSearchesUsaCase(
+class RecentSearchesUseCase(
     private val recentSearchRepository: RecentSearchRepository
 ) {
     suspend fun addRecentSearch(keyword: String) =

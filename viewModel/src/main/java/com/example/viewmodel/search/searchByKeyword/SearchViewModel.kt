@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetAndFilterMoviesByKeywordUseCase
 import com.example.domain.useCase.GetAndFilterTvShowsByKeywordUseCase
-import com.example.domain.useCase.RecentSearchesUsaCase
+import com.example.domain.useCase.RecentSearchesUseCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 class SearchViewModel(
     private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
     private val getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase,
-    private val recentSearchesUsaCase: RecentSearchesUsaCase,
+    private val recentSearchesUseCase: RecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     SearchInteractionListener, FilterInteractionListener {
@@ -46,7 +46,7 @@ class SearchViewModel(
     private fun loadRecentSearches() {
         startLoading()
         tryToExecute(
-            action = { recentSearchesUsaCase.getRecentSearches() },
+            action = { recentSearchesUseCase.getRecentSearches() },
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion
@@ -192,7 +192,7 @@ class SearchViewModel(
     override fun onSearchActionClicked() {
         onKeywordValuedChanged(state.value.keyword)
         tryToExecute(
-            action = { recentSearchesUsaCase.addRecentSearch(state.value.keyword) },
+            action = { recentSearchesUseCase.addRecentSearch(state.value.keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
             onCompletion = ::onCompletion
@@ -240,7 +240,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = true) }
 
         tryToExecute(
-            action = { recentSearchesUsaCase.deleteRecentSearch(searchKeyword = keyword) },
+            action = { recentSearchesUseCase.deleteRecentSearch(searchKeyword = keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
         )
@@ -250,7 +250,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = true) }
 
         tryToExecute(
-            action = { recentSearchesUsaCase.deleteRecentSearches() },
+            action = { recentSearchesUseCase.deleteRecentSearches() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion
