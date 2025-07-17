@@ -14,6 +14,6 @@ data class Movie(
     override val rating: Float,
     override val popularity: Double,
     val originCountry: String,
-    val movieLength: Int,
+    val runTime: Int,
     val hasVideo : Boolean,
 ) : PopularitySortable, RatingFilterable
