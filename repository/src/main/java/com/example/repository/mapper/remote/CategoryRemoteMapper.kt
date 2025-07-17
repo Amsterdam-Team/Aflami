@@ -6,39 +6,36 @@ import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.remote.RemoteCategoryDto
 import com.example.repository.dto.remote.RemoteCategoryResponse
 
-class CategoryRemoteMapper {
+fun RemoteCategoryResponse.toCategories(): List<Category> {
+    return genres.map { it.toCategory() }
+}
 
-    fun mapToCategories(remoteCategoryResponse: RemoteCategoryResponse): List<Category> {
-        return remoteCategoryResponse.genres.map { mapToCategory(it) }
-    }
+fun RemoteCategoryResponse.toLocalMovieCategories(): List<LocalMovieCategoryDto> {
+    return genres.map { it.toLocalMovieCategory() }
+}
 
-    fun mapToLocalMovieCategories(remoteCategoryResponse: RemoteCategoryResponse): List<LocalMovieCategoryDto> {
-        return remoteCategoryResponse.genres.map { mapToLocalMovieCategory(it) }
-    }
+fun RemoteCategoryResponse.toLocalTvShowCategories(): List<LocalTvShowCategoryDto> {
+    return genres.map { it.toLocalTvShowCategory() }
+}
 
-    fun mapToLocalTvShowCategories(remoteCategoryResponse: RemoteCategoryResponse): List<LocalTvShowCategoryDto> {
-        return remoteCategoryResponse.genres.map { mapToLocalTvShowCategory(it) }
-    }
+fun RemoteCategoryDto.toCategory(): Category {
+    return Category(
+        id = id,
+        name = name,
+        image = ""
+    )
+}
 
-    private fun mapToCategory(remoteCategory: RemoteCategoryDto): Category {
-        return Category(
-            id = remoteCategory.id,
-            name = remoteCategory.name,
-            image = ""
-        )
-    }
+fun RemoteCategoryDto.toLocalMovieCategory(): LocalMovieCategoryDto {
+    return LocalMovieCategoryDto(
+        categoryId = id,
+        name = name
+    )
+}
 
-    private fun mapToLocalMovieCategory(remoteCategory: RemoteCategoryDto): LocalMovieCategoryDto {
-        return LocalMovieCategoryDto(
-            categoryId = remoteCategory.id,
-            name = remoteCategory.name
-        )
-    }
-
-    private fun mapToLocalTvShowCategory(remoteCategory: RemoteCategoryDto): LocalTvShowCategoryDto {
-        return LocalTvShowCategoryDto(
-            categoryId = remoteCategory.id,
-            name = remoteCategory.name
-        )
-    }
+fun RemoteCategoryDto.toLocalTvShowCategory(): LocalTvShowCategoryDto {
+    return LocalTvShowCategoryDto(
+        categoryId = id,
+        name = name
+    )
 }

@@ -1,39 +1,23 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Category
-import com.example.entity.category.MovieGenre
-import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.local.LocalMovieCategoryDto
-import com.example.repository.dto.local.LocalTvShowCategoryDto
-import com.example.repository.mapper.shared.mapToMovieCategory
-import com.example.repository.mapper.shared.mapToTvShowCategory
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class CategoryLocalMapper {
 
-    fun mapToMovieCategories(localMovieCategories: List<LocalMovieCategoryDto>): List<MovieGenre> {
-        return localMovieCategories.map { mapToMovieCategory(it) }
-    }
+fun Category.toLocal(): LocalMovieCategoryDto = LocalMovieCategoryDto(
+    categoryId = id,
+    name = name,
+)
 
-    fun mapToTvShowCategories(localTvShowCategories: List<LocalTvShowCategoryDto>): List<TvShowGenre> {
-        return localTvShowCategories.map { mapToTvShowCategory(it) }
-    }
+fun LocalMovieCategoryDto.toDomain(): Category = Category(
+    id = categoryId,
+    name = name,
+    image = ""
+)
 
-    fun mapToLocalMovieCategories(categories: List<Category>): List<LocalMovieCategoryDto> {
-        return categories.map { mapToLocalMovieCategory(it) }
-    }
-
-    fun mapToLocalMovieCategory(category: Category): LocalMovieCategoryDto {
-        return LocalMovieCategoryDto(
-            categoryId = category.id,
-            name = category.name,
-        )
-    }
-
-    private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieGenre {
-        return localMovieCategory.categoryId.mapToMovieCategory()
-    }
-
-    private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowGenre {
-        return localTvShowCategory.categoryId.mapToTvShowCategory()
-    }
+fun Flow<List<LocalMovieCategoryDto>>.toMovieCategoryListFlow(): Flow<List<Category>> {
+    return this.map { list -> list.map { it.toDomain() } }
 }
+

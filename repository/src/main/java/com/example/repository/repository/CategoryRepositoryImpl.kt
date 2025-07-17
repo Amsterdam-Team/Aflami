@@ -5,15 +5,16 @@ import com.example.entity.Category
 import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.remote.RemoteCategoryResponse
-import com.example.repository.mapper.local.CategoryLocalMapper
-import com.example.repository.mapper.remote.CategoryRemoteMapper
+import com.example.repository.mapper.remote.toCategories
+import com.example.repository.mapper.remote.toLocalMovieCategories
+import com.example.repository.mapper.remote.toLocalTvShowCategories
+import com.example.repository.mapper.local.toDomain
 import com.example.repository.utils.tryToExecute
+
 
 class CategoryRepositoryImpl(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
-    private val categoryLocalMapper: CategoryLocalMapper,
-    private val categoryRemoteMapper: CategoryRemoteMapper
 ) : CategoryRepository {
 
     override suspend fun getMovieCategories(): List<Category> {
@@ -23,7 +24,7 @@ class CategoryRepositoryImpl(
             function = { categoryRemoteSource.getMovieCategories() },
             onSuccess = { movieCategories ->
                 saveMovieCategoriesToDatabase(movieCategories)
-                categoryRemoteMapper.mapToCategories(movieCategories)
+                movieCategories.toCategories()
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -36,7 +37,7 @@ class CategoryRepositoryImpl(
             function = { categoryRemoteSource.getTvShowCategories() },
             onSuccess = { tvShowCategories ->
                 saveTvShowCategoriesToDatabase(tvShowCategories)
-                categoryRemoteMapper.mapToCategories(tvShowCategories)
+                tvShowCategories.toCategories()
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -46,14 +47,7 @@ class CategoryRepositoryImpl(
         return tryToExecute(
             function = { categoryLocalSource.getMovieCategories() },
             onSuccess = { localCategories ->
-                categoryLocalMapper.mapToMovieCategories(localCategories)
-                    .map { category ->
-                        Category(
-                            id = category.ordinal.toLong(),
-                            name = category.name,
-                            image = ""
-                        )
-                    }
+                localCategories.map { it.toDomain() }
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -63,7 +57,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertMovieCategories(
-                    categoryRemoteMapper.mapToLocalMovieCategories(movieCategories)
+                    movieCategories.toLocalMovieCategories()
                 )
             },
             onSuccess = {},
@@ -74,16 +68,9 @@ class CategoryRepositoryImpl(
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
         return tryToExecute(
             function = { categoryLocalSource.getTvShowCategories() },
-            onSuccess = { localCategories ->
-                categoryLocalMapper.mapToTvShowCategories(
-                    localCategories
-                ).map { category ->
-                    Category(
-                        id = category.ordinal.toLong(),
-                        name = category.name,
-                        image = ""
-                    )
-                }
+            onSuccess = {
+                localCategories ->
+                localCategories.map { it.toDomain() }
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -93,7 +80,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertTvShowCategories(
-                    categoryRemoteMapper.mapToLocalTvShowCategories(tvShowCategories)
+                    tvShowCategories.toLocalTvShowCategories()
                 )
             },
             onSuccess = {},
