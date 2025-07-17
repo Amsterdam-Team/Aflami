@@ -6,8 +6,9 @@ import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.mapper.local.MovieLocalMapper
-import com.example.repository.mapper.remote.MovieRemoteMapper
+import com.example.repository.mapper.local.toDomain
+import com.example.repository.mapper.remote.toLocalMovies
+import com.example.repository.mapper.remote.toMovies
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
 import kotlinx.datetime.Clock
@@ -15,8 +16,6 @@ import kotlinx.datetime.Clock
 class MovieRepositoryImpl(
     private val movieLocalSource: MovieLocalSource,
     private val movieDataSource: MovieRemoteSource,
-    private val movieLocalMapper: MovieLocalMapper,
-    private val movieRemoteMapper: MovieRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
@@ -66,7 +65,7 @@ class MovieRepositoryImpl(
                     keyword = keyword,
                     searchType = searchType,
                 )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                remoteMovies.toMovies()
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -85,7 +84,7 @@ class MovieRepositoryImpl(
                     keyword = actorName,
                     searchType = searchType
                 )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                remoteMovies.toMovies()
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -103,7 +102,7 @@ class MovieRepositoryImpl(
                     keyword = countryIsoCode,
                     searchType = searchType
                 )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                remoteMovies.toMovies()
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -117,7 +116,7 @@ class MovieRepositoryImpl(
                     searchType = searchType
                 )
             },
-            onSuccess = { localMovies -> movieLocalMapper.mapToMovies(localMovies) },
+            onSuccess = { localMovies -> localMovies.map { it.toDomain() } },
             onFailure = { emptyList() },
         )
     }
@@ -127,7 +126,7 @@ class MovieRepositoryImpl(
         keyword: String,
         searchType: SearchType
     ) {
-        val localMovies = movieRemoteMapper.mapToLocalMovies(remoteMovies)
+        val localMovies = remoteMovies.toLocalMovies()
         tryToExecute(
             function = {
                 movieLocalSource.addMoviesBySearchData(

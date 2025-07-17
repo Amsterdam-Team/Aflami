@@ -1,43 +1,70 @@
 package com.example.repository.mapper.local
 
 import com.example.entity.Movie
+import com.example.entity.category.MovieGenre
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
+import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.MovieWithCategories
+import com.example.repository.dto.local.utils.SearchType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class MovieLocalMapper(
-    private val categoryLocalMapper: CategoryLocalMapper
-) {
+fun MovieWithCategories.toDomain(): Movie {
+    return movie.toDomain(
+        categories = categories.mapNotNull { it.toDomainOrNull() }
+    )
+}
 
-    fun mapToMovie(movieWithCategories: MovieWithCategories): Movie {
-        return Movie(
-            id = movieWithCategories.movie.movieId,
-            name = movieWithCategories.movie.name,
-            description = movieWithCategories.movie.description,
-            poster = movieWithCategories.movie.poster,
-            productionYear = movieWithCategories.movie.productionYear,
-            rating = movieWithCategories.movie.rating,
-            categories = categoryLocalMapper.mapToMovieCategories(movieWithCategories.categories),
-            popularity = movieWithCategories.movie.popularity
+fun LocalMovieCategoryDto.toDomainOrNull(): MovieGenre? {
+    return runCatching { MovieGenre.valueOf(name.uppercase()) }.getOrNull()
+}
+
+fun MovieGenre.toLocalDto(): LocalMovieCategoryDto {
+    return LocalMovieCategoryDto(
+        categoryId = this.ordinal.toLong(),
+        name = this.name
+    )
+}
+
+fun LocalMovieDto.toDomain(categories: List<MovieGenre>): Movie {
+    return Movie(
+        id = movieId,
+        name = name,
+        description = description,
+        poster = poster,
+        productionYear = productionYear,
+        categories = categories,
+        rating = rating,
+        popularity = popularity
+    )
+}
+
+fun Movie.toLocalMovieDto(): LocalMovieDto {
+    return LocalMovieDto(
+        movieId = id,
+        name = name,
+        description = description,
+        poster = poster,
+        productionYear = productionYear,
+        popularity = popularity,
+        rating = rating
+    )
+}
+
+fun Movie.toSearchMovieCrossRefs(
+    searchKeyword: String,
+    searchType: SearchType
+): List<SearchMovieCrossRefDto> {
+    return categories.map {
+        SearchMovieCrossRefDto(
+            movieId = id,
+            searchKeyword = searchKeyword,
+            searchType = searchType
         )
     }
+}
 
-    fun mapToLocalMovie(movie: Movie): LocalMovieDto {
-        return LocalMovieDto(
-            movieId = movie.id,
-            name = movie.name,
-            description = movie.description,
-            poster = movie.poster,
-            productionYear = movie.productionYear,
-            rating = movie.rating,
-            popularity = movie.popularity
-        )
-    }
-
-    fun mapToMovies(moviesWithCategories: List<MovieWithCategories>): List<Movie> {
-        return moviesWithCategories.map { mapToMovie(it) }
-    }
-
-    fun mapToLocalMovies(movies: List<Movie>): List<LocalMovieDto> {
-        return movies.map { mapToLocalMovie(it) }
-    }
+fun Flow<List<MovieWithCategories>>.toMovieListFlow(): Flow<List<Movie>> {
+    return this.map { list -> list.map { it.toDomain() } }
 }
