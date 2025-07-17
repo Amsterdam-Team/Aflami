@@ -249,7 +249,7 @@ fun MovieContent(
     }
 }
 
-fun LazyListScope.ReviewSection(reviews: List<ReviewUiState>) {
+private fun LazyListScope.ReviewSection(reviews: List<ReviewUiState>) {
     if (reviews.isEmpty())
         item {
             EmptyStateText(stringResource(com.example.ui.R.string.there_is_no_reviews))
@@ -261,7 +261,7 @@ fun LazyListScope.ReviewSection(reviews: List<ReviewUiState>) {
         }
 }
 
-fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
+private fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
     if (similarMovies.isEmpty())
         item {
             EmptyStateText(stringResource(com.example.ui.R.string.there_is_no_production_company))
@@ -284,7 +284,7 @@ fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
         }
 }
 
-fun LazyListScope.CompanyProductionSection(companies: List<ProductionCompanyUiState>) {
+private fun LazyListScope.CompanyProductionSection(companies: List<ProductionCompanyUiState>) {
     itemsIndexed(companies.chunked(2), key = { index, _ -> index }) { index, rowCompanies ->
         Row(
             modifier = Modifier
@@ -307,7 +307,7 @@ fun LazyListScope.CompanyProductionSection(companies: List<ProductionCompanyUiSt
 }
 
 @Composable
-fun CastSection(
+private fun CastSection(
     modifier: Modifier = Modifier,
     actors: List<ActorUiState>,
     onClickAllCast: () -> Unit
