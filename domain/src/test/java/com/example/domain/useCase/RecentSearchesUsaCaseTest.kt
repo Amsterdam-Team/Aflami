@@ -21,7 +21,7 @@ class RecentSearchesUsaCaseTest {
     }
 
     @Test
-    fun `should call addRecentSearch when keyword is valid`() = runTest {
+    fun `recentSearchesUsaCase should call addRecentSearch when keyword is valid`() = runTest {
         recentSearchesUsaCase.addRecentSearch("keyword")
         coVerify { recentSearchRepository.addRecentSearch(any()) }
     }

@@ -1,5 +1,6 @@
 package com.example.domain.useCase
 
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.repository.MovieRepository
 import com.example.domain.useCase.utils.fakeMovieList
 import com.example.entity.Movie
@@ -11,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetMoviesByActorUseCaseTest {
     private lateinit var movieRepository: MovieRepository
@@ -23,14 +25,13 @@ class GetMoviesByActorUseCaseTest {
     }
 
     @Test
-    fun `should call getMoviesByActor when an actor name is provided`() =
-        runTest {
+    fun `getMoviesByActorUseCase should call getMoviesByActor exactly one time when called`() = runTest {
             getMoviesByActorUseCase("actorName")
-            coVerify { movieRepository.getMoviesByActor(any()) }
+            coVerify(exactly = 1) { movieRepository.getMoviesByActor(any()) }
         }
 
     @Test
-    fun `should return movies sorted by popularity descending when data is available`() = runTest {
+    fun `getMoviesByActorUseCase should return movies when data is available`() = runTest {
         coEvery { movieRepository.getMoviesByActor("actorName") } returns fakeMovieList
 
         val result = getMoviesByActorUseCase("actorName")
@@ -38,10 +39,16 @@ class GetMoviesByActorUseCaseTest {
     }
 
     @Test
-    fun `should return an empty list when repository returns no movies`() = runTest {
+    fun `getMoviesByActorUseCase should return an empty list when repository returns no movies`() = runTest {
         coEvery { movieRepository.getMoviesByActor(any()) } returns emptyList()
 
         val result = getMoviesByActorUseCase("nonexistentActor")
         assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `getMoviesByActorUseCase should return Aflami exception when an error happened`() = runTest {
+        coEvery { movieRepository.getMoviesByActor("actorName") } throws AflamiException()
+        assertThrows<AflamiException> { getMoviesByActorUseCase("actorName") }
     }
 }
