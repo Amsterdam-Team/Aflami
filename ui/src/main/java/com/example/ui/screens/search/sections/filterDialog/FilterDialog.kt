@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.designsystem.R
-import com.example.designsystem.components.Chip
+import com.example.designsystem.chip.Chip
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.IconButton
 import com.example.designsystem.components.Text
@@ -70,45 +70,48 @@ internal fun FilterDialog(
         selectedMovieGenre = filterState.selectableMovieGenres.getSelectedGenreType(),
         selectedTvGenre = filterState.selectableTvShowGenres.getSelectedGenreType(),
         isFilterCleared = isFilterCleared,
-        onFilterClearHandled = { isFilterCleared = false }
+        onFilterClearHandled = { isFilterCleared = false },
     )
 
     Dialog(
         onDismissRequest = { onCancelButtonClicked() },
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false
-        )
+        properties =
+            DialogProperties(
+                usePlatformDefaultWidth = false,
+            ),
     ) {
         Column(
-            modifier = modifier
-                .fillMaxWidth(0.9f)
-                .background(
-                    color = AppTheme.color.surface,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 12.dp),
+            modifier =
+                modifier
+                    .fillMaxWidth(0.9f)
+                    .background(
+                        color = AppTheme.color.surface,
+                        shape = RoundedCornerShape(12.dp),
+                    ).verticalScroll(rememberScrollState())
+                    .padding(vertical = 12.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = stringResource(R.string.filter_result),
                     color = AppTheme.color.title,
                     fontStyle = AppTheme.textStyle.title.large.fontStyle,
                     style = AppTheme.textStyle.title.large,
-                    modifier = Modifier
-                        .weight(1f)
+                    modifier =
+                        Modifier
+                            .weight(1f),
                 )
 
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = null,
                     onClick = { onCancelButtonClicked() },
-                    tint = AppTheme.color.title
+                    tint = AppTheme.color.title,
                 )
             }
             Text(
@@ -116,26 +119,29 @@ internal fun FilterDialog(
                 color = AppTheme.color.title,
                 fontStyle = AppTheme.textStyle.title.small.fontStyle,
                 style = AppTheme.textStyle.title.small,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp),
             )
             RatingBar(
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
                 selectedStarIndex = filterState.selectedStarIndex,
-                onRatingStarChanged = onRatingStarChanged
+                onRatingStarChanged = onRatingStarChanged,
             )
             Text(
                 text = stringResource(R.string.genre),
                 color = AppTheme.color.title,
                 fontStyle = AppTheme.textStyle.title.small.fontStyle,
                 style = AppTheme.textStyle.title.small,
-                modifier = Modifier
-                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
+                modifier =
+                    Modifier
+                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
             )
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                 state = lazyState,
                 contentPadding = PaddingValues(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
@@ -145,7 +151,7 @@ internal fun FilterDialog(
                     TabOption.MOVIES -> {
                         items(
                             items = filterState.selectableMovieGenres,
-                            key = { it.selectableMovieGenre.type.name }
+                            key = { it.selectableMovieGenre.type.name },
                         ) { category ->
                             val genreType = category.selectableMovieGenre.type
                             Chip(
@@ -155,13 +161,12 @@ internal fun FilterDialog(
                                 onClick = { onMovieGenreButtonChanged(genreType) },
                             )
                         }
-
                     }
 
                     TabOption.TV_SHOWS -> {
                         items(
                             items = filterState.selectableTvShowGenres,
-                            key = { it.selectableTvShowGenre.type.name }
+                            key = { it.selectableTvShowGenre.type.name },
                         ) { category ->
                             val genreType = category.selectableTvShowGenre.type
                             Chip(
@@ -201,31 +206,34 @@ internal fun FilterDialog(
 private fun RatingBar(
     selectedStarIndex: Int,
     onRatingStarChanged: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     Row(
-        modifier = modifier.padding(horizontal = 12.dp)
+        modifier = modifier.padding(horizontal = 12.dp),
     ) {
         repeat(10) { index ->
             val starIndex = index + 1
             Icon(
-                painter = painterResource(
-                    id = if (selectedStarIndex >= starIndex)
-                        R.drawable.ic_filled_star
-                    else
-                        R.drawable.ic_outlined_star
-                ),
+                painter =
+                    painterResource(
+                        id =
+                            if (selectedStarIndex >= starIndex) {
+                                R.drawable.ic_filled_star
+                            } else {
+                                R.drawable.ic_outlined_star
+                            },
+                    ),
                 contentDescription = null,
                 tint = AppTheme.color.yellowAccent,
-                modifier = Modifier
-                    .size(24.dp)
-                    .weight(1f)
-                    .clickable(
-                        onClick = { onRatingStarChanged(starIndex) },
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    )
+                modifier =
+                    Modifier
+                        .size(24.dp)
+                        .weight(1f)
+                        .clickable(
+                            onClick = { onRatingStarChanged(starIndex) },
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ),
             )
         }
     }

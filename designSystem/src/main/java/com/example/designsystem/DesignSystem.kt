@@ -24,8 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.chip.Chip
 import com.example.designsystem.components.CategoryCard
-import com.example.designsystem.components.Chip
 import com.example.designsystem.components.CustomMoodPickerCard
 import com.example.designsystem.components.CustomRadioButton
 import com.example.designsystem.components.CustomSlider

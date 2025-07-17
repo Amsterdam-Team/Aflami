@@ -1,4 +1,4 @@
-package com.example.designsystem.components
+package com.example.designsystem.chip
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -34,29 +34,32 @@ fun Chip(
     label: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
+    colors: ChipColor = ChipDefaults.chipColors(),
     onClick: () -> Unit = {},
 ) {
     val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) AppTheme.color.secondary else AppTheme.color.surfaceHigh,
+        targetValue = if (isSelected) colors.backgroundSelectedColor else colors.backgroundUnselectedColor,
         animationSpec = tween(durationMillis = 500),
         label = "BackgroundColorAnimation",
     )
 
-    val iconColor = if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint
-    val labelColor = if (isSelected) AppTheme.color.body else AppTheme.color.hint
-    val borderColor = if (isSelected) AppTheme.color.stroke else AppTheme.color.surfaceHigh
+    val iconColor = if (isSelected) colors.iconSelectedColor else colors.iconUnselectedColor
+    val labelColor = if (isSelected) colors.labelSelectedColor else colors.labelUnselectedColor
+    val borderColor = if (isSelected) colors.borderSelectedColor else colors.borderUnselectedColor
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier,
     ) {
         Box(
             modifier =
-                modifier
+                Modifier
                     .size(56.dp)
                     .background(
                         backgroundColor,
                         RoundedCornerShape(16.dp),
-                    ).border(1.dp, borderColor, RoundedCornerShape(16.dp))
+                    )
+                    .border(1.dp, borderColor, RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
