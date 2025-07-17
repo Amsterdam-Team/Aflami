@@ -7,6 +7,6 @@ class AddRecentSearchUseCase(
 ) {
     suspend operator fun invoke(keyword: String) {
         if (keyword.isBlank()) return
-        recentSearchRepository.upsertRecentSearch(keyword)
+        recentSearchRepository.addRecentSearch(keyword)
     }
 }

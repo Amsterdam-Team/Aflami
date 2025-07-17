@@ -35,7 +35,7 @@ class RecentSearchRepositoryImplTest {
     fun `should upsert keyword search`() = runTest {
         coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
-        repository.upsertRecentSearch(testKeyword)
+        repository.addRecentSearch(testKeyword)
 
         coVerify {
             recentSearchLocalSource.upsertRecentSearch(
@@ -51,7 +51,7 @@ class RecentSearchRepositoryImplTest {
     fun `should upsert actor search`() = runTest {
         coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
-        repository.upsertRecentSearchForActor(testKeyword)
+        repository.addRecentSearchForActor(testKeyword)
 
         coVerify {
             recentSearchLocalSource.upsertRecentSearch(
@@ -67,7 +67,7 @@ class RecentSearchRepositoryImplTest {
     fun `should upsert country search`() = runTest {
         coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
-        repository.upsertRecentSearchForCountry(testKeyword)
+        repository.addRecentSearchForCountry(testKeyword)
 
         coVerify {
             recentSearchLocalSource.upsertRecentSearch(
