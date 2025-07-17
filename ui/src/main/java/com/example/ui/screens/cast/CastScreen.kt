@@ -39,10 +39,10 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
-import com.example.viewmodel.cast.CastErrorUiState
 import com.example.viewmodel.cast.CastInteractionListener
 import com.example.viewmodel.cast.CastUiEffect
 import com.example.viewmodel.cast.CastUiState
+import com.example.viewmodel.cast.CastUiState.CastErrorUiState
 import com.example.viewmodel.cast.CastViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
@@ -94,7 +94,7 @@ private fun CastContent(
             when {
                 isLoading -> LoadingContainer()
 
-                errorState == CastErrorUiState.NoCastFound -> {
+                 state.cast.isEmpty() -> {
                     NoDataContainer(
                         modifier = Modifier.fillMaxSize(),
                         title = stringResource(R.string.cast_not_available),
