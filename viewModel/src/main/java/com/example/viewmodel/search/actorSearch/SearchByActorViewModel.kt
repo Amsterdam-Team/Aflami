@@ -1,16 +1,14 @@
 package com.example.viewmodel.search.actorSearch
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
-import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.search.globalSearch.mapToSearchUiState
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -30,82 +28,75 @@ class SearchByActorViewModel(
 ),
     SearchByActorInteractionListener {
 
-    private val _keyword = MutableStateFlow("")
+    private val queryFlow = MutableStateFlow("")
 
     init {
-        observeKeywordFlow()
+        observeActorSearchQuery()
     }
 
-    private fun observeKeywordFlow() {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeActorSearchQuery() {
         viewModelScope.launch {
-            _keyword
-                .debounce(DEBOUNCE_DURATION)
+            queryFlow
+                .debounce(300)
                 .map(String::trim)
                 .filter(String::isNotBlank)
-                .collectLatest(::onGetActorsMoviesSuccess)
+                .collectLatest(::executeActorSearch)
         }
     }
 
-    private fun onGetActorsMoviesSuccess(keyword: String) {
-        updateState { it.copy(isLoading = true) }
+    fun executeActorSearch(query: String) {
         tryToExecute(
-            action = { getMoviesByActorUseCase(keyword) },
-            onSuccess = ::updateSearchByActorResult,
-            onError = ::onGetActorsMoviesError
+            action = { getMoviesByActorUseCase(query) },
+            onSuccess = ::handleSearchResults,
+            onError = ::onError
         )
     }
 
-    private fun onGetActorsMoviesError(message: AflamiException) {
-        Log.d("actor","${message}  ,,, ${message::class.simpleName}")
-        updateState {
-            it.copy(
-                isLoading = false,
-                movies = emptyList(),
-                noInternetException = message is NoInternetException
-            )
-        }
+    override fun onUserSearch(query: String) {
+        queryFlow.update { oldText -> query }
+        updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
     }
-    private fun onFetchError(exception: AflamiException) {
-        updateState { it.copy(errorUiState = mapToActorSearchUiState(exception)) }
-    }
-    private fun updateSearchByActorResult(movies: List<Movie>) {
+
+    private fun handleSearchResults(movies: List<Movie>) {
         updateState {
             it.copy(
                 movies = movies.toListOfUiState(),
                 isLoading = false,
-                noInternetException = false
+                isNetworkError = false
             )
         }
     }
 
-    override fun onKeywordValueChanged(keyword: String) {
-        _keyword.update { keyword }
-        if (keyword.isBlank()) {
-            updateState { it.copy(
-                keyword = "",
-                isLoading = false,
-                movies = emptyList(),
-                noInternetException = false
-            ) }
-        } else {
-            updateState { it.copy(
-                keyword = keyword,
-                isLoading = true,
-                noInternetException = false
-            ) }
-        }
-    }
-
-    override fun onNavigateBackClicked() {
+    override fun onNavigateBackClick() {
         sendNewEffect(SearchByActorEffect.NavigateBack)
     }
 
-    override fun onRetryQuestClicked() {
-        updateState { it.copy(isLoading = true,noInternetException = false) }
-        observeKeywordFlow()
+    override fun onRetrySearchClick() {
+        updateState { it.copy(isLoading = true) }
+        executeActorSearch(state.value.query)
     }
 
-    companion object {
-        private const val DEBOUNCE_DURATION = 300L
+    override fun onMovieClicked(movieId: Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(SearchByActorEffect.NavigateToDetailsScreen)
+    }
+
+    private fun onError(aflamiException: AflamiException) {
+        updateState {
+            when (aflamiException) {
+                is NetworkException -> it.copy(
+                    isNetworkError = true,
+                    isLoading = false,
+                    movies = emptyList()
+                )
+
+                else -> it.copy(
+                    isNetworkError = false,
+                    isLoading = false,
+                    movies = emptyList()
+                )
+            }
+        }
     }
 }
