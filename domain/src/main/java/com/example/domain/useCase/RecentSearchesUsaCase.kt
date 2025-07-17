@@ -1,24 +1,29 @@
 package com.example.domain.useCase
 
 import com.example.domain.repository.RecentSearchRepository
+import com.example.entity.Country
 
 class RecentSearchesUsaCase(
     private val recentSearchRepository: RecentSearchRepository
 ) {
-    suspend fun addRecentSearch(keyword: String) {
-        if (keyword.isBlank()) return
-        recentSearchRepository.addRecentSearch(keyword)
-    }
+    suspend fun addRecentSearch(keyword: String) =
+        keyword.takeIf { it.isNotBlank() }
+            .also { recentSearchRepository.addRecentSearch(keyword) }
 
-    suspend fun getRecentSearches(): List<String> {
-        return recentSearchRepository.getRecentSearches()
-    }
+    suspend fun addRecentSearchForCountry(country: Country) =
+        country.countryIsoCode.takeIf { it.isNotBlank() }
+            .also { recentSearchRepository.addRecentSearchForCountry(country.countryIsoCode) }
 
-    suspend fun deleteRecentSearch(searchKeyword: String) {
+    suspend fun addRecentSearchForActor(actorName: String) =
+        actorName.takeIf { it.isNotBlank() }
+            .also { recentSearchRepository.addRecentSearchForActor(actorName) }
+
+    suspend fun getRecentSearches(): List<String> =
+        recentSearchRepository.getRecentSearches()
+
+    suspend fun deleteRecentSearch(searchKeyword: String) =
         recentSearchRepository.deleteRecentSearch(searchKeyword = searchKeyword)
-    }
 
-    suspend fun deleteRecentSearches() {
+    suspend fun deleteRecentSearches() =
         recentSearchRepository.deleteRecentSearches()
-    }
 }
