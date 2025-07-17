@@ -31,4 +31,8 @@ dependencies {
 
     // Unit Testing
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit.jupiter)
+
 }
