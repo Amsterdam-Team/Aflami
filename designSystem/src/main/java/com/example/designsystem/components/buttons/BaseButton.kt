@@ -1,6 +1,5 @@
 package com.example.designsystem.components.buttons
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -29,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.LoadingIndicator
@@ -45,7 +42,7 @@ internal fun BaseButton(
     isSecondary: Boolean,
     modifier: Modifier = Modifier,
     title: String? = null,
-    @DrawableRes icon: Int? = null,
+    icon: (@Composable (tint: Color) -> Unit)? = null,
     iconSize: Dp = 20.dp,
     height: Dp = 56.dp,
     width: Dp = Dp.Unspecified,
@@ -114,11 +111,7 @@ internal fun BaseButton(
             visible = icon != null && !isLoading,
             modifier = Modifier.size(animatedIconSize),
         ) {
-            Icon(
-                painter = painterResource(icon!!),
-                contentDescription = null,
-                tint = contentColor,
-            )
+            icon?.invoke(contentColor)
         }
 
         AnimatedVisibility(

@@ -1,10 +1,10 @@
 package com.example.designsystem.components.buttons
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
@@ -19,7 +19,7 @@ fun ConfirmButton(
     isLoading: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
-    @DrawableRes icon: Int? = null,
+    icon: (@Composable (tint: Color) -> Unit)? = null,
 ) {
     BaseButton(
         title = title,

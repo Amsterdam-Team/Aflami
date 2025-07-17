@@ -33,6 +33,7 @@ import com.example.designsystem.components.EpisodeCard
 import com.example.designsystem.components.GameCard
 import com.example.designsystem.components.GameCardImageContentType
 import com.example.designsystem.components.GenreChip
+import com.example.designsystem.components.Icon
 import com.example.designsystem.components.ListItem
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.components.RadioState
@@ -90,19 +91,34 @@ fun DesignSystem() {
                 ),
         )
         FloatingActionButton(
-            icon = R.drawable.ic_add,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null,
+                )
+            },
             onClick = {},
             isNegative = false,
             isLoading = false,
         )
         FloatingActionButton(
-            icon = R.drawable.ic_add,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null,
+                )
+            },
             onClick = {},
             isNegative = true,
             isLoading = false,
         )
         FloatingActionButton(
-            icon = R.drawable.ic_add,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null,
+                )
+            },
             onClick = {},
             isNegative = false,
             isLoading = true,
