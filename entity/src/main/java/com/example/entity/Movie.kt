@@ -11,4 +11,7 @@ data class Movie(
     val categories: List<MovieGenre>,
     val rating: Float,
     val popularity: Double,
+    val originCountry: String,
+    val runTime: Int,
+    val hasVideo : Boolean,
 )

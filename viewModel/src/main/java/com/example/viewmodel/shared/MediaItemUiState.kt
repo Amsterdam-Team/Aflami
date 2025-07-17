@@ -1,4 +1,4 @@
-package com.example.viewmodel.common
+package com.example.viewmodel.shared
 
 import android.icu.text.DecimalFormat
 import com.example.entity.Movie
@@ -7,6 +7,7 @@ import com.example.entity.TvShow
 const val base_image_url = "https://image.tmdb.org/t/p/w500"
 
 data class MediaItemUiState(
+    val id : Long = 0,
     val name: String = "",
     val posterImage: String = "",
     val mediaType: MediaType = MediaType.MOVIE,
@@ -21,6 +22,7 @@ enum class MediaType {
 
 private fun Movie.toMediaItemUiState(): MediaItemUiState =
     MediaItemUiState(
+        id = id,
         name = name,
         posterImage = base_image_url + posterUrl,
         mediaType = MediaType.MOVIE,

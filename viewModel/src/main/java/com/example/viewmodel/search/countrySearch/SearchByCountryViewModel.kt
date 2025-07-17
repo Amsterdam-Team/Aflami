@@ -136,4 +136,10 @@ class SearchByCountryViewModel(
             updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR) }
         }
     }
+
+    override fun onMovieClicked(movieId: Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(SearchByCountryEffect.NavigateToMovieDetails)
+    }
+
 }

@@ -14,7 +14,10 @@ class SearchWithMoviesMapper {
                 productionYear = it.productionYear.toUInt(),
                 rating = it.rating,
                 categories = emptyList(),
-                popularity = it.popularity
+                popularity = it.popularity,
+                runTime = it.movieLength,
+                originCountry = it.originCountry,
+                hasVideo = it.hasVideo
             )
         }
     }

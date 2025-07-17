@@ -14,6 +14,8 @@ import org.koin.dsl.module
 val useCaseModule = module {
     singleOf(::GetAndFilterMoviesByKeywordUseCase)
     singleOf(::GetMoviesByCountryUseCase)
+    singleOf(::GetMovieCastUseCase)
+    singleOf(::GetMovieDetailsUseCase)
     singleOf(::GetMoviesByActorUseCase)
     singleOf(::GetMovieCategoriesUseCase)
     singleOf(::GetTvShowCategoriesUseCase)
