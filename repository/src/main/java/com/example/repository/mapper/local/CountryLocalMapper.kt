@@ -2,24 +2,21 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Country
 import com.example.repository.dto.local.LocalCountryDto
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class CountryLocalMapper {
+fun Country.toLocal(): LocalCountryDto = LocalCountryDto(
+    name = countryName,
+    isoCode = countryIsoCode
+)
 
-    fun mapToCountries(localCountries: List<LocalCountryDto>): List<Country> {
-        return localCountries.map { mapToCountry(it) }
-    }
+fun LocalCountryDto.toDomain(): Country = Country(
+    countryName = name,
+    countryIsoCode = isoCode
+)
 
-    fun mapToCountry(localCountry: LocalCountryDto): Country {
-        return Country(
-            countryName = localCountry.name,
-            countryIsoCode = localCountry.isoCode
-        )
-    }
-
-    fun mapToLocalCountry(country: Country): LocalCountryDto {
-        return LocalCountryDto(
-            name = country.countryName,
-            isoCode = country.countryIsoCode
-        )
-    }
+fun Flow<List<LocalCountryDto>>.toCountryListFlow(): Flow<List<Country>> {
+    return this.map { list -> list.map { it.toDomain() } }
 }
+
+fun List<LocalCountryDto>.toCountries(): List<Country> = map { it.toDomain() }

@@ -4,27 +4,24 @@ import com.example.entity.Country
 import com.example.repository.dto.local.LocalCountryDto
 import com.example.repository.dto.remote.RemoteCountryDto
 
-class CountryRemoteMapper {
+fun List<RemoteCountryDto>.toCountries(): List<Country> {
+    return map { it.toCountry() }
+}
 
-    fun mapToCountries(remoteCountries: List<RemoteCountryDto>): List<Country> {
-        return remoteCountries.map { mapToCountry(it) }
-    }
+fun List<RemoteCountryDto>.toLocalCountries(): List<LocalCountryDto> {
+    return map { it.toLocalCountry() }
+}
 
-    fun mapToLocalCountries(remoteCountries: List<RemoteCountryDto>): List<LocalCountryDto> {
-        return remoteCountries.map { mapToLocalCountry(it) }
-    }
+fun RemoteCountryDto.toCountry(): Country {
+    return Country(
+        countryName = nativeName,
+        countryIsoCode = isoCode,
+    )
+}
 
-    fun mapToCountry(remoteCountryDto: RemoteCountryDto): Country {
-        return Country(
-            countryName = remoteCountryDto.nativeName,
-            countryIsoCode = remoteCountryDto.isoCode,
-        )
-    }
-
-    private fun mapToLocalCountry(remoteCountryDto: RemoteCountryDto): LocalCountryDto {
-        return LocalCountryDto(
-            name = remoteCountryDto.nativeName,
-            isoCode = remoteCountryDto.isoCode
-        )
-    }
+fun RemoteCountryDto.toLocalCountry(): LocalCountryDto {
+    return LocalCountryDto(
+        name = nativeName,
+        isoCode = isoCode
+    )
 }
