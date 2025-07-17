@@ -18,19 +18,19 @@ class AppLogger : Logger {
             return getLoggerInfo()
         }
 
-    override fun d(message: Any, tag: String) {
+    override fun debug(message: Any, tag: String) {
         log(Log.DEBUG, "🐛", message.toString(), tag)
     }
 
-    override fun i(message: Any, tag: String) {
+    override fun info(message: Any, tag: String) {
         log(Log.INFO, "ℹ️", message.toString(), tag)
     }
 
-    override fun w(message: Any, tag: String) {
+    override fun warning(message: Any, tag: String) {
         log(Log.WARN, "⚠️", message.toString(), tag)
     }
 
-    override fun e(message: String, tag: String, throwable: Throwable?) {
+    override fun error(message: String, tag: String, throwable: Throwable?) {
         log(Log.ERROR, "🔥", message, tag, throwable)
     }
 
