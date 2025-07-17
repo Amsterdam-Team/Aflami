@@ -66,7 +66,7 @@ class SearchByCountryViewModel(
         }
     }
 
-    override fun onKeywordValueChanged(keyword: String) {
+    override fun onChangeSearchKeyword(keyword: String) {
         _keyword.update { keyword }
         updateState {
             it.copy(
@@ -77,7 +77,7 @@ class SearchByCountryViewModel(
         }
     }
 
-    override fun onCountrySelected(country: CountryUiState) {
+    override fun onSelectCountry(country: CountryUiState) {
         updateState {
             it.copy(
                 keyword = country.countryName,
@@ -88,7 +88,7 @@ class SearchByCountryViewModel(
         fetchMoviesByCountry()
     }
 
-    override fun onRetryRequestClicked() {
+    override fun onClickRetry() {
         val hasKeyword = state.value.keyword.isNotBlank()
         val hasSelectedCountry = state.value.selectedCountryIsoCode.isNotBlank()
 
@@ -125,7 +125,7 @@ class SearchByCountryViewModel(
         }
     }
 
-    override fun onNavigateBackClicked() {
+    override fun onClickNavigateBack() {
         sendNewEffect(SearchByCountryEffect.NavigateBack)
     }
 }

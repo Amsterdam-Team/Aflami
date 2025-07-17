@@ -98,7 +98,7 @@ private fun SearchContent(
     filterInteraction: FilterInteractionListener
 ) {
     BackHandler(enabled = state.keyword.isNotEmpty()) {
-        interaction.onSearchCleared()
+        interaction.onClickClearSearch()
     }
     var headerHeight by remember { mutableStateOf(0.dp) }
 
@@ -112,11 +112,11 @@ private fun SearchContent(
         SearchScreenHeader(
             keyword = state.keyword,
             selectedTabOption = state.selectedTabOption,
-            onNavigateBackClicked = interaction::onNavigateBackClicked,
-            onKeywordValuedChanged = interaction::onKeywordValuedChanged,
-            onFilterButtonClicked = interaction::onFilterButtonClicked,
-            onSearchActionClicked = interaction::onSearchActionClicked,
-            onTabOptionClicked = interaction::onTabOptionClicked,
+            onNavigateBackClicked = interaction::onClickNavigateBack,
+            onKeywordValuedChanged = interaction::onChangeSearchKeyword,
+            onFilterButtonClicked = interaction::onClickFilterButton,
+            onSearchActionClicked = interaction::onClickSearchAction,
+            onTabOptionClicked = interaction::onClickTabOption,
             onHeaderSizeChanged = {
                 headerHeight = it.height.dp
             }
@@ -135,12 +135,12 @@ private fun SearchContent(
             FilterDialog(
                 filterState = state.filterItemUiState,
                 selectedTabOption = state.selectedTabOption,
-                onCancelButtonClicked = filterInteraction::onCancelButtonClicked,
-                onRatingStarChanged = filterInteraction::onRatingStarChanged,
-                onMovieGenreButtonChanged = filterInteraction::onMovieGenreButtonChanged,
-                onTvGenreButtonChanged = filterInteraction::onTvGenreButtonChanged,
-                onApplyButtonClicked = filterInteraction::onApplyButtonClicked,
-                onClearButtonClicked = filterInteraction::onClearButtonClicked
+                onCancelButtonClicked = filterInteraction::onClickCancel,
+                onRatingStarChanged = filterInteraction::onChangeRatingStar,
+                onMovieGenreButtonChanged = filterInteraction::onChangeMovieGenre,
+                onTvGenreButtonChanged = filterInteraction::onChangeTvShowGenre,
+                onApplyButtonClicked = filterInteraction::onClickApply,
+                onClearButtonClicked = filterInteraction::onClickClear
             )
         }
 
@@ -154,16 +154,16 @@ private fun SearchContent(
 
         SuggestionsHubSection(
             keyword = state.keyword,
-            onWorldSearchCardClicked = interaction::onWorldSearchCardClicked,
-            onActorSearchCardClicked = interaction::onActorSearchCardClicked
+            onWorldSearchCardClicked = interaction::onClickWorldSearchCard,
+            onActorSearchCardClicked = interaction::onClickActorSearchCard
         )
 
         RecentSearchesSection(
             keyword = state.keyword,
             recentSearches = state.recentSearches,
-            onAllRecentSearchesCleared = interaction::onAllRecentSearchesCleared,
-            onRecentSearchClicked = interaction::onRecentSearchClicked,
-            onRecentSearchCleared = interaction::onRecentSearchCleared
+            onAllRecentSearchesCleared = interaction::onClickClearAllRecentSearches,
+            onRecentSearchClicked = interaction::onClickRecentSearch,
+            onRecentSearchCleared = interaction::onClickClearRecentSearch
         )
 
         CenterOfScreenContainer(
@@ -175,7 +175,7 @@ private fun SearchContent(
             AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState != null) {
                 if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
-                        onClickRetry = interaction::onRetryQuestClicked,
+                        onClickRetry = interaction::onClickRetryRequest,
                         modifier = Modifier.verticalScroll(rememberScrollState())
                     )
                 }

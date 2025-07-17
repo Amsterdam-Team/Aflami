@@ -4,29 +4,29 @@ import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
 
 interface SearchInteractionListener {
-    fun onNavigateBackClicked()
-    fun onKeywordValuedChanged(keyword: String)
-    fun onSearchActionClicked()
-    fun onFilterButtonClicked()
-    fun onWorldSearchCardClicked()
-    fun onActorSearchCardClicked()
-    fun onRetryQuestClicked()
+    fun onClickNavigateBack()
+    fun onChangeSearchKeyword(keyword: String)
+    fun onClickSearchAction()
+    fun onClickFilterButton()
+    fun onClickWorldSearchCard()
+    fun onClickActorSearchCard()
+    fun onClickRetryRequest()
 
-    fun onTabOptionClicked(tabOption: TabOption)
-    fun onMovieCardClicked()
+    fun onClickTabOption(tabOption: TabOption)
+    fun onClickMovieCard()
 
-    fun onRecentSearchClicked(keyword: String)
-    fun onRecentSearchCleared(keyword: String)
-    fun onAllRecentSearchesCleared()
-    fun onSearchCleared()
+    fun onClickRecentSearch(keyword: String)
+    fun onClickClearRecentSearch(keyword: String)
+    fun onClickClearAllRecentSearches()
+    fun onClickClearSearch()
 }
 
 interface FilterInteractionListener {
-    fun onCancelButtonClicked()
-    fun onRatingStarChanged(ratingIndex: Int)
-    fun onMovieGenreButtonChanged(genreType: MovieGenre)
-    fun onTvGenreButtonChanged(genreType: TvShowGenre)
+    fun onClickCancel()
+    fun onChangeRatingStar(ratingIndex: Int)
+    fun onChangeMovieGenre(genreType: MovieGenre)
+    fun onChangeTvShowGenre(genreType: TvShowGenre)
 
-    fun onApplyButtonClicked()
-    fun onClearButtonClicked()
+    fun onClickApply()
+    fun onClickClear()
 }

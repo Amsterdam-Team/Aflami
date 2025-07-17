@@ -109,7 +109,7 @@ class SearchViewModel(
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onCancelButtonClicked
+            onCompletion = ::onClickCancel
         )
     }
 
@@ -135,7 +135,7 @@ class SearchViewModel(
             },
             onSuccess = ::onTvShowsFilteredSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onCancelButtonClicked
+            onCompletion = ::onClickCancel
         )
     }
 
@@ -160,13 +160,13 @@ class SearchViewModel(
 
     private fun startLoading() = updateState { it.copy(isLoading = true) }
 
-    override fun onKeywordValuedChanged(keyword: String) {
+    override fun onChangeSearchKeyword(keyword: String) {
         _keyword.update { oldText -> keyword }
         updateState { it.copy(keyword = keyword) }
     }
 
-    override fun onSearchActionClicked() {
-        onKeywordValuedChanged(state.value.keyword)
+    override fun onClickSearchAction() {
+        onChangeSearchKeyword(state.value.keyword)
         tryToExecute(
             action = { addRecentSearchUseCase(state.value.keyword) },
             onSuccess = { fetchRecentSearches() },
@@ -175,25 +175,25 @@ class SearchViewModel(
         )
     }
 
-    override fun onNavigateBackClicked() {
+    override fun onClickNavigateBack() {
         if (state.value.keyword.isNotEmpty()) {
-            onSearchCleared()
+            onClickClearSearch()
         } else {
             sendNewEffect(SearchUiEffect.NavigateBack)
         }
     }
 
-    override fun onWorldSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
+    override fun onClickWorldSearchCard() = sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
 
-    override fun onActorSearchCardClicked() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
+    override fun onClickActorSearchCard() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
 
-    override fun onRetryQuestClicked() {
+    override fun onClickRetryRequest() {
         updateState { it.copy(isLoading = true, errorUiState = null) }
     }
 
-    override fun onMovieCardClicked() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
+    override fun onClickMovieCard() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
-    override fun onTabOptionClicked(tabOption: TabOption) {
+    override fun onClickTabOption(tabOption: TabOption) {
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
@@ -205,10 +205,10 @@ class SearchViewModel(
         }
     }
 
-    override fun onRecentSearchClicked(keyword: String) = onKeywordValuedChanged(keyword)
+    override fun onClickRecentSearch(keyword: String) = onChangeSearchKeyword(keyword)
 
 
-    override fun onRecentSearchCleared(keyword: String) {
+    override fun onClickClearRecentSearch(keyword: String) {
         startLoading()
         tryToExecute(
             action = { clearRecentSearchUseCase(searchKeyword = keyword) },
@@ -217,7 +217,7 @@ class SearchViewModel(
         )
     }
 
-    override fun onAllRecentSearchesCleared() {
+    override fun onClickClearAllRecentSearches() {
         startLoading()
         tryToExecute(
             action = { clearAllRecentSearchesUseCase() },
@@ -231,7 +231,7 @@ class SearchViewModel(
         updateState { it.copy(recentSearches = emptyList()) }
     }
 
-    override fun onSearchCleared() {
+    override fun onClickClearSearch() {
         updateState { currentState ->
             currentState.copy(
                 keyword = "",
@@ -241,15 +241,15 @@ class SearchViewModel(
         }
     }
 
-    override fun onFilterButtonClicked() {
+    override fun onClickFilterButton() {
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
     }
 
-    override fun onRatingStarChanged(ratingIndex: Int) {
+    override fun onChangeRatingStar(ratingIndex: Int) {
         updateState { it.copy(filterItemUiState = it.filterItemUiState.copy(selectedStarIndex = ratingIndex)) }
     }
 
-    override fun onMovieGenreButtonChanged(genreType: MovieGenre) {
+    override fun onChangeMovieGenre(genreType: MovieGenre) {
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -261,7 +261,7 @@ class SearchViewModel(
         }
     }
 
-    override fun onTvGenreButtonChanged(genreType: TvShowGenre) {
+    override fun onChangeTvShowGenre(genreType: TvShowGenre) {
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -273,7 +273,7 @@ class SearchViewModel(
         }
     }
 
-    override fun onCancelButtonClicked() {
+    override fun onClickCancel() {
         updateState {
             it.copy(
                 isDialogVisible = false,
@@ -282,7 +282,7 @@ class SearchViewModel(
         }
     }
 
-    override fun onApplyButtonClicked() {
+    override fun onClickApply() {
         updateState {
             it.copy(
                 filterItemUiState = it.filterItemUiState.copy(isLoading = true),
@@ -296,5 +296,5 @@ class SearchViewModel(
         }
     }
 
-    override fun onClearButtonClicked() = resetFilterState()
+    override fun onClickClear() = resetFilterState()
 }

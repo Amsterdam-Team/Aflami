@@ -72,7 +72,7 @@ class SearchByCountryViewModelTest {
                 }
             }
 
-            viewModel.onNavigateBackClicked()
+            viewModel.onClickNavigateBack()
             testScope.advanceUntilIdle()
             collectJob.cancel()
 
@@ -84,7 +84,7 @@ class SearchByCountryViewModelTest {
         testScope.runTest {
             val keyword = "egypt"
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onChangeSearchKeyword(keyword)
             testScope.advanceTimeBy(5000)
             testScope.advanceUntilIdle()
 
@@ -98,7 +98,7 @@ class SearchByCountryViewModelTest {
             val countryUiState = CountryUiState("Egypt", "eg")
             coEvery { addRecentSearchUseCase(any()) } returns
 
-            viewModel.onCountrySelected(countryUiState)
+            viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
 
             coVerify(exactly = 1) { addRecentSearchUseCase(keyword) }
@@ -111,7 +111,7 @@ class SearchByCountryViewModelTest {
             val countryUiState = CountryUiState("Egypt", "eg")
             coEvery { addRecentSearchUseCase(any()) } throws AflamiException()
 
-            viewModel.onCountrySelected(countryUiState)
+            viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
 
             coVerify(exactly = 1) { addRecentSearchUseCase(keyword) }
@@ -122,7 +122,7 @@ class SearchByCountryViewModelTest {
         testScope.runTest {
             val keyword = ""
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onChangeSearchKeyword(keyword)
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.isCountriesDropDownVisible).isFalse()
@@ -134,7 +134,7 @@ class SearchByCountryViewModelTest {
             val keyword = "a"
             coEvery { getSuggestedCountriesUseCase(any()) } returns emptyList()
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onChangeSearchKeyword(keyword)
 
             coVerify(exactly = 0) { getSuggestedCountriesUseCase(keyword) }
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
@@ -151,11 +151,11 @@ class SearchByCountryViewModelTest {
             coEvery { getSuggestedCountriesUseCase("au") } coAnswers { delay(500L); emptyList() }
             coEvery { getSuggestedCountriesUseCase("aus") } coAnswers { countries }
 
-            viewModel.onKeywordValueChanged("a")
+            viewModel.onChangeSearchKeyword("a")
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
-            viewModel.onKeywordValueChanged("au")
+            viewModel.onChangeSearchKeyword("au")
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
-            viewModel.onKeywordValueChanged("aus")
+            viewModel.onChangeSearchKeyword("aus")
             testScope.advanceTimeBy(3000L)
             testScope.advanceUntilIdle()
             coVerify(exactly = 0) { getSuggestedCountriesUseCase("a") }
@@ -173,7 +173,7 @@ class SearchByCountryViewModelTest {
                 Country("Austria", "")
             )
             coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onChangeSearchKeyword(keyword)
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.isCountriesDropDownVisible).isTrue()
@@ -186,7 +186,7 @@ class SearchByCountryViewModelTest {
             val countries = emptyList<Country>()
             coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onChangeSearchKeyword(keyword)
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.isCountriesDropDownVisible).isFalse()
@@ -199,9 +199,9 @@ class SearchByCountryViewModelTest {
         val countries = listOf(Country("Egypt", "eg"), Country("Senegal", "sg"))
         coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
 
-        viewModel.onKeywordValueChanged(keyword)
+        viewModel.onChangeSearchKeyword(keyword)
         testScope.advanceTimeBy(500)
-        viewModel.onCountrySelected(countryUiState)
+        viewModel.onSelectCountry(countryUiState)
         testScope.advanceUntilIdle()
 
         assertThat(viewModel.state.value.isCountriesDropDownVisible).isFalse()
@@ -211,7 +211,7 @@ class SearchByCountryViewModelTest {
     fun `should set state to LOADING_MOVIES when call getMoviesByCountry`() = testScope.runTest {
         val countryUiState = CountryUiState("Egypt", "eg")
 
-        viewModel.onCountrySelected(countryUiState)
+        viewModel.onSelectCountry(countryUiState)
         testScope.advanceUntilIdle()
 
         assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
@@ -226,7 +226,7 @@ class SearchByCountryViewModelTest {
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
-            viewModel.onCountrySelected(countryUiState)
+            viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.movies).isEqualTo(movies.toListOfUiState())
@@ -239,7 +239,7 @@ class SearchByCountryViewModelTest {
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
-            viewModel.onCountrySelected(countryUiState)
+            viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
@@ -256,9 +256,9 @@ class SearchByCountryViewModelTest {
             val countries = listOf(Country("Egypt", "eg"), Country("Senegal", "sg"))
             coEvery { getSuggestedCountriesUseCase(any()) } returns countries
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onChangeSearchKeyword(keyword)
             testScope.advanceUntilIdle()
-            viewModel.onRetryRequestClicked()
+            viewModel.onClickRetry()
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.suggestedCountries).isEqualTo(countriesUiState)
@@ -271,9 +271,9 @@ class SearchByCountryViewModelTest {
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
-            viewModel.onCountrySelected(countryUiState)
+            viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
-            viewModel.onRetryRequestClicked()
+            viewModel.onClickRetry()
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.movies).isEqualTo(movies.toListOfUiState())
@@ -282,7 +282,7 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should set content ui state to COUNTRY_TOUR when onRetryRequestClicked cannot reload`() =
         testScope.runTest {
-            viewModel.onRetryRequestClicked()
+            viewModel.onClickRetry()
             testScope.advanceUntilIdle()
 
             assertThat(viewModel.state.value.searchByCountryContentUIState).isEqualTo(
@@ -299,7 +299,7 @@ class SearchByCountryViewModelTest {
         val countryUiState = CountryUiState("Egypt", "eg")
         coEvery { getMoviesByCountryUseCase(any()) } throws exception
 
-        viewModel.onCountrySelected(countryUiState)
+        viewModel.onSelectCountry(countryUiState)
         testScope.advanceUntilIdle()
 
         val res = viewModel.state.value.searchByCountryContentUIState

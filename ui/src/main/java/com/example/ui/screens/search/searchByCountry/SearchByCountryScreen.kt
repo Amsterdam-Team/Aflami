@@ -89,9 +89,9 @@ private fun SearchByCountryScreenContent(
             DefaultAppBar(
                 title = stringResource(R.string.world_tour_title),
                 showNavigateBackButton = true,
-                onNavigateBackClicked = { interactionListener.onNavigateBackClicked() },
+                onNavigateBackClicked = { interactionListener.onClickNavigateBack() },
             )
-            CountrySearchField(state.keyword, interactionListener::onKeywordValueChanged, focusManager)
+            CountrySearchField(state.keyword, interactionListener::onChangeSearchKeyword, focusManager)
         }
         Box {
             CenterOfScreenContainer(
@@ -104,7 +104,7 @@ private fun SearchByCountryScreenContent(
                     SearchByCountryContentUIState.COUNTRY_TOUR -> ExploreCountries()
                     SearchByCountryContentUIState.LOADING_MOVIES -> LoadingContainer()
                     SearchByCountryContentUIState.NO_INTERNET_CONNECTION -> NoNetworkContainer(
-                        onClickRetry = interactionListener::onRetryRequestClicked,
+                        onClickRetry = interactionListener::onClickRetry,
                         modifier = modifier.padding(vertical = 8.dp),
                     )
 
@@ -120,7 +120,7 @@ private fun SearchByCountryScreenContent(
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(4),
                 isVisible = state.isCountriesDropDownVisible,
-                onItemClicked = (interactionListener::onCountrySelected),
+                onItemClicked = (interactionListener::onSelectCountry),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(AppTheme.color.profileOverlay)
@@ -136,10 +136,10 @@ private fun SearchByCriteriaPreview() {
         SearchByCountryScreenContent(
             state = SearchByCountryScreenState(),
             interactionListener = object : SearchByCountryInteractionListener {
-                override fun onKeywordValueChanged(keyword: String) {}
-                override fun onCountrySelected(country: CountryUiState) {}
-                override fun onNavigateBackClicked() {}
-                override fun onRetryRequestClicked() {}
+                override fun onChangeSearchKeyword(keyword: String) {}
+                override fun onSelectCountry(country: CountryUiState) {}
+                override fun onClickNavigateBack() {}
+                override fun onClickRetry() {}
             },
         )
     }
