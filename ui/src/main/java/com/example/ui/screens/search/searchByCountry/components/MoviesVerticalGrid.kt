@@ -24,6 +24,7 @@ internal fun MoviesVerticalGrid(
     movies: List<MovieUiState>,
     isVisible: Boolean,
     modifier: Modifier = Modifier,
+    onMovieClicked:(movieId:Long)-> Unit
 ) {
     AnimatedVisibility(isVisible) {
         LazyVerticalGrid(
@@ -52,6 +53,7 @@ internal fun MoviesVerticalGrid(
                     movieYear = movie.productionYear,
                     movieTitle = movie.name,
                     movieRating = movie.rating,
+                    onClick = {onMovieClicked(movie.id) }
                 )
             }
         }
@@ -74,6 +76,7 @@ private fun MoviesVerticalGridPreview() {
                     )
                 },
             isVisible = true,
+            onMovieClicked = {}
         )
     }
 }

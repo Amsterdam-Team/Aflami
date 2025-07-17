@@ -8,6 +8,7 @@ data class SearchByCountryScreenState(
     val isLoadingCountries: Boolean = false,
     val isCountriesDropDownVisible: Boolean = false,
     val searchByCountryContentUIState: SearchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR,
+    val selectedMovieId : Long = 0
 )
 
 enum class SearchByCountryContentUIState {

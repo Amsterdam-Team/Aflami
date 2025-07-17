@@ -24,7 +24,7 @@ class CategoryRemoteMapper {
         return Category(
             id = remoteCategory.id,
             name = remoteCategory.name,
-            image = ""
+            imageUrl = ""
         )
     }
 

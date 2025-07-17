@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
@@ -78,6 +79,7 @@ fun Chip(
             text = label,
             color = labelColor,
             style = AppTheme.textStyle.label.small,
+            textAlign = TextAlign.Center
         )
     }
 }
