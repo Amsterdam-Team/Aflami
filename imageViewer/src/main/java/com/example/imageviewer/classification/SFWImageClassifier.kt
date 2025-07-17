@@ -3,6 +3,8 @@ package com.example.imageviewer.classification
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import com.example.imageviewer.firebase.FirebaseModelRepository
+import kotlinx.coroutines.runBlocking
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
@@ -16,9 +18,10 @@ import java.io.IOException
 
 internal class SFWImageClassifier(
     private val context: Context,
-    modelPath: String = SFWClassifierConfig.NSFW_MODEL_PATH
+    modelPath: String = SFWClassifierConfig.NSFW_MODEL_PATH,
+    modelFile: java.io.File? = null,
+    private val modelRepository: FirebaseModelRepository? = null
 ) : ImageClassifier {
-
 
     private val safetyRules = SFWClassifierConfig.NSFW_SAFETY_RULES
 
@@ -32,18 +35,45 @@ internal class SFWImageClassifier(
         .add(NormalizeOp(0.0f, 255.0f))
         .build()
 
-    private var interpreter: Interpreter? = setupInterpreter(modelPath)
+    private var interpreter: Interpreter? = run {
+        if (modelRepository != null) {
+            try {
+                val file = runBlocking { modelRepository.ensureModelDownloaded() }
+                setupInterpreter(modelPath, file)
+            } catch (e: Exception) {
+                setupInterpreter(modelPath, modelFile)
+            }
+        } else {
+            setupInterpreter(modelPath, modelFile)
+        }
+    }
 
-    private fun setupInterpreter(modelPath: String): Interpreter? {
+    private fun setupInterpreter(modelPath: String, modelFile: java.io.File?): Interpreter? {
+        val options = Interpreter.Options().apply { setUseNNAPI( true) }
         return try {
-            val model = FileUtil.loadMappedFile(context, modelPath)
-            Interpreter(model, Interpreter.Options().apply { useNNAPI = true })
+            if (modelFile != null) {
+                Interpreter(modelFile, options)
+            } else {
+                val modelBuffer = FileUtil.loadMappedFile(context, modelPath)
+                Interpreter(modelBuffer, options)
+            }
         } catch (e: IOException) {
-            Log.e(TAG, ERROR_MSG_MODEL_LOAD, e)
+            Log.e(TAG, "Error loading the TFLite model.", e)
             null
         }
     }
 
+    //    private var interpreter: Interpreter? = setupInterpreter(modelPath)
+//
+//    private fun setupInterpreter(modelPath: String): Interpreter? {
+//        return try {
+//            val model = FileUtil.loadMappedFile(context, modelPath)
+//            Interpreter(model, Interpreter.Options().apply { useNNAPI = true })
+//        } catch (e: IOException) {
+//            Log.e(TAG, ERROR_MSG_MODEL_LOAD, e)
+//            null
+//        }
+//    }
     override fun isImageSafe(bitmap: Bitmap): Boolean? {
         val scores = runInference(bitmap) ?: return null
         val violatedRuleIndex = findViolatedRuleIndex(scores)
