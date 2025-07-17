@@ -24,4 +24,5 @@ interface MovieLocalSource {
         searchType: SearchType,
     ): List<SearchMovieCrossRefDto>
 
+    suspend fun getMovieById(movieId : Long) : LocalMovieDto
 }
