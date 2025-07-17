@@ -1,4 +1,5 @@
 package com.example.viewmodel.utils.entityHelper
+
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
 
@@ -19,6 +20,9 @@ fun createMovie(
         productionYear = productionYear,
         categories = genres,
         rating = rating,
-        popularity = 0.0
+        popularity = 0.0,
+        originCountry = "",
+        movieLength = 110,
+        hasVideo = false
     )
 }

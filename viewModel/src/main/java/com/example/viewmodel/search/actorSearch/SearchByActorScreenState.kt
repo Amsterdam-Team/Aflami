@@ -9,3 +9,4 @@ data class SearchByActorScreenState(
     val selectedMovieId : Long = 0,
     val isNetworkError : Boolean = false
 )
+

@@ -53,7 +53,7 @@ class SearchByActorViewModel(
         )
     }
 
-    override fun onUserSearch(query: String) {
+    override fun onUserSearchChange(query: String) {
         queryFlow.update { oldText -> query }
         updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
     }
@@ -98,10 +98,5 @@ class SearchByActorViewModel(
                 )
             }
         }
-    }
-
-    override fun onMovieClicked(movieId : Long) {
-        updateState { it.copy(selectedMovieId = movieId) }
-        sendNewEffect(SearchByActorEffect.NavigateToDetailsScreen)
     }
 }

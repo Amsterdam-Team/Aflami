@@ -12,6 +12,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -49,11 +50,11 @@ class SearchByActorViewModelTest {
         testScope.runTest {
             val keyword = ""
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onUserSearchChange(keyword)
             testScope.advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.keyword).isEqualTo(keyword)
+            assertThat(state.query).isEqualTo(keyword)
             assertThat(state.isLoading).isFalse()
         }
 
@@ -61,7 +62,7 @@ class SearchByActorViewModelTest {
     fun `should not call use case when keyword is entered within debounce duration`() =
         testScope.runTest {
             val keyword = "a"
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onUserSearchChange(keyword)
             advanceTimeBy(200L)
 
             coVerify(exactly = 0) { getMoviesByActorUseCase(any()) }
@@ -73,7 +74,7 @@ class SearchByActorViewModelTest {
             val keyword = "Tom"
             coEvery { getMoviesByActorUseCase(keyword) } returns emptyList()
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onUserSearchChange(keyword)
             advanceTimeBy(500L)
             advanceUntilIdle()
 
@@ -87,7 +88,7 @@ class SearchByActorViewModelTest {
             val movies = listOf(createMovie(id = 1, name = "Forrest Gump"))
             coEvery { getMoviesByActorUseCase(keyword) } returns movies
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onUserSearchChange(keyword)
             advanceUntilIdle()
 
             val state = viewModel.state.value
@@ -101,7 +102,7 @@ class SearchByActorViewModelTest {
             val keyword = "Unknown Actor"
             coEvery { getMoviesByActorUseCase(keyword) } returns emptyList()
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onUserSearchChange(keyword)
             advanceUntilIdle()
 
             val state = viewModel.state.value
@@ -115,11 +116,11 @@ class SearchByActorViewModelTest {
             val keyword = "Tom Cruise"
             coEvery { getMoviesByActorUseCase(keyword) } throws NetworkException()
 
-            viewModel.onKeywordValueChanged(keyword)
+            viewModel.onUserSearchChange(keyword)
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.noInternetException).isTrue()
+            assertThat(state.isNetworkError).isTrue()
             assertThat(state.isLoading).isFalse()
             assertThat(state.movies).isEmpty()
         }
@@ -132,7 +133,7 @@ class SearchByActorViewModelTest {
                 viewModel.effect.collect { effects.add(it!!) }
             }
 
-            viewModel.onNavigateBackClicked()
+            viewModel.onNavigateBackClick()
             advanceUntilIdle()
 
             assertThat(effects).contains(SearchByActorEffect.NavigateBack)
@@ -143,16 +144,16 @@ class SearchByActorViewModelTest {
     fun `should retry search when onRetryQuestClicked is called`() = testScope.runTest {
         val keyword = "Will Smith"
         coEvery { getMoviesByActorUseCase(keyword) } throws NetworkException()
-        viewModel.onKeywordValueChanged(keyword)
+        viewModel.onUserSearchChange(keyword)
         advanceUntilIdle()
 
         coVerify(exactly = 1) { getMoviesByActorUseCase(keyword) }
-        assertThat(viewModel.state.value.noInternetException).isTrue()
+        assertThat(viewModel.state.value.isNetworkError).isTrue()
 
         val movies = listOf(createMovie(id = 2, name = "I Am Legend"))
         coEvery { getMoviesByActorUseCase(keyword) } returns movies
 
-        viewModel.onRetryQuestClicked()
+        viewModel.onRetrySearchClick()
         advanceTimeBy(500L)
         advanceUntilIdle()
 
