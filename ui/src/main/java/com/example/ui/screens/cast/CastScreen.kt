@@ -94,7 +94,7 @@ private fun CastContent(
             when {
                 isLoading -> LoadingContainer()
 
-                errorState == CastErrorUiState.NoCastFound -> {
+                state.cast.isEmpty() -> {
                     NoDataContainer(
                         modifier = Modifier.fillMaxSize(),
                         title = stringResource(R.string.cast_not_available),

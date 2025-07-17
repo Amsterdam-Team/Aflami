@@ -153,9 +153,9 @@ class MovieRepositoryImpl(
         )
     }
 
-    override suspend fun getActorsByMovieId(id: Long): List<Actor> {
-        return movieRemoteDataSource.getCastByMovieId(id).cast.map { castRemoteMapper.mapToDomain(it) }
-    }
+    override suspend fun getActorsByMovieId(movieId: Long): List<Actor> =
+         movieRemoteDataSource.getCastByMovieId(movieId).cast.map { castRemoteMapper.mapToDomain(it) }
+
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> =
         reviewRemoteMapper.mapResponseToDomain(movieRemoteDataSource.getMovieReviews(movieId))

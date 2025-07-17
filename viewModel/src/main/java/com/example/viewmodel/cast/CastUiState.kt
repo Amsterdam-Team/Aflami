@@ -13,5 +13,4 @@ data class CastItemUiState(
 
 sealed interface CastErrorUiState {
     object NoNetworkConnection : CastErrorUiState
-    object NoCastFound : CastErrorUiState
 }

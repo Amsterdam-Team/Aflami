@@ -1,7 +1,6 @@
 package com.example.viewmodel.cast
 
 import com.example.domain.exceptions.AflamiException
-import com.example.domain.exceptions.NoCastFoundException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMovieCastUseCase
 import com.example.entity.Actor
@@ -39,7 +38,6 @@ class CastViewModel(
     private fun onGetMovieCastError(exception: AflamiException) {
         val errorUiState = when (exception) {
             is NoInternetException -> CastErrorUiState.NoNetworkConnection
-            is NoCastFoundException -> CastErrorUiState.NoCastFound
             else -> null
         }
 
