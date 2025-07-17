@@ -29,7 +29,6 @@ data class MovieDetailsUiState(
     val networkError : Boolean = false
 ) {
 
-
     enum class MovieExtras {
         MORE_LIKE_THIS,
         REVIEWS,
