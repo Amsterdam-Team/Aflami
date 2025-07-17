@@ -2,7 +2,7 @@ package com.example.viewmodel.search.searchByKeyword
 
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
-import com.example.domain.exceptions.QueryTooLongException
+import com.example.domain.exceptions.KeywordTooLongException
 
 sealed interface SearchErrorState {
     object QueryTooLong : SearchErrorState
@@ -13,7 +13,7 @@ sealed interface SearchErrorState {
 
 internal fun mapToSearchUiState(aflamiException: AflamiException): SearchErrorState {
     return when (aflamiException) {
-        is QueryTooLongException -> SearchErrorState.QueryTooLong
+        is KeywordTooLongException -> SearchErrorState.QueryTooLong
         is NetworkException -> SearchErrorState.NoNetworkConnection
         else -> SearchErrorState.UnknownException
     }
