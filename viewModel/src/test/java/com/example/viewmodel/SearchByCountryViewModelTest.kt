@@ -4,6 +4,7 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.RecentSearchesUsaCase
 import com.example.entity.Country
 import com.example.viewmodel.search.countrySearch.CountryUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
@@ -40,7 +41,7 @@ class SearchByCountryViewModelTest {
     private val testDispatcherProvider = TestDispatcherProvider()
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase = mockk(relaxed = true)
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase = mockk(relaxed = true)
-    private val addRecentSearchUseCase: AddRecentSearchUseCase = mockk(relaxed = true)
+    private val recentSearchesUsaCase: RecentSearchesUsaCase = mockk(relaxed = true)
     private var testScope = TestScope(
         testDispatcherProvider.testDispatcher
     )
@@ -51,7 +52,7 @@ class SearchByCountryViewModelTest {
         viewModel = SearchByCountryViewModel(
             getSuggestedCountriesUseCase = getSuggestedCountriesUseCase,
             getMoviesByCountryUseCase = getMoviesByCountryUseCase,
-            addRecentSearchUseCase = addRecentSearchUseCase,
+            recentSearchUseCase = recentSearchesUsaCase,
             dispatcherProvider = testDispatcherProvider
         )
     }
@@ -95,12 +96,12 @@ class SearchByCountryViewModelTest {
         testScope.runTest {
             val keyword = "eg"
             val countryUiState = CountryUiState("Egypt", "eg")
-            coEvery { addRecentSearchUseCase(any()) } returns
+            coEvery { recentSearchesUsaCase.addRecentSearch(any()) } returns
 
             viewModel.onCountrySelected(countryUiState)
             testScope.advanceUntilIdle()
 
-            coVerify(exactly = 1) { addRecentSearchUseCase(keyword) }
+            coVerify(exactly = 1) { recentSearchesUsaCase.addRecentSearch(keyword) }
         }
 
     @Test
@@ -108,12 +109,12 @@ class SearchByCountryViewModelTest {
         testScope.runTest {
             val keyword = "eg"
             val countryUiState = CountryUiState("Egypt", "eg")
-            coEvery { addRecentSearchUseCase(any()) } throws AflamiException()
+            coEvery { recentSearchesUsaCase.addRecentSearch(any()) } throws AflamiException()
 
             viewModel.onCountrySelected(countryUiState)
             testScope.advanceUntilIdle()
 
-            coVerify(exactly = 1) { addRecentSearchUseCase(keyword) }
+            coVerify(exactly = 1) { recentSearchesUsaCase.addRecentSearch(keyword) }
         }
 
     @Test

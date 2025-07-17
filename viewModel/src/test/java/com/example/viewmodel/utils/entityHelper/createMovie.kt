@@ -16,7 +16,7 @@ fun createMovie(
         name = name,
         description = description,
         posterUrl = poster,
-        productionYear = productionYear,
+        productionYear = productionYear.toUInt(),
         categories = genres,
         rating = rating,
         popularity = 0.0
