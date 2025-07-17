@@ -2,11 +2,8 @@ package com.example.viewmodel.search.searchByKeyword
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.common.MediaItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.Selectable
-import com.example.viewmodel.search.searchByKeyword.TabOption
-import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
+import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.shared.Selectable
 
 data class SearchUiState(
     val keyword: String = "",
@@ -19,6 +16,11 @@ data class SearchUiState(
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
 )
+
+enum class TabOption(val index: Int) {
+    MOVIES(index = 0),
+    TV_SHOWS(index = 1),
+}
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,

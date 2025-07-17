@@ -1,13 +1,20 @@
 package com.example.viewmodel.search.countrySearch
 
-data class SearchByCountryScreenState(
+import com.example.viewmodel.shared.MediaItemUiState
+
+data class CountrySearchUiState(
     val keyword: String = "",
     val selectedCountryIsoCode: String = "",
-    val suggestedCountries: List<CountryUiState> = emptyList(),
-    val movies: List<MovieUiState> = emptyList(),
+    val suggestedCountries: List<CountryItemUiState> = emptyList(),
+    val movies: List<MediaItemUiState> = emptyList(),
     val isLoadingCountries: Boolean = false,
     val isCountriesDropDownVisible: Boolean = false,
     val searchByCountryContentUIState: SearchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR,
+)
+
+data class CountryItemUiState(
+    val countryName: String,
+    val countryIsoCode: String
 )
 
 enum class SearchByCountryContentUIState {

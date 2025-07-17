@@ -36,16 +36,16 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
-import com.example.viewmodel.searchByActor.SearchByActorEffect
-import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
-import com.example.viewmodel.searchByActor.SearchByActorScreenState
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
+import com.example.viewmodel.search.actorSearch.ActorSearchEffect
+import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
+import com.example.viewmodel.search.actorSearch.ActorSearchUiState
+import com.example.viewmodel.search.actorSearch.ActorSearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchByActorViewModel = koinViewModel(),
+    viewModel: ActorSearchViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
@@ -54,11 +54,11 @@ fun SearchByActorScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
 
-                SearchByActorEffect.NavigateBack -> {
+                ActorSearchEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
 
-                SearchByActorEffect.NoInternetConnection -> {
+                ActorSearchEffect.NoInternetConnection -> {
                     isNoInternetConnection = true
                 }
                 null -> {}
@@ -80,7 +80,7 @@ fun SearchByActorScreen(
 @Composable
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
-    state: SearchByActorScreenState,
+    state: ActorSearchUiState,
     interactionListener: SearchByActorInteractionListener,
     isNoInternetConnection: Boolean,
     onRetryQuestClicked: () -> Unit,
@@ -158,10 +158,10 @@ private fun SearchByActorContent(
                         items(targetState.movies) { movie ->
                             MovieCard(
                                 movieImage = movie.posterImageUrl,
-                                movieType = "Movies",
-                                movieYear = movie.productionYear,
+                                movieType = stringResource(R.string.movie),
+                                movieYear = movie.yearOfRelease,
                                 movieTitle = movie.name,
-                                movieRating = movie.rating,
+                                movieRating = movie.rate,
                             )
                         }
                     }
@@ -177,7 +177,7 @@ private fun SearchByActorContent(
 private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
-            state = SearchByActorScreenState(),
+            state = ActorSearchUiState(),
             interactionListener = object : SearchByActorInteractionListener {
                 override fun onUserSearch(query: String) {
                 }

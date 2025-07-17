@@ -1,11 +1,11 @@
-package com.example.viewmodel.searchByActor
+package com.example.viewmodel.search.actorSearch
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.FlowPreview
@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
-class SearchByActorViewModel(
+class ActorSearchViewModel(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchByActorScreenState, SearchByActorEffect>(
-    SearchByActorScreenState(),
+) : BaseViewModel<ActorSearchUiState, ActorSearchEffect>(
+    ActorSearchUiState(),
     dispatcherProvider
 ),
     SearchByActorInteractionListener {
@@ -45,7 +45,7 @@ class SearchByActorViewModel(
                     )
                 }
                 when (msg) {
-                    is NetworkException -> sendNewEffect(SearchByActorEffect.NoInternetConnection)
+                    is NetworkException -> sendNewEffect(ActorSearchEffect.NoInternetConnection)
                 }
             }
         )
@@ -59,14 +59,14 @@ class SearchByActorViewModel(
     private fun updateSearchByActorResult(movies: List<Movie>) {
         updateState {
             it.copy(
-                movies = movies.toListOfUiState(),
+                movies = movies.toMoveUiStates(),
                 isLoading = false
             )
         }
     }
 
     override fun onNavigateBackClicked() {
-        sendNewEffect(SearchByActorEffect.NavigateBack)
+        sendNewEffect(ActorSearchEffect.NavigateBack)
     }
 
     override fun onRetryQuestClicked() {

@@ -24,13 +24,13 @@ import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.viewmodel.search.countrySearch.CountryUiState
+import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import kotlin.collections.forEach
 
 @Composable
 internal fun CountriesDropdownMenu(
-    items: List<CountryUiState>,
-    onItemClicked: (CountryUiState) -> Unit,
+    items: List<CountryItemUiState>,
+    onItemClicked: (CountryItemUiState) -> Unit,
     isVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -77,7 +77,7 @@ internal fun CountriesDropdownMenu(
 private fun CountriesDropdownMenuPreview() {
     AflamiTheme {
         CountriesDropdownMenu(
-            items = buildList(5) { CountryUiState("Egypt", "EG") },
+            items = buildList(5) { CountryItemUiState("Egypt", "EG") },
             onItemClicked = {},
             isVisible = true,
         )

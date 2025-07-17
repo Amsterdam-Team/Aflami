@@ -1,7 +1,8 @@
-package com.example.viewmodel.search.searchByKeyword.genre
+package com.example.viewmodel.search.searchByKeyword
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
+import com.example.viewmodel.shared.Selectable
 
 data class MovieGenreItemUiState(
     val selectableMovieGenre: Selectable<MovieGenre> = Selectable(
@@ -15,9 +16,4 @@ data class TvGenreItemUiState(
         type = TvShowGenre.ALL,
         isSelected = false
     )
-)
-
-data class Selectable<T>(
-    val isSelected: Boolean = true,
-    val type: T
 )

@@ -37,18 +37,18 @@ import com.example.ui.screens.search.searchByCountry.components.CountrySearchFie
 import com.example.ui.screens.search.searchByCountry.components.ExploreCountries
 import com.example.ui.screens.search.searchByCountry.components.MoviesVerticalGrid
 import com.example.ui.screens.search.searchByCountry.components.NoMoviesFound
-import com.example.viewmodel.search.countrySearch.CountryUiState
+import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
-import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
-import com.example.viewmodel.search.countrySearch.SearchByCountryInteractionListener
-import com.example.viewmodel.search.countrySearch.SearchByCountryScreenState
-import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
+import com.example.viewmodel.search.countrySearch.CountrySearchEffect
+import com.example.viewmodel.search.countrySearch.CountrySearchInteractionListener
+import com.example.viewmodel.search.countrySearch.CountrySearchUiState
+import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SearchByCountryScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchByCountryViewModel = koinViewModel()
+    viewModel: CountrySearchViewModel = koinViewModel()
 ) {
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -56,7 +56,7 @@ internal fun SearchByCountryScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                SearchByCountryEffect.NavigateBack -> {
+                CountrySearchEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
                 else -> {}
@@ -72,8 +72,8 @@ internal fun SearchByCountryScreen(
 
 @Composable
 private fun SearchByCountryScreenContent(
-    state: SearchByCountryScreenState,
-    interactionListener: SearchByCountryInteractionListener,
+    state: CountrySearchUiState,
+    interactionListener: CountrySearchInteractionListener,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -134,10 +134,10 @@ private fun SearchByCountryScreenContent(
 private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
-            state = SearchByCountryScreenState(),
-            interactionListener = object : SearchByCountryInteractionListener {
+            state = CountrySearchUiState(),
+            interactionListener = object : CountrySearchInteractionListener {
                 override fun onChangeSearchKeyword(keyword: String) {}
-                override fun onSelectCountry(country: CountryUiState) {}
+                override fun onSelectCountry(country: CountryItemUiState) {}
                 override fun onClickNavigateBack() {}
                 override fun onClickRetry() {}
             },

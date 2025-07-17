@@ -1,8 +1,8 @@
 package com.example.viewmodel.search.countrySearch
 
-interface SearchByCountryInteractionListener {
+interface CountrySearchInteractionListener {
     fun onChangeSearchKeyword(keyword: String)
-    fun onSelectCountry(country: CountryUiState)
+    fun onSelectCountry(country: CountryItemUiState)
     fun onClickNavigateBack()
     fun onClickRetry()
 }

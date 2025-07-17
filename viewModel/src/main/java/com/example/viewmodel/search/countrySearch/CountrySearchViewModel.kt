@@ -8,7 +8,7 @@ import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.entity.Country
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.debounceSearch
@@ -19,15 +19,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.collections.isNotEmpty
 
-class SearchByCountryViewModel(
+class CountrySearchViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
     private val addRecentSearchUseCase: AddRecentSearchUseCase,
     dispatcherProvider: DispatcherProvider
-) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
-    SearchByCountryScreenState(),
+) : BaseViewModel<CountrySearchUiState, CountrySearchEffect>(
+    CountrySearchUiState(),
     dispatcherProvider
-), SearchByCountryInteractionListener {
+), CountrySearchInteractionListener {
     private val _keyword = MutableStateFlow("")
 
     init { observeKeywordFlow() }
@@ -77,7 +77,7 @@ class SearchByCountryViewModel(
         }
     }
 
-    override fun onSelectCountry(country: CountryUiState) {
+    override fun onSelectCountry(country: CountryItemUiState) {
         updateState {
             it.copy(
                 keyword = country.countryName,
@@ -116,7 +116,7 @@ class SearchByCountryViewModel(
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
         updateState {
             it.copy(
-                movies = movies.toListOfUiState(),
+                movies = movies.toMoveUiStates(),
                 searchByCountryContentUIState = when {
                     movies.isEmpty() -> SearchByCountryContentUIState.NO_DATA_FOUND
                     else -> SearchByCountryContentUIState.MOVIES_LOADED
@@ -126,6 +126,6 @@ class SearchByCountryViewModel(
     }
 
     override fun onClickNavigateBack() {
-        sendNewEffect(SearchByCountryEffect.NavigateBack)
+        sendNewEffect(CountrySearchEffect.NavigateBack)
     }
 }

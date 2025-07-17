@@ -6,10 +6,10 @@ import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.entity.Country
-import com.example.viewmodel.search.countrySearch.CountryUiState
+import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
-import com.example.viewmodel.search.countrySearch.SearchByCountryEffect
-import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
+import com.example.viewmodel.search.countrySearch.CountrySearchEffect
+import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.TestDispatcherProvider
@@ -37,7 +37,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchByCountryViewModelTest {
-    private lateinit var viewModel: SearchByCountryViewModel
+    private lateinit var viewModel: CountrySearchViewModel
     private val testDispatcherProvider = TestDispatcherProvider()
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase = mockk(relaxed = true)
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase = mockk(relaxed = true)
@@ -49,7 +49,7 @@ class SearchByCountryViewModelTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
-        viewModel = SearchByCountryViewModel(
+        viewModel = CountrySearchViewModel(
             getSuggestedCountriesUseCase = getSuggestedCountriesUseCase,
             getMoviesByCountryUseCase = getMoviesByCountryUseCase,
             addRecentSearchUseCase = addRecentSearchUseCase,
@@ -65,7 +65,7 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should nav back when onNavigateBackClicked`() =
         testScope.runTest {
-            var effects = mutableListOf<SearchByCountryEffect?>()
+            var effects = mutableListOf<CountrySearchEffect?>()
             val collectJob = testScope.launch {
                 viewModel.effect.collect {
                     effects.add(it)
@@ -76,7 +76,7 @@ class SearchByCountryViewModelTest {
             testScope.advanceUntilIdle()
             collectJob.cancel()
 
-            assertThat(effects).containsExactly(SearchByCountryEffect.NavigateBack)
+            assertThat(effects).containsExactly(CountrySearchEffect.NavigateBack)
         }
 
     @Test
@@ -95,7 +95,7 @@ class SearchByCountryViewModelTest {
     fun `should add recent search when onCountrySelected called`() =
         testScope.runTest {
             val keyword = "eg"
-            val countryUiState = CountryUiState("Egypt", "eg")
+            val countryUiState = CountryItemUiState("Egypt", "eg")
             coEvery { addRecentSearchUseCase(any()) } returns
 
             viewModel.onSelectCountry(countryUiState)
@@ -108,7 +108,7 @@ class SearchByCountryViewModelTest {
     fun `should fail to add recent search when onCountrySelected called`() =
         testScope.runTest {
             val keyword = "eg"
-            val countryUiState = CountryUiState("Egypt", "eg")
+            val countryUiState = CountryItemUiState("Egypt", "eg")
             coEvery { addRecentSearchUseCase(any()) } throws AflamiException()
 
             viewModel.onSelectCountry(countryUiState)
@@ -137,7 +137,7 @@ class SearchByCountryViewModelTest {
             viewModel.onChangeSearchKeyword(keyword)
 
             coVerify(exactly = 0) { getSuggestedCountriesUseCase(keyword) }
-            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
+            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryItemUiState>())
         }
 
     @Test
@@ -152,9 +152,9 @@ class SearchByCountryViewModelTest {
             coEvery { getSuggestedCountriesUseCase("aus") } coAnswers { countries }
 
             viewModel.onChangeSearchKeyword("a")
-            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
+            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryItemUiState>())
             viewModel.onChangeSearchKeyword("au")
-            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryUiState>())
+            assertThat(viewModel.state.value.suggestedCountries).isEqualTo(emptyList<CountryItemUiState>())
             viewModel.onChangeSearchKeyword("aus")
             testScope.advanceTimeBy(3000L)
             testScope.advanceUntilIdle()
@@ -194,7 +194,7 @@ class SearchByCountryViewModelTest {
 
     @Test
     fun `should show countries dropDown when onKeywordValueChanged called`() = testScope.runTest {
-        val countryUiState = CountryUiState("Egypt", "eg")
+        val countryUiState = CountryItemUiState("Egypt", "eg")
         val keyword = "eg"
         val countries = listOf(Country("Egypt", "eg"), Country("Senegal", "sg"))
         coEvery { getSuggestedCountriesUseCase(keyword) } returns countries
@@ -209,7 +209,7 @@ class SearchByCountryViewModelTest {
 
     @Test
     fun `should set state to LOADING_MOVIES when call getMoviesByCountry`() = testScope.runTest {
-        val countryUiState = CountryUiState("Egypt", "eg")
+        val countryUiState = CountryItemUiState("Egypt", "eg")
 
         viewModel.onSelectCountry(countryUiState)
         testScope.advanceUntilIdle()
@@ -222,7 +222,7 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should update movies state when getMoviesByCountryUseCase return list of movie `() =
         testScope.runTest {
-            val countryUiState = CountryUiState("Egypt", "eg")
+            val countryUiState = CountryItemUiState("Egypt", "eg")
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
@@ -235,7 +235,7 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should set state to MOVIES_LOADED when getMoviesByCountryUseCase return list of movie`() =
         testScope.runTest {
-            val countryUiState = CountryUiState("Egypt", "eg")
+            val countryUiState = CountryItemUiState("Egypt", "eg")
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
@@ -252,7 +252,7 @@ class SearchByCountryViewModelTest {
         testScope.runTest {
             val keyword = "eg"
             val countriesUiState =
-                listOf(CountryUiState("Egypt", "eg"), CountryUiState("Senegal", "sg"))
+                listOf(CountryItemUiState("Egypt", "eg"), CountryItemUiState("Senegal", "sg"))
             val countries = listOf(Country("Egypt", "eg"), Country("Senegal", "sg"))
             coEvery { getSuggestedCountriesUseCase(any()) } returns countries
 
@@ -267,7 +267,7 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should reload movies when onRetryRequestClicked calls getMoviesByCountry`() =
         testScope.runTest {
-            val countryUiState = CountryUiState("Egypt", "eg")
+            val countryUiState = CountryItemUiState("Egypt", "eg")
             val movies = listOf(createMovie())
             coEvery { getMoviesByCountryUseCase(any()) } returns movies
 
@@ -296,7 +296,7 @@ class SearchByCountryViewModelTest {
         exception: Exception,
         expectedState: SearchByCountryContentUIState,
     ) = testScope.runTest {
-        val countryUiState = CountryUiState("Egypt", "eg")
+        val countryUiState = CountryItemUiState("Egypt", "eg")
         coEvery { getMoviesByCountryUseCase(any()) } throws exception
 
         viewModel.onSelectCountry(countryUiState)

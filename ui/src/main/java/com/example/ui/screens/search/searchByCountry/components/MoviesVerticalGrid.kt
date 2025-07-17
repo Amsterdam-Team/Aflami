@@ -14,11 +14,11 @@ import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.viewmodel.search.countrySearch.MovieUiState
+import com.example.viewmodel.shared.MediaItemUiState
 
 @Composable
 internal fun MoviesVerticalGrid(
-    movies: List<MovieUiState>,
+    movies: List<MediaItemUiState>,
     isVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -37,9 +37,9 @@ internal fun MoviesVerticalGrid(
                 MovieCard(
                     movieImage = movie.posterImageUrl,
                     movieType = stringResource(R.string.movie),
-                    movieYear = movie.productionYear,
+                    movieYear = movie.yearOfRelease,
                     movieTitle = movie.name,
-                    movieRating = movie.rating,
+                    movieRating = movie.rate,
                 )
             }
         }
@@ -51,12 +51,12 @@ internal fun MoviesVerticalGrid(
 private fun MoviesVerticalGridPreview() {
     AflamiTheme {
         MoviesVerticalGrid(
-            movies = buildList(4) { MovieUiState(
+            movies = buildList(4) { MediaItemUiState(
                 id = 1,
                 name = stringResource(R.string.movie),
                 posterImageUrl = "https://unsplash.com/s/photos/free-images",
-                productionYear = "2025",
-                rating = "9.9"
+                yearOfRelease = "2025",
+                rate = "9.9"
             ) },
             isVisible = true,
         )

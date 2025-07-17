@@ -13,11 +13,11 @@ import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.common.toMoveUiStates
-import com.example.viewmodel.common.toTvShowUiStates
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
+import com.example.viewmodel.search.mapper.toMoveUiStates
+import com.example.viewmodel.search.mapper.toTvShowUiStates
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.FlowPreview

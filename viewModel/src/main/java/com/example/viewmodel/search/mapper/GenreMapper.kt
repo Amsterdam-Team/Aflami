@@ -2,10 +2,9 @@ package com.example.viewmodel.search.mapper
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.Selectable
-import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
-
+import com.example.viewmodel.search.searchByKeyword.MovieGenreItemUiState
+import com.example.viewmodel.search.searchByKeyword.TvGenreItemUiState
+import com.example.viewmodel.shared.Selectable
 
 fun List<MovieGenreItemUiState>.selectByMovieGenre(movieGenre: MovieGenre): List<MovieGenreItemUiState> {
     return this.map { movies ->
@@ -29,7 +28,6 @@ fun List<TvGenreItemUiState>.selectByTvGenre(tvGenre: TvShowGenre): List<TvGenre
     }
 }
 
-
 fun List<MovieGenreItemUiState>.getSelectedGenreType(): MovieGenre {
     return this.find { it.selectableMovieGenre.isSelected }?.selectableMovieGenre?.type
         ?: MovieGenre.ALL
@@ -38,5 +36,4 @@ fun List<MovieGenreItemUiState>.getSelectedGenreType(): MovieGenre {
 fun List<TvGenreItemUiState>.getSelectedGenreType(): TvShowGenre {
     return this.find { it.selectableTvShowGenre.isSelected }?.selectableTvShowGenre?.type
         ?: TvShowGenre.ALL
-
 }
