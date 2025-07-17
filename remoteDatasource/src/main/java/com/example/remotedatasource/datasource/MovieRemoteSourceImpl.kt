@@ -1,6 +1,7 @@
 package com.example.remotedatasource.datasource
 
 import com.example.domain.exceptions.NoSearchByActorResultFoundException
+import com.example.remotedatasource.base.BaseRemoteSource
 import com.example.remotedatasource.client.KtorClient
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.RemoteActorSearchResponse
@@ -8,13 +9,14 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 import io.ktor.client.request.parameter
 
 class MovieRemoteSourceImpl(
-    private val ktorClient: KtorClient,
-) : MovieRemoteSource {
+    ktorClient: KtorClient,
+) : BaseRemoteSource(ktorClient), MovieRemoteSource {
 
     override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
-        return ktorClient.tryToExecute {
+        val rawResponse: RemoteMovieResponse = safeExecute {
             ktorClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
         }
+        return enrichMovieResponseWithFullUrls(rawResponse)
     }
 
     override suspend fun getMoviesByActorName(name: String): RemoteMovieResponse {
@@ -23,9 +25,10 @@ class MovieRemoteSourceImpl(
             .joinToString(separator = "|") { it.id.toString() }
             .ifEmpty { throw NoSearchByActorResultFoundException() }
 
-        return ktorClient.tryToExecute {
+        val rawResponse: RemoteMovieResponse = safeExecute {
             ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
         }
+        return enrichMovieResponseWithFullUrls(rawResponse)
     }
 
     private suspend fun getActorIdByName(name: String): RemoteActorSearchResponse {
@@ -35,9 +38,18 @@ class MovieRemoteSourceImpl(
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse {
-        return ktorClient.tryToExecute {
+        val rawResponse: RemoteMovieResponse = safeExecute {
             ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_ORIGIN_COUNTRY, countryIsoCode) }
         }
+        return enrichMovieResponseWithFullUrls(rawResponse)
+    }
+
+    private fun enrichMovieResponseWithFullUrls(response: RemoteMovieResponse): RemoteMovieResponse {
+        return response.copy(
+            results = response.results.map { itemDto ->
+                itemDto.copy(posterPath = BASE_IMAGE_URL + itemDto.posterPath.orEmpty())
+            }
+        )
     }
 
     private companion object {
