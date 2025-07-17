@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.Chip
 import com.example.ui.screens.movieDetails.getExtrasSectionItemInfo
 import com.example.viewmodel.shared.Selectable
-import com.example.viewmodel.movieDetails.MovieExtras
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 
 @Composable
 fun MovieExtrasSection(

@@ -27,39 +27,40 @@ data class MovieDetailsUiState(
     val reviews: List<ReviewUiState> = emptyList(),
     val isLoading: Boolean = false,
     val networkError : Boolean = false
-)
+) {
 
 
-enum class MovieExtras {
-    MORE_LIKE_THIS,
-    REVIEWS,
-    GALLERY,
-    COMPANY_PRODUCTION
+    enum class MovieExtras {
+        MORE_LIKE_THIS,
+        REVIEWS,
+        GALLERY,
+        COMPANY_PRODUCTION
+    }
+
+    data class ActorUiState(
+        val photo: String = "",
+        val name: String = ""
+    )
+
+    data class SimilarMovieUiState(
+        val rate: String = "",
+        val name: String = "",
+        val productionYear: String = "",
+        val posterUrl: String = ""
+    )
+
+    data class ProductionCompanyUiState(
+        val image: String = "",
+        val name: String = "",
+        val country: String = ""
+    )
+
+    data class ReviewUiState(
+        val author: String = "",
+        val username: String = "",
+        val rating: String = "",
+        val content: String = "",
+        val date: String = "",
+        val imageUrl: String? = "",
+    )
 }
-
-data class ActorUiState(
-    val photo: String = "",
-    val name: String = ""
-)
-
-data class SimilarMovieUiState(
-    val rate: String = "",
-    val name: String = "",
-    val productionYear: String = "",
-    val posterUrl: String = ""
-)
-
-data class ProductionCompanyUiState(
-    val image: String = "",
-    val name: String = "",
-    val country: String = ""
-)
-
-data class ReviewUiState(
-    val author: String = "",
-    val username: String = "",
-    val rating: String = "",
-    val content: String = "",
-    val date: String = "",
-    val imageUrl: String? = "",
-)

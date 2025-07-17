@@ -3,7 +3,7 @@ package com.example.ui.screens.movieDetails.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import com.example.viewmodel.movieDetails.ProductionCompanyUiState
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.ProductionCompanyUiState
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth

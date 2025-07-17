@@ -4,6 +4,7 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMovieDetailsUseCase
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
 class MovieDetailsViewModel(

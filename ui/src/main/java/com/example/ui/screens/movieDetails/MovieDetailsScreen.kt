@@ -68,13 +68,13 @@ import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewCard
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
-import com.example.viewmodel.movieDetails.ActorUiState
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.ActorUiState
 import com.example.viewmodel.movieDetails.MovieDetailsEffect
 import com.example.viewmodel.movieDetails.MovieDetailsInteractionListener
-import com.example.viewmodel.movieDetails.MovieExtras
-import com.example.viewmodel.movieDetails.ProductionCompanyUiState
-import com.example.viewmodel.movieDetails.ReviewUiState
-import com.example.viewmodel.movieDetails.SimilarMovieUiState
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.ProductionCompanyUiState
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.ReviewUiState
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

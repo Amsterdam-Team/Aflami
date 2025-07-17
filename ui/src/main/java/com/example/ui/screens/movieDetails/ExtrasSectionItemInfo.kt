@@ -3,7 +3,7 @@ package com.example.ui.screens.movieDetails
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.example.designsystem.R
-import com.example.viewmodel.movieDetails.MovieExtras
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 
 data class ExtrasSectionItemInfo(
     @DrawableRes val iconResId: Int,
