@@ -19,7 +19,7 @@ class MovieLocalMapper(
             categories = categoryLocalMapper.mapToMovieCategories(movieWithCategories.categories),
             popularity = movieWithCategories.movie.popularity,
             originCountry = movieWithCategories.movie.originCountry,
-            movieLength = movieWithCategories.movie.movieLength,
+            runTime = movieWithCategories.movie.movieLength,
             hasVideo = movieWithCategories.movie.hasVideo
         )
     }
@@ -33,7 +33,7 @@ class MovieLocalMapper(
             productionYear = movie.productionYear,
             rating = movie.rating,
             popularity = movie.popularity,
-            movieLength = movie.movieLength,
+            movieLength = movie.runTime,
             originCountry = movie.originCountry,
             hasVideo = movie.hasVideo
         )

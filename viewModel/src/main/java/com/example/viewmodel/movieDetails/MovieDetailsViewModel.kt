@@ -39,7 +39,7 @@ class MovieDetailsViewModel(
         updateState { movieDetailsUiStateMapper.toUiState(movieDetails) }
 
 
-    override fun onMovieExtrasClicked(movieExtras: MovieExtras) {
+    override fun onClickMovieExtras(movieExtras: MovieExtras) {
         updateState { state ->
             state.copy(
                 extraItem = state.extraItem.map { selectable ->
@@ -49,15 +49,15 @@ class MovieDetailsViewModel(
         }
     }
 
-    override fun onShowAllCastClick() {
+    override fun onClickShowAllCast() {
         sendNewEffect(MovieDetailsEffect.NavigateToCastsScreenEffect)
     }
 
-    override fun onBackClick() {
+    override fun onClickBack() {
         sendNewEffect(MovieDetailsEffect.NavigateBackEffect)
     }
 
-    override fun onRetryQuestClick() {
+    override fun onClickRetryRequest() {
         loadMovieDetails()
     }
 

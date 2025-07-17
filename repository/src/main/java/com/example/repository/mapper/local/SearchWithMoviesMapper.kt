@@ -15,7 +15,7 @@ class SearchWithMoviesMapper {
                 rating = it.rating,
                 categories = emptyList(),
                 popularity = it.popularity,
-                movieLength = it.movieLength,
+                runTime = it.movieLength,
                 originCountry = it.originCountry,
                 hasVideo = it.hasVideo
             )

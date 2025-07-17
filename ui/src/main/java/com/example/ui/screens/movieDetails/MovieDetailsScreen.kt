@@ -122,7 +122,7 @@ fun MovieContent(
         exit = fadeOut(tween(animationDuration))) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             NoNetworkContainer(
-                onClickRetry = interactionListener::onRetryQuestClick,
+                onClickRetry = interactionListener::onClickRetryRequest,
             )
         }
     }
@@ -158,7 +158,7 @@ fun MovieContent(
                             .statusBarsPadding(),
                         firstOption = painterResource(R.drawable.ic_outlined_star),
                         lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                        onNavigateBackClicked = interactionListener::onBackClick
+                        onNavigateBackClicked = interactionListener::onClickBack
                     )
                     RatingChip(
                         state.rating,
@@ -215,7 +215,7 @@ fun MovieContent(
                         CastSection(
                             modifier = Modifier.padding(top = 24.dp),
                             actors = state.actors,
-                            onClickAllCast = interactionListener::onShowAllCastClick
+                            onClickAllCast = interactionListener::onClickShowAllCast
                         )
                         Spacer(
                             modifier = Modifier
@@ -227,7 +227,7 @@ fun MovieContent(
                         MovieExtrasSection(
                             modifier = Modifier.padding(top = 12.dp),
                             extras = state.extraItem,
-                            onClickExtras = interactionListener::onMovieExtrasClicked
+                            onClickExtras = interactionListener::onClickMovieExtras
                         )
                     }
 
@@ -350,16 +350,16 @@ private fun SearchByActorContentPreview() {
         MovieContent(
             MovieDetailsUiState(posterUrl = "https://image.tmdb.org/t/p/w500/1GJvBE7UWU1WOVi0XREl4JQc7f8.jpg"),
             interactionListener = object : MovieDetailsInteractionListener {
-                override fun onMovieExtrasClicked(movieExtras: MovieExtras) {
+                override fun onClickMovieExtras(movieExtras: MovieExtras) {
                 }
 
-                override fun onShowAllCastClick() {
+                override fun onClickShowAllCast() {
                 }
 
-                override fun onBackClick() {
+                override fun onClickBack() {
                 }
 
-                override fun onRetryQuestClick() {
+                override fun onClickRetryRequest() {
                 }
             })
     }

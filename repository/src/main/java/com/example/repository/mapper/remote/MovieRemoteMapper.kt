@@ -24,7 +24,7 @@ class MovieRemoteMapper {
             rating = remoteMovieItemDto.voteAverage.toFloat(),
             popularity = remoteMovieItemDto.popularity,
             originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
-            movieLength = remoteMovieItemDto.runtime,
+            runTime = remoteMovieItemDto.runtime,
             hasVideo = remoteMovieItemDto.video
         )
     }

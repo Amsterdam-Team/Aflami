@@ -21,7 +21,7 @@ class MovieDetailsUiStateMapper {
             movieTitle = movie.name,
             categories = categories,
             releaseDate = productionYearToDate(movie.productionYear),
-            movieLength = movieLengthToHourMinuteString(movie.movieLength),
+            movieLength = movieLengthToHourMinuteString(movie.runTime),
             originCountry = movie.originCountry,
             description = movie.description,
             hasVideo = movie.hasVideo,
@@ -55,8 +55,8 @@ class MovieDetailsUiStateMapper {
             gallery = movieGallery.map { it},
             reviews = reviews.map {
                 ReviewUiState(
-                    author = it.author,
-                    username = it.username,
+                    author = it.reviewerName,
+                    username = it.reviewerUsername,
                     rating = ratingToRatingString(it.rating),
                     content = it.content,
                     date = dateToString(it.date),
