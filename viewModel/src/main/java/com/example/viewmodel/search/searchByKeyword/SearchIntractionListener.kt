@@ -21,7 +21,6 @@ interface SearchInteractionListener {
     fun onSearchCleared()
 }
 
-
 interface FilterInteractionListener {
     fun onCancelButtonClicked()
     fun onRatingStarChanged(ratingIndex: Int)

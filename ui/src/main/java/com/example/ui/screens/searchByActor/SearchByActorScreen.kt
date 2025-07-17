@@ -157,7 +157,7 @@ private fun SearchByActorContent(
                     ) {
                         items(targetState.movies) { movie ->
                             MovieCard(
-                                movieImage = movie.poster,
+                                movieImage = movie.posterImageUrl,
                                 movieType = "Movies",
                                 movieYear = movie.productionYear,
                                 movieTitle = movie.name,

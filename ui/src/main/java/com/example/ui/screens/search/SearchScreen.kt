@@ -213,7 +213,7 @@ private fun SuccessMediaItems(
         ) { mediaItem ->
             with(mediaItem) {
                 MovieCard(
-                    movieImage = posterImage,
+                    movieImage = posterImageUrl,
                     movieType = if (mediaType == MediaType.TV_SHOW) stringResource(R.string.tv_shows)
                     else stringResource(R.string.movies),
                     movieYear = yearOfRelease,

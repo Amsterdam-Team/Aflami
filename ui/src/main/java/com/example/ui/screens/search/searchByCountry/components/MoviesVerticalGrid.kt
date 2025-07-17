@@ -35,7 +35,7 @@ internal fun MoviesVerticalGrid(
                 key = { movie -> movie.id }
             ) { movie ->
                 MovieCard(
-                    movieImage = movie.poster,
+                    movieImage = movie.posterImageUrl,
                     movieType = stringResource(R.string.movie),
                     movieYear = movie.productionYear,
                     movieTitle = movie.name,
@@ -54,7 +54,7 @@ private fun MoviesVerticalGridPreview() {
             movies = buildList(4) { MovieUiState(
                 id = 1,
                 name = stringResource(R.string.movie),
-                poster = "https://unsplash.com/s/photos/free-images",
+                posterImageUrl = "https://unsplash.com/s/photos/free-images",
                 productionYear = "2025",
                 rating = "9.9"
             ) },
