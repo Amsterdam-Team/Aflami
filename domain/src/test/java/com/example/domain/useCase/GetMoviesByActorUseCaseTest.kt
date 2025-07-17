@@ -50,7 +50,7 @@ class GetMoviesByActorUseCaseTest {
                 name = "Movie A",
                 description = "",
                 posterUrl = "",
-                productionYear = 2020,
+                productionYear = (2020).toUInt(),
                 categories = emptyList(),
                 rating = 7.0f,
                 popularity = 50.0
@@ -60,7 +60,7 @@ class GetMoviesByActorUseCaseTest {
                 name = "Movie B",
                 description = "",
                 posterUrl = "",
-                productionYear = 2021,
+                productionYear = (2021).toUInt(),
                 categories = emptyList(),
                 rating = 8.0f,
                 popularity = 100.0
@@ -70,7 +70,7 @@ class GetMoviesByActorUseCaseTest {
                 name = "Movie C",
                 description = "",
                 posterUrl = "",
-                productionYear = 2022,
+                productionYear = (2022).toUInt(),
                 categories = emptyList(),
                 rating = 6.0f,
                 popularity = 20.0

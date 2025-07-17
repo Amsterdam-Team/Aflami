@@ -4,10 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetAndFilterMoviesByKeywordUseCase
 import com.example.domain.useCase.GetAndFilterTvShowsByKeywordUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
-import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
-import com.example.domain.useCase.search.ClearRecentSearchUseCase
-import com.example.domain.useCase.search.GetRecentSearchesUseCase
+import com.example.domain.useCase.RecentSearchesUsaCase
 import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
@@ -33,10 +30,7 @@ import kotlinx.coroutines.launch
 class SearchViewModel(
     private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
     private val getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase,
-    private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
-    private val addRecentSearchUseCase: AddRecentSearchUseCase,
-    private val clearRecentSearchUseCase: ClearRecentSearchUseCase,
-    private val clearAllRecentSearchesUseCase: ClearAllRecentSearchesUseCase,
+    private val recentSearchesUsaCase: RecentSearchesUsaCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     SearchInteractionListener, FilterInteractionListener {
@@ -51,7 +45,7 @@ class SearchViewModel(
     private fun loadRecentSearches() {
         startLoading()
         tryToExecute(
-            action = { getRecentSearchesUseCase() },
+            action = { recentSearchesUsaCase.getRecentSearches() },
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion
@@ -95,6 +89,9 @@ class SearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
+        if (movies.isEmpty()) {
+            updateState { it.copy(errorUiState = SearchErrorState.NoResultFoundException) }
+        }
         updateState { it.copy(movies = movies.toMoveUiStates(), errorUiState = null) }
     }
 
@@ -111,6 +108,9 @@ class SearchViewModel(
     }
 
     private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
+        if (tvShows.isEmpty()) {
+            updateState { it.copy(errorUiState = SearchErrorState.NoResultFoundException) }
+        }
         updateState { it.copy(tvShows = tvShows.toTvShowUiStates(), errorUiState = null) }
     }
 
@@ -191,7 +191,7 @@ class SearchViewModel(
     override fun onSearchActionClicked() {
         onKeywordValuedChanged(state.value.keyword)
         tryToExecute(
-            action = { addRecentSearchUseCase(state.value.keyword) },
+            action = { recentSearchesUsaCase.addRecentSearch(state.value.keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
             onCompletion = ::onCompletion
@@ -239,7 +239,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = true) }
 
         tryToExecute(
-            action = { clearRecentSearchUseCase(searchKeyword = keyword) },
+            action = { recentSearchesUsaCase.deleteRecentSearch(searchKeyword = keyword) },
             onSuccess = { loadRecentSearches() },
             onError = ::onFetchError,
         )
@@ -249,7 +249,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = true) }
 
         tryToExecute(
-            action = { clearAllRecentSearchesUseCase() },
+            action = { recentSearchesUsaCase.deleteRecentSearches() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = ::onFetchError,
             onCompletion = ::onCompletion

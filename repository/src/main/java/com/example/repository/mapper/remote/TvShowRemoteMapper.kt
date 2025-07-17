@@ -22,7 +22,7 @@ class TvShowRemoteMapper {
             name = remoteTvShowItemDto.title,
             description = remoteTvShowItemDto.overview,
             posterUrl = remoteTvShowItemDto.posterPath.orEmpty(),
-            productionYear = parseYear(remoteTvShowItemDto.releaseDate),
+            productionYear = parseYear(remoteTvShowItemDto.releaseDate).toUInt(),
             categories = mapGenreIdsToCategories(remoteTvShowItemDto.genreIds),
             rating = remoteTvShowItemDto.voteAverage.toFloat(),
             popularity = remoteTvShowItemDto.popularity

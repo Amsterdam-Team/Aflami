@@ -11,7 +11,7 @@ class SearchWithMoviesMapper {
                 name = it.name,
                 description = it.description,
                 posterUrl = it.poster,
-                productionYear = it.productionYear,
+                productionYear = it.productionYear.toUInt(),
                 rating = it.rating,
                 categories = emptyList(),
                 popularity = it.popularity

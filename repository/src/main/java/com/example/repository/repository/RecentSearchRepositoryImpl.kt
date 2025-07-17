@@ -13,19 +13,19 @@ class RecentSearchRepositoryImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource,
     private val recentSearchMapper: RecentSearchMapper,
 ) : RecentSearchRepository {
-    override suspend fun upsertRecentSearch(searchKeyword: String) {
+    override suspend fun addRecentSearch(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
     }
 
-    override suspend fun upsertRecentSearchForCountry(searchKeyword: String) {
+    override suspend fun addRecentSearchForCountry(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_COUNTRY)
     }
 
-    override suspend fun upsertRecentSearchForActor(searchKeyword: String) {
+    override suspend fun addRecentSearchForActor(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_ACTOR)
     }
 
-    override suspend fun getAllRecentSearches(): List<String> {
+    override suspend fun getRecentSearches(): List<String> {
         return tryToExecute(
             function = { recentSearchLocalSource.getRecentSearches() },
             onSuccess = { recentSearchMapper.toDomainList(it) },
@@ -33,7 +33,7 @@ class RecentSearchRepositoryImpl(
         )
     }
 
-    override suspend fun deleteAllRecentSearches() {
+    override suspend fun deleteRecentSearches() {
         tryToExecute(
             function = { recentSearchLocalSource.deleteRecentSearches() },
             onSuccess = { },

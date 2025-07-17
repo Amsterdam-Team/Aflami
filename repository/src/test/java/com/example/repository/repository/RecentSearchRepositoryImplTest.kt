@@ -35,7 +35,7 @@ class RecentSearchRepositoryImplTest {
     fun `should upsert keyword search`() = runTest {
         coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
-        repository.upsertRecentSearch(testKeyword)
+        repository.addRecentSearch(testKeyword)
 
         coVerify {
             recentSearchLocalSource.upsertRecentSearch(
@@ -51,7 +51,7 @@ class RecentSearchRepositoryImplTest {
     fun `should upsert actor search`() = runTest {
         coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
-        repository.upsertRecentSearchForActor(testKeyword)
+        repository.addRecentSearchForActor(testKeyword)
 
         coVerify {
             recentSearchLocalSource.upsertRecentSearch(
@@ -67,7 +67,7 @@ class RecentSearchRepositoryImplTest {
     fun `should upsert country search`() = runTest {
         coEvery { recentSearchLocalSource.upsertRecentSearch(any()) } just Runs
 
-        repository.upsertRecentSearchForCountry(testKeyword)
+        repository.addRecentSearchForCountry(testKeyword)
 
         coVerify {
             recentSearchLocalSource.upsertRecentSearch(
@@ -87,7 +87,7 @@ class RecentSearchRepositoryImplTest {
         coEvery { recentSearchLocalSource.getRecentSearches() } returns dtos
         every { recentSearchMapper.toDomainList(dtos) } returns expected
 
-        val result = repository.getAllRecentSearches()
+        val result = repository.getRecentSearches()
 
         assertThat(result).isEqualTo(expected)
     }
@@ -96,7 +96,7 @@ class RecentSearchRepositoryImplTest {
     fun `should delete all recent searches`() = runTest {
         coEvery { recentSearchLocalSource.deleteRecentSearches() } just Runs
 
-        repository.deleteAllRecentSearches()
+        repository.deleteRecentSearches()
 
         coVerify { recentSearchLocalSource.deleteRecentSearches() }
     }

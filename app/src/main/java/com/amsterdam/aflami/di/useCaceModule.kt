@@ -7,28 +7,17 @@ import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
-import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
-import com.example.domain.useCase.search.ClearRecentSearchUseCase
-import com.example.domain.useCase.search.GetRecentSearchesUseCase
-import com.example.domain.validation.CountryValidator
-import com.example.domain.validation.CountryValidatorImp
-import org.koin.core.module.dsl.bind
+import com.example.domain.useCase.RecentSearchesUsaCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    singleOf(::CountryValidatorImp) { bind<CountryValidator>() }
-    singleOf(::CountryValidatorImp)
     singleOf(::GetAndFilterMoviesByKeywordUseCase)
     singleOf(::GetMoviesByCountryUseCase)
     singleOf(::GetMoviesByActorUseCase)
     singleOf(::GetMovieCategoriesUseCase)
     singleOf(::GetTvShowCategoriesUseCase)
     singleOf(::GetSuggestedCountriesUseCase)
-    singleOf(::GetRecentSearchesUseCase)
+    singleOf(::RecentSearchesUsaCase)
     singleOf(::GetAndFilterTvShowsByKeywordUseCase)
-    singleOf(::AddRecentSearchUseCase)
-    singleOf(::ClearRecentSearchUseCase)
-    singleOf(::ClearAllRecentSearchesUseCase)
 }

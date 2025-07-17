@@ -4,8 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
+import com.example.domain.useCase.RecentSearchesUsaCase
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.search.mapper.toCountry
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 class SearchByCountryViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
-    private val addRecentSearchUseCase: AddRecentSearchUseCase,
+    private val recentSearchUseCase: RecentSearchesUsaCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryEffect>(
     SearchByCountryScreenState(),
@@ -50,7 +51,7 @@ class SearchByCountryViewModel(
         updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
         addRecentSearch()
         tryToExecute(
-            action = { getMoviesByCountryUseCase(state.value.selectedCountryIsoCode) },
+            action = { getMoviesByCountryUseCase(state.value.selectedCountry.toCountry()) },
             onSuccess = { movies -> updateMoviesForCountry(movies.toListOfUiState()) },
             onError = (::onError)
         )
@@ -58,7 +59,7 @@ class SearchByCountryViewModel(
 
     private fun addRecentSearch() {
         tryToExecute(
-            action = { addRecentSearchUseCase(state.value.selectedCountryIsoCode) },
+            action = { recentSearchUseCase.addRecentSearch(state.value.selectedCountry.countryIsoCode) },
             onSuccess = { },
             onError = { }
         )
@@ -115,7 +116,7 @@ class SearchByCountryViewModel(
         updateState {
             it.copy(
                 keyword = country.countryName,
-                selectedCountryIsoCode = country.countryIsoCode,
+                selectedCountry = country,
                 isCountriesDropDownVisible = false
             )
         }
@@ -127,9 +128,9 @@ class SearchByCountryViewModel(
     }
 
     override fun onRetryRequestClicked() {
-        if (state.value.selectedCountryIsoCode.isBlank() && state.value.keyword.isNotBlank()) {
+        if (state.value.selectedCountry.countryIsoCode.isBlank() && state.value.keyword.isNotBlank()) {
             getCountriesByKeyword(state.value.keyword)
-        } else if (state.value.selectedCountryIsoCode.isNotBlank()) {
+        } else if (state.value.selectedCountry.countryIsoCode.isNotBlank()) {
             getMoviesByCountry()
         } else {
             updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR) }

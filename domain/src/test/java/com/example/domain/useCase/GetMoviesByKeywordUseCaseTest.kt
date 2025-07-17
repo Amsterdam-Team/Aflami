@@ -43,16 +43,6 @@ class GetMoviesByKeywordUseCaseTest {
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException when repository returns an empty list`(): Unit =
-        runBlocking {
-            coEvery { movieRepository.getMoviesByKeyword(any()) } returns emptyList()
-
-            assertThrows<NoSearchByKeywordResultFoundException> {
-                getAndFilterMoviesByKeywordUseCase("nonexistentKeyword")
-            }
-        }
-
-    @Test
     fun `should throw NoSearchByKeywordResultFoundException when filters yield an empty list`(): Unit =
         runBlocking {
             val specificMovieList = listOf(
@@ -61,7 +51,7 @@ class GetMoviesByKeywordUseCaseTest {
                     name = "Low Rated",
                     description = "",
                     posterUrl = "",
-                    productionYear = 2023,
+                    productionYear = (2023).toUInt(),
                     categories = listOf(),
                     rating = 1.0f,
                     popularity = 5.0
@@ -71,7 +61,7 @@ class GetMoviesByKeywordUseCaseTest {
                     name = "Wrong Category",
                     description = "",
                     posterUrl = "",
-                    productionYear = 2023,
+                    productionYear = (2023).toUInt(),
                     categories = listOf(Category(id = 99, name = "Other", imageUrl = "")),
                     rating = 5.0f,
                     popularity = 5.0

@@ -22,7 +22,7 @@ class TvShowLocalMapper(
             name = tvShow.name,
             description = tvShow.description,
             poster = tvShow.posterUrl,
-            productionYear = tvShow.productionYear,
+            productionYear = tvShow.productionYear.toInt(),
             rating = tvShow.rating,
             popularity = tvShow.popularity
         )
@@ -34,7 +34,7 @@ class TvShowLocalMapper(
             name = tvShowWithCategory.tvShow.name,
             description = tvShowWithCategory.tvShow.description,
             posterUrl = tvShowWithCategory.tvShow.poster,
-            productionYear = tvShowWithCategory.tvShow.productionYear,
+            productionYear = tvShowWithCategory.tvShow.productionYear.toUInt(),
             rating = tvShowWithCategory.tvShow.rating,
             categories = categoryLocalMapper.mapToTvShowCategories(tvShowWithCategory.categories),
             popularity = tvShowWithCategory.tvShow.popularity

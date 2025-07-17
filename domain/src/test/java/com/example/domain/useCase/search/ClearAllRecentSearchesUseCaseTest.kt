@@ -21,6 +21,6 @@ class ClearAllRecentSearchesUseCaseTest {
     fun `should call deleteAllRecentSearches when executed`() =
         runBlocking {
             clearAllRecentSearchesUseCase()
-            coVerify { recentSearchRepository.deleteAllRecentSearches() }
+            coVerify { recentSearchRepository.deleteRecentSearches() }
         }
 }

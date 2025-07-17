@@ -30,19 +30,19 @@ class GetSuggestedCountriesUseCaseTest {
     @Test
     fun `should return a list of suggested countries when a matching keyword is provided`() =
         runBlocking {
-            coEvery { countryRepository.getAllCountries() } returns fakeCountryList
+            coEvery { countryRepository.getCountries() } returns fakeCountryList
 
             val countries = getSuggestedCountriesUseCase("eg")
 
             assertThat(countries).isNotEmpty()
-            coVerify { countryRepository.getAllCountries() }
+            coVerify { countryRepository.getCountries() }
         }
 
     @Test
     fun `should call validateCountry when a country keyword is provided`() {
         runBlocking {
             coEvery { countryValidator.validateCountry(any()) } returns Unit
-            coEvery { countryRepository.getAllCountries() } returns fakeCountryList
+            coEvery { countryRepository.getCountries() } returns fakeCountryList
 
             getSuggestedCountriesUseCase("eg")
         }
@@ -51,7 +51,7 @@ class GetSuggestedCountriesUseCaseTest {
     @Test
     fun `should throw NoSuggestedCountriesException when no countries match the given keyword`() {
         runBlocking {
-            coEvery { countryRepository.getAllCountries() } returns fakeCountryList
+            coEvery { countryRepository.getCountries() } returns fakeCountryList
 
             assertThrows<NoSuggestedCountriesException> {
                 getSuggestedCountriesUseCase("usa")
@@ -80,7 +80,7 @@ class GetSuggestedCountriesUseCaseTest {
                     Country(countryName = "canada", countryIsoCode = "ca"),
                     Country(countryName = "Germany", countryIsoCode = "de"),
                 )
-            coEvery { countryRepository.getAllCountries() } returns countriesWithDifferentCases
+            coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
 
             val result1 = getSuggestedCountriesUseCase("un")
             assertThat(result1).containsExactly(

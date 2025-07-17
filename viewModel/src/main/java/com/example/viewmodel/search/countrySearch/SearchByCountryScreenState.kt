@@ -2,7 +2,7 @@ package com.example.viewmodel.search.countrySearch
 
 data class SearchByCountryScreenState(
     val keyword: String = "",
-    val selectedCountryIsoCode: String = "",
+    val selectedCountry: CountryUiState = CountryUiState(),
     val suggestedCountries: List<CountryUiState> = emptyList(),
     val movies: List<MovieUiState> = emptyList(),
     val isLoadingCountries: Boolean = false,
