@@ -51,7 +51,7 @@ class CategoryRepositoryImpl(
                         Category(
                             id = category.ordinal.toLong(),
                             name = category.name,
-                            image = ""
+                            imageUrl = ""
                         )
                     }
             },
@@ -81,7 +81,7 @@ class CategoryRepositoryImpl(
                     Category(
                         id = category.ordinal.toLong(),
                         name = category.name,
-                        image = ""
+                        imageUrl = ""
                     )
                 }
             },
@@ -100,4 +100,5 @@ class CategoryRepositoryImpl(
             onFailure = {}
         )
     }
+
 }

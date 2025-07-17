@@ -1,16 +1,7 @@
 package com.amsterdam.aflami.di
 
-import com.example.domain.useCase.GetAndFilterMoviesByKeywordUseCase
-import com.example.domain.useCase.GetAndFilterTvShowsByKeywordUseCase
-import com.example.domain.useCase.GetMovieCategoriesUseCase
-import com.example.domain.useCase.GetMoviesByActorUseCase
-import com.example.domain.useCase.GetMoviesByCountryUseCase
-import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.GetTvShowCategoriesUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
-import com.example.domain.useCase.search.ClearAllRecentSearchesUseCase
-import com.example.domain.useCase.search.ClearRecentSearchUseCase
-import com.example.domain.useCase.search.GetRecentSearchesUseCase
+import com.example.domain.useCase.*
+import com.example.domain.useCase.search.*
 import com.example.domain.validation.CountryValidator
 import com.example.domain.validation.CountryValidatorImp
 import org.koin.core.module.dsl.bind
@@ -18,16 +9,22 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module {
+    // Validators
     singleOf(::CountryValidatorImp) { bind<CountryValidator>() }
-    singleOf(::CountryValidatorImp)
+
+    // Use Cases
     singleOf(::GetAndFilterMoviesByKeywordUseCase)
-    singleOf(::GetMoviesByCountryUseCase)
+    singleOf(::GetAndFilterTvShowsByKeywordUseCase)
+    singleOf(::GetMovieCastUseCase)
+    singleOf(::GetMovieDetailsUseCase)
     singleOf(::GetMoviesByActorUseCase)
+    singleOf(::GetMoviesByCountryUseCase)
     singleOf(::GetMovieCategoriesUseCase)
     singleOf(::GetTvShowCategoriesUseCase)
     singleOf(::GetSuggestedCountriesUseCase)
+
+    // Recent Search Use Cases
     singleOf(::GetRecentSearchesUseCase)
-    singleOf(::GetAndFilterTvShowsByKeywordUseCase)
     singleOf(::AddRecentSearchUseCase)
     singleOf(::ClearRecentSearchUseCase)
     singleOf(::ClearAllRecentSearchesUseCase)

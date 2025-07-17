@@ -2,10 +2,9 @@ package com.example.viewmodel.search.searchByKeyword
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.common.MediaItemUiState
+import com.example.viewmodel.shared.MediaItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
 import com.example.viewmodel.search.searchByKeyword.genre.Selectable
-import com.example.viewmodel.search.searchByKeyword.TabOption
 import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
 
 data class SearchUiState(
@@ -18,6 +17,7 @@ data class SearchUiState(
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
+    val selectedMovieId : Long = 0
 )
 
 data class FilterItemUiState(

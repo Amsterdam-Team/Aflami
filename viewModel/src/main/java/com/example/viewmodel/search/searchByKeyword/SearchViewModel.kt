@@ -13,8 +13,8 @@ import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.common.toMoveUiStates
-import com.example.viewmodel.common.toTvShowUiStates
+import com.example.viewmodel.shared.toMoveUiStates
+import com.example.viewmodel.shared.toTvShowUiStates
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
@@ -264,6 +265,11 @@ class SearchViewModel(
                 filterItemUiState = FilterItemUiState()
             )
         }
+    }
+
+    override fun onMovieClicked(movieId: Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
     }
 
     override fun onFilterButtonClicked() {

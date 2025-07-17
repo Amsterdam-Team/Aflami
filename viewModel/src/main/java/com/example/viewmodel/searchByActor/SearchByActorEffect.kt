@@ -4,4 +4,5 @@ sealed interface SearchByActorEffect{
 
     data object NavigateBack:SearchByActorEffect
     data object NoInternetConnection:SearchByActorEffect
+    data object NavigateToDetailsScreen : SearchByActorEffect
 }
