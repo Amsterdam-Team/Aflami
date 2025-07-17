@@ -5,6 +5,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -28,7 +29,7 @@ class GetTvShowCategoriesUseCaseTest {
 
     @Test
     fun `should return an empty list of categories when repository returns empty`() {
-        runBlocking {
+        runTest {
             coEvery { categoryRepository.getTvShowCategories() } returns listOf()
             val categories = getTvShowCategoriesUseCase()
             assert(categories.isEmpty())

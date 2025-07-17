@@ -5,6 +5,7 @@ import com.example.entity.Country
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -22,7 +23,7 @@ class GetMoviesByCountryUseCaseTest {
 
     @Test
     fun `should call getMoviesByCountryIsoCode when a country ISO code is provided`() =
-        runBlocking {
+        runTest {
             getMoviesByCountryUseCase(country)
             coVerify { movieRepository.getMoviesByCountry(country) }
         }

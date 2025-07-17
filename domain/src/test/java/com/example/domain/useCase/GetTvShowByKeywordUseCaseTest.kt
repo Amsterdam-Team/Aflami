@@ -1,17 +1,19 @@
 package com.example.domain.useCase
 
-import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.TvShowRepository
-import com.example.entity.Category
-import com.example.entity.TvShow
+import com.example.domain.useCase.utils.fakeTvShowList
+import com.example.domain.useCase.utils.fakeTvShowListWithCategories
+import com.example.domain.useCase.utils.fakeTvShowListWithRatings
+import com.example.domain.useCase.utils.specificTvShowList
+import com.example.entity.category.TvShowGenre
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class GetTvShowByKeywordUseCaseTest {
     private lateinit var tvShowRepository: TvShowRepository
@@ -26,7 +28,7 @@ class GetTvShowByKeywordUseCaseTest {
 
     @Test
     fun `should call getTvShowByKeyword when a keyword is provided`() =
-        runBlocking {
+        runTest {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
 
             getAndFilterTvShowsByKeywordUseCase("keyword")
@@ -35,58 +37,37 @@ class GetTvShowByKeywordUseCaseTest {
 
     @Test
     fun `should return a list of tv shows sorted by popularity when keyword search is successful`() =
-        runBlocking {
+        runTest {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowList
             val tvShows = getAndFilterTvShowsByKeywordUseCase("keyword")
-            assertThat(fakeTvShowList.sortedByDescending { it.popularity }).isEqualTo(tvShows)
+            assertThat(fakeTvShowList).isEqualTo(tvShows)
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException when repository returns an empty list`(): Unit =
-        runBlocking {
+    fun `should return empty list when repository returns an empty list`(): Unit =
+        runTest {
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns emptyList()
 
-            assertThrows<NoSearchByKeywordResultFoundException> {
-                getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")
-            }
+            assertThat(getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")).isEmpty()
         }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException when filters yield an empty list`(): Unit =
-        runBlocking {
-            val specificTvShowList = listOf(
-                TvShow(
-                    id = 1,
-                    name = "Low Rated",
-                    description = "",
-                    posterUrl = "",
-                    productionYear = 2023,
-                    categories = listOf(),
-                    rating = 1.0f,
-                    popularity = 5.0
-                ),
-                TvShow(
-                    id = 2,
-                    name = "Wrong Category",
-                    description = "",
-                    posterUrl = "",
-                    productionYear = 2023,
-                    categories = listOf(
-                        Category(id = 99, name = "Other", imageUrl = "")
-                    ),
-                    rating = 5.0f,
-                    popularity = 5.0
-                )
-            )
+    fun `should return empty list when filters yield an empty list`(): Unit =
+        runTest {
+
             coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns specificTvShowList
 
-            assertThrows<NoSearchByKeywordResultFoundException> {
-                getAndFilterTvShowsByKeywordUseCase("keyword", rating = 10, tvShowGenreId = 1)
-            }
+            assertThat(
+                getAndFilterTvShowsByKeywordUseCase(
+                    "keyword",
+                    rating = 10,
+                    tvGenre = TvShowGenre.COMEDY
+                )
+            ).isEmpty()
         }
 
     @Test
-    fun `should return filtered tv shows when a minimum rating is specified`() = runBlocking {
+    fun `should return filtered tv shows when a minimum rating is specified`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithRatings
 
         val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 6)
@@ -98,7 +79,7 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return all tv shows when rating filter is 0`() = runBlocking {
+    fun `should return all tv shows when rating filter is 0`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithRatings
 
         val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 0)
@@ -107,10 +88,10 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return filtered tv shows when a genre ID is specified`(): Unit = runBlocking {
+    fun `should return filtered tv shows when a genre is specified`(): Unit = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
 
-        val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvShowGenreId = 10)
+        val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.TALK)
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(
@@ -120,135 +101,24 @@ class GetTvShowByKeywordUseCaseTest {
     }
 
     @Test
-    fun `should return all tv shows when genre ID filter is 0`() = runBlocking {
+    fun `should return all tv shows when genre filter is All`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
 
 
-        val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvShowGenreId = 0)
+        val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.ALL)
 
         assertThat(result).isEqualTo(fakeTvShowListWithCategories.sortedByDescending { it.popularity })
     }
 
     @Test
-    fun `should throw NoSearchByKeywordResultFoundException when no tv shows match the specified genre`(): Unit = runBlocking {
+    fun `should return empty list when no tv shows match the specified genre`(): Unit =
+        runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(any()) } returns fakeTvShowListWithCategories
-        assertThrows<NoSearchByKeywordResultFoundException> {
-            getAndFilterTvShowsByKeywordUseCase("keyword", tvShowGenreId = 999)
-        }
+            assertThat(
+                getAndFilterTvShowsByKeywordUseCase(
+                    "keyword",
+                    tvGenre = TvShowGenre.ACTION_ADVENTURE
+                )
+            ).isEmpty()
     }
-
-
-    private val fakeTvShowList =
-        listOf(
-            TvShow(
-                id = 1,
-                name = "abc",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = emptyList(),
-                rating = 2.5f,
-                popularity = 10.2,
-            ),
-            TvShow(
-                id = 2,
-                name = "dfg",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = emptyList(),
-                rating = 2.5f,
-                popularity = 11.2,
-            ),
-            TvShow(
-                id = 3,
-                name = "hij",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = emptyList(),
-                rating = 2.5f,
-                popularity = 0.2,
-            ),
-        )
-    private val fakeTvShowListWithRatings =
-        listOf(
-            TvShow(
-                id = 1,
-                name = "High Rated",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = emptyList(),
-                rating = 8.0f,
-                popularity = 10.0
-            ),
-            TvShow(
-                id = 2,
-                name = "Medium Rated",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = emptyList(),
-                rating = 5.5f,
-                popularity = 9.0
-            ),
-            TvShow(
-                id = 3,
-                name = "Low Rated",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = emptyList(),
-                rating = 3.0f,
-                popularity = 8.0
-            ),
-        )
-    private val fakeTvShowListWithCategories =
-        listOf(
-            TvShow(
-                id = 1,
-                name = "Action Show",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = listOf(Category(id = 10L, name = "Action", imageUrl = "")),
-                rating = 8.0f,
-                popularity = 10.0
-            ),
-            TvShow(
-                id = 2,
-                name = "Comedy Show",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = listOf(Category(id = 20L, name = "Comedy", imageUrl = "")),
-                rating = 7.0f,
-                popularity = 9.0
-            ),
-            TvShow(
-                id = 3,
-                name = "Action & Drama",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = listOf(
-                    Category(id = 10L, name = "Action", imageUrl = ""),
-                    Category(id = 30L, name = "Drama", imageUrl = "")
-                ),
-                rating = 7.5f,
-                popularity = 11.0
-            ),
-            TvShow(
-                id = 4,
-                name = "Thriller",
-                description = "",
-                posterUrl = "",
-                productionYear = 2023,
-                categories = listOf(Category(id = 40L, name = "Thriller", imageUrl = "")),
-                rating = 6.0f,
-                popularity = 8.0
-            )
-        )
-
 }

@@ -1,35 +1,32 @@
 package com.example.domain.useCase
 
-import com.example.domain.exceptions.CountryIsEmptyException
-import com.example.domain.exceptions.NoSuggestedCountriesException
+
 import com.example.domain.repository.CountryRepository
-import com.example.domain.validation.CountryValidator
+import com.example.domain.useCase.utils.countriesWithDifferentCases
+import com.example.domain.useCase.utils.fakeCountryList
 import com.example.entity.Country
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class GetSuggestedCountriesUseCaseTest {
     private lateinit var countryRepository: CountryRepository
-    private lateinit var countryValidator: CountryValidator
     private lateinit var getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase
 
     @BeforeEach
     fun setUp() {
         countryRepository = mockk(relaxed = true)
-        countryValidator = mockk(relaxed = true)
         getSuggestedCountriesUseCase =
-            GetSuggestedCountriesUseCase(countryRepository, countryValidator)
+            GetSuggestedCountriesUseCase(countryRepository)
     }
 
     @Test
     fun `should return a list of suggested countries when a matching keyword is provided`() =
-        runBlocking {
+        runTest {
             coEvery { countryRepository.getCountries() } returns fakeCountryList
 
             val countries = getSuggestedCountriesUseCase("eg")
@@ -40,8 +37,7 @@ class GetSuggestedCountriesUseCaseTest {
 
     @Test
     fun `should call validateCountry when a country keyword is provided`() {
-        runBlocking {
-            coEvery { countryValidator.validateCountry(any()) } returns Unit
+        runTest {
             coEvery { countryRepository.getCountries() } returns fakeCountryList
 
             getSuggestedCountriesUseCase("eg")
@@ -49,70 +45,42 @@ class GetSuggestedCountriesUseCaseTest {
     }
 
     @Test
-    fun `should throw NoSuggestedCountriesException when no countries match the given keyword`() {
-        runBlocking {
+    fun `should return empty list when no countries match the given keyword`() {
+        runTest {
             coEvery { countryRepository.getCountries() } returns fakeCountryList
 
-            assertThrows<NoSuggestedCountriesException> {
-                getSuggestedCountriesUseCase("usa")
-            }
+            assertThat(getSuggestedCountriesUseCase("usa")).isEmpty()
         }
     }
 
     @Test
-    fun `should throw CountryIsEmptyException when the country keyword is empty`() =
-        runBlocking {
-            coEvery { countryValidator.validateCountry(any()) } throws CountryIsEmptyException()
-
-            assertThrows<CountryIsEmptyException> {
-                getSuggestedCountriesUseCase("")
-            }
-            coVerify { countryValidator.validateCountry("") }
+    fun `should return empty list when the country keyword is empty`() =
+        runTest {
+            assertThat(getSuggestedCountriesUseCase("")).isEmpty()
         }
 
     @Test
     fun `should return filtered countries matching keyword case-insensitively when valid input is provided`(): Unit =
-        runBlocking {
-            val countriesWithDifferentCases =
-                listOf(
-                    Country(countryName = "United States", countryIsoCode = "us"),
-                    Country(countryName = "Australia", countryIsoCode = "au"),
-                    Country(countryName = "canada", countryIsoCode = "ca"),
-                    Country(countryName = "Germany", countryIsoCode = "de"),
-                )
+        runTest {
             coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
 
-            val result1 = getSuggestedCountriesUseCase("un")
+            val result1 =
+                getSuggestedCountriesUseCase(countriesWithDifferentCases[0].countryName[0].toString())
             assertThat(result1).containsExactly(
                 Country(
-                    countryName = "United States",
-                    countryIsoCode = "us"
+                    countryName = countriesWithDifferentCases[0].countryName,
+                    countryIsoCode = countriesWithDifferentCases[0].countryIsoCode
                 )
             )
 
-            val result2 = getSuggestedCountriesUseCase("CAN")
+            val result2 =
+                getSuggestedCountriesUseCase(countriesWithDifferentCases[1].countryName[1].toString())
             assertThat(result2).containsExactly(
                 Country(
-                    countryName = "canada",
-                    countryIsoCode = "ca"
+                    countryName = countriesWithDifferentCases[1].countryName,
+                    countryIsoCode = countriesWithDifferentCases[1].countryIsoCode
                 )
             )
 
-            assertThrows<NoSuggestedCountriesException> {
-                getSuggestedCountriesUseCase("xyz")
-            }
-
         }
-
-    private val fakeCountryList =
-        listOf(
-            Country(
-                countryName = "Egypt",
-                countryIsoCode = "eg",
-            ),
-            Country(
-                countryName = "Iraq",
-                countryIsoCode = "ir",
-            ),
-        )
 }
