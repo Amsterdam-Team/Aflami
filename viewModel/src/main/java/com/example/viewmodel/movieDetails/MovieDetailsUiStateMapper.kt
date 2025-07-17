@@ -1,12 +1,12 @@
 package com.example.viewmodel.movieDetails
 
 import com.example.domain.useCase.GetMovieDetailsUseCase
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ActorUiState
 import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ProductionCompanyUiState
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ReviewUiState
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 import com.example.viewmodel.shared.Selectable
+import com.example.viewmodel.shared.movieAndSeriseDetails.ActorUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 import kotlin.math.roundToInt

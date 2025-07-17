@@ -22,8 +22,7 @@ import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ReviewUiState
-
+import com.example.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
 
 
 @Composable

@@ -7,11 +7,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.appBar.DefaultAppBar
@@ -49,32 +44,27 @@ import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
-import com.example.designsystem.components.UpcomingCard
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
-import com.example.ui.screens.movieDetails.components.ActorCard
+import com.example.ui.screens.movieDetails.components.CastSection
 import com.example.ui.screens.movieDetails.components.CategoryChip
-import com.example.ui.screens.movieDetails.components.CompanyCard
+import com.example.ui.screens.movieDetails.components.CompanyProductionSection
 import com.example.ui.screens.movieDetails.components.DescriptionSection
-import com.example.ui.screens.movieDetails.components.EmptyStateText
 import com.example.ui.screens.movieDetails.components.GallerySection
+import com.example.ui.screens.movieDetails.components.MoreLikeSection
 import com.example.ui.screens.movieDetails.components.MovieExtrasSection
 import com.example.ui.screens.movieDetails.components.MovieInfoSection
 import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PlayButton
-import com.example.ui.screens.movieDetails.components.ReviewCard
+import com.example.ui.screens.movieDetails.components.ReviewSection
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ActorUiState
 import com.example.viewmodel.movieDetails.MovieDetailsEffect
 import com.example.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ProductionCompanyUiState
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ReviewUiState
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -245,100 +235,6 @@ fun MovieContent(
                         MovieExtras.COMPANY_PRODUCTION -> CompanyProductionSection(state.productionCompany)
                     }
                 }
-        }
-    }
-}
-
-private fun LazyListScope.ReviewSection(reviews: List<ReviewUiState>) {
-    if (reviews.isEmpty())
-        item {
-            EmptyStateText(stringResource(com.example.ui.R.string.there_is_no_reviews))
-        }
-    else
-        itemsIndexed(reviews) { index, item ->
-            val topPadding = if (index == 0) 0 else 12
-            ReviewCard(item, modifier = Modifier.padding(top = topPadding.dp))
-        }
-}
-
-private fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
-    if (similarMovies.isEmpty())
-        item {
-            EmptyStateText(stringResource(com.example.ui.R.string.there_is_no_production_company))
-        }
-    else
-        itemsIndexed(similarMovies, key = { index, _ -> index }) { index, similarMovie ->
-            val yOffset = if (index == 0) -16 else 0
-            UpcomingCard(
-                movieImage = similarMovie.posterUrl,
-                movieTitle = similarMovie.name,
-                movieType = stringResource(R.string.movie),
-                movieYear = similarMovie.productionYear,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-                    .offset(y = yOffset.dp),
-                movieRating = similarMovie.rate,
-                movieContentDescription = similarMovie.name,
-            )
-        }
-}
-
-private fun LazyListScope.CompanyProductionSection(companies: List<ProductionCompanyUiState>) {
-    itemsIndexed(companies.chunked(2), key = { index, _ -> index }) { index, rowCompanies ->
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 16.dp, end =
-                        16.dp, bottom = 8.dp
-                ),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            rowCompanies.forEachIndexed { index, company ->
-                val maxWidth = if (index == 0) .5f else 1f
-                CompanyCard(
-                    productionCompany = company,
-                    modifier = Modifier.fillMaxWidth(maxWidth)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CastSection(
-    modifier: Modifier = Modifier,
-    actors: List<ActorUiState>,
-    onClickAllCast: () -> Unit
-) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(R.string.cast),
-                style = AppTheme.textStyle.headline.small,
-                color = AppTheme.color.title,
-            )
-            Text(
-                text = stringResource(R.string.all),
-                style = AppTheme.textStyle.label.medium,
-                color = AppTheme.color.primary,
-                modifier = Modifier.clickable(onClick = onClickAllCast)
-            )
-        }
-        LazyRow(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            userScrollEnabled = false
-        ) {
-            items(actors) {
-                ActorCard(actor = it)
-            }
         }
     }
 }

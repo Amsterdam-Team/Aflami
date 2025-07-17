@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
-import com.example.viewmodel.movieDetails.MovieDetailsUiState.ActorUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 
 
 @Composable
