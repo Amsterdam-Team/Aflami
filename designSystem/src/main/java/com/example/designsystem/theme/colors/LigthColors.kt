@@ -1,6 +1,5 @@
 package com.example.designsystem.theme.colors
 
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 internal val lightThemeColors =
@@ -46,5 +45,3 @@ internal val lightThemeColors =
         primaryEnd = Color(0xFF973A66),
         overlayDark = listOf(Color(0x000D090B), Color(0xFF0D090B)),
     )
-
-internal val localAflamiAppColors = staticCompositionLocalOf { lightThemeColors }

@@ -1,6 +1,7 @@
 package com.example.designsystem.theme.colors
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 @Immutable
@@ -46,3 +47,5 @@ data class AflamiColorScheme(
     val guessCardGradient: List<Color>,
     val primaryEnd: Color,
 )
+
+internal val LocalAflamiAppColors = staticCompositionLocalOf { lightThemeColors }
