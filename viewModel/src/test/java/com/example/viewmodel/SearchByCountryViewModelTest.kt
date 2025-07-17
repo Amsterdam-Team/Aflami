@@ -10,7 +10,7 @@ import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.SearchByCountryContentUIState
 import com.example.viewmodel.search.countrySearch.CountrySearchEffect
 import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
-import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.TestDispatcherProvider
 import com.example.viewmodel.utils.entityHelper.createMovie
@@ -229,7 +229,7 @@ class SearchByCountryViewModelTest {
             viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
 
-            assertThat(viewModel.state.value.movies).isEqualTo(movies.toListOfUiState())
+            assertThat(viewModel.state.value.movies).isEqualTo(movies.toMoveUiStates())
         }
 
     @Test
@@ -276,7 +276,7 @@ class SearchByCountryViewModelTest {
             viewModel.onClickRetry()
             testScope.advanceUntilIdle()
 
-            assertThat(viewModel.state.value.movies).isEqualTo(movies.toListOfUiState())
+            assertThat(viewModel.state.value.movies).isEqualTo(movies.toMoveUiStates())
         }
 
     @Test
