@@ -37,7 +37,7 @@ fun Text(
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = AppTheme.textStyle.body.small
+    style: TextStyle = AppTheme.textStyle.body.small,
 ) {
     androidx.compose.material3.Text(
         text = text,
@@ -56,7 +56,7 @@ fun Text(
         maxLines = maxLines,
         minLines = minLines,
         onTextLayout = onTextLayout,
-        style = style
+        style = style,
     )
 }
 

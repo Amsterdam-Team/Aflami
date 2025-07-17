@@ -19,7 +19,6 @@ import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
-
 @Composable
 fun TopAppBar(
     modifier: Modifier = Modifier,
@@ -31,18 +30,19 @@ fun TopAppBar(
     trailingIcon: (@Composable () -> Unit)? = null,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(
-                color = containerColor
-            )
-            .padding(PaddingValues(vertical = 8.dp)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(
+                    color = containerColor,
+                )
+                .padding(PaddingValues(vertical = 8.dp)),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingIcon?.invoke()
             Column {
@@ -52,7 +52,7 @@ fun TopAppBar(
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             middleIcon?.invoke()
             trailingIcon?.invoke()
@@ -74,21 +74,21 @@ private fun TopAppBarPreview() {
             leadingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_filter_vertical),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             },
             middleIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_filter_vertical),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             },
             trailingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_filter_vertical),
-                    contentDescription = null
+                    contentDescription = null,
                 )
-            }
+            },
         )
     }
 }

@@ -22,7 +22,6 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
-
 @Composable
 fun SectionTitle(
     title: String,
@@ -31,30 +30,31 @@ fun SectionTitle(
     tintColor: Color = AppTheme.color.title,
     contentDescription: String? = null,
     showAllLabel: Boolean = false,
-    onAllLabelClicked: () -> Unit = {}
+    onAllLabelClicked: () -> Unit = {},
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = title,
                 color = AppTheme.color.title,
-                style = AppTheme.textStyle.headline.small
+                style = AppTheme.textStyle.headline.small,
             )
             icon?.let {
                 Icon(
                     painter = icon,
                     tint = tintColor,
                     contentDescription = contentDescription,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }
@@ -63,16 +63,16 @@ fun SectionTitle(
                 text = stringResource(R.string.all),
                 color = AppTheme.color.primary,
                 style = AppTheme.textStyle.label.medium,
-                modifier = Modifier
-                    .clickable(
-                        onClick = onAllLabelClicked,
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    )
+                modifier =
+                    Modifier
+                        .clickable(
+                            onClick = onAllLabelClicked,
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ),
             )
         }
     }
-
 }
 
 @ThemeAndLocalePreviews
@@ -83,7 +83,7 @@ private fun SectionTitlePreview() {
             title = stringResource(R.string.movies_birthday),
             icon = painterResource(R.drawable.ic_birthday_cake),
             showAllLabel = true,
-            tintColor = AppTheme.color.yellowAccent
+            tintColor = AppTheme.color.yellowAccent,
         )
     }
 }

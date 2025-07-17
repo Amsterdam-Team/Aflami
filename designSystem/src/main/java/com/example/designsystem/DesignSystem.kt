@@ -63,47 +63,49 @@ fun DesignSystem() {
     val scrollState = rememberScrollState()
     var selectedIndex by remember { mutableIntStateOf(0) }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppTheme.color.surface)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .verticalScroll(scrollState),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(AppTheme.color.surface)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         HomeAppBar()
         BottomNavBar(
             items = mapOf(),
-            selectedBottomBarItems = BottomBarItems.HOME
+            selectedBottomBarItems = BottomBarItems.HOME,
         )
         CustomSlider(
-            aflamiImageList = listOf(
-                R.drawable.bg_man_with_popcorn,
-                R.drawable.bg_directly_shot_film,
-                R.drawable.bg_cinema_movie_theater,
-                R.drawable.bg_directly_shot_film,
-                R.drawable.bg_children_wearing_3d,
-                R.drawable.bg_children_wearing_3d,
-            )
+            aflamiImageList =
+                listOf(
+                    R.drawable.bg_man_with_popcorn,
+                    R.drawable.bg_directly_shot_film,
+                    R.drawable.bg_cinema_movie_theater,
+                    R.drawable.bg_directly_shot_film,
+                    R.drawable.bg_children_wearing_3d,
+                    R.drawable.bg_children_wearing_3d,
+                ),
         )
         FloatingActionButton(
             icon = R.drawable.ic_add,
             onClick = {},
             isNegative = false,
-            isLoading = false
+            isLoading = false,
         )
         FloatingActionButton(
             icon = R.drawable.ic_add,
             onClick = {},
             isNegative = true,
-            isLoading = false
+            isLoading = false,
         )
         FloatingActionButton(
             icon = R.drawable.ic_add,
             onClick = {},
             isNegative = false,
-            isLoading = true
+            isLoading = true,
         )
         ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -111,7 +113,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = false,
-            isEnabled = true
+            isEnabled = true,
         )
         ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -119,7 +121,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = true,
             isLoading = false,
-            isEnabled = true
+            isEnabled = true,
         )
         ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -127,7 +129,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = false,
-            isEnabled = false
+            isEnabled = false,
         )
         ConfirmButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -135,7 +137,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = true,
-            isEnabled = true
+            isEnabled = true,
         )
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -143,7 +145,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = false,
-            isEnabled = true
+            isEnabled = true,
         )
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -151,7 +153,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = true,
             isLoading = false,
-            isEnabled = true
+            isEnabled = true,
         )
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -159,7 +161,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = false,
-            isEnabled = false
+            isEnabled = false,
         )
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -167,7 +169,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = true,
-            isEnabled = true
+            isEnabled = true,
         )
         PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -175,7 +177,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = false,
-            isEnabled = true
+            isEnabled = true,
         )
         PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -183,7 +185,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = true,
             isLoading = false,
-            isEnabled = true
+            isEnabled = true,
         )
         PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -191,7 +193,7 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = false,
-            isEnabled = false
+            isEnabled = false,
         )
         PlainTextButton(
             modifier = Modifier.fillMaxWidth(0.5f),
@@ -199,28 +201,30 @@ fun DesignSystem() {
             onClick = {},
             isNegative = false,
             isLoading = true,
-            isEnabled = true
+            isEnabled = true,
         )
         Box {
             SnackBar(
                 message = stringResource(R.string.list_added_success_message),
-                status = SnackBarStatus.Success
+                status = SnackBarStatus.Success,
             )
         }
         Box {
             SnackBar(
                 message = stringResource(R.string.general_error_message),
-                status = SnackBarStatus.Failure
+                status = SnackBarStatus.Failure,
             )
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             GlobalSearchHub(
-                GlobalSearchHubUI.ACTOR, {}
+                GlobalSearchHubUI.ACTOR,
+                {},
             )
             GlobalSearchHub(
-                GlobalSearchHubUI.WORLD, {}
+                GlobalSearchHubUI.WORLD,
+                {},
             )
         }
         MovieCard(
@@ -229,7 +233,7 @@ fun DesignSystem() {
             movieType = "Sci-fi",
             movieYear = "2002",
             movieContentDescription = "best movie ever you should totally watch it",
-            movieRating = "9.8"
+            movieRating = "9.8",
         )
         UpcomingCard(
             movieImage = "",
@@ -237,51 +241,51 @@ fun DesignSystem() {
             movieType = "Sci-fi",
             movieYear = "2002",
             movieContentDescription = "best movie ever you should totally watch it",
-            movieRating = "9.8"
+            movieRating = "9.8",
         )
         ListItem(
             title = "Kitten Movies",
             count = 10,
-            modifier = Modifier.size(160.dp, 147.dp)
+            modifier = Modifier.size(160.dp, 147.dp),
         )
         CategoryCard(
             categoryName = stringResource(R.string.action),
-            painterResource(R.drawable.img_action)
+            painterResource(R.drawable.img_action),
         )
         Chip(
             icon = painterResource(R.drawable.ic_nav_categories),
             label = stringResource(R.string.categories),
-            isSelected = true
+            isSelected = true,
         )
         Chip(
             icon = painterResource(R.drawable.ic_nav_categories),
             label = stringResource(R.string.categories),
-            isSelected = false
+            isSelected = false,
         )
         CustomMoodPickerCard(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         CustomRadioButton(state = RadioState.Selected)
         CustomRadioButton(state = RadioState.Unselected)
         GenreChip(
             genre = stringResource(R.string.action),
-            selected = false
+            selected = false,
         )
         GenreChip(
             genre = stringResource(R.string.action),
-            selected = true
+            selected = true,
         )
         Score(
-            1
+            1,
         )
         Score(
-            -1
+            -1,
         )
         SectionTitle(
             title = stringResource(R.string.movies_birthday),
             icon = painterResource(R.drawable.ic_birthday_cake),
             showAllLabel = true,
-            tintColor = AppTheme.color.yellowAccent
+            tintColor = AppTheme.color.yellowAccent,
         )
         TabsLayout(
             modifier = Modifier.fillMaxWidth(),
@@ -293,7 +297,7 @@ fun DesignSystem() {
             "",
             hintText = stringResource(R.string.user_name_hint),
             leadingIcon = R.drawable.ic_user,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         TextField(
             "",
@@ -302,19 +306,19 @@ fun DesignSystem() {
             trailingIcon = R.drawable.ic_password_hide,
             isError = true,
             errorMessage = stringResource(R.string.general_error_message),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         TextField(
             stringResource(R.string.action_adventure),
             hintText = stringResource(R.string.hint),
             trailingIcon = R.drawable.ic_filter_vertical,
             maxCharacters = 20,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         TextField(
             "",
             hintText = stringResource(R.string.country_name_hint),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.release_game_title),
@@ -325,7 +329,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.CALENDER,
             isPlayable = false,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.release_game_title),
@@ -336,7 +340,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.CALENDER,
             isPlayable = true,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.guess_movie_game_title),
@@ -347,7 +351,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.MANY_POSTERS,
             isPlayable = false,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.guess_movie_game_title),
@@ -358,7 +362,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.MANY_POSTERS,
             isPlayable = true,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.genre_game_title),
@@ -369,7 +373,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.LAWN_CHAIR,
             isPlayable = false,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.genre_game_title),
@@ -380,7 +384,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.LAWN_CHAIR,
             isPlayable = true,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.guess_character_game_title),
@@ -391,7 +395,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
             isPlayable = false,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GameCard(
             title = stringResource(R.string.guess_character_game_title),
@@ -402,7 +406,7 @@ fun DesignSystem() {
             gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
             isPlayable = true,
             unlockPrice = "400",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GuessPicture(
             blurRadius = 8.dp,
@@ -410,7 +414,7 @@ fun DesignSystem() {
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             isHintVisible = true,
             onClick = {},
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GuessPicture(
             blurRadius = 8.dp,
@@ -418,21 +422,21 @@ fun DesignSystem() {
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             isHintVisible = false,
             onClick = {},
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GuessTitle(
             title = "The Green Mile",
             points = 10,
             isHintVisible = true,
             onClick = {},
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         GuessTitle(
             title = "The Green Mile",
             points = 10,
             isHintVisible = false,
             onClick = {},
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         EpisodeCard(
             episodeBanner = painterResource(id = R.drawable.bg_man_with_popcorn),

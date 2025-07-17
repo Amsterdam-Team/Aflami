@@ -43,51 +43,51 @@ fun GuessCard(
     modifier: Modifier = Modifier,
     isHintVisible: Boolean,
     onClick: () -> Unit,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
-
     val cornerRadius by animateDpAsState(
         targetValue = if (isHintVisible) 0.dp else 24.dp,
-        animationSpec = tween(300)
+        animationSpec = tween(300),
     )
 
     Column {
         Box(
-            modifier = modifier
-                .clip(
-                    RoundedCornerShape(
-                        topEnd = 24.dp,
-                        topStart = 24.dp,
-                        bottomStart = cornerRadius,
-                        bottomEnd = cornerRadius
-                    )
-                )
-                .background(AppTheme.color.surface)
-                .background(
-                    brush = Brush.verticalGradient(
-                        AppTheme.color.guessCardGradient
-                    ),
-                    alpha = 0.32f
-                )
-                .fillMaxWidth()
-                .padding(8.dp)
+            modifier =
+                modifier
+                    .clip(
+                        RoundedCornerShape(
+                            topEnd = 24.dp,
+                            topStart = 24.dp,
+                            bottomStart = cornerRadius,
+                            bottomEnd = cornerRadius,
+                        ),
+                    ).background(AppTheme.color.surface)
+                    .background(
+                        brush =
+                            Brush.verticalGradient(
+                                AppTheme.color.guessCardGradient,
+                            ),
+                        alpha = 0.32f,
+                    ).fillMaxWidth()
+                    .padding(8.dp),
         ) {
             content()
         }
 
         AnimatedVisibility(
             visible = isHintVisible,
-            exit = fadeOut(tween(800)) + shrinkVertically(tween(600))
+            exit = fadeOut(tween(800)) + shrinkVertically(tween(600)),
         ) {
             BoxWithConstraints(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp))
-                    .background(AppTheme.color.surface)
-                    .fillMaxWidth()
-                    .aspectRatio((336 / 32).toFloat())
-                    .clickable(
-                        onClick = onClick
-                    ),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp))
+                        .background(AppTheme.color.surface)
+                        .fillMaxWidth()
+                        .aspectRatio((336 / 32).toFloat())
+                        .clickable(
+                            onClick = onClick,
+                        ),
             ) {
                 val size = Size(maxWidth.value, maxHeight.value)
 
@@ -97,30 +97,32 @@ fun GuessCard(
 
                 repeat(repeatNum.toInt()) { count ->
                     Box(
-                        modifier = Modifier
-                            .offset(x = (count * width).dp)
-                            .clip(SkewedRectangleShape())
-                            .size(width.dp, size.height.dp)
-                            .background(AppTheme.color.primary.copy(alpha = 0.03f))
+                        modifier =
+                            Modifier
+                                .offset(x = (count * width).dp)
+                                .clip(SkewedRectangleShape())
+                                .size(width.dp, size.height.dp)
+                                .background(AppTheme.color.primary.copy(alpha = 0.03f)),
                     )
                 }
                 Row(
                     modifier = Modifier.align(Alignment.Center),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = stringResource(R.string.hint, points),
                         style = AppTheme.textStyle.label.small,
                         color = AppTheme.color.yellowAccent,
-                        modifier = Modifier.padding(end = 2.dp)
+                        modifier = Modifier.padding(end = 2.dp),
                     )
                     Icon(
                         painter = painterResource(R.drawable.ic_user_pts),
                         contentDescription = "points",
                         tint = AppTheme.color.yellowAccent,
-                        modifier = Modifier
-                            .size(12.dp)
-                            .autoMirroredContent()
+                        modifier =
+                            Modifier
+                                .size(12.dp)
+                                .autoMirroredContent(),
                     )
                 }
             }
@@ -135,9 +137,8 @@ private fun GuessCardPreview() {
         GuessCard(
             points = 10,
             isHintVisible = true,
-            onClick = {}
+            onClick = {},
         ) {
-
         }
     }
 }

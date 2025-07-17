@@ -26,48 +26,50 @@ fun RecentSearchItem(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onItemClick(title) }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onItemClick(title) }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             modifier = Modifier.size(20.dp),
             painter = painterResource(R.drawable.ic_clock),
             tint = AppTheme.color.hint,
-            contentDescription = title
+            contentDescription = title,
         )
 
         Text(
             modifier = Modifier.padding(start = 8.dp),
             text = title,
             style = AppTheme.textStyle.body.medium,
-            color = AppTheme.color.title
+            color = AppTheme.color.title,
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Icon(
-            modifier = Modifier
-                .size(16.dp)
-                .clip(CircleShape)
-                .clickable { onCancelClick(title) },
+            modifier =
+                Modifier
+                    .size(16.dp)
+                    .clip(CircleShape)
+                    .clickable { onCancelClick(title) },
             painter = painterResource(R.drawable.ic_cancel),
             tint = AppTheme.color.hint,
-            contentDescription = title
+            contentDescription = title,
         )
     }
 }
+
 @ThemeAndLocalePreviews
 @Composable
-private fun RecentSearchItemPreview(){
+private fun RecentSearchItemPreview() {
     AflamiTheme {
         RecentSearchItem(
             title = "Recent Search",
             onCancelClick = {},
-            onItemClick = {}
+            onItemClick = {},
         )
-
     }
 }

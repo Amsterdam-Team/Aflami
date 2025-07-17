@@ -49,29 +49,32 @@ internal fun BaseCard(
     onClick: () -> Unit = {},
 ) {
     Box(
-        modifier = modifier
-            .size(328.dp, 196.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(width = 1.dp, color = AppTheme.color.stroke, shape = RoundedCornerShape(16.dp))
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null,
-                onClick = onClick
-            )
+        modifier =
+            modifier
+                .size(328.dp, 196.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(width = 1.dp, color = AppTheme.color.stroke, shape = RoundedCornerShape(16.dp))
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = onClick,
+                ),
     ) {
         SafeImageView(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxSize(),
             contentDescription = movieContentDescription,
             model = movieImage,
             contentScale = contentScale,
         )
         movieRating?.let {
             RatingChip(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 4.dp, end = 4.dp),
-                rating = it
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 4.dp, end = 4.dp),
+                rating = it,
             )
         }
         topIcon?.let { IconContainer(it) }
@@ -84,27 +87,29 @@ internal fun BaseCard(
 private fun BoxScope.MovieInfoSection(
     movieTitle: String,
     movieType: String,
-    movieYear: String
+    movieYear: String,
 ) {
     Column(
-        modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .zIndex(2f)
-            .padding(
-                start = 8.dp, end = 8.dp, bottom =
-                    8.dp
-            )
+        modifier =
+            Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .zIndex(2f)
+                .padding(
+                    start = 8.dp,
+                    end = 8.dp,
+                    bottom =
+                        8.dp,
+                ),
     ) {
-
-
         Text(
-            modifier = Modifier.fillMaxWidth(), text =
-                movieTitle,
+            modifier = Modifier.fillMaxWidth(),
+            text =
+            movieTitle,
             maxLines = 1,
             style = AppTheme.textStyle.label.large,
             overflow = TextOverflow.Ellipsis,
-            color = AppTheme.color.onPrimary
+            color = AppTheme.color.onPrimary,
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -117,12 +122,12 @@ private fun BoxScope.MovieInfoSection(
                     .padding(horizontal = 4.dp)
                     .size(3.dp)
                     .clip(CircleShape)
-                    .background(AppTheme.color.onPrimaryBody)
+                    .background(AppTheme.color.onPrimaryBody),
             )
             Text(
                 text = movieYear,
                 style = AppTheme.textStyle.label.small,
-                color = AppTheme.color.onPrimaryBody
+                color = AppTheme.color.onPrimaryBody,
             )
         }
     }
@@ -132,38 +137,43 @@ private fun BoxScope.MovieInfoSection(
 private fun BoxScope.GradientOverlay() {
     val overlayDarkColor = AppTheme.color.overlayDark
     Box(
-        modifier = Modifier
-            .zIndex(1f)
-            .align(Alignment.BottomCenter)
-            .height(108.dp)
-            .fillMaxWidth()
-            .drawWithContent {
-                drawContent()
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = overlayDarkColor
+        modifier =
+            Modifier
+                .zIndex(1f)
+                .align(Alignment.BottomCenter)
+                .height(108.dp)
+                .fillMaxWidth()
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        brush =
+                            Brush.verticalGradient(
+                                colors = overlayDarkColor,
+                            ),
                     )
-                )
-            }
+                },
     )
 }
 
 @Composable
 private fun BoxScope.IconContainer(topIcon: Painter) {
     Box(
-        modifier = Modifier
-            .align(Alignment.TopStart)
-            .padding(start = 4.dp, top = 4.dp)
-            .size(32.dp)
-            .background(
-                color = AppTheme.color.iconBackGround,
-                RoundedCornerShape(12.dp)
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .align(Alignment.TopStart)
+                .padding(start = 4.dp, top = 4.dp)
+                .size(32.dp)
+                .background(
+                    color = AppTheme.color.iconBackGround,
+                    RoundedCornerShape(12.dp),
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
-            painter = topIcon, contentDescription = null, modifier = Modifier.size(20.dp),
-            tint = AppTheme.color.redAccent
+            painter = topIcon,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = AppTheme.color.redAccent,
         )
     }
 }
@@ -178,8 +188,7 @@ private fun BaseCardPreview() {
             movieYear = "2016",
             movieTitle = "Your Name",
             movieRating = "9.9",
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillBounds,
         )
     }
 }
-

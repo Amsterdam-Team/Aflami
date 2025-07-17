@@ -13,7 +13,6 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
-
 @Composable
 fun VerticalDivider(
     modifier: Modifier = Modifier,
@@ -23,7 +22,7 @@ fun VerticalDivider(
     Canvas(
         modifier
             .fillMaxHeight()
-            .width(thickness)
+            .width(thickness),
     ) {
         drawLine(
             color = color,

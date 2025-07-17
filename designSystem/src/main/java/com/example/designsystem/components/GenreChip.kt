@@ -23,28 +23,27 @@ fun GenreChip(
     genre: String,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
-
     val boxColor by animateColorAsState(if (selected) AppTheme.color.primary else AppTheme.color.surfaceHigh)
     val textColor by animateColorAsState(if (selected) AppTheme.color.onPrimary else AppTheme.color.primary)
 
     Box(
-        modifier = modifier
-            .background(
-                color = boxColor,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .background(
+                    color = boxColor,
+                    shape = RoundedCornerShape(8.dp),
+                ).padding(horizontal = 8.dp, vertical = 4.dp)
+                .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = genre,
             style = AppTheme.textStyle.label.small,
             color = textColor,
             fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

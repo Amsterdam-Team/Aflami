@@ -14,12 +14,11 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
-
 @Composable
 fun HomeAppBar(
     modifier: Modifier = Modifier,
     containerColor: Color = Color.Unspecified,
-    onSearchClicked: () -> Unit = {}
+    onSearchClicked: () -> Unit = {},
 ) {
     TopAppBar(
         modifier = modifier,
@@ -27,7 +26,7 @@ fun HomeAppBar(
             Text(
                 text = stringResource(R.string.app_name),
                 color = AppTheme.color.title,
-                style = AppTheme.textStyle.appName.large
+                style = AppTheme.textStyle.appName.large,
             )
         },
         containerColor = containerColor,
@@ -35,7 +34,7 @@ fun HomeAppBar(
             Text(
                 text = stringResource(R.string.aflami_description),
                 color = AppTheme.color.body,
-                style = AppTheme.textStyle.label.small
+                style = AppTheme.textStyle.label.small,
             )
         },
         leadingIcon = {
@@ -55,9 +54,9 @@ fun HomeAppBar(
                 tint = AppTheme.color.body,
                 paddingValues = PaddingValues(8.dp),
                 withBorder = true,
-                onClick = onSearchClicked
+                onClick = onSearchClicked,
             )
-        }
+        },
     )
 }
 
@@ -66,7 +65,7 @@ fun HomeAppBar(
 private fun HomeAppBarPreview() {
     AflamiTheme {
         HomeAppBar(
-            containerColor = AppTheme.color.surface
+            containerColor = AppTheme.color.surface,
         )
     }
 }

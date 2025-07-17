@@ -85,35 +85,38 @@ fun TextField(
     val canShowMaxCharacters = maxCharacters - text.length < 5
 
     val currentBorderColor by animateColorAsState(
-        if (isError) borderErrorColor
-        else if (isFocused) borderFocusedColor
-        else borderColor
+        if (isError) {
+            borderErrorColor
+        } else if (isFocused) {
+            borderFocusedColor
+        } else {
+            borderColor
+        },
     )
 
     Column(modifier = modifier) {
         AnimatedErrorBox(isError, errorMessage, style)
         Row(
-            modifier = Modifier
-                .border(
-                    width = 1.dp,
-                    color = currentBorderColor,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clip(shape = RoundedCornerShape(16.dp))
-                .clipToBounds()
-                .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
-                .defaultMinSize(minHeight = 56.dp)
-                .then(
-                    if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier
-                )
-                .then(
-                    if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier
-                ),
-            verticalAlignment = Alignment.Top
+            modifier =
+                Modifier
+                    .border(
+                        width = 1.dp,
+                        color = currentBorderColor,
+                        shape = RoundedCornerShape(16.dp),
+                    ).clip(shape = RoundedCornerShape(16.dp))
+                    .clipToBounds()
+                    .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
+                    .defaultMinSize(minHeight = 56.dp)
+                    .then(
+                        if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier,
+                    ).then(
+                        if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier,
+                    ),
+            verticalAlignment = Alignment.Top,
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body
+                    targetValue = if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body,
                 )
                 LeadingIcon(leadingIcon, imageColor)
                 VerticalDivider()
@@ -121,19 +124,21 @@ fun TextField(
             BasicTextField(
                 value = text,
                 onValueChange = {
-                    if (it.length <= maxCharacters)
+                    if (it.length <= maxCharacters) {
                         onValueChange(it)
-                    else if (it.length > text.length + 1)
+                    } else if (it.length > text.length + 1) {
                         onValueChange(it.substring(0, maxCharacters))
+                    }
                 },
                 maxLines = 1,
                 enabled = isEnabled,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .weight(1f)
-                    .defaultMinSize(minHeight = 56.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .onFocusChanged { focusState -> isFocused = focusState.isFocused },
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp)
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 56.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = AppTheme.color.title),
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
@@ -141,13 +146,14 @@ fun TextField(
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 },
                 keyboardActions = keyboardActions,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = imeAction,
-                )
+                keyboardOptions =
+                    KeyboardOptions(
+                        imeAction = imeAction,
+                    ),
             )
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isBlank()) AppTheme.color.hint else AppTheme.color.title
+                    targetValue = if (text.isBlank()) AppTheme.color.hint else AppTheme.color.title,
                 )
                 VerticalDivider()
                 TrailingIcon(trailingIcon, imageColor, isTrailingClickEnabled, onTrailingClick)
@@ -166,12 +172,13 @@ private fun RowScope.InnerTextFieldWithHint(
     innerTextField: @Composable (() -> Unit),
     text: String,
     hintText: String,
-    style: TextStyle
+    style: TextStyle,
 ) {
     Box(
-        modifier = Modifier
-            .padding(vertical = 5.dp)
-            .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
+        modifier =
+            Modifier
+                .padding(vertical = 5.dp)
+                .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         innerTextField()
@@ -182,7 +189,7 @@ private fun RowScope.InnerTextFieldWithHint(
                 fontSize = 16.sp,
                 lineHeight = 20.sp,
                 color = AppTheme.color.hint,
-                modifier = Modifier
+                modifier = Modifier,
             )
         }
     }
@@ -194,21 +201,25 @@ private fun VerticalDivider() {
         Modifier
             .padding(vertical = 13.dp)
             .size(1.dp, 30.dp)
-            .background(AppTheme.color.stroke)
+            .background(AppTheme.color.stroke),
     )
 }
 
 @Composable
-private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
+private fun LeadingIcon(
+    leadingIcon: Int,
+    imageColor: Color,
+) {
     Image(
         imageVector = ImageVector.vectorResource(id = leadingIcon),
         contentDescription = null,
         colorFilter = ColorFilter.tint(imageColor),
         contentScale = ContentScale.Fit,
-        modifier = Modifier
-            .padding(vertical = 16.dp)
-            .padding(start = 16.dp, end = 12.dp)
-            .size(24.dp)
+        modifier =
+            Modifier
+                .padding(vertical = 16.dp)
+                .padding(start = 16.dp, end = 12.dp)
+                .size(24.dp),
     )
 }
 
@@ -218,7 +229,7 @@ private fun TrailingIcon(
     leadingIcon: Int,
     imageColor: Color,
     isClickEnabled: Boolean = true,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     Crossfade(targetState = leadingIcon) { state ->
         Image(
@@ -226,21 +237,22 @@ private fun TrailingIcon(
             contentDescription = null,
             colorFilter = ColorFilter.tint(imageColor),
             contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .then(
-                    if (onClick != null)
-                        Modifier.clickable(
-                            enabled = isClickEnabled,
-                            interactionSource = MutableInteractionSource(),
-                            indication = ripple(color = AppTheme.color.hint),
-                            onClick = onClick
-                        )
-                    else
-                        Modifier
-                )
-                .padding(vertical = 16.dp)
-                .padding(start = 12.dp, end = 16.dp)
-                .size(24.dp)
+            modifier =
+                Modifier
+                    .then(
+                        if (onClick != null) {
+                            Modifier.clickable(
+                                enabled = isClickEnabled,
+                                interactionSource = MutableInteractionSource(),
+                                indication = ripple(color = AppTheme.color.hint),
+                                onClick = onClick,
+                            )
+                        } else {
+                            Modifier
+                        },
+                    ).padding(vertical = 16.dp)
+                    .padding(start = 12.dp, end = 16.dp)
+                    .size(24.dp),
         )
     }
 }
@@ -253,29 +265,31 @@ private fun ColumnScope.AnimatedErrorBox(
 ) {
     AnimatedVisibility(visible = isError) {
         Box(
-            modifier = Modifier
-                .padding(bottom = 4.dp)
-                .wrapContentSize()
-                .background(
-                    color = AppTheme.color.redAccent,
-                    shape = SpeechBubbleShape(
-                        cornerRadius = 8.dp,
-                        tailWidth = 8.dp,
-                        tailHeight = 4.dp,
-                        tailOffsetDp = 8.dp,
-                        isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-                    )
-                )
-                .padding(bottom = 4.dp)
+            modifier =
+                Modifier
+                    .padding(bottom = 4.dp)
+                    .wrapContentSize()
+                    .background(
+                        color = AppTheme.color.redAccent,
+                        shape =
+                            SpeechBubbleShape(
+                                cornerRadius = 8.dp,
+                                tailWidth = 8.dp,
+                                tailHeight = 4.dp,
+                                tailOffsetDp = 8.dp,
+                                isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl,
+                            ),
+                    ).padding(bottom = 4.dp),
         ) {
             Text(
                 text = message,
                 style = style,
                 color = AppTheme.color.onPrimary,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(vertical = 6.dp)
-                    .animateContentSize()
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(vertical = 6.dp)
+                        .animateContentSize(),
             )
         }
     }
@@ -288,10 +302,11 @@ private fun ColumnScope.AnimatedMaxCharacters(
     style: TextStyle,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 4.dp),
-        horizontalArrangement = Arrangement.End
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+        horizontalArrangement = Arrangement.End,
     ) {
         AnimatedVisibility(visible = canShowMaxCharacters) {
             Text(
@@ -299,10 +314,11 @@ private fun ColumnScope.AnimatedMaxCharacters(
                 style = style,
                 fontSize = 12.sp,
                 color = AppTheme.color.title,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 4.dp)
-                    .animateContentSize()
+                modifier =
+                    Modifier
+                        .padding(horizontal = 8.dp)
+                        .padding(top = 4.dp)
+                        .animateContentSize(),
             )
         }
     }
@@ -316,7 +332,7 @@ private fun CustomTextFieldPreview() {
             Modifier
                 .background(AppTheme.color.surface)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             TextField(
                 "",
@@ -329,13 +345,13 @@ private fun CustomTextFieldPreview() {
                 leadingIcon = R.drawable.ic_user,
                 trailingIcon = R.drawable.ic_password_hide,
                 isError = true,
-                errorMessage = stringResource(R.string.general_error_message)
+                errorMessage = stringResource(R.string.general_error_message),
             )
             TextField(
                 stringResource(R.string.action_adventure),
                 hintText = stringResource(R.string.hint),
                 trailingIcon = R.drawable.ic_filter_vertical,
-                maxCharacters = 20
+                maxCharacters = 20,
             )
             TextField(
                 "",

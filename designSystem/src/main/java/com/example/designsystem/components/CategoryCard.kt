@@ -33,51 +33,51 @@ fun CategoryCard(
     categoryName: String,
     categoryImage: Painter,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Box(
-        modifier = modifier.size(width = 160.dp, height = 71.dp)
+        modifier = modifier.size(width = 160.dp, height = 71.dp),
     ) {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(
                     color = AppTheme.color.surfaceHigh,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .border(
+                    shape = RoundedCornerShape(16.dp),
+                ).border(
                     width = 1.dp,
                     color = AppTheme.color.stroke,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clip(RoundedCornerShape(16.dp))
+                    shape = RoundedCornerShape(16.dp),
+                ).clip(RoundedCornerShape(16.dp))
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = ripple(color = AppTheme.color.hint),
-                    onClick = onClick
-                )
+                    onClick = onClick,
+                ),
         )
         Row(
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .fillMaxSize()
+            modifier =
+                Modifier
+                    .padding(start = 8.dp)
+                    .fillMaxSize(),
         ) {
             Text(
-                modifier
-                = Modifier
-                    .padding(top = 8.dp)
-                    .weight(1f),
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .weight(1f),
                 style = AppTheme.textStyle.label.medium,
                 text = categoryName,
                 color = AppTheme.color.title,
             )
 
             Image(
-                modifier = Modifier
-                    .size(64.dp, 71.dp)
-                    .offset(y = (-8).dp),
+                modifier =
+                    Modifier
+                        .size(64.dp, 71.dp)
+                        .offset(y = (-8).dp),
                 painter = categoryImage,
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
@@ -89,7 +89,7 @@ private fun CategoryCardPreview() {
     AflamiTheme {
         CategoryCard(
             categoryName = stringResource(R.string.family),
-            categoryImage = painterResource(id = R.drawable.img_action)
+            categoryImage = painterResource(id = R.drawable.img_action),
         )
     }
 }

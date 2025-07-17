@@ -114,9 +114,10 @@ private fun EpisodeBanner(
         )
         RatingChip(
             rating = episodeRate.toString(),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(2.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(2.dp),
         )
     }
 }
@@ -211,8 +212,7 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = CircleShape,
-                )
-                .size(40.dp),
+                ).size(40.dp),
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_play),

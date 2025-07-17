@@ -25,7 +25,6 @@ fun AflamiTheme(
     val view = LocalView.current
 
     if (activity != null) {
-
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
             activity.window.navigationBarColor = theme.surface.toArgb()
         }
@@ -34,12 +33,13 @@ fun AflamiTheme(
     }
     CompositionLocalProvider(
         localAflamiAppColors provides theme,
-        LocalIsDarkTheme provides isDarkTheme
+        LocalIsDarkTheme provides isDarkTheme,
     ) {
         content()
     }
 }
 
-internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
-    error("LocalIsDarkTheme not provided")
-}
+internal val LocalIsDarkTheme =
+    compositionLocalOf<Boolean> {
+        error("LocalIsDarkTheme not provided")
+    }

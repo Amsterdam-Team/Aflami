@@ -27,27 +27,28 @@ fun NoNetworkContainer(
     description: String = stringResource(R.string.offline_description),
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Image(
             painter = imageRes,
-            contentDescription = stringResource(R.string.offline_message)
+            contentDescription = stringResource(R.string.offline_message),
         )
         Text(
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
             text = title,
             style = AppTheme.textStyle.title.medium,
-            color = AppTheme.color.title
+            color = AppTheme.color.title,
         )
 
         Text(
             text = description,
             style = AppTheme.textStyle.body.small,
-            color = AppTheme.color.body
+            color = AppTheme.color.body,
         )
         OutlinedButton(
             title = stringResource(R.string.retry),
@@ -55,7 +56,7 @@ fun NoNetworkContainer(
             isEnabled = true,
             isLoading = false,
             isNegative = false,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
         )
     }
 }

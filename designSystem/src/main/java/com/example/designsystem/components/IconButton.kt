@@ -25,7 +25,6 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
-
 @Composable
 fun IconButton(
     painter: Painter,
@@ -37,38 +36,40 @@ fun IconButton(
     containerColor: Color = AppTheme.color.surfaceHigh,
     tint: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
-    val borderModifier = if (withBorder) {
-        Modifier.border(width = 1.dp, color = AppTheme.color.stroke, shape = shape)
-    } else {
-        Modifier
-    }
+    val borderModifier =
+        if (withBorder) {
+            Modifier.border(width = 1.dp, color = AppTheme.color.stroke, shape = shape)
+        } else {
+            Modifier
+        }
 
-    val clickableModifier = if (onClick != null) {
-        Modifier
-            .clip(shape)
-            .clickable(onClick = onClick)
-    } else {
-        Modifier
-    }
+    val clickableModifier =
+        if (onClick != null) {
+            Modifier
+                .clip(shape)
+                .clickable(onClick = onClick)
+        } else {
+            Modifier
+        }
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(iconSize)
-            .background(
-                shape = shape,
-                color = containerColor,
-            )
-            .then(borderModifier)
-            .then(clickableModifier)
+        modifier =
+            modifier
+                .size(iconSize)
+                .background(
+                    shape = shape,
+                    color = containerColor,
+                ).then(borderModifier)
+                .then(clickableModifier),
     ) {
         Icon(
             painter = painter,
             tint = tint,
             contentDescription = contentDescription,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
         )
     }
 }
@@ -84,8 +85,9 @@ private fun SearchIconPreview() {
             tint = AppTheme.color.body,
             withBorder = true,
             paddingValues = PaddingValues(8.dp),
-            modifier = Modifier
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .padding(8.dp),
         )
     }
 }
@@ -101,7 +103,7 @@ private fun BackIconPreview() {
             tint = AppTheme.color.body,
             withBorder = true,
             paddingValues = PaddingValues(8.dp),
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp),
         )
     }
 }

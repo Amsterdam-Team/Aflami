@@ -13,11 +13,11 @@ typealias GradientType = @Composable () -> List<Color>
 typealias ColorType = @Composable () -> Color
 
 object AppTheme {
-
     val color: AflamiColorScheme
-        @Composable @ReadOnlyComposable get() = localAflamiAppColors.current
+        @Composable @ReadOnlyComposable
+        get() = localAflamiAppColors.current
 
     val textStyle: AflamiTextStyle
-        @Composable @ReadOnlyComposable get() = LocalAflamiTextStyle.current
-
+        @Composable @ReadOnlyComposable
+        get() = LocalAflamiTextStyle.current
 }

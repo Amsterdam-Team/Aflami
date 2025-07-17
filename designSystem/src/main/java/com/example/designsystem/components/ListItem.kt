@@ -25,35 +25,35 @@ fun ListItem(
     title: String,
     count: Int,
     modifier: Modifier = Modifier,
-
-    ) {
+) {
     val folderShape = FolderShape()
     BoxWithConstraints(
-        modifier = modifier
-            .clip(
-                folderShape
-            )
-            .background(AppTheme.color.surfaceHigh)
-            .clipToBounds(),
-        contentAlignment = Alignment.BottomStart
+        modifier =
+            modifier
+                .clip(
+                    folderShape,
+                ).background(AppTheme.color.surfaceHigh)
+                .clipToBounds(),
+        contentAlignment = Alignment.BottomStart,
     ) {
         val size = Size(maxWidth.value, maxHeight.value)
         val dynamicBottomPadding = folderShape.getBottomPadding(size)
 
         Column(
-            modifier = Modifier
-                .padding(bottom = dynamicBottomPadding)
-                .padding(horizontal = 8.dp)
+            modifier =
+                Modifier
+                    .padding(bottom = dynamicBottomPadding)
+                    .padding(horizontal = 8.dp),
         ) {
             Text(
                 text = title,
                 style = AppTheme.textStyle.title.medium,
-                color = AppTheme.color.title
+                color = AppTheme.color.title,
             )
             Text(
                 text = stringResource(R.string.list_items, count),
                 style = AppTheme.textStyle.label.large,
-                color = AppTheme.color.hint
+                color = AppTheme.color.hint,
             )
         }
     }
@@ -66,7 +66,7 @@ private fun ListItemPreview() {
         ListItem(
             title = "My Favourites",
             count = 12,
-            modifier = Modifier.size(160.dp, 147.dp)
+            modifier = Modifier.size(160.dp, 147.dp),
         )
     }
 }

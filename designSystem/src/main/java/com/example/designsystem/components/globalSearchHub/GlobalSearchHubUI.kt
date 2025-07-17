@@ -12,20 +12,21 @@ enum class GlobalSearchHubUI(
     @StringRes val labelRes: Int,
     @StringRes val descriptionRes: Int,
     @DrawableRes val icon: Int,
-    private val gradientProvider: GradientType
+    private val gradientProvider: GradientType,
 ) {
     ACTOR(
         labelRes = R.string.find_by_actor,
         descriptionRes = R.string.find_by_actor_description_hint,
         icon = R.drawable.img_suggestion_magician,
-        gradientProvider = { AppTheme.color.findByActorGradient }
+        gradientProvider = { AppTheme.color.findByActorGradient },
     ),
     WORLD(
         labelRes = R.string.world_tour_title,
         descriptionRes = R.string.world_tour_description,
         icon = R.drawable.tour_world_image,
-        gradientProvider = { AppTheme.color.worldTourGradient }
-    );
+        gradientProvider = { AppTheme.color.worldTourGradient },
+    ),
+    ;
 
     val gradient: List<Color>
         @Composable get() = gradientProvider()

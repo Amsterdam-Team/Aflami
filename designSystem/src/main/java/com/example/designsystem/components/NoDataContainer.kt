@@ -28,22 +28,23 @@ fun NoDataContainer(
     description: String = "",
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding( start = 24.dp, end = 24.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Image(
             painter = imageRes,
-            contentDescription = null
+            contentDescription = null,
         )
         if (title.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
                 text = title,
                 style = AppTheme.textStyle.title.medium,
-                color = AppTheme.color.title
+                color = AppTheme.color.title,
             )
         }
         if (description.isNotEmpty()) {
@@ -51,7 +52,7 @@ fun NoDataContainer(
                 text = description,
                 style = AppTheme.textStyle.body.small,
                 color = AppTheme.color.body,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
@@ -68,7 +69,7 @@ private fun NoDataContainerPreview() {
             NoDataContainer(
                 imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
                 title = stringResource(R.string.no_search_result),
-                description = stringResource(R.string.no_search_result_description)
+                description = stringResource(R.string.no_search_result_description),
             )
         }
     }

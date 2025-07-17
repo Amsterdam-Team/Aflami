@@ -22,19 +22,19 @@ fun GuessTitle(
         points = points,
         modifier = modifier,
         onClick = onClick,
-        isHintVisible = isHintVisible
+        isHintVisible = isHintVisible,
     ) {
         Text(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(vertical = 65.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(vertical = 65.dp),
             text = title,
             style = AppTheme.textStyle.title.large,
-            color = AppTheme.color.title
+            color = AppTheme.color.title,
         )
     }
 }
-
 
 @ThemeAndLocalePreviews
 @Composable
@@ -44,7 +44,7 @@ private fun GuessTitleHintVisiblePreview() {
             title = "The Green Mile",
             points = 10,
             isHintVisible = true,
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -57,7 +57,7 @@ private fun GuessTitleHintNotVisiblePreview() {
             title = "The Green Mile",
             points = 10,
             isHintVisible = false,
-            onClick = {}
+            onClick = {},
         )
     }
 }

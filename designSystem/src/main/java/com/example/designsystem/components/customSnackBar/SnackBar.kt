@@ -28,41 +28,45 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.designsystem.utils.modifierExtensions.dropShadow
 
 @Composable
-fun BoxScope.SnackBar(message: String, status: SnackBarStatus) {
+fun BoxScope.SnackBar(
+    message: String,
+    status: SnackBarStatus,
+) {
     val shape = RoundedCornerShape(12.dp)
     Box(
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .padding(19.dp)
-            .fillMaxWidth()
-            .dropShadow(
-                blur = 8.dp,
-                shape = shape,
-                color = status.dropShadowColor(),
-            )
-            .padding(1.dp)
-            .clip(shape = shape)
-            .clipToBounds()
-            .background(AppTheme.color.surfaceHigh, shape = shape)
-            .border(1.dp, AppTheme.color.stroke, shape)
+        modifier =
+            Modifier
+                .align(Alignment.TopCenter)
+                .padding(19.dp)
+                .fillMaxWidth()
+                .dropShadow(
+                    blur = 8.dp,
+                    shape = shape,
+                    color = status.dropShadowColor(),
+                ).padding(1.dp)
+                .clip(shape = shape)
+                .clipToBounds()
+                .background(AppTheme.color.surfaceHigh, shape = shape)
+                .border(1.dp, AppTheme.color.stroke, shape),
     ) {
         Row(
-            modifier = Modifier
-                .defaultMinSize(minHeight = 56.dp)
-                .padding(horizontal = 12.dp, vertical = 16.dp),
+            modifier =
+                Modifier
+                    .defaultMinSize(minHeight = 56.dp)
+                    .padding(horizontal = 12.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
                 painter = painterResource(status.icon),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(status.iconTintColor()),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
             Text(
                 text = message,
                 style = AppTheme.textStyle.body.medium,
                 color = AppTheme.color.body,
-                modifier = Modifier.padding(start = 12.dp)
+                modifier = Modifier.padding(start = 12.dp),
             )
         }
     }
@@ -75,7 +79,7 @@ private fun SnackBarSuccessPreview() {
         Box {
             SnackBar(
                 stringResource(R.string.list_added_success_message),
-                SnackBarStatus.Success
+                SnackBarStatus.Success,
             )
         }
     }
@@ -88,7 +92,7 @@ private fun SnackBarFailurePreview() {
         Box {
             SnackBar(
                 stringResource(R.string.general_error_message),
-                SnackBarStatus.Failure
+                SnackBarStatus.Failure,
             )
         }
     }

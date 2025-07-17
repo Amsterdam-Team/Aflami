@@ -36,52 +36,54 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 fun GlobalSearchHub(
     globalSearchHubUI: GlobalSearchHubUI,
     onItemClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                brush = Brush.verticalGradient(globalSearchHubUI.gradient), alpha = 0.8f
-            )
-            .clickable { onItemClick() }
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    brush = Brush.verticalGradient(globalSearchHubUI.gradient),
+                    alpha = 0.8f,
+                ).clickable { onItemClick() },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues = PaddingValues(8.dp)),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = PaddingValues(8.dp)),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Image(
                 painter = painterResource(globalSearchHubUI.icon),
                 contentDescription = null,
                 modifier = Modifier.height(40.dp),
-                contentScale = ContentScale.FillHeight
+                contentScale = ContentScale.FillHeight,
             )
             Text(
                 text = stringResource(globalSearchHubUI.labelRes),
                 style = AppTheme.textStyle.title.small,
-                color = AppTheme.color.onPrimary
+                color = AppTheme.color.onPrimary,
             )
             Text(
                 text = stringResource(globalSearchHubUI.descriptionRes),
                 style = AppTheme.textStyle.label.small,
-                color = AppTheme.color.onPrimaryBody
+                color = AppTheme.color.onPrimaryBody,
             )
         }
         Box(
-            modifier = Modifier
-                .fillMaxWidth(0.20f)
-                .fillMaxHeight(0.45f)
-                .blur(56.dp, BlurredEdgeTreatment.Unbounded)
-                .background(color = AppTheme.color.onPrimary, CircleShape)
-                .alpha(0.12f)
-                .align(Alignment.TopEnd)
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.20f)
+                    .fillMaxHeight(0.45f)
+                    .blur(56.dp, BlurredEdgeTreatment.Unbounded)
+                    .background(color = AppTheme.color.onPrimary, CircleShape)
+                    .alpha(0.12f)
+                    .align(Alignment.TopEnd),
         )
     }
 }
-
 
 @ThemeAndLocalePreviews
 @Composable
@@ -90,7 +92,7 @@ private fun GlobalSearchHubWorldPreview() {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.WORLD,
             modifier = Modifier.size(160.dp, 100.dp),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -102,7 +104,7 @@ private fun GlobalSearchHubActorPreview() {
         GlobalSearchHub(
             globalSearchHubUI = GlobalSearchHubUI.ACTOR,
             modifier = Modifier.size(160.dp, 100.dp),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }

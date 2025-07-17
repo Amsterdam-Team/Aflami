@@ -15,9 +15,8 @@ class FolderShape(
     private val bottomRightRadius: Float = 24f,
     private val topLeftRadius: Float = 24f,
     private val topRightRadius: Float = 16f,
-    private val middleRadius: Float = 16f
+    private val middleRadius: Float = 16f,
 ) : Shape {
-
     private val originalHeight = 147f
     private val originalWidth = 160f
 
@@ -30,26 +29,24 @@ class FolderShape(
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density
+        density: Density,
     ): Outline {
-
-
-
         val scaleX = size.width / originalWidth
         val scaleY = size.height / originalHeight
 
-        val clipPath = if (layoutDirection == LayoutDirection.Rtl) {
-            createRtlPath(size = size, scaleX = scaleX, scaleY = scaleY)
-        } else {
-            createLtrPath(size = size, scaleX = scaleX, scaleY = scaleY)
-        }
+        val clipPath =
+            if (layoutDirection == LayoutDirection.Rtl) {
+                createRtlPath(size = size, scaleX = scaleX, scaleY = scaleY)
+            } else {
+                createLtrPath(size = size, scaleX = scaleX, scaleY = scaleY)
+            }
         return Outline.Generic(clipPath)
     }
 
     private fun createLtrPath(
         size: Size,
         scaleX: Float,
-        scaleY: Float
+        scaleY: Float,
     ): Path {
         val topOffset = 14f * scaleY
         val middleOffset = size.width * 0.475f
@@ -75,74 +72,80 @@ class FolderShape(
 
             // Top Right Corner
             arcTo(
-                rect = Rect(
-                    left = size.width - topRightDiameterX,
-                    top = topOffset,
-                    right = size.width,
-                    bottom = topRightDiameterY + topOffset
-                ),
+                rect =
+                    Rect(
+                        left = size.width - topRightDiameterX,
+                        top = topOffset,
+                        right = size.width,
+                        bottom = topRightDiameterY + topOffset,
+                    ),
                 startAngleDegrees = 270f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Bottom Right Corner
             arcTo(
-                rect = Rect(
-                    left = size.width - bottomRightDiameterX,
-                    top = size.height - bottomRightDiameterY,
-                    right = size.width,
-                    bottom = size.height
-                ),
+                rect =
+                    Rect(
+                        left = size.width - bottomRightDiameterX,
+                        top = size.height - bottomRightDiameterY,
+                        right = size.width,
+                        bottom = size.height,
+                    ),
                 startAngleDegrees = 0f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Bottom Left Corner
             arcTo(
-                rect = Rect(
-                    left = 0f,
-                    top = size.height - bottomLeftDiameterY,
-                    right = bottomLeftDiameterX,
-                    bottom = size.height
-                ),
+                rect =
+                    Rect(
+                        left = 0f,
+                        top = size.height - bottomLeftDiameterY,
+                        right = bottomLeftDiameterX,
+                        bottom = size.height,
+                    ),
                 startAngleDegrees = 90f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Top Left Corner
             arcTo(
-                rect = Rect(
-                    left = 0f,
-                    top = 0f,
-                    right = topLeftDiameterX,
-                    bottom = topLeftDiameterY
-                ),
+                rect =
+                    Rect(
+                        left = 0f,
+                        top = 0f,
+                        right = topLeftDiameterX,
+                        bottom = topLeftDiameterY,
+                    ),
                 startAngleDegrees = 180f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Middle connecting arc
             arcTo(
-                rect = Rect(
-                    left = middleOffset - middleDiameterX,
-                    top = 0f,
-                    right = middleOffset,
-                    bottom = middleDiameterY
-                ),
+                rect =
+                    Rect(
+                        left = middleOffset - middleDiameterX,
+                        top = 0f,
+                        right = middleOffset,
+                        bottom = middleDiameterY,
+                    ),
                 startAngleDegrees = 270f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
         }
     }
+
     private fun createRtlPath(
         size: Size,
         scaleX: Float,
-        scaleY: Float
+        scaleY: Float,
     ): Path {
         val topOffset = 14f * scaleY
         val middleOffset = size.width - (size.width * 0.475f)
@@ -168,67 +171,72 @@ class FolderShape(
 
             // Middle connecting arc
             arcTo(
-                rect = Rect(
-                    left = middleOffset,
-                    top = 0f,
-                    right = middleOffset + middleDiameterX,
-                    bottom = middleDiameterY
-                ),
+                rect =
+                    Rect(
+                        left = middleOffset,
+                        top = 0f,
+                        right = middleOffset + middleDiameterX,
+                        bottom = middleDiameterY,
+                    ),
                 startAngleDegrees = 180f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Top Right Corner
             arcTo(
-                rect = Rect(
-                    left = size.width - topRightDiameterX,
-                    top = 0f,
-                    right = size.width,
-                    bottom = topRightDiameterY
-                ),
+                rect =
+                    Rect(
+                        left = size.width - topRightDiameterX,
+                        top = 0f,
+                        right = size.width,
+                        bottom = topRightDiameterY,
+                    ),
                 startAngleDegrees = 270f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Bottom Right Corner
             arcTo(
-                rect = Rect(
-                    left = size.width - bottomRightDiameterX,
-                    top = size.height - bottomRightDiameterY,
-                    right = size.width,
-                    bottom = size.height
-                ),
+                rect =
+                    Rect(
+                        left = size.width - bottomRightDiameterX,
+                        top = size.height - bottomRightDiameterY,
+                        right = size.width,
+                        bottom = size.height,
+                    ),
                 startAngleDegrees = 0f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Bottom Left Corner
             arcTo(
-                rect = Rect(
-                    left = 0f,
-                    top = size.height - bottomLeftDiameterY,
-                    right = bottomLeftDiameterX,
-                    bottom = size.height
-                ),
+                rect =
+                    Rect(
+                        left = 0f,
+                        top = size.height - bottomLeftDiameterY,
+                        right = bottomLeftDiameterX,
+                        bottom = size.height,
+                    ),
                 startAngleDegrees = 90f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
 
             // Top Left Corner
             arcTo(
-                rect = Rect(
-                    left = 0f,
-                    top = topOffset,
-                    right = topLeftDiameterX,
-                    bottom = topLeftDiameterY + topOffset
-                ),
+                rect =
+                    Rect(
+                        left = 0f,
+                        top = topOffset,
+                        right = topLeftDiameterX,
+                        bottom = topLeftDiameterY + topOffset,
+                    ),
                 startAngleDegrees = 180f,
                 sweepAngleDegrees = 90f,
-                forceMoveTo = false
+                forceMoveTo = false,
             )
         }
     }

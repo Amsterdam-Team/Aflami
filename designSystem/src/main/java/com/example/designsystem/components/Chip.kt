@@ -34,12 +34,12 @@ fun Chip(
     label: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     val backgroundColor by animateColorAsState(
         targetValue = if (isSelected) AppTheme.color.secondary else AppTheme.color.surfaceHigh,
         animationSpec = tween(durationMillis = 500),
-        label = "BackgroundColorAnimation"
+        label = "BackgroundColorAnimation",
     )
 
     val iconColor = if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint
@@ -47,26 +47,29 @@ fun Chip(
     val borderColor = if (isSelected) AppTheme.color.stroke else AppTheme.color.surfaceHigh
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
-            modifier = modifier
-                .size(56.dp)
-                .background(
-                    backgroundColor,
-                    RoundedCornerShape(16.dp)
-                )
-                .border(1.dp, borderColor, RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = ripple(color = iconColor, bounded = true), onClick = onClick
-                ),
-            contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .size(56.dp)
+                    .background(
+                        backgroundColor,
+                        RoundedCornerShape(16.dp),
+                    ).border(1.dp, borderColor, RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(color = iconColor, bounded = true),
+                        onClick = onClick,
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = icon, contentDescription = label, tint = iconColor,
-                modifier = Modifier.size(24.dp)
+                painter = icon,
+                contentDescription = label,
+                tint = iconColor,
+                modifier = Modifier.size(24.dp),
             )
         }
         Text(
@@ -82,11 +85,12 @@ fun Chip(
 private fun ChipPreview() {
     AflamiTheme {
         Chip(
-            icon = painterResource(
-                R.drawable.ic_menu_square
-            ),
+            icon =
+                painterResource(
+                    R.drawable.ic_menu_square,
+                ),
             label = "All",
-            isSelected = true
+            isSelected = true,
         )
     }
 }

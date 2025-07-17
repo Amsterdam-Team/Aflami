@@ -39,11 +39,10 @@ data class AflamiColorScheme(
     val borderLinearGradient: List<Color>,
     val successSnackBarShadow: Color,
     val failureSnackBarShadow: Color,
-    val overlayDark : List<Color>,
+    val overlayDark: List<Color>,
     val softBlue: Color,
     val worldTourGradient: List<Color>,
     val findByActorGradient: List<Color>,
     val guessCardGradient: List<Color>,
     val primaryEnd: Color,
 )
-

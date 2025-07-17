@@ -50,36 +50,38 @@ internal fun BaseButton(
     height: Dp = 56.dp,
     width: Dp = Dp.Unspecified,
 ) {
-    val backGroundColor = animateButtonBrush(
-        isEnabled = isEnabled,
-        isNegative = isNegative,
-        isSecondary = isSecondary,
-    )
+    val backGroundColor =
+        animateButtonBrush(
+            isEnabled = isEnabled,
+            isNegative = isNegative,
+            isSecondary = isSecondary,
+        )
     val contentColor by animateColorAsState(
         when {
             !isEnabled -> AppTheme.color.stroke
             isNegative -> AppTheme.color.redAccent
             isSecondary -> AppTheme.color.primary
             else -> AppTheme.color.onPrimary
-        }
+        },
     )
 
     Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clipToBounds()
-            .width(width)
-            .fillMaxWidth()
-            .height(height)
-            .background(backGroundColor)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(),
-                onClick = onClick,
-                enabled = isEnabled && !isLoading,
-            ),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(16.dp))
+                .clipToBounds()
+                .width(width)
+                .fillMaxWidth()
+                .height(height)
+                .background(backGroundColor)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(),
+                    onClick = onClick,
+                    enabled = isEnabled && !isLoading,
+                ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         if (title != null) {
             Text(
@@ -91,15 +93,15 @@ internal fun BaseButton(
 
         val animatedPadding by animateDpAsState(
             if (isLoading || icon != null) 8.dp else 0.dp,
-            tween(durationMillis = 500)
+            tween(durationMillis = 500),
         )
         val animatedIconSize by animateDpAsState(
             if (!isLoading) iconSize else 0.dp,
-            tween(durationMillis = 500)
+            tween(durationMillis = 500),
         )
         val animatedLoadingSize by animateDpAsState(
             if (isLoading) 20.dp else 0.dp,
-            tween(durationMillis = 500)
+            tween(durationMillis = 500),
         )
 
         AnimatedVisibility(
@@ -128,34 +130,35 @@ internal fun BaseButton(
     }
 }
 
-
 @Composable
 private fun animateButtonBrush(
     isEnabled: Boolean,
     isNegative: Boolean,
     isSecondary: Boolean,
-    animationSpec: AnimationSpec<Color> = tween(300)
+    animationSpec: AnimationSpec<Color> = tween(300),
 ): Brush {
     val startColor by animateColorAsState(
-        targetValue = when {
-            !isEnabled && !isSecondary -> AppTheme.color.disable
-            isSecondary -> AppTheme.color.primaryVariant
-            isNegative -> AppTheme.color.redVariant
-            else -> AppTheme.color.primary
-        },
+        targetValue =
+            when {
+                !isEnabled && !isSecondary -> AppTheme.color.disable
+                isSecondary -> AppTheme.color.primaryVariant
+                isNegative -> AppTheme.color.redVariant
+                else -> AppTheme.color.primary
+            },
         animationSpec = animationSpec,
-        label = "startColor"
+        label = "startColor",
     )
 
     val endColor by animateColorAsState(
-        targetValue = when {
-            !isEnabled && !isSecondary -> AppTheme.color.disable
-            isSecondary -> AppTheme.color.primaryVariant
-            isNegative -> AppTheme.color.redVariant
-            else -> AppTheme.color.primaryEnd
-        },
+        targetValue =
+            when {
+                !isEnabled && !isSecondary -> AppTheme.color.disable
+                isSecondary -> AppTheme.color.primaryVariant
+                isNegative -> AppTheme.color.redVariant
+                else -> AppTheme.color.primaryEnd
+            },
         animationSpec = animationSpec,
-        label = "endColor"
+        label = "endColor",
     )
 
     return Brush.verticalGradient(listOf(startColor, endColor))

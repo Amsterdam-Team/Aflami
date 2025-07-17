@@ -25,23 +25,24 @@ fun GuessPicture(
     painter: Painter,
     isHintVisible: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     GuessCard(
         points = points,
         modifier = modifier,
         isHintVisible = isHintVisible,
-        onClick = onClick
+        onClick = onClick,
     ) {
         Image(
             painter = painter,
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio((360 / 160).toFloat())
-                .blur(radius = blurRadius, BlurredEdgeTreatment.Unbounded)
-                .clip(RoundedCornerShape(20.dp))
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio((360 / 160).toFloat())
+                    .blur(radius = blurRadius, BlurredEdgeTreatment.Unbounded)
+                    .clip(RoundedCornerShape(20.dp)),
         )
     }
 }
@@ -55,7 +56,7 @@ private fun GuessPictureHintVisiblePreview() {
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             isHintVisible = true,
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -69,7 +70,7 @@ private fun GuessPictureHintNotVisiblePreview() {
             points = 10,
             painter = painterResource(R.drawable.bg_children_wearing_3d),
             isHintVisible = false,
-            onClick = {}
+            onClick = {},
         )
     }
 }

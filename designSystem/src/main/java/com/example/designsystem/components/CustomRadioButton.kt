@@ -22,36 +22,38 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 enum class RadioState {
     Default,
     Selected,
-    Unselected
+    Unselected,
 }
 
 @Composable
 fun CustomRadioButton(
     state: RadioState,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
-    val (borderColor, borderWidth) = when (state) {
-        RadioState.Default -> AppTheme.color.disable to 1.dp
-        RadioState.Selected -> AppTheme.color.primary to 6.dp
-        RadioState.Unselected -> AppTheme.color.disable to 6.dp
-    }
+    val (borderColor, borderWidth) =
+        when (state) {
+            RadioState.Default -> AppTheme.color.disable to 1.dp
+            RadioState.Selected -> AppTheme.color.primary to 6.dp
+            RadioState.Unselected -> AppTheme.color.disable to 6.dp
+        }
 
     Box(
-        modifier = modifier
-            .size(18.dp)
-            .clip(CircleShape)
-            .border(
-                width = borderWidth,
-                color = borderColor,
-                shape = CircleShape
-            )
-            .clickable(
-                onClick = onClick,
-                role = Role.RadioButton
-            )
+        modifier =
+            modifier
+                .size(18.dp)
+                .clip(CircleShape)
+                .border(
+                    width = borderWidth,
+                    color = borderColor,
+                    shape = CircleShape,
+                ).clickable(
+                    onClick = onClick,
+                    role = Role.RadioButton,
+                ),
     )
 }
+
 @ThemeAndLocalePreviews
 @Composable
 private fun CustomRadioButtonPreview() {
@@ -59,18 +61,18 @@ private fun CustomRadioButtonPreview() {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CustomRadioButton(
                 modifier = Modifier.padding(bottom = 16.dp),
-                state = RadioState.Default
+                state = RadioState.Default,
             )
             CustomRadioButton(
                 modifier = Modifier.padding(bottom = 16.dp),
-                state = RadioState.Selected
+                state = RadioState.Selected,
             )
             CustomRadioButton(
-                state = RadioState.Unselected
+                state = RadioState.Unselected,
             )
         }
     }
