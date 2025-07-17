@@ -244,19 +244,17 @@ fun DesignSystem() {
             )
         }
         MovieCard(
-            movieImage = "",
+            movieImage = { },
             movieTitle = "Eternal Sunshine of the Spotless mind",
             movieType = "Sci-fi",
             movieYear = "2002",
-            movieContentDescription = "best movie ever you should totally watch it",
             movieRating = "9.8",
         )
         UpcomingCard(
-            movieImage = "",
+            movieImage = {},
             movieTitle = "Eternal Sunshine of the Spotless mind",
             movieType = "Sci-fi",
             movieYear = "2002",
-            movieContentDescription = "best movie ever you should totally watch it",
             movieRating = "9.8",
         )
         ListItem(

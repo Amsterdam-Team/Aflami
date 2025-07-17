@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,25 +24,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.imageviewer.ui.SafeImageView
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 internal fun BaseCard(
-    movieImage: String,
+    movieImage: @Composable () -> Unit,
     movieTitle: String,
     movieType: String,
     movieYear: String,
-    contentScale: ContentScale,
     modifier: Modifier = Modifier,
-    movieContentDescription: String? = null,
     movieRating: String? = null,
     topIcon: Painter? = null,
     onClick: () -> Unit = {},
@@ -60,14 +55,7 @@ internal fun BaseCard(
                     onClick = onClick,
                 ),
     ) {
-        SafeImageView(
-            modifier =
-                Modifier
-                    .fillMaxSize(),
-            contentDescription = movieContentDescription,
-            model = movieImage,
-            contentScale = contentScale,
-        )
+        movieImage.invoke()
         movieRating?.let {
             RatingChip(
                 modifier =
@@ -183,12 +171,11 @@ private fun BoxScope.IconContainer(topIcon: Painter) {
 private fun BaseCardPreview() {
     AflamiTheme {
         BaseCard(
-            movieImage = "",
+            movieImage = { },
             movieType = "TV show",
             movieYear = "2016",
             movieTitle = "Your Name",
             movieRating = "9.9",
-            contentScale = ContentScale.FillBounds,
         )
     }
 }
