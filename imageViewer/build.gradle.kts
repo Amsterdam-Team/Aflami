@@ -21,4 +21,10 @@ dependencies {
     // TensorFlow Lite for on-device ML
     implementation(files("libs/tensorflow-lite.aar"))
     implementation(files("libs/tensorflowlite_support_java.aar"))
+
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+    implementation("com.google.firebase:firebase-ml-modeldownloader")
+  
+
+    implementation(libs.androidx.startup.runtime)
 }
