@@ -1,5 +1,6 @@
 package com.example.viewmodel
 
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.viewmodel.search.actorSearch.SearchByActorEffect
@@ -12,7 +13,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SearchByActorViewModelTest {
     private lateinit var viewModel: SearchByActorViewModel
 
@@ -46,7 +48,7 @@ class SearchByActorViewModelTest {
     }
 
     @Test
-    fun `should update keyword and set loading to false when onKeywordValueChanged is called with blank string`() =
+    fun `onUserSearchChange should update keyword and set loading to false when onKeywordValueChanged is called with blank string`() =
         testScope.runTest {
             val keyword = ""
 
@@ -54,22 +56,13 @@ class SearchByActorViewModelTest {
             testScope.advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.query).isEqualTo(keyword)
+            assertThat(state.keyword).isEqualTo(keyword)
             assertThat(state.isLoading).isFalse()
         }
 
-    @Test
-    fun `should not call use case when keyword is entered within debounce duration`() =
-        testScope.runTest {
-            val keyword = "a"
-            viewModel.onUserSearchChange(keyword)
-            advanceTimeBy(200L)
-
-            coVerify(exactly = 0) { getMoviesByActorUseCase(any()) }
-        }
 
     @Test
-    fun `should call use case when keyword is entered after debounce duration`() =
+    fun `onUserSearchChange should call use case when keyword is entered after debounce duration`() =
         testScope.runTest {
             val keyword = "Tom"
             coEvery { getMoviesByActorUseCase(keyword) } returns emptyList()
@@ -82,7 +75,20 @@ class SearchByActorViewModelTest {
         }
 
     @Test
-    fun `should update movies state when getMoviesByActorUseCase returns a list of movies`() =
+    fun `onUserSearchChange should not call use case when keyword is entered within debounce duration`() =
+        testScope.runTest {
+            var keyword = "a"
+            viewModel.onUserSearchChange(keyword)
+            advanceTimeBy(200L)
+            keyword += "b"
+            viewModel.onUserSearchChange(keyword)
+            advanceTimeBy(200L)
+            coVerify(exactly = 0) { getMoviesByActorUseCase(any()) }
+        }
+
+
+    @Test
+    fun `onUserSearchChange should update movies state when getMoviesByActorUseCase returns a list of movies`() =
         testScope.runTest {
             val keyword = "Tom Hanks"
             val movies = listOf(createMovie(id = 1, name = "Forrest Gump"))
@@ -97,7 +103,7 @@ class SearchByActorViewModelTest {
         }
 
     @Test
-    fun `should update state to empty movies when getMoviesByActorUseCase returns an empty list`() =
+    fun `onUserSearchChange should update state to empty movies when getMoviesByActorUseCase returns an empty list`() =
         testScope.runTest {
             val keyword = "Unknown Actor"
             coEvery { getMoviesByActorUseCase(keyword) } returns emptyList()
@@ -111,7 +117,7 @@ class SearchByActorViewModelTest {
         }
 
     @Test
-    fun `should update noInternetException state when use case throws NetworkException`() =
+    fun `onUserSearchChange should update noInternetException state when use case throws NetworkException`() =
         testScope.runTest {
             val keyword = "Tom Cruise"
             coEvery { getMoviesByActorUseCase(keyword) } throws NetworkException()
@@ -126,7 +132,7 @@ class SearchByActorViewModelTest {
         }
 
     @Test
-    fun `should send NavigateBack effect when onNavigateBackClicked is called`() =
+    fun `onNavigateBackClicked should send NavigateBack effect when its called`() =
         testScope.runTest {
             val effects = mutableListOf<SearchByActorEffect>()
             val collectJob = launch {
@@ -135,13 +141,12 @@ class SearchByActorViewModelTest {
 
             viewModel.onNavigateBackClick()
             advanceUntilIdle()
-
-            assertThat(effects).contains(SearchByActorEffect.NavigateBack)
             collectJob.cancel()
+            assertThat(effects).contains(SearchByActorEffect.NavigateBack)
         }
 
     @Test
-    fun `should retry search when onRetryQuestClicked is called`() = testScope.runTest {
+    fun `onRetrySearchClick should retry search when is called`() = testScope.runTest {
         val keyword = "Will Smith"
         coEvery { getMoviesByActorUseCase(keyword) } throws NetworkException()
         viewModel.onUserSearchChange(keyword)
@@ -161,5 +166,49 @@ class SearchByActorViewModelTest {
         val state = viewModel.state.value
         assertThat(state.movies).isEqualTo(movies.toListOfUiState())
         assertThat(state.isLoading).isFalse()
+    }
+
+    @Test
+    fun `onMovieClicked should update the selected movie id state when its call`() =
+        testScope.runTest {
+            val movieId = 1L
+
+            viewModel.onMovieClicked(movieId)
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.selectedMovieId).isEqualTo(movieId)
+        }
+
+    @Test
+    fun `onMovieClicked should send NavigateToDetailsScreen effect when its call`() =
+        testScope.runTest {
+            val movieId = 1L
+            var effect: SearchByActorEffect? = null
+
+            val job = launch {
+                viewModel.effect.collect { searchByActorEffect ->
+                    effect = searchByActorEffect
+                }
+            }
+            viewModel.onMovieClicked(movieId)
+            advanceUntilIdle()
+            job.cancel()
+
+            assertThat(effect).isEqualTo(SearchByActorEffect.NavigateToDetailsScreen)
+        }
+
+    @Test
+    fun `onUserSearchChange should update the state with empty list and stop loading and set network error to false when get unknown error `()
+    = testScope.runTest {
+            val keyword = "#%$"
+            coEvery { getMoviesByActorUseCase(keyword) } throws AflamiException()
+
+            viewModel.onUserSearchChange(keyword)
+            advanceUntilIdle()
+
+            val state = viewModel.state.value
+            assertThat(state.isNetworkError).isFalse()
+            assertThat(state.isLoading).isFalse()
+            assertThat(state.movies).isEmpty()
     }
 }

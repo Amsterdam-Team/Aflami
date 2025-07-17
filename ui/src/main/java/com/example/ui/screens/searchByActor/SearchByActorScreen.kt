@@ -86,9 +86,9 @@ private fun SearchByActorContent(
             onNavigateBackClicked = interactionListener::onNavigateBackClick
         )
         TextField(
-            text = state.query,
+            text = state.keyword,
             hintText = stringResource(R.string.find_by_actor),
-            onValueChange = { interactionListener.onUserSearch(it) },
+            onValueChange = { interactionListener.onUserSearchChange(it) },
             modifier = Modifier
                 .padding(top = 8.dp)
                 .padding(horizontal = 16.dp),
@@ -117,7 +117,7 @@ private fun SearchByActorContent(
                     )
                 }
 
-                targetState.query.isBlank() -> {
+                targetState.keyword.isBlank() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.img_suggestion_magician),
                         title = stringResource(R.string.find_by_actor),
@@ -172,7 +172,7 @@ private fun SearchByActorContentPreview() {
         SearchByActorContent(
             state = SearchByActorScreenState(),
             interactionListener = object : SearchByActorInteractionListener {
-                override fun onUserSearch(query: String) {
+                override fun onUserSearchChange(query: String) {
                 }
 
                 override fun onNavigateBackClick() {

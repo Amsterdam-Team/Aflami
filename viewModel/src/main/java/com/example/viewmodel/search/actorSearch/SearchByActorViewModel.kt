@@ -28,7 +28,7 @@ class SearchByActorViewModel(
 ),
     SearchByActorInteractionListener {
 
-    private val queryFlow = MutableStateFlow("")
+    private val keywordFlow = MutableStateFlow("")
 
     init {
         observeActorSearchQuery()
@@ -37,7 +37,7 @@ class SearchByActorViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeActorSearchQuery() {
         viewModelScope.launch {
-            queryFlow
+            keywordFlow
                 .debounce(300)
                 .map(String::trim)
                 .filter(String::isNotBlank)
@@ -45,7 +45,7 @@ class SearchByActorViewModel(
         }
     }
 
-    fun executeActorSearch(query: String) {
+    private fun executeActorSearch(query: String) {
         tryToExecute(
             action = { getMoviesByActorUseCase(query) },
             onSuccess = ::handleSearchResults,
@@ -53,9 +53,9 @@ class SearchByActorViewModel(
         )
     }
 
-    override fun onUserSearchChange(query: String) {
-        queryFlow.update { oldText -> query }
-        updateState { it.copy(query = query, isLoading = query.isNotBlank()) }
+    override fun onUserSearchChange(keyword: String) {
+        keywordFlow.update { oldText -> keyword }
+        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
     }
 
     private fun handleSearchResults(movies: List<Movie>) {
@@ -74,7 +74,7 @@ class SearchByActorViewModel(
 
     override fun onRetrySearchClick() {
         updateState { it.copy(isLoading = true) }
-        executeActorSearch(state.value.query)
+        executeActorSearch(state.value.keyword)
     }
 
     override fun onMovieClicked(movieId: Long) {

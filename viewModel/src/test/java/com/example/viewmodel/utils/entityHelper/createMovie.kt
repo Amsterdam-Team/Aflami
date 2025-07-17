@@ -10,7 +10,11 @@ fun createMovie(
     poster: String = "https://example.com/poster.jpg",
     productionYear: Int = 2024,
     genres: List<MovieGenre> = listOf(),
-    rating: Float = 4.5f
+    rating: Float = 4.5f,
+    originCountry: String = "USA",
+    popularity : Double = 0.0,
+    movieLength: Int = 120,
+    hasVideo: Boolean = true
 ): Movie {
     return Movie(
         id = id,
@@ -20,9 +24,9 @@ fun createMovie(
         productionYear = productionYear,
         categories = genres,
         rating = rating,
-        popularity = 0.0,
-        originCountry = "",
-        movieLength = 110,
-        hasVideo = false
+        popularity = popularity,
+        originCountry = originCountry,
+        movieLength = movieLength,
+        hasVideo = hasVideo
     )
 }
