@@ -106,7 +106,7 @@ private fun CastContent(
                 errorState == CastErrorUiState.NoNetworkConnection -> {
                     NoNetworkContainer(
                         modifier = Modifier.fillMaxSize(),
-                        onClickRetry = interaction::onRetryQuestClicked
+                        onClickRetry = interaction::onRetrySearchClick
                     )
                 }
 

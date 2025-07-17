@@ -48,15 +48,15 @@ class MovieDetailsViewModel(
         }
     }
 
-    override fun onShowAllCastClicked() {
+    override fun onShowAllCastClick() {
         sendNewEffect(MovieDetailsEffect.NavigateToCastsScreenEffect)
     }
 
-    override fun onBackClicked() {
+    override fun onBackClick() {
         sendNewEffect(MovieDetailsEffect.NavigateBackEffect)
     }
 
-    override fun onRetryQuestClicked() {
+    override fun onRetryQuestClick() {
         loadMovieDetails()
     }
 

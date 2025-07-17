@@ -50,6 +50,6 @@ class CastViewModel(
 
     override fun onNavigateBackClicked() = sendNewEffect(CastUiEffect.NavigateBack)
 
-    override fun onRetryQuestClicked() = fetchMovieCast()
+    override fun onRetrySearchClick() = fetchMovieCast()
 
 }
