@@ -1,13 +1,14 @@
 package com.example.repository.mapper.remote
 
+import com.example.domain.mapper.DomainMapper
 import com.example.entity.Actor
 import com.example.entity.Gender
 import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteCastDto
 
-class CastRemoteMapper {
+class CastRemoteMapper: DomainMapper<Actor, RemoteCastDto> {
 
-    fun mapToDomain(dto: RemoteCastDto): Actor{
+    override fun toDomain(dto: RemoteCastDto): Actor{
         return Actor(
             id = dto.id,
             name = dto.name,
@@ -18,7 +19,5 @@ class CastRemoteMapper {
     }
 
     private fun mapIntToGender(gender: Int) = if (gender == 2) Gender.Male else Gender.Female
-
-
 
 }
