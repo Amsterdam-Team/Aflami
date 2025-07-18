@@ -1,5 +1,6 @@
 package com.example.ui.screens.search.countrySearch.components
 
+import android.R.attr.rating
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,10 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.imageviewer.ui.SafeImageView
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.ui.components.MovieCard
-import com.example.viewmodel.search.countrySearch.MovieUiState
 
 @Composable
 internal fun MoviesVerticalGrid(
@@ -40,7 +40,16 @@ internal fun MoviesVerticalGrid(
                 key = { movie -> movie.id },
             ) { movie ->
                 MovieCard(
-                    movieImage = movie.posterImageUrl,
+                    movieImage = {
+                        SafeImageView(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize(),
+                            contentDescription = movie.name,
+                            model = movie.posterImageUrl,
+                            contentScale = ContentScale.Crop,
+                        )
+                    },
                     movieType = stringResource(R.string.movie),
                     movieYear = movie.yearOfRelease,
                     movieTitle = movie.name,
@@ -59,12 +68,12 @@ private fun MoviesVerticalGridPreview() {
         MoviesVerticalGrid(
             movies =
                 buildList(4) {
-                    MovieUiState(
+                    MovieItemUiState(
                         id = 1,
                         name = stringResource(R.string.movie),
-                        poster = "https://unsplash.com/s/photos/free-images",
-                        productionYear = "2025",
-                        rating = "9.9",
+                        posterImageUrl = "https://unsplash.com/s/photos/free-images",
+                        yearOfRelease = "2025",
+                        rate = "9.9",
                     )
                 },
             isVisible = true,

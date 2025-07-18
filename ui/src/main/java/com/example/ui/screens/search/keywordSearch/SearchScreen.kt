@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -36,14 +37,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingContainer
-import com.example.designsystem.components.MovieCard
-import com.example.designsystem.components.NoDataContainer
-import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
-import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
+import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
+import com.example.ui.components.MovieCard
+import com.example.ui.components.NoDataContainer
+import com.example.ui.components.NoNetworkContainer
+import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.navigation.Route.MovieDetails
 import com.example.ui.screens.search.keywordSearch.sections.RecentSearchesSection
@@ -183,7 +185,7 @@ private fun SearchContent(
 
                 AnimatedVisibility(isSelectedTabSearchResultEmpty) {
                     NoDataContainer(
-                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                        imageRes = painterResource(com.example.ui.R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
                         modifier = Modifier.verticalScroll(rememberScrollState())
@@ -219,7 +221,14 @@ private fun SuccessMediaItems(
             when (mediaItem) {
                 is MovieItemUiState -> {
                     MovieCard(
-                        movieImage = mediaItem.posterImageUrl,
+                        movieImage = {
+                            SafeImageView(
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = mediaItem.name,
+                                model = mediaItem.posterImageUrl,
+                                contentScale = ContentScale.Crop,
+                            )
+                        },
                         movieType = stringResource(R.string.movies),
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
@@ -230,7 +239,14 @@ private fun SuccessMediaItems(
 
                 is TvShowItemUiState -> {
                     MovieCard(
-                        movieImage = mediaItem.posterImageUrl,
+                        movieImage = {
+                            SafeImageView(
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = mediaItem.name,
+                                model = mediaItem.posterImageUrl,
+                                contentScale = ContentScale.Crop,
+                            )
+                        },
                         movieType = stringResource(R.string.tv_shows),
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
@@ -273,7 +289,7 @@ private fun SearchScreenHeader(
             text = keyword,
             onValueChange = onKeywordValuedChanged,
             hintText = stringResource(R.string.search_hint),
-            trailingIcon = R.drawable.ic_filter_vertical,
+            trailingIcon = com.example.ui.R.drawable.ic_filter_vertical,
             onTrailingClick = onFilterButtonClicked,
             isTrailingClickEnabled = keyword.isNotBlank(),
             isError = keyword.length > 100,

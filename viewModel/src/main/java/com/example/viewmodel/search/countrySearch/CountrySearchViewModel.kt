@@ -1,5 +1,6 @@
 package com.example.viewmodel.search.countrySearch
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
@@ -44,10 +45,13 @@ class CountrySearchViewModel(
         )
     }
     private fun onFetchCountriesSuccess(countries: List<Country>) {
-        updateState { it.copy(suggestedCountries = countries.toUiState(), errorUiState = null) }
+        Log.e("bk", countries.toString())
+        updateState { it.copy(suggestedCountries = countries.toUiState(), isCountriesDropDownVisible = true, errorUiState = null) }
     }
 
     private fun onFetchError(exception: AflamiException) {
+        Log.e("bk", "exception: $exception")
+
         updateState {
             it.copy(
                 isLoading = false,

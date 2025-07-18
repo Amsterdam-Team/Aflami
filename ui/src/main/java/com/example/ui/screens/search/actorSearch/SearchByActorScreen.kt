@@ -23,20 +23,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.LoadingContainer
-import com.example.designsystem.components.MovieCard
-import com.example.designsystem.components.NoDataContainer
-import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.TextField
-import com.example.designsystem.components.appBar.DefaultAppBar
+import com.example.ui.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
+import com.example.ui.components.MovieCard
+import com.example.ui.components.NoDataContainer
+import com.example.ui.components.NoNetworkContainer
 import com.example.ui.navigation.Route.MovieDetails
 import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
@@ -129,7 +131,7 @@ private fun SearchByActorContent(
 
                 targetState.keyword.isBlank() -> {
                     NoDataContainer(
-                        imageRes = painterResource(R.drawable.img_suggestion_magician),
+                        imageRes = painterResource(com.example.ui.R.drawable.img_suggestion_magician),
                         title = stringResource(R.string.find_by_actor),
                         description = stringResource(R.string.find_by_actor_description),
                         modifier = Modifier
@@ -140,7 +142,7 @@ private fun SearchByActorContent(
 
                 targetState.movies.isEmpty() -> {
                     NoDataContainer(
-                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                        imageRes = painterResource(com.example.ui.R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
                         modifier = Modifier
@@ -158,7 +160,16 @@ private fun SearchByActorContent(
                     ) {
                         items(targetState.movies) { movie ->
                             MovieCard(
-                                movieImage = movie.posterImageUrl,
+                                movieImage = {
+                                    SafeImageView(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxSize(),
+                                        contentDescription = movie.name,
+                                        model = movie.posterImageUrl,
+                                        contentScale = ContentScale.Crop,
+                                    )
+                                },
                                 movieType = stringResource(R.string.movie),
                                 movieYear = movie.yearOfRelease,
                                 movieTitle = movie.name,
