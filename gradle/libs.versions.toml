@@ -46,6 +46,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-ml-modeldownloader = { module = "com.google.firebase:firebase-ml-modeldownloader" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

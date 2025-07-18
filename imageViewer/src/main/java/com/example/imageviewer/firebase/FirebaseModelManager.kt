@@ -1,64 +1,38 @@
 package com.example.imageviewer.firebase
 
-import android.content.Context
-import android.util.Log
-import com.google.firebase.ml.modeldownloader.CustomModel
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
 import com.google.firebase.ml.modeldownloader.DownloadType
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.suspendCancellableCoroutine
-import org.tensorflow.lite.Interpreter
+import kotlinx.coroutines.tasks.await
 import java.io.File
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import java.io.IOException
 
+object FirebaseModelManager {
 
-object FirebaseModelManager  {
     private const val MODEL_NAME = "NSFW-Detector"
-    @Volatile
-    private var modelFile: File? = null
-    @Volatile
-    private var interpreter: Interpreter? = null
-    private val modelReady = CompletableDeferred<File>()
 
-     suspend fun ensureModelDownloaded(): File {
-        Log.d("firebaseImg","in ensureModelDownloaded")
-        if (modelFile != null) return modelFile!!
-        return try {
-            val file = downloadModel()
-            if (!modelReady.isCompleted) modelReady.complete(file)
-            file
-        } catch (e: Exception) {
-            if (!modelReady.isCompleted) modelReady.completeExceptionally(e)
-            throw e
-        }
+    @Volatile
+    var modelFile: File? = null
+        private set
+
+
+    suspend fun getModelFileInstance(): File {
+        return modelFile ?: downloadAndCacheModel().also { modelFile = it }
     }
 
-     suspend fun downloadModel(): File = suspendCancellableCoroutine { cont ->
-         Log.d("firebaseImg","in ensureModelDownloaded :: try downloadModel")
+    private suspend fun downloadAndCacheModel(): File {
         val conditions = CustomModelDownloadConditions.Builder()
             .requireWifi()
             .build()
-        FirebaseModelDownloader.getInstance()
-            .getModel(MODEL_NAME, DownloadType.LOCAL_MODEL, conditions)
-            .addOnSuccessListener { model: CustomModel? ->
-                val file = model?.file
-                if (file != null) {
-                    modelFile = file
-                    cont.resume(file)
-                } else {
-                    Log.d("firebaseImg","in ensureModelDownloaded :: try downloadModel :: else Model file is null")
 
-                    cont.resumeWithException(IllegalStateException("Model file is null"))
-                }
-                Log.d("firebaseImg","downloadModel ${model?.file?.path}")
-            }
-            .addOnFailureListener { e ->
-
-                Log.d("firebaseImg","in ensureModelDownloaded :: try downloadModel :: failed ${e.printStackTrace()}")
-                cont.resumeWithException(e)
-            }
+        return runCatching {
+            FirebaseModelDownloader.getInstance()
+                .getModel(MODEL_NAME, DownloadType.LOCAL_MODEL, conditions)
+                .await()
+        }.map { customModel ->
+            customModel.file ?: throw IOException("Downloaded model file is null.")
+        }.onSuccess { file ->
+            modelFile = file
+        }.getOrThrow()
     }
 }
-
