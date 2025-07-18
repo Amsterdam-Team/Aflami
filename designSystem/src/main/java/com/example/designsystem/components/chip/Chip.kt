@@ -35,7 +35,7 @@ fun Chip(
     label: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
-    colors: ChipColor = ChipDefaults.chipColors(),
+    colors: ChipColors = ChipDefaults.chipColors(),
     onClick: () -> Unit = {},
 ) {
     val backgroundColor by animateColorAsState(
@@ -59,7 +59,8 @@ fun Chip(
                     .background(
                         backgroundColor,
                         RoundedCornerShape(16.dp),
-                    ).border(1.dp, borderColor, RoundedCornerShape(16.dp))
+                    )
+                    .border(1.dp, borderColor, RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },

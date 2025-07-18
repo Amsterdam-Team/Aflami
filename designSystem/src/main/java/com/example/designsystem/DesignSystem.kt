@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.components.GenreChip
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.RadioButton
 import com.example.designsystem.components.RadioState
@@ -34,6 +33,7 @@ import com.example.designsystem.components.buttons.FloatingActionButton
 import com.example.designsystem.components.buttons.OutlinedButton
 import com.example.designsystem.components.buttons.PlainTextButton
 import com.example.designsystem.components.chip.Chip
+import com.example.designsystem.components.chip.GenreChip
 import com.example.designsystem.components.customSnackBar.SnackBar
 import com.example.designsystem.components.customSnackBar.SnackBarStatus
 import com.example.designsystem.theme.AflamiTheme

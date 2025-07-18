@@ -1,4 +1,4 @@
-package com.example.designsystem.components
+package com.example.designsystem.components.chip
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -22,11 +22,14 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 fun GenreChip(
     genre: String,
     modifier: Modifier = Modifier,
+    colors: ChipColors = ChipDefaults.genreChipColors(),
     selected: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-    val boxColor by animateColorAsState(if (selected) AppTheme.color.primary else AppTheme.color.surfaceHigh)
-    val textColor by animateColorAsState(if (selected) AppTheme.color.onPrimary else AppTheme.color.primary)
+    val boxColor by animateColorAsState(
+        if (selected) colors.backgroundSelectedColor else colors.backgroundUnselectedColor,
+    )
+    val textColor by animateColorAsState(if (selected) colors.labelSelectedColor else colors.labelUnselectedColor)
 
     Box(
         modifier =

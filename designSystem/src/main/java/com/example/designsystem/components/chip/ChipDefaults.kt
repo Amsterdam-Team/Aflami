@@ -7,7 +7,7 @@ import com.example.designsystem.theme.AppTheme
 object ChipDefaults {
     @Composable
     fun chipColors() =
-        ChipColor(
+        ChipColors(
             iconSelectedColor = AppTheme.color.onPrimary,
             iconUnselectedColor = AppTheme.color.hint,
             labelSelectedColor = AppTheme.color.body,
@@ -28,7 +28,7 @@ object ChipDefaults {
         borderUnselectedColor: Color = Color.Unspecified,
         backgroundSelectedColor: Color = Color.Unspecified,
         backgroundUnselectedColor: Color = Color.Unspecified,
-    ) = ChipColor(
+    ) = ChipColors(
         iconSelectedColor = iconSelectedColor,
         iconUnselectedColor = iconUnselectedColor,
         labelSelectedColor = labelSelectedColor,
@@ -38,9 +38,39 @@ object ChipDefaults {
         backgroundSelectedColor = backgroundSelectedColor,
         backgroundUnselectedColor = backgroundUnselectedColor,
     )
+
+    @Composable
+    fun genreChipColors() =
+        ChipColors(
+            iconSelectedColor = Color.Unspecified,
+            iconUnselectedColor = Color.Unspecified,
+            labelSelectedColor = AppTheme.color.onPrimary,
+            labelUnselectedColor = AppTheme.color.primary,
+            borderSelectedColor = Color.Unspecified,
+            borderUnselectedColor = Color.Unspecified,
+            backgroundSelectedColor = AppTheme.color.primary,
+            backgroundUnselectedColor = AppTheme.color.surfaceHigh,
+        )
+
+    @Composable
+    fun genreChipColors(
+        textSelectedColor: Color = Color.Unspecified,
+        textUnselectedColor: Color = Color.Unspecified,
+        boxSelectedColor: Color = Color.Unspecified,
+        boxUnselectedColor: Color = Color.Unspecified,
+    ) = ChipColors(
+        iconSelectedColor = Color.Unspecified,
+        iconUnselectedColor = Color.Unspecified,
+        labelSelectedColor = textSelectedColor,
+        labelUnselectedColor = textUnselectedColor,
+        borderSelectedColor = Color.Unspecified,
+        borderUnselectedColor = Color.Unspecified,
+        backgroundSelectedColor = boxSelectedColor,
+        backgroundUnselectedColor = boxUnselectedColor,
+    )
 }
 
-data class ChipColor(
+data class ChipColors(
     val iconSelectedColor: Color,
     val iconUnselectedColor: Color,
     val labelSelectedColor: Color,
