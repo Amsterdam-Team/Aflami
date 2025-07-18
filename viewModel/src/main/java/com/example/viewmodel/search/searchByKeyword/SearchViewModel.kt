@@ -12,7 +12,7 @@ import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
@@ -150,7 +150,7 @@ class SearchViewModel(
     }
 
     private fun onFetchError(exception: AflamiException) {
-        updateState { it.copy(errorUiState = mapToSearchUiState(exception)) }
+        updateState { it.copy(errorUiState = SearchErrorState.toSearchErrorState(exception)) }
     }
 
     private fun resetFilterState() =

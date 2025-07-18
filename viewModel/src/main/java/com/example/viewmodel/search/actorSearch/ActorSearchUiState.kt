@@ -1,6 +1,6 @@
 package com.example.viewmodel.search.actorSearch
 
-import com.example.viewmodel.shared.MovieItemUiState
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
 
 data class ActorSearchUiState(
     val isLoading: Boolean = false,

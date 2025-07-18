@@ -7,9 +7,8 @@ import com.example.domain.useCase.GetSuggestedCountriesUseCase
 import com.example.domain.useCase.search.AddRecentSearchUseCase
 import com.example.entity.Country
 import com.example.entity.Movie
-import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.search.mapper.toMoveUiStates
-import com.example.viewmodel.search.mapper.toSearchByCountryState
 import com.example.viewmodel.search.mapper.toUiState
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
@@ -37,42 +36,39 @@ class CountrySearchViewModel(
     }
 
     private fun fetchCountriesByKeyword(keyword: String): Job {
-        updateState { it.copy(isLoadingCountries = true) }
+        updateState { it.copy(isLoading = true) }
         return tryToExecute(
             action = { getSuggestedCountriesUseCase(keyword) },
             onSuccess = ::onFetchCountriesSuccess,
             onError = ::onFetchError
         )
     }
-
     private fun onFetchCountriesSuccess(countries: List<Country>) {
-        updateState {
-            it.copy(
-                isLoadingCountries = false,
-                suggestedCountries = countries.toUiState(),
-                isCountriesDropDownVisible = countries.isNotEmpty()
-            )
-        }
+        updateState { it.copy(suggestedCountries = countries.toUiState(), errorUiState = null) }
     }
 
     private fun onFetchError(exception: AflamiException) {
         updateState {
             it.copy(
-                isLoadingCountries = false,
+                isLoading = false,
                 suggestedCountries = emptyList(),
                 movies = emptyList(),
-                searchByCountryContentUIState = exception.toSearchByCountryState()
+                errorUiState = CountrySearchErrorState.toCountrySearchErrorState(exception)
             )
         }
     }
 
     override fun onChangeSearchKeyword(keyword: String) {
         _keyword.update { keyword }
+
         updateState {
             it.copy(
                 keyword = keyword,
+                isLoading = keyword.isNotBlank(),
+                isCountriesDropDownVisible = it.suggestedCountries.isNotEmpty(),
                 suggestedCountries = if (keyword.isBlank()) emptyList() else it.suggestedCountries,
-                isCountriesDropDownVisible = !keyword.isBlank()
+                errorUiState = null,
+                movies = emptyList()
             )
         }
     }
@@ -95,14 +91,12 @@ class CountrySearchViewModel(
         when {
             !hasSelectedCountry && hasKeyword -> fetchCountriesByKeyword(state.value.keyword)
             hasSelectedCountry -> fetchMoviesByCountry()
-            else -> updateState {
-                it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.COUNTRY_TOUR)
-            }
+
         }
     }
 
     private fun fetchMoviesByCountry() {
-        updateState { it.copy(searchByCountryContentUIState = SearchByCountryContentUIState.LOADING_MOVIES) }
+        updateState { it.copy(isLoading = true) }
 
         viewModelScope.launch { addRecentSearchUseCase(state.value.selectedCountryIsoCode) }
 
@@ -114,15 +108,7 @@ class CountrySearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        updateState {
-            it.copy(
-                movies = movies.toMoveUiStates(),
-                searchByCountryContentUIState = when {
-                    movies.isEmpty() -> SearchByCountryContentUIState.NO_DATA_FOUND
-                    else -> SearchByCountryContentUIState.MOVIES_LOADED
-                }
-            )
-        }
+        updateState { it.copy(movies = movies.toMoveUiStates(), isLoading = false,) }
     }
 
     override fun onClickNavigateBack() {
