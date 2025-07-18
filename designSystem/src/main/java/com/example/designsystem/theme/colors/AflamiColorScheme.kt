@@ -1,6 +1,7 @@
 package com.example.designsystem.theme.colors
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 @Immutable
@@ -39,7 +40,7 @@ data class AflamiColorScheme(
     val borderLinearGradient: List<Color>,
     val successSnackBarShadow: Color,
     val failureSnackBarShadow: Color,
-    val overlayDark : List<Color>,
+    val overlayDark: List<Color>,
     val softBlue: Color,
     val worldTourGradient: List<Color>,
     val findByActorGradient: List<Color>,
@@ -47,3 +48,4 @@ data class AflamiColorScheme(
     val primaryEnd: Color,
 )
 
+internal val LocalAflamiAppColors = staticCompositionLocalOf { lightThemeColors }

@@ -1,7 +1,6 @@
 package com.example.repository.utils
 
 import com.example.domain.exceptions.AflamiException
-import com.example.domain.exceptions.UnknownException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +17,6 @@ internal suspend fun <T, R> tryToExecute(
     } catch (exception: AflamiException) {
         onFailure(exception)
     } catch (exception: Exception) {
-        onFailure(UnknownException())
+        onFailure(AflamiException())
     }
 }

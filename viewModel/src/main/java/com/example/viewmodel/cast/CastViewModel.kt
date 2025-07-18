@@ -4,10 +4,10 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMovieCastUseCase
 import com.example.entity.Actor
-import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.cast.CastUiState.CastErrorUiState
 import com.example.viewmodel.cast.mapper.toUiState
 import com.example.viewmodel.movieDetails.MovieDetailsArgs
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
 class CastViewModel(

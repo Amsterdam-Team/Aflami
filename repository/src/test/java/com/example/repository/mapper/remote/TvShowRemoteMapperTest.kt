@@ -48,12 +48,12 @@ class TvShowRemoteMapperTest {
             voteAverage = 8.5
         )
 
-        val result = mapper.mapToTvShow(dto)
+        val result = mapper.toTvShow(dto)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Loki")
         assertThat(result.description).isEqualTo("Time travel and mischief")
-        assertThat(result.poster).isEqualTo("/loki.jpg")
+        assertThat(result.posterUrl).isEqualTo("/loki.jpg")
         assertThat(result.productionYear).isEqualTo(2021)
         assertThat(result.rating).isEqualTo(8.5f)
         assertThat(result.categories).containsExactly(TvShowGenre.ANIMATION)
@@ -68,9 +68,9 @@ class TvShowRemoteMapperTest {
             posterPath = null
         )
 
-        val result = mapper.mapToTvShow(dto)
+        val result = mapper.toTvShow(dto)
 
-        assertThat(result.poster).isEqualTo("")
+        assertThat(result.posterUrl).isEqualTo("")
     }
 
     @Test
@@ -82,7 +82,7 @@ class TvShowRemoteMapperTest {
             releaseDate = "abcd"
         )
 
-        val result = mapper.mapToTvShow(dto)
+        val result = mapper.toTvShow(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -96,7 +96,7 @@ class TvShowRemoteMapperTest {
             releaseDate = ""
         )
 
-        val result = mapper.mapToTvShow(dto)
+        val result = mapper.toTvShow(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -115,7 +115,7 @@ class TvShowRemoteMapperTest {
             totalResults = 2
         )
 
-        val result = mapper.mapToTvShows(response)
+        val result = mapper.toTvShows(response)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("Show A")
@@ -131,7 +131,7 @@ class TvShowRemoteMapperTest {
             totalResults = 0
         )
 
-        val result = mapper.mapToTvShows(response)
+        val result = mapper.toTvShows(response)
 
         assertThat(result).isEmpty()
     }
