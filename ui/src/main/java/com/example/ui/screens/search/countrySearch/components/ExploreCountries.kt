@@ -12,11 +12,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.R
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.ui.R
 
 @Composable
 internal fun ExploreCountries(modifier: Modifier = Modifier) {
@@ -28,21 +28,21 @@ internal fun ExploreCountries(modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(R.drawable.tour_world_image),
             contentDescription = stringResource(R.string.country_tour_image_description),
-            modifier = Modifier.height(82.dp)
+            modifier = Modifier.height(82.dp),
         )
         Text(
             text = stringResource(R.string.country_tour_title),
             modifier = Modifier.padding(top = 16.dp),
             style = AppTheme.textStyle.title.medium,
             color = AppTheme.color.title,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Text(
             text = stringResource(R.string.country_tour_description),
             modifier = Modifier.padding(top = 8.dp),
             style = AppTheme.textStyle.body.small,
             color = AppTheme.color.body,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

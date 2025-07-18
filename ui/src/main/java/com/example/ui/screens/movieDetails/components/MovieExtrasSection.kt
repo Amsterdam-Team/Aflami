@@ -9,16 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.components.Chip
+import com.example.designsystem.components.chip.Chip
 import com.example.ui.screens.movieDetails.getExtrasSectionItemInfo
-import com.example.viewmodel.shared.Selectable
 import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
+import com.example.viewmodel.shared.Selectable
 
 @Composable
 fun MovieExtrasSection(
-    modifier: Modifier = Modifier,
     extras: List<Selectable<MovieExtras>>,
-    onClickExtras: (MovieExtras) -> Unit
+    onClickExtras: (MovieExtras) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         extras.forEach {
@@ -28,7 +28,7 @@ fun MovieExtrasSection(
                 icon = painterResource(extrasSectionItemInfo.iconResId),
                 label = stringResource(extrasSectionItemInfo.textResId),
                 isSelected = it.isSelected,
-                onClick = { onClickExtras(it.item) }
+                onClick = { onClickExtras(it.item) },
             )
         }
     }

@@ -22,43 +22,46 @@ class SpeechBubbleShape(
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density
+        density: Density,
     ): Outline {
         val cornerRadiusPx = with(density) { cornerRadius.toPx() }
         val tailWidthPx = with(density) { tailWidth.toPx() }
         val tailHeightPx = with(density) { tailHeight.toPx() }
 
-        return Outline.Generic(Path().apply {
-            val rectWidth = size.width
-            val rectHeight = size.height - tailHeightPx
+        return Outline.Generic(
+            Path().apply {
+                val rectWidth = size.width
+                val rectHeight = size.height - tailHeightPx
 
-            addRoundRect(
-                roundRect = RoundRect(
-                    rect = Rect(0f, 0f, rectWidth, rectHeight),
-                    cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx)
+                addRoundRect(
+                    roundRect =
+                        RoundRect(
+                            rect = Rect(0f, 0f, rectWidth, rectHeight),
+                            cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
+                        ),
                 )
-            )
-            if (tailOffsetRatio != null) {
-                val tailBaseLeft = rectWidth * tailOffsetRatio - tailWidthPx / 2
-                val tailBaseRight = rectWidth * tailOffsetRatio + tailWidthPx / 2
-                val tailBaseStart = if (isRtl) tailBaseRight else tailBaseLeft
-                val tailBaseEnd = if (isRtl) tailBaseLeft else tailBaseRight
-                val tailTipX = rectWidth * tailOffsetRatio
-                val tailTipY = rectHeight + tailHeightPx
-                moveTo(tailBaseStart, rectHeight)
-                lineTo(tailTipX, tailTipY)
-                lineTo(tailBaseEnd, rectHeight)
-            } else if (tailOffsetDp != null) {
-                val tailOffsetPx = with(density) { tailOffsetDp.toPx() }
-                val tailBaseStart = if (isRtl) rectWidth - tailOffsetPx - tailWidthPx else tailOffsetPx
-                val tailBaseEnd = if (isRtl) rectWidth - tailOffsetPx else tailOffsetPx + tailWidthPx
-                val tailTipX = tailBaseStart + tailWidthPx / 2
-                val tailTipY = rectHeight + tailHeightPx
-                moveTo(tailBaseStart, rectHeight)
-                lineTo(tailTipX, tailTipY)
-                lineTo(tailBaseEnd, rectHeight)
-            }
-            close()
-        })
+                if (tailOffsetRatio != null) {
+                    val tailBaseLeft = rectWidth * tailOffsetRatio - tailWidthPx / 2
+                    val tailBaseRight = rectWidth * tailOffsetRatio + tailWidthPx / 2
+                    val tailBaseStart = if (isRtl) tailBaseRight else tailBaseLeft
+                    val tailBaseEnd = if (isRtl) tailBaseLeft else tailBaseRight
+                    val tailTipX = rectWidth * tailOffsetRatio
+                    val tailTipY = rectHeight + tailHeightPx
+                    moveTo(tailBaseStart, rectHeight)
+                    lineTo(tailTipX, tailTipY)
+                    lineTo(tailBaseEnd, rectHeight)
+                } else if (tailOffsetDp != null) {
+                    val tailOffsetPx = with(density) { tailOffsetDp.toPx() }
+                    val tailBaseStart = if (isRtl) rectWidth - tailOffsetPx - tailWidthPx else tailOffsetPx
+                    val tailBaseEnd = if (isRtl) rectWidth - tailOffsetPx else tailOffsetPx + tailWidthPx
+                    val tailTipX = tailBaseStart + tailWidthPx / 2
+                    val tailTipY = rectHeight + tailHeightPx
+                    moveTo(tailBaseStart, rectHeight)
+                    lineTo(tailTipX, tailTipY)
+                    lineTo(tailBaseEnd, rectHeight)
+                }
+                close()
+            },
+        )
     }
 }

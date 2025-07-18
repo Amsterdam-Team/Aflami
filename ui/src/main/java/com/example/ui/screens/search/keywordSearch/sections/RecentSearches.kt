@@ -16,10 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
-import com.example.designsystem.components.RecentSearchItem
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AppTheme
+import com.example.ui.components.RecentSearchItem
 
 @Composable
 internal fun RecentSearchesSection(
@@ -33,18 +33,19 @@ internal fun RecentSearchesSection(
     AnimatedVisibility(recentSearches.isNotEmpty() && keyword.isBlank()) {
         Column {
             Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .background(color = AppTheme.color.surface)
-                    .padding(top = 24.dp)
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .background(color = AppTheme.color.surface)
+                        .padding(top = 24.dp)
+                        .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = stringResource(R.string.recent_searches),
                     style = AppTheme.textStyle.title.medium,
                     color = AppTheme.color.title,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
                 )
 
                 Text(
@@ -61,7 +62,7 @@ internal fun RecentSearchesSection(
                         modifier = Modifier.animateItem(),
                         title = recentSearchItem,
                         onItemClick = onRecentSearchClicked,
-                        onCancelClick = onRecentSearchCleared
+                        onCancelClick = onRecentSearchCleared,
                     )
                     if (recentSearchItem != recentSearches.last()) HorizontalDivider()
                 }
@@ -69,9 +70,7 @@ internal fun RecentSearchesSection(
         }
     }
 
-
     AnimatedVisibility(recentSearches.isEmpty()) {
-        //todo: show empty state imageUrl
+        // todo: show empty state imageUrl
     }
-
 }
