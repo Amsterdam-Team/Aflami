@@ -23,7 +23,7 @@ class CountryRepositoryImpl(
             function = { remoteDataSource.getCountries() },
             onSuccess = { remoteCountries ->
                 saveCountries(remoteCountries)
-                countryRemoteMapper.mapToCountries(remoteCountries)
+                countryRemoteMapper.toDomainList(remoteCountries)
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -32,12 +32,12 @@ class CountryRepositoryImpl(
     private suspend fun getCountriesFromLocal(): List<Country> {
         return tryToExecute(
             function = { localDataSource.getCountries() },
-            onSuccess = { localCountries -> countryLocalMapper.mapToCountries(localCountries) },
+            onSuccess = { localCountries -> countryLocalMapper.toDomainList(localCountries) },
             onFailure = { emptyList() }
         )
     }
 
     private suspend fun saveCountries(remoteCountries: List<RemoteCountryDto>) {
-        localDataSource.addCountries(countryRemoteMapper.mapToLocalCountries(remoteCountries))
+        localDataSource.addCountries(countryRemoteMapper.toLocalCountries(remoteCountries))
     }
 }

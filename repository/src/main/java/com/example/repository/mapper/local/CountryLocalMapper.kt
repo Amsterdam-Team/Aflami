@@ -1,25 +1,23 @@
 package com.example.repository.mapper.local
 
+import com.example.domain.mapper.DomainMapper
+import com.example.domain.mapper.DtoMapper
 import com.example.entity.Country
 import com.example.repository.dto.local.LocalCountryDto
 
-class CountryLocalMapper {
+class CountryLocalMapper: DomainMapper<Country, LocalCountryDto> ,DtoMapper<Country, LocalCountryDto> {
 
-    fun mapToCountries(localCountries: List<LocalCountryDto>): List<Country> {
-        return localCountries.map { mapToCountry(it) }
-    }
-
-    fun mapToCountry(localCountry: LocalCountryDto): Country {
+    override fun toDomain(dto: LocalCountryDto): Country {
         return Country(
-            countryName = localCountry.name,
-            countryIsoCode = localCountry.isoCode
+            countryName = dto.name,
+            countryIsoCode = dto.isoCode
         )
     }
 
-    fun mapToLocalCountry(country: Country): LocalCountryDto {
+    override fun toDto(domain: Country): LocalCountryDto {
         return LocalCountryDto(
-            name = country.countryName,
-            isoCode = country.countryIsoCode
+            name = domain.countryName,
+            isoCode = domain.countryIsoCode
         )
     }
 }
