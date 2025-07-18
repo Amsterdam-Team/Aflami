@@ -22,6 +22,8 @@ val useCaseModule = module {
     singleOf(::GetMovieCategoriesUseCase)
     singleOf(::GetTvShowCategoriesUseCase)
     singleOf(::GetSuggestedCountriesUseCase)
+    singleOf(::GetEpisodesBySeasonNumberUseCase)
+    singleOf(::GetTvShowDetailsUseCase)
 
     // Recent Search Use Cases
     singleOf(::GetRecentSearchesUseCase)

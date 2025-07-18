@@ -15,9 +15,11 @@ import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
+import com.example.repository.mapper.remote.EpisodeRemoteMapper
 import com.example.repository.mapper.remote.GalleryRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
+import com.example.repository.mapper.remote.SeasonRemoteMapper
 import com.example.repository.repository.CategoryRepositoryImpl
 import com.example.repository.repository.CountryRepositoryImpl
 import com.example.repository.repository.MovieRepositoryImpl
@@ -44,6 +46,8 @@ val repositoryModule = module {
     singleOf(::ReviewRemoteMapper)
     singleOf(::GalleryRemoteMapper)
     singleOf(::ProductionCompanyRemoteMapper)
+    singleOf(::EpisodeRemoteMapper)
+    singleOf(::SeasonRemoteMapper)
 
     // Handler
     singleOf(::RecentSearchHandlerImpl) bind RecentSearchHandler::class
