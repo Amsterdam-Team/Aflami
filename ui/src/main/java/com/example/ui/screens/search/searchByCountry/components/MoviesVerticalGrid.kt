@@ -11,18 +11,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.viewmodel.search.countrySearch.MovieUiState
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 internal fun MoviesVerticalGrid(
     movies: LazyPagingItems<MovieUiState>,
     isVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
         movies.itemSnapshotList.isNotEmpty() && isVisible,
@@ -55,15 +58,9 @@ internal fun MoviesVerticalGrid(
 @ThemeAndLocalePreviews
 private fun MoviesVerticalGridPreview() {
     AflamiTheme {
-//        MoviesVerticalGrid(
-//            movies = buildList(4) { MovieUiState(
-//                id = 1,
-//                name = stringResource(R.string.movie),
-//                poster = "https://unsplash.com/s/photos/free-images",
-//                productionYear = "2025",
-//                rating = "9.9"
-//            ) },
-//            isVisible = true,
-//        )
+        MoviesVerticalGrid(
+            movies = emptyFlow<PagingData<MovieUiState>>().collectAsLazyPagingItems(),
+            isVisible = true,
+        )
     }
 }
