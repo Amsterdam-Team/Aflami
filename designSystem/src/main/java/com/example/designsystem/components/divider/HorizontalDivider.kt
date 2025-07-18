@@ -13,7 +13,6 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
-
 @Composable
 fun HorizontalDivider(
     modifier: Modifier = Modifier,
@@ -23,7 +22,7 @@ fun HorizontalDivider(
     Canvas(
         modifier
             .fillMaxWidth()
-            .height(thickness)
+            .height(thickness),
     ) {
         drawLine(
             color = color,

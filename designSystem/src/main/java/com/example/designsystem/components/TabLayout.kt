@@ -40,7 +40,7 @@ fun TabsLayout(
     unselectedTextColor: Color = AppTheme.color.hint,
     containerColor: Color = AppTheme.color.surface,
     indicatorColor: Color = AppTheme.color.secondary,
-    dividerColor: Color = AppTheme.color.stroke
+    dividerColor: Color = AppTheme.color.stroke,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(
@@ -52,33 +52,36 @@ fun TabsLayout(
                 TabRowDefaults.SecondaryIndicator(
                     height = 5.dp,
                     color = indicatorColor,
-                    modifier = Modifier
-                        .tabIndicatorOffset(list[selectedIndex])
-                        .padding(start = 24.dp, end = 40.dp)
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    modifier =
+                        Modifier
+                            .tabIndicatorOffset(list[selectedIndex])
+                            .padding(start = 24.dp, end = 40.dp)
+                            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
                 )
-            }
+            },
         ) {
             tabs.fastForEachIndexed { index, text ->
                 Tab(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = if (index == tabs.lastIndex) 0.dp else tabsEndSpace),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(end = if (index == tabs.lastIndex) 0.dp else tabsEndSpace),
                     selected = index == selectedIndex,
                     onClick = { onSelectTab(index) },
                     selectedContentColor = selectedTextColor,
                     unselectedContentColor = unselectedTextColor,
                 ) {
                     Text(
-                        modifier = Modifier.padding(
-                            top = tabTopPadding,
-                            bottom = tabBottomPadding
-                        ),
+                        modifier =
+                            Modifier.padding(
+                                top = tabTopPadding,
+                                bottom = tabBottomPadding,
+                            ),
                         text = text,
                         fontSize = 14.sp,
                         lineHeight = 22.sp,
                         letterSpacing = 0.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
@@ -86,11 +89,10 @@ fun TabsLayout(
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            color = dividerColor
+            color = dividerColor,
         )
     }
 }
-
 
 @ThemeAndLocalePreviews
 @Composable

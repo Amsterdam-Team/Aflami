@@ -6,11 +6,11 @@ import com.example.designsystem.R
 
 enum class BottomBarItems(
     @DrawableRes val icon: Int,
-    @StringRes val label: Int
+    @StringRes val label: Int,
 ) {
     HOME(
         icon = R.drawable.ic_nav_home,
-        label = R.string.home
+        label = R.string.home,
     ),
     LISTS(
         icon = R.drawable.ic_nav_lists,
@@ -27,5 +27,5 @@ enum class BottomBarItems(
     PROFILE(
         icon = R.drawable.ic_nav_profile,
         label = R.string.profile,
-    )
+    ),
 }

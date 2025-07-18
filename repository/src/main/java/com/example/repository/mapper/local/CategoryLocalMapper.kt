@@ -7,6 +7,7 @@ import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.mapper.shared.mapToMovieCategory
 import com.example.repository.mapper.shared.mapToTvShowCategory
+import com.example.repository.dto.remote.RemoteCategoryDto
 
 class CategoryLocalMapper {
 
@@ -31,6 +32,15 @@ class CategoryLocalMapper {
 
     private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieGenre {
         return localMovieCategory.categoryId.mapToMovieCategory()
+    }
+
+
+    fun mapLocalCategoryToDomain(localCategory : LocalMovieCategoryDto): Category {
+        return Category(
+            id = localCategory.categoryId,
+            name = localCategory.name,
+            imageUrl = ""
+        )
     }
 
     private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowGenre {

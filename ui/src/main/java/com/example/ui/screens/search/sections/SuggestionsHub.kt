@@ -15,54 +15,59 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.Text
-import com.example.designsystem.components.globalSearchHub.GlobalSearchHub
-import com.example.designsystem.components.globalSearchHub.GlobalSearchHubUI
 import com.example.designsystem.theme.AppTheme
+import com.example.ui.components.globalSearchHub.GlobalSearchHub
+import com.example.ui.components.globalSearchHub.GlobalSearchHubUI
 
 @Composable
 internal fun SuggestionsHubSection(
     keyword: String,
     onWorldSearchCardClicked: () -> Unit,
     onActorSearchCardClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(keyword.isBlank()) {
         Column(
-            modifier = modifier.padding(
-                bottom = 12.dp,
-                top = 8.dp,
-                start = 16.dp,
-                end = 16.dp
-            )
+            modifier =
+                modifier.padding(
+                    bottom = 12.dp,
+                    top = 8.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                ),
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 text = stringResource(R.string.serach_suggestions_hub),
                 style = AppTheme.textStyle.title.medium,
                 color = AppTheme.color.title,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .height(intrinsicSize = IntrinsicSize.Max),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                        .height(intrinsicSize = IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 GlobalSearchHub(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .weight(1f),
                     globalSearchHubUI = GlobalSearchHubUI.WORLD,
-                    onItemClick = onWorldSearchCardClicked
+                    onItemClick = onWorldSearchCardClicked,
                 )
 
                 GlobalSearchHub(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .weight(1f),
                     globalSearchHubUI = GlobalSearchHubUI.ACTOR,
-                    onItemClick = onActorSearchCardClicked
+                    onItemClick = onActorSearchCardClicked,
                 )
             }
         }

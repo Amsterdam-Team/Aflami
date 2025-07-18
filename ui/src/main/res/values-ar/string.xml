@@ -1,3 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">أفلامي</string>
+    <string name="aflami_description">أكثر من مجرد مشاهدة.</string>
+    <!-- - Offline messages  -->
+    <string name="offline_message">عفواً! يبدو أنك غير متصل بالإنترنت.</string>
+    <string name="offline_description">تحقق من اتصالك وحاول مرة أخرى، سنكون في انتظارك مع أفلامك والفشار.</string>
+    <!-- -  -->
+    <!-- - OnBoarding messages  -->
+    <string name="skip">تخطي</string>
+    <string name="onboarding1_title">أفلام تشعر بك</string>
+    <string name="onboarding1_description">هذا ليس مجرد تطبيق أفلام — إنها تجربة مزاجية. اختر حالتك ودع القصة تبدأ.</string>
+    <string name="onboarding2_title">أنشئ قائمة مشاهداتك، واظهر إعجابك</string>
+    <string name="onboarding2_description">احفظ اختياراتك المفضلة، تتبع مزاجك، وعُد لتجد شيئًا جديدًا كل يوم.</string>
+    <string name="onboarding3_title">مذكرات أفلامك</string>
+    <string name="onboarding3_description">تتبع ما شاهدته، كيف شعرت، وما أحببته. رحلة أفلامك، متذكرة.</string>
+    <string name="onboarding4_title">خمن والعب!</string>
+    <string name="onboarding4_description">اختبر معلوماتك السينمائية من خلال اختبارات شيقة. كل تخمين صحيح يقربك من مغامرة الفيلم التالية.</string>
+    <!-- -   -->
+    <!-- - Categories  -->
+    <string name="drama">دراما</string>
+    <string name="family">عائلي</string>
+    <string name="fantasy">خيال</string>
+    <string name="comedy">كوميديا</string>
+    <string name="romance">رومانسي</string>
+    <string name="action">أكشن</string>
+    <string name="western">ويسترن</string>
+    <string name="history">تاريخي</string>
+    <string name="tv_movie">فيلم تلفزيوني</string>
+    <string name="movie">فيلم</string>
+    <string name="war">حرب</string>
+    <string name="mystery">غموض</string>
+    <string name="thriller">إثارة</string>
+    <string name="documentary">وثائقي</string>
+    <string name="animation">رسوم متحركة</string>
+    <string name="crime">جريمة</string>
+    <string name="science_fiction">خيال علمي</string>
+    <string name="science_fiction_fantasy">خيال علمي و فانتازيا</string>
+    <string name="music">موسيقى</string>
+    <string name="horror">رعب</string>
+    <string name="adventure">مغامرة</string>
+    <string name="action_adventure">أكشن ومغامرة</string>
+    <string name="reality">واقعي</string>
+    <string name="news">أخبار</string>
+    <string name="kids">أطفال</string>
+    <string name="soap">دراما تلفزيونية (سوب أوبرا)</string>
+    <string name="talk">برنامج حواري</string>
+    <!-- -   -->
+    <!-- -   -->
+    <string name="popular">رائج</string>
+    <string name="movies_birthday">عيد ميلاد الأفلام</string>
+    <string name="continue_watching">متابعة المشاهدة</string>
+    <string name="top_rating">أعلى تقييم</string>
+    <string name="celebrate_message">احتفل مع الأفلام التي صدرت في مثل هذا اليوم.</string>
+    <!-- -   -->
+    <!-- - Bottom Navigation items  -->
+    <string name="home">الرئيسية</string>
+    <string name="lists">القوائم</string>
+    <string name="categories">الفئات</string>
+    <string name="lets_play">هيا بنا نلعب</string>
+    <string name="profile">حسابي</string>
+    <!-- -   -->
+    <!-- - Login screen messages  -->
+    <string name="welcome_back">أهلاً بعودتك!</string>
+    <string name="enter_info_to_login_message">الرجاء إدخال معلوماتك لتسجيل الدخول</string>
+    <string name="user_name_hint">اسم المستخدم</string>
+    <string name="password_hint">كلمة المرور</string>
+    <string name="forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="continue_as_guest">المتابعة كضيف</string>
+    <string name="dont_have_account">ليس لديك حساب؟</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="incorrect_password">كلمة مرور خاطئة</string>
+    <!-- -   -->
+    <!-- - Mood Picker  -->
+    <string name="mood_picker_title">محدد المزاج (احصل على فيلم)</string>
+    <string name="mood_picker_question">ما هو شعورك اليوم؟</string>
+    <string name="get_now">احصل الآن</string>
+    <string name="mood_picker">محدد المزاج</string>
+    <string name="mood_picker_description">الفيلم الذي يطابق مزاجك هو:</string>
+    <string name="view_details">عرض التفاصيل</string>
+    <string name="get_another_movie">احصل على فيلم آخر</string>
+    <!-- -   -->
+    <!-- - Game section   -->
+    <string name="release_game_title">متى تم إصداره؟</string>
+    <string name="release_game_description">اختر سنة الإصدار الصحيحة.</string>
+    <string name="guess_movie_game_title">خمن الفيلم من الملصق</string>
+    <string name="guess_movie_game_description">طابق الملصق مع العنوان الصحيح!</string>
+    <string name="genre_game_title">أي نوع؟</string>
+    <string name="genre_game_description">أي واحد هو فيلم الأكشن الحقيقي؟</string>
+    <string name="guess_character_game_title">خمن الشخصية</string>
+    <string name="guess_character_game_description">هل يمكنك معرفة من هي هذه الشخصية؟</string>
+    <string name="play_now">العب الآن</string>
+    <string name="points_to_unlock">نقاط لفتح</string>
+    <string name="choose_level">اختر مستوى الصعوبة</string>
+    <string name="easy">سهل</string>
+    <string name="medium">متوسط</string>
+    <string name="hard">صعب</string>
+    <string name="lets_start">لنبدأ</string>
+    <string name="and">و</string>
+    <string name="sec">ثانية</string>
+    <string name="point_per_question">نقطة لكل سؤال.</string>
+    <string name="hint">تلميح؟ %1$d نقاط.</string>
+    <string name="next">التالي</string>
+    <string name="back_to_menue">العودة للقائمة</string>
+    <string name="play_again">العب مرة أخرى</string>
+    <string name="points_acheived">النقاط المحققة</string>
+    <string name="total_time">الوقت الكلي</string>
+    <string name="finish_game_message">لقد أنهيت اللعبة!</string>
+    <!-- -   -->
+    <!-- -  -->
+    <string name="loading">تحميل…</string>
+    <string name="all">الكل</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="world_tour_title">جولة حول العالم</string>
+    <string name="world_tour_description">استكشف السينما العالمية</string>
+    <string name="country_tour_title">جولة البلدان</string>
+    <string name="country_tour_description">ابدأ باستكشاف الأفلام العالمية بإدخال اسم بلدك المفضل في شريط البحث</string>
+    <string name="country_name_hint">اسم البلد</string>
+    <string name="my_account">حسابي</string>
+    <string name="description">الوصف</string>
+    <string name="cast">الممثلون</string>
+    <string name="search">بحث</string>
+    <string name="search_hint">ابحث…</string>
+    <string name="serach_suggestions_hub">مركز اقتراحات البحث</string>
+    <string name="search_description">ابدأ الاستكشاف! ابحث عن أفلامك ومسلسلاتك وعروضك المفضلة</string>
+    <string name="clear_all">مسح الكل</string>
+    <string name="recent_searches">عمليات البحث الأخيرة</string>
+    <string name="no_search_result">لا توجد نتائج بحث</string>
+    <string name="no_search_result_description">الرجاء المحاولة بكلمة مفتاحية أخرى.</string>
+    <string name="no_search_result_for_country">الرجاء المحاولة ب اسم دولة أخرى.</string>
+    <string name="filter_result">تصفية النتائج</string>
+    <string name="imdb_rating">تقييم IMDb</string>
+    <string name="genre">النوع</string>
+    <string name="apply">تطبيق</string>
+    <string name="clear">مسح</string>
+    <string name="delete">حذف</string>
+    <string name="save">حفظ</string>
+    <string name="add">إضافة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="submit">إرسال</string>
+    <string name="tv_shows">المسلسلات التلفزيونية</string>
+    <string name="movies">الأفلام</string>
+    <string name="find_by_actor">البحث بالممثل</string>
+    <string name="find_by_actor_description_hint">ابحث حسب ممثلك المفضل</string>
+    <string name="find_by_actor_description">ابدأ باستكشاف أفلام ممثلك المفضل واستمتع بها.</string>
+    <string name="find_by_actor_hint">اسم الممثل</string>
+    <string name="list_items">%1$d عنصر</string>
+    <string name="delete_list">حذف القائمة</string>
+    <string name="delete_list_message">هل أنت متأكد من المتابعة بالحذف؟</string>
+    <string name="edit_list">تعديل القائمة</string>
+    <string name="no_saved_items">لا توجد عناصر محفوظة هنا!</string>
+    <string name="create_list">إنشاء قائمة جديدة</string>
+    <string name="list_title_hint">عنوان القائمة</string>
+    <string name="no_list_yet">لا توجد قوائم بعد!</string>
+    <string name="no_list_description">عقلنا لا يزال فارغًا، اضغط على + وابدأ بحفظ عناصرك وعروضك المفضلة التي تحبها!</string>
+    <string name="points">نقاط.</string>
+    <string name="watch_history">سجل المشاهدة</string>
+    <string name="my_rating">تقييماتي</string>
+    <string name="language">اللغة</string>
+    <string name="app_theme">ثيم التطبيق</string>
+    <string name="settings">الإعدادات</string>
+    <string name="change_password">تغيير كلمة المرور</string>
+    <string name="tired_to_watching">هل مللت من المشاهدة؟</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logout_message">إذا مللت منا، فاعلم أننا لم نفعل، وسنبقى هنا.</string>
+    <string name="login_message">الرجاء تسجيل الدخول للوصول إلى تفاصيل حسابك والميزات الأخرى!</string>
+    <string name="confirm_message">هل أنت متأكد من المتابعة؟</string>
+    <string name="version">الإصدار</string>
+    <string name="profile_title">الملف الشخصي</string>
+    <string name="more_like_this">المزيد مثل هذا</string>
+    <string name="reviews">التقييمات</string>
+    <string name="gallary">المعرض</string>
+    <string name="company_production">شركة الإنتاج</string>
+    <string name="read_more">اقرأ المزيد</string>
+    <string name="rate">تقييم</string>
+    <string name="rate_title">قيمه</string>
+    <string name="rate_message">اختر مدى إعجابك به</string>
+    <string name="add_to_list">أضف إلى قائمة</string>
+    <string name="episodes">حلقات</string>
+    <string name="season">موسم</string>
+    <string name="seasons">مواسم</string>
+    <string name="country_tour_image_description">صورة جولة في البلد</string>
+    <!-- -  -->
+    <!-- - Positive messages  -->
+    <string name="list_added_success_message">تمت إضافة القائمة الجديدة بنجاح.</string>
+    <!-- -  -->
+    <!-- - Negative messages   -->
+    <string name="general_error_message">حدث خطأ ما، الرجاء المحاولة مرة أخرى.</string>
+    <!-- -   -->
+    <string name="episode">الحلقه %1$d</string>
+
+    <!-- - Cast  -->
+    <string name="cast_not_available">"الممثلون غير متوفرين"</string>
+    <string name="we_could_not_find_cast_information">"لم نتمكن من العثور على معلومات الممثلين لهذا العنوان حالياً. يرجى المحاولة مرة أخرى لاحقاً."</string>
+
+
+    <string name="search_suggestions_hub">توصيات واقتراحات للبحث</string>
+
+    <!-- Search validation error messages -->
+    <string name="search_error_query_too_short">قصير جدًا. أدخل حرفين على الأقل.</string>
+    <string name="search_error_query_too_long">طويل جدًا. جرّب بحثًا أقصر.</string>
+    <string name="search_error_invalid_characters">تم استخدام رموز غير صالحة.</string>
+    <string name="search_error_blank_query">يرجى إدخال شيء ما.</string>
+    <string name="search_error_unknown">حدث خطأ غير متوقع.</string>
+    <string name="there_is_no_production_company">لا توجد شركة إنتاج!</string>
+    <string name="there_is_no_reviews">لا توجد مراجعات!</string>
 </resources>
