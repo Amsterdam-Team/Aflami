@@ -26,12 +26,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingContainer
-import com.example.designsystem.components.NoNetworkContainer
-import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.components.NoNetworkContainer
+import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.screens.search.searchByCountry.components.CountriesDropdownMenu
 import com.example.ui.screens.search.searchByCountry.components.CountrySearchField
@@ -49,7 +49,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun SearchByCountryScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchByCountryViewModel = koinViewModel()
+    viewModel: SearchByCountryViewModel = koinViewModel(),
 ) {
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -80,11 +80,12 @@ private fun SearchByCountryScreenContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp),
     ) {
         var headerHeight by remember { mutableStateOf(0.dp) }
         val focusManager = LocalFocusManager.current
@@ -99,17 +100,19 @@ private fun SearchByCountryScreenContent(
         Box {
             CenterOfScreenContainer(
                 headerHeight,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
             ) {
                 when (state.searchByCountryContentUIState) {
                     SearchByCountryContentUIState.COUNTRY_TOUR -> ExploreCountries()
                     SearchByCountryContentUIState.LOADING_MOVIES -> LoadingContainer()
-                    SearchByCountryContentUIState.NO_INTERNET_CONNECTION -> NoNetworkContainer(
-                        onClickRetry = interactionListener::onRetryRequestClicked,
-                        modifier = modifier.padding(vertical = 8.dp),
-                    )
+                    SearchByCountryContentUIState.NO_INTERNET_CONNECTION ->
+                        NoNetworkContainer(
+                            onClickRetry = interactionListener::onRetryRequestClicked,
+                            modifier = modifier.padding(vertical = 8.dp),
+                        )
 
                     SearchByCountryContentUIState.NO_DATA_FOUND -> NoMoviesFound()
                     else -> {}
@@ -119,15 +122,16 @@ private fun SearchByCountryScreenContent(
                 state.movies,
                 state.searchByCountryContentUIState == SearchByCountryContentUIState.MOVIES_LOADED,
                 Modifier.align(Alignment.TopStart),
-                interactionListener::onMovieClicked
+                interactionListener::onMovieClicked,
             )
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(4),
                 isVisible = state.isCountriesDropDownVisible,
                 onItemClicked = (interactionListener::onCountrySelected),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(AppTheme.color.profileOverlay)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.color.profileOverlay),
             )
         }
     }
@@ -139,14 +143,19 @@ private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryScreenContent(
             state = SearchByCountryScreenState(),
-            interactionListener = object : SearchByCountryInteractionListener {
-                override fun onKeywordValueChanged(keyword: String) {}
-                override fun onCountrySelected(country: CountryUiState) {}
-                override fun onNavigateBackClicked() {}
-                override fun onRetryRequestClicked() {}
-                override fun onMovieClicked(movieId: Long) {
-                }
-            },
+            interactionListener =
+                object : SearchByCountryInteractionListener {
+                    override fun onKeywordValueChanged(keyword: String) {}
+
+                    override fun onCountrySelected(country: CountryUiState) {}
+
+                    override fun onNavigateBackClicked() {}
+
+                    override fun onRetryRequestClicked() {}
+
+                    override fun onMovieClicked(movieId: Long) {
+                    }
+                },
         )
     }
 }
