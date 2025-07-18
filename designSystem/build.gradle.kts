@@ -17,5 +17,4 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview.android)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    api(project(":blurred"))
 }
