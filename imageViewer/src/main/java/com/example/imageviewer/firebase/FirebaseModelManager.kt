@@ -13,12 +13,8 @@ import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-interface FirebaseModelRepository {
-    suspend fun ensureModelDownloaded(): File
-    suspend fun getInterpreter(): Interpreter
-}
 
-object FirebaseModelManager : FirebaseModelRepository {
+object FirebaseModelManager  {
     private const val MODEL_NAME = "NSFW-Detector"
     @Volatile
     private var modelFile: File? = null
@@ -26,7 +22,7 @@ object FirebaseModelManager : FirebaseModelRepository {
     private var interpreter: Interpreter? = null
     private val modelReady = CompletableDeferred<File>()
 
-    override suspend fun ensureModelDownloaded(): File {
+     suspend fun ensureModelDownloaded(): File {
         Log.d("firebaseImg","in ensureModelDownloaded")
         if (modelFile != null) return modelFile!!
         return try {
@@ -63,11 +59,6 @@ object FirebaseModelManager : FirebaseModelRepository {
                 Log.d("firebaseImg","in ensureModelDownloaded :: try downloadModel :: failed ${e.printStackTrace()}")
                 cont.resumeWithException(e)
             }
-    }
-
-    override suspend fun getInterpreter(): Interpreter {
-        if (interpreter != null) return interpreter!!
-        return Interpreter(modelFile!!).also { interpreter = it }
     }
 }
 
