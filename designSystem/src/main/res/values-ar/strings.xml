@@ -201,4 +201,9 @@
     <string name="search_error_blank_query">يرجى إدخال شيء ما.</string>
     <string name="search_error_unknown">حدث خطأ غير متوقع.</string>
     <string name="search_suggestions_hub">توصيات واقتراحات للبحث</string>
+
+    <!-- - Cast  -->
+    <string name="cast_not_available">"الممثلون غير متوفرين"</string>
+    <string name="we_could_not_find_cast_information">"لم نتمكن من العثور على معلومات الممثلين لهذا العنوان حالياً. يرجى المحاولة مرة أخرى لاحقاً."</string>
+
 </resources>

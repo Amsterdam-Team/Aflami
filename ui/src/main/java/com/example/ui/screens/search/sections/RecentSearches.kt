@@ -71,7 +71,7 @@ internal fun RecentSearchesSection(
 
 
     AnimatedVisibility(recentSearches.isEmpty()) {
-        //todo: show empty state image
+        //todo: show empty state imageUrl
     }
 
 }
