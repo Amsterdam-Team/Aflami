@@ -1,44 +1,26 @@
 package com.example.repository.mapper.remote
 
+import com.example.domain.mapper.DomainMapper
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
 import com.example.repository.BuildConfig
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.mapper.shared.mapToMovieCategory
+import com.example.repository.mapper.shared.toMovieCategory
 
-class MovieRemoteMapper {
+class MovieRemoteMapper: DomainMapper<Movie, RemoteMovieItemDto> {
 
-    fun mapToMovie(remoteMovieItemDto: RemoteMovieItemDto): Movie {
-        val genresIds = if (remoteMovieItemDto.genreIds.isNotEmpty())
-            remoteMovieItemDto.genreIds
-        else remoteMovieItemDto.genres.map { it.id }
-        return Movie(
-            id = remoteMovieItemDto.id,
-            name = remoteMovieItemDto.title,
-            description = remoteMovieItemDto.overview,
-            poster = BuildConfig.BASE_IMAGE_URL + remoteMovieItemDto.posterPath.orEmpty(),
-            productionYear = parseYear(remoteMovieItemDto.releaseDate),
-            categories = mapGenreIdsToCategories(genresIds),
-            rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity,
-            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
-            runTime = remoteMovieItemDto.runtime,
-            hasVideo = remoteMovieItemDto.video
-        )
+    fun toMovies(remoteMovieResponse: RemoteMovieResponse): List<Movie> {
+        return remoteMovieResponse.results.map { toDomain(it) }
     }
 
-    fun mapToMovies(remoteMovieResponse: RemoteMovieResponse): List<Movie> {
-        return remoteMovieResponse.results.map { mapToMovie(it) }
-    }
-
-    fun mapToLocalMovies(remoteMovieResponse: RemoteMovieResponse): List<LocalMovieDto> {
-        return remoteMovieResponse.results.map { mapToLocalMovie(it) }
+    fun toLocalMovies(remoteMovieResponse: RemoteMovieResponse): List<LocalMovieDto> {
+        return remoteMovieResponse.results.map { toLocalMovie(it) }
     }
 
 
-    private fun mapToLocalMovie(remoteMovieItemDto: RemoteMovieItemDto): LocalMovieDto {
+    private fun toLocalMovie(remoteMovieItemDto: RemoteMovieItemDto): LocalMovieDto {
         return LocalMovieDto(
             movieId = remoteMovieItemDto.id,
             name = remoteMovieItemDto.title,
@@ -58,6 +40,25 @@ class MovieRemoteMapper {
     }
 
     private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieGenre> {
-        return genreIds.map { it.toLong().mapToMovieCategory() }
+        return genreIds.map { it.toLong().toMovieCategory() }
+    }
+
+    override fun toDomain(dto: RemoteMovieItemDto): Movie {
+        val genresIds = if (dto.genreIds.isNotEmpty())
+            dto.genreIds
+        else dto.genres.map { it.id }
+        return Movie(
+            id = dto.id,
+            name = dto.title,
+            description = dto.overview,
+            poster = BuildConfig.BASE_IMAGE_URL + dto.posterPath.orEmpty(),
+            productionYear = parseYear(dto.releaseDate),
+            categories = mapGenreIdsToCategories(genresIds),
+            rating = dto.voteAverage.toFloat(),
+            popularity = dto.popularity,
+            originCountry = dto.originCountry.firstOrNull() ?: "",
+            runTime = dto.runtime,
+            hasVideo = dto.video
+        )
     }
 }

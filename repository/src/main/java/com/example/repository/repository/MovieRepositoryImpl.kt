@@ -77,7 +77,7 @@ class MovieRepositoryImpl(
                     keyword = keyword,
                     searchType = searchType,
                 )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                movieRemoteMapper.toMovies(remoteMovies)
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -96,7 +96,7 @@ class MovieRepositoryImpl(
                     keyword = actorName,
                     searchType = searchType
                 )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                movieRemoteMapper.toMovies(remoteMovies)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -114,7 +114,7 @@ class MovieRepositoryImpl(
                     keyword = countryIsoCode,
                     searchType = searchType
                 )
-                movieRemoteMapper.mapToMovies(remoteMovies)
+                movieRemoteMapper.toMovies(remoteMovies)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -128,7 +128,7 @@ class MovieRepositoryImpl(
                     searchType = searchType
                 )
             },
-            onSuccess = { localMovies -> movieLocalMapper.mapToMovies(localMovies) },
+            onSuccess = { localMovies -> movieLocalMapper.toMovies(localMovies) },
             onFailure = { emptyList() },
         )
     }
@@ -138,7 +138,7 @@ class MovieRepositoryImpl(
         keyword: String,
         searchType: SearchType
     ) {
-        val localMovies = movieRemoteMapper.mapToLocalMovies(remoteMovies)
+        val localMovies = movieRemoteMapper.toLocalMovies(remoteMovies)
         tryToExecute(
             function = {
                 movieLocalSource.addMoviesBySearchData(
@@ -154,24 +154,24 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun getActorsByMovieId(movieId: Long): List<Actor> =
-         movieRemoteDataSource.getCastByMovieId(movieId).cast.map { castRemoteMapper.mapToDomain(it) }
+         movieRemoteDataSource.getCastByMovieId(movieId).cast.map { castRemoteMapper.toDomain(it) }
 
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> =
-        reviewRemoteMapper.mapResponseToDomain(movieRemoteDataSource.getMovieReviews(movieId))
+        reviewRemoteMapper.toDomain(movieRemoteDataSource.getMovieReviews(movieId))
 
     override suspend fun getMovieDetailsById(movieId: Long): Movie {
-        return movieRemoteMapper.mapToMovie(movieRemoteDataSource.getMovieDetailsById(movieId))
+        return movieRemoteMapper.toDomain(movieRemoteDataSource.getMovieDetailsById(movieId))
     }
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> =
-        movieRemoteMapper.mapToMovies(movieRemoteDataSource.getSimilarMovies(movieId))
+        movieRemoteMapper.toMovies(movieRemoteDataSource.getSimilarMovies(movieId))
 
     override suspend fun getMovieGallery(movieId: Long): List<String> =
-        galleryRemoteMapper.mapGalleryToDomain(movieRemoteDataSource.getMovieGallery(movieId))
+        galleryRemoteMapper.toDomain(movieRemoteDataSource.getMovieGallery(movieId))
 
     override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
-      return  remoteProductionCompanyMapper.mapProductionCompanyToDomain(
+      return  remoteProductionCompanyMapper.toDomain(
             movieRemoteDataSource.getProductionCompany(movieId)
         )
     }
