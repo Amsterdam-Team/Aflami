@@ -28,7 +28,7 @@ class CategoryLocalMapperTest {
             LocalMovieCategoryDto(categoryId = 35, name = "Comedy")
         )
 
-        val result = mapper.mapToMovieCategories(dtos)
+        val result = mapper.toMovieCategories(dtos)
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(

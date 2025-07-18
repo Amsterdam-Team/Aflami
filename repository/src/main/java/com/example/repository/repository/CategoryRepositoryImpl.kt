@@ -46,7 +46,7 @@ class CategoryRepositoryImpl(
         return tryToExecute(
             function = { categoryLocalSource.getMovieCategories() },
             onSuccess = { localCategories ->
-                categoryLocalMapper.mapToMovieCategories(localCategories)
+                categoryLocalMapper.toMovieCategories(localCategories)
                     .map { category ->
                         Category(
                             id = category.ordinal.toLong(),
@@ -75,7 +75,7 @@ class CategoryRepositoryImpl(
         return tryToExecute(
             function = { categoryLocalSource.getTvShowCategories() },
             onSuccess = { localCategories ->
-                categoryLocalMapper.mapToTvShowCategories(
+                categoryLocalMapper.toTvShowCategories(
                     localCategories
                 ).map { category ->
                     Category(
@@ -93,7 +93,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertTvShowCategories(
-                    categoryRemoteMapper.mapToLocalTvShowCategories(tvShowCategories)
+                    categoryRemoteMapper.toLocalTvShowCategories(tvShowCategories)
                 )
             },
             onSuccess = {},

@@ -48,7 +48,7 @@ class CategoryRepositoryImplTest {
         )
 
         coEvery { localDataSource.getMovieCategories() } returns local
-        every { localMapper.mapToMovieCategories(local) } returns listOf(MovieGenre.ACTION)
+        every { localMapper.toMovieCategories(local) } returns listOf(MovieGenre.ACTION)
 
         val result = repository.getMovieCategories()
 
@@ -68,7 +68,7 @@ class CategoryRepositoryImplTest {
         )
 
         coEvery { localDataSource.getTvShowCategories() } returns local
-        every { localMapper.mapToTvShowCategories(local) } returns listOf(TvShowGenre.DRAMA)
+        every { localMapper.toTvShowCategories(local) } returns listOf(TvShowGenre.DRAMA)
 
         val result = repository.getTvShowCategories()
 
