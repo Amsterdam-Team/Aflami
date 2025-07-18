@@ -1,10 +1,14 @@
 package com.example.viewmodel.search.searchByKeyword
 
+import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.NetworkException
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.shared.MovieItemUiState
+import com.example.viewmodel.shared.uiStates.MovieGenreItemUiState
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.viewmodel.shared.Selectable
-import com.example.viewmodel.shared.TvShowItemUiState
+import com.example.viewmodel.shared.uiStates.TvGenreItemUiState
+import com.example.viewmodel.shared.uiStates.TvShowItemUiState
 
 data class SearchUiState(
     val keyword: String = "",
@@ -52,5 +56,20 @@ data class FilterItemUiState(
                     )
                 )
             }
+    }
+}
+
+
+sealed interface SearchErrorState {
+    object NoNetworkConnection : SearchErrorState
+    object UnknownError : SearchErrorState
+
+    companion object{
+        fun toSearchErrorState(exception: AflamiException): SearchErrorState {
+            return when (exception) {
+                is NetworkException, -> NoNetworkConnection
+                else -> UnknownError
+            }
+        }
     }
 }

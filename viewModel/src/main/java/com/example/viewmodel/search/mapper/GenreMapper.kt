@@ -2,8 +2,8 @@ package com.example.viewmodel.search.mapper
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.search.searchByKeyword.MovieGenreItemUiState
-import com.example.viewmodel.search.searchByKeyword.TvGenreItemUiState
+import com.example.viewmodel.shared.uiStates.MovieGenreItemUiState
+import com.example.viewmodel.shared.uiStates.TvGenreItemUiState
 import com.example.viewmodel.shared.Selectable
 
 fun List<MovieGenreItemUiState>.selectByMovieGenre(movieGenre: MovieGenre): List<MovieGenreItemUiState> {

@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.searchByCountry.components
+package com.example.ui.screens.searchByCountry.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically

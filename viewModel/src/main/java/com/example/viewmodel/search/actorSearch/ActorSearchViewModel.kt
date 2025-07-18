@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
-import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider

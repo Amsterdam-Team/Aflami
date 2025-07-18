@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.searchByCountry.components
+package com.example.ui.screens.searchByCountry.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,7 @@ import com.example.designsystem.R
 import com.example.designsystem.components.MovieCard
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.viewmodel.shared.MovieItemUiState
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
 
 @Composable
 internal fun MoviesVerticalGrid(

@@ -1,4 +1,4 @@
-package com.example.viewmodel.shared
+package com.example.viewmodel.shared.uiStates
 
 data class MovieItemUiState(
     val id: Long = 0,

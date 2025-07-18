@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.searchByCountry.components
+package com.example.ui.screens.searchByCountry.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState

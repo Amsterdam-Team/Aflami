@@ -2,7 +2,7 @@ package com.example.viewmodel.search.mapper
 
 import android.icu.text.DecimalFormat
 import com.example.entity.TvShow
-import com.example.viewmodel.shared.TvShowItemUiState
+import com.example.viewmodel.shared.uiStates.TvShowItemUiState
 
 private fun TvShow.toMediaItemUiState(): TvShowItemUiState =
     TvShowItemUiState(

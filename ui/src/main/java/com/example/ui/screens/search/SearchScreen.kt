@@ -55,8 +55,8 @@ import com.example.viewmodel.search.searchByKeyword.SearchUiEffect
 import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import com.example.viewmodel.search.searchByKeyword.SearchViewModel
 import com.example.viewmodel.search.searchByKeyword.TabOption
-import com.example.viewmodel.shared.MovieItemUiState
-import com.example.viewmodel.shared.TvShowItemUiState
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
+import com.example.viewmodel.shared.uiStates.TvShowItemUiState
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -173,7 +173,7 @@ private fun SearchContent(
                 .padding(start = 8.dp, end = 8.dp)
         ) {
             AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState != null) {
-                if (state.errorUiState == SearchErrorState.NoNetworkConnection) {
+                if (state.errorUiState is SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onClickRetryRequest,
                         modifier = Modifier.verticalScroll(rememberScrollState())
@@ -186,7 +186,7 @@ private fun SearchContent(
                     state.tvShows.isEmpty()
                 }
 
-                if (isSelectedTabSearchResultEmpty) {
+                AnimatedVisibility(isSelectedTabSearchResultEmpty) {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),

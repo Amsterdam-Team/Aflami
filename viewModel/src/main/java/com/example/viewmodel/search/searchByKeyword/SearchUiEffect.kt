@@ -1,6 +1,6 @@
 package com.example.viewmodel.search.searchByKeyword
 
-import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.shared.BaseViewModel
 
 sealed interface SearchUiEffect: BaseViewModel.BaseUiEffect {
     object NavigateToWorldSearch : SearchUiEffect
