@@ -18,7 +18,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun Score(
     score: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val isNegative = score < 0
     val sign = if (score > 0) "+" else ""
@@ -26,16 +26,17 @@ fun Score(
     val backgroundColor = if (isNegative) AppTheme.color.redVariant else AppTheme.color.greenVariant
 
     Box(
-        modifier = modifier
-            .background(shape = CircleShape, color = backgroundColor)
-            .size(44.dp),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .background(shape = CircleShape, color = backgroundColor)
+                .size(44.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = "$sign$score",
             style = AppTheme.textStyle.label.large,
             color = textColor,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

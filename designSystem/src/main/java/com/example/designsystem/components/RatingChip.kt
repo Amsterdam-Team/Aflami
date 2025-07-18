@@ -18,24 +18,30 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun RatingChip(rating: String, modifier: Modifier = Modifier) {
+fun RatingChip(
+    rating: String,
+    modifier: Modifier = Modifier,
+) {
     val roundedShape =
         RoundedCornerShape(topStart = 4.dp, topEnd = 12.dp, bottomEnd = 4.dp, bottomStart = 12.dp)
     Row(
-        modifier = modifier
-            .background(
-                color = AppTheme.color.primaryVariant, shape = roundedShape
-            )
-            .border(width = 1.dp, color = AppTheme.color.stroke, shape = roundedShape)
-            .padding(horizontal = 8.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .background(
+                    color = AppTheme.color.primaryVariant,
+                    shape = roundedShape,
+                ).border(width = 1.dp, color = AppTheme.color.stroke, shape = roundedShape)
+                .padding(horizontal = 8.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_filled_star), contentDescription = null,
-            modifier = Modifier
-                .size(16.dp)
-                .padding(end = 2.dp),
-            tint = AppTheme.color.yellowAccent
+            painter = painterResource(R.drawable.ic_filled_star),
+            contentDescription = null,
+            modifier =
+                Modifier
+                    .size(16.dp)
+                    .padding(end = 2.dp),
+            tint = AppTheme.color.yellowAccent,
         )
         Text(rating, style = AppTheme.textStyle.label.small, color = AppTheme.color.body)
     }

@@ -25,28 +25,31 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 fun CenterOfScreenContainer(
     unneededSpace: Dp,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     var paddingValueDp by remember { mutableStateOf(0.dp) }
     var containerHeight by remember { mutableStateOf(0.dp) }
     val screenHeight = getAppScreenHeight()
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(bottom = paddingValueDp),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(bottom = paddingValueDp),
         contentAlignment = Alignment.Center,
     ) {
         Box(
-            modifier = Modifier
-                .onSizeChanged {
-                    paddingValueDp = getContainerSize(
-                        containerHeight,
-                        it,
-                        paddingValueDp,
-                        screenHeight,
-                        unneededSpace
-                    )
-                },
+            modifier =
+                Modifier
+                    .onSizeChanged {
+                        paddingValueDp =
+                            getContainerSize(
+                                containerHeight,
+                                it,
+                                paddingValueDp,
+                                screenHeight,
+                                unneededSpace,
+                            )
+                    },
         ) {
             content()
         }
@@ -71,23 +74,25 @@ private fun getContainerSize(
     size: IntSize,
     paddingValueDp: Dp,
     screenHeight: Dp,
-    headerHeight: Dp
+    headerHeight: Dp,
 ): Dp {
     var containerHeight1 = containerHeight
     var paddingValueDp1 = paddingValueDp
     containerHeight1 = size.height.dp
     paddingValueDp1 =
-        if (screenHeight > headerHeight * 2 + containerHeight1)
+        if (screenHeight > headerHeight * 2 + containerHeight1) {
             headerHeight / 2
-        else 0.dp
+        } else {
+            0.dp
+        }
     return paddingValueDp1
 }
+
 @ThemeAndLocalePreviews
 @Composable
-private fun CenterOfScreenContainerPreview(){
+private fun CenterOfScreenContainerPreview() {
     AflamiTheme {
         CenterOfScreenContainer(unneededSpace = 5.dp) {
         }
-
     }
 }
