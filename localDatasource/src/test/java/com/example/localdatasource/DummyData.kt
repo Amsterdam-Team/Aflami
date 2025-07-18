@@ -15,6 +15,9 @@ val expectedMovieWithCategories = listOf(
             productionYear = 2,
             popularity = 22.2,
             rating = 9.9f,
+            originCountry ="",
+            movieLength = 2,
+            hasVideo = false,
         ), categories = listOf()
     )
 )
@@ -27,6 +30,9 @@ val expectedMovieDto = listOf(
         productionYear = 2,
         popularity = 22.2,
         rating = 9.9f,
+        originCountry = "",
+        movieLength = 3,
+        hasVideo = false,
     )
 )
 val expectedTvShowWithCategory = listOf(
