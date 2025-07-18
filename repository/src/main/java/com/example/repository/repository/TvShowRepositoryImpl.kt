@@ -37,7 +37,7 @@ class TvShowRepositoryImpl(
                     searchType = SearchType.BY_KEYWORD
                 )
             },
-            onSuccess = { localTvShows -> tvLocalMapper.mapToTvShows(localTvShows) },
+            onSuccess = { localTvShows -> tvLocalMapper.toTvShows(localTvShows) },
             onFailure = { emptyList() },
         )
     }
@@ -51,7 +51,7 @@ class TvShowRepositoryImpl(
             },
             onSuccess = { remoteTvShows ->
                 saveTvShowsToDatabase(remoteTvShows, keyword)
-                tvRemoteMapper.mapToTvShows(remoteTvShows)
+                tvRemoteMapper.toTvShows(remoteTvShows)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -61,7 +61,7 @@ class TvShowRepositoryImpl(
         remoteTvShows: RemoteTvShowResponse,
         keyword: String
     ) {
-        val localTvShows = tvRemoteMapper.mapToLocalTvShows(remoteTvShows)
+        val localTvShows = tvRemoteMapper.toLocalTvShows(remoteTvShows)
         tryToExecute(
             function = {
                 localTvDataSource.addTvShows(
