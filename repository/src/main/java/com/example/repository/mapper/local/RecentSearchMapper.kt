@@ -1,14 +1,11 @@
 package com.example.repository.mapper.local
 
+import com.example.domain.mapper.DomainMapper
 import com.example.repository.dto.local.LocalSearchDto
 
-class RecentSearchMapper {
+class RecentSearchMapper: DomainMapper<String, LocalSearchDto> {
 
-    fun toDomainList(recentSearches: List<LocalSearchDto>): List<String> {
-        return recentSearches.map { searchKeyword -> toDomain(searchKeyword) }
-    }
-
-    private fun toDomain(recentSearch: LocalSearchDto): String {
+    override fun toDomain(recentSearch: LocalSearchDto): String {
         return recentSearch.searchKeyword
     }
 }
