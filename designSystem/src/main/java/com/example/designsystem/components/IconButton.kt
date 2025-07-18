@@ -79,7 +79,7 @@ fun IconButton(
 private fun SearchIconPreview() {
     AflamiTheme {
         IconButton(
-            painter = painterResource(R.drawable.ic_search_normal),
+            painter = painterResource(R.drawable.ic_add),
             contentDescription = stringResource(R.string.search),
             containerColor = AppTheme.color.primaryVariant,
             tint = AppTheme.color.body,

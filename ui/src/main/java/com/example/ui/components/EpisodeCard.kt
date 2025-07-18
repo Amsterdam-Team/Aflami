@@ -224,7 +224,7 @@ private fun EpisodeCardPreview() {
                     .background(AppTheme.color.surface),
         ) {
             EpisodeCard(
-                episodeBanner = painterResource(id = R.drawable.bg_man_with_popcorn),
+                episodeBanner = painterResource(id = R.drawable.ic_camera_video),
                 episodeRate = 4.5,
                 episodeNumber = 1,
                 episodeTitle = "Recovering a body",

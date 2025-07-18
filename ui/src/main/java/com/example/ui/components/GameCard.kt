@@ -45,13 +45,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.designsystem.R
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.designsystem.utils.modifierExtensions.dropShadow
 import com.example.designsystem.utils.modifierExtensions.mirroredContent
+import com.example.ui.R
 
 @Composable
 fun GameCard(

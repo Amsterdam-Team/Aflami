@@ -34,13 +34,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
+import com.example.ui.R
 import com.example.ui.application.LocalNavController
 import com.example.ui.components.MovieCard
 import com.example.ui.components.NoDataContainer
@@ -81,6 +81,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
                 SearchUiEffect.NavigateToMovieDetails -> {
                     navController.navigate(Route.MovieDetails(state.selectedMovieId))
                 }
+
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }

@@ -30,11 +30,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.R
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
+import com.example.ui.R
 import com.example.ui.application.LocalNavController
 import com.example.ui.components.NoDataContainer
 import com.example.ui.components.NoNetworkContainer

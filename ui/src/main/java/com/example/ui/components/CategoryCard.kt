@@ -18,14 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.R
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.designsystem.utils.ripple
+import com.example.ui.R
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
@@ -44,13 +43,11 @@ fun CategoryCard(
                 .background(
                     color = AppTheme.color.surfaceHigh,
                     shape = RoundedCornerShape(16.dp),
-                )
-                .border(
+                ).border(
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = RoundedCornerShape(16.dp),
-                )
-                .clip(RoundedCornerShape(16.dp))
+                ).clip(RoundedCornerShape(16.dp))
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = ripple(color = AppTheme.color.hint),
@@ -90,7 +87,7 @@ fun CategoryCard(
 private fun CategoryCardPreview() {
     AflamiTheme {
         CategoryCard(
-            categoryName = stringResource(R.string.family),
+            categoryName = "stringResource(R.string.family)",
             categoryImage = painterResource(id = R.drawable.img_action),
         )
     }

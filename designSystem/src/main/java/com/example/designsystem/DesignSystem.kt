@@ -27,7 +27,6 @@ import com.example.designsystem.components.RadioButton
 import com.example.designsystem.components.RadioState
 import com.example.designsystem.components.Score
 import com.example.designsystem.components.SectionTitle
-import com.example.designsystem.components.Slider
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
 import com.example.designsystem.components.buttons.ConfirmButton
@@ -56,17 +55,6 @@ fun DesignSystem() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Slider(
-            aflamiImageList =
-                listOf(
-                    R.drawable.bg_man_with_popcorn,
-                    R.drawable.bg_directly_shot_film,
-                    R.drawable.bg_cinema_movie_theater,
-                    R.drawable.bg_directly_shot_film,
-                    R.drawable.bg_children_wearing_3d,
-                    R.drawable.bg_children_wearing_3d,
-                ),
-        )
         FloatingActionButton(
             icon = {
                 Icon(
@@ -264,7 +252,7 @@ fun DesignSystem() {
         TextField(
             stringResource(R.string.action_adventure),
             hintText = stringResource(R.string.hint),
-            trailingIcon = R.drawable.ic_filter_vertical,
+            trailingIcon = R.drawable.ic_add,
             maxCharacters = 20,
             modifier = Modifier.padding(horizontal = 16.dp),
         )

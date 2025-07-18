@@ -350,7 +350,7 @@ private fun CustomTextFieldPreview() {
             TextField(
                 stringResource(R.string.action_adventure),
                 hintText = stringResource(R.string.hint),
-                trailingIcon = R.drawable.ic_filter_vertical,
+                trailingIcon = R.drawable.ic_add,
                 maxCharacters = 20,
             )
             TextField(

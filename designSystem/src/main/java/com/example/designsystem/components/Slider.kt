@@ -19,7 +19,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -62,8 +61,7 @@ fun Slider(
                             width = 1.dp,
                             color = AppTheme.color.stroke,
                             shape = RoundedCornerShape(24.dp),
-                        )
-                        .aspectRatio(0.81f)
+                        ).aspectRatio(0.81f)
                         .clip(RoundedCornerShape(24.dp)),
                 painter = painterResource(id = aflamiImageList[index]),
                 contentDescription = null,
@@ -85,16 +83,5 @@ fun Slider(
 @ThemeAndLocalePreviews
 private fun CustomSliderPreview() {
     AflamiTheme {
-        Slider(
-            aflamiImageList =
-                listOf(
-                    R.drawable.bg_man_with_popcorn,
-                    R.drawable.bg_directly_shot_film,
-                    R.drawable.bg_cinema_movie_theater,
-                    R.drawable.bg_directly_shot_film,
-                    R.drawable.bg_children_wearing_3d,
-                    R.drawable.bg_children_wearing_3d,
-                ),
-        )
     }
 }

@@ -4,9 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.example.designsystem.R
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.GradientType
+import com.example.ui.R
 
 enum class GlobalSearchHubUI(
     @StringRes val labelRes: Int,
