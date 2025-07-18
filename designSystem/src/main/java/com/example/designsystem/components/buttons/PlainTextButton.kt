@@ -30,12 +30,13 @@ fun PlainTextButton(
     isEnabled: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.textButtonColors(),
 ) {
     val contentColor by animateColorAsState(
         when {
-            !isEnabled -> AppTheme.color.disable
-            isNegative -> AppTheme.color.redAccent
-            else -> AppTheme.color.primary
+            !isEnabled -> colors.disableContainerColor
+            isNegative -> colors.negativeContainerColor
+            else -> colors.containerColor
         },
     )
 

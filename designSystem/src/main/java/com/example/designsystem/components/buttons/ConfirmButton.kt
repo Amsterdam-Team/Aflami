@@ -19,6 +19,7 @@ fun ConfirmButton(
     isLoading: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     icon: (@Composable (tint: Color) -> Unit)? = null,
 ) {
     BaseButton(
@@ -30,6 +31,7 @@ fun ConfirmButton(
         isNegative = isNegative,
         isSecondary = false,
         modifier = modifier,
+        colors = colors,
     )
 }
 

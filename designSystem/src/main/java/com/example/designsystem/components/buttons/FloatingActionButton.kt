@@ -19,6 +19,7 @@ fun FloatingActionButton(
     isLoading: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     isEnabled: Boolean = true,
 ) {
     BaseButton(
@@ -32,6 +33,7 @@ fun FloatingActionButton(
         isNegative = isNegative,
         isSecondary = false,
         modifier = modifier,
+        colors = colors,
     )
 }
 

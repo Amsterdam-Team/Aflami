@@ -41,6 +41,7 @@ internal fun BaseButton(
     isEnabled: Boolean,
     isSecondary: Boolean,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     title: String? = null,
     icon: (@Composable (tint: Color) -> Unit)? = null,
     iconSize: Dp = 20.dp,
@@ -55,10 +56,10 @@ internal fun BaseButton(
         )
     val contentColor by animateColorAsState(
         when {
-            !isEnabled -> AppTheme.color.stroke
-            isNegative -> AppTheme.color.redAccent
-            isSecondary -> AppTheme.color.primary
-            else -> AppTheme.color.onPrimary
+            !isEnabled -> colors.disableContainerColor
+            isNegative -> colors.negativeContainerColor
+            isSecondary -> colors.secondaryContainerColor
+            else -> colors.containerColor
         },
     )
 
@@ -128,15 +129,16 @@ private fun animateButtonBrush(
     isEnabled: Boolean,
     isNegative: Boolean,
     isSecondary: Boolean,
+    colors: ButtonBrushColor = ButtonDefaults.brushColors(),
     animationSpec: AnimationSpec<Color> = tween(300),
 ): Brush {
     val startColor by animateColorAsState(
         targetValue =
             when {
-                !isEnabled && !isSecondary -> AppTheme.color.disable
-                isSecondary -> AppTheme.color.primaryVariant
-                isNegative -> AppTheme.color.redVariant
-                else -> AppTheme.color.primary
+                !isEnabled && !isSecondary -> colors.disableColor
+                isSecondary -> colors.secondaryColor
+                isNegative -> colors.negativeColor
+                else -> colors.startColor
             },
         animationSpec = animationSpec,
         label = "startColor",
@@ -145,10 +147,10 @@ private fun animateButtonBrush(
     val endColor by animateColorAsState(
         targetValue =
             when {
-                !isEnabled && !isSecondary -> AppTheme.color.disable
-                isSecondary -> AppTheme.color.primaryVariant
-                isNegative -> AppTheme.color.redVariant
-                else -> AppTheme.color.primaryEnd
+                !isEnabled && !isSecondary -> colors.disableColor
+                isSecondary -> colors.secondaryColor
+                isNegative -> colors.negativeColor
+                else -> colors.endColor
             },
         animationSpec = animationSpec,
         label = "endColor",
