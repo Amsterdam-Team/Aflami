@@ -29,42 +29,18 @@ class TvShowLocalDataSourceImplTest {
         //Given
         val searchKeyword = "action"
         val searchType = SearchType.BY_KEYWORD
-        val expected = listOf(
-            TvShowWithCategory(
-                tvShow = LocalTvShowDto(
-                    tvShowId = 1,
-                    name = "",
-                    description = "",
-                    poster = "",
-                    productionYear = 2,
-                    popularity = 22.2,
-                    rating = 9.9f,
-                ),
-                categories = emptyList()
-            )
-        )
-        coEvery { dao.getTvShowsBySearchKeyword(searchKeyword, searchType) } returns expected
+
+        coEvery { dao.getTvShowsBySearchKeyword(searchKeyword, searchType) } returns expectedTvShowWithCategory
         //When
        val result= tvShowLocalDataSourceImpl.getTvShowsByKeywordAndSearchType(searchKeyword, searchType)
         //Then
         coVerify { dao.getTvShowsBySearchKeyword(searchKeyword, searchType) }
-        assertEquals(expected, result)
+        assertEquals(expectedTvShowWithCategory, result)
 
     }
     @Test
     fun `addTvShows should call dao with correct data`() =runTest {
         //Given
-        val tvShows = listOf(
-            LocalTvShowDto(
-                tvShowId = 1,
-                name = "",
-                description = "",
-                poster = "",
-                productionYear = 2,
-                popularity = 22.2,
-                rating = 9.9f,
-            )
-        )
         val searchKeyword = "action"
         //When
         tvShowLocalDataSourceImpl.addTvShows(tvShows, searchKeyword)

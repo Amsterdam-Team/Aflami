@@ -34,20 +34,8 @@ class MovieLocalDataSourceImplTest {
             // Given
             val keyword = "action"
             val searchType = SearchType.BY_KEYWORD
-            val expected = listOf(
-                MovieWithCategories(
-                    movie = LocalMovieDto(
-                        1,
-                        name = "",
-                        description = "",
-                        poster = "",
-                        productionYear = 2,
-                        popularity = 22.2,
-                        rating = 9.9f,
-                    ), categories = listOf()
-                )
-            )
-            coEvery { dao.getMoviesByKeywordAndSearchType(keyword, searchType) } returns expected
+
+            coEvery { dao.getMoviesByKeywordAndSearchType(keyword, searchType) } returns expectedMovieWithCategories
 
             // When
             val result =
@@ -55,7 +43,7 @@ class MovieLocalDataSourceImplTest {
 
             // Then
             coVerify { dao.getMoviesByKeywordAndSearchType(keyword, searchType) }
-            assertEquals(expected, result)
+            assertEquals(expectedMovieWithCategories, result)
         }
 
     @Test
@@ -96,22 +84,12 @@ class MovieLocalDataSourceImplTest {
         //Given
         val keyword = "action"
         val searchType = SearchType.BY_KEYWORD
-        val expected = listOf(
-            LocalMovieDto(
-                1,
-                name = "",
-                description = "",
-                poster = "",
-                productionYear = 2,
-                popularity = 22.2,
-                rating = 9.9f,
-            )
-        )
+
         val expireDate = Instant.fromEpochMilliseconds(2000)
         //When
-        movieLocalDataSourceImpl.addMoviesBySearchData(expected, keyword, searchType, expireDate)
+        movieLocalDataSourceImpl.addMoviesBySearchData(expectedMovieDto, keyword, searchType, expireDate)
         //Then
-        coVerify { dao.insertMovies(expected) }
+        coVerify { dao.insertMovies(expectedMovieDto) }
         coVerify { dao.insertSearchEntries(any()) }
 
     }
