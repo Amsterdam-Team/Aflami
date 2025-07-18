@@ -84,10 +84,20 @@ fun SeriesDetailsScreen(
     viewModel: SeriesDetailsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+    val navController = LocalNavController.current
     SeriesDetailsContent(
         state = state,
         interactionListener = viewModel
     )
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when (it) {
+                SeriesDetailsEffect.NavigateBack -> navController.popBackStack()
+                SeriesDetailsEffect.NavigateToCastScreen -> navController.navigate(Route.SeriesDetails)
+                null -> {}
+            }
+        }
+    }
 }
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -375,6 +385,7 @@ private fun SeriesDetailsContentPreview() {
     AflamiTheme {
         SeriesDetailsContent(
             state = SeriesDetailsUiState(),
+
             interactionListener = object : SeriesDetailsInteractionListener {
                 override fun onClickSeriesExtraItem(seriesExtras: SeriesExtras) {}
                 override fun onNavigateBack() {}
