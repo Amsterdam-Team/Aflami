@@ -13,11 +13,11 @@ enum class SnackBarStatus(
     Success(
         R.drawable.ic_thumbs_up,
         iconTintColor = { AppTheme.color.greenAccent },
-        dropShadowColor = { AppTheme.color.successSnackBarShadow }
+        dropShadowColor = { AppTheme.color.successSnackBarShadow },
     ),
     Failure(
         R.drawable.ic_thumbs_down,
         iconTintColor = { AppTheme.color.redAccent },
-        dropShadowColor = { AppTheme.color.failureSnackBarShadow }
-    );
+        dropShadowColor = { AppTheme.color.failureSnackBarShadow },
+    ),
 }

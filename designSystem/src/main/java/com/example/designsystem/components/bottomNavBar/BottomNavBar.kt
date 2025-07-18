@@ -24,12 +24,16 @@ fun BottomNavBar(
 ) {
     NavigationBar(
         modifier = modifier,
-        containerColor = AppTheme.color.surface
+        containerColor = AppTheme.color.surface,
     ) {
         items.entries.forEach { destination ->
             val isSelected = selectedBottomBarItems == destination.key
-            val labelColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.body else AppTheme.color.hint)
-            val iconColor by animateColorAsState(targetValue = if (isSelected) AppTheme.color.primary else AppTheme.color.hint)
+            val labelColor by animateColorAsState(
+                targetValue = if (isSelected) AppTheme.color.body else AppTheme.color.hint,
+            )
+            val iconColor by animateColorAsState(
+                targetValue = if (isSelected) AppTheme.color.primary else AppTheme.color.hint,
+            )
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
@@ -39,18 +43,20 @@ fun BottomNavBar(
                     Text(
                         text = stringResource(destination.key.label),
                         color = labelColor,
-                        style = AppTheme.textStyle.label.small
+                        style = AppTheme.textStyle.label.small,
                     )
                 },
                 icon = {
                     Icon(
                         painter = painterResource(id = destination.key.icon),
                         contentDescription = null,
-                        tint = iconColor
+                        tint = iconColor,
                     )
-                }, colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = AppTheme.color.primaryVariant
-                )
+                },
+                colors =
+                    NavigationBarItemDefaults.colors(
+                        indicatorColor = AppTheme.color.primaryVariant,
+                    ),
             )
         }
     }
@@ -61,14 +67,15 @@ fun BottomNavBar(
 private fun BottomNavBarPreview() {
     AflamiTheme {
         BottomNavBar(
-            items = mapOf(
-                BottomBarItems.HOME to "home",
-                BottomBarItems.LISTS to "lists",
-                BottomBarItems.CATEGORIES to "categories",
-                BottomBarItems.LETS_PLAY to "letsPlay",
-                BottomBarItems.PROFILE to "profile"
-            ),
-            selectedBottomBarItems = BottomBarItems.HOME
+            items =
+                mapOf(
+                    BottomBarItems.HOME to "home",
+                    BottomBarItems.LISTS to "lists",
+                    BottomBarItems.CATEGORIES to "categories",
+                    BottomBarItems.LETS_PLAY to "letsPlay",
+                    BottomBarItems.PROFILE to "profile",
+                ),
+            selectedBottomBarItems = BottomBarItems.HOME,
         )
     }
 }

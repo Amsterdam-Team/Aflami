@@ -30,25 +30,27 @@ fun PlainTextButton(
     isEnabled: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.textButtonColors(),
 ) {
     val contentColor by animateColorAsState(
         when {
-            !isEnabled -> AppTheme.color.disable
-            isNegative -> AppTheme.color.redAccent
-            else -> AppTheme.color.primary
-        }
+            !isEnabled -> colors.disableContainerColor
+            isNegative -> colors.negativeContainerColor
+            else -> colors.containerColor
+        },
     )
 
     Row(
-        modifier = modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick,
-                enabled = isEnabled && !isLoading,
-            ),
+        modifier =
+            modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick,
+                    enabled = isEnabled && !isLoading,
+                ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         Text(
             text = title,
@@ -58,18 +60,19 @@ fun PlainTextButton(
 
         val animatedPadding by animateDpAsState(
             if (isLoading) 8.dp else 0.dp,
-            tween(durationMillis = 500)
+            tween(durationMillis = 500),
         )
         val animatedLoadingSize by animateDpAsState(
             if (isLoading) 20.dp else 0.dp,
-            tween(durationMillis = 500)
+            tween(durationMillis = 500),
         )
 
         AnimatedVisibility(
             visible = isLoading && isEnabled,
-            modifier = Modifier
-                .padding(start = animatedPadding)
-                .size(animatedLoadingSize),
+            modifier =
+                Modifier
+                    .padding(start = animatedPadding)
+                    .size(animatedLoadingSize),
         ) {
             LoadingIndicator(tint = contentColor)
         }
@@ -85,7 +88,7 @@ private fun PlainTextButtonPreview() {
             onClick = {},
             isLoading = false,
             isEnabled = true,
-            isNegative = false
+            isNegative = false,
         )
     }
 }

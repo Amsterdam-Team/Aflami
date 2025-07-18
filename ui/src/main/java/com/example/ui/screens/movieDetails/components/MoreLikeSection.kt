@@ -1,15 +1,18 @@
 package com.example.ui.screens.movieDetails.components
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
-import com.example.designsystem.components.UpcomingCard
+import com.example.imageviewer.ui.SafeImageView
+import com.example.ui.components.UpcomingCard
 import com.example.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
 fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
@@ -21,7 +24,16 @@ fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
         itemsIndexed(similarMovies, key = { index, _ -> index }) { index, similarMovie ->
             val yOffset = if (index == 0) -16 else 0
             UpcomingCard(
-                movieImage = similarMovie.posterUrl,
+                movieImage = {
+                    SafeImageView(
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
+                        contentDescription = similarMovie.name,
+                        model = similarMovie.posterUrl,
+                        contentScale = ContentScale.Crop,
+                    )
+                },
                 movieTitle = similarMovie.name,
                 movieType = stringResource(R.string.movie),
                 movieYear = similarMovie.productionYear,
@@ -30,7 +42,6 @@ fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
                     .offset(y = yOffset.dp),
                 movieRating = similarMovie.rate,
-                movieContentDescription = similarMovie.name,
             )
         }
 }

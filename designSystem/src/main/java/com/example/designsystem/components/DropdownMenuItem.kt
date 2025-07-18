@@ -17,11 +17,11 @@ fun DropdownMenuItem(
             Text(
                 text = text,
                 style = AppTheme.textStyle.body.medium,
-                color = AppTheme.color.body
+                color = AppTheme.color.body,
             )
         },
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -30,9 +30,8 @@ fun DropdownMenuItem(
 private fun DropdownMenuItemPreview() {
     AflamiTheme {
         DropdownMenuItem(
-            "item", onClick = {}
+            "item",
+            onClick = {},
         )
     }
 }
-
-

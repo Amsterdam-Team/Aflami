@@ -27,9 +27,9 @@ import com.example.repository.repository.RecentSearchRepositoryImpl
 import com.example.repository.repository.TvShowRepositoryImpl
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.RecentSearchHandlerImpl
-import org.koin.dsl.module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
+import org.koin.dsl.module
 
 val repositoryModule = module {
     // Mappers
@@ -52,7 +52,6 @@ val repositoryModule = module {
     // Handler
     singleOf(::RecentSearchHandlerImpl) bind RecentSearchHandler::class
 
-    // Repositories
     singleOf(::CountryRepositoryImpl) bind CountryRepository::class
     singleOf(::CategoryRepositoryImpl) bind CategoryRepository::class
     singleOf(::MovieRepositoryImpl) bind MovieRepository::class
