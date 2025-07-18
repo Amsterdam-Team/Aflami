@@ -3,7 +3,6 @@
 #include <android/bitmap.h>
 #include "blur_renderer.h"
 #include "unbounded_blur.h"
-#include <android/Log.h>
 
 static BlurRenderer rectangleRenderer(1920, 1080);
 static UnboundedBlurRenderer unboundedRenderer(4096, 4096);
@@ -17,17 +16,14 @@ Java_com_amsterdam_blurred_blurProcessor_BlurNative_blurBitmap(JNIEnv* env, jobj
     void* pixels;
 
     if (AndroidBitmap_getInfo(env, inputBitmap, &info) < 0) {
-        __android_log_print(ANDROID_LOG_INFO, "Benchmark", "Failed to get bitmap info 1");
         return nullptr;
     }
 
     if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
-        __android_log_print(ANDROID_LOG_INFO, "Benchmark", "Failed to get bitmap info 2");
         return nullptr;
     }
 
     if (AndroidBitmap_lockPixels(env, inputBitmap, &pixels) < 0) {
-        __android_log_print(ANDROID_LOG_INFO, "Benchmark", "Failed to get bitmap info 3");
         return nullptr;
     }
 
@@ -50,17 +46,14 @@ Java_com_amsterdam_blurred_blurProcessor_BlurNative_blurBitmapUnbounded(JNIEnv* 
     void* pixels;
 
     if (AndroidBitmap_getInfo(env, inputBitmap, &info) < 0) {
-        __android_log_print(ANDROID_LOG_ERROR, "BlurNative", "Failed to get bitmap info");
         return nullptr;
     }
 
     if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
-        __android_log_print(ANDROID_LOG_ERROR, "BlurNative", "Unsupported bitmap format");
         return nullptr;
     }
 
     if (AndroidBitmap_lockPixels(env, inputBitmap, &pixels) < 0) {
-        __android_log_print(ANDROID_LOG_ERROR, "BlurNative", "Failed to lock pixels");
         return nullptr;
     }
 
@@ -89,7 +82,6 @@ Java_com_amsterdam_blurred_blurProcessor_BlurNative_blurBitmapUnbounded(JNIEnv* 
     // Lock output bitmap pixels
     void* outputPixels;
     if (AndroidBitmap_lockPixels(env, outputBitmap, &outputPixels) < 0) {
-        __android_log_print(ANDROID_LOG_ERROR, "BlurNative", "Failed to lock output pixels");
         return nullptr;
     }
 
