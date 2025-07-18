@@ -435,11 +435,11 @@ fun DesignSystem() {
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         EpisodeCard(
-            episodeBanner = painterResource(id = R.drawable.bg_man_with_popcorn),
-            episodeRate = 4.5,
-            episodeNumber = 1,
+            episodeBanner = "https://image.tmdb.org/t/p/w500/1GJvBE7UWU1WOVi0XREl4JQc7f8.jpg",
+            episodeRate = "4.5",
+            episodeNumber = "1",
             episodeTitle = "Recovering a body",
-            episodeTime = 58,
+            episodeTime = "58",
             publishedAt = "3 Sep 2020",
             episodeDescription = "In 1935, corrections officer Paul Edgecomb oversees ",
             onPlayEpisodeClick = { },

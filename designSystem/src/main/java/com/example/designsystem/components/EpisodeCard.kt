@@ -1,7 +1,6 @@
 package com.example.designsystem.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,10 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,14 +37,15 @@ import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.imageviewer.ui.SafeImageView
 
 @Composable
 fun EpisodeCard(
-    episodeBanner: Painter,
-    episodeRate: Double,
-    episodeNumber: Int,
+    episodeBanner: String,
+    episodeRate: String,
+    episodeNumber: String,
     episodeTitle: String,
-    episodeTime: Int,
+    episodeTime: String,
     publishedAt: String,
     episodeDescription: String,
     modifier: Modifier = Modifier,
@@ -92,8 +90,9 @@ fun EpisodeCard(
 
 @Composable
 private fun EpisodeBanner(
-    episodeBanner: Painter,
-    episodeRate: Double,
+    episodeBanner: String,
+    episodeRate: String,
+    episodeContentDescription: String? = null
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -107,10 +106,11 @@ private fun EpisodeBanner(
                     shape = RoundedCornerShape(12.dp),
                 ),
     ) {
-        Image(
-            painter = episodeBanner,
-            contentDescription = null,
+        SafeImageView(
+            model = episodeBanner,
+            contentDescription = episodeContentDescription,
             contentScale = ContentScale.Crop,
+            modifier = Modifier,
         )
         RatingChip(
             rating = episodeRate.toString(),
@@ -123,9 +123,9 @@ private fun EpisodeBanner(
 
 @Composable
 private fun EpisodeInfo(
-    episodeNumber: Int,
+    episodeNumber: String,
     episodeTitle: String,
-    episodeTime: Int,
+    episodeTime: String,
     publishedAt: String,
 ) {
     Column(
@@ -233,11 +233,11 @@ private fun EpisodeCardPreview() {
                     .background(AppTheme.color.surface),
         ) {
             EpisodeCard(
-                episodeBanner = painterResource(id = R.drawable.bg_man_with_popcorn),
-                episodeRate = 4.5,
-                episodeNumber = 1,
+                episodeBanner = "https://image.tmdb.org/t/p/w500/1GJvBE7UWU1WOVi0XREl4JQc7f8.jpg",
+                episodeRate = "4.5",
+                episodeNumber = "1",
                 episodeTitle = "Recovering a body",
-                episodeTime = 58,
+                episodeTime = "58",
                 publishedAt = "3 Sep 2020",
                 episodeDescription = "In 1935, corrections officer Paul Edgecomb oversees ",
                 onPlayEpisodeClick = { },
