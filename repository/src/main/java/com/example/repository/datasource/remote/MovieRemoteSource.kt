@@ -4,7 +4,7 @@ import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 
 interface MovieRemoteSource {
@@ -21,7 +21,7 @@ interface MovieRemoteSource {
 
     suspend fun getSimilarMovies(movieId: Long): RemoteMovieResponse
 
-    suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse
+    suspend fun getMovieGallery(movieId: Long): RemoteGalleryResponse
 
     suspend fun getProductionCompany(movieId: Long): ProductionCompanyResponse
 

@@ -9,7 +9,7 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
@@ -72,10 +72,10 @@ class MovieRemoteSourceImpl(
         }
     }
 
-    override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
-        return safeCall<RemoteMovieGalleryResponse> {
+    override suspend fun getMovieGallery(movieId: Long): RemoteGalleryResponse {
+        return safeCall<RemoteGalleryResponse> {
             val response = ktorClient.get("movie/$movieId/images")
-            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+            return json.decodeFromString<RemoteGalleryResponse>(response.bodyAsText())
         }
     }
 
