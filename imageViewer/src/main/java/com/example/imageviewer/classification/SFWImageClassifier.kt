@@ -3,7 +3,7 @@ package com.example.imageviewer.classification
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import com.example.imageviewer.firebase.FirebaseModelRepository
+import com.example.imageviewer.firebase.FirebaseModelManager
 import kotlinx.coroutines.runBlocking
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
@@ -20,7 +20,7 @@ internal class SFWImageClassifier(
     private val context: Context,
     modelPath: String = SFWClassifierConfig.NSFW_MODEL_PATH,
     modelFile: java.io.File? = null,
-    private val modelRepository: FirebaseModelRepository? = null
+    private val modelRepository: FirebaseModelManager? = null
 ) : ImageClassifier {
 
     private val safetyRules = SFWClassifierConfig.NSFW_SAFETY_RULES
