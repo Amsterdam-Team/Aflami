@@ -23,6 +23,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,9 +35,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.designsystem.R
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.RatingChip
@@ -56,6 +62,7 @@ import com.example.ui.screens.movieDetails.components.MoreLikeSection
 import com.example.ui.screens.movieDetails.components.MovieExtrasSection
 import com.example.ui.screens.movieDetails.components.MovieInfoSection
 import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
+import com.example.ui.screens.movieDetails.components.PageIndicator
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
 import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
@@ -64,6 +71,7 @@ import com.example.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.example.viewmodel.movieDetails.MovieDetailsUiState
 import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.example.viewmodel.movieDetails.MovieDetailsViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -84,6 +92,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = koinViewModel()) {
                     navController.navigate(
                         Route.Cast(state.value.movieId),
                     )
+
                 null -> {}
             }
         }
@@ -100,6 +109,14 @@ fun MovieContent(
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
     val listState = rememberLazyListState()
     val animationDuration by remember { mutableIntStateOf(1000) }
+    val pagerState = rememberPagerState { state.moviePostersUrl.size }
+
+    LaunchedEffect(true) {
+        while (true) {
+            delay(4000)
+            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10 ))
+        }
+    }
     AnimatedVisibility(
         state.isLoading,
         enter = fadeIn(tween(animationDuration)),
@@ -142,15 +159,34 @@ fun MovieContent(
                             .fillMaxWidth()
                             .height(263.dp),
                 ) {
-                    SafeImageView(
-                        model = state.posterUrl,
-                        contentDescription = "",
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .animateContentSize(),
-                        onError = { NoMovieImageHolder() },
+                    VerticalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        SafeImageView(
+                            model = state.moviePostersUrl[page],
+                            contentDescription = "",
+                            contentScale = ContentScale.FillBounds,
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .animateContentSize(),
+                            onError = { NoMovieImageHolder() },
+                        )
+
+                    }
+
+                    PageIndicator(
+                        modifier = Modifier
+                            .zIndex(1f)
+                            .padding(4.dp)
+                            .background(AppTheme.color.primaryVariant)
+                            .padding(vertical = 4.dp, horizontal = 2.dp)
+                            .align(Alignment.BottomEnd).clip(RoundedCornerShape(100.dp)),
+                        numberOfPages = state.moviePostersUrl.size,
+                        selectedPage = pagerState.currentPage
                     )
+
                     DefaultAppBar(
                         modifier =
                             Modifier
@@ -253,12 +289,13 @@ fun MovieContent(
     }
 }
 
+
 @Composable
 @ThemeAndLocalePreviews
 private fun SearchByActorContentPreview() {
     AflamiTheme {
         MovieContent(
-            MovieDetailsUiState(posterUrl = "https://image.tmdb.org/t/p/w500/1GJvBE7UWU1WOVi0XREl4JQc7f8.jpg"),
+            MovieDetailsUiState(),
             interactionListener =
                 object : MovieDetailsInteractionListener {
                     override fun onClickMovieExtras(movieExtras: MovieExtras) {

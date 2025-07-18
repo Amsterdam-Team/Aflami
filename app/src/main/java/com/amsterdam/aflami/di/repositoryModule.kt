@@ -16,6 +16,7 @@ import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
 import com.example.repository.mapper.remote.GalleryRemoteMapper
+import com.example.repository.mapper.remote.PostersRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.repository.CategoryRepositoryImpl
@@ -43,6 +44,7 @@ val repositoryModule = module {
     singleOf(::CastRemoteMapper)
     singleOf(::ReviewRemoteMapper)
     singleOf(::GalleryRemoteMapper)
+    singleOf(::PostersRemoteMapper)
     singleOf(::ProductionCompanyRemoteMapper)
 
     // Handler

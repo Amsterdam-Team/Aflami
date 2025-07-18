@@ -16,10 +16,10 @@ class MovieDetailsUiStateMapper {
     fun toUiState(domain: GetMovieDetailsUseCase.MovieDetails): MovieDetailsUiState = with(domain) {
         MovieDetailsUiState(
             movieId = movie.id,
-            posterUrl = movie.poster,
             rating = ratingToRatingString(movie.rating),
             movieTitle = movie.name,
             categories = categories,
+            moviePostersUrl = moviePosters,
             releaseDate = productionYearToDate(movie.productionYear),
             movieLength = movieLengthToHourMinuteString(movie.runTime),
             originCountry = movie.originCountry,
