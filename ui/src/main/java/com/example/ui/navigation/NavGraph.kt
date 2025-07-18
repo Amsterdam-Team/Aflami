@@ -13,6 +13,7 @@ import com.example.ui.screens.profile.profileScreenRoute
 import com.example.ui.screens.search.searchScreenRoute
 import com.example.ui.screens.searchByActor.searchByActorScreenRoute
 import com.example.ui.screens.search.searchByCountry.searchByCountryScreenRoute
+import com.example.ui.screens.seriesDetails.seriesDetailsScreenRoute
 
 @Composable
 fun NavGraph(
@@ -29,6 +30,7 @@ fun NavGraph(
         searchByActorScreenRoute()
         searchByCountryScreenRoute()
         movieDetailsScreenRoute()
+        seriesDetailsScreenRoute()
         castScreenRoute()
     }
 }
