@@ -1,4 +1,5 @@
 package com.example.viewmodel.utils.entityHelper
+
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
 
@@ -9,7 +10,11 @@ fun createMovie(
     poster: String = "https://example.com/poster.jpg",
     productionYear: Int = 2024,
     genres: List<MovieGenre> = listOf(),
-    rating: Float = 4.5f
+    rating: Float = 4.5f,
+    originCountry: String = "USA",
+    popularity : Double = 0.0,
+    runTime: Int = 120,
+    hasVideo: Boolean = true
 ): Movie {
     return Movie(
         id = id,
@@ -19,6 +24,9 @@ fun createMovie(
         productionYear = productionYear,
         categories = genres,
         rating = rating,
-        popularity = 0.0
+        popularity = popularity,
+        originCountry = originCountry,
+        runTime = runTime,
+        hasVideo = hasVideo,
     )
 }

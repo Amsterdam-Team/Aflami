@@ -17,10 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -33,39 +29,38 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
-import com.example.ui.R
 import com.example.ui.application.LocalNavController
-import com.example.ui.components.MovieCard
 import com.example.ui.components.NoDataContainer
 import com.example.ui.components.NoNetworkContainer
-import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
-import com.example.viewmodel.searchByActor.SearchByActorEffect
-import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
-import com.example.viewmodel.searchByActor.SearchByActorScreenState
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
+import com.example.viewmodel.search.actorSearch.SearchActorEffect
+import com.example.viewmodel.search.actorSearch.SearchActorInteractionListener
+import com.example.ui.R
+import com.example.ui.components.MovieCard
+import com.example.ui.components.appBar.DefaultAppBar
+import com.example.viewmodel.search.actorSearch.ActorSearchUiState
+import com.example.viewmodel.search.actorSearch.SearchActorViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchByActorViewModel = koinViewModel(),
+    viewModel: SearchActorViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-    var isNoInternetConnection by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                SearchByActorEffect.NavigateBack -> {
+
+                SearchActorEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
 
-                SearchByActorEffect.NoInternetConnection -> {
-                    isNoInternetConnection = true
+                is SearchActorEffect.NavigateToDetailsScreen -> {
+                    navController.navigate(Route.MovieDetails(effect.movieId))
                 }
-                SearchByActorEffect.NavigateToDetailsScreen ->
-                    navController.navigate(Route.MovieDetails(uiState.value.selectedMovieId))
+
                 null -> {}
             }
         }
@@ -73,77 +68,74 @@ fun SearchByActorScreen(
     SearchByActorContent(
         modifier = modifier,
         state = uiState.value,
-        interactionListener = viewModel,
-        isNoInternetConnection = isNoInternetConnection,
-        onRetryQuestClicked = {
-            isNoInternetConnection = false
-            viewModel.onRetryQuestClicked()
-        },
+        interactionListener = viewModel
     )
 }
 
 @Composable
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
-    state: SearchByActorScreenState,
-    interactionListener: SearchByActorInteractionListener,
-    isNoInternetConnection: Boolean,
-    onRetryQuestClicked: () -> Unit,
+    state: ActorSearchUiState,
+    interactionListener: SearchActorInteractionListener,
 ) {
     Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .statusBarsPadding(),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding()
     ) {
         DefaultAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
             title = stringResource(R.string.find_by_actor),
             showNavigateBackButton = true,
-            onNavigateBackClicked = { interactionListener.onNavigateBackClicked() },
+            onNavigateBackClicked = interactionListener::onClickNavigateBack
         )
         TextField(
-            text = state.query,
+            text = state.keyword,
             hintText = stringResource(R.string.find_by_actor),
-            onValueChange = { interactionListener.onUserSearch(it) },
-            modifier =
-                Modifier
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 16.dp),
+            onValueChange = { interactionListener.onUserSearchChange(it) },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .padding(horizontal = 16.dp),
         )
 
         AnimatedContent(
             targetState = state,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
-                    fadeOut(animationSpec = tween(300))
+                        fadeOut(animationSpec = tween(300))
             },
-            label = "Content Animation",
+            label = "Content Animation"
         ) { targetState ->
             when {
                 targetState.isLoading ->
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         LoadingContainer(modifier = Modifier)
                     }
-                isNoInternetConnection -> {
-                    NoNetworkContainer(
-                        onClickRetry = onRetryQuestClicked,
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally),
-                    )
+
+                targetState.error != null -> {
+                    when (targetState.error) {
+                        ActorSearchUiState.SearchByActorError.NetworkError ->
+                            NoNetworkContainer(
+                                onClickRetry = interactionListener::onClickRetrySearch,
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .align(Alignment.CenterHorizontally)
+                            )
+
+                        null -> {}
+                    }
+
                 }
 
-                targetState.query.isBlank() -> {
+                targetState.keyword.isBlank() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.img_suggestion_magician),
                         title = stringResource(R.string.find_by_actor),
                         description = stringResource(R.string.find_by_actor_description),
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 144.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 144.dp)
                     )
                 }
 
@@ -152,10 +144,9 @@ private fun SearchByActorContent(
                         imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 144.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 144.dp)
                     )
                 }
 
@@ -168,22 +159,13 @@ private fun SearchByActorContent(
                     ) {
                         items(targetState.movies) { movie ->
                             MovieCard(
-                                movieImage = {
-                                    SafeImageView(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxSize(),
-                                        contentDescription = movie.name,
-                                        model = movie.poster,
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                },
-                                movieType = "Movies",
+                                movieImage = { MovieImage(movie.poster) },
+                                movieType = stringResource(R.string.movie),
                                 movieYear = movie.productionYear,
                                 movieTitle = movie.name,
                                 movieRating = movie.rating,
                             ) {
-                                interactionListener.onMovieClicked(movie.id)
+                                interactionListener.onClickMovie(movie.id)
                             }
                         }
                     }
@@ -194,27 +176,34 @@ private fun SearchByActorContent(
 }
 
 @Composable
+private fun MovieImage(imageUrl: String) {
+    SafeImageView(
+        model = imageUrl,
+        contentScale = ContentScale.FillBounds,
+        contentDescription = null,
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
 @ThemeAndLocalePreviews
 private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
-            state = SearchByActorScreenState(),
-            interactionListener =
-                object : SearchByActorInteractionListener {
-                    override fun onUserSearch(query: String) {
-                    }
+            state = ActorSearchUiState(),
+            interactionListener = object : SearchActorInteractionListener {
+                override fun onUserSearchChange(query: String) {
+                }
 
-                    override fun onNavigateBackClicked() {
-                    }
+                override fun onClickNavigateBack() {
+                }
 
-                    override fun onRetryQuestClicked() {
-                    }
+                override fun onClickRetrySearch() {
+                }
 
-                    override fun onMovieClicked(movieId: Long) {
-                    }
-                },
-            isNoInternetConnection = false,
-            onRetryQuestClicked = {},
+                override fun onClickMovie(movieId: Long) {
+                }
+            }
         )
     }
 }
