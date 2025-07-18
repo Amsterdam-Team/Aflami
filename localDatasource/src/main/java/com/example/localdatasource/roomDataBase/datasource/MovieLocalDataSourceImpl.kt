@@ -46,4 +46,8 @@ class MovieLocalDataSourceImpl(
         return dao.getSearchMoviesCrossRef(searchKeyword, searchType)
     }
 
+    override suspend fun getMovieById(movieId : Long): LocalMovieDto {
+        return dao.getMovieById(movieId)
+    }
+
 }
