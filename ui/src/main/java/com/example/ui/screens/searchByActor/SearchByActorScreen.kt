@@ -57,8 +57,9 @@ fun SearchByActorScreen(
                     navController.popBackStack()
                 }
 
-                SearchActorEffect.NavigateToDetailsScreen ->
-                    navController.navigate(Route.MovieDetails(uiState.value.selectedMovieId))
+                is SearchActorEffect.NavigateToDetailsScreen -> {
+                    navController.navigate(Route.MovieDetails(effect.movieId))
+                }
 
                 null -> {}
             }
@@ -158,7 +159,7 @@ private fun SearchByActorContent(
                     ) {
                         items(targetState.movies) { movie ->
                             MovieCard(
-                                movieImage = {MovieImage(movie.poster)},
+                                movieImage = { MovieImage(movie.poster) },
                                 movieType = stringResource(R.string.movie),
                                 movieYear = movie.productionYear,
                                 movieTitle = movie.name,

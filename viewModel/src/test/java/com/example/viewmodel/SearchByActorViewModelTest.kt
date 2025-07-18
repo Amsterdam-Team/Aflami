@@ -169,16 +169,7 @@ class SearchByActorViewModelTest {
         assertThat(state.isLoading).isFalse()
     }
 
-    @Test
-    fun `onMovieClicked should update the selected movie id state when its call`() =
-        testScope.runTest {
-            val movieId = 1L
 
-            viewModel.onClickMovie(movieId)
-            advanceUntilIdle()
-
-            assertThat(viewModel.state.value.selectedMovieId).isEqualTo(movieId)
-        }
 
     @Test
     fun `onMovieClicked should send NavigateToDetailsScreen effect when its call`() =
@@ -195,7 +186,7 @@ class SearchByActorViewModelTest {
             advanceUntilIdle()
             job.cancel()
 
-            assertThat(effect).isEqualTo(SearchActorEffect.NavigateToDetailsScreen)
+            assertThat(effect).isEqualTo(SearchActorEffect.NavigateToDetailsScreen(1))
         }
 
     @Test

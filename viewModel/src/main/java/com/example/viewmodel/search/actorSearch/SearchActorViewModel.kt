@@ -73,8 +73,7 @@ class SearchActorViewModel(
     }
 
     override fun onClickMovie(movieId: Long) {
-        updateState { it.copy(selectedMovieId = movieId) }
-        sendNewEffect(SearchActorEffect.NavigateToDetailsScreen)
+        sendNewEffect(SearchActorEffect.NavigateToDetailsScreen(movieId))
     }
 
     private fun onError(aflamiException: AflamiException) {

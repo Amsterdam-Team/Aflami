@@ -6,7 +6,6 @@ data class ActorSearchUiState(
     val isLoading:Boolean = false,
     val keyword:String="",
     val movies:List<MovieUiState> = emptyList(),
-    val selectedMovieId : Long = 0,
     val error : SearchByActorError? = null
 ){
     sealed class SearchByActorError{
