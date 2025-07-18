@@ -4,36 +4,36 @@ import com.example.domain.repository.RecentSearchRepository
 import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
-import com.example.repository.mapper.local.RecentSearchMapper
+import com.example.repository.mapper.local.RecentSearchLocalMapper
 import com.example.repository.utils.tryToExecute
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class RecentSearchRepositoryImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource,
-    private val recentSearchMapper: RecentSearchMapper,
+    private val recentSearchLocalMapper: RecentSearchLocalMapper,
 ) : RecentSearchRepository {
-    override suspend fun upsertRecentSearch(searchKeyword: String) {
+    override suspend fun addRecentSearch(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
     }
 
-    override suspend fun upsertRecentSearchForCountry(searchKeyword: String) {
+    override suspend fun addRecentSearchForCountry(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_COUNTRY)
     }
 
-    override suspend fun upsertRecentSearchForActor(searchKeyword: String) {
+    override suspend fun addRecentSearchForActor(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_ACTOR)
     }
 
-    override suspend fun getAllRecentSearches(): List<String> {
+    override suspend fun getRecentSearches(): List<String> {
         return tryToExecute(
             function = { recentSearchLocalSource.getRecentSearches() },
-            onSuccess = { recentSearchMapper.toDomainList(it) },
+            onSuccess = { recentSearchLocalMapper.toEntityList(it) },
             onFailure = { aflamiException -> throw aflamiException }
         )
     }
 
-    override suspend fun deleteAllRecentSearches() {
+    override suspend fun deleteRecentSearches() {
         tryToExecute(
             function = { recentSearchLocalSource.deleteRecentSearches() },
             onSuccess = { },

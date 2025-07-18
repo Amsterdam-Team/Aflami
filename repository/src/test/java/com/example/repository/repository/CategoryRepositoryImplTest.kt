@@ -8,7 +8,7 @@ import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
-import com.example.repository.mapper.local.CategoryLocalMapper
+import com.example.repository.mapper.local.MovieCategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -24,7 +24,7 @@ class CategoryRepositoryImplTest {
 
     private val remoteDataSource: CategoryRemoteSource = mockk()
     private val localDataSource: CategoryLocalSource = mockk()
-    private val localMapper: CategoryLocalMapper = mockk()
+    private val localMapper: MovieCategoryLocalMapper = mockk()
     private val remoteMapper: CategoryRemoteMapper = mockk()
 
     @BeforeEach
@@ -32,7 +32,7 @@ class CategoryRepositoryImplTest {
         repository = CategoryRepositoryImpl(
             categoryRemoteSource = remoteDataSource,
             categoryLocalSource = localDataSource,
-            categoryLocalMapper = localMapper,
+            movieCategoryLocalMapper = localMapper,
             categoryRemoteMapper = remoteMapper
         )
     }
@@ -48,7 +48,7 @@ class CategoryRepositoryImplTest {
         )
 
         coEvery { localDataSource.getMovieCategories() } returns local
-        every { localMapper.mapToMovieCategories(local) } returns listOf(MovieGenre.ACTION)
+        every { localMapper.toMovieCategories(local) } returns listOf(MovieGenre.ACTION)
 
         val result = repository.getMovieCategories()
 
@@ -68,7 +68,7 @@ class CategoryRepositoryImplTest {
         )
 
         coEvery { localDataSource.getTvShowCategories() } returns local
-        every { localMapper.mapToTvShowCategories(local) } returns listOf(TvShowGenre.DRAMA)
+        every { localMapper.toTvShowCategories(local) } returns listOf(TvShowGenre.DRAMA)
 
         val result = repository.getTvShowCategories()
 

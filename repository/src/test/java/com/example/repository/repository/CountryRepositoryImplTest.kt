@@ -39,10 +39,10 @@ class CountryRepositoryImplTest {
         val expected = listOf(Country("Egypt", "EG"))
 
         coEvery { localDataSource.getCountries() } returns localDto
-        every { localMapper.mapToCountry(localDto[0]) } returns expected[0]
+        every { localMapper.toCountry(localDto[0]) } returns expected[0]
 
         // When
-        val result = repository.getAllCountries()
+        val result = repository.getCountries()
 
         // Then
         assertThat(result).isEqualTo(expected)
@@ -71,12 +71,12 @@ class CountryRepositoryImplTest {
         )
 
         coEvery { remoteDataSource.getCountries() } returns listOf(remoteDto)
-        every { remoteMapper.mapToCountry(remoteDto) } returns domainModel
-        every { localMapper.mapToLocalCountry(domainModel) } returns localDto
+        every { remoteMapper.toCountry(remoteDto) } returns domainModel
+        every { localMapper.toLocalCountry(domainModel) } returns localDto
         coEvery { localDataSource.addCountries(listOf(localDto)) } just Runs
 
         // When
-        val result = repository.getAllCountries()
+        val result = repository.getCountries()
 
         // Then
         assertThat(result).isEqualTo(listOf(domainModel))
