@@ -15,42 +15,64 @@ class CategoryRepositoryImpl(
     private val categoryLocalMapper: CategoryLocalMapper,
     private val categoryRemoteMapper: CategoryRemoteMapper
 ) : CategoryRepository {
-    override suspend fun getMovieCategories() =
-        getMovieCategoriesFromLocal().takeIf { localMovieCategories -> localMovieCategories.isNotEmpty() }
+    override suspend fun getMovieCategories(): List<Category> {
+        return getMovieCategoriesFromLocal()
+            .takeIf { localMovieCategories -> localMovieCategories.isNotEmpty() }
             ?: onSuccessLoadMovieCategories(categoryRemoteSource.getMovieCategories())
+    }
 
-    override suspend fun getTvShowCategories() =
-        getTvShowCategoriesFromLocal().takeIf { localTvShowCategories -> localTvShowCategories.isNotEmpty() }
+    override suspend fun getTvShowCategories(): List<Category> {
+        return getTvShowCategoriesFromLocal()
+            .takeIf { localTvShowCategories -> localTvShowCategories.isNotEmpty() }
             ?: onSuccessLoadTvShowCategories(categoryRemoteSource.getTvShowCategories())
+    }
 
-    private suspend fun getMovieCategoriesFromLocal() =
-        onSuccessGetMovieCategoriesFromLocal(categoryLocalSource.getMovieCategories())
+    private suspend fun getMovieCategoriesFromLocal(): List<Category> {
+        return onSuccessGetMovieCategoriesFromLocal(categoryLocalSource.getMovieCategories())
+    }
 
-    private fun onSuccessGetMovieCategoriesFromLocal(localCategories: List<LocalMovieCategoryDto>) =
-        categoryLocalMapper.mapToMovieCategories(localCategories).map { category ->
-            Category(id = category.ordinal.toLong(), name = category.name, image = "")
-        }
+    private fun onSuccessGetMovieCategoriesFromLocal(
+        localCategories: List<LocalMovieCategoryDto>
+    ): List<Category> {
+        return categoryLocalMapper
+            .mapToMovieCategories(localCategories)
+            .map { category ->
+                Category(id = category.ordinal.toLong(), name = category.name, imageUrl = "")
+            }
+    }
 
-    private suspend fun onSuccessLoadMovieCategories(movieCategories: RemoteCategoryResponse) =
-        saveMovieCategoriesToDatabase(movieCategories).let {
-            categoryRemoteMapper.mapToCategories(movieCategories)
-        }
+    private suspend fun onSuccessLoadMovieCategories(
+        movieCategories: RemoteCategoryResponse
+    ): List<Category> {
+        return saveMovieCategoriesToDatabase(movieCategories)
+            .let { categoryRemoteMapper.mapToCategories(movieCategories) }
+    }
 
-    private suspend fun saveMovieCategoriesToDatabase(movieCategories: RemoteCategoryResponse) =
+    private suspend fun saveMovieCategoriesToDatabase(
+        movieCategories: RemoteCategoryResponse
+    ) {
         categoryLocalSource.upsertMovieCategories(
             categoryRemoteMapper.mapToLocalMovieCategories(movieCategories)
         )
+    }
 
-    private suspend fun getTvShowCategoriesFromLocal() =
-        categoryLocalMapper.mapToCategories(categoryLocalSource.getTvShowCategories())
+    private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
+        return categoryLocalMapper.mapToCategories(categoryLocalSource.getTvShowCategories())
+    }
 
-    private suspend fun onSuccessLoadTvShowCategories(tvShowCategories: RemoteCategoryResponse) =
-        saveTvShowCategoriesToDatabase(tvShowCategories).let {
+    private suspend fun onSuccessLoadTvShowCategories(
+        tvShowCategories: RemoteCategoryResponse
+    ): List<Category> {
+        return saveTvShowCategoriesToDatabase(tvShowCategories).let {
             categoryRemoteMapper.mapToCategories(tvShowCategories)
         }
+    }
 
-    private suspend fun saveTvShowCategoriesToDatabase(tvShowCategories: RemoteCategoryResponse) =
+    private suspend fun saveTvShowCategoriesToDatabase(
+        tvShowCategories: RemoteCategoryResponse
+    ) {
         categoryLocalSource.upsertTvShowCategories(
             categoryRemoteMapper.mapToLocalTvShowCategories(tvShowCategories)
         )
+    }
 }
