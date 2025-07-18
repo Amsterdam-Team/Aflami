@@ -3,9 +3,9 @@ package com.example.repository.mapper.remote
 import com.example.entity.TvShow
 import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.remote.RemoteTvShowItemDto
-import com.example.repository.mapper.DateParser
 import com.example.repository.mapper.shared.EntityMapper
 import com.example.repository.mapper.shared.toTvShowCategory
+import com.example.repository.utils.DateParser
 
 class TvShowRemoteMapper(
     private val dateParser: DateParser

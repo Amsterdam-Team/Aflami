@@ -2,8 +2,8 @@ package com.example.repository.mapper.remoteToLocal
 
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.remote.RemoteTvShowItemDto
-import com.example.repository.mapper.DateParser
 import com.example.repository.mapper.shared.RemoteToLocalMapper
+import com.example.repository.utils.DateParser
 
 class TvShowRemoteLocalMapper(
     private val dateParser: DateParser

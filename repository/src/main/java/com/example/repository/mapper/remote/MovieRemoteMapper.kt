@@ -4,10 +4,9 @@ import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
 import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteMovieItemDto
-import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.mapper.DateParser
 import com.example.repository.mapper.shared.EntityMapper
 import com.example.repository.mapper.shared.toMovieCategory
+import com.example.repository.utils.DateParser
 
 class MovieRemoteMapper(
     private val dateParser: DateParser
