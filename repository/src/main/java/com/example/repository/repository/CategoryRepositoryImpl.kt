@@ -5,15 +5,21 @@ import com.example.entity.Category
 import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.remote.RemoteCategoryResponse
-import com.example.repository.mapper.local.CategoryLocalMapper
+import com.example.repository.mapper.local.MovieCategoryLocalMapper
+import com.example.repository.mapper.local.TvShowCategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
+import com.example.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
+import com.example.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
 import com.example.repository.utils.tryToExecute
 
 class CategoryRepositoryImpl(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
-    private val categoryLocalMapper: CategoryLocalMapper,
-    private val categoryRemoteMapper: CategoryRemoteMapper
+    private val movieCategoryLocalMapper: MovieCategoryLocalMapper,
+    private val categoryRemoteMapper: CategoryRemoteMapper,
+    private val movieCategoryRemoteLocalMapper: MovieCategoryRemoteLocalMapper,
+    private val tvShowCategoryRemoteLocalMapper: TvShowCategoryRemoteLocalMapper,
+    private val tvShowCategoryLocalMapper: TvShowCategoryLocalMapper
 ) : CategoryRepository {
 
     override suspend fun getMovieCategories(): List<Category> {
@@ -23,7 +29,7 @@ class CategoryRepositoryImpl(
             function = { categoryRemoteSource.getMovieCategories() },
             onSuccess = { movieCategories ->
                 saveMovieCategoriesToDatabase(movieCategories)
-                categoryRemoteMapper.mapToCategories(movieCategories)
+                categoryRemoteMapper.toEntityList(movieCategories.genres)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -36,7 +42,7 @@ class CategoryRepositoryImpl(
             function = { categoryRemoteSource.getTvShowCategories() },
             onSuccess = { tvShowCategories ->
                 saveTvShowCategoriesToDatabase(tvShowCategories)
-                categoryRemoteMapper.mapToCategories(tvShowCategories)
+                categoryRemoteMapper.toEntityList(tvShowCategories.genres)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -46,14 +52,7 @@ class CategoryRepositoryImpl(
         return tryToExecute(
             function = { categoryLocalSource.getMovieCategories() },
             onSuccess = { localCategories ->
-                categoryLocalMapper.mapToMovieCategories(localCategories)
-                    .map { category ->
-                        Category(
-                            id = category.ordinal.toLong(),
-                            name = category.name,
-                            imageUrl = ""
-                        )
-                    }
+                movieCategoryLocalMapper.toEntityList(localCategories)
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -63,7 +62,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertMovieCategories(
-                    categoryRemoteMapper.mapToLocalMovieCategories(movieCategories)
+                    movieCategoryRemoteLocalMapper.toLocalList(movieCategories.genres)
                 )
             },
             onSuccess = {},
@@ -75,15 +74,7 @@ class CategoryRepositoryImpl(
         return tryToExecute(
             function = { categoryLocalSource.getTvShowCategories() },
             onSuccess = { localCategories ->
-                categoryLocalMapper.mapToTvShowCategories(
-                    localCategories
-                ).map { category ->
-                    Category(
-                        id = category.ordinal.toLong(),
-                        name = category.name,
-                        imageUrl = ""
-                    )
-                }
+                tvShowCategoryLocalMapper.toEntityList(localCategories)
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -93,7 +84,7 @@ class CategoryRepositoryImpl(
         tryToExecute(
             function = {
                 categoryLocalSource.upsertTvShowCategories(
-                    categoryRemoteMapper.mapToLocalTvShowCategories(tvShowCategories)
+                    tvShowCategoryRemoteLocalMapper.toLocalList(tvShowCategories.genres)
                 )
             },
             onSuccess = {},

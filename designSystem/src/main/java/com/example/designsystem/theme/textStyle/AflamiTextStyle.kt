@@ -11,10 +11,8 @@ data class AflamiTextStyle(
     val appLogo: SizedTextStyle,
 )
 
-
 data class SizedTextStyle(
     val large: TextStyle,
     val medium: TextStyle,
     val small: TextStyle,
 )
-

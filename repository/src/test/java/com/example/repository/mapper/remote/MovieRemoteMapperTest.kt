@@ -47,7 +47,7 @@ class MovieRemoteMapperTest {
             voteAverage = 8.8
         )
 
-        val result = mapper.mapToMovie(dto)
+        val result = mapper.toMovie(dto)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
@@ -67,7 +67,7 @@ class MovieRemoteMapperTest {
             posterPath = null
         )
 
-        val result = mapper.mapToMovie(dto)
+        val result = mapper.toMovie(dto)
 
         assertThat(result.posterUrl).isEqualTo("")
     }
@@ -81,7 +81,7 @@ class MovieRemoteMapperTest {
             releaseDate = "invalid-date"
         )
 
-        val result = mapper.mapToMovie(dto)
+        val result = mapper.toMovie(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -95,7 +95,7 @@ class MovieRemoteMapperTest {
             releaseDate = ""
         )
 
-        val result = mapper.mapToMovie(dto)
+        val result = mapper.toMovie(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -114,7 +114,7 @@ class MovieRemoteMapperTest {
             totalResults = 2
         )
 
-        val result = mapper.mapToMovies(response)
+        val result = mapper.toMovies(response)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("Movie A")
@@ -130,7 +130,7 @@ class MovieRemoteMapperTest {
             totalResults = 0
         )
 
-        val result = mapper.mapToMovies(response)
+        val result = mapper.toMovies(response)
 
         assertThat(result).isEmpty()
     }

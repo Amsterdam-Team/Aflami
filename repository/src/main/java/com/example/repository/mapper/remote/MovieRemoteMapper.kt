@@ -3,61 +3,33 @@ package com.example.repository.mapper.remote
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
 import com.example.repository.BuildConfig
-import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
-import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.mapper.shared.mapToMovieCategory
+import com.example.repository.mapper.shared.EntityMapper
+import com.example.repository.mapper.shared.toMovieCategory
+import com.example.repository.utils.DateParser
 
-class MovieRemoteMapper {
+class MovieRemoteMapper(
+    private val dateParser: DateParser
+) : EntityMapper<RemoteMovieItemDto, Movie> {
 
-    fun mapToMovie(remoteMovieItemDto: RemoteMovieItemDto): Movie {
-        val genresIds = if (remoteMovieItemDto.genreIds.isNotEmpty())
-            remoteMovieItemDto.genreIds
-        else remoteMovieItemDto.genres.map { it.id }
+    override fun toEntity(dto: RemoteMovieItemDto): Movie {
+        val genresIds = dto.genreIds.ifEmpty { dto.genres.map { it.id } }
         return Movie(
-            id = remoteMovieItemDto.id,
-            name = remoteMovieItemDto.title,
-            description = remoteMovieItemDto.overview,
-            posterUrl = BuildConfig.BASE_IMAGE_URL + remoteMovieItemDto.posterPath.orEmpty(),
-            productionYear = parseYear(remoteMovieItemDto.releaseDate).toUInt(),
+            id = dto.id,
+            name = dto.title,
+            description = dto.overview,
+            posterUrl = BuildConfig.BASE_IMAGE_URL + dto.posterPath.orEmpty(),
+            productionYear = dateParser.parseYear(dto.releaseDate).toUInt(),
             categories = mapGenreIdsToCategories(genresIds),
-            rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity,
-            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
-            runTime = remoteMovieItemDto.runtime,
-            hasVideo = remoteMovieItemDto.video
+            rating = dto.voteAverage.toFloat(),
+            popularity = dto.popularity,
+            originCountry = dto.originCountry.firstOrNull() ?: "",
+            runTime = dto.runtime,
+            hasVideo = dto.video
         )
-    }
-
-    fun mapToMovies(remoteMovieResponse: RemoteMovieResponse): List<Movie> {
-        return remoteMovieResponse.results.map { mapToMovie(it) }
-    }
-
-    fun mapToLocalMovies(remoteMovieResponse: RemoteMovieResponse): List<LocalMovieDto> {
-        return remoteMovieResponse.results.map { mapToLocalMovie(it) }
-    }
-
-
-    private fun mapToLocalMovie(remoteMovieItemDto: RemoteMovieItemDto): LocalMovieDto {
-        return LocalMovieDto(
-            movieId = remoteMovieItemDto.id,
-            name = remoteMovieItemDto.title,
-            description = remoteMovieItemDto.overview,
-            poster = remoteMovieItemDto.posterPath.orEmpty(),
-            productionYear = parseYear(remoteMovieItemDto.releaseDate),
-            rating = remoteMovieItemDto.voteAverage.toFloat(),
-            popularity = remoteMovieItemDto.popularity,
-            movieLength = remoteMovieItemDto.runtime,
-            originCountry = remoteMovieItemDto.originCountry.firstOrNull() ?: "",
-            hasVideo = remoteMovieItemDto.video
-        )
-    }
-
-    private fun parseYear(date: String): Int {
-        return date.takeIf { it.length >= 4 }?.substring(0, 4)?.toIntOrNull() ?: 0
     }
 
     private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieGenre> {
-        return genreIds.map { it.toLong().mapToMovieCategory() }
+        return genreIds.map { it.toLong().toMovieCategory() }
     }
 }

@@ -4,14 +4,14 @@ import com.example.domain.repository.RecentSearchRepository
 import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
-import com.example.repository.mapper.local.RecentSearchMapper
+import com.example.repository.mapper.local.RecentSearchLocalMapper
 import com.example.repository.utils.tryToExecute
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class RecentSearchRepositoryImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource,
-    private val recentSearchMapper: RecentSearchMapper,
+    private val recentSearchLocalMapper: RecentSearchLocalMapper,
 ) : RecentSearchRepository {
     override suspend fun addRecentSearch(searchKeyword: String) {
         upsertRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
@@ -28,7 +28,7 @@ class RecentSearchRepositoryImpl(
     override suspend fun getRecentSearches(): List<String> {
         return tryToExecute(
             function = { recentSearchLocalSource.getRecentSearches() },
-            onSuccess = { recentSearchMapper.toDomainList(it) },
+            onSuccess = { recentSearchLocalMapper.toEntityList(it) },
             onFailure = { aflamiException -> throw aflamiException }
         )
     }

@@ -30,10 +30,11 @@ fun LoadingIndicator(
     val angle by rememberInfiniteTransition().animateFloat(
         initialValue = 0f,
         targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
     )
 
     val steppedAngle = (angle / 45f).toInt() * 45f
@@ -42,7 +43,9 @@ fun LoadingIndicator(
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_loading),
         contentDescription = null,
         tint = tint,
-        modifier = modifier.size(size).rotate(steppedAngle),
+        modifier = modifier
+            .size(size)
+            .rotate(steppedAngle),
     )
 }
 
