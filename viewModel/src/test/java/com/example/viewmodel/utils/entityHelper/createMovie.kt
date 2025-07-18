@@ -13,7 +13,7 @@ fun createMovie(
     rating: Float = 4.5f,
     originCountry: String = "USA",
     popularity : Double = 0.0,
-    movieLength: Int = 120,
+    runTime: Int = 120,
     hasVideo: Boolean = true
 ): Movie {
     return Movie(
@@ -26,7 +26,7 @@ fun createMovie(
         rating = rating,
         popularity = popularity,
         originCountry = originCountry,
-        movieLength = movieLength,
-        hasVideo = hasVideo
+        runTime = runTime,
+        hasVideo = hasVideo,
     )
 }

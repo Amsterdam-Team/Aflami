@@ -4,6 +4,7 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.viewmodel.search.actorSearch.SearchByActorEffect
+import com.example.viewmodel.search.actorSearch.SearchByActorScreenState
 import com.example.viewmodel.search.actorSearch.SearchByActorViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.TestDispatcherProvider
@@ -126,7 +127,7 @@ class SearchByActorViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.isNetworkError).isTrue()
+            assertThat(state.error).isEqualTo(SearchByActorScreenState.SearchByActorError.NetworkError)
             assertThat(state.isLoading).isFalse()
             assertThat(state.movies).isEmpty()
         }
@@ -146,14 +147,14 @@ class SearchByActorViewModelTest {
         }
 
     @Test
-    fun `onRetrySearchClick should retry search when is called`() = testScope.runTest {
+    fun `onRetrySearchClick should retry search when its called`() = testScope.runTest {
         val keyword = "Will Smith"
         coEvery { getMoviesByActorUseCase(keyword) } throws NetworkException()
         viewModel.onUserSearchChange(keyword)
         advanceUntilIdle()
 
         coVerify(exactly = 1) { getMoviesByActorUseCase(keyword) }
-        assertThat(viewModel.state.value.isNetworkError).isTrue()
+        assertThat(viewModel.state.value.error).isEqualTo(SearchByActorScreenState.SearchByActorError.NetworkError)
 
         val movies = listOf(createMovie(id = 2, name = "I Am Legend"))
         coEvery { getMoviesByActorUseCase(keyword) } returns movies
@@ -198,7 +199,7 @@ class SearchByActorViewModelTest {
         }
 
     @Test
-    fun `onUserSearchChange should update the state with empty list and stop loading and set network error to false when get unknown error `()
+    fun `onUserSearchChange should update the state with empty list and stop loading when get unknown error `()
     = testScope.runTest {
             val keyword = "#%$"
             coEvery { getMoviesByActorUseCase(keyword) } throws AflamiException()
@@ -207,7 +208,6 @@ class SearchByActorViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.isNetworkError).isFalse()
             assertThat(state.isLoading).isFalse()
             assertThat(state.movies).isEmpty()
     }

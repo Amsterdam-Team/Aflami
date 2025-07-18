@@ -7,6 +7,10 @@ data class SearchByActorScreenState(
     val keyword:String="",
     val movies:List<MovieUiState> = emptyList(),
     val selectedMovieId : Long = 0,
-    val isNetworkError : Boolean = false
-)
+    val error : SearchByActorError? = null
+){
+    sealed class SearchByActorError{
+        data object NetworkError : SearchByActorError()
+    }
+}
 

@@ -6,6 +6,7 @@ import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.search.actorSearch.SearchByActorScreenState.SearchByActorError
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -63,7 +64,7 @@ class SearchByActorViewModel(
             it.copy(
                 movies = movies.toListOfUiState(),
                 isLoading = false,
-                isNetworkError = false
+                error = null
             )
         }
     }
@@ -86,13 +87,12 @@ class SearchByActorViewModel(
         updateState {
             when (aflamiException) {
                 is NetworkException -> it.copy(
-                    isNetworkError = true,
+                    error = SearchByActorError.NetworkError,
                     isLoading = false,
                     movies = emptyList()
                 )
 
                 else -> it.copy(
-                    isNetworkError = false,
                     isLoading = false,
                     movies = emptyList()
                 )

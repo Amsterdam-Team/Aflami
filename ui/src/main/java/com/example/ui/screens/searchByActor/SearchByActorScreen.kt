@@ -107,14 +107,19 @@ private fun SearchByActorContent(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         LoadingContainer(modifier = Modifier)
                     }
-                targetState.isNetworkError -> {
-                    NoNetworkContainer(
-                        onClickRetry = interactionListener::onRetrySearchClick,
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally)
-                    )
+                targetState.error != null -> {
+                    when(targetState.error) {
+                        SearchByActorScreenState.SearchByActorError.NetworkError ->
+                            NoNetworkContainer(
+                            onClickRetry = interactionListener::onRetrySearchClick,
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.CenterHorizontally)
+                        )
+                        null -> {}
+                    }
+
                 }
 
                 targetState.keyword.isBlank() -> {
