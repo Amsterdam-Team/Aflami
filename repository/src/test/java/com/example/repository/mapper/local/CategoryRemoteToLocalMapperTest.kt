@@ -6,9 +6,9 @@ import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class CategoryLocalMapperTest {
+class CategoryRemoteToLocalMapperTest {
 
-    private val mapper = CategoryLocalMapper()
+    private val mapper = MovieCategoryLocalMapper()
 
 
     @Test
@@ -28,7 +28,7 @@ class CategoryLocalMapperTest {
             LocalMovieCategoryDto(categoryId = 35, name = "Comedy")
         )
 
-        val result = mapper.mapToMovieCategories(dtos)
+        val result = mapper.toMovieCategories(dtos)
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(

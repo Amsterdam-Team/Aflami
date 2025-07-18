@@ -2,49 +2,39 @@ package com.example.repository.mapper.local
 
 import com.example.entity.Movie
 import com.example.repository.dto.local.LocalMovieDto
-import com.example.repository.dto.local.relation.MovieWithCategories
+import com.example.repository.mapper.shared.DtoMapper
+import com.example.repository.mapper.shared.EntityMapper
 
-class MovieLocalMapper(
-    private val categoryLocalMapper: CategoryLocalMapper
-) {
-
-    fun mapToMovie(movieWithCategories: MovieWithCategories): Movie {
+class MovieLocalMapper : EntityMapper<LocalMovieDto, Movie>,
+    DtoMapper<Movie, LocalMovieDto> {
+    override fun toEntity(dto: LocalMovieDto): Movie {
         return Movie(
-            id = movieWithCategories.movie.movieId,
-            name = movieWithCategories.movie.name,
-            description = movieWithCategories.movie.description,
-            poster = movieWithCategories.movie.poster,
-            productionYear = movieWithCategories.movie.productionYear,
-            rating = movieWithCategories.movie.rating,
-            categories = categoryLocalMapper.mapToMovieCategories(movieWithCategories.categories),
-            popularity = movieWithCategories.movie.popularity,
-            originCountry = movieWithCategories.movie.originCountry,
-            runTime = movieWithCategories.movie.movieLength,
-            hasVideo = movieWithCategories.movie.hasVideo
+            id = dto.movieId,
+            name = dto.name,
+            description = dto.description,
+            poster = dto.poster,
+            productionYear = dto.productionYear,
+            rating = dto.rating,
+            categories = emptyList(),
+            popularity = dto.popularity,
+            runTime = dto.movieLength,
+            originCountry = dto.originCountry,
+            hasVideo = dto.hasVideo
         )
     }
 
-    fun mapToLocalMovie(movie: Movie): LocalMovieDto {
+    override fun toDto(domain: Movie): LocalMovieDto {
         return LocalMovieDto(
-            movieId = movie.id,
-            name = movie.name,
-            description = movie.description,
-            poster = movie.poster,
-            productionYear = movie.productionYear,
-            rating = movie.rating,
-            popularity = movie.popularity,
-            movieLength = movie.runTime,
-            originCountry = movie.originCountry,
-            hasVideo = movie.hasVideo
+            movieId = domain.id,
+            name = domain.name,
+            description = domain.description,
+            poster = domain.poster,
+            productionYear = domain.productionYear,
+            rating = domain.rating,
+            popularity = domain.popularity,
+            movieLength = domain.runTime,
+            originCountry = domain.originCountry,
+            hasVideo = domain.hasVideo
         )
     }
-
-    fun mapToMovies(moviesWithCategories: List<MovieWithCategories>): List<Movie> {
-        return moviesWithCategories.map { mapToMovie(it) }
-    }
-
-    fun mapToLocalMovies(movies: List<Movie>): List<LocalMovieDto> {
-        return movies.map { mapToLocalMovie(it) }
-    }
-
 }
