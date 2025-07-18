@@ -1,4 +1,4 @@
-package com.example.designsystem.components
+package com.example.ui.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -16,10 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,14 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.IconButton
+import com.example.designsystem.components.RatingChip
+import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -200,12 +197,11 @@ private fun EpisodeDescription(episodeDescription: String) {
 @Composable
 private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
     IconButton(
+        painter = painterResource(R.drawable.ic_play),
+        contentDescription = null,
         onClick = onPlayEpisodeClick,
-        colors =
-            IconButtonDefaults.iconButtonColors(
-                containerColor = AppTheme.color.surfaceHigh,
-                contentColor = AppTheme.color.primary,
-            ),
+        containerColor = AppTheme.color.surfaceHigh,
+        tint = AppTheme.color.primary,
         modifier =
             Modifier
                 .border(
@@ -213,12 +209,7 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
                     color = AppTheme.color.stroke,
                     shape = CircleShape,
                 ).size(40.dp),
-    ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_play),
-            contentDescription = null,
-        )
-    }
+    )
 }
 
 @ThemeAndLocalePreviews

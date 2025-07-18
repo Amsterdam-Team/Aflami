@@ -1,4 +1,4 @@
-package com.example.designsystem.components.globalSearchHub
+package com.example.ui.components.globalSearchHub
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

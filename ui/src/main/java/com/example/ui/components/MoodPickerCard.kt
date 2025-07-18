@@ -1,4 +1,4 @@
-package com.example.designsystem.components
+package com.example.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.Icon
+import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -55,8 +55,7 @@ fun MoodPickerCard(
                                 AppTheme.color.yellowAccent,
                             ),
                     ),
-                )
-                .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp)),
+                ).border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp)),
     ) {
         Image(
             painter = painterResource(R.drawable.img_mood_fun_clown),
@@ -189,8 +188,7 @@ private fun BlurredBoxWithIcon(modifier: Modifier = Modifier) {
                         width = 0.5.dp,
                         brush = Brush.linearGradient(AppTheme.color.borderLinearGradient),
                         shape = CircleShape,
-                    )
-                    .blur(8.dp),
+                    ).blur(8.dp),
         )
         Icon(
             painter = painterResource(R.drawable.ic_filled_favourite),

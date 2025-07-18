@@ -9,16 +9,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
-import com.example.designsystem.components.NoDataContainer
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.ui.components.NoDataContainer
 
 @Composable
-internal fun NoMoviesFound(
-    modifier: Modifier = Modifier
-) {
+internal fun NoMoviesFound(modifier: Modifier = Modifier) {
     NoDataContainer(
-        modifier = modifier.padding(vertical = 8.dp).verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .padding(vertical = 8.dp)
+                .verticalScroll(rememberScrollState()),
         title = stringResource(R.string.no_search_result),
         description = stringResource(R.string.no_search_result_for_country),
         imageRes = painterResource(id = R.drawable.placeholder_no_result_found),

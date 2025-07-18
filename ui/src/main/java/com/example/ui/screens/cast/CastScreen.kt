@@ -32,13 +32,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.LoadingContainer
-import com.example.designsystem.components.NoDataContainer
-import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.Text
-import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
+import com.example.ui.components.NoDataContainer
+import com.example.ui.components.NoNetworkContainer
+import com.example.ui.components.appBar.DefaultAppBar
 import com.example.viewmodel.cast.CastInteractionListener
 import com.example.viewmodel.cast.CastUiEffect
 import com.example.viewmodel.cast.CastUiState
@@ -48,9 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CastScreen(
-    viewModel: CastViewModel = koinViewModel(),
-) {
+fun CastScreen(viewModel: CastViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
@@ -60,27 +58,28 @@ fun CastScreen(
         }
     }
 
-    CastContent(state = state, interaction = viewModel,)
+    CastContent(state = state, interaction = viewModel)
 }
 
 @Composable
 private fun CastContent(
     state: CastUiState,
     interaction: CastInteractionListener,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = AppTheme.color.surface)
-            .padding(horizontal = 16.dp)
-            .statusBarsPadding(),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(color = AppTheme.color.surface)
+                .padding(horizontal = 16.dp)
+                .statusBarsPadding(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         DefaultAppBar(
             title = stringResource(R.string.cast),
-            onNavigateBackClicked = interaction::onClickNavigateBack
+            onNavigateBackClicked = interaction::onClickNavigateBack,
         )
 
         AnimatedContent(
@@ -94,19 +93,19 @@ private fun CastContent(
             when {
                 isLoading -> LoadingContainer()
 
-                 state.cast.isEmpty() -> {
+                state.cast.isEmpty() -> {
                     NoDataContainer(
                         modifier = Modifier.fillMaxSize(),
                         title = stringResource(R.string.cast_not_available),
                         description = stringResource(R.string.we_could_not_find_cast_information),
-                        imageRes = painterResource(id = R.drawable.placeholder_no_result_found)
+                        imageRes = painterResource(id = R.drawable.placeholder_no_result_found),
                     )
                 }
 
                 errorState == CastErrorUiState.NoNetworkConnection -> {
                     NoNetworkContainer(
                         modifier = Modifier.fillMaxSize(),
-                        onClickRetry = interaction::onClickRetrySearch
+                        onClickRetry = interaction::onClickRetrySearch,
                     )
                 }
 
@@ -115,7 +114,7 @@ private fun CastContent(
                         modifier = Modifier.fillMaxSize(),
                         columns = GridCells.Adaptive(104.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         items(cast) { actor ->
                             ActorCard(actorImage = actor.actorImage, actorName = actor.actorName)
@@ -127,24 +126,27 @@ private fun CastContent(
     }
 }
 
-
 @Composable
-private fun ActorCard(actorImage: String, actorName: String, modifier: Modifier = Modifier) {
+private fun ActorCard(
+    actorImage: String,
+    actorName: String,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(2.dp),
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
     ) {
         SafeImageView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(122.dp)
-                .border(
-                    width = 1.dp,
-                    color = AppTheme.color.stroke,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clip(RoundedCornerShape(16.dp)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(122.dp)
+                    .border(
+                        width = 1.dp,
+                        color = AppTheme.color.stroke,
+                        shape = RoundedCornerShape(16.dp),
+                    ).clip(RoundedCornerShape(16.dp)),
             contentDescription = actorName,
             model = actorImage,
             contentScale = ContentScale.Crop,
@@ -155,7 +157,7 @@ private fun ActorCard(actorImage: String, actorName: String, modifier: Modifier 
             style = AppTheme.textStyle.label.small,
             color = AppTheme.color.body,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.designsystem.components
+package com.example.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +21,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.designsystem.utils.ripple
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
@@ -44,11 +44,13 @@ fun CategoryCard(
                 .background(
                     color = AppTheme.color.surfaceHigh,
                     shape = RoundedCornerShape(16.dp),
-                ).border(
+                )
+                .border(
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = RoundedCornerShape(16.dp),
-                ).clip(RoundedCornerShape(16.dp))
+                )
+                .clip(RoundedCornerShape(16.dp))
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = ripple(color = AppTheme.color.hint),

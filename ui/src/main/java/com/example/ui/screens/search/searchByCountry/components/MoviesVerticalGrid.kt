@@ -13,10 +13,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
-import com.example.designsystem.components.MovieCard
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
+import com.example.ui.components.MovieCard
 import com.example.viewmodel.search.countrySearch.MovieUiState
 
 @Composable
@@ -24,7 +24,7 @@ internal fun MoviesVerticalGrid(
     movies: List<MovieUiState>,
     isVisible: Boolean,
     modifier: Modifier = Modifier,
-    onMovieClicked:(movieId:Long)-> Unit
+    onMovieClicked: (movieId: Long) -> Unit,
 ) {
     AnimatedVisibility(isVisible) {
         LazyVerticalGrid(
@@ -53,7 +53,7 @@ internal fun MoviesVerticalGrid(
                     movieYear = movie.productionYear,
                     movieTitle = movie.name,
                     movieRating = movie.rating,
-                    onClick = {onMovieClicked(movie.id) }
+                    onClick = { onMovieClicked(movie.id) },
                 )
             }
         }
@@ -76,7 +76,7 @@ private fun MoviesVerticalGridPreview() {
                     )
                 },
             isVisible = true,
-            onMovieClicked = {}
+            onMovieClicked = {},
         )
     }
 }

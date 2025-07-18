@@ -37,21 +37,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.LoadingContainer
-import com.example.designsystem.components.MovieCard
-import com.example.designsystem.components.NoDataContainer
-import com.example.designsystem.components.NoNetworkContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
-import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
+import com.example.ui.components.MovieCard
+import com.example.ui.components.NoDataContainer
+import com.example.ui.components.NoNetworkContainer
+import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.ui.screens.search.sections.filterDialog.FilterDialog
-import com.example.viewmodel.shared.MediaItemUiState
-import com.example.viewmodel.shared.MediaType
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchErrorState
 import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
@@ -59,6 +57,8 @@ import com.example.viewmodel.search.searchByKeyword.SearchUiEffect
 import com.example.viewmodel.search.searchByKeyword.SearchUiState
 import com.example.viewmodel.search.searchByKeyword.SearchViewModel
 import com.example.viewmodel.search.searchByKeyword.TabOption
+import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.shared.MediaType
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -203,8 +203,8 @@ private fun SuccessMediaItems(
     movies: List<MediaItemUiState>,
     tvShows: List<MediaItemUiState>,
     selectedTabOption: TabOption,
-    onMovieClicked : (movieId:Long) -> Unit,
-    modifier: Modifier = Modifier
+    onMovieClicked: (movieId: Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
@@ -241,7 +241,7 @@ private fun SuccessMediaItems(
                     movieYear = yearOfRelease,
                     movieTitle = name,
                     movieRating = rate,
-                    onClick ={ if (mediaType == MediaType.MOVIE) onMovieClicked(id) }
+                    onClick = { if (mediaType == MediaType.MOVIE) onMovieClicked(id) },
                 )
             }
         }

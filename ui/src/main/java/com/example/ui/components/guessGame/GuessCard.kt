@@ -1,4 +1,4 @@
-package com.example.designsystem.components.guessGame
+package com.example.ui.components.guessGame
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -40,9 +40,9 @@ import com.example.designsystem.utils.modifierExtensions.autoMirroredContent
 @Composable
 fun GuessCard(
     points: Int,
-    modifier: Modifier = Modifier,
     isHintVisible: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val cornerRadius by animateDpAsState(
@@ -50,10 +50,12 @@ fun GuessCard(
         animationSpec = tween(300),
     )
 
-    Column {
+    Column(
+        modifier = modifier,
+    ) {
         Box(
             modifier =
-                modifier
+                Modifier
                     .clip(
                         RoundedCornerShape(
                             topEnd = 24.dp,
@@ -89,7 +91,7 @@ fun GuessCard(
                             onClick = onClick,
                         ),
             ) {
-                val size = Size(maxWidth.value, maxHeight.value)
+                val size = Size(this.maxWidth.value, this.maxHeight.value)
 
                 val width = size.width / 9
 

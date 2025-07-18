@@ -33,7 +33,7 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-internal fun BaseCard(
+fun BaseCard(
     movieImage: @Composable () -> Unit,
     movieTitle: String,
     movieType: String,
@@ -55,7 +55,7 @@ internal fun BaseCard(
                     onClick = onClick,
                 ),
     ) {
-        movieImage.invoke()
+        movieImage()
         movieRating?.let {
             RatingChip(
                 modifier =

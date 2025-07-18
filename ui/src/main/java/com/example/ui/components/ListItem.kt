@@ -1,11 +1,10 @@
-package com.example.designsystem.components
+package com.example.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +14,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.shapes.FolderShape
@@ -32,11 +32,12 @@ fun ListItem(
             modifier
                 .clip(
                     folderShape,
-                ).background(AppTheme.color.surfaceHigh)
+                )
+                .background(AppTheme.color.surfaceHigh)
                 .clipToBounds(),
         contentAlignment = Alignment.BottomStart,
     ) {
-        val size = Size(maxWidth.value, maxHeight.value)
+        val size = Size(this.maxWidth.value, this.maxHeight.value)
         val dynamicBottomPadding = folderShape.getBottomPadding(size)
 
         Column(

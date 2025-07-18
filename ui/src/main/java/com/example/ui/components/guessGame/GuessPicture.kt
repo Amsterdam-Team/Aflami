@@ -1,4 +1,4 @@
-package com.example.designsystem.components.guessGame
+package com.example.ui.components.guessGame
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio
@@ -24,8 +24,8 @@ fun GuessPicture(
     points: Int,
     painter: Painter,
     isHintVisible: Boolean,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     GuessCard(
         points = points,
