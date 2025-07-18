@@ -34,17 +34,17 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
-import com.example.viewmodel.search.actorSearch.SearchByActorEffect
-import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
+import com.example.viewmodel.search.actorSearch.SearchActorEffect
+import com.example.viewmodel.search.actorSearch.SearchActorInteractionListener
 
-import com.example.viewmodel.search.actorSearch.SearchByActorScreenState
-import com.example.viewmodel.search.actorSearch.SearchByActorViewModel
+import com.example.viewmodel.search.actorSearch.ActorSearchUiState
+import com.example.viewmodel.search.actorSearch.SearchActorViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchByActorViewModel = koinViewModel(),
+    viewModel: SearchActorViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
@@ -52,10 +52,10 @@ fun SearchByActorScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
 
-                SearchByActorEffect.NavigateBack -> {
+                SearchActorEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
-                SearchByActorEffect.NavigateToDetailsScreen ->
+                SearchActorEffect.NavigateToDetailsScreen ->
                     navController.navigate(Route.MovieDetails(uiState.value.selectedMovieId))
                 null -> {}
             }
@@ -71,8 +71,8 @@ fun SearchByActorScreen(
 @Composable
 private fun SearchByActorContent(
     modifier: Modifier = Modifier,
-    state: SearchByActorScreenState,
-    interactionListener: SearchByActorInteractionListener,
+    state: ActorSearchUiState,
+    interactionListener: SearchActorInteractionListener,
 ) {
     Column(
         modifier = modifier
@@ -83,7 +83,7 @@ private fun SearchByActorContent(
             modifier = Modifier.padding(horizontal = 16.dp),
             title = stringResource(R.string.find_by_actor),
             showNavigateBackButton = true,
-            onNavigateBackClicked = interactionListener::onNavigateBackClick
+            onNavigateBackClicked = interactionListener::onClickNavigateBack
         )
         TextField(
             text = state.keyword,
@@ -109,9 +109,9 @@ private fun SearchByActorContent(
                     }
                 targetState.error != null -> {
                     when(targetState.error) {
-                        SearchByActorScreenState.SearchByActorError.NetworkError ->
+                        ActorSearchUiState.SearchByActorError.NetworkError ->
                             NoNetworkContainer(
-                            onClickRetry = interactionListener::onRetrySearchClick,
+                            onClickRetry = interactionListener::onClickRetrySearch,
                             modifier =
                                 Modifier
                                     .fillMaxSize()
@@ -159,7 +159,7 @@ private fun SearchByActorContent(
                                 movieTitle = movie.name,
                                 movieRating = movie.rating,
                             ){
-                                interactionListener.onMovieClicked(movie.id)
+                                interactionListener.onClickMovie(movie.id)
                             }
                         }
                     }
@@ -175,18 +175,18 @@ private fun SearchByActorContent(
 private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
-            state = SearchByActorScreenState(),
-            interactionListener = object : SearchByActorInteractionListener {
+            state = ActorSearchUiState(),
+            interactionListener = object : SearchActorInteractionListener {
                 override fun onUserSearchChange(query: String) {
                 }
 
-                override fun onNavigateBackClick() {
+                override fun onClickNavigateBack() {
                 }
 
-                override fun onRetrySearchClick() {
+                override fun onClickRetrySearch() {
                 }
 
-                override fun onMovieClicked(movieId: Long) {
+                override fun onClickMovie(movieId: Long) {
                 }
             }
         )

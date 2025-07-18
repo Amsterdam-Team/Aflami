@@ -1,7 +1,6 @@
 package com.example.domain.useCase
 
 import com.example.domain.common.ContentFilteringExtensions.sortByPopularityDescending
-import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 
@@ -11,8 +10,5 @@ class GetMoviesByActorUseCase(
     suspend operator fun invoke(actorName: String): List<Movie> {
         return movieRepository.getMoviesByActor(actorName)
             .sortByPopularityDescending()
-//            .ifEmpty {
-//                throw NoSearchByActorResultFoundException()
-//            }
     }
 }

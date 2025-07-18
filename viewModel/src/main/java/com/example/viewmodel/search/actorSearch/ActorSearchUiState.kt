@@ -2,7 +2,7 @@ package com.example.viewmodel.search.actorSearch
 
 import com.example.viewmodel.search.countrySearch.MovieUiState
 
-data class SearchByActorScreenState(
+data class ActorSearchUiState(
     val isLoading:Boolean = false,
     val keyword:String="",
     val movies:List<MovieUiState> = emptyList(),

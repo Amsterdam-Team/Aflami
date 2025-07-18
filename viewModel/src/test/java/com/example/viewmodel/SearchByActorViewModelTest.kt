@@ -3,9 +3,9 @@ package com.example.viewmodel
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
-import com.example.viewmodel.search.actorSearch.SearchByActorEffect
-import com.example.viewmodel.search.actorSearch.SearchByActorScreenState
-import com.example.viewmodel.search.actorSearch.SearchByActorViewModel
+import com.example.viewmodel.search.actorSearch.SearchActorEffect
+import com.example.viewmodel.search.actorSearch.ActorSearchUiState
+import com.example.viewmodel.search.actorSearch.SearchActorViewModel
 import com.example.viewmodel.search.mapper.toListOfUiState
 import com.example.viewmodel.utils.TestDispatcherProvider
 import com.example.viewmodel.utils.entityHelper.createMovie
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchByActorViewModelTest {
-    private lateinit var viewModel: SearchByActorViewModel
+    private lateinit var viewModel: SearchActorViewModel
 
     private val testDispatcherProvider = TestDispatcherProvider()
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase = mockk(relaxed = true)
@@ -37,7 +37,7 @@ class SearchByActorViewModelTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
-        viewModel = SearchByActorViewModel(
+        viewModel = SearchActorViewModel(
             getMoviesByActorUseCase = getMoviesByActorUseCase,
             dispatcherProvider = testDispatcherProvider
         )
@@ -127,7 +127,7 @@ class SearchByActorViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.error).isEqualTo(SearchByActorScreenState.SearchByActorError.NetworkError)
+            assertThat(state.error).isEqualTo(ActorSearchUiState.SearchByActorError.NetworkError)
             assertThat(state.isLoading).isFalse()
             assertThat(state.movies).isEmpty()
         }
@@ -135,15 +135,15 @@ class SearchByActorViewModelTest {
     @Test
     fun `onNavigateBackClicked should send NavigateBack effect when its called`() =
         testScope.runTest {
-            val effects = mutableListOf<SearchByActorEffect>()
+            val effects = mutableListOf<SearchActorEffect>()
             val collectJob = launch {
                 viewModel.effect.collect { effects.add(it!!) }
             }
 
-            viewModel.onNavigateBackClick()
+            viewModel.onClickNavigateBack()
             advanceUntilIdle()
             collectJob.cancel()
-            assertThat(effects).contains(SearchByActorEffect.NavigateBack)
+            assertThat(effects).contains(SearchActorEffect.NavigateBack)
         }
 
     @Test
@@ -154,12 +154,12 @@ class SearchByActorViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 1) { getMoviesByActorUseCase(keyword) }
-        assertThat(viewModel.state.value.error).isEqualTo(SearchByActorScreenState.SearchByActorError.NetworkError)
+        assertThat(viewModel.state.value.error).isEqualTo(ActorSearchUiState.SearchByActorError.NetworkError)
 
         val movies = listOf(createMovie(id = 2, name = "I Am Legend"))
         coEvery { getMoviesByActorUseCase(keyword) } returns movies
 
-        viewModel.onRetrySearchClick()
+        viewModel.onClickRetrySearch()
         advanceTimeBy(500L)
         advanceUntilIdle()
 
@@ -174,7 +174,7 @@ class SearchByActorViewModelTest {
         testScope.runTest {
             val movieId = 1L
 
-            viewModel.onMovieClicked(movieId)
+            viewModel.onClickMovie(movieId)
             advanceUntilIdle()
 
             assertThat(viewModel.state.value.selectedMovieId).isEqualTo(movieId)
@@ -184,18 +184,18 @@ class SearchByActorViewModelTest {
     fun `onMovieClicked should send NavigateToDetailsScreen effect when its call`() =
         testScope.runTest {
             val movieId = 1L
-            var effect: SearchByActorEffect? = null
+            var effect: SearchActorEffect? = null
 
             val job = launch {
                 viewModel.effect.collect { searchByActorEffect ->
                     effect = searchByActorEffect
                 }
             }
-            viewModel.onMovieClicked(movieId)
+            viewModel.onClickMovie(movieId)
             advanceUntilIdle()
             job.cancel()
 
-            assertThat(effect).isEqualTo(SearchByActorEffect.NavigateToDetailsScreen)
+            assertThat(effect).isEqualTo(SearchActorEffect.NavigateToDetailsScreen)
         }
 
     @Test
