@@ -6,8 +6,6 @@ import com.example.viewmodel.movieDetails.MovieDetailsArgs
 import com.example.viewmodel.movieDetails.MovieDetailsViewModel
 import com.example.viewmodel.cast.CastViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsUiStateMapper
-import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import com.example.viewmodel.search.actorSearch.ActorSearchViewModel
 import com.example.viewmodel.utils.dispatcher.DefaultDispatcherProvider
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
@@ -20,8 +18,6 @@ import org.koin.dsl.module
 val viewModelModule = module {
     singleOf(::DefaultDispatcherProvider) { bind<DispatcherProvider>() }
     viewModelOf(::SearchViewModel)
-    viewModelOf(::SearchByCountryViewModel)
-    viewModelOf(::SearchByActorViewModel)
     factoryOf(::MovieDetailsArgs)
     factoryOf(::MovieDetailsUiStateMapper)
     viewModelOf(::MovieDetailsViewModel)

@@ -9,10 +9,6 @@ import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.viewmodel.shared.Selectable
 import com.example.viewmodel.shared.uiStates.TvGenreItemUiState
 import com.example.viewmodel.shared.uiStates.TvShowItemUiState
-import com.example.viewmodel.shared.MediaItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
-import com.example.viewmodel.search.searchByKeyword.genre.Selectable
-import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
 
 data class SearchUiState(
     val keyword: String = "",
@@ -46,8 +42,8 @@ data class FilterItemUiState(
             MovieGenre.entries.toTypedArray().mapIndexed { index, category ->
                 MovieGenreItemUiState(
                     selectableMovieGenre = Selectable(
-                        type = category,
-                        isSelected = index == 0
+                        item = category,
+                        isSelected = index == 0,
                     )
                 )
             }
@@ -56,7 +52,7 @@ data class FilterItemUiState(
             TvShowGenre.entries.toTypedArray().mapIndexed { index, category ->
                 TvGenreItemUiState(
                     selectableTvShowGenre = Selectable(
-                        type = category,
+                        item = category,
                         isSelected = index == 0
                     )
                 )

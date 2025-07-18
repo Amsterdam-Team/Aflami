@@ -5,7 +5,7 @@ import com.example.viewmodel.shared.Selectable
 
 data class TvGenreItemUiState(
     val selectableTvShowGenre: Selectable<TvShowGenre> = Selectable(
-        type = TvShowGenre.ALL,
+        item = TvShowGenre.ALL,
         isSelected = false
     )
 )

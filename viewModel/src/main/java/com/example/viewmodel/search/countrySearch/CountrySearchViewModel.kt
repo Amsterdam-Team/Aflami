@@ -95,6 +95,11 @@ class CountrySearchViewModel(
         }
     }
 
+    override fun onMovieClicked(movieId: Long) {
+        updateState { it.copy(selectedMovieId = movieId) }
+        sendNewEffect(CountrySearchEffect.NavigateToMovieDetails)
+    }
+
     private fun fetchMoviesByCountry() {
         updateState { it.copy(isLoading = true) }
 

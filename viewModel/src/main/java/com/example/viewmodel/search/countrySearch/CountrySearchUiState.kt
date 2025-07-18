@@ -12,6 +12,7 @@ data class CountrySearchUiState(
     val isLoading: Boolean = false,
     val isCountriesDropDownVisible: Boolean = false,
     val errorUiState: CountrySearchErrorState? = null,
+    val selectedMovieId : Long = 0
 )
 
 data class CountryItemUiState(

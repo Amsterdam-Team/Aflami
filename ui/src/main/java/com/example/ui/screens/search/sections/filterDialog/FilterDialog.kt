@@ -145,9 +145,9 @@ internal fun FilterDialog(
                     TabOption.MOVIES -> {
                         items(
                             items = filterState.selectableMovieGenres,
-                            key = { it.selectableMovieGenre.type.name }
+                            key = { it.selectableMovieGenre.item.name }
                         ) { category ->
-                            val genreType = category.selectableMovieGenre.type
+                            val genreType = category.selectableMovieGenre.item
                             Chip(
                                 icon = getMovieGenreIcon(genreType),
                                 label = getMovieGenreLabel(genreType),
@@ -161,14 +161,14 @@ internal fun FilterDialog(
                     TabOption.TV_SHOWS -> {
                         items(
                             items = filterState.selectableTvShowGenres,
-                            key = { it.selectableTvShowGenre.type.name }
+                            key = { it.selectableTvShowGenre.item.name }
                         ) { category ->
-                            val genreType = category.selectableTvShowGenre.type
+                            val genreType = category.selectableTvShowGenre.item
                             Chip(
                                 icon = getTvShowGenreIcon(genreType),
                                 label = getTvShowGenreLabel(genreType),
                                 isSelected = category.selectableTvShowGenre.isSelected,
-                                onClick = { onTvGenreButtonChanged(category.selectableTvShowGenre.type) },
+                                onClick = { onTvGenreButtonChanged(category.selectableTvShowGenre.item) },
                             )
                         }
                     }

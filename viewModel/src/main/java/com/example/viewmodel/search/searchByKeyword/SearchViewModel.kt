@@ -13,9 +13,6 @@ import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.shared.BaseViewModel
-import com.example.viewmodel.BaseViewModel
-import com.example.viewmodel.shared.toMoveUiStates
-import com.example.viewmodel.shared.toTvShowUiStates
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
@@ -246,13 +243,12 @@ class SearchViewModel(
         }
     }
 
-    override fun onClickFilterButton() {
     override fun onMovieClicked(movieId: Long) {
         updateState { it.copy(selectedMovieId = movieId) }
         sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
     }
 
-    override fun onFilterButtonClicked() {
+    override fun onClickFilterButton() {
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
     }
 

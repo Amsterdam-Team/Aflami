@@ -33,11 +33,13 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route.MovieDetails
 import com.example.ui.screens.searchByCountry.components.CountriesDropdownMenu
 import com.example.ui.screens.searchByCountry.components.CountrySearchField
 import com.example.ui.screens.searchByCountry.components.ExploreCountries
 import com.example.ui.screens.searchByCountry.components.MoviesVerticalGrid
 import com.example.ui.screens.searchByCountry.components.NoMoviesFound
+import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.CountrySearchEffect
 import com.example.viewmodel.search.countrySearch.CountrySearchErrorState
@@ -57,6 +59,8 @@ internal fun SearchByCountryScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 CountrySearchEffect.NavigateBack -> { navController.popBackStack() }
+                CountrySearchEffect.NavigateToMovieDetails ->
+                    navController.navigate(MovieDetails(state.selectedMovieId))
                 else -> {}
             }
         }
@@ -124,7 +128,10 @@ private fun SearchByCountryContent(
                     )
                 }
 
-                else -> MoviesVerticalGrid(movies = uiState.movies, isVisible = true)
+                else -> MoviesVerticalGrid(
+                    movies = uiState.movies, isVisible = true,
+                    onMovieClicked = interactionListener::onMovieClicked
+                )
 
             }
         }
@@ -142,6 +149,8 @@ private fun SearchByCriteriaPreview() {
                 override fun onSelectCountry(country: CountryItemUiState) {}
                 override fun onClickNavigateBack() {}
                 override fun onClickRetry() {}
+                override fun onMovieClicked(movieId: Long) {
+                }
             },
         )
     }

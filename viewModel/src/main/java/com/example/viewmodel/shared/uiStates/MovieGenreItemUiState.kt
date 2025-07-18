@@ -5,7 +5,7 @@ import com.example.viewmodel.shared.Selectable
 
 data class MovieGenreItemUiState(
     val selectableMovieGenre: Selectable<MovieGenre> = Selectable(
-        type = MovieGenre.ALL,
+        item = MovieGenre.ALL,
         isSelected = false
     )
 )

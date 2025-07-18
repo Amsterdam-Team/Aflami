@@ -38,10 +38,8 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
+import com.example.ui.navigation.Route.*
 import com.example.viewmodel.searchByActor.SearchByActorEffect
-import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
-import com.example.viewmodel.searchByActor.SearchByActorScreenState
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState
@@ -68,7 +66,9 @@ fun SearchByActorScreen(
                     isNoInternetConnection = true
                 }
                 SearchByActorEffect.NavigateToDetailsScreen ->
-                    navController.navigate(Route.MovieDetails(uiState.value.selectedMovieId))
+                    navController.navigate(MovieDetails(uiState.value.selectedMovieId))
+                ActorSearchEffect.NavigateToMovieDetails ->
+                    navController.navigate(MovieDetails(uiState.value.selectedMovieId))
                 null -> {}
             }
         }

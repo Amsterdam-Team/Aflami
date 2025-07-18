@@ -5,4 +5,5 @@ interface CountrySearchInteractionListener {
     fun onSelectCountry(country: CountryItemUiState)
     fun onClickNavigateBack()
     fun onClickRetry()
+    fun onMovieClicked(movieId : Long)
 }
