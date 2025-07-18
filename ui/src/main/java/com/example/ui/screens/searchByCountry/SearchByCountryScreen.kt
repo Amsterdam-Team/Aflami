@@ -39,7 +39,6 @@ import com.example.ui.screens.searchByCountry.components.CountrySearchField
 import com.example.ui.screens.searchByCountry.components.ExploreCountries
 import com.example.ui.screens.searchByCountry.components.MoviesVerticalGrid
 import com.example.ui.screens.searchByCountry.components.NoMoviesFound
-import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.CountrySearchEffect
 import com.example.viewmodel.search.countrySearch.CountrySearchErrorState
