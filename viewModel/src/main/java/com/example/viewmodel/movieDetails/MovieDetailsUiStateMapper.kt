@@ -1,7 +1,12 @@
 package com.example.viewmodel.movieDetails
 
 import com.example.domain.useCase.GetMovieDetailsUseCase
-import com.example.viewmodel.common.Selectable
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
+import com.example.viewmodel.shared.Selectable
+import com.example.viewmodel.shared.movieAndSeriseDetails.ActorUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
+import com.example.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -16,7 +21,7 @@ class MovieDetailsUiStateMapper {
             movieTitle = movie.name,
             categories = categories,
             releaseDate = productionYearToDate(movie.productionYear),
-            movieLength = movieLengthToHourMinuteString(movie.movieLength),
+            movieLength = movieLengthToHourMinuteString(movie.runTime),
             originCountry = movie.originCountry,
             description = movie.description,
             hasVideo = movie.hasVideo,
@@ -50,8 +55,8 @@ class MovieDetailsUiStateMapper {
             gallery = movieGallery.map { it},
             reviews = reviews.map {
                 ReviewUiState(
-                    author = it.author,
-                    username = it.username,
+                    author = it.reviewerName,
+                    username = it.reviewerUsername,
                     rating = ratingToRatingString(it.rating),
                     content = it.content,
                     date = dateToString(it.date),

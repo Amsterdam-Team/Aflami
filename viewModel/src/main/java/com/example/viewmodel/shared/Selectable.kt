@@ -1,4 +1,4 @@
-package com.example.viewmodel.common
+package com.example.viewmodel.shared
 
 data class Selectable<T>(
     val isSelected: Boolean,

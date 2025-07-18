@@ -4,6 +4,7 @@ import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetMovieDetailsUseCase
 import com.example.viewmodel.BaseViewModel
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
 class MovieDetailsViewModel(
@@ -38,7 +39,7 @@ class MovieDetailsViewModel(
         updateState { movieDetailsUiStateMapper.toUiState(movieDetails) }
 
 
-    override fun onMovieExtrasClicked(movieExtras: MovieExtras) {
+    override fun onClickMovieExtras(movieExtras: MovieExtras) {
         updateState { state ->
             state.copy(
                 extraItem = state.extraItem.map { selectable ->
@@ -48,15 +49,15 @@ class MovieDetailsViewModel(
         }
     }
 
-    override fun onShowAllCastClicked() {
+    override fun onClickShowAllCast() {
         sendNewEffect(MovieDetailsEffect.NavigateToCastsScreenEffect)
     }
 
-    override fun onBackClicked() {
+    override fun onClickBack() {
         sendNewEffect(MovieDetailsEffect.NavigateBackEffect)
     }
 
-    override fun onRetryQuestClicked() {
+    override fun onClickRetryRequest() {
         loadMovieDetails()
     }
 

@@ -1,8 +1,10 @@
 package com.example.viewmodel.movieDetails
 
+import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
+
 interface MovieDetailsInteractionListener  {
-    fun onMovieExtrasClicked(movieExtras: MovieExtras)
-    fun onShowAllCastClicked()
-    fun onBackClicked()
-    fun onRetryQuestClicked()
+    fun onClickMovieExtras(movieExtras: MovieExtras)
+    fun onClickShowAllCast()
+    fun onClickBack()
+    fun onClickRetryRequest()
 }

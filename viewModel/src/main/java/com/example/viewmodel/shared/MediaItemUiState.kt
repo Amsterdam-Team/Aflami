@@ -1,4 +1,4 @@
-package com.example.viewmodel.common
+package com.example.viewmodel.shared
 
 import android.icu.text.DecimalFormat
 import com.example.entity.Movie

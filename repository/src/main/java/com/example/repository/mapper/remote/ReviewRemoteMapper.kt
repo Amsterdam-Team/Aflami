@@ -12,8 +12,8 @@ class ReviewRemoteMapper {
         return response.results.map { dto ->
             Review(
                 id = dto.id.hashCode().toLong(),
-                author = dto.author,
-                username = dto.authorDetails.username,
+                reviewerName = dto.author,
+                reviewerUsername = dto.authorDetails.username,
                 rating = dto.authorDetails.rating ?: 0f,
                 content = dto.content,
                 date = dto.createdAt.toLocalDateTime(TimeZone.UTC).date,
