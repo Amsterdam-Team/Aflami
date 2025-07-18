@@ -15,3 +15,10 @@ fun List<Country>.toUiState(): List<CountryItemUiState> {
         country.toUiState()
     }
 }
+
+fun CountryItemUiState?.toCountry(): Country {
+    return Country(
+        countryName = this?.countryName ?: "",
+        countryIsoCode = this?.countryIsoCode ?: ""
+    )
+}

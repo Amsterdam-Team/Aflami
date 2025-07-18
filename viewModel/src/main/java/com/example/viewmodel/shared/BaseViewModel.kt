@@ -3,7 +3,6 @@ package com.example.viewmodel.shared
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
-import com.example.domain.exceptions.UnknownException
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -55,7 +54,7 @@ open class BaseViewModel<S, E>(
             } catch (exception: AflamiException) {
                 onError(exception)
             } catch (_: Exception) {
-                onError(UnknownException())
+                onError(AflamiException())
             } finally {
                 onCompletion()
             }

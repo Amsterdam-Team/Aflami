@@ -52,7 +52,7 @@ class MovieRemoteMapperTest {
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
         assertThat(result.description).isEqualTo("A mind-bending thriller")
-        assertThat(result.poster).isEqualTo("/inception.jpg")
+        assertThat(result.posterUrl).isEqualTo("/inception.jpg")
         assertThat(result.productionYear).isEqualTo(2010)
         assertThat(result.rating).isEqualTo(8.8f)
         assertThat(result.categories).containsExactly(MovieGenre.ACTION, MovieGenre.ADVENTURE)
@@ -69,7 +69,7 @@ class MovieRemoteMapperTest {
 
         val result = mapper.toMovie(dto)
 
-        assertThat(result.poster).isEqualTo("")
+        assertThat(result.posterUrl).isEqualTo("")
     }
 
     @Test

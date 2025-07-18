@@ -15,8 +15,8 @@ class TvShowRemoteMapper(
             id = dto.id,
             name = dto.title,
             description = dto.overview,
-            poster = dto.posterPath.orEmpty(),
-            productionYear = dateParser.parseYear(dto.releaseDate),
+            posterUrl = dto.posterPath.orEmpty(),
+            productionYear = dateParser.parseYear(dto.releaseDate).toUInt(),
             categories = mapGenreIdsToCategories(dto.genreIds),
             rating = dto.voteAverage.toFloat(),
             popularity = dto.popularity

@@ -53,7 +53,7 @@ class TvShowRemoteMapperTest {
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Loki")
         assertThat(result.description).isEqualTo("Time travel and mischief")
-        assertThat(result.poster).isEqualTo("/loki.jpg")
+        assertThat(result.posterUrl).isEqualTo("/loki.jpg")
         assertThat(result.productionYear).isEqualTo(2021)
         assertThat(result.rating).isEqualTo(8.5f)
         assertThat(result.categories).containsExactly(TvShowGenre.ANIMATION)
@@ -70,7 +70,7 @@ class TvShowRemoteMapperTest {
 
         val result = mapper.toTvShow(dto)
 
-        assertThat(result.poster).isEqualTo("")
+        assertThat(result.posterUrl).isEqualTo("")
     }
 
     @Test

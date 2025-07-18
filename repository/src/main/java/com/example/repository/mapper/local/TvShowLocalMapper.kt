@@ -12,8 +12,8 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             id = dto.tvShowId,
             name = dto.name,
             description = dto.description,
-            poster = dto.poster,
-            productionYear = dto.productionYear,
+            posterUrl = dto.poster,
+            productionYear = dto.productionYear.toUInt(),
             rating = dto.rating,
             categories = emptyList(),
             popularity = dto.popularity
@@ -25,8 +25,8 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             tvShowId = domain.id,
             name = domain.name,
             description = domain.description,
-            poster = domain.poster,
-            productionYear = domain.productionYear,
+            poster = domain.posterUrl,
+            productionYear = domain.productionYear.toInt(),
             rating = domain.rating,
             popularity = domain.popularity
         )

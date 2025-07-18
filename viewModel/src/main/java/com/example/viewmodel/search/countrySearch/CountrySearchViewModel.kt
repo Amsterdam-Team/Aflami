@@ -5,24 +5,24 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
-import com.example.domain.useCase.search.AddRecentSearchUseCase
+import com.example.domain.useCase.RecentSearchesUseCase
 import com.example.entity.Country
 import com.example.entity.Movie
-import com.example.viewmodel.shared.BaseViewModel
+import com.example.viewmodel.search.mapper.toCountry
 import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.search.mapper.toUiState
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.isNotEmpty
 
 class CountrySearchViewModel(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
-    private val addRecentSearchUseCase: AddRecentSearchUseCase,
+    private val recentSearchesUseCase: RecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<CountrySearchUiState, CountrySearchEffect>(
     CountrySearchUiState(),
@@ -85,7 +85,7 @@ class CountrySearchViewModel(
                 isCountriesDropDownVisible = false
             )
         }
-        fetchMoviesByCountry()
+        fetchMoviesByCountry(getSelectedCountry())
     }
 
     override fun onClickRetry() {
@@ -94,7 +94,7 @@ class CountrySearchViewModel(
 
         when {
             !hasSelectedCountry && hasKeyword -> fetchCountriesByKeyword(state.value.keyword)
-            hasSelectedCountry -> fetchMoviesByCountry()
+            hasSelectedCountry -> fetchMoviesByCountry(getSelectedCountry())
 
         }
     }
@@ -104,16 +104,22 @@ class CountrySearchViewModel(
         sendNewEffect(CountrySearchEffect.NavigateToMovieDetails)
     }
 
-    private fun fetchMoviesByCountry() {
+    private fun fetchMoviesByCountry(selectedCountry: Country) {
         updateState { it.copy(isLoading = true) }
 
-        viewModelScope.launch { addRecentSearchUseCase(state.value.selectedCountryIsoCode) }
+        viewModelScope.launch { recentSearchesUseCase.addRecentSearchForCountry(selectedCountry) }
 
         tryToExecute(
-            action = { getMoviesByCountryUseCase(state.value.selectedCountryIsoCode) },
+            action = { getMoviesByCountryUseCase(selectedCountry) },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError
         )
+    }
+
+    private fun getSelectedCountry(): Country {
+        return state.value.suggestedCountries.find {
+            state.value.selectedCountryIsoCode == it.countryIsoCode
+        }.toCountry()
     }
 
     private fun onFetchMoviesSuccess(movies: List<Movie>) {
