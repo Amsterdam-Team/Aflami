@@ -14,6 +14,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
+import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.R
@@ -41,7 +43,7 @@ fun GuessPicture(
                 Modifier
                     .fillMaxWidth()
                     .aspectRatio((360 / 160).toFloat())
-                    .blur(radius = blurRadius, BlurredEdgeTreatment.Unbounded)
+                    .blur(radius = blurRadius.value, BlurEdgeTreatment.UNBOUNDED)
                     .clip(RoundedCornerShape(20.dp)),
         )
     }

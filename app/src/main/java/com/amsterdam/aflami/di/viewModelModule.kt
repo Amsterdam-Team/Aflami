@@ -1,15 +1,12 @@
 package com.amsterdam.aflami.di
 
-import com.example.viewmodel.search.searchByKeyword.SearchViewModel
+import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
+import com.example.viewmodel.search.keywordSearch.SearchViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsArgs
 import com.example.viewmodel.movieDetails.MovieDetailsViewModel
 import com.example.viewmodel.cast.CastViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsUiStateMapper
-import com.example.viewmodel.search.countrySearch.SearchByCountryViewModel
-import com.example.viewmodel.searchByActor.SearchByActorViewModel
-import com.example.viewmodel.seriesDetails.SeriesDetailsArgs
-import com.example.viewmodel.seriesDetails.SeriesDetailsStateMapper
-import com.example.viewmodel.seriesDetails.SeriesDetailsViewModel
+import com.example.viewmodel.search.actorSearch.ActorSearchViewModel
 import com.example.viewmodel.utils.dispatcher.DefaultDispatcherProvider
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import org.koin.core.module.dsl.bind
@@ -30,4 +27,6 @@ val viewModelModule = module {
     viewModelOf(::SeriesDetailsViewModel)
     factoryOf(::SeriesDetailsArgs)
     factoryOf(::SeriesDetailsStateMapper)
+    viewModelOf(::CountrySearchViewModel)
+    viewModelOf(::ActorSearchViewModel)
 }

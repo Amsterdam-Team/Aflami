@@ -18,7 +18,7 @@ class CountryRepositoryImpl(
     private val countryRemoteLocalMapper: CountryRemoteLocalMapper
 ): CountryRepository {
 
-    override suspend fun getAllCountries(): List<Country> {
+    override suspend fun getCountries(): List<Country> {
         val countriesFromLocal = getCountriesFromLocal()
         if (countriesFromLocal.isNotEmpty()) return countriesFromLocal
         return tryToExecute(

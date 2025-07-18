@@ -2,6 +2,7 @@ package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Actor
+import com.example.entity.Country
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany
 import com.example.entity.Review
@@ -54,15 +55,15 @@ class MovieRepositoryImpl(
         return getMoviesByActorNameFromRemote(actorName, searchType)
     }
 
-    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
+    override suspend fun getMoviesByCountry(country: Country): List<Movie> {
         var movies: List<Movie> = emptyList()
         val searchType = SearchType.BY_COUNTRY
-        if (!recentSearchHandler.isExpired(countryIsoCode, searchType)) {
-            movies = getMoviesFromLocal(countryIsoCode, searchType)
+        if (!recentSearchHandler.isExpired(country.countryIsoCode, searchType)) {
+            movies = getMoviesFromLocal(country.countryIsoCode, searchType)
         }
         if (movies.isNotEmpty()) return movies
-        recentSearchHandler.deleteRecentSearch(countryIsoCode, searchType)
-        return getMoviesByCountryIsoCodeFromRemote(countryIsoCode, searchType)
+        recentSearchHandler.deleteRecentSearch(country.countryIsoCode, searchType)
+        return getMoviesByCountryIsoCodeFromRemote(country.countryIsoCode, searchType)
     }
 
     private suspend fun getMoviesByKeywordFromRemote(
