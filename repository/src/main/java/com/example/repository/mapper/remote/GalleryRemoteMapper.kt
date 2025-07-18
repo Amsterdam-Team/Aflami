@@ -6,6 +6,6 @@ import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
 class GalleryRemoteMapper {
 
     fun mapGalleryToDomain(galleryResponse: RemoteMovieGalleryResponse) : List<String> =
-        galleryResponse.posters.map { BuildConfig.BASE_IMAGE_URL +it.filePath }
+        galleryResponse.backdrops.map { BuildConfig.BASE_IMAGE_URL +it.filePath }
 
 }
