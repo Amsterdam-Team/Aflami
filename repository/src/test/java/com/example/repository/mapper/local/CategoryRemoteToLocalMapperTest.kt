@@ -6,9 +6,9 @@ import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class CategoryLocalMapperTest {
+class CategoryRemoteToLocalMapperTest {
 
-    private val mapper = CategoryLocalMapper()
+    private val mapper = MovieCategoryLocalMapper()
 
 
     @Test

@@ -6,17 +6,19 @@ import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteTvShowResponse
-import com.example.repository.mapper.local.TvShowLocalMapper
+import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
+import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.tryToExecute
 
 class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
-    private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
+    private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
+    private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper
 ) : TvShowRepository {
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
         var tvShows: List<TvShow> = emptyList()
@@ -37,7 +39,7 @@ class TvShowRepositoryImpl(
                     searchType = SearchType.BY_KEYWORD
                 )
             },
-            onSuccess = { localTvShows -> tvLocalMapper.toTvShows(localTvShows) },
+            onSuccess = { localTvShows -> tvShowWithCategoryLocalMapper.toEntityList(localTvShows) },
             onFailure = { emptyList() },
         )
     }
@@ -51,7 +53,7 @@ class TvShowRepositoryImpl(
             },
             onSuccess = { remoteTvShows ->
                 saveTvShowsToDatabase(remoteTvShows, keyword)
-                tvRemoteMapper.toTvShows(remoteTvShows)
+                tvRemoteMapper.toEntityList(remoteTvShows.results)
             },
             onFailure = { aflamiException -> throw aflamiException },
         )
@@ -61,7 +63,7 @@ class TvShowRepositoryImpl(
         remoteTvShows: RemoteTvShowResponse,
         keyword: String
     ) {
-        val localTvShows = tvRemoteMapper.toLocalTvShows(remoteTvShows)
+        val localTvShows = tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results)
         tryToExecute(
             function = {
                 localTvDataSource.addTvShows(

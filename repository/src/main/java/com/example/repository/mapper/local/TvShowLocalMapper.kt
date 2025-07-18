@@ -1,33 +1,13 @@
 package com.example.repository.mapper.local
 
-import com.example.domain.mapper.DomainMapper
-import com.example.domain.mapper.DtoMapper
 import com.example.entity.TvShow
 import com.example.repository.dto.local.LocalTvShowDto
-import com.example.repository.dto.local.relation.TvShowWithCategory
+import com.example.repository.mapper.shared.DtoMapper
+import com.example.repository.mapper.shared.EntityMapper
 
-class TvShowLocalMapper(
-    private val categoryLocalMapper: CategoryLocalMapper
-) : DomainMapper<TvShow, LocalTvShowDto>, DtoMapper<TvShow, LocalTvShowDto> {
+class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow, LocalTvShowDto> {
 
-    fun toTvShows(tvShowWithCategories: List<TvShowWithCategory>): List<TvShow> {
-        return tvShowWithCategories.map { toTvShow(it) }
-    }
-
-    fun toTvShow(tvShowWithCategory: TvShowWithCategory): TvShow {
-        return TvShow(
-            id = tvShowWithCategory.tvShow.tvShowId,
-            name = tvShowWithCategory.tvShow.name,
-            description = tvShowWithCategory.tvShow.description,
-            poster = tvShowWithCategory.tvShow.poster,
-            productionYear = tvShowWithCategory.tvShow.productionYear,
-            rating = tvShowWithCategory.tvShow.rating,
-            categories = categoryLocalMapper.toTvShowCategories(tvShowWithCategory.categories),
-            popularity = tvShowWithCategory.tvShow.popularity
-        )
-    }
-
-    override fun toDomain(dto: LocalTvShowDto): TvShow {
+    override fun toEntity(dto: LocalTvShowDto): TvShow {
         return TvShow(
             id = dto.tvShowId,
             name = dto.name,

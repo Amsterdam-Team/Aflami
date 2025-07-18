@@ -7,6 +7,7 @@ import com.example.repository.datasource.remote.CountryRemoteSource
 import com.example.repository.dto.remote.RemoteCountryDto
 import com.example.repository.mapper.local.CountryLocalMapper
 import com.example.repository.mapper.remote.CountryRemoteMapper
+import com.example.repository.mapper.remoteToLocal.CountryRemoteLocalMapper
 import com.example.repository.utils.tryToExecute
 
 class CountryRepositoryImpl(
@@ -14,6 +15,7 @@ class CountryRepositoryImpl(
     private val remoteDataSource: CountryRemoteSource,
     private val countryRemoteMapper: CountryRemoteMapper,
     private val countryLocalMapper: CountryLocalMapper,
+    private val countryRemoteLocalMapper: CountryRemoteLocalMapper
 ): CountryRepository {
 
     override suspend fun getAllCountries(): List<Country> {
@@ -23,7 +25,7 @@ class CountryRepositoryImpl(
             function = { remoteDataSource.getCountries() },
             onSuccess = { remoteCountries ->
                 saveCountries(remoteCountries)
-                countryRemoteMapper.toDomainList(remoteCountries)
+                countryRemoteMapper.toEntityList(remoteCountries)
             },
             onFailure = { aflamiException -> throw aflamiException }
         )
@@ -32,12 +34,12 @@ class CountryRepositoryImpl(
     private suspend fun getCountriesFromLocal(): List<Country> {
         return tryToExecute(
             function = { localDataSource.getCountries() },
-            onSuccess = { localCountries -> countryLocalMapper.toDomainList(localCountries) },
+            onSuccess = { localCountries -> countryLocalMapper.toEntityList(localCountries) },
             onFailure = { emptyList() }
         )
     }
 
     private suspend fun saveCountries(remoteCountries: List<RemoteCountryDto>) {
-        localDataSource.addCountries(countryRemoteMapper.toLocalCountries(remoteCountries))
+        localDataSource.addCountries(countryRemoteLocalMapper.toLocalList(remoteCountries))
     }
 }

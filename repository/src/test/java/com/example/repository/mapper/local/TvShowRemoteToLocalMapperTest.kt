@@ -8,9 +8,9 @@ import com.example.repository.dto.local.relation.TvShowWithCategory
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class TvShowLocalMapperTest {
+class TvShowRemoteToLocalMapperTest {
 
-    private val mapper = TvShowLocalMapper(CategoryLocalMapper())
+    private val mapper = TvShowLocalMapper(MovieCategoryLocalMapper())
 
     @Test
     fun `should return TvShow with all fields and categories when mapping from LocalTvShowDto`() {

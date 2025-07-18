@@ -7,9 +7,9 @@ import com.example.repository.dto.local.relation.MovieWithCategories
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class MovieLocalMapperTest {
+class MovieRemoteToLocalMapperTest {
 
-    private val mapper = MovieLocalMapper(CategoryLocalMapper())
+    private val mapper = MovieLocalMapper(MovieCategoryLocalMapper())
 
 
 
@@ -90,7 +90,7 @@ class MovieLocalMapperTest {
             Movie(2L, "Movie B", "Desc B", "b.jpg", 2002, emptyList(), 7.2f, 0.0)
         )
 
-        val mapper = MovieLocalMapper(CategoryLocalMapper())
+        val mapper = MovieLocalMapper(MovieCategoryLocalMapper())
 
         val result = mapper.toLocalMovies(domains)
 

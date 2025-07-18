@@ -1,36 +1,13 @@
 package com.example.repository.mapper.local
 
-import com.example.domain.mapper.DomainMapper
-import com.example.domain.mapper.DtoMapper
 import com.example.entity.Movie
 import com.example.repository.dto.local.LocalMovieDto
-import com.example.repository.dto.local.relation.MovieWithCategories
+import com.example.repository.mapper.shared.DtoMapper
+import com.example.repository.mapper.shared.EntityMapper
 
-class MovieLocalMapper(
-    private val categoryLocalMapper: CategoryLocalMapper
-) : DomainMapper<Movie, LocalMovieDto>, DtoMapper<Movie, LocalMovieDto> {
-
-    fun toMovie(movieWithCategories: MovieWithCategories): Movie {
-        return Movie(
-            id = movieWithCategories.movie.movieId,
-            name = movieWithCategories.movie.name,
-            description = movieWithCategories.movie.description,
-            poster = movieWithCategories.movie.poster,
-            productionYear = movieWithCategories.movie.productionYear,
-            rating = movieWithCategories.movie.rating,
-            categories = categoryLocalMapper.toMovieCategories(movieWithCategories.categories),
-            popularity = movieWithCategories.movie.popularity,
-            originCountry = movieWithCategories.movie.originCountry,
-            runTime = movieWithCategories.movie.movieLength,
-            hasVideo = movieWithCategories.movie.hasVideo
-        )
-    }
-
-    fun toMovies(moviesWithCategories: List<MovieWithCategories>): List<Movie> {
-        return moviesWithCategories.map { toMovie(it) }
-    }
-
-    override fun toDomain(dto: LocalMovieDto): Movie {
+class MovieLocalMapper : EntityMapper<LocalMovieDto, Movie>,
+    DtoMapper<Movie, LocalMovieDto> {
+    override fun toEntity(dto: LocalMovieDto): Movie {
         return Movie(
             id = dto.movieId,
             name = dto.name,
@@ -60,5 +37,4 @@ class MovieLocalMapper(
             hasVideo = domain.hasVideo
         )
     }
-
 }
