@@ -24,7 +24,9 @@ class TvShowLocalMapper(
             poster = tvShow.poster,
             productionYear = tvShow.productionYear,
             rating = tvShow.rating,
-            popularity = tvShow.popularity
+            popularity = tvShow.popularity,
+            seasonCount = tvShow.seasonCount,
+            originCountry = tvShow.originCountry,
         )
     }
 
@@ -37,7 +39,9 @@ class TvShowLocalMapper(
             productionYear = tvShowWithCategory.tvShow.productionYear,
             rating = tvShowWithCategory.tvShow.rating,
             categories = categoryLocalMapper.mapToTvShowCategories(tvShowWithCategory.categories),
-            popularity = tvShowWithCategory.tvShow.popularity
+            popularity = tvShowWithCategory.tvShow.popularity,
+            seasonCount = tvShowWithCategory.tvShow.seasonCount,
+            originCountry = tvShowWithCategory.tvShow.originCountry,
         )
     }
 }

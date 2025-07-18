@@ -25,7 +25,9 @@ class TvShowRemoteMapper {
             productionYear = parseYear(remoteTvShowItemDto.releaseDate),
             categories = mapGenreIdsToCategories(remoteTvShowItemDto.genreIds),
             rating = remoteTvShowItemDto.voteAverage.toFloat(),
-            popularity = remoteTvShowItemDto.popularity
+            popularity = remoteTvShowItemDto.popularity,
+            seasonCount = remoteTvShowItemDto.seasonCount,
+            originCountry = remoteTvShowItemDto.originCountry.firstOrNull() ?: "",
         )
     }
 
@@ -37,7 +39,9 @@ class TvShowRemoteMapper {
             poster = remoteTvShowItemDto.posterPath.orEmpty(),
             productionYear = parseYear(remoteTvShowItemDto.releaseDate),
             rating = remoteTvShowItemDto.voteAverage.toFloat(),
-            popularity = remoteTvShowItemDto.popularity
+            popularity = remoteTvShowItemDto.popularity,
+            seasonCount = remoteTvShowItemDto.seasonCount,
+            originCountry = remoteTvShowItemDto.originCountry.firstOrNull() ?: "",
         )
     }
 

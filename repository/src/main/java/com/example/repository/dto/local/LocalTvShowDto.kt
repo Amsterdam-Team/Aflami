@@ -14,5 +14,7 @@ data class LocalTvShowDto(
     val poster: String,
     val productionYear: Int,
     val rating: Float,
-    val popularity: Double
+    val popularity: Double,
+    val seasonCount: Int,
+    val originCountry: String
 )
