@@ -11,6 +11,8 @@ data class TvShow(
     val poster: String,
     val productionYear: Int,
     val categories: List<TvShowGenre>,
+    val seasonCount: Int,
+    val originCountry: String,
     override val rating: Float,
     override val popularity: Double
 ) : PopularitySortable, RatingFilterable
