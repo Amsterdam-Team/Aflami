@@ -16,7 +16,9 @@ class TvShowWithCategoryLocalMapper(
             productionYear = dto.tvShow.productionYear,
             rating = dto.tvShow.rating,
             categories = tvShowGenreLocalMapper.toEntityList(dto.categories),
-            popularity = dto.tvShow.popularity
+            popularity = dto.tvShow.popularity,
+            seasonCount = dto.tvShow.seasonCount,
+            originCountry = dto.tvShow.originCountry,
         )
     }
 }

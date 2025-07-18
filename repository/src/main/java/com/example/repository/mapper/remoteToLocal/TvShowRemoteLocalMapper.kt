@@ -16,7 +16,9 @@ class TvShowRemoteLocalMapper(
             poster = remote.posterPath.orEmpty(),
             productionYear = dateParser.parseYear(remote.releaseDate),
             rating = remote.voteAverage.toFloat(),
-            popularity = remote.popularity
+            popularity = remote.popularity,
+            seasonCount = remote.seasonCount,
+            originCountry = remote.originCountry.firstOrNull() ?: "",
         )
     }
 }

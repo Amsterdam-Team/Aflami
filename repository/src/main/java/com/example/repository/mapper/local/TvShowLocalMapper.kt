@@ -17,8 +17,8 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             rating = dto.rating,
             categories = emptyList(),
             popularity = dto.popularity,
-            seasonCount = dto.tvShow.seasonCount,
-            originCountry = dto.tvShow.originCountry,
+            seasonCount = dto.seasonCount,
+            originCountry = dto.originCountry,
         )
     }
 

@@ -1,7 +1,6 @@
 package com.example.ui.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -209,7 +208,8 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = CircleShape,
-                ).size(40.dp),
+                )
+                .size(40.dp),
     )
 }
 
