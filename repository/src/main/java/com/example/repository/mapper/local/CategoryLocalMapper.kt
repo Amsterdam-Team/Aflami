@@ -37,12 +37,21 @@ class CategoryLocalMapper {
         return Category(
             id = tvShowGenre.ordinal.toLong(),
             name = tvShowGenre.name,
-            image = ""
+            imageUrl = ""
         )
     }
 
     private fun mapToMovieCategory(localMovieCategory: LocalMovieCategoryDto): MovieGenre {
         return localMovieCategory.categoryId.mapToMovieCategory()
+    }
+
+
+    fun mapLocalCategoryToDomain(localCategory : LocalMovieCategoryDto): Category {
+        return Category(
+            id = localCategory.categoryId,
+            name = localCategory.name,
+            imageUrl = ""
+        )
     }
 
     private fun mapToTvShowCategory(localTvShowCategory: LocalTvShowCategoryDto): TvShowGenre {

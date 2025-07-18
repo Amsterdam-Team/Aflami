@@ -1,21 +1,33 @@
 package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
+import com.example.entity.Actor
+import com.example.entity.Movie
+import com.example.entity.ProductionCompany
+import com.example.entity.Review
 import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
+import com.example.repository.mapper.remote.CastRemoteMapper
+import com.example.repository.mapper.remote.GalleryRemoteMapper
+import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
+import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.utils.RecentSearchHandler
 import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
     private val movieLocalSource: MovieLocalSource,
-    private val movieDataSource: MovieRemoteSource,
+    private val movieRemoteDataSource: MovieRemoteSource,
     private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: MovieRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
+    private val castRemoteMapper: CastRemoteMapper,
+    private val reviewRemoteMapper: ReviewRemoteMapper,
+    private val galleryRemoteMapper: GalleryRemoteMapper,
+    private val remoteProductionCompanyMapper: ProductionCompanyRemoteMapper,
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String) =
         getCachedMovies(keyword, SearchType.BY_KEYWORD) ?: recentSearchHandler.deleteRecentSearch(
@@ -39,6 +51,29 @@ class MovieRepositoryImpl(
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
             ?.let { getMoviesFromLocal(keyword, searchType) }
             ?.takeIf { movies -> movies.isNotEmpty() }
+
+    override suspend fun getActorsByMovieId(movieId: Long): List<Actor> =
+        movieRemoteDataSource.getCastByMovieId(movieId).cast.map { castRemoteMapper.mapToDomain(it) }
+
+
+    override suspend fun getMovieReviews(movieId: Long): List<Review> =
+        reviewRemoteMapper.mapResponseToDomain(movieRemoteDataSource.getMovieReviews(movieId))
+
+    override suspend fun getMovieDetailsById(movieId: Long): Movie {
+        return movieRemoteMapper.mapToMovie(movieRemoteDataSource.getMovieDetailsById(movieId))
+    }
+
+    override suspend fun getSimilarMovies(movieId: Long): List<Movie> =
+        movieRemoteMapper.mapToMovies(movieRemoteDataSource.getSimilarMovies(movieId))
+
+    override suspend fun getMovieGallery(movieId: Long): List<String> =
+        galleryRemoteMapper.mapGalleryToDomain(movieRemoteDataSource.getMovieGallery(movieId))
+
+    override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
+        return  remoteProductionCompanyMapper.mapProductionCompanyToDomain(
+            movieRemoteDataSource.getProductionCompany(movieId)
+        )
+    }
 
     private suspend fun getMoviesByKeywordFromRemote(
         keyword: String, searchType: SearchType

@@ -201,4 +201,8 @@
     <string name="search_error_blank_query">Please enter something.</string>
     <string name="search_error_unknown">An unknown error occurred.</string>
     <string name="search_suggestions_hub">Search Suggestions Hub</string>
+
+    <!-- - Cast  -->
+    <string name="cast_not_available">"Cast Not Available"</string>
+    <string name="we_could_not_find_cast_information">"We couldn't find cast information for this title right now. Please try again later."</string>
 </resources>

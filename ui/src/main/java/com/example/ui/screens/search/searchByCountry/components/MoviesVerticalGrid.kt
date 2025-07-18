@@ -20,7 +20,8 @@ import com.example.viewmodel.search.countrySearch.MovieUiState
 internal fun MoviesVerticalGrid(
     movies: List<MovieUiState>,
     isVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMovieClicked:(movieId:Long)-> Unit
 ) {
     AnimatedVisibility(isVisible) {
         LazyVerticalGrid(
@@ -40,6 +41,7 @@ internal fun MoviesVerticalGrid(
                     movieYear = movie.productionYear,
                     movieTitle = movie.name,
                     movieRating = movie.rating,
+                    onClick = {onMovieClicked(movie.id) }
                 )
             }
         }
@@ -59,6 +61,7 @@ private fun MoviesVerticalGridPreview() {
                 rating = "9.9"
             ) },
             isVisible = true,
+            onMovieClicked = {}
         )
     }
 }
