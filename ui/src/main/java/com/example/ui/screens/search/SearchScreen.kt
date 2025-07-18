@@ -48,6 +48,8 @@ import com.example.ui.navigation.Route
 import com.example.ui.screens.search.sections.RecentSearchesSection
 import com.example.ui.screens.search.sections.SuggestionsHubSection
 import com.example.ui.screens.search.sections.filterDialog.FilterDialog
+import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.shared.MediaType
 import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
 import com.example.viewmodel.search.searchByKeyword.SearchErrorState
 import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
@@ -78,7 +80,9 @@ internal fun SearchScreen(
                     navController.navigate(Route.SearchByActor)
                 }
 
-                SearchUiEffect.NavigateToMovieDetails -> {}
+                SearchUiEffect.NavigateToMovieDetails -> {
+                    navController.navigate(Route.MovieDetails(state.selectedMovieId))
+                }
                 SearchUiEffect.NavigateToWorldSearch -> {
                     navController.navigate(Route.SearchByCountry)
                 }
@@ -146,8 +150,9 @@ private fun SearchContent(
 
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
-                movies = state.movies,
+                onMovieClicked = interaction::onMovieClicked,
                 tvShows = state.tvShows,
+                movies = state.movies,
                 selectedTabOption = state.selectedTabOption
             )
         }
@@ -204,7 +209,8 @@ private fun SuccessMediaItems(
     movies: List<MovieItemUiState>,
     tvShows: List<TvShowItemUiState>,
     selectedTabOption: TabOption,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMovieClicked : (movieId:Long)->Unit
 ) {
     val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
         movies
@@ -228,6 +234,7 @@ private fun SuccessMediaItems(
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
                         movieRating = mediaItem.rate,
+                        onClick = {onMovieClicked (mediaItem.id)}
                     )
                 }
 

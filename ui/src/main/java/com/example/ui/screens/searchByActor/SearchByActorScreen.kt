@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +37,11 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
+import com.example.ui.navigation.Route
+import com.example.viewmodel.searchByActor.SearchByActorEffect
+import com.example.viewmodel.searchByActor.SearchByActorInteractionListener
+import com.example.viewmodel.searchByActor.SearchByActorScreenState
+import com.example.viewmodel.searchByActor.SearchByActorViewModel
 import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState
@@ -61,6 +67,8 @@ fun SearchByActorScreen(
                 ActorSearchEffect.NoInternetConnection -> {
                     isNoInternetConnection = true
                 }
+                SearchByActorEffect.NavigateToDetailsScreen ->
+                    navController.navigate(Route.MovieDetails(uiState.value.selectedMovieId))
                 null -> {}
             }
         }
@@ -114,8 +122,10 @@ private fun SearchByActorContent(
             label = "Content Animation"
         ) { targetState ->
             when {
-                targetState.isLoading -> LoadingContainer(modifier = Modifier)
-
+                targetState.isLoading ->
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        LoadingContainer(modifier = Modifier)
+                    }
                 isNoInternetConnection -> {
                     NoNetworkContainer(
                         onClickRetry = onRetryQuestClicked,
@@ -162,7 +172,9 @@ private fun SearchByActorContent(
                                 movieYear = movie.yearOfRelease,
                                 movieTitle = movie.name,
                                 movieRating = movie.rate,
-                            )
+                            ){
+                                interactionListener.onMovieClicked(movie.id)
+                            }
                         }
                     }
                 }
@@ -181,15 +193,14 @@ private fun SearchByActorContentPreview() {
             interactionListener = object : SearchByActorInteractionListener {
                 override fun onUserSearch(query: String) {
                 }
-
                 override fun onNavigateBackClicked() {
                 }
-
                 override fun onRetryQuestClicked() {
+                }
+                override fun onMovieClicked(movieId: Long) {
                 }
             },
             isNoInternetConnection = false,
-            onRetryQuestClicked = {}
-        )
+            onRetryQuestClicked = {})
     }
 }

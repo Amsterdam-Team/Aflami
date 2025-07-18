@@ -19,6 +19,7 @@ interface SearchInteractionListener {
     fun onClickClearRecentSearch(keyword: String)
     fun onClickClearAllRecentSearches()
     fun onClickClearSearch()
+    fun onMovieClicked(movieId : Long)
 }
 
 interface FilterInteractionListener {

@@ -9,6 +9,10 @@ import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.viewmodel.shared.Selectable
 import com.example.viewmodel.shared.uiStates.TvGenreItemUiState
 import com.example.viewmodel.shared.uiStates.TvShowItemUiState
+import com.example.viewmodel.shared.MediaItemUiState
+import com.example.viewmodel.search.searchByKeyword.genre.MovieGenreItemUiState
+import com.example.viewmodel.search.searchByKeyword.genre.Selectable
+import com.example.viewmodel.search.searchByKeyword.genre.TvGenreItemUiState
 
 data class SearchUiState(
     val keyword: String = "",
@@ -20,6 +24,7 @@ data class SearchUiState(
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
+    val selectedMovieId : Long = 0
 )
 
 enum class TabOption(val index: Int) {
