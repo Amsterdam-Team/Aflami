@@ -1,4 +1,4 @@
-package com.example.ui.screens.searchByActor
+package com.example.ui.screens.search.actorSearch
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -38,7 +38,6 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route.MovieDetails
-import com.example.viewmodel.searchByActor.SearchByActorEffect
 import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState
@@ -55,20 +54,13 @@ fun SearchByActorScreen(
     var isNoInternetConnection by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when (effect) {
+            effect?.let {
+                when (effect) {
+                    ActorSearchEffect.NavigateBack ->  navController.popBackStack()
+                    ActorSearchEffect.NoInternetConnection -> isNoInternetConnection = true
+                    is ActorSearchEffect.NavigateToMovieDetails -> navController.navigate(MovieDetails(effect.movieId))
 
-                ActorSearchEffect.NavigateBack -> {
-                    navController.popBackStack()
                 }
-
-                ActorSearchEffect.NoInternetConnection -> {
-                    isNoInternetConnection = true
-                }
-                SearchByActorEffect.NavigateToDetailsScreen ->
-                    navController.navigate(MovieDetails(uiState.value.selectedMovieId))
-                ActorSearchEffect.NavigateToMovieDetails ->
-                    navController.navigate(MovieDetails(uiState.value.selectedMovieId))
-                null -> {}
             }
         }
     }
@@ -190,14 +182,10 @@ private fun SearchByActorContentPreview() {
         SearchByActorContent(
             state = ActorSearchUiState(),
             interactionListener = object : SearchByActorInteractionListener {
-                override fun onUserSearch(query: String) {
-                }
-                override fun onNavigateBackClicked() {
-                }
-                override fun onRetryQuestClicked() {
-                }
-                override fun onMovieClicked(movieId: Long) {
-                }
+                override fun onUserSearch(query: String) {}
+                override fun onNavigateBackClicked() {}
+                override fun onRetryQuestClicked() {}
+                override fun onMovieClicked(movieId: Long) {}
             },
             isNoInternetConnection = false,
             onRetryQuestClicked = {})

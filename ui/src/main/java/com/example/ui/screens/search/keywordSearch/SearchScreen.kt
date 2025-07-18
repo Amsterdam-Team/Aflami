@@ -1,4 +1,4 @@
-package com.example.ui.screens.search
+package com.example.ui.screens.search.keywordSearch
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -45,16 +45,18 @@ import com.example.designsystem.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
-import com.example.ui.screens.search.sections.RecentSearchesSection
-import com.example.ui.screens.search.sections.SuggestionsHubSection
-import com.example.ui.screens.search.sections.filterDialog.FilterDialog
-import com.example.viewmodel.search.searchByKeyword.FilterInteractionListener
-import com.example.viewmodel.search.searchByKeyword.SearchErrorState
-import com.example.viewmodel.search.searchByKeyword.SearchInteractionListener
-import com.example.viewmodel.search.searchByKeyword.SearchUiEffect
-import com.example.viewmodel.search.searchByKeyword.SearchUiState
-import com.example.viewmodel.search.searchByKeyword.SearchViewModel
-import com.example.viewmodel.search.searchByKeyword.TabOption
+import com.example.ui.navigation.Route.MovieDetails
+import com.example.ui.screens.search.keywordSearch.sections.RecentSearchesSection
+import com.example.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
+import com.example.viewmodel.search.actorSearch.ActorSearchEffect
+import com.example.viewmodel.search.keywordSearch.FilterInteractionListener
+import com.example.viewmodel.search.keywordSearch.SearchErrorState
+import com.example.viewmodel.search.keywordSearch.SearchInteractionListener
+import com.example.viewmodel.search.keywordSearch.SearchUiEffect
+import com.example.viewmodel.search.keywordSearch.SearchUiState
+import com.example.viewmodel.search.keywordSearch.SearchViewModel
+import com.example.viewmodel.search.keywordSearch.TabOption
 import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.viewmodel.shared.uiStates.TvShowItemUiState
 import kotlinx.coroutines.flow.collectLatest
@@ -69,23 +71,13 @@ internal fun SearchScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when (effect) {
-                SearchUiEffect.NavigateBack -> {
-                    navController.popBackStack()
+            effect?.let {
+                when (effect) {
+                    SearchUiEffect.NavigateBack -> navController.popBackStack()
+                    SearchUiEffect.NavigateToActorSearch -> navController.navigate(Route.SearchByActor)
+                    is SearchUiEffect.NavigateToMovieDetails -> navController.navigate(MovieDetails(effect.movieId))
+                    SearchUiEffect.NavigateToWorldSearch -> navController.navigate(Route.SearchByCountry)
                 }
-
-                SearchUiEffect.NavigateToActorSearch -> {
-                    navController.navigate(Route.SearchByActor)
-                }
-
-                SearchUiEffect.NavigateToMovieDetails -> {
-                    navController.navigate(Route.MovieDetails(state.selectedMovieId))
-                }
-                SearchUiEffect.NavigateToWorldSearch -> {
-                    navController.navigate(Route.SearchByCountry)
-                }
-
-                null -> {}
             }
         }
     }
@@ -125,7 +117,7 @@ private fun SearchContent(
         )
 
         AnimatedVisibility(state.isLoading && state.errorUiState == null) {
-            CenterOfScreenContainer(unneededSpace = headerHeight,) {
+            CenterOfScreenContainer(unneededSpace = headerHeight) {
                 LoadingContainer()
             }
         }
@@ -148,7 +140,7 @@ private fun SearchContent(
 
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
-                onMovieClicked = interaction::onMovieClicked,
+                onMovieClicked = interaction::onClickMovieCard,
                 tvShows = state.tvShows,
                 movies = state.movies,
                 selectedTabOption = state.selectedTabOption

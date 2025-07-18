@@ -61,7 +61,7 @@ import com.example.ui.screens.movieDetails.components.MovieInfoSection
 import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
-import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.example.viewmodel.movieDetails.MovieDetailsEffect
 import com.example.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.example.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras

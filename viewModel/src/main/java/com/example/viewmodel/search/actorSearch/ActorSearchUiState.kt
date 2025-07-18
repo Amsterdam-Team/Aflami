@@ -6,5 +6,4 @@ data class ActorSearchUiState(
     val isLoading: Boolean = false,
     val keyword: String = "",
     val movies: List<MovieItemUiState> = emptyList(),
-    val selectedMovieId : Long = 0
 )

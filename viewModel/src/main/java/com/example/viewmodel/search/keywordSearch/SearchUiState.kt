@@ -1,4 +1,4 @@
-package com.example.viewmodel.search.searchByKeyword
+package com.example.viewmodel.search.keywordSearch
 
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
@@ -20,7 +20,6 @@ data class SearchUiState(
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
-    val selectedMovieId : Long = 0
 )
 
 enum class TabOption(val index: Int) {

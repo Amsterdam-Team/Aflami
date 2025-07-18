@@ -1,4 +1,4 @@
-package com.example.viewmodel.search.searchByKeyword
+package com.example.viewmodel.search.keywordSearch
 
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
@@ -13,13 +13,12 @@ interface SearchInteractionListener {
     fun onClickRetryRequest()
 
     fun onClickTabOption(tabOption: TabOption)
-    fun onClickMovieCard()
+    fun onClickMovieCard(movieId : Long)
 
     fun onClickRecentSearch(keyword: String)
     fun onClickClearRecentSearch(keyword: String)
     fun onClickClearAllRecentSearches()
     fun onClickClearSearch()
-    fun onMovieClicked(movieId : Long)
 }
 
 interface FilterInteractionListener {

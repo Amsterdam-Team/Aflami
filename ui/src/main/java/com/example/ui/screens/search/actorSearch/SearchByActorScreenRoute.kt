@@ -1,4 +1,4 @@
-package com.example.ui.screens.searchByActor
+package com.example.ui.screens.search.actorSearch
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

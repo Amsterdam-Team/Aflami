@@ -95,7 +95,7 @@ class CountrySearchViewModel(
         }
     }
 
-    override fun onMovieClicked(movieId: Long) {
+    override fun onClickMovieCard(movieId: Long) {
         updateState { it.copy(selectedMovieId = movieId) }
         sendNewEffect(CountrySearchEffect.NavigateToMovieDetails)
     }

@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.sections
+package com.example.ui.screens.search.keywordSearch.sections
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.sections.filterDialog
+package com.example.ui.screens.search.keywordSearch.sections.filterDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,14 +40,14 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.ui.screens.search.sections.filterDialog.genre.ScrollToGenreItem
-import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreIcon
-import com.example.ui.screens.search.sections.filterDialog.genre.getMovieGenreLabel
-import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreIcon
-import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.ScrollToGenreItem
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreIcon
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.example.viewmodel.search.mapper.getSelectedGenreType
-import com.example.viewmodel.search.searchByKeyword.FilterItemUiState
-import com.example.viewmodel.search.searchByKeyword.TabOption
+import com.example.viewmodel.search.keywordSearch.FilterItemUiState
+import com.example.viewmodel.search.keywordSearch.TabOption
 
 @Composable
 internal fun FilterDialog(

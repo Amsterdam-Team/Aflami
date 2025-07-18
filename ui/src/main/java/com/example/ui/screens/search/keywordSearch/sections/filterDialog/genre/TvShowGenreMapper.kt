@@ -1,4 +1,4 @@
-package com.example.ui.screens.search.sections.filterDialog.genre
+package com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter

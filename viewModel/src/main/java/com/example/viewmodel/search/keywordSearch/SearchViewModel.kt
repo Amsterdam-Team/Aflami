@@ -1,4 +1,4 @@
-package com.example.viewmodel.search.searchByKeyword
+package com.example.viewmodel.search.keywordSearch
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
@@ -192,7 +192,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = true, errorUiState = null) }
     }
 
-    override fun onClickMovieCard() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
+   // override fun onClickMovieCard() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onClickTabOption(tabOption: TabOption) {
         updateState {
@@ -243,9 +243,9 @@ class SearchViewModel(
         }
     }
 
-    override fun onMovieClicked(movieId: Long) {
-        updateState { it.copy(selectedMovieId = movieId) }
-        sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
+    override fun onClickMovieCard(movieId: Long) {
+
+        sendNewEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
     }
 
     override fun onClickFilterButton() {

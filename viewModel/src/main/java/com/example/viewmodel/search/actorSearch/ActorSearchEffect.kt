@@ -1,7 +1,7 @@
 package com.example.viewmodel.search.actorSearch
 
-sealed interface ActorSearchEffect{
-    data object NavigateBack:ActorSearchEffect
-    data object NoInternetConnection:ActorSearchEffect
-    object NavigateToMovieDetails : ActorSearchEffect
+sealed interface ActorSearchEffect {
+    object NavigateBack : ActorSearchEffect
+    object NoInternetConnection : ActorSearchEffect
+    data class NavigateToMovieDetails(val movieId: Long) : ActorSearchEffect
 }

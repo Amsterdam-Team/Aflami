@@ -1,7 +1,7 @@
 package com.amsterdam.aflami.di
 
 import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
-import com.example.viewmodel.search.searchByKeyword.SearchViewModel
+import com.example.viewmodel.search.keywordSearch.SearchViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsArgs
 import com.example.viewmodel.movieDetails.MovieDetailsViewModel
 import com.example.viewmodel.cast.CastViewModel

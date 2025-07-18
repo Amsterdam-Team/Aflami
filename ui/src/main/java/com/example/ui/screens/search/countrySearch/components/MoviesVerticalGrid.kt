@@ -1,4 +1,4 @@
-package com.example.ui.screens.searchByCountry.components
+package com.example.ui.screens.search.countrySearch.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement

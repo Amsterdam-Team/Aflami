@@ -1,4 +1,4 @@
-package com.example.ui.screens.searchByCountry
+package com.example.ui.screens.search.countrySearch
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -34,11 +34,11 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route.MovieDetails
-import com.example.ui.screens.searchByCountry.components.CountriesDropdownMenu
-import com.example.ui.screens.searchByCountry.components.CountrySearchField
-import com.example.ui.screens.searchByCountry.components.ExploreCountries
-import com.example.ui.screens.searchByCountry.components.MoviesVerticalGrid
-import com.example.ui.screens.searchByCountry.components.NoMoviesFound
+import com.example.ui.screens.search.countrySearch.components.CountriesDropdownMenu
+import com.example.ui.screens.search.countrySearch.components.CountrySearchField
+import com.example.ui.screens.search.countrySearch.components.ExploreCountries
+import com.example.ui.screens.search.countrySearch.components.MoviesVerticalGrid
+import com.example.ui.screens.search.countrySearch.components.NoMoviesFound
 import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.CountrySearchEffect
 import com.example.viewmodel.search.countrySearch.CountrySearchErrorState
@@ -56,11 +56,16 @@ internal fun SearchByCountryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when (effect) {
-                CountrySearchEffect.NavigateBack -> { navController.popBackStack() }
-                CountrySearchEffect.NavigateToMovieDetails ->
-                    navController.navigate(MovieDetails(state.selectedMovieId))
-                else -> {}
+            effect?.let {
+                when (effect) {
+                    CountrySearchEffect.NavigateBack -> {
+                        navController.popBackStack()
+                    }
+
+                    CountrySearchEffect.NavigateToMovieDetails -> navController.navigate(
+                        MovieDetails(state.selectedMovieId)
+                    )
+                }
             }
         }
     }
@@ -127,10 +132,7 @@ private fun SearchByCountryContent(
                     )
                 }
 
-                else -> MoviesVerticalGrid(
-                    movies = uiState.movies, isVisible = true,
-                    onMovieClicked = interactionListener::onMovieClicked
-                )
+                else -> MoviesVerticalGrid(movies = uiState.movies, isVisible = true, onMovieClicked = interactionListener::onClickMovieCard)
 
             }
         }
@@ -148,7 +150,8 @@ private fun SearchByCriteriaPreview() {
                 override fun onSelectCountry(country: CountryItemUiState) {}
                 override fun onClickNavigateBack() {}
                 override fun onClickRetry() {}
-                override fun onMovieClicked(movieId: Long) {
+                override fun onClickMovieCard(movieId: Long) {
+                    TODO("Not yet implemented")
                 }
             },
         )

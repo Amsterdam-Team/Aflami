@@ -75,7 +75,6 @@ class ActorSearchViewModel(
     }
 
     override fun onMovieClicked(movieId : Long) {
-        updateState { it.copy(selectedMovieId = movieId) }
-        sendNewEffect(ActorSearchEffect.NavigateToMovieDetails)
+        sendNewEffect(ActorSearchEffect.NavigateToMovieDetails(movieId))
     }
 }

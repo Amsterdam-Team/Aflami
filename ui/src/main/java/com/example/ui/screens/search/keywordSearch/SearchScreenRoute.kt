@@ -1,4 +1,4 @@
-package com.example.ui.screens.search
+package com.example.ui.screens.search.keywordSearch
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
