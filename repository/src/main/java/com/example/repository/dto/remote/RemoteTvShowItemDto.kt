@@ -23,5 +23,6 @@ data class RemoteTvShowItemDto(
     @SerialName("name") val title: String,
     @SerialName("vote_average") val voteAverage: Double,
 
-    @SerialName("vote_count") val voteCount: Int
+    @SerialName("seasons") val seasons: List<SeasonResponse>,
+    @SerialName("number_of_seasons") val seasonCount: Int,
 )
