@@ -6,8 +6,8 @@ import com.example.domain.useCase.GetEpisodesBySeasonNumberUseCase
 import com.example.domain.useCase.GetTvShowDetailsUseCase
 import com.example.domain.useCase.GetTvShowDetailsUseCase.TvShowDetails
 import com.example.entity.Episode
-import com.example.viewmodel.BaseViewModel
 import com.example.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
 class SeriesDetailsViewModel(
@@ -96,6 +96,7 @@ class SeriesDetailsViewModel(
                     networkError = true
                 )
             }
+
             else -> {}
         }
     }

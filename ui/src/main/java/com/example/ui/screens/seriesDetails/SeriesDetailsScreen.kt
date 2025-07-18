@@ -68,7 +68,7 @@ import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
 import com.example.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
-import com.example.ui.screens.search.sections.filterDialog.genre.getTvShowGenreLabel
+import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.example.viewmodel.seriesDetails.SeriesDetailsEffect
 import com.example.viewmodel.seriesDetails.SeriesDetailsInteractionListener
 import com.example.viewmodel.seriesDetails.SeriesDetailsUiState

@@ -20,7 +20,7 @@ class MovieDetailsUiStateMapper {
             rating = ratingToRatingString(movie.rating),
             movieTitle = movie.name,
             categories = categories,
-            releaseDate = productionYearToDate(movie.productionYear.toInt()),
+            releaseDate = productionYearToDate(movie.productionYear.toUInt()),
             movieLength = movieLengthToHourMinuteString(movie.runTime),
             originCountry = movie.originCountry,
             description = movie.description,
@@ -66,7 +66,7 @@ class MovieDetailsUiStateMapper {
         )
     }
 
-    fun productionYearToDate(year: Int): String = "$year-01-01"
+    fun productionYearToDate(year: UInt): String = "$year-01-01"
 
     fun movieLengthToHourMinuteString(movieLength: Int): String {
         val hours = movieLength / 60

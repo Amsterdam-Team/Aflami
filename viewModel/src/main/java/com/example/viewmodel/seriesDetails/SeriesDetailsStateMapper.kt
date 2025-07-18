@@ -26,7 +26,7 @@ class SeriesDetailsStateMapper(
     ): SeriesDetailsUiState {
         return SeriesDetailsUiState(
             tvShowId = tvShowDetails.tvShow.id,
-            posterUrl = tvShowDetails.tvShow.poster,
+            posterUrl = tvShowDetails.tvShow.posterUrl,
             rating = movieDetailsStateMapper.ratingToRatingString(tvShowDetails.tvShow.rating),
             title = tvShowDetails.tvShow.name,
             categories = tvShowDetails.categories,
@@ -55,7 +55,7 @@ class SeriesDetailsStateMapper(
                     rate = movieDetailsStateMapper.ratingToRatingString(it.rating),
                     name = it.name,
                     productionYear = it.productionYear.toString(),
-                    posterUrl = it.poster
+                    posterUrl = it.posterUrl
                 )
             },
             reviews = tvShowDetails.reviews.map {
