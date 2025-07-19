@@ -9,12 +9,12 @@ import com.example.entity.Movie
 import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
-import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
 import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.search.mapper.toTvShowUiStates
+import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.FlowPreview
@@ -182,11 +182,10 @@ class SearchViewModel(
 
     override fun onClickActorSearchCard() = sendNewEffect(SearchUiEffect.NavigateToActorSearch)
 
-    override fun onClickRetryRequest() {
-        updateState { it.copy(isLoading = true, errorUiState = null) }
-    }
+    override fun onClickRetryRequest() = onSearchKeywordChanged(_keyword.value)
 
-   // override fun onClickMovieCard() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
+
+    // override fun onClickMovieCard() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
 
     override fun onClickTabOption(tabOption: TabOption) {
         updateState {

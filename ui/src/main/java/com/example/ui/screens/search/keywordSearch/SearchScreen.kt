@@ -175,8 +175,8 @@ private fun SearchContent(
                 .fillMaxSize()
                 .padding(start = 8.dp, end = 8.dp)
         ) {
-            AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState != null) {
-                if (state.errorUiState is SearchErrorState.NoNetworkConnection) {
+            AnimatedVisibility(state.keyword.isNotBlank()) {
+                if (state.errorUiState != null && state.errorUiState is SearchErrorState.NoNetworkConnection) {
                     NoNetworkContainer(
                         onClickRetry = interaction::onClickRetryRequest,
                         modifier = Modifier.verticalScroll(rememberScrollState())
@@ -190,7 +190,7 @@ private fun SearchContent(
                         state.tvShows.isEmpty()
                     }
 
-                AnimatedVisibility(isSelectedTabSearchResultEmpty) {
+                AnimatedVisibility(state.errorUiState == null && isSelectedTabSearchResultEmpty) {
                     NoDataContainer(
                         imageRes = painterResource(com.example.ui.R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
