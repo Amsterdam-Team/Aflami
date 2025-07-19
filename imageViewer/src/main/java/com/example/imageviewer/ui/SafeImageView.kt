@@ -19,8 +19,8 @@ fun SafeImageView(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    onLoading: (@Composable () -> Unit)? = null,
-    onError: (@Composable () -> Unit)? = null,
+    onLoading: (@Composable () -> Unit),
+    onError: (@Composable () -> Unit),
 ) {
     val imageLoader = rememberSafeImageLoader()
 
@@ -31,10 +31,10 @@ fun SafeImageView(
             imageLoader = imageLoaders,
             modifier = modifier,
             contentScale = contentScale,
-            loading = { onLoading?.let { it() } ?: LoadingIndicator() },
-            error = { onError?.let { it -> it() } ?: ErrorIndicator() },
+            loading = { onLoading() },
+            error = { onError() },
         )
-    } ?: LoadingIndicator()
+    } ?: onLoading()
 }
 
 

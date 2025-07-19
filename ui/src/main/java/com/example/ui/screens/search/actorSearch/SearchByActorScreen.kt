@@ -29,6 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.TextField
 import com.example.ui.components.appBar.DefaultAppBar
@@ -168,6 +170,8 @@ private fun SearchByActorContent(
                                         contentDescription = movie.name,
                                         model = movie.posterImageUrl,
                                         contentScale = ContentScale.Crop,
+                                        onLoading = { ImageLoadingIndicator() },
+                                        onError = { ImageErrorIndicator() },
                                     )
                                 },
                                 movieType = stringResource(R.string.movie),

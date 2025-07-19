@@ -36,6 +36,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
@@ -149,7 +151,8 @@ fun MovieContent(
                             Modifier
                                 .fillMaxSize()
                                 .animateContentSize(),
-                        onError = { NoMovieImageHolder() },
+                        onLoading = { ImageLoadingIndicator() },
+                        onError = { ImageErrorIndicator() },
                     )
                     DefaultAppBar(
                         modifier =

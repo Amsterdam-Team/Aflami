@@ -11,9 +11,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui.tooling.preview.android)
+
     // Coil for image loading
     implementation(libs.coil.compose)
 

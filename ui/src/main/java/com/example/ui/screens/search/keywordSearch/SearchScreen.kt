@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.TabsLayout
 import com.example.designsystem.components.TextField
@@ -227,6 +229,8 @@ private fun SuccessMediaItems(
                                 contentDescription = mediaItem.name,
                                 model = mediaItem.posterImageUrl,
                                 contentScale = ContentScale.Crop,
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
                             )
                         },
                         movieType = stringResource(R.string.movies),
@@ -245,6 +249,8 @@ private fun SuccessMediaItems(
                                 contentDescription = mediaItem.name,
                                 model = mediaItem.posterImageUrl,
                                 contentScale = ContentScale.Crop,
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
                             )
                         },
                         movieType = stringResource(R.string.tv_shows),
