@@ -2,9 +2,11 @@ package com.example.repository.mapper.remote
 
 import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.mapper.shared.EntityMapper
 
-class PostersRemoteMapper {
+class PostersRemoteMapper : EntityMapper<RemoteMovieGalleryResponse, List<String>>{
 
-    fun mapPostersToDomain(galleryResponse: RemoteMovieGalleryResponse) : List<String> =
-        galleryResponse.posters.map { BuildConfig.BASE_IMAGE_URL +it.filePath }
+    override fun toEntity(dto: RemoteMovieGalleryResponse): List<String> =
+        dto.posters.map { BuildConfig.BASE_IMAGE_URL +it.filePath }
+
 }

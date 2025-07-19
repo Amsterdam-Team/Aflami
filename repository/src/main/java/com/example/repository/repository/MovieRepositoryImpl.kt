@@ -175,8 +175,7 @@ class MovieRepositoryImpl(
         galleryRemoteMapper.toEntity(movieRemoteDataSource.getMovieGallery(movieId))
 
     override suspend fun getMoviePosters(movieId: Long): List<String> =
-        posterRemoteMapper.mapPostersToDomain(movieRemoteDataSource.getMoviePosters(movieId))
-
+        posterRemoteMapper.toEntity(movieRemoteDataSource.getMoviePosters(movieId))
 
     override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
         return remoteProductionCompanyMapper.toEntityList(
