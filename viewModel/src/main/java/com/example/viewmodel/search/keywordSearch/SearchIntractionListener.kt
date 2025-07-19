@@ -14,6 +14,7 @@ interface SearchInteractionListener {
 
     fun onClickTabOption(tabOption: TabOption)
     fun onClickMovieCard(movieId : Long)
+    fun onClickTvShowCard(tvShowId: Long)
 
     fun onClickRecentSearch(keyword: String)
     fun onClickClearRecentSearch(keyword: String)

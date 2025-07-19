@@ -2,6 +2,7 @@ package com.example.repository.mapper.remote
 
 import com.example.entity.TvShow
 import com.example.entity.category.TvShowGenre
+import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.mapper.shared.EntityMapper
 import com.example.repository.mapper.shared.toTvShowCategory
@@ -15,7 +16,7 @@ class TvShowRemoteMapper(
             id = dto.id,
             name = dto.title,
             description = dto.overview,
-            posterUrl = dto.posterPath.orEmpty(),
+            posterUrl = BuildConfig.BASE_IMAGE_URL + dto.posterPath.orEmpty(),
             productionYear = dateParser.parseYear(dto.releaseDate).toUInt(),
             categories = mapGenreIdsToCategories(dto.genreIds),
             rating = dto.voteAverage.toFloat(),
