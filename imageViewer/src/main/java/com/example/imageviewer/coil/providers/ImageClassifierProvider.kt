@@ -9,7 +9,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.tensorflow.lite.Interpreter
 
-object ImageClassifierProvider {
+internal object ImageClassifierProvider {
 
     @Volatile
     private var instance: SFWImageClassifier? = null

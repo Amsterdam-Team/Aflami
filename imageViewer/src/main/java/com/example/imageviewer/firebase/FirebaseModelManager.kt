@@ -7,7 +7,7 @@ import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.IOException
 
-object FirebaseModelManager {
+internal object FirebaseModelManager {
 
     private const val MODEL_NAME = "NSFW-Detector"
 

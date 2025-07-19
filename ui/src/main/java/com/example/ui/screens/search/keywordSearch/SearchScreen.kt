@@ -53,7 +53,6 @@ import com.example.ui.navigation.Route.MovieDetails
 import com.example.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.example.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
-import com.example.viewmodel.search.actorSearch.ActorSearchEffect
 import com.example.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.example.viewmodel.search.keywordSearch.SearchErrorState
 import com.example.viewmodel.search.keywordSearch.SearchInteractionListener
@@ -79,7 +78,12 @@ internal fun SearchScreen(
                 when (effect) {
                     SearchUiEffect.NavigateBack -> navController.popBackStack()
                     SearchUiEffect.NavigateToActorSearch -> navController.navigate(Route.SearchByActor)
-                    is SearchUiEffect.NavigateToMovieDetails -> navController.navigate(MovieDetails(effect.movieId))
+                    is SearchUiEffect.NavigateToMovieDetails -> navController.navigate(
+                        MovieDetails(
+                            effect.movieId
+                        )
+                    )
+
                     SearchUiEffect.NavigateToWorldSearch -> navController.navigate(Route.SearchByCountry)
                 }
             }
@@ -179,11 +183,12 @@ private fun SearchContent(
                     )
                 }
 
-                val isSelectedTabSearchResultEmpty = if (state.selectedTabOption == TabOption.MOVIES) {
-                    state.movies.isEmpty()
-                } else {
-                    state.tvShows.isEmpty()
-                }
+                val isSelectedTabSearchResultEmpty =
+                    if (state.selectedTabOption == TabOption.MOVIES) {
+                        state.movies.isEmpty()
+                    } else {
+                        state.tvShows.isEmpty()
+                    }
 
                 AnimatedVisibility(isSelectedTabSearchResultEmpty) {
                     NoDataContainer(
@@ -204,7 +209,7 @@ private fun SuccessMediaItems(
     tvShows: List<TvShowItemUiState>,
     selectedTabOption: TabOption,
     modifier: Modifier = Modifier,
-    onMovieClicked : (movieId:Long)->Unit
+    onMovieClicked: (movieId: Long) -> Unit
 ) {
     val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
         movies
@@ -237,7 +242,7 @@ private fun SuccessMediaItems(
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
                         movieRating = mediaItem.rate,
-                        onClick = {onMovieClicked (mediaItem.id)}
+                        onClick = { onMovieClicked(mediaItem.id) }
                     )
                 }
 

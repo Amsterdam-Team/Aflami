@@ -57,7 +57,6 @@ import com.example.ui.screens.movieDetails.components.GallerySection
 import com.example.ui.screens.movieDetails.components.MoreLikeSection
 import com.example.ui.screens.movieDetails.components.MovieExtrasSection
 import com.example.ui.screens.movieDetails.components.MovieInfoSection
-import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
@@ -86,6 +85,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = koinViewModel()) {
                     navController.navigate(
                         Route.Cast(state.value.movieId),
                     )
+
                 null -> {}
             }
         }

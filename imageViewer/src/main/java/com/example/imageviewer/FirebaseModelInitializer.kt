@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FirebaseModelInitializer : Initializer<Unit> {
+internal class FirebaseModelInitializer : Initializer<Unit> {
     override fun create(context: Context) {
 
         CoroutineScope(Dispatchers.IO).launch {

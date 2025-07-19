@@ -10,7 +10,7 @@ import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 
 
-class SFWImageClassifier(
+internal class SFWImageClassifier(
     private val interpreter: Interpreter
 ) : ImageClassifier {
     private val safetyRules = SFWClassifierConfig.NSFW_SAFETY_RULES

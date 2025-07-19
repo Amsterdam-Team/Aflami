@@ -7,7 +7,7 @@ import com.example.imageviewer.coil.ImageLoaderFactory
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-object ImageLoaderProvider {
+internal object ImageLoaderProvider {
 
     @Volatile
     private var instance: ImageLoader? = null
