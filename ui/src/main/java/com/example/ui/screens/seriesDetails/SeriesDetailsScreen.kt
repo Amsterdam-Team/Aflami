@@ -93,7 +93,7 @@ fun SeriesDetailsScreen(
         viewModel.effect.collect {
             when (it) {
                 SeriesDetailsEffect.NavigateBack -> navController.popBackStack()
-                SeriesDetailsEffect.NavigateToCastScreen -> navController.navigate(Route.SeriesDetails)
+                SeriesDetailsEffect.NavigateToCastScreen -> navController.navigate(Route.Cast(state.tvShowId))
                 null -> {}
             }
         }
