@@ -184,9 +184,6 @@ class SearchViewModel(
 
     override fun onClickRetryRequest() = onSearchKeywordChanged(_keyword.value)
 
-
-    // override fun onClickMovieCard() = sendNewEffect(SearchUiEffect.NavigateToMovieDetails)
-
     override fun onClickTabOption(tabOption: TabOption) {
         updateState {
             it.copy(
