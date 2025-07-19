@@ -14,6 +14,7 @@ import com.example.repository.mapper.local.MovieWithCategoriesLocalMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
 import com.example.repository.mapper.remote.GalleryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
+import com.example.repository.mapper.remote.PostersRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
@@ -29,6 +30,7 @@ class MovieRepositoryImpl(
     private val castRemoteMapper: CastRemoteMapper,
     private val reviewRemoteMapper: ReviewRemoteMapper,
     private val galleryRemoteMapper: GalleryRemoteMapper,
+    private val posterRemoteMapper: PostersRemoteMapper,
     private val remoteProductionCompanyMapper: ProductionCompanyRemoteMapper,
     private val movieWithCategoriesLocalMapper: MovieWithCategoriesLocalMapper,
     private val movieRemoteLocalMapper: MovieRemoteLocalMapper,
@@ -171,6 +173,9 @@ class MovieRepositoryImpl(
 
     override suspend fun getMovieGallery(movieId: Long): List<String> =
         galleryRemoteMapper.toEntity(movieRemoteDataSource.getMovieGallery(movieId))
+
+    override suspend fun getMoviePosters(movieId: Long): List<String> =
+        posterRemoteMapper.toEntity(movieRemoteDataSource.getMoviePosters(movieId))
 
     override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
         return remoteProductionCompanyMapper.toEntityList(
