@@ -22,7 +22,7 @@ class RecentSearchesUseCase(
     }
 
     suspend fun getRecentSearches(): List<String> {
-        return recentSearchRepository.getRecentSearches()
+        return recentSearchRepository.getAllRecentSearches()
     }
 
     suspend fun deleteRecentSearch(searchKeyword: String) {
@@ -30,6 +30,6 @@ class RecentSearchesUseCase(
     }
 
     suspend fun deleteRecentSearches() {
-        recentSearchRepository.deleteRecentSearches()
+        recentSearchRepository.deleteAllRecentSearches()
     }
 }

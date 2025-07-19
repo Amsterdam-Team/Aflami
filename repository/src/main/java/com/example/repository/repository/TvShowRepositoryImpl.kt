@@ -10,7 +10,6 @@ import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
-import com.example.repository.utils.tryToExecute
 
 class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
@@ -21,58 +20,40 @@ class TvShowRepositoryImpl(
     private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper
 ) : TvShowRepository {
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
-        var tvShows: List<TvShow> = emptyList()
-        val searchType = SearchType.BY_KEYWORD
-        if (!recentSearchHandler.isExpired(keyword, searchType)) {
-            tvShows = getTvShowFromLocal(keyword)
-        }
-        if (tvShows.isNotEmpty()) return tvShows
-        recentSearchHandler.deleteRecentSearch(keyword, searchType)
-        return getTvShowsFromRemote(keyword)
+        return getCachedTvShows(keyword)
+            ?: recentSearchHandler.deleteRecentSearch(keyword, SearchType.BY_KEYWORD)
+                .let { getTvShowsFromRemote(keyword) }
+                .let { remoteTvShows ->
+                    saveTvShowsToDatabase(remoteTvShows, keyword)
+                    tvRemoteMapper.toEntityList(remoteTvShows.results)
+                }
     }
 
-    private suspend fun getTvShowFromLocal(keyword: String): List<TvShow> {
-        return tryToExecute(
-            function = {
-                localTvDataSource.getTvShowsByKeywordAndSearchType(
-                    searchKeyword = keyword,
-                    searchType = SearchType.BY_KEYWORD
-                )
-            },
-            onSuccess = { localTvShows -> tvShowWithCategoryLocalMapper.toEntityList(localTvShows) },
-            onFailure = { emptyList() },
+    private suspend fun getCachedTvShows(keyword: String): List<TvShow>? {
+        return recentSearchHandler.isRecentSearchExpired(keyword, SearchType.BY_KEYWORD)
+            .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
+            ?.let { getTvShowFromLocal(keyword, SearchType.BY_KEYWORD) }
+            ?.takeIf { tvShows -> tvShows.isNotEmpty() }
+    }
+
+    private suspend fun getTvShowFromLocal(keyword: String, searchType: SearchType): List<TvShow> {
+        return tvShowWithCategoryLocalMapper.toEntityList(
+            localTvDataSource.getTvShowsByKeywordAndSearchType(
+                keyword, searchType
+            )
         )
     }
 
-    private suspend fun getTvShowsFromRemote(
-        keyword: String,
-    ): List<TvShow> {
-        return tryToExecute(
-            function = {
-                remoteTvDataSource.getTvShowsByKeyword(keyword)
-            },
-            onSuccess = { remoteTvShows ->
-                saveTvShowsToDatabase(remoteTvShows, keyword)
-                tvRemoteMapper.toEntityList(remoteTvShows.results)
-            },
-            onFailure = { aflamiException -> throw aflamiException },
-        )
+    private suspend fun getTvShowsFromRemote(keyword: String): RemoteTvShowResponse {
+        return remoteTvDataSource.getTvShowsByKeyword(keyword)
     }
 
     private suspend fun saveTvShowsToDatabase(
-        remoteTvShows: RemoteTvShowResponse,
-        keyword: String
+        remoteTvShows: RemoteTvShowResponse, keyword: String
     ) {
-        val localTvShows = tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results)
-        tryToExecute(
-            function = {
-                localTvDataSource.addTvShows(
-                    tvShows = localTvShows,
-                    searchKeyword = keyword,
-                )
-            },
-            onSuccess = {},
-            onFailure = {},
+        localTvDataSource.addTvShows(
+            tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results),
+            keyword,
         )
     }
 }

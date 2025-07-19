@@ -10,7 +10,6 @@ import com.example.repository.utils.DateParser
 class MovieRemoteMapper(
     private val dateParser: DateParser
 ) : EntityMapper<RemoteMovieItemDto, Movie> {
-
     override fun toEntity(dto: RemoteMovieItemDto): Movie {
         val genresIds = dto.genreIds.ifEmpty { dto.genres.map { it.id } }
         return Movie(

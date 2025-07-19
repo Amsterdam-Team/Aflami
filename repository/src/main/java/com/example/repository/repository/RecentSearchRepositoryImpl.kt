@@ -5,63 +5,44 @@ import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.RecentSearchLocalMapper
-import com.example.repository.utils.tryToExecute
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class RecentSearchRepositoryImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource,
-    private val recentSearchLocalMapper: RecentSearchLocalMapper,
+    private val recentSearchMapper: RecentSearchLocalMapper,
 ) : RecentSearchRepository {
     override suspend fun addRecentSearch(searchKeyword: String) {
-        upsertRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
+        addRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
     }
 
     override suspend fun addRecentSearchForCountry(searchKeyword: String) {
-        upsertRecentSearch(searchKeyword, searchType = SearchType.BY_COUNTRY)
+        addRecentSearch(searchKeyword, searchType = SearchType.BY_COUNTRY)
     }
 
     override suspend fun addRecentSearchForActor(searchKeyword: String) {
-        upsertRecentSearch(searchKeyword, searchType = SearchType.BY_ACTOR)
+        addRecentSearch(searchKeyword, searchType = SearchType.BY_ACTOR)
     }
 
-    override suspend fun getRecentSearches(): List<String> {
-        return tryToExecute(
-            function = { recentSearchLocalSource.getRecentSearches() },
-            onSuccess = { recentSearchLocalMapper.toEntityList(it) },
-            onFailure = { aflamiException -> throw aflamiException }
-        )
+    override suspend fun getAllRecentSearches(): List<String> {
+        return recentSearchMapper.toEntityList(recentSearchLocalSource.getRecentSearches())
     }
 
-    override suspend fun deleteRecentSearches() {
-        tryToExecute(
-            function = { recentSearchLocalSource.deleteRecentSearches() },
-            onSuccess = { },
-            onFailure = { aflamiException -> throw aflamiException }
-        )
+    override suspend fun deleteAllRecentSearches() {
+        recentSearchLocalSource.deleteRecentSearches()
     }
 
     override suspend fun deleteRecentSearch(searchKeyword: String) {
-        tryToExecute(
-            function = { recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword) },
-            onSuccess = { },
-            onFailure = { aflamiException -> throw aflamiException }
-        )
+        recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword)
     }
 
-    private suspend fun upsertRecentSearch(
-        searchKeyword: String,
-        searchType: SearchType = SearchType.BY_KEYWORD
-    ) {
-        val localSearchDto = LocalSearchDto(
-            searchKeyword = searchKeyword,
-            searchType = searchType,
-            expireDate = Clock.System.now().plus(1.hours)
-        )
-        tryToExecute(
-            function = { recentSearchLocalSource.upsertRecentSearch(localSearchDto) },
-            onSuccess = {},
-            onFailure = { aflamiException -> throw aflamiException }
+    private suspend fun addRecentSearch(searchKeyword: String, searchType: SearchType) {
+        recentSearchLocalSource.upsertRecentSearch(
+            LocalSearchDto(
+                searchKeyword,
+                searchType,
+                Clock.System.now().plus(1.hours)
+            )
         )
     }
 }
