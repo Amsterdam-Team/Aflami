@@ -15,10 +15,10 @@ class TvShowCategoryLocalMapper : EntityMapper<LocalTvShowCategoryDto, Category>
         )
     }
 
-    override fun toDto(domain: Category): LocalTvShowCategoryDto {
+    override fun toDto(entity: Category): LocalTvShowCategoryDto {
         return LocalTvShowCategoryDto(
-            categoryId = domain.id,
-            name = domain.name,
+            categoryId = entity.id,
+            name = entity.name,
         )
     }
 }

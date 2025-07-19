@@ -6,7 +6,6 @@ import com.example.repository.mapper.shared.DtoMapper
 import com.example.repository.mapper.shared.EntityMapper
 
 class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow, LocalTvShowDto> {
-
     override fun toEntity(dto: LocalTvShowDto): TvShow {
         return TvShow(
             id = dto.tvShowId,
@@ -20,15 +19,15 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
         )
     }
 
-    override fun toDto(domain: TvShow): LocalTvShowDto {
+    override fun toDto(entity: TvShow): LocalTvShowDto {
         return LocalTvShowDto(
-            tvShowId = domain.id,
-            name = domain.name,
-            description = domain.description,
-            poster = domain.posterUrl,
-            productionYear = domain.productionYear.toInt(),
-            rating = domain.rating,
-            popularity = domain.popularity
+            tvShowId = entity.id,
+            name = entity.name,
+            description = entity.description,
+            poster = entity.posterUrl,
+            productionYear = entity.productionYear.toInt(),
+            rating = entity.rating,
+            popularity = entity.popularity
         )
     }
 }
