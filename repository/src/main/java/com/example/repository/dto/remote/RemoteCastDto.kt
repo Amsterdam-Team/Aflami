@@ -1,5 +1,6 @@
 package com.example.repository.dto.remote
 
+import com.example.repository.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -40,4 +41,7 @@ data class RemoteCastDto(
     
     @SerialName("order")
     val order: Int
-)
+){
+    val fullProfilePath: String?
+        get() = profilePath.let { BuildConfig.BASE_IMAGE_URL + it }
+}

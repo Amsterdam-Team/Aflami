@@ -1,5 +1,6 @@
 package com.example.repository.dto.remote
 
+import com.example.repository.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,4 +20,7 @@ data class RemoteTvShowItemDto(
     @SerialName("name") val title: String,
     @SerialName("vote_average") val voteAverage: Double,
     @SerialName("vote_count") val voteCount: Int
-)
+){
+    val fullPosterPath: String?
+        get() = posterPath.let { BuildConfig.BASE_IMAGE_URL + it }
+}
