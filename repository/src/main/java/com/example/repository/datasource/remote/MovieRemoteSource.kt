@@ -27,5 +27,5 @@ interface MovieRemoteSource {
 
     suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto
 
-    suspend fun getMoviePosters(movieId : Long) : RemoteMovieGalleryResponse
+    suspend fun getMoviePosters(movieId : Long) : RemoteGalleryResponse
 }

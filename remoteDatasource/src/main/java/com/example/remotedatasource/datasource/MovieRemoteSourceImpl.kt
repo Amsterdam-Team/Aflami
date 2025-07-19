@@ -42,7 +42,7 @@ class MovieRemoteSourceImpl(
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse {
-        return safeCall{
+        return safeCall {
             ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_ORIGIN_COUNTRY, countryIsoCode) }
         }
     }
@@ -91,10 +91,10 @@ class MovieRemoteSourceImpl(
         }
     }
 
-    override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
-        return safeCall<RemoteMovieGalleryResponse> {
+    override suspend fun getMoviePosters(movieId: Long): RemoteGalleryResponse {
+        return safeCall<RemoteGalleryResponse> {
             val response = ktorClient.get("movie/$movieId/images")
-            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+            return json.decodeFromString<RemoteGalleryResponse>(response.bodyAsText())
         }
     }
 
