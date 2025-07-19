@@ -6,6 +6,7 @@ import com.example.entity.Country
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany
 import com.example.entity.Review
+import com.example.entity.category.MovieGenre
 import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.utils.SearchType
@@ -86,6 +87,14 @@ class MovieRepositoryImpl(
         return remoteProductionCompanyMapper.toEntityList(
             movieRemoteDataSource.getProductionCompany(movieId).productionCompanies
         )
+    }
+
+    override suspend fun incrementGenreInterest(genre: MovieGenre) {
+        movieLocalSource.incrementGenreInterest(genre)
+    }
+
+    override suspend fun getAllGenreInterests(): Map<MovieGenre, Int> {
+        return movieLocalSource.getAllGenreInterests()
     }
 
     private suspend fun getCachedMovies(keyword: String, searchType: SearchType): List<Movie>? {

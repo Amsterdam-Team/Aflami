@@ -26,6 +26,8 @@ val localDataSourceModule = module {
     single { get<AflamiDatabase>().movieDao() }
     single { get<AflamiDatabase>().tvShowDao() }
     single { get<AflamiDatabase>().recentSearchDao() }
+    single { get<AflamiDatabase>().movieCategoryInterestDao() }
+    single { get<AflamiDatabase>().tvShowCategoryInterestDao()}
 
 // Local sources using singleOf with interface binding
     singleOf(::CategoryLocalDataSourceImpl) bind CategoryLocalSource::class
