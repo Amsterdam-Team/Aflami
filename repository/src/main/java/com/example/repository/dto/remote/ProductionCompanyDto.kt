@@ -13,4 +13,7 @@ data class ProductionCompanyDto(
     val name: String,
     @SerialName("origin_country")
     val originCountry: String
-)
+){
+    val fullLogoPath: String?
+        get() = logoPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+}

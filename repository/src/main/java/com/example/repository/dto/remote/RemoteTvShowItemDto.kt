@@ -24,4 +24,7 @@ data class RemoteTvShowItemDto(
     @SerialName("vote_average") val voteAverage: Double,
 
     @SerialName("vote_count") val voteCount: Int
-)
+){
+    val fullPosterPath: String?
+        get() = posterPath.let { BuildConfig.BASE_IMAGE_URL + it }
+}

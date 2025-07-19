@@ -37,4 +37,7 @@ data class RemoteCrewDto(
     
     @SerialName("job")
     val job: String
-)
+){
+    val fullProfilePath: String?
+        get() = profilePath.let { BuildConfig.BASE_IMAGE_URL + it }
+}

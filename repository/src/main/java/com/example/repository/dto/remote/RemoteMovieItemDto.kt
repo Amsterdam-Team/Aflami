@@ -55,4 +55,10 @@ data class RemoteMovieItemDto(
 
     @SerialName("genres")
     val genres: List<GenreDto> = emptyList()
-)
+) {
+    val fullPosterUrl: String?
+        get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+
+    val fullBackdropUrl: String?
+        get() = backdropPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+}

@@ -12,4 +12,7 @@ data class GalleryImageDto(
     @SerialName("vote_average") val voteAverage: Double,
     @SerialName("vote_count") val voteCount: Int,
     @SerialName("width") val width: Int
-)
+){
+    val fullFilePath: String?
+        get() = filePath.let { BuildConfig.BASE_IMAGE_URL + it }
+}
