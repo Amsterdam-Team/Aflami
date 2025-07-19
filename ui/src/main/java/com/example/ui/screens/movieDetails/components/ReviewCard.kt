@@ -18,6 +18,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.ExpandableText
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
@@ -52,6 +54,8 @@ fun ReviewCard(review: ReviewUiState, modifier: Modifier = Modifier) {
                 model = review.imageUrl
                     ?: "android.resource://your.package.name/${R.drawable.ic_outlined_star}",
                 contentScale = ContentScale.Crop,
+                onLoading = { ImageLoadingIndicator() },
+                onError = { ImageErrorIndicator() },
             )
             Column(modifier = Modifier.padding(start = 8.dp)) {
                 Text(

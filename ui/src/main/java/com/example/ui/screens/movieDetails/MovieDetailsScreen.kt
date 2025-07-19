@@ -40,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.designsystem.R
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
@@ -59,7 +61,6 @@ import com.example.ui.screens.movieDetails.components.GallerySection
 import com.example.ui.screens.movieDetails.components.MoreLikeSection
 import com.example.ui.screens.movieDetails.components.MovieExtrasSection
 import com.example.ui.screens.movieDetails.components.MovieInfoSection
-import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PageIndicator
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
@@ -112,7 +113,7 @@ fun MovieContent(
     LaunchedEffect(true) {
         while (true) {
             delay(4000)
-            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10 ))
+            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10))
         }
     }
     AnimatedVisibility(
@@ -168,7 +169,8 @@ fun MovieContent(
                                 Modifier
                                     .fillMaxSize()
                                     .animateContentSize(),
-                            onError = { NoMovieImageHolder() },
+                            onLoading = { ImageLoadingIndicator() },
+                            onError = { ImageErrorIndicator() },
                         )
 
                     }
@@ -177,7 +179,7 @@ fun MovieContent(
                         modifier = Modifier
                             .zIndex(1f)
                             .padding(4.dp)
-                            .background(AppTheme.color.primaryVariant,RoundedCornerShape(100.dp))
+                            .background(AppTheme.color.primaryVariant, RoundedCornerShape(100.dp))
                             .padding(vertical = 4.dp, horizontal = 2.dp)
                             .align(Alignment.BottomEnd),
                         numberOfPages = state.moviePostersUrl.size,

@@ -9,15 +9,17 @@ import com.example.imageviewer.classification.policy.SafetyPolicy
 
 internal object ImageLoaderFactory {
 
-        fun create(context: Context, policy: SafetyPolicy): ImageLoader {
-            val classifier: ImageClassifier = when (policy) {
-                is SafetyPolicy.SFWPolicy -> SFWImageClassifier(context)
-            }
-
-            return ImageLoader.Builder(context)
-                .components {
-                    add(SafetyInterceptor(classifier))
-                }
-                .build()
+    fun build(
+        context: Context,
+        classifier: SFWImageClassifier,
+        policy: SafetyPolicy
+    ): ImageLoader {
+        val classifier: ImageClassifier = when (policy) {
+            is SafetyPolicy.SFWPolicy -> classifier
         }
+
+        return ImageLoader.Builder(context).components {
+                add(SafetyInterceptor(classifier))
+            }.build()
     }
+}

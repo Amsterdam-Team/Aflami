@@ -1,6 +1,5 @@
 package com.example.ui.screens.search.countrySearch.components
 
-import android.R.attr.rating
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,11 +13,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
-import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.ui.components.MovieCard
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
 
 @Composable
 internal fun MoviesVerticalGrid(
@@ -48,13 +49,15 @@ internal fun MoviesVerticalGrid(
                             contentDescription = movie.name,
                             model = movie.posterImageUrl,
                             contentScale = ContentScale.Crop,
+                            onLoading = { ImageLoadingIndicator() },
+                            onError = { ImageErrorIndicator() },
                         )
                     },
                     movieType = stringResource(R.string.movie),
                     movieYear = movie.yearOfRelease,
                     movieTitle = movie.name,
                     movieRating = movie.rate,
-                    onClick = {onMovieClicked(movie.id) }
+                    onClick = { onMovieClicked(movie.id) }
                 )
             }
         }

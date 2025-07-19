@@ -11,6 +11,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.components.UpcomingCard
 import com.example.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
@@ -32,6 +34,8 @@ fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
                         contentDescription = similarMovie.name,
                         model = similarMovie.posterUrl,
                         contentScale = ContentScale.Crop,
+                        onLoading = { ImageLoadingIndicator() },
+                        onError = { ImageErrorIndicator() },
                     )
                 },
                 movieTitle = similarMovie.name,
