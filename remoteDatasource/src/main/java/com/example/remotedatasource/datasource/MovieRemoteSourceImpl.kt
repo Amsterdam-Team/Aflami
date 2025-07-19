@@ -91,6 +91,13 @@ class MovieRemoteSourceImpl(
         }
     }
 
+    override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
+        return safeCall<RemoteMovieGalleryResponse> {
+            val response = ktorClient.get("movie/$movieId/images")
+            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+        }
+    }
+
     private companion object {
         const val SEARCH_MOVIE_URL = "search/movie"
         const val GET_ACTOR_NAME_BY_ID_URL = "search/person"

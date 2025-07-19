@@ -6,7 +6,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
 
-class RecentSearchLocalSourceImpl(
+class RecentSearchLocalDataSourceImpl(
     private val dao: RecentSearchDao
 ) : RecentSearchLocalSource {
 

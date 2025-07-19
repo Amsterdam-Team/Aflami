@@ -1,5 +1,6 @@
 package com.example.repository.dto.remote.movieGallery
 
+import com.example.repository.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

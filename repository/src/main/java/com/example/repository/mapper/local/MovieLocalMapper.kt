@@ -23,18 +23,18 @@ class MovieLocalMapper : EntityMapper<LocalMovieDto, Movie>,
         )
     }
 
-    override fun toDto(domain: Movie): LocalMovieDto {
+    override fun toDto(entity: Movie): LocalMovieDto {
         return LocalMovieDto(
-            movieId = domain.id,
-            name = domain.name,
-            description = domain.description,
-            poster = domain.posterUrl,
-            productionYear = domain.productionYear.toInt(),
-            rating = domain.rating,
-            popularity = domain.popularity,
-            movieLength = domain.runTime,
-            originCountry = domain.originCountry,
-            hasVideo = domain.hasVideo
+            movieId = entity.id,
+            name = entity.name,
+            description = entity.description,
+            poster = entity.posterUrl,
+            productionYear = entity.productionYear.toInt(),
+            rating = entity.rating,
+            popularity = entity.popularity,
+            movieLength = entity.runTime,
+            originCountry = entity.originCountry,
+            hasVideo = entity.hasVideo
         )
     }
 }

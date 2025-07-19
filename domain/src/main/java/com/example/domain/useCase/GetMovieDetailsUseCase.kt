@@ -16,6 +16,7 @@ class GetMovieDetailsUseCase(
         val actors = movieRepository.getActorsByMovieId(movieId)
         val similarMovies = movieRepository.getSimilarMovies(movieId)
         val movieGallery = movieRepository.getMovieGallery(movieId)
+        val moviePosters = movieRepository.getMoviePosters(movieId).take(10)
         val productionsCompanies = movieRepository.getProductionCompany(movieId)
         return MovieDetails(
             movie = movie,
@@ -24,6 +25,7 @@ class GetMovieDetailsUseCase(
             actors = actors,
             similarMovies = similarMovies,
             movieGallery = movieGallery,
+            moviePosters = moviePosters,
             productionsCompanies = productionsCompanies
         )
     }
@@ -35,6 +37,7 @@ class GetMovieDetailsUseCase(
         val actors: List<Actor>,
         val similarMovies: List<Movie>,
         val movieGallery: List<String>,
+        val moviePosters : List<String>,
         val productionsCompanies : List<ProductionCompany>
     )
 }
