@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.local.LocalTvShowCategoryInterestDto
 import com.example.repository.dto.local.utils.DatabaseContract
@@ -18,7 +19,7 @@ interface TvShowCategoryInterestDao {
     @Query("SELECT ${DatabaseContract.INTEREST_COUNT_FIELD} FROM ${DatabaseContract.TV_SHOW_CATEGORY_INTEREST_TABLE} WHERE ${DatabaseContract.GENRE_FIELD} = :genre")
     suspend fun getInterestCount(genre: TvShowGenre): Int?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun insertInterest(entity: LocalTvShowCategoryInterestDto)
 
     @Transaction
