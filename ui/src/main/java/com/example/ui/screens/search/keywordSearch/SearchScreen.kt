@@ -146,6 +146,7 @@ private fun SearchContent(
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
                 onMovieClicked = interaction::onClickMovieCard,
+                onTvShowClicked = interaction::onClickTvShowCard,
                 tvShows = state.tvShows,
                 movies = state.movies,
                 selectedTabOption = state.selectedTabOption
@@ -206,7 +207,8 @@ private fun SuccessMediaItems(
     tvShows: List<TvShowItemUiState>,
     selectedTabOption: TabOption,
     modifier: Modifier = Modifier,
-    onMovieClicked: (movieId: Long) -> Unit
+    onMovieClicked: (movieId: Long) -> Unit,
+    onTvShowClicked: (tvShowId: Long) -> Unit
 ) {
     val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
         movies
@@ -255,6 +257,7 @@ private fun SuccessMediaItems(
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
                         movieRating = mediaItem.rate,
+                        onClick = {onTvShowClicked(mediaItem.id)}
                     )
                 }
             }

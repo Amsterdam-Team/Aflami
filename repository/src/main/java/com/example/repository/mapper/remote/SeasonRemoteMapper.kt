@@ -1,20 +1,15 @@
 package com.example.repository.mapper.remote
 
 import com.example.entity.Season
-import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.SeasonResponse
+import com.example.repository.mapper.shared.EntityMapper
 
-class SeasonRemoteMapper {
-    fun mapToSeasons(tvShowDto: RemoteTvShowItemDto): List<Season> {
-        return tvShowDto.seasons.map { mapToSeason(it) }
-    }
-
-    fun mapToSeason(seasonResponse: SeasonResponse): Season {
+class SeasonRemoteMapper : EntityMapper<SeasonResponse, Season> {
+    override fun toEntity(dto: SeasonResponse): Season {
         return Season(
-            id = seasonResponse.id,
-            seasonNumber = seasonResponse.seasonNumber,
-            episodeCount = seasonResponse.episodeCount,
-            episodes = seasonResponse.episodes.map { it.id }
+            id = dto.id,
+            seasonNumber = dto.seasonNumber,
+            episodeCount = dto.episodeCount
         )
     }
 }

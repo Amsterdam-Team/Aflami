@@ -18,6 +18,7 @@ import com.example.repository.mapper.remote.GalleryRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.mapper.remote.SeasonRemoteMapper
+import com.example.repository.mapper.remote.TvShowDetailsRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
@@ -34,7 +35,8 @@ class TvShowRepositoryImpl(
     private val seasonRemoteMapper: SeasonRemoteMapper,
     private val episodeRemoteMapper: EpisodeRemoteMapper,
     private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
-    private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper
+    private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper,
+    private val tvShowDetailsRemoteMapper: TvShowDetailsRemoteMapper
 ) : TvShowRepository {
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
         return getCachedTvShows(keyword)
@@ -54,7 +56,7 @@ class TvShowRepositoryImpl(
     }
 
     override suspend fun getTvShowDetails(tvShowId: Long): TvShow {
-        return tvRemoteMapper.toEntity(remoteTvDataSource.getTvShowDetailsById(tvShowId))
+        return tvShowDetailsRemoteMapper.toEntity(remoteTvDataSource.getTvShowDetailsById(tvShowId))
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
@@ -62,18 +64,18 @@ class TvShowRepositoryImpl(
     }
 
     override suspend fun getTvShowSeasons(tvShowId: Long): List<Season> {
-        return seasonRemoteMapper.mapToSeasons(remoteTvDataSource.getTvShowDetailsById(tvShowId))
+        return seasonRemoteMapper.toEntityList(remoteTvDataSource.getTvShowDetailsById(tvShowId).seasons)
     }
 
     override suspend fun getEpisodesBySeasonNumber(
         tvShowId: Long,
         seasonNumber: Int
     ): List<Episode> {
-        return episodeRemoteMapper.mapToEpisodes(
+        return episodeRemoteMapper.toEntityList(
             remoteTvDataSource.getEpisodesBySeasonNumber(
                 tvShowId,
                 seasonNumber
-            )
+            ).episodes
         )
     }
 

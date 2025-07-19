@@ -10,6 +10,5 @@ data class SeasonResponse(
     @SerialName("name") val title: String,
     @SerialName("air_date") val airDate: Instant,
     @SerialName("season_number") val seasonNumber: Int,
-    @SerialName("episode_count") val episodeCount: Int,
-    @SerialName("episodes") val episodes: List<EpisodeDto>,
+    @SerialName("episode_count") val episodeCount: Int
 )

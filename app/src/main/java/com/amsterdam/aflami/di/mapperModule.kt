@@ -19,6 +19,7 @@ import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.PostersRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
+import com.example.repository.mapper.remote.TvShowDetailsRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remoteToLocal.CountryRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
@@ -56,5 +57,6 @@ val mapperModule = module {
     singleOf(::TvShowGenreLocalMapper)
     singleOf(::TvShowWithCategoryLocalMapper)
     singleOf(::PostersRemoteMapper)
+    singleOf(::TvShowDetailsRemoteMapper)
 
 }

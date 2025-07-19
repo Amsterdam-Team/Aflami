@@ -26,10 +26,10 @@ class TvRemoteSourceImpl(
         }
     }
 
-    override suspend fun getTvShowDetailsById(tvShowId: Long): RemoteTvShowItemDto {
+    override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteDto {
         return safeCall {
             val response = ktorClient.get("tv/$tvShowId")
-            return json.decodeFromString<RemoteTvShowItemDto>(response.bodyAsText())
+            return json.decodeFromString<TvShowDetailsRemoteDto>(response.bodyAsText())
         }
     }
 
@@ -71,10 +71,10 @@ class TvRemoteSourceImpl(
     override suspend fun getEpisodesBySeasonNumber(
         tvShowId: Long,
         seasonNumber: Int
-    ): SeasonResponse {
+    ): EpisodeResponse {
         return safeCall {
             val response = ktorClient.get("tv/$tvShowId/season/$seasonNumber")
-            return json.decodeFromString<SeasonResponse>(response.bodyAsText())
+            return json.decodeFromString<EpisodeResponse>(response.bodyAsText())
         }
     }
 
