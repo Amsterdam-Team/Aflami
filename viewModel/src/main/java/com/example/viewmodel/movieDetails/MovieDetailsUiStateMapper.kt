@@ -52,7 +52,7 @@ class MovieDetailsUiStateMapper {
                     country = company.country
                 )
             },
-            gallery = movieGallery.map { it},
+            gallery = movieGallery.map { it },
             reviews = reviews.map {
                 ReviewUiState(
                     author = it.reviewerName,
@@ -65,7 +65,8 @@ class MovieDetailsUiStateMapper {
             }
         )
     }
-    private fun productionYearToDate(year: UInt): String = "$year-01-01"
+
+    fun productionYearToDate(year: UInt): String = "$year-01-01"
 
     fun movieLengthToHourMinuteString(movieLength: Int): String {
         val hours = movieLength / 60
