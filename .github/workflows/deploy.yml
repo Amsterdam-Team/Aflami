@@ -31,6 +31,7 @@ jobs:
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
           echo baseUrl=\"$BASE_URL\" >> local.properties
+          echo baseImageUrl=\"${{ secrets.BASE_IMAGE_URL }}\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -39,7 +40,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Generate APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew :app:assembleRelease
 
       - name: Rename APK
         run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/aflami-amsterdam.apk

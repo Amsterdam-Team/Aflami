@@ -33,6 +33,7 @@ jobs:
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
           echo baseUrl=\"$BASE_URL\" >> local.properties
+          echo baseImageUrl=\"${{ secrets.BASE_IMAGE_URL }}\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
@@ -41,7 +42,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Compile Project
-        run: ./gradlew assemble
+        run: ./gradlew :app:assemble
 
       - name: Run Unit Tests
         run: ./gradlew test

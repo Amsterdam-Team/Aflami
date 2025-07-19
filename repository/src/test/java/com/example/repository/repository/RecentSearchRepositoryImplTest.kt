@@ -3,7 +3,7 @@ package com.example.repository.repository
 import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
-import com.example.repository.mapper.local.RecentSearchMapper
+import com.example.repository.mapper.local.RecentSearchLocalMapper
 import com.example.domain.repository.RecentSearchRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -20,7 +20,7 @@ class RecentSearchRepositoryImplTest {
     private lateinit var repository: RecentSearchRepository
 
     private val recentSearchLocalSource: RecentSearchLocalSource = mockk()
-    private val recentSearchMapper: RecentSearchMapper = mockk()
+    private val recentSearchLocalMapper: RecentSearchLocalMapper = mockk()
     private val now: Instant = Clock.System.now()
 
     private val testKeyword = "Action"
@@ -28,7 +28,7 @@ class RecentSearchRepositoryImplTest {
 
     @BeforeEach
     fun setup() {
-        repository = RecentSearchRepositoryImpl(recentSearchLocalSource, recentSearchMapper)
+        repository = RecentSearchRepositoryImpl(recentSearchLocalSource, recentSearchLocalMapper)
     }
 
     @Test
@@ -85,9 +85,9 @@ class RecentSearchRepositoryImplTest {
         val expected = listOf("Action")
 
         coEvery { recentSearchLocalSource.getRecentSearches() } returns dtos
-        every { recentSearchMapper.toDomainList(dtos) } returns expected
+        every { recentSearchLocalMapper.toEntityList(dtos) } returns expected
 
-        val result = repository.getAllRecentSearches()
+        val result = repository.getRecentSearches()
 
         assertThat(result).isEqualTo(expected)
     }
@@ -96,7 +96,7 @@ class RecentSearchRepositoryImplTest {
     fun `should delete all recent searches`() = runTest {
         coEvery { recentSearchLocalSource.deleteRecentSearches() } just Runs
 
-        repository.deleteAllRecentSearches()
+        repository.deleteRecentSearches()
 
         coVerify { recentSearchLocalSource.deleteRecentSearches() }
     }

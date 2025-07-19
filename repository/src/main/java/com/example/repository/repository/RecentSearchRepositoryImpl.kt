@@ -2,12 +2,15 @@ package com.example.repository.repository
 
 import com.example.domain.repository.RecentSearchRepository
 import com.example.repository.datasource.local.RecentSearchLocalSource
+import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
-import com.example.repository.mapper.local.RecentSearchMapper
+import com.example.repository.mapper.local.RecentSearchLocalMapper
+import kotlinx.datetime.Clock
+import kotlin.time.Duration.Companion.hours
 
 class RecentSearchRepositoryImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource,
-    private val recentSearchMapper: RecentSearchMapper,
+    private val recentSearchMapper: RecentSearchLocalMapper,
 ) : RecentSearchRepository {
     override suspend fun addRecentSearch(searchKeyword: String) {
         addRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
@@ -22,7 +25,7 @@ class RecentSearchRepositoryImpl(
     }
 
     override suspend fun getAllRecentSearches(): List<String> {
-        return recentSearchMapper.toDomainList(recentSearchLocalSource.getRecentSearches())
+        return recentSearchMapper.toEntityList(recentSearchLocalSource.getRecentSearches())
     }
 
     override suspend fun deleteAllRecentSearches() {
@@ -35,8 +38,10 @@ class RecentSearchRepositoryImpl(
 
     private suspend fun addRecentSearch(searchKeyword: String, searchType: SearchType) {
         recentSearchLocalSource.upsertRecentSearch(
-            recentSearchMapper.toLocalSearch(
-                searchKeyword, searchType
+            LocalSearchDto(
+                searchKeyword,
+                searchType,
+                Clock.System.now().plus(1.hours)
             )
         )
     }

@@ -6,14 +6,20 @@ import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.remote.RemoteCategoryResponse
-import com.example.repository.mapper.local.CategoryLocalMapper
+import com.example.repository.mapper.local.MovieCategoryLocalMapper
+import com.example.repository.mapper.local.TvShowCategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
+import com.example.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
+import com.example.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
 
 class CategoryRepositoryImpl(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
-    private val categoryLocalMapper: CategoryLocalMapper,
-    private val categoryRemoteMapper: CategoryRemoteMapper
+    private val movieCategoryLocalMapper: MovieCategoryLocalMapper,
+    private val categoryRemoteMapper: CategoryRemoteMapper,
+    private val movieCategoryRemoteLocalMapper: MovieCategoryRemoteLocalMapper,
+    private val tvShowCategoryRemoteLocalMapper: TvShowCategoryRemoteLocalMapper,
+    private val tvShowCategoryLocalMapper: TvShowCategoryLocalMapper
 ) : CategoryRepository {
     override suspend fun getMovieCategories(): List<Category> {
         return getMovieCategoriesFromLocal()
@@ -34,37 +40,33 @@ class CategoryRepositoryImpl(
     private fun onSuccessGetMovieCategoriesFromLocal(
         localCategories: List<LocalMovieCategoryDto>
     ): List<Category> {
-        return categoryLocalMapper
-            .mapToMovieCategories(localCategories)
-            .map { category ->
-                Category(id = category.ordinal.toLong(), name = category.name, imageUrl = "")
-            }
+        return movieCategoryLocalMapper.toEntityList(localCategories)
     }
 
     private suspend fun onSuccessLoadMovieCategories(
         movieCategories: RemoteCategoryResponse
     ): List<Category> {
         return saveMovieCategoriesToDatabase(movieCategories)
-            .let { categoryRemoteMapper.mapToCategories(movieCategories) }
+            .let { categoryRemoteMapper.toEntityList(movieCategories.genres) }
     }
 
     private suspend fun saveMovieCategoriesToDatabase(
         movieCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertMovieCategories(
-            categoryRemoteMapper.mapToLocalMovieCategories(movieCategories)
+            movieCategoryRemoteLocalMapper.toLocalList(movieCategories.genres)
         )
     }
 
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
-        return categoryLocalMapper.mapToCategories(categoryLocalSource.getTvShowCategories())
+        return tvShowCategoryLocalMapper.toEntityList(categoryLocalSource.getTvShowCategories())
     }
 
     private suspend fun onSuccessLoadTvShowCategories(
         tvShowCategories: RemoteCategoryResponse
     ): List<Category> {
         return saveTvShowCategoriesToDatabase(tvShowCategories).let {
-            categoryRemoteMapper.mapToCategories(tvShowCategories)
+            categoryRemoteMapper.toEntityList(tvShowCategories.genres)
         }
     }
 
@@ -72,7 +74,7 @@ class CategoryRepositoryImpl(
         tvShowCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertTvShowCategories(
-            categoryRemoteMapper.mapToLocalTvShowCategories(tvShowCategories)
+            tvShowCategoryRemoteLocalMapper.toLocalList(tvShowCategories.genres)
         )
     }
 }

@@ -6,16 +6,18 @@ import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteTvShowResponse
-import com.example.repository.mapper.local.TvShowLocalMapper
+import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
+import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 
 class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
-    private val tvLocalMapper: TvShowLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
+    private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
+    private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper
 ) : TvShowRepository {
     override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
         return getCachedTvShows(keyword)
@@ -23,7 +25,7 @@ class TvShowRepositoryImpl(
                 .let { getTvShowsFromRemote(keyword) }
                 .let { remoteTvShows ->
                     saveTvShowsToDatabase(remoteTvShows, keyword)
-                    tvRemoteMapper.mapToTvShows(remoteTvShows)
+                    tvRemoteMapper.toEntityList(remoteTvShows.results)
                 }
     }
 
@@ -35,7 +37,7 @@ class TvShowRepositoryImpl(
     }
 
     private suspend fun getTvShowFromLocal(keyword: String, searchType: SearchType): List<TvShow> {
-        return tvLocalMapper.mapToTvShows(
+        return tvShowWithCategoryLocalMapper.toEntityList(
             localTvDataSource.getTvShowsByKeywordAndSearchType(
                 keyword, searchType
             )
@@ -50,7 +52,7 @@ class TvShowRepositoryImpl(
         remoteTvShows: RemoteTvShowResponse, keyword: String
     ) {
         localTvDataSource.addTvShows(
-            tvRemoteMapper.mapToLocalTvShows(remoteTvShows),
+            tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results),
             keyword,
         )
     }

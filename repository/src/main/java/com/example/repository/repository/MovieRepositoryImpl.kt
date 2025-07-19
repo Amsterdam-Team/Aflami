@@ -2,6 +2,7 @@ package com.example.repository.repository
 
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Actor
+import com.example.entity.Country
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany
 import com.example.entity.Review
@@ -9,25 +10,27 @@ import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.mapper.local.MovieLocalMapper
+import com.example.repository.mapper.local.MovieWithCategoriesLocalMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
 import com.example.repository.mapper.remote.GalleryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
+import com.example.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 import kotlinx.datetime.Clock
 
 class MovieRepositoryImpl(
     private val movieLocalSource: MovieLocalSource,
     private val movieRemoteDataSource: MovieRemoteSource,
-    private val movieLocalMapper: MovieLocalMapper,
     private val movieRemoteMapper: MovieRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val castRemoteMapper: CastRemoteMapper,
     private val reviewRemoteMapper: ReviewRemoteMapper,
     private val galleryRemoteMapper: GalleryRemoteMapper,
     private val remoteProductionCompanyMapper: ProductionCompanyRemoteMapper,
+    private val movieWithCategoriesLocalMapper: MovieWithCategoriesLocalMapper,
+    private val movieRemoteLocalMapper: MovieRemoteLocalMapper,
 ) : MovieRepository {
     override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
         return getCachedMovies(keyword, SearchType.BY_KEYWORD)
@@ -43,39 +46,40 @@ class MovieRepositoryImpl(
             ).let { getMoviesByActorNameFromRemote(actorName, SearchType.BY_ACTOR) }
     }
 
-    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): List<Movie> {
-        return getCachedMovies(countryIsoCode, SearchType.BY_COUNTRY)
-            ?: recentSearchHandler.deleteRecentSearch(countryIsoCode, SearchType.BY_COUNTRY)
-                .let { getMoviesByCountryIsoCodeFromRemote(countryIsoCode, SearchType.BY_COUNTRY) }
+    override suspend fun getMoviesByCountry(country: Country): List<Movie> {
+        return getCachedMovies(country.countryIsoCode, SearchType.BY_COUNTRY)
+            ?: recentSearchHandler.deleteRecentSearch(country.countryIsoCode, SearchType.BY_COUNTRY)
+                .let {
+                    getMoviesByCountryIsoCodeFromRemote(
+                        country.countryIsoCode,
+                        SearchType.BY_COUNTRY
+                    )
+                }
     }
 
     override suspend fun getActorsByMovieId(movieId: Long): List<Actor> {
-        return movieRemoteDataSource.getCastByMovieId(movieId).cast.map {
-            castRemoteMapper.mapToDomain(
-                it
-            )
-        }
+        return castRemoteMapper.toEntityList(movieRemoteDataSource.getCastByMovieId(movieId).cast)
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): Movie {
-        return movieRemoteMapper.mapToMovie(movieRemoteDataSource.getMovieDetailsById(movieId))
+        return movieRemoteMapper.toEntity(movieRemoteDataSource.getMovieDetailsById(movieId))
     }
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> {
-        return reviewRemoteMapper.mapResponseToDomain(movieRemoteDataSource.getMovieReviews(movieId))
+        return reviewRemoteMapper.toEntityList(movieRemoteDataSource.getMovieReviews(movieId).results)
     }
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
-        return movieRemoteMapper.mapToMovies(movieRemoteDataSource.getSimilarMovies(movieId))
+        return movieRemoteMapper.toEntityList(movieRemoteDataSource.getSimilarMovies(movieId).results)
     }
 
     override suspend fun getMovieGallery(movieId: Long): List<String> {
-        return galleryRemoteMapper.mapGalleryToDomain(movieRemoteDataSource.getMovieGallery(movieId))
+        return galleryRemoteMapper.toEntity(movieRemoteDataSource.getMovieGallery(movieId))
     }
 
     override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
-        return remoteProductionCompanyMapper.mapProductionCompanyToDomain(
-            movieRemoteDataSource.getProductionCompany(movieId)
+        return remoteProductionCompanyMapper.toEntityList(
+            movieRemoteDataSource.getProductionCompany(movieId).productionCompanies
         )
     }
 
@@ -117,12 +121,12 @@ class MovieRepositoryImpl(
     ): List<Movie> {
         return saveMoviesWithSearch(
             remoteMovies, actorName, searchType
-        ).let { movieRemoteMapper.mapToMovies(remoteMovies) }
+        ).let { movieRemoteMapper.toEntityList(remoteMovies.results) }
     }
 
     private suspend fun getMoviesFromLocal(keyword: String, searchType: SearchType): List<Movie> {
         return try {
-            movieLocalMapper.mapToMovies(
+            movieWithCategoriesLocalMapper.toEntityList(
                 movieLocalSource.getMoviesByKeywordAndSearchType(
                     keyword = keyword, searchType = searchType
                 )
@@ -136,7 +140,7 @@ class MovieRepositoryImpl(
         remoteMovies: RemoteMovieResponse, keyword: String, searchType: SearchType
     ) {
         movieLocalSource.addMoviesBySearchData(
-            movies = movieRemoteMapper.mapToLocalMovies(remoteMovies),
+            movies = movieRemoteLocalMapper.toLocalList(remoteMovies.results),
             searchKeyword = keyword,
             searchType = searchType,
             expireDate = Clock.System.now()

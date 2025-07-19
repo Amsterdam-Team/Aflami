@@ -10,9 +10,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.designsystem.theme.colors.LocalAflamiAppColors
 import com.example.designsystem.theme.colors.darkThemeColors
 import com.example.designsystem.theme.colors.lightThemeColors
-import com.example.designsystem.theme.colors.localAflamiAppColors
 
 @Composable
 fun AflamiTheme(
@@ -25,7 +25,6 @@ fun AflamiTheme(
     val view = LocalView.current
 
     if (activity != null) {
-
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
             activity.window.navigationBarColor = theme.surface.toArgb()
         }
@@ -33,13 +32,14 @@ fun AflamiTheme(
             !isDarkTheme
     }
     CompositionLocalProvider(
-        localAflamiAppColors provides theme,
-        LocalIsDarkTheme provides isDarkTheme
+        LocalAflamiAppColors provides theme,
+        LocalIsDarkTheme provides isDarkTheme,
     ) {
         content()
     }
 }
 
-internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
-    error("LocalIsDarkTheme not provided")
-}
+internal val LocalIsDarkTheme =
+    compositionLocalOf<Boolean> {
+        error("LocalIsDarkTheme not provided")
+    }

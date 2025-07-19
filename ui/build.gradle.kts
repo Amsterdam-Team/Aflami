@@ -13,6 +13,8 @@ android {
 dependencies {
     implementation(project(":designSystem"))
     implementation(project(":viewModel"))
+    implementation(project(":blurred"))
+    implementation(project(":imageViewer"))
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
