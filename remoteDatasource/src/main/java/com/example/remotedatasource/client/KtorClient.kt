@@ -2,6 +2,7 @@ package com.example.remotedatasource.client
 
 import com.example.domain.exceptions.NoInternetException
 import com.example.remotedatasource.BuildConfig
+import com.example.remotedatasource.utils.getDeviceLanguage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -11,21 +12,17 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import java.util.Locale
 
 class KtorClient(
     val json: Json
 ) {
-    private val languageTag = Locale.getDefault().toLanguageTag()
-
     private val token = BuildConfig.BEARER_TOKEN
 
     private val sessionId: String? = null
 
-    private val httpClient = HttpClient() {
+    private val httpClient = HttpClient {
         install(HttpTimeout) {
             requestTimeoutMillis = 30_000
             connectTimeoutMillis = 10_000
@@ -37,12 +34,10 @@ class KtorClient(
         defaultRequest {
             header(TOKEN_HEADER_NAME, "Bearer $token")
             url(BuildConfig.BASE_URL)
-            parameters {
-                if (!sessionId.isNullOrBlank()) {
-                    append(SESSION, sessionId)
-                }
-                append(LANGUAGE, languageTag)
+            if (!sessionId.isNullOrBlank()) {
+                url.parameters.append(SESSION, sessionId)
             }
+            url.parameters.append(LANGUAGE, getDeviceLanguage())
         }
     }
 
