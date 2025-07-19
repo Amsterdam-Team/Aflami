@@ -30,7 +30,7 @@ data class RemoteCastDto(
     val profilePath: String? = null,
     
     @SerialName("cast_id")
-    val castId: Int,
+    val castId: Int = 0,
     
     @SerialName("character")
     val character: String,

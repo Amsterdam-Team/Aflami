@@ -4,14 +4,14 @@ import com.example.repository.dto.remote.EpisodeResponse
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteTvShowResponse
-import com.example.repository.dto.remote.TvShowDetailsRemoteDto
+import com.example.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 
 interface TvShowsRemoteSource {
     suspend fun getTvShowsByKeyword(keyword: String): RemoteTvShowResponse
 
-    suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteDto
+    suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse
 
     suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse
 

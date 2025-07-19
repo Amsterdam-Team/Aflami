@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TvShowDetailsRemoteDto(
+data class TvShowDetailsRemoteResponse(
     @SerialName("adult") val adult: Boolean,
     @SerialName("backdrop_path") val backdropPath: String?,
     @SerialName("genres") val genres: List<GenreDto>,

@@ -1,17 +1,15 @@
 package com.example.remotedatasource.datasource
 
 import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.repository.datasource.remote.TvShowsRemoteSource
+import com.example.repository.dto.remote.EpisodeResponse
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
-import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
-import com.example.repository.dto.remote.SeasonResponse
+import com.example.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
-import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
 class TvRemoteSourceImpl(
@@ -26,45 +24,39 @@ class TvRemoteSourceImpl(
         }
     }
 
-    override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteDto {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId")
-            return json.decodeFromString<TvShowDetailsRemoteDto>(response.bodyAsText())
+    override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse {
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId")
         }
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId/credits")
-            return json.decodeFromString<RemoteCastAndCrewResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId/credits")
         }
     }
 
     override suspend fun getSimilarTvShows(tvShowId: Long): RemoteTvShowResponse {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId/similar")
-            return json.decodeFromString<RemoteTvShowResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId/similar")
         }
     }
 
     override suspend fun getTvShowReviews(tvShowId: Long): ReviewsResponse {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId/reviews")
-            return json.decodeFromString<ReviewsResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId/reviews")
         }
     }
 
     override suspend fun getTvShowGallery(tvShowId: Long): RemoteGalleryResponse {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId/images")
-            return json.decodeFromString<RemoteGalleryResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId/images")
         }
     }
 
     override suspend fun getTvShowCompanyProduction(tvShowId: Long): ProductionCompanyResponse {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId")
-            return json.decodeFromString<ProductionCompanyResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId")
         }
     }
 
@@ -72,9 +64,8 @@ class TvRemoteSourceImpl(
         tvShowId: Long,
         seasonNumber: Int
     ): EpisodeResponse {
-        return safeCall {
-            val response = ktorClient.get("tv/$tvShowId/season/$seasonNumber")
-            return json.decodeFromString<EpisodeResponse>(response.bodyAsText())
+        return ktorClient.tryToExecute {
+            ktorClient.get("tv/$tvShowId/season/$seasonNumber")
         }
     }
 
