@@ -9,7 +9,7 @@ import com.example.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
 
 
-class MovieLocalSourceImpl(
+class MovieLocalDataSourceImpl(
     private val dao: MovieDao
 ) : MovieLocalSource {
 
@@ -39,7 +39,10 @@ class MovieLocalSourceImpl(
         dao.insertSearchEntries(entries)
     }
 
-    override suspend fun getSearchMovieCrossRefs(searchKeyword: String, searchType: SearchType): List<SearchMovieCrossRefDto> {
+    override suspend fun getSearchMovieCrossRefs(
+        searchKeyword: String,
+        searchType: SearchType
+    ): List<SearchMovieCrossRefDto> {
         return dao.getSearchMoviesCrossRef(searchKeyword, searchType)
     }
 

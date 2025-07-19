@@ -15,10 +15,10 @@ class CountryLocalMapper : EntityMapper<LocalCountryDto, Country>,
         )
     }
 
-    override fun toDto(domain: Country): LocalCountryDto {
+    override fun toDto(entity: Country): LocalCountryDto {
         return LocalCountryDto(
-            name = domain.countryName,
-            isoCode = domain.countryIsoCode
+            name = entity.countryName,
+            isoCode = entity.countryIsoCode
         )
     }
 }

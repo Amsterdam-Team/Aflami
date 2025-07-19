@@ -16,11 +16,11 @@ class MovieDetailsUiStateMapper {
     fun toUiState(domain: GetMovieDetailsUseCase.MovieDetails): MovieDetailsUiState = with(domain) {
         MovieDetailsUiState(
             movieId = movie.id,
-            posterUrl = movie.posterUrl,
             rating = ratingToRatingString(movie.rating),
             movieTitle = movie.name,
             categories = categories,
-            releaseDate = productionYearToDate(movie.productionYear.toUInt()),
+            moviePostersUrl = moviePosters,
+            releaseDate = productionYearToDate(movie.productionYear),
             movieLength = movieLengthToHourMinuteString(movie.runTime),
             originCountry = movie.originCountry,
             description = movie.description,
@@ -52,7 +52,7 @@ class MovieDetailsUiStateMapper {
                     country = company.country
                 )
             },
-            gallery = movieGallery.map { it },
+            gallery = movieGallery.map { it},
             reviews = reviews.map {
                 ReviewUiState(
                     author = it.reviewerName,
@@ -65,8 +65,7 @@ class MovieDetailsUiStateMapper {
             }
         )
     }
-
-    fun productionYearToDate(year: UInt): String = "$year-01-01"
+    private fun productionYearToDate(year: UInt): String = "$year-01-01"
 
     fun movieLengthToHourMinuteString(movieLength: Int): String {
         val hours = movieLength / 60
