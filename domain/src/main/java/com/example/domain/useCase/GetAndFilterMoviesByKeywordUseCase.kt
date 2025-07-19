@@ -1,12 +1,9 @@
 package com.example.domain.useCase
 
-import com.example.domain.common.ContentFilteringExtensions.filterByMinRating
-import com.example.domain.common.ContentFilteringExtensions.sortByPopularityDescending
-import com.example.domain.common.ContentFilteringExtensions.throwIfEmpty
-import com.example.domain.exceptions.NoSearchByKeywordResultFoundException
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
+import kotlin.math.floor
 
 class GetAndFilterMoviesByKeywordUseCase(
     private val movieRepository: MovieRepository
@@ -17,16 +14,20 @@ class GetAndFilterMoviesByKeywordUseCase(
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
-        return movieRepository
-            .getMoviesByKeyword(keyword = keyword)
-            .filterByMinRating(rating)
-            .filter { movie ->
-                if (movieGenre == MovieGenre.ALL)
-                    return@filter true
+       return movieRepository
+           .getMoviesByKeyword(keyword = keyword)
+           .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
+    }
 
-                movie.categories.any { it == movieGenre }
+
+    private fun List<Movie>.filterMoviesWithRatingAndGenre(
+        rating: Int,
+        genre: MovieGenre
+    ): List<Movie> {
+        return this.filter { item -> floor(item.rating) >= rating }
+            .filter { movie ->
+                if (genre == MovieGenre.ALL) return@filter true
+                movie.categories.any { it == genre }
             }
-            .sortByPopularityDescending()
-            .throwIfEmpty { NoSearchByKeywordResultFoundException() }
     }
 }

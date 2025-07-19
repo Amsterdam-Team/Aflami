@@ -1,6 +1,5 @@
 package com.example.remotedatasource.datasource
 
-import com.example.domain.exceptions.NoSearchByActorResultFoundException
 import com.example.remotedatasource.client.KtorClient
 import com.example.remotedatasource.utils.apiHandler.safeCall
 import com.example.remotedatasource.utils.constants.RemoteDataSourceConstants
@@ -29,7 +28,6 @@ class MovieRemoteSourceImpl(
         val actorsByName = getActorIdByName(name)
             .actors
             .joinToString(separator = "|") { it.id.toString() }
-            .ifEmpty { throw NoSearchByActorResultFoundException() }
 
         val rawResponse: RemoteMovieResponse = safeCall {
             ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
@@ -95,6 +93,13 @@ class MovieRemoteSourceImpl(
                 itemDto.copy(posterPath = RemoteDataSourceConstants.BASE_IMAGE_URL + itemDto.posterPath.orEmpty())
             }
         )
+    }
+
+    override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
+        return safeCall<RemoteMovieGalleryResponse> {
+            val response = ktorClient.get("movie/$movieId/images")
+            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+        }
     }
 
     private companion object {

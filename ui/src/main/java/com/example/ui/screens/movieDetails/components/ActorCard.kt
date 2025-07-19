@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
@@ -23,7 +25,9 @@ fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
                 .size(78.dp)
                 .clip(RoundedCornerShape(16.dp)),
             model = actor.photo,
-            contentDescription = actor.name
+            contentDescription = actor.name,
+            onLoading = { ImageLoadingIndicator() },
+            onError = { ImageErrorIndicator() },
         )
         Text(
             text = actor.name,

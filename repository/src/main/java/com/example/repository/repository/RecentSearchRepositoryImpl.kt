@@ -4,64 +4,45 @@ import com.example.domain.repository.RecentSearchRepository
 import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
-import com.example.repository.mapper.local.RecentSearchMapper
-import com.example.repository.utils.tryToExecute
+import com.example.repository.mapper.local.RecentSearchLocalMapper
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
 class RecentSearchRepositoryImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource,
-    private val recentSearchMapper: RecentSearchMapper,
+    private val recentSearchMapper: RecentSearchLocalMapper,
 ) : RecentSearchRepository {
-    override suspend fun upsertRecentSearch(searchKeyword: String) {
-        upsertRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
+    override suspend fun addRecentSearch(searchKeyword: String) {
+        addRecentSearch(searchKeyword, searchType = SearchType.BY_KEYWORD)
     }
 
-    override suspend fun upsertRecentSearchForCountry(searchKeyword: String) {
-        upsertRecentSearch(searchKeyword, searchType = SearchType.BY_COUNTRY)
+    override suspend fun addRecentSearchForCountry(searchKeyword: String) {
+        addRecentSearch(searchKeyword, searchType = SearchType.BY_COUNTRY)
     }
 
-    override suspend fun upsertRecentSearchForActor(searchKeyword: String) {
-        upsertRecentSearch(searchKeyword, searchType = SearchType.BY_ACTOR)
+    override suspend fun addRecentSearchForActor(searchKeyword: String) {
+        addRecentSearch(searchKeyword, searchType = SearchType.BY_ACTOR)
     }
 
     override suspend fun getAllRecentSearches(): List<String> {
-        return tryToExecute(
-            function = { recentSearchLocalSource.getRecentSearches() },
-            onSuccess = { recentSearchMapper.toDomainList(it) },
-            onFailure = { aflamiException -> throw aflamiException }
-        )
+        return recentSearchMapper.toEntityList(recentSearchLocalSource.getRecentSearches())
     }
 
     override suspend fun deleteAllRecentSearches() {
-        tryToExecute(
-            function = { recentSearchLocalSource.deleteRecentSearches() },
-            onSuccess = { },
-            onFailure = { aflamiException -> throw aflamiException }
-        )
+        recentSearchLocalSource.deleteRecentSearches()
     }
 
     override suspend fun deleteRecentSearch(searchKeyword: String) {
-        tryToExecute(
-            function = { recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword) },
-            onSuccess = { },
-            onFailure = { aflamiException -> throw aflamiException }
-        )
+        recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword)
     }
 
-    private suspend fun upsertRecentSearch(
-        searchKeyword: String,
-        searchType: SearchType = SearchType.BY_KEYWORD
-    ) {
-        val localSearchDto = LocalSearchDto(
-            searchKeyword = searchKeyword,
-            searchType = searchType,
-            expireDate = Clock.System.now().plus(1.hours)
-        )
-        tryToExecute(
-            function = { recentSearchLocalSource.upsertRecentSearch(localSearchDto) },
-            onSuccess = {},
-            onFailure = { aflamiException -> throw aflamiException }
+    private suspend fun addRecentSearch(searchKeyword: String, searchType: SearchType) {
+        recentSearchLocalSource.upsertRecentSearch(
+            LocalSearchDto(
+                searchKeyword,
+                searchType,
+                Clock.System.now().plus(1.hours)
+            )
         )
     }
 }
