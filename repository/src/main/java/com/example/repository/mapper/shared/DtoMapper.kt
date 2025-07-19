@@ -1,6 +1,6 @@
 package com.example.repository.mapper.shared
 
-interface DtoMapper <Domain, Dto>{
-    fun toDto(domain: Domain): Dto
-    fun toDtoList(domainList: List<Domain>): List<Dto> = domainList.map (::toDto)
+interface DtoMapper <Entity, Dto>{
+    fun toDto(entity: Entity): Dto
+    fun toDtoList(entityList: List<Entity>): List<Dto> = entityList.map (::toDto)
 }

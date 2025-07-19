@@ -13,7 +13,7 @@ class MovieRemoteLocalMapper(
             movieId = remote.id,
             name = remote.title,
             description = remote.overview,
-            poster = remote.posterPath.orEmpty(),
+            poster = remote.fullPosterUrl.orEmpty(),
             productionYear = dateParser.parseYear(remote.releaseDate),
             rating = remote.voteAverage.toFloat(),
             popularity = remote.popularity,

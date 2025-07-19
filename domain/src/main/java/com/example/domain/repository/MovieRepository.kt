@@ -17,5 +17,6 @@ interface MovieRepository {
 
     suspend fun getSimilarMovies(movieId : Long) : List<Movie>
     suspend fun getMovieGallery(movieId : Long) : List<String>
+    suspend fun getMoviePosters(movieId : Long) : List<String>
     suspend fun getProductionCompany(movieId : Long) : List<ProductionCompany>
 }
