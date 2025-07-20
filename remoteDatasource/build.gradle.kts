@@ -56,7 +56,11 @@ dependencies {
 kover.reports {
     filters.excludes {
         androidGeneratedClasses()
-        packages("*")
+        packages("*.client")
+    }
+
+    filters.includes {
+        packages("*.datasource")
     }
 
     verify {

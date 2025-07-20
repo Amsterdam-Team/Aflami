@@ -20,7 +20,8 @@ android {
         buildConfig = true
     }
     defaultConfig {
-        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
+        testInstrumentationRunnerArguments["runnerBuilder"] =
+            "de.mannodermaus.junit5.AndroidJUnit5Builder"
 
         buildConfigField(
             "String",
@@ -52,17 +53,26 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
     //truth
-    testImplementation (libs.truth)
+    testImplementation(libs.truth)
     //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
 }
 kover.reports {
     filters.excludes {
         androidGeneratedClasses()
-        packages("*")
     }
+    filters.includes {
+        classes(
+            "*.CountryLocalMapper",
+            "*.MovieLocalMapper",
+            "*.TvShowLocalMapper",
+            "*.DtoMapper",
+            "*.EntityMapper",
+        )
+    }
+
     verify {
         rule {
             minBound(80)

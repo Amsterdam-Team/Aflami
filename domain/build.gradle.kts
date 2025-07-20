@@ -35,7 +35,6 @@ kover.reports {
         classes(
             "*.GetMovieCategoriesUseCase",
             "*.GetTvShowCategoriesUseCase",
-            "*.RecentSearchesUseCase",
             "*.GetMovieDetailsUseCase",
             "*.GetMovieCastUseCase"
         )

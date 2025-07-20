@@ -42,7 +42,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Run Unit Tests With Kover Report
-        run: ./gradlew test koverVerify --build-cache
+        run: ./gradlew koverVerify --build-cache
 
       - name: Generate kover coverage report
         run: ./gradlew koverXmlReport
