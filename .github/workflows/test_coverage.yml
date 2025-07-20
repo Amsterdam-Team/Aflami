@@ -46,20 +46,26 @@ jobs:
 
       - name: Generate kover coverage report
         run: ./gradlew koverXmlReport
-
+      
       - name: Upload XML Coverage Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: kover-xml-report
           path: '**/build/reports/kover/**/*.xml'
-
+      
+  
       - name: Post Kover Code Coverage Comment
         id: kover
         uses: mi-kas/kover-report@v1
         if: github.event_name == 'pull_request'
         with:
-          path: '**/build/reports/kover/**/*.xml'
+          path: |
+            domain/build/reports/kover/report.xml
+            repository/build/reports/kover/report.xml
+            viewModel/build/reports/kover/report.xml
+            remoteDatasource/build/reports/kover/report.xml
+            localDatasource/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
