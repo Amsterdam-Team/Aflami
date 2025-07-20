@@ -39,3 +39,5 @@ include(":entity")
 include(":repository")
 include(":imageViewer")
 include(":blurred")
+
+gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
