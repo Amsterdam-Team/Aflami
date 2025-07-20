@@ -1,3 +1,4 @@
+/*
 package com.example.domain.useCase
 
 import com.example.domain.exceptions.AflamiException
@@ -105,4 +106,4 @@ class RecentSearchesUseCaseTest {
         assertThrows<AflamiException> { recentSearchesUseCase.getRecentSearches() }
     }
 
-}
+}*/

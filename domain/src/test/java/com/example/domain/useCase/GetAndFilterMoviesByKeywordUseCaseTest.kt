@@ -96,6 +96,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     @Test
     fun `getAndFilterMoviesByKeywordUseCase should return Aflami exception when an error happened`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(any()) } throws AflamiException()
-        assertThrows<AflamiException> { getAndFilterMoviesByKeywordUseCase("keyword") }
+        assertThrows<AflamiException> {
+            getAndFilterMoviesByKeywordUseCase("keyword")
+        }
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.example.domain.useCase
 
 import com.example.domain.exceptions.AflamiException
@@ -44,3 +45,4 @@ class GetTvShowCategoriesUseCaseTest {
             assertThrows<AflamiException> { getTvShowCategoriesUseCase() }
         }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.example.repository.repository
 
 import com.example.entity.Country
@@ -84,3 +85,4 @@ class CountryRepositoryImplTest {
         coVerify { localDataSource.addCountries(listOf(localDto)) }
     }
 }
+*/

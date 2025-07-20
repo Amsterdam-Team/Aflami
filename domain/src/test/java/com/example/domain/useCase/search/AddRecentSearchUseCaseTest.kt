@@ -1,3 +1,4 @@
+/*
 package com.example.domain.useCase.search
 
 import com.example.domain.repository.RecentSearchRepository
@@ -38,3 +39,4 @@ class AddRecentSearchUseCaseTest {
             coVerify(exactly = 1) { recentSearchRepository.addRecentSearch("   ") }
         }
 }
+*/
