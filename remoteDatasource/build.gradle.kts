@@ -2,7 +2,7 @@ import java.util.Properties
 
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
-var bearerToken: String = properties.getProperty("bearerToken")?:""
+var bearerToken: String = properties.getProperty("bearerToken") ?: ""
 val baseUrl: String = properties.getProperty("baseUrl") ?: ""
 
 plugins {
@@ -19,7 +19,7 @@ android {
         buildConfig = true
     }
 
-    defaultConfig{
+    defaultConfig {
         buildConfigField(
             "String",
             "BEARER_TOKEN",
@@ -39,13 +39,15 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
-    implementation (libs.ktor.client.serialization)
+    implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
+    // Unit Testing
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit)
+    testImplementation(kotlin("test"))
 }
