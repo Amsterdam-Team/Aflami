@@ -10,7 +10,7 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.io.IOException
 import java.net.ConnectException
 
-suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): T {
+suspend inline fun <reified T> responseCall(execute: () -> HttpResponse): T {
     val response: HttpResponse
     try {
         response = execute()
