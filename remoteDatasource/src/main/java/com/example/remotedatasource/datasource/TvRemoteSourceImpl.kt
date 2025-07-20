@@ -7,14 +7,19 @@ import io.ktor.client.request.parameter
 
 class TvRemoteSourceImpl(private val ktorClient: KtorClient) : TvShowsRemoteSource {
 
-    override suspend fun getTvShowsByKeyword(keyword: String): RemoteTvShowResponse {
+    override suspend fun getTvShowsByKeyword(keyword: String, page: Int,): RemoteTvShowResponse {
         return ktorClient.tryToExecute {
-            ktorClient.get(SEARCH_TV_URL) { parameter(QUERY_KEY, keyword) }
+            ktorClient
+                .get(SEARCH_TV_URL) {
+                    parameter(QUERY_KEY, keyword)
+                    parameter(PAGE, page)
+                }
         }
     }
 
     private companion object {
         const val QUERY_KEY = "query"
+        const val PAGE = "page"
         const val SEARCH_TV_URL = "search/tv"
     }
 }

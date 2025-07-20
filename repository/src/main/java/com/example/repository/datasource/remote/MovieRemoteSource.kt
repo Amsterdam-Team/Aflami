@@ -9,11 +9,11 @@ import com.example.repository.dto.remote.review.ReviewsResponse
 
 interface MovieRemoteSource {
 
-    suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse
+    suspend fun getMoviesByKeyword(keyword: String, page:Int): RemoteMovieResponse
 
-    suspend fun getMoviesByActorName(name: String): RemoteMovieResponse
+    suspend fun getMoviesByActorName(name: String, page:Int): RemoteMovieResponse
 
-    suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse
+    suspend fun getMoviesByCountryIsoCode(countryIsoCode: String, page:Int): RemoteMovieResponse
 
     suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse
 

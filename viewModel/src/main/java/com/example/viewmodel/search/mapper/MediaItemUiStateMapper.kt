@@ -4,7 +4,7 @@ import android.icu.text.DecimalFormat
 import com.example.entity.TvShow
 import com.example.viewmodel.shared.uiStates.TvShowItemUiState
 
-private fun TvShow.toMediaItemUiState(): TvShowItemUiState =
+fun TvShow.toMediaItemUiState(): TvShowItemUiState =
     TvShowItemUiState(
         id = id,
         name = name,
