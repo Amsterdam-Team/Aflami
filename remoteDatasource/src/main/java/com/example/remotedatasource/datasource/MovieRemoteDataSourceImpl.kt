@@ -1,7 +1,7 @@
 package com.example.remotedatasource.datasource
 
 import com.example.remotedatasource.client.NetworkClient
-import com.example.remotedatasource.utils.apiHandler.safeCall
+import com.example.remotedatasource.utils.apiHandler.responseCall
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
@@ -12,12 +12,12 @@ import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
 
-class MovieRemoteSourceImpl(
+class MovieRemoteDataSourceImpl(
     private val networkClient: NetworkClient
 ) : MovieRemoteSource {
 
     override suspend fun getMoviesByKeyword(keyword: String): RemoteMovieResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get(SEARCH_MOVIE_URL) { parameter(QUERY_KEY, keyword) }
         }
     }
@@ -27,25 +27,25 @@ class MovieRemoteSourceImpl(
             .actors
             .joinToString(separator = "|") { it.id.toString() }
 
-        return safeCall {
+        return responseCall {
             networkClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
         }
     }
 
     private suspend fun getActorIdByName(name: String): RemoteActorSearchResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get(GET_ACTOR_NAME_BY_ID_URL) { parameter(QUERY_KEY, name) }
         }
     }
 
     override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String): RemoteMovieResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get(DISCOVER_MOVIE) { parameter(WITH_ORIGIN_COUNTRY, countryIsoCode) }
         }
     }
 
     override suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get(buildMovieCreditsEndpoint(movieId))
         }
     }
@@ -53,37 +53,37 @@ class MovieRemoteSourceImpl(
     private fun buildMovieCreditsEndpoint(movieId: Long) = "movie/$movieId/credits"
 
     override suspend fun getMovieReviews(movieId: Long): ReviewsResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get("movie/$movieId/reviews")
         }
     }
 
     override suspend fun getSimilarMovies(movieId: Long): RemoteMovieResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get("movie/$movieId/similar")
         }
     }
 
     override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get("movie/$movieId/images")
         }
     }
 
     override suspend fun getProductionCompany(movieId: Long): ProductionCompanyResponse {
-        return safeCall {
+        return responseCall {
             networkClient.get("movie/$movieId")
         }
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto {
-        return safeCall {
+        return responseCall {
             networkClient.get("movie/$movieId")
         }
     }
 
     override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
-        return safeCall<RemoteMovieGalleryResponse> {
+        return responseCall<RemoteMovieGalleryResponse> {
             networkClient.get("movie/$movieId/images")
         }
     }
