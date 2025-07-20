@@ -35,59 +35,65 @@ class MovieRepositoryImpl(
     private val movieWithCategoriesLocalMapper: MovieWithCategoriesLocalMapper,
     private val movieRemoteLocalMapper: MovieRemoteLocalMapper,
 ) : MovieRepository {
-    override suspend fun getMoviesByKeyword(keyword: String): List<Movie> {
-        return getCachedMovies(keyword, SearchType.BY_KEYWORD)
-            ?: recentSearchHandler.deleteRecentSearch(
-                keyword, SearchType.BY_KEYWORD
-            ).let { getMoviesByKeywordFromRemote(keyword, SearchType.BY_KEYWORD) }
-    }
+    override suspend fun getMoviesByKeyword(
+        keyword: String,
+        page: Int,
+    ): List<Movie> =
+        getCachedMovies(keyword, SearchType.BY_KEYWORD)
+            ?: recentSearchHandler
+                .deleteRecentSearch(
+                    keyword,
+                    SearchType.BY_KEYWORD,
+                ).let { getMoviesByKeywordFromRemote(keyword, SearchType.BY_KEYWORD, page) }
 
-    override suspend fun getMoviesByActor(actorName: String): List<Movie> {
-        return getCachedMovies(actorName, SearchType.BY_ACTOR)
-            ?: recentSearchHandler.deleteRecentSearch(
-                actorName, SearchType.BY_ACTOR
-            ).let { getMoviesByActorNameFromRemote(actorName, SearchType.BY_ACTOR) }
-    }
+    override suspend fun getMoviesByActor(
+        actorName: String,
+        page: Int,
+    ): List<Movie> =
+        getCachedMovies(actorName, SearchType.BY_ACTOR)
+            ?: recentSearchHandler
+                .deleteRecentSearch(
+                    actorName,
+                    SearchType.BY_ACTOR,
+                ).let { getMoviesByActorNameFromRemote(actorName, SearchType.BY_ACTOR, page) }
 
-    override suspend fun getMoviesByCountry(country: Country): List<Movie> {
-        return getCachedMovies(country.countryIsoCode, SearchType.BY_COUNTRY)
-            ?: recentSearchHandler.deleteRecentSearch(country.countryIsoCode, SearchType.BY_COUNTRY)
+    override suspend fun getMoviesByCountry(
+        country: Country,
+        page: Int,
+    ): List<Movie> =
+        getCachedMovies(country.countryIsoCode, SearchType.BY_COUNTRY)
+            ?: recentSearchHandler
+                .deleteRecentSearch(country.countryIsoCode, SearchType.BY_COUNTRY)
                 .let {
                     getMoviesByCountryIsoCodeFromRemote(
                         country.countryIsoCode,
-                        SearchType.BY_COUNTRY
+                        SearchType.BY_COUNTRY,
+                        page,
                     )
                 }
-    }
 
-    override suspend fun getActorsByMovieId(movieId: Long): List<Actor> {
-        return castRemoteMapper.toEntityList(movieRemoteDataSource.getCastByMovieId(movieId).cast)
-    }
+    override suspend fun getActorsByMovieId(movieId: Long): List<Actor> =
+        castRemoteMapper.toEntityList(movieRemoteDataSource.getCastByMovieId(movieId).cast)
 
-    override suspend fun getMovieDetailsById(movieId: Long): Movie {
-        return movieRemoteMapper.toEntity(movieRemoteDataSource.getMovieDetailsById(movieId))
-    }
+    override suspend fun getMovieDetailsById(movieId: Long): Movie =
+        movieRemoteMapper.toEntity(movieRemoteDataSource.getMovieDetailsById(movieId))
 
-    override suspend fun getMovieReviews(movieId: Long): List<Review> {
-        return reviewRemoteMapper.toEntityList(movieRemoteDataSource.getMovieReviews(movieId).results)
-    }
+    override suspend fun getMovieReviews(movieId: Long): List<Review> =
+        reviewRemoteMapper.toEntityList(movieRemoteDataSource.getMovieReviews(movieId).results)
 
-    override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
-        return movieRemoteMapper.toEntityList(movieRemoteDataSource.getSimilarMovies(movieId).results)
-    }
+    override suspend fun getSimilarMovies(movieId: Long): List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getSimilarMovies(movieId).results)
 
-    override suspend fun getMovieGallery(movieId: Long): List<String> {
-        return galleryRemoteMapper.toEntity(movieRemoteDataSource.getMovieGallery(movieId))
-    }
+    override suspend fun getMovieGallery(movieId: Long): List<String> =
+        galleryRemoteMapper.toEntity(movieRemoteDataSource.getMovieGallery(movieId))
 
     override suspend fun getMoviePosters(movieId: Long): List<String> =
         posterRemoteMapper.toEntity(movieRemoteDataSource.getMoviePosters(movieId))
 
-    override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> {
-        return remoteProductionCompanyMapper.toEntityList(
-            movieRemoteDataSource.getProductionCompany(movieId).productionCompanies
+    override suspend fun getProductionCompany(movieId: Long): List<ProductionCompany> =
+        remoteProductionCompanyMapper.toEntityList(
+            movieRemoteDataSource.getProductionCompany(movieId).productionCompanies,
         )
-    }
 
     override suspend fun incrementGenreInterest(genre: MovieGenre) {
         movieLocalSource.incrementGenreInterest(genre)
@@ -97,67 +103,87 @@ class MovieRepositoryImpl(
         return movieLocalSource.getAllGenreInterests()
     }
 
-    private suspend fun getCachedMovies(keyword: String, searchType: SearchType): List<Movie>? {
-        return recentSearchHandler.isRecentSearchExpired(keyword, searchType)
+    private suspend fun getCachedMovies(
+        keyword: String,
+        searchType: SearchType,
+    ): List<Movie>? =
+        recentSearchHandler
+            .isRecentSearchExpired(keyword, searchType)
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
             ?.let { getMoviesFromLocal(keyword, searchType) }
             ?.takeIf { movies -> movies.isNotEmpty() }
-    }
 
     private suspend fun getMoviesByKeywordFromRemote(
-        keyword: String, searchType: SearchType
-    ): List<Movie> {
-        return onSuccessGetMovies(
-            movieRemoteDataSource.getMoviesByKeyword(keyword), keyword, searchType
+        keyword: String,
+        searchType: SearchType,
+        page: Int,
+    ): List<Movie> =
+        onSuccessGetMovies(
+            movieRemoteDataSource.getMoviesByKeyword(keyword, page),
+            keyword,
+            searchType,
         )
-    }
 
     private suspend fun getMoviesByActorNameFromRemote(
-        actorName: String, searchType: SearchType
-    ): List<Movie> {
-        return onSuccessGetMovies(
-            movieRemoteDataSource.getMoviesByActorName(actorName), actorName, searchType
+        actorName: String,
+        searchType: SearchType,
+        page: Int,
+    ): List<Movie> =
+        onSuccessGetMovies(
+            movieRemoteDataSource.getMoviesByActorName(actorName, page),
+            actorName,
+            searchType,
         )
-    }
 
     private suspend fun getMoviesByCountryIsoCodeFromRemote(
-        countryIsoCode: String, searchType: SearchType
-    ): List<Movie> {
-        return onSuccessGetMovies(
-            movieRemoteDataSource.getMoviesByCountryIsoCode(countryIsoCode),
+        countryIsoCode: String,
+        searchType: SearchType,
+        page: Int,
+    ): List<Movie> =
+        onSuccessGetMovies(
+            movieRemoteDataSource.getMoviesByCountryIsoCode(countryIsoCode, page),
             countryIsoCode,
-            searchType
+            searchType,
         )
-    }
 
     private suspend fun onSuccessGetMovies(
-        remoteMovies: RemoteMovieResponse, actorName: String, searchType: SearchType
-    ): List<Movie> {
-        return saveMoviesWithSearch(
-            remoteMovies, actorName, searchType
+        remoteMovies: RemoteMovieResponse,
+        actorName: String,
+        searchType: SearchType,
+    ): List<Movie> =
+        saveMoviesWithSearch(
+            remoteMovies,
+            actorName,
+            searchType,
         ).let { movieRemoteMapper.toEntityList(remoteMovies.results) }
-    }
 
-    private suspend fun getMoviesFromLocal(keyword: String, searchType: SearchType): List<Movie> {
-        return try {
+    private suspend fun getMoviesFromLocal(
+        keyword: String,
+        searchType: SearchType,
+    ): List<Movie> =
+        try {
             movieWithCategoriesLocalMapper.toEntityList(
                 movieLocalSource.getMoviesByKeywordAndSearchType(
-                    keyword = keyword, searchType = searchType
-                )
+                    keyword = keyword,
+                    searchType = searchType,
+                ),
             )
         } catch (_: Exception) {
             emptyList()
         }
-    }
 
     private suspend fun saveMoviesWithSearch(
-        remoteMovies: RemoteMovieResponse, keyword: String, searchType: SearchType
+        remoteMovies: RemoteMovieResponse,
+        keyword: String,
+        searchType: SearchType,
     ) {
         movieLocalSource.addMoviesBySearchData(
             movies = movieRemoteLocalMapper.toLocalList(remoteMovies.results),
             searchKeyword = keyword,
             searchType = searchType,
-            expireDate = Clock.System.now()
+            expireDate = Clock.System.now(),
         )
     }
+    override suspend fun getPopularMovies(): List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
 }

@@ -5,11 +5,14 @@ import com.example.entity.category.MovieGenre
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.google.common.truth.Truth.assertThat
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
 
 class MovieRemoteMapperTest {
 
-    private val mapper = MovieRemoteMapper()
+    private val mapper = MovieRemoteMapper(
+        dateParser = mockk()
+    )
 
     private fun createRemoteMovieItemDto(
         id: Long,
@@ -48,7 +51,7 @@ class MovieRemoteMapperTest {
             voteAverage = 8.8
         )
 
-        val result = mapper.toMovie(dto)
+        val result = mapper.toEntity(dto)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Inception")
@@ -68,7 +71,7 @@ class MovieRemoteMapperTest {
             posterPath = null
         )
 
-        val result = mapper.toMovie(dto)
+        val result = mapper.toEntity(dto)
 
         assertThat(result.posterUrl).isEqualTo("")
     }
@@ -82,7 +85,7 @@ class MovieRemoteMapperTest {
             releaseDate = "invalid-date"
         )
 
-        val result = mapper.toMovie(dto)
+        val result = mapper.toEntity(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -96,7 +99,7 @@ class MovieRemoteMapperTest {
             releaseDate = ""
         )
 
-        val result = mapper.toMovie(dto)
+        val result = mapper.toEntity(dto)
 
         assertThat(result.productionYear).isEqualTo(0)
     }
@@ -115,7 +118,7 @@ class MovieRemoteMapperTest {
             totalResults = 2
         )
 
-        val result = mapper.toMovies(response)
+        val result = mapper.toEntityList(movieList)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("Movie A")
@@ -131,7 +134,7 @@ class MovieRemoteMapperTest {
             totalResults = 0
         )
 
-        val result = mapper.toMovies(response)
+        val result = mapper.toEntityList(emptyList())
 
         assertThat(result).isEmpty()
     }

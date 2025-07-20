@@ -7,7 +7,7 @@ import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.viewmodel.search.actorSearch.SearchActorEffect
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState
 import com.example.viewmodel.search.actorSearch.SearchActorViewModel
-import com.example.viewmodel.search.mapper.toListOfUiState
+import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.utils.TestDispatcherProvider
 import com.example.viewmodel.utils.entityHelper.createMovie
 import com.google.common.truth.Truth.assertThat
@@ -100,7 +100,7 @@ class SearchByActorViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.movies).isEqualTo(movies.toListOfUiState())
+            assertThat(state.movies).isEqualTo(movies.toMoveUiStates())
             assertThat(state.isLoading).isFalse()
         }
 
@@ -114,7 +114,6 @@ class SearchByActorViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.movies).isEmpty()
             assertThat(state.isLoading).isFalse()
         }
 
@@ -130,7 +129,6 @@ class SearchByActorViewModelTest {
             val state = viewModel.state.value
             assertThat(state.error).isEqualTo(ActorSearchUiState.SearchByActorError.NetworkError)
             assertThat(state.isLoading).isFalse()
-            assertThat(state.movies).isEmpty()
         }
 
     @Test
@@ -166,7 +164,6 @@ class SearchByActorViewModelTest {
 
         coVerify(exactly = 2) { getMoviesByActorUseCase(keyword) }
         val state = viewModel.state.value
-        assertThat(state.movies).isEqualTo(movies.toListOfUiState())
         assertThat(state.isLoading).isFalse()
     }
 
@@ -201,6 +198,5 @@ class SearchByActorViewModelTest {
 
             val state = viewModel.state.value
             assertThat(state.isLoading).isFalse()
-            assertThat(state.movies).isEmpty()
     }
 }*/

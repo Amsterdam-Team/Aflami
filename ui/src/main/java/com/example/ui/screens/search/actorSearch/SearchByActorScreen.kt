@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -24,6 +23,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.components.ImageErrorIndicator
 import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
@@ -31,17 +34,19 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
+import com.example.ui.R
 import com.example.ui.application.LocalNavController
+import com.example.ui.components.MovieCard
 import com.example.ui.components.NoDataContainer
 import com.example.ui.components.NoNetworkContainer
+import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
+import com.example.viewmodel.search.actorSearch.ActorSearchUiState
 import com.example.viewmodel.search.actorSearch.SearchActorEffect
 import com.example.viewmodel.search.actorSearch.SearchActorInteractionListener
-import com.example.ui.R
-import com.example.ui.components.MovieCard
-import com.example.ui.components.appBar.DefaultAppBar
-import com.example.viewmodel.search.actorSearch.ActorSearchUiState
 import com.example.viewmodel.search.actorSearch.SearchActorViewModel
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
+import kotlinx.coroutines.flow.emptyFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,6 +55,7 @@ fun SearchByActorScreen(
     viewModel: SearchActorViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
+    val moviesFlow = uiState.value.movies.collectAsLazyPagingItems()
     val navController = LocalNavController.current
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -70,43 +76,47 @@ fun SearchByActorScreen(
     SearchByActorContent(
         modifier = modifier,
         state = uiState.value,
-        interactionListener = viewModel
+        moviesFlow = moviesFlow,
+        interactionListener = viewModel,
     )
 }
 
 @Composable
 private fun SearchByActorContent(
-    modifier: Modifier = Modifier,
     state: ActorSearchUiState,
     interactionListener: SearchActorInteractionListener,
+    moviesFlow: LazyPagingItems<MovieItemUiState>,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding()
+        modifier =
+            modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
     ) {
         DefaultAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
-            title = stringResource(R.string.find_by_actor),
+            title = stringResource(com.example.designsystem.R.string.find_by_actor),
             showNavigateBackButton = true,
             onNavigateBackClicked = interactionListener::onClickNavigateBack
         )
         TextField(
             text = state.keyword,
-            hintText = stringResource(R.string.find_by_actor),
+            hintText = stringResource(com.example.designsystem.R.string.find_by_actor),
             onValueChange = { interactionListener.onUserSearchChange(it) },
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .padding(top = 8.dp)
+                    .padding(horizontal = 16.dp),
         )
 
         AnimatedContent(
             targetState = state,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
-                        fadeOut(animationSpec = tween(300))
+                    fadeOut(animationSpec = tween(300))
             },
-            label = "Content Animation"
+            label = "Content Animation",
         ) { targetState ->
             when {
                 targetState.isLoading ->
@@ -124,7 +134,7 @@ private fun SearchByActorContent(
                             modifier =
                                 Modifier
                                     .fillMaxSize()
-                                    .align(Alignment.CenterHorizontally)
+                                    .align(Alignment.CenterHorizontally),
                         )
                     }
                 }
@@ -132,22 +142,24 @@ private fun SearchByActorContent(
                 targetState.keyword.isBlank() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.img_suggestion_magician),
-                        title = stringResource(R.string.find_by_actor),
-                        description = stringResource(R.string.find_by_actor_description),
+                        title = stringResource(com.example.designsystem.R.string.find_by_actor),
+                        description = stringResource(com.example.designsystem.R.string.find_by_actor_description),
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
                             .padding(top = 144.dp)
                     )
                 }
+                moviesFlow.loadState.refresh is LoadState.Loading -> LoadingContainer()
 
-                targetState.movies.isEmpty() -> {
+                moviesFlow.itemSnapshotList.isEmpty() -> {
                     NoDataContainer(
                         imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 144.dp)
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(top = 144.dp),
                     )
                 }
 
@@ -161,7 +173,8 @@ private fun SearchByActorContent(
                             horizontal = 16.dp
                         ),
                     ) {
-                        items(targetState.movies) { movie ->
+                        items(moviesFlow.itemCount) { index ->
+                            val movie = moviesFlow[index] ?: return@items
                             MovieCard(
                                 movieImage = { MovieImage(movie.posterImageUrl) },
                                 movieType = stringResource(R.string.movie),
@@ -197,6 +210,7 @@ private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
             state = ActorSearchUiState(),
+            moviesFlow = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
             interactionListener = object : SearchActorInteractionListener {
                 override fun onUserSearchChange(query: String) {
                 }

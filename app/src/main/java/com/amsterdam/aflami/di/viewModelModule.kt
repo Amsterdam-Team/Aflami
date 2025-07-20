@@ -3,6 +3,8 @@ package com.amsterdam.aflami.di
 import com.example.viewmodel.movieDetails.MovieDetailsArgs
 import com.example.viewmodel.movieDetails.MovieDetailsViewModel
 import com.example.viewmodel.cast.CastViewModel
+import com.example.viewmodel.home.HomeUiStateMapper
+import com.example.viewmodel.home.HomeViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsUiStateMapper
 import com.example.viewmodel.search.actorSearch.SearchActorViewModel
 import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
@@ -20,8 +22,12 @@ val viewModelModule = module {
     viewModelOf(::SearchViewModel)
     viewModelOf(::CountrySearchViewModel)
     viewModelOf(::SearchActorViewModel)
-    factoryOf(::MovieDetailsArgs)
-    factoryOf(::MovieDetailsUiStateMapper)
     viewModelOf(::MovieDetailsViewModel)
     viewModelOf(::CastViewModel)
+    viewModelOf(::HomeViewModel)
+    // mappers
+    factoryOf(::MovieDetailsUiStateMapper)
+    factoryOf(::HomeUiStateMapper)
+    // args
+    factoryOf(::MovieDetailsArgs)
 }
