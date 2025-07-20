@@ -84,7 +84,7 @@ class MovieRemoteDataSourceImplTest {
         } returns mockHttpResponse
 
         // When
-        val movies = movieRemoteDataSourceImpl.getMoviesByKeyword(keyword)
+        val movies = movieRemoteDataSourceImpl.getMoviesByKeyword(keyword, 1)
 
         // Then
         coVerify(exactly = 1) { networkClient.get("search/movie", any()) }
@@ -181,7 +181,7 @@ class MovieRemoteDataSourceImplTest {
         } returns mockDiscoverMovieHttpResponse
 
         // When
-        val movies = movieRemoteDataSourceImpl.getMoviesByActorName(actorName)
+        val movies = movieRemoteDataSourceImpl.getMoviesByActorName(actorName, 1)
 
         // Then
         coVerify(exactly = 1) { networkClient.get("search/person", any()) }
@@ -248,7 +248,7 @@ class MovieRemoteDataSourceImplTest {
             } returns mockHttpResponse
 
             // When
-            val movies = movieRemoteDataSourceImpl.getMoviesByCountryIsoCode(countryIsoCode)
+            val movies = movieRemoteDataSourceImpl.getMoviesByCountryIsoCode(countryIsoCode, 1)
 
             // Then
             coVerify(exactly = 1) { networkClient.get("discover/movie", any()) }

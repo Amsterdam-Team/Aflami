@@ -80,7 +80,7 @@ class TvRemoteDataSourceImplTest {
         } returns mockHttpResponse
 
         // When
-        val tvShows = tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword)
+        val tvShows = tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, 1)
 
         coVerify(exactly = 1) { networkClient.get("search/tv", any()) }
 
