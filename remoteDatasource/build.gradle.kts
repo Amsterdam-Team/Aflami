@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.aflami.custom.plugin)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -48,4 +49,17 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
+}
+
+kover.reports {
+    filters.excludes {
+        androidGeneratedClasses()
+        packages("*")
+    }
+
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
 }

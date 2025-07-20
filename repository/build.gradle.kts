@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.junit5)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -56,4 +57,15 @@ dependencies {
     testImplementation (libs.mockk)
     testImplementation (libs.kotlinx.coroutines.test)
 
+}
+kover.reports {
+    filters.excludes {
+        androidGeneratedClasses()
+        packages("*")
+    }
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
 }
