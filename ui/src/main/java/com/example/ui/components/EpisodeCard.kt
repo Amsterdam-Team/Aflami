@@ -41,7 +41,7 @@ import com.example.imageviewer.ui.SafeImageView
 fun EpisodeCard(
     episodeBanner: String,
     episodeRate: String,
-    episodeNumber: String,
+    episodeNumber: Int,
     episodeTitle: String,
     episodeTime: String,
     publishedAt: String,
@@ -90,7 +90,6 @@ fun EpisodeCard(
 private fun EpisodeBanner(
     episodeBanner: String,
     episodeRate: String,
-    episodeContentDescription: String? = null
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -106,22 +105,22 @@ private fun EpisodeBanner(
     ) {
         SafeImageView(
             model = episodeBanner,
-            contentDescription = episodeContentDescription,
+            contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier,
         )
         RatingChip(
             rating = episodeRate.toString(),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(2.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(2.dp),
         )
     }
 }
 
 @Composable
 private fun EpisodeInfo(
-    episodeNumber: String,
+    episodeNumber: Int,
     episodeTitle: String,
     episodeTime: String,
     publishedAt: String,
@@ -208,8 +207,7 @@ private fun PlayEpisodeButton(onPlayEpisodeClick: () -> Unit) {
                     width = 1.dp,
                     color = AppTheme.color.stroke,
                     shape = CircleShape,
-                )
-                .size(40.dp),
+                ).size(40.dp),
     )
 }
 
@@ -225,9 +223,9 @@ private fun EpisodeCardPreview() {
                     .background(AppTheme.color.surface),
         ) {
             EpisodeCard(
-                episodeBanner = "https://image.tmdb.org/t/p/w500/1GJvBE7UWU1WOVi0XREl4JQc7f8.jpg",
+                episodeBanner = "",
                 episodeRate = "4.5",
-                episodeNumber = "1",
+                episodeNumber = 1,
                 episodeTitle = "Recovering a body",
                 episodeTime = "58",
                 publishedAt = "3 Sep 2020",

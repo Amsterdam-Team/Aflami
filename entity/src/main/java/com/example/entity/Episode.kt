@@ -9,7 +9,7 @@ data class Episode(
     val description: String,
     val stillUrl: String,
     val rating: Float,
-    val airDate: LocalDate,
+    val airDate: LocalDate?,
     val seasonNumber: Int,
     val runtime: Int,
 )

@@ -26,17 +26,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -49,6 +48,7 @@ import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
 import com.example.designsystem.components.chip.Chip
+import com.example.designsystem.components.divider.HorizontalDivider
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
@@ -87,7 +87,7 @@ fun SeriesDetailsScreen(
     val navController = LocalNavController.current
     SeriesDetailsContent(
         state = state,
-        interactionListener = viewModel
+        interaction = viewModel
     )
     LaunchedEffect(Unit) {
         viewModel.effect.collect {
@@ -104,12 +104,34 @@ fun SeriesDetailsScreen(
 @Composable
 fun SeriesDetailsContent(
     state: SeriesDetailsUiState,
-    interactionListener: SeriesDetailsInteractionListener
+    interaction: SeriesDetailsInteractionListener
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
     val listState = rememberLazyListState()
     val animationDuration by remember { mutableIntStateOf(1000) }
+    val surface = AppTheme.color.surface
+    val transparent = AppTheme.color.surface.copy(alpha = 0f)
+    val stroke = AppTheme.color.stroke
+    val appBarColor by remember {
+        derivedStateOf {
+            if (listState.firstVisibleItemIndex != 0) {
+                surface
+            } else {
+                transparent
+            }
+        }
+    }
+    val dividerColor by remember {
+        derivedStateOf {
+            if (listState.firstVisibleItemIndex != 0) {
+                stroke
+            } else {
+                transparent
+            }
+        }
+    }
+
     AnimatedVisibility(
         state.isLoading,
         enter = fadeIn(tween(animationDuration)),
@@ -126,7 +148,7 @@ fun SeriesDetailsContent(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             NoNetworkContainer(
-                onClickRetry = interactionListener::onClickRetryButton,
+                onClickRetry = interaction::onClickRetryButton,
             )
         }
     }
@@ -136,123 +158,144 @@ fun SeriesDetailsContent(
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
     ) {
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppTheme.color.surface)
-                .navigationBarsPadding()
-        ) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(263.dp)
-                ) {
-                    SafeImageView(
-                        model = state.posterUrl,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .animateContentSize(),
-                        onError = { NoMovieImageHolder() }
-                    )
-                    DefaultAppBar(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .statusBarsPadding(),
-                        firstOption = painterResource(R.drawable.ic_outlined_star),
-                        lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                        onNavigateBackClicked = interactionListener::onNavigateBack
-                    )
-                    RatingChip(
-                        state.rating,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(bottom = 4.dp, start = 4.dp, end = 4.dp)
-                    )
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(AppTheme.color.surface)
-                ) {
 
-                    PlayButton(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .offset(y = (-32).dp),
-                        isActive = state.hasVideo
-                    )
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AppTheme.color.surface)
+                    .navigationBarsPadding()
+                    .animateContentSize()
+            ) {
+                stickyHeader {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .offset(y = (-20).dp)
+                            .background(appBarColor)
                     ) {
-                        Text(
-                            text = state.title,
-                            style = AppTheme.textStyle.title.large,
-                            color = AppTheme.color.title
+                        DefaultAppBar(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .statusBarsPadding(),
+                            firstOption = painterResource(R.drawable.ic_outlined_star),
+                            lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                            onNavigateBackClicked = interaction::onNavigateBack
                         )
-                        LazyRow(
+                        HorizontalDivider(color = dividerColor)
+                    }
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(263.dp)
+                    ) {
+                        SafeImageView(
+                            model = state.posterUrl,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .animateContentSize(),
+                            onError = { NoMovieImageHolder() }
+                        )
+
+                        RatingChip(
+                            state.rating,
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(vertical = 4.dp)
+                                .padding(start = 4.dp)
+                        )
+                    }
+                }
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AppTheme.color.surface)
+                    ) {
+
+                        PlayButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .offset(y = (-32).dp),
+                            isActive = state.hasVideo
+                        )
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                .padding(horizontal = 16.dp)
+                                .offset(y = (-20).dp)
                         ) {
-                            items(state.categories) {
-                                CategoryChip(categoryName = getTvShowGenreLabel(it))
+                            Text(
+                                text = state.title,
+                                style = AppTheme.textStyle.title.large,
+                                color = AppTheme.color.title
+                            )
+                            LazyRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 12.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(state.categories) {
+                                    CategoryChip(categoryName = getTvShowGenreLabel(it))
+                                }
                             }
+                            SeriesInfoSection(
+                                modifier = Modifier.padding(top = 8.dp),
+                                airDate = state.airDate,
+                                seasonCount = state.seasonCount,
+                                originCountry = state.originCountry
+                            )
+                            DescriptionSection(
+                                modifier = Modifier.padding(top = 24.dp),
+                                description = state.description
+                            )
+                            CastSection(
+                                modifier = Modifier.padding(top = 24.dp),
+                                actors = state.cast,
+                                onClickAllCast = interaction::onClickShowAllCast
+                            )
+                            Spacer(
+                                modifier = Modifier
+                                    .padding(top = 24.dp)
+                                    .requiredWidth(screenWidthDp)
+                                    .height(1.dp)
+                                    .background(AppTheme.color.stroke)
+                            )
+                            SeriesExtrasSection(
+                                modifier = Modifier.padding(top = 12.dp),
+                                extras = state.extraItem,
+                                onClickExtras = interaction::onClickSeriesExtraItem
+                            )
                         }
-                        SeriesInfoSection(
-                            modifier = Modifier.padding(top = 8.dp),
-                            airDate = state.airDate,
-                            seasonCount = state.seasonCount,
-                            originCountry = state.originCountry
-                        )
-                        DescriptionSection(
-                            modifier = Modifier.padding(top = 24.dp),
-                            description = state.description
-                        )
-                        CastSection(
-                            modifier = Modifier.padding(top = 24.dp),
-                            actors = state.cast,
-                            onClickAllCast = interactionListener::onClickShowAllCast
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .padding(top = 24.dp)
-                                .requiredWidth(screenWidthDp)
-                                .height(1.dp)
-                                .background(AppTheme.color.stroke)
-                        )
-                        SeriesExtrasSection(
-                            modifier = Modifier.padding(top = 12.dp),
-                            extras = state.extraItem,
-                            onClickExtras = interactionListener::onClickSeriesExtraItem
-                        )
-                    }
 
+                    }
                 }
+                state.extraItem
+                    .find { it.isSelected }
+                    ?.item
+                    ?.let { selectedExtra ->
+                        when (selectedExtra) {
+                            SeriesExtras.SEASONS -> SeasonsSection(
+                                seasons = state.seasons,
+                                state = state,
+                                interaction = interaction
+                            )
+
+                            SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
+                            SeriesExtras.REVIEWS -> ReviewSection(state.reviews)
+                            SeriesExtras.GALLERY -> GallerySection(state.gallery)
+                            SeriesExtras.COMPANY_PRODUCTION -> CompanyProductionSection(
+                                state.productionCompanies
+                            )
+                        }
+                    }
             }
-
-            state.extraItem
-                .find { it.isSelected }
-                ?.item
-                ?.let { selectedExtra ->
-                    when (selectedExtra) {
-                        SeriesExtras.SEASONS -> SeasonsSection(state.seasons)
-                        SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
-                        SeriesExtras.REVIEWS -> ReviewSection(state.reviews)
-                        SeriesExtras.GALLERY -> GallerySection(state.gallery)
-                        SeriesExtras.COMPANY_PRODUCTION -> CompanyProductionSection(
-                            state.productionCompanies
-                        )
-                    }
-                }
         }
     }
 }
@@ -310,73 +353,87 @@ private fun SeriesExtrasSection(
     }
 }
 
-private fun LazyListScope.SeasonsSection(seasons: List<SeasonUiState>) {
+private fun LazyListScope.SeasonsSection(
+    seasons: List<SeasonUiState>,
+    state: SeriesDetailsUiState,
+    interaction: SeriesDetailsInteractionListener
+) {
     seasons.forEachIndexed { index, season ->
         stickyHeader {
-            SeasonHeader(season = season)
+            SeasonHeader(
+                season = season,
+                onClickSeasonMenu = { seasonNumber ->
+                    interaction.onClickSeasonMenu(seasonNumber)
+                }
+            )
         }
-
-        item {
-            EpisodesMenu(episodes = season.episodes)
+        items(if (season.isExpanded) season.episodes else emptyList(), key = { it.id }) {
+            EpisodesMenu(it, state)
         }
     }
 }
 
 @Composable
 private fun SeasonHeader(
-    season: SeasonUiState
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clickable { expanded = !expanded }
-            .animateContentSize(),
-        verticalAlignment = Alignment.CenterVertically
+    season: SeasonUiState,
+    onClickSeasonMenu: (Int) -> Unit,
+
     ) {
-        Text(
-            text = season.title,
-            color = AppTheme.color.title,
-            style = AppTheme.textStyle.label.small,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = "${season.episodeCount} ${stringResource(R.string.episodes)}",
-            color = AppTheme.color.hint,
-            style = AppTheme.textStyle.label.small,
-            modifier = Modifier.padding(end = 4.dp)
-        )
-        Icon(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface)
+    ) {
+        Row(
             modifier = Modifier
-                .size(20.dp),
-            painter = if (expanded) painterResource(R.drawable.ic_arrow_up) else
-                painterResource(R.drawable.ic_arrow_down),
-            contentDescription = null,
-            tint = AppTheme.color.title,
-        )
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .clickable { onClickSeasonMenu(season.seasonNumber) }
+                .animateContentSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = season.title,
+                color = AppTheme.color.title,
+                style = AppTheme.textStyle.title.small,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "${season.episodeCount} ${stringResource(R.string.episodes)}",
+                color = AppTheme.color.hint,
+                style = AppTheme.textStyle.label.small,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+            Icon(
+                modifier = Modifier
+                    .size(20.dp),
+                painter = if (season.isExpanded) painterResource(R.drawable.ic_arrow_up) else
+                    painterResource(R.drawable.ic_arrow_down),
+                contentDescription = null,
+                tint = AppTheme.color.title,
+            )
+        }
+        HorizontalDivider(color = AppTheme.color.stroke)
     }
 }
 
 @Composable
 private fun EpisodesMenu(
-    episodes: List<EpisodeUiState>
+    episode: EpisodeUiState,
+    state: SeriesDetailsUiState,
+    isExpanded: Boolean = false
 ) {
-    LazyColumn {
-        itemsIndexed(episodes) { index, episode ->
-            EpisodeCard(
-                episodeBanner = episode.imageUrl,
-                episodeRate = episode.rating,
-                episodeNumber = episode.number,
-                episodeTitle = episode.title,
-                episodeTime = episode.duration,
-                publishedAt = episode.airDate,
-                episodeDescription = episode.description,
-                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
-                onPlayEpisodeClick = { }
-            )
-        }
-    }
+    EpisodeCard(
+        episodeBanner = episode.imageUrl,
+        episodeRate = episode.rating,
+        episodeNumber = episode.number,
+        episodeTitle = episode.title,
+        episodeTime = episode.duration,
+        publishedAt = episode.airDate,
+        episodeDescription = episode.description,
+        modifier = Modifier.padding(vertical = 12.dp),
+        onPlayEpisodeClick = { }
+    )
 }
 
 @Composable
@@ -386,7 +443,7 @@ private fun SeriesDetailsContentPreview() {
         SeriesDetailsContent(
             state = SeriesDetailsUiState(),
 
-            interactionListener = object : SeriesDetailsInteractionListener {
+            interaction = object : SeriesDetailsInteractionListener {
                 override fun onClickSeriesExtraItem(seriesExtras: SeriesExtras) {}
                 override fun onNavigateBack() {}
                 override fun onClickRetryButton() {}

@@ -18,7 +18,7 @@ class GetTvShowDetailsUseCase(
         val seasons = tvShowRepository.getTvShowSeasons(tvShowId)
         val reviews = tvShowRepository.getTvShowReviews(tvShowId)
         val similarTvShows = tvShowRepository.getSimilarTvShows(tvShowId)
-        val tvShowGallery = tvShowRepository.getTvShowGallery(tvShowId)
+        val gallery = tvShowRepository.getTvShowGallery(tvShowId)
         val productionsCompanies = tvShowRepository.getProductionCompany(tvShowId)
 
         return TvShowDetails(
@@ -28,7 +28,7 @@ class GetTvShowDetailsUseCase(
             seasons = seasons,
             reviews = reviews,
             similarTvShows = similarTvShows,
-            tvShowGallery = tvShowGallery,
+            gallery = gallery,
             productionsCompanies = productionsCompanies
         )
     }
@@ -40,7 +40,7 @@ class GetTvShowDetailsUseCase(
         val seasons: List<Season>,
         val reviews: List<Review>,
         val similarTvShows: List<TvShow>,
-        val tvShowGallery: List<String>,
+        val gallery: List<String>,
         val productionsCompanies: List<ProductionCompany>
     )
 }

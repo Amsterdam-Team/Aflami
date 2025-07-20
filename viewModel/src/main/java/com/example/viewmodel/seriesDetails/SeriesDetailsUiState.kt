@@ -48,16 +48,18 @@ data class SeriesDetailsUiState(
         val id: Long = 0,
         val title: String = "",
         val seasonNumber: Int = 0,
-        val episodeCount: String = "",
-        val episodes: List<EpisodeUiState> = emptyList()
+        val episodeCount: Int = 0,
+        val episodes: List<EpisodeUiState> = emptyList(),
+        var isExpanded: Boolean = false,
+        val isLoading: Boolean = false
     ) {
         data class EpisodeUiState(
             val id: Long = 0,
-            val number: String = "",
+            val number: Int = 0,
             val title: String = "",
             val rating: String = "",
             val imageUrl: String = "",
-            val imageNumber: String = "",
+            val imageNumber: Int = 0,
             val description: String = "",
             val duration: String = "",
             val airDate: String = "",

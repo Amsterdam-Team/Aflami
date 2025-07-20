@@ -14,34 +14,28 @@ import com.example.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
 import com.example.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
 class SeriesDetailsStateMapper(
-    private val movieDetailsStateMapper: MovieDetailsUiStateMapper,
-) {
-    fun mapToSeriesDetailsUiState(
-        tvShowDetails: TvShowDetails,
-        seasons: List<Season> = emptyList(),
-        isLoading: Boolean = false,
-        networkError: Boolean = false,
-        isRateDialogVisible: Boolean = false,
-        isAddToListDialogVisible: Boolean = false,
-    ): SeriesDetailsUiState {
-        return SeriesDetailsUiState(
-            tvShowId = tvShowDetails.tvShow.id,
-            posterUrl = tvShowDetails.tvShow.posterUrl,
-            rating = movieDetailsStateMapper.ratingToRatingString(tvShowDetails.tvShow.rating),
-            title = tvShowDetails.tvShow.name,
-            categories = tvShowDetails.categories,
-            airDate = movieDetailsStateMapper.productionYearToDate(tvShowDetails.tvShow.productionYear),
-            seasonCount = formatSeasonCount(tvShowDetails.seasons.size),
-            originCountry = tvShowDetails.tvShow.originCountry,
-            description = tvShowDetails.tvShow.description,
-            cast = tvShowDetails.actors.map {
+    private val movieDetailsStateMapper: MovieDetailsUiStateMapper
+){
+
+    fun toUiState(seriesDetails: TvShowDetails): SeriesDetailsUiState = with(seriesDetails) {
+        SeriesDetailsUiState(
+            tvShowId = tvShow.id,
+            rating = movieDetailsStateMapper.ratingToRatingString(tvShow.rating),
+            posterUrl = tvShow.posterUrl,
+            title = tvShow.name,
+            categories = categories,
+            airDate = movieDetailsStateMapper.productionYearToDate(tvShow.productionYear),
+            seasonCount = formatSeasonCount(seasons.size),
+            originCountry = tvShow.originCountry,
+            description = tvShow.description,
+            cast = actors.map {
                 ActorUiState(
                     photo = it.imageUrl,
                     name = it.name
                 )
             },
-            isRateDialogVisible = isRateDialogVisible,
-            isAddToListDialogVisible = isAddToListDialogVisible,
+            isRateDialogVisible = false,
+            isAddToListDialogVisible = false,
             extraItem = listOf(
                 Selectable(isSelected = true, SeriesExtras.SEASONS),
                 Selectable(isSelected = false, SeriesExtras.MORE_LIKE_THIS),
@@ -50,7 +44,7 @@ class SeriesDetailsStateMapper(
                 Selectable(isSelected = false, SeriesExtras.COMPANY_PRODUCTION)
             ),
             seasons = mapToSeasonUiState(seasons),
-            similarSeries = tvShowDetails.similarTvShows.map {
+            similarSeries = similarTvShows.map {
                 SimilarMovieUiState(
                     rate = movieDetailsStateMapper.ratingToRatingString(it.rating),
                     name = it.name,
@@ -58,7 +52,7 @@ class SeriesDetailsStateMapper(
                     posterUrl = it.posterUrl
                 )
             },
-            reviews = tvShowDetails.reviews.map {
+            reviews = reviews.map {
                 ReviewUiState(
                     author = it.reviewerName,
                     username = it.reviewerUsername,
@@ -68,16 +62,14 @@ class SeriesDetailsStateMapper(
                     imageUrl = it.imageUrl.takeIf { it.isNotBlank() }
                 )
             },
-            gallery = tvShowDetails.tvShowGallery.map { it },
-            productionCompanies = tvShowDetails.productionsCompanies.map { company ->
+            gallery = gallery.map { it },
+            productionCompanies = productionsCompanies.map { company ->
                 ProductionCompanyUiState(
                     image = company.imageUrl,
                     name = company.name,
                     country = company.country
                 )
             },
-            isLoading = isLoading,
-            networkError = networkError,
         )
     }
 
@@ -90,7 +82,8 @@ class SeriesDetailsStateMapper(
             SeasonUiState(
                 id = season.id,
                 seasonNumber = season.seasonNumber,
-                episodeCount = formatEpisodeCount(episodes.size),
+                title = season.title,
+                episodeCount = season.episodeCount,
                 episodes = mapToEpisodeUiState(episodes)
             )
         }
@@ -100,11 +93,11 @@ class SeriesDetailsStateMapper(
         return episodes.map { episode ->
             EpisodeUiState(
                 id = episode.id,
-                number = episode.episodeNumber.toString(),
+                number = episode.episodeNumber,
                 title = episode.title,
                 rating = movieDetailsStateMapper.ratingToRatingString(episode.rating),
                 imageUrl = episode.stillUrl,
-                imageNumber = episode.episodeNumber.toString(),
+                imageNumber = episode.episodeNumber,
                 description = episode.description,
                 duration = formatDuration(episode.runtime),
                 airDate = movieDetailsStateMapper.dateToString(episode.airDate)
@@ -113,14 +106,6 @@ class SeriesDetailsStateMapper(
     }
 
     private fun formatSeasonCount(count: Int) = "$count Season"
-
-    private fun formatEpisodeCount(count: Int): String {
-        return if (count == 1) {
-            "$count Episode"
-        } else {
-            "$count Episodes"
-        }
-    }
 
     private fun formatDuration(duration: Int): String {
         val hours = duration / 60

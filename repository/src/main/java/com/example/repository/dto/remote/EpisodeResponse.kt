@@ -1,11 +1,12 @@
 package com.example.repository.dto.remote
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class EpisodeResponse(
     @SerialName("air_date")
-    val airDate: String,
+    val airDate: String?,
     @SerialName("episodes")
     val episodes: List<EpisodeDto>,
     @SerialName("name")
@@ -15,7 +16,7 @@ data class EpisodeResponse(
     @SerialName("id")
     val id: Long,
     @SerialName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerialName("season_number")
     val seasonNumber: Long,
     @SerialName("vote_average")

@@ -1,5 +1,6 @@
 package com.example.viewmodel.seriesDetails
 
+import android.util.Log
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetEpisodesBySeasonNumberUseCase
@@ -36,11 +37,13 @@ class SeriesDetailsViewModel(
         )
     }
 
-    private suspend fun getTvShowDetails() = getTvShowDetailsUseCase(state.value.tvShowId)
-
+    private suspend fun getTvShowDetails(): TvShowDetails {
+        Log.d("viewModel", "getTvShowDetails: ${state.value.tvShowId}")
+        return getTvShowDetailsUseCase(state.value.tvShowId)
+    }
     private fun onGetTvShowDetailsSuccess(tvShowDetails: TvShowDetails) {
         updateState {
-            seriesDetailsStateMapper.mapToSeriesDetailsUiState(tvShowDetails)
+            seriesDetailsStateMapper.toUiState(tvShowDetails)
         }
     }
 
@@ -74,21 +77,43 @@ class SeriesDetailsViewModel(
         )
     }
 
-    private suspend fun getEpisodesForSeason(seasonNumber: Int) =
-        getEpisodesBySeasonNumberUseCase(state.value.tvShowId, seasonNumber)
-
-    private fun onGetEpisodesSuccess(seasonNumber: Int, episodes: List<Episode>) {
+    private suspend fun getEpisodesForSeason(seasonNumber: Int): List<Episode> {
         val updatedSeasons = state.value.seasons.map {
-            if (it.seasonNumber == seasonNumber) {
-                it.copy(episodes = seriesDetailsStateMapper.mapToEpisodeUiState(episodes))
+            if (it.seasonNumber == seasonNumber && it.episodes.isNotEmpty()) {
+                it.copy(isExpanded = !it.isExpanded)
             } else {
                 it
             }
         }
-        updateState { it.copy(seasons = updatedSeasons) }
+        if (updatedSeasons != state.value.seasons) {
+            updateState { it.copy(seasons = updatedSeasons) }
+            return emptyList()
+        }
+        return getEpisodesBySeasonNumberUseCase(state.value.tvShowId, seasonNumber)
+    }
+
+
+    private fun onGetEpisodesSuccess(seasonNumber: Int, episodes: List<Episode>) {
+        if (episodes.isEmpty()) {
+            return
+        }
+        val updatedSeasons = state.value.seasons.map {
+            if (it.seasonNumber == seasonNumber) {
+                it.copy(
+                    episodes = seriesDetailsStateMapper.mapToEpisodeUiState(episodes),
+                    isExpanded = true
+                )
+            } else {
+                it
+            }
+        }
+        updateState {
+            it.copy(seasons = updatedSeasons)
+        }
     }
 
     private fun onError(exception: AflamiException) {
+        Log.d("TAG", "onError: $exception")
         when (exception) {
             is NoInternetException -> updateState {
                 it.copy(
@@ -96,7 +121,6 @@ class SeriesDetailsViewModel(
                     networkError = true
                 )
             }
-
             else -> {}
         }
     }

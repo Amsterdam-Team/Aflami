@@ -9,6 +9,7 @@ class SeasonRemoteMapper : EntityMapper<SeasonResponse, Season> {
         return Season(
             id = dto.id,
             seasonNumber = dto.seasonNumber,
+            title = dto.title,
             episodeCount = dto.episodeCount
         )
     }
