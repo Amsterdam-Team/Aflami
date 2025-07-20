@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.designsystem.R
 import com.example.designsystem.components.ImageErrorIndicator
 import com.example.designsystem.components.ImageLoadingIndicator
@@ -20,10 +23,11 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.components.MovieCard
 import com.example.viewmodel.shared.uiStates.MovieItemUiState
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 internal fun MoviesVerticalGrid(
-    movies: List<MovieItemUiState>,
+    movies: LazyPagingItems<MovieItemUiState>,
     isVisible: Boolean,
     modifier: Modifier = Modifier,
     onMovieClicked: (movieId: Long) -> Unit,
@@ -37,9 +41,10 @@ internal fun MoviesVerticalGrid(
             contentPadding = PaddingValues(vertical = 12.dp),
         ) {
             items(
-                items = movies,
-                key = { movie -> movie.id },
-            ) { movie ->
+                count = movies.itemCount,
+                key = movies.itemKey { it.id },
+            ) { index ->
+                val movie = movies[index] ?: return@items
                 MovieCard(
                     movieImage = {
                         SafeImageView(
@@ -69,16 +74,7 @@ internal fun MoviesVerticalGrid(
 private fun MoviesVerticalGridPreview() {
     AflamiTheme {
         MoviesVerticalGrid(
-            movies =
-                buildList(4) {
-                    MovieItemUiState(
-                        id = 1,
-                        name = stringResource(R.string.movie),
-                        posterImageUrl = "https://unsplash.com/s/photos/free-images",
-                        yearOfRelease = "2025",
-                        rate = "9.9",
-                    )
-                },
+            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
             isVisible = true,
             onMovieClicked = {}
         )

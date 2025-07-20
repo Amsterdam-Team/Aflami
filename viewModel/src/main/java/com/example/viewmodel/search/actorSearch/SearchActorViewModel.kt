@@ -1,31 +1,39 @@
 package com.example.viewmodel.search.actorSearch
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
-import com.example.entity.Movie
+import com.example.paging.PagingSource
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState.SearchByActorError
-import com.example.viewmodel.search.mapper.toMoveUiStates
+import com.example.viewmodel.search.mapper.toMediaItemUiState
 import com.example.viewmodel.shared.BaseViewModel
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class SearchActorViewModel(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
-    dispatcherProvider: DispatcherProvider
+    dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<ActorSearchUiState, SearchActorEffect>(
-    ActorSearchUiState(),
-    dispatcherProvider
+        ActorSearchUiState(),
+    dispatcherProvider,
 ),
     SearchActorInteractionListener {
-
     private val keywordFlow = MutableStateFlow("")
 
     init {
@@ -42,9 +50,21 @@ class SearchActorViewModel(
 
     private fun executeActorSearch(query: String) {
         tryToExecute(
-            action = { getMoviesByActorUseCase(query) },
+            action = {
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getMoviesByActorUseCase(
+                                query,
+                                page,
+                            )
+                        }
+                    },
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+            },
             onSuccess = ::handleSearchResults,
-            onError = ::onError
+            onError = ::onError,
         )
     }
 
@@ -53,12 +73,12 @@ class SearchActorViewModel(
         updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
     }
 
-    private fun handleSearchResults(movies: List<Movie>) {
+    private fun handleSearchResults(movies: Flow<PagingData<MovieItemUiState>>) {
         updateState {
             it.copy(
-                movies = movies.toMoveUiStates(),
+                movies = movies,
                 isLoading = false,
-                error = null
+                error = null,
             )
         }
     }
@@ -79,16 +99,18 @@ class SearchActorViewModel(
     private fun onError(aflamiException: AflamiException) {
         updateState {
             when (aflamiException) {
-                is NetworkException -> it.copy(
-                    error = SearchByActorError.NetworkError,
-                    isLoading = false,
-                    movies = emptyList()
-                )
+                is NetworkException ->
+                    it.copy(
+                        error = SearchByActorError.NetworkError,
+                        isLoading = false,
+                        movies = emptyFlow(),
+                    )
 
-                else -> it.copy(
-                    isLoading = false,
-                    movies = emptyList()
-                )
+                else ->
+                    it.copy(
+                        isLoading = false,
+                        movies = emptyFlow(),
+                    )
             }
         }
     }

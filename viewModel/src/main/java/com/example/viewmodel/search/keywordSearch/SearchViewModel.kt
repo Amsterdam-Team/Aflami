@@ -1,37 +1,44 @@
 package com.example.viewmodel.search.keywordSearch
 
+import android.R.attr.rating
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.useCase.GetAndFilterMoviesByKeywordUseCase
 import com.example.domain.useCase.GetAndFilterTvShowsByKeywordUseCase
 import com.example.domain.useCase.RecentSearchesUseCase
-import com.example.entity.Movie
-import com.example.entity.TvShow
 import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
+import com.example.paging.PagingSource
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.search.mapper.selectByTvGenre
-import com.example.viewmodel.search.mapper.toMoveUiStates
-import com.example.viewmodel.search.mapper.toTvShowUiStates
+import com.example.viewmodel.search.mapper.toMediaItemUiState
 import com.example.viewmodel.shared.BaseViewModel
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
+import com.example.viewmodel.shared.uiStates.TvShowItemUiState
 import com.example.viewmodel.utils.debounceSearch
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
     private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
     private val getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase,
     private val recentSearchesUseCase: RecentSearchesUseCase,
-    dispatcherProvider: DispatcherProvider
+    dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
-    SearchInteractionListener, FilterInteractionListener {
-
+    SearchInteractionListener,
+    FilterInteractionListener {
     private val _keyword = MutableStateFlow("")
 
     init {
@@ -45,7 +52,7 @@ class SearchViewModel(
             action = { recentSearchesUseCase.getRecentSearches() },
             onSuccess = ::onLoadRecentSearchesSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onCompletion
+            onCompletion = ::onCompletion,
         )
     }
 
@@ -67,53 +74,88 @@ class SearchViewModel(
     private fun fetchMoviesByKeyword(keyword: String) {
         startLoading()
         tryToExecute(
-            action = { getAndFilterMoviesByKeywordUseCase(keyword = keyword) },
+            action = {
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getAndFilterMoviesByKeywordUseCase(
+                                keyword = keyword,
+                                page = page,
+                            )
+                        }
+                    },
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+            },
             onSuccess = ::onFetchMoviesSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onCompletion
+            onCompletion = ::onCompletion,
         )
     }
 
-    private fun onFetchMoviesSuccess(movies: List<Movie>) {
-        updateState { it.copy(movies = movies.toMoveUiStates(), errorUiState = null) }
+    private fun onFetchMoviesSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
+        applyMoviesFilter()
+        updateState { it.copy(movies = movies, errorUiState = null) }
     }
 
     private fun fetchTvShowsByKeyword(keyword: String) {
         startLoading()
         tryToExecute(
-            action = { getAndFilterTvShowsByKeywordUseCase(keyword = keyword) },
+            action = {
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getAndFilterTvShowsByKeywordUseCase(
+                                keyword = keyword,
+                                page = page,
+                                rating = rating,
+                            )
+                        }
+                    },
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+            },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onCompletion
+            onCompletion = ::onCompletion,
         )
     }
 
-    private fun onFetchTvShowsSuccess(tvShows: List<TvShow>) {
-        updateState { it.copy(tvShows = tvShows.toTvShowUiStates(), errorUiState = null) }
+    private fun onFetchTvShowsSuccess(tvShows: Flow<PagingData<TvShowItemUiState>>) {
+        applyTvShowsFilter()
+        updateState { it.copy(tvShows = tvShows, errorUiState = null) }
     }
 
     private fun applyMoviesFilter() {
         val currentCategoryItemUiStates = state.value.filterItemUiState.selectableMovieGenres
         tryToExecute(
             action = {
-                getAndFilterMoviesByKeywordUseCase(
-                    keyword = state.value.keyword,
-                    rating = state.value.filterItemUiState.selectedStarIndex,
-                    movieGenre = currentCategoryItemUiStates.getSelectedGenreType()
-                )
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getAndFilterMoviesByKeywordUseCase(
+                                keyword = state.value.keyword,
+                                page = page,
+                                rating = state.value.filterItemUiState.selectedStarIndex,
+                                movieGenre = currentCategoryItemUiStates.getSelectedGenreType(),
+                            )
+                        }
+                    },
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onClickCancel
+            onCompletion = ::onClickCancel,
         )
     }
 
-    private fun onMoviesFilteredSuccess(movies: List<Movie>) {
+    private fun onMoviesFilteredSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
         updateState {
             it.copy(
-                movies = movies.toMoveUiStates(),
+                movies = movies,
                 filterItemUiState = it.filterItemUiState.copy(isLoading = false),
-                errorUiState = null
+                errorUiState = null,
             )
         }
     }
@@ -122,24 +164,35 @@ class SearchViewModel(
         val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
         tryToExecute(
             action = {
-                getAndFilterTvShowsByKeywordUseCase(
-                    keyword = state.value.keyword,
-                    rating = state.value.filterItemUiState.selectedStarIndex,
-                    tvGenre = currentGenreItemUiStates.getSelectedGenreType()
-                )
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getAndFilterTvShowsByKeywordUseCase(
+                                keyword = state.value.keyword,
+                                page = page,
+                                rating = state.value.filterItemUiState.selectedStarIndex,
+                                tvGenre = currentGenreItemUiStates.getSelectedGenreType(),
+                            )
+                        }
+                    },
+                ).flow
+                    .map { pagingData ->
+                        pagingData.map { it.toMediaItemUiState() }
+                    }.cachedIn(viewModelScope)
             },
             onSuccess = ::onTvShowsFilteredSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onClickCancel
+            onCompletion = ::onClickCancel,
         )
     }
 
-    private fun onTvShowsFilteredSuccess(tvShows: List<TvShow>) {
+    private fun onTvShowsFilteredSuccess(tvShows: Flow<PagingData<TvShowItemUiState>>) {
         updateState {
             it.copy(
-                tvShows = tvShows.toTvShowUiStates(),
+                tvShows = tvShows,
                 filterItemUiState = it.filterItemUiState.copy(isLoading = false),
-                errorUiState = null
+                errorUiState = null,
             )
         }
     }
@@ -148,8 +201,7 @@ class SearchViewModel(
         updateState { it.copy(errorUiState = SearchErrorState.toSearchErrorState(exception)) }
     }
 
-    private fun resetFilterState() =
-        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }
 
@@ -166,7 +218,7 @@ class SearchViewModel(
             action = { recentSearchesUseCase.addRecentSearch(state.value.keyword) },
             onSuccess = { fetchRecentSearches() },
             onError = ::onFetchError,
-            onCompletion = ::onCompletion
+            onCompletion = ::onCompletion,
         )
     }
 
@@ -190,15 +242,14 @@ class SearchViewModel(
                 selectedTabOption = tabOption,
                 movies = state.value.movies,
                 tvShows = state.value.tvShows,
-                isLoading = true,
-                filterItemUiState = FilterItemUiState()
+                isLoading = true, // TODO: Check
+                filterItemUiState = FilterItemUiState(),
             )
         }
         onSearchKeywordChanged(_keyword.value)
     }
 
     override fun onClickRecentSearch(keyword: String) = onChangeSearchKeyword(keyword)
-
 
     override fun onClickClearRecentSearch(keyword: String) {
         startLoading()
@@ -215,7 +266,7 @@ class SearchViewModel(
             action = { recentSearchesUseCase.deleteRecentSearches() },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = ::onFetchError,
-            onCompletion = ::onCompletion
+            onCompletion = ::onCompletion,
         )
     }
 
@@ -228,13 +279,12 @@ class SearchViewModel(
             currentState.copy(
                 keyword = "",
                 isDialogVisible = false,
-                filterItemUiState = FilterItemUiState()
+                filterItemUiState = FilterItemUiState(),
             )
         }
     }
 
     override fun onClickMovieCard(movieId: Long) {
-
         sendNewEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
     }
 
@@ -249,11 +299,13 @@ class SearchViewModel(
     override fun onChangeMovieGenre(genreType: MovieGenre) {
         updateState {
             it.copy(
-                filterItemUiState = state.value.filterItemUiState.copy(
-                    selectableMovieGenres = it.filterItemUiState.selectableMovieGenres.selectByMovieGenre(
-                        genreType
-                    )
-                )
+                filterItemUiState =
+                    state.value.filterItemUiState.copy(
+                        selectableMovieGenres =
+                            it.filterItemUiState.selectableMovieGenres.selectByMovieGenre(
+                                genreType,
+                            ),
+                    ),
             )
         }
     }
@@ -261,11 +313,13 @@ class SearchViewModel(
     override fun onChangeTvShowGenre(genreType: TvShowGenre) {
         updateState {
             it.copy(
-                filterItemUiState = state.value.filterItemUiState.copy(
-                    selectableTvShowGenres = it.filterItemUiState.selectableTvShowGenres.selectByTvGenre(
-                        genreType
-                    )
-                )
+                filterItemUiState =
+                    state.value.filterItemUiState.copy(
+                        selectableTvShowGenres =
+                            it.filterItemUiState.selectableTvShowGenres.selectByTvGenre(
+                                genreType,
+                            ),
+                    ),
             )
         }
     }
@@ -274,7 +328,7 @@ class SearchViewModel(
         updateState {
             it.copy(
                 isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
             )
         }
     }

@@ -4,7 +4,7 @@ import android.icu.text.DecimalFormat
 import com.example.entity.Movie
 import com.example.viewmodel.shared.uiStates.MovieItemUiState
 
-private fun Movie.toMediaItemUiState(): MovieItemUiState =
+fun Movie.toMediaItemUiState(): MovieItemUiState =
     MovieItemUiState(
         id = id,
         name = name,

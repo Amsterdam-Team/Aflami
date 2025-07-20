@@ -20,10 +20,10 @@ class TvShowRepositoryImpl(
     private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
     private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper
 ) : TvShowRepository {
-    override suspend fun getTvShowByKeyword(keyword: String): List<TvShow> {
+    override suspend fun getTvShowByKeyword(keyword: String, page: Int): List<TvShow> {
         return getCachedTvShows(keyword)
             ?: recentSearchHandler.deleteRecentSearch(keyword, SearchType.BY_KEYWORD)
-                .let { getTvShowsFromRemote(keyword) }
+                .let { getTvShowsFromRemote(keyword, page) }
                 .let { remoteTvShows ->
                     saveTvShowsToDatabase(remoteTvShows, keyword)
                     tvRemoteMapper.toEntityList(remoteTvShows.results)
@@ -53,8 +53,8 @@ class TvShowRepositoryImpl(
         )
     }
 
-    private suspend fun getTvShowsFromRemote(keyword: String): RemoteTvShowResponse {
-        return remoteTvDataSource.getTvShowsByKeyword(keyword)
+    private suspend fun getTvShowsFromRemote(keyword: String, page: Int): RemoteTvShowResponse {
+        return remoteTvDataSource.getTvShowsByKeyword(keyword, page)
     }
 
     private suspend fun saveTvShowsToDatabase(
