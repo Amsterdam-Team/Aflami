@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
@@ -34,6 +33,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.ImageErrorIndicator
@@ -66,10 +68,10 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun SearchScreen(
-    viewModel: SearchViewModel = koinViewModel(),
-) {
+internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val movieFlow = state.movies.collectAsLazyPagingItems()
+    val tvShowFlow = state.tvShows.collectAsLazyPagingItems()
     val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
@@ -90,26 +92,36 @@ internal fun SearchScreen(
         }
     }
 
-    SearchContent(state = state, interaction = viewModel, filterInteraction = viewModel)
+    SearchContent(
+        state = state,
+        movies = movieFlow,
+        tvShows = tvShowFlow,
+        interaction = viewModel,
+        filterInteraction = viewModel,
+    )
 }
 
 @Composable
 private fun SearchContent(
     state: SearchUiState,
+    movies: LazyPagingItems<MovieItemUiState>,
+    tvShows: LazyPagingItems<TvShowItemUiState>,
     interaction: SearchInteractionListener,
-    filterInteraction: FilterInteractionListener
+    filterInteraction: FilterInteractionListener,
 ) {
     BackHandler(enabled = state.keyword.isNotEmpty()) {
         interaction.onClickClearSearch()
     }
     var headerHeight by remember { mutableStateOf(0.dp) }
+    var isPageStillLoading by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = AppTheme.color.surface)
-            .statusBarsPadding()
-            .navigationBarsPadding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = AppTheme.color.surface)
+                .statusBarsPadding()
+                .navigationBarsPadding(),
     ) {
         SearchScreenHeader(
             keyword = state.keyword,
@@ -121,10 +133,12 @@ private fun SearchContent(
             onTabOptionClicked = interaction::onClickTabOption,
             onHeaderSizeChanged = {
                 headerHeight = it.height.dp
-            }
+            },
         )
 
-        AnimatedVisibility(state.isLoading && state.errorUiState == null) {
+        AnimatedVisibility(
+            (state.isLoading || isPageStillLoading) && state.keyword.isNotBlank() && state.errorUiState == null,
+        ) {
             CenterOfScreenContainer(unneededSpace = headerHeight) {
                 LoadingContainer()
             }
@@ -132,7 +146,7 @@ private fun SearchContent(
 
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            visible = state.isDialogVisible
+            visible = state.isDialogVisible,
         ) {
             FilterDialog(
                 filterState = state.filterItemUiState,
@@ -148,10 +162,11 @@ private fun SearchContent(
 
         AnimatedVisibility(state.keyword.isNotBlank() && state.errorUiState == null) {
             SuccessMediaItems(
+                selectedTabOption = state.selectedTabOption,
+                moviesFlow = movies,
+                tvShowsFlow = tvShows,
+                onPageLoading = { isPageStillLoading = it },
                 onMovieClicked = interaction::onClickMovieCard,
-                tvShows = state.tvShows,
-                movies = state.movies,
-                selectedTabOption = state.selectedTabOption
             )
         }
 
@@ -185,9 +200,9 @@ private fun SearchContent(
 
                 val isSelectedTabSearchResultEmpty =
                     if (state.selectedTabOption == TabOption.MOVIES) {
-                        state.movies.isEmpty()
+                        movies.itemSnapshotList.isEmpty()
                     } else {
-                        state.tvShows.isEmpty()
+                        tvShows.itemSnapshotList.isEmpty()
                     }
 
                 AnimatedVisibility(state.errorUiState == null && isSelectedTabSearchResultEmpty) {
@@ -195,7 +210,7 @@ private fun SearchContent(
                         imageRes = painterResource(com.example.ui.R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
-                        modifier = Modifier.verticalScroll(rememberScrollState())
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
                     )
                 }
             }
@@ -205,16 +220,17 @@ private fun SearchContent(
 
 @Composable
 private fun SuccessMediaItems(
-    movies: List<MovieItemUiState>,
-    tvShows: List<TvShowItemUiState>,
     selectedTabOption: TabOption,
-    modifier: Modifier = Modifier,
-    onMovieClicked: (movieId: Long) -> Unit
+    moviesFlow: LazyPagingItems<MovieItemUiState>,
+    tvShowsFlow: LazyPagingItems<TvShowItemUiState>,
+    onPageLoading: (Boolean) -> Unit,
+    onMovieClicked: (movieId: Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
-        movies
+        moviesFlow
     } else {
-        tvShows
+        tvShowsFlow
     }
 
     LazyVerticalGrid(
@@ -222,9 +238,10 @@ private fun SuccessMediaItems(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-        modifier = modifier
+        modifier = modifier,
     ) {
-        items(selectedItems) { mediaItem ->
+        items(selectedItems.itemCount) { index ->
+            val mediaItem = selectedItems[index] ?: return@items
             when (mediaItem) {
                 is MovieItemUiState -> {
                     MovieCard(
@@ -266,6 +283,20 @@ private fun SuccessMediaItems(
                 }
             }
         }
+
+        selectedItems.apply {
+            when (loadState.refresh) {
+                is LoadState.Loading -> {
+                    onPageLoading(true)
+                }
+
+                is LoadState.NotLoading -> {
+                    onPageLoading(false)
+                }
+
+                else -> onPageLoading(false)
+            }
+        }
     }
 }
 
@@ -279,24 +310,24 @@ private fun SearchScreenHeader(
     onSearchActionClicked: () -> Unit,
     onTabOptionClicked: (TabOption) -> Unit,
     modifier: Modifier = Modifier,
-    onHeaderSizeChanged: (IntSize) -> Unit = {}
+    onHeaderSizeChanged: (IntSize) -> Unit = {},
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        modifier = modifier.onSizeChanged(onSizeChanged = onHeaderSizeChanged)
+        modifier = modifier.onSizeChanged(onSizeChanged = onHeaderSizeChanged),
     ) {
         DefaultAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
             title = stringResource(R.string.search),
-            onNavigateBackClicked = onNavigateBackClicked
+            onNavigateBackClicked = onNavigateBackClicked,
         )
         TextField(
-            modifier = Modifier
-                .background(color = AppTheme.color.surface)
-                .padding(top = 8.dp)
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .background(color = AppTheme.color.surface)
+                    .padding(top = 8.dp)
+                    .padding(horizontal = 16.dp),
             text = keyword,
             onValueChange = onKeywordValuedChanged,
             hintText = stringResource(R.string.search_hint),
@@ -306,21 +337,23 @@ private fun SearchScreenHeader(
             isError = keyword.length > 100,
             errorMessage = stringResource(R.string.search_error_query_too_long),
             maxCharacters = 100,
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    keyboardController?.hide()
-                    onSearchActionClicked()
-                }
-            ),
+            keyboardActions =
+                KeyboardActions(
+                    onSearch = {
+                        keyboardController?.hide()
+                        onSearchActionClicked()
+                    },
+                ),
             imeAction = ImeAction.Search,
         )
         AnimatedVisibility(keyword.isNotBlank()) {
             TabsLayout(
                 modifier = Modifier.fillMaxWidth(),
-                tabs = listOf(
-                    stringResource(R.string.movies),
-                    stringResource(R.string.tv_shows)
-                ),
+                tabs =
+                    listOf(
+                        stringResource(R.string.movies),
+                        stringResource(R.string.tv_shows),
+                    ),
                 selectedIndex = selectedTabOption.index,
                 onSelectTab = { index -> onTabOptionClicked(TabOption.entries[index]) },
             )

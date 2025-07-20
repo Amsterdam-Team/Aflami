@@ -5,9 +5,8 @@ import com.example.entity.Country
 import com.example.entity.Movie
 
 class GetMoviesByCountryUseCase(private val movieRepository: MovieRepository) {
-
-    suspend operator fun invoke(country: Country): List<Movie> {
-        return movieRepository.getMoviesByCountry(country)
-    }
-
+    suspend operator fun invoke(
+        country: Country,
+        page: Int,
+    ): List<Movie> = movieRepository.getMoviesByCountry(country, page)
 }
