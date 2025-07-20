@@ -16,7 +16,7 @@ import java.util.Locale
 
 class KtorClient(
     private val json: Json
-) {
+) : NetworkClient {
     private val languageTag = Locale.getDefault().toLanguageTag()
 
     private val token = BuildConfig.BEARER_TOKEN
@@ -44,7 +44,7 @@ class KtorClient(
         }
     }
 
-    suspend fun get(url: String, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse {
+    override suspend fun get(url: String, block: HttpRequestBuilder.() -> Unit): HttpResponse {
         return httpClient.get(url, block)
     }
 
