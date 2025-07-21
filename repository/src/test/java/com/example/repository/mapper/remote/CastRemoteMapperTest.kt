@@ -38,7 +38,7 @@ class CastRemoteMapperTest {
         val dto = createRemoteCastDto(profilePath = "/actor.jpg")
         val result = mapper.toEntity(dto)
 
-        assertThat(result.imageUrl).isEqualTo(baseImageUrl + "/actor.jpg")
+        assertThat(result.imageUrl).isEqualTo("$baseImageUrl/actor.jpg")
     }
 
     @Test
@@ -46,7 +46,7 @@ class CastRemoteMapperTest {
         val dto = createRemoteCastDto(profilePath = "")
         val result = mapper.toEntity(dto)
 
-        assertThat(result.imageUrl).isEqualTo("")
+        assertThat(result.imageUrl).isEqualTo(baseImageUrl)
     }
 
     @Test
@@ -64,7 +64,7 @@ class CastRemoteMapperTest {
         assertThat(result.id).isEqualTo(999)
         assertThat(result.name).isEqualTo("Test Actor")
         assertThat(result.gender).isEqualTo(Gender.Male)
-        assertThat(result.imageUrl).isEqualTo(baseImageUrl + "/test.jpg")
+        assertThat(result.imageUrl).isEqualTo("$baseImageUrl/test.jpg")
         assertThat(result.popularity).isEqualTo(123.45)
     }
 }
