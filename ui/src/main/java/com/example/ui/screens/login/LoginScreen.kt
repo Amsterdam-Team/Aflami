@@ -50,7 +50,6 @@ fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
-        viewModel.factory()
     LaunchedEffect(Unit) {
         viewModel.effect.collect{ effect ->
             effect?.let {
