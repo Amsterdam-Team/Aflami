@@ -1,39 +1,39 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.client.NetworkClient
+import com.example.domain.exceptions.NetworkException
+import com.example.domain.exceptions.NoInternetException
+import com.example.domain.exceptions.ServerErrorException
+import com.example.remotedatasource.serviceProvider.TvShowsServiceProvider
 import com.example.repository.dto.remote.RemoteTvShowResponse
-import io.ktor.client.call.body
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 class TvRemoteDataSourceImplTest {
 
-    private lateinit var networkClient: NetworkClient
+    private lateinit var tvShowsServiceProvider: TvShowsServiceProvider
     private lateinit var tvRemoteDataSourceImpl: TvRemoteDataSourceImpl
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
     @Before
     fun setUp() {
-        networkClient = mockk()
-        tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(networkClient)
+        tvShowsServiceProvider = mockk()
+        tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(tvShowsServiceProvider)
     }
 
     @Test
     fun `getTvShowsByKeyword should return a list of TV shows when executed`() = runTest {
         // Given
         val keyword = "Game of Thrones"
+        val page = 1
 
         val jsonString = """
             {
@@ -64,40 +64,87 @@ class TvRemoteDataSourceImplTest {
         val expectedTvShowResponse =
             jsonSerializer.decodeFromString<RemoteTvShowResponse>(jsonString)
 
-        val mockHttpResponse = mockk<HttpResponse>(relaxed = true)
-
-        coEvery { mockHttpResponse.status } returns HttpStatusCode.OK
-
-        coEvery { mockHttpResponse.body<RemoteTvShowResponse>() } returns expectedTvShowResponse
-
-        val requestBuilderSlot = slot<HttpRequestBuilder.() -> Unit>()
-
         coEvery {
-            networkClient.get(
-                "search/tv",
-                capture(requestBuilderSlot)
-            )
-        } returns mockHttpResponse
+            tvShowsServiceProvider.getTvShowsByKeyword(keyword, page)
+        } returns expectedTvShowResponse
 
         // When
-        val tvShows = tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, 1)
+        val tvShows =
+            tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
 
-        coVerify(exactly = 1) { networkClient.get("search/tv", any()) }
+        coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowsByKeyword(keyword, page) }
 
-        val dummyBuilder = HttpRequestBuilder()
-        requestBuilderSlot.captured.invoke(dummyBuilder)
-        assertEquals(keyword, dummyBuilder.url.parameters["query"])
-
-        //Then
+        // Then
         assertEquals(1, tvShows.results.size)
-        assertEquals("Game of Thrones", tvShows.results[0].title)
+        assertEquals(
+            "Game of Thrones",
+            tvShows.results[0].title
+        )
         assertEquals(1399, tvShows.results[0].id)
-        assertEquals("2011-04-17", tvShows.results[0].releaseDate)
+        assertEquals(
+            "2011-04-17",
+            tvShows.results[0].releaseDate
+        )
         assertNotNull(tvShows.results[0].overview)
         assertEquals(450.0, tvShows.results[0].popularity, 0.001)
         assertEquals("/suopoADq0bPmYhnN8jQePVKzfdg.jpg", tvShows.results[0].backdropPath)
         assertEquals("/2yafLgJ9jL6t7jM0W7W9Bv0qP7j.jpg", tvShows.results[0].posterPath)
         assertEquals(8.4, tvShows.results[0].voteAverage, 0.001)
         assertEquals(20000, tvShows.results[0].voteCount)
+    }
+
+    @Test
+    fun `getTvShowsByKeyword should rethrow ServerErrorException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            val keyword = "test"
+            val page = 1
+            coEvery {
+                tvShowsServiceProvider.getTvShowsByKeyword(
+                    keyword,
+                    page
+                )
+            } throws ServerErrorException()
+
+            // When & Then
+            assertFailsWith<ServerErrorException> {
+                tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
+            }
+        }
+
+    @Test
+    fun `getTvShowsByKeyword should rethrow NoInternetException from service provider when exception occurs`() = runTest {
+        // Given
+        val keyword = "test"
+        val page = 1
+        coEvery {
+            tvShowsServiceProvider.getTvShowsByKeyword(
+                keyword,
+                page
+            )
+        } throws NoInternetException()
+
+        // When & Then
+        assertFailsWith<NoInternetException> {
+            tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
+        }
+    }
+
+    @Test
+    fun `getTvShowsByKeyword should rethrow NetworkException from service provider when exception occurs`() = runTest {
+        // Given
+        val keyword = "test"
+        val page = 1
+        coEvery {
+            tvShowsServiceProvider.getTvShowsByKeyword(
+                keyword,
+                page
+            )
+        } throws NetworkException()
+
+        // When & Then
+        assertFailsWith<NetworkException> {
+            tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
+        }
     }
 }
