@@ -12,7 +12,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class RetrofitClient(
@@ -23,8 +22,8 @@ class RetrofitClient(
     private val SESSION_PARAM_NAME = "session_id"
 
     private val token = BuildConfig.BEARER_TOKEN
-    private val languageTag = Locale.getDefault().toLanguageTag()
-    private val sessionId: String? = null // Still null, as in your Ktor setup
+    private val languageTag: String? = null
+    private val sessionId: String? = null
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -41,17 +40,18 @@ class RetrofitClient(
     private fun createAuthAndParamInterceptor(): Interceptor {
         return Interceptor { chain ->
             val originalRequest = chain.request()
-            val originalHttpUrl = originalRequest.url
+            val originalHttpUrlBuilder = originalRequest.url.newBuilder()
 
-            val newHttpUrlBuilder = originalHttpUrl.newBuilder()
-                .addQueryParameter(LANGUAGE_PARAM_NAME, languageTag)
+            if (!languageTag.isNullOrBlank()) {
+                originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, languageTag)
+            }
 
             if (!sessionId.isNullOrBlank()) {
-                newHttpUrlBuilder.addQueryParameter(SESSION_PARAM_NAME, sessionId)
+                originalHttpUrlBuilder.addQueryParameter(SESSION_PARAM_NAME, sessionId)
             }
 
             val newRequest = originalRequest.newBuilder()
-                .url(newHttpUrlBuilder.build())
+                .url(originalHttpUrlBuilder.build())
                 .header(TOKEN_HEADER_NAME, "Bearer $token")
                 .build()
 
