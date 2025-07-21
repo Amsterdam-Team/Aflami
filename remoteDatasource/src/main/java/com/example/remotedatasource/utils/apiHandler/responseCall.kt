@@ -4,9 +4,6 @@ import com.example.domain.exceptions.NetworkException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.exceptions.ServerErrorException
 import io.ktor.client.network.sockets.SocketTimeoutException
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.statement.HttpResponse
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
