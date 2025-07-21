@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew koverVerify --build-cache
 
       - name: Generate kover coverage report
-        run: ./gradlew koverXmlReport
+        run: ./gradlew :koverXmlReport
       
       - name: Upload XML Coverage Report
         uses: actions/upload-artifact@v4
@@ -60,12 +60,7 @@ jobs:
         uses: mi-kas/kover-report@v1
         if: github.event_name == 'pull_request'
         with:
-          path: |
-            domain/build/reports/kover/report.xml
-            repository/build/reports/kover/report.xml
-            viewModel/build/reports/kover/report.xml
-            remoteDatasource/build/reports/kover/report.xml
-            localDatasource/build/reports/kover/report.xml
+          path: '**/build/reports/kover/report.xml'
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
