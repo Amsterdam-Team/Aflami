@@ -1,6 +1,5 @@
 package com.example.ui.screens.login
 
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -39,25 +37,25 @@ import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
 import com.example.ui.screens.login.components.LoginBackground
 import com.example.ui.screens.login.components.getPasswordTextFieldIcon
-import com.example.ui.utils.safeNavigate
 import com.example.ui.utils.safeNavigateToTab
-import com.example.viewmodel.login.LoginScreenEffect
-import com.example.viewmodel.login.LoginScreenInteractionListener
-import com.example.viewmodel.login.LoginScreenUiState
-import com.example.viewmodel.login.LoginScreenViewModel
+import com.example.viewmodel.login.LoginEffect
+import com.example.viewmodel.login.LoginInteractionListener
+import com.example.viewmodel.login.LoginUiState
+import com.example.viewmodel.login.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginScreenViewModel = koinViewModel()
+    viewModel: LoginViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
+        viewModel.factory()
     LaunchedEffect(Unit) {
         viewModel.effect.collect{ effect ->
             effect?.let {
                 when(it){
-                    LoginScreenEffect.NavigateToHome -> {
+                    LoginEffect.NavigateToHome -> {
                         navController.safeNavigateToTab(Route.Tab.Home)
                     }
                 }
@@ -73,8 +71,8 @@ fun LoginScreen(
 @Composable
 private fun LoginScreenContent(
     modifier: Modifier = Modifier,
-    state: LoginScreenUiState,
-    interactionListener: LoginScreenInteractionListener
+    state: LoginUiState,
+    interactionListener: LoginInteractionListener
 ) {
     val scrollState = rememberScrollState()
     Box {
@@ -161,7 +159,7 @@ private fun LoginScreenContent(
                 )
             }
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -171,6 +169,7 @@ private fun LoginScreenContent(
                     color = AppTheme.color.hint,
                     modifier = Modifier.padding(end = 4.dp)
                 )
+
                 PlainTextButton(
                     stringResource(R.string.create_account),
                     onClick = interactionListener::onCreateAccountClicked,
@@ -190,11 +189,11 @@ private fun LoginScreenContent(
 private fun LoginScreenContentPreview() {
     AflamiTheme {
         LoginScreenContent(
-            state = LoginScreenUiState(
+            state = LoginUiState(
                 password = "mypassword",
                 passwordError = "Password is incorrect",
             ),
-            interactionListener = object : LoginScreenInteractionListener {
+            interactionListener = object : LoginInteractionListener {
                 override fun onUserNameUpdated(username: String) {
                     TODO("Not yet implemented")
                 }

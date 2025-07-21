@@ -5,14 +5,15 @@ import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 import kotlin.random.Random
 
-class LoginScreenViewModel(
-    dispatcherProvider: DispatcherProvider
-) : BaseViewModel<LoginScreenUiState, LoginScreenEffect>(
-    LoginScreenUiState(),
-    dispatcherProvider
-), LoginScreenInteractionListener {
+class LoginViewModel : BaseViewModel<LoginUiState, LoginEffect>, LoginInteractionListener {
+
+    constructor(dispatcherProvider: DispatcherProvider): super(dispatcherProvider = dispatcherProvider, initialState = LoginUiState())
+
+    private constructor(dispatcherProvider: DispatcherProvider, loginUiState: LoginUiState): super(loginUiState, dispatcherProvider)
+
     override fun onUserNameUpdated(username: String) {
         updateState {
             it.copy(username = username, usernameError = "")
@@ -41,7 +42,7 @@ class LoginScreenViewModel(
                 updateState {
                     it.copy(isLoginButtonLoading = false)
                 }
-                sendNewEffect(LoginScreenEffect.NavigateToHome)
+                sendNewEffect(LoginEffect.NavigateToHome)
             } else {
                 updateState {
                     it.copy(
@@ -50,7 +51,6 @@ class LoginScreenViewModel(
                         passwordError = "Incorrect Password"
                     )
                 }
-
             }
         }
     }
@@ -58,7 +58,7 @@ class LoginScreenViewModel(
     override fun onContinueAsGuestClicked() {
         viewModelScope.launch {
             delay(1000)
-            sendNewEffect(LoginScreenEffect.NavigateToHome)
+            sendNewEffect(LoginEffect.NavigateToHome)
         }
     }
 
@@ -81,6 +81,16 @@ class LoginScreenViewModel(
             updateState {
                 it.copy(isLoginButtonEnabled = false)
             }
+        }
+    }
+
+    @TestOnly
+    companion object{
+        fun getViewModel(
+            dispatcherProvider: DispatcherProvider,
+            loginUiState: LoginUiState
+        ): LoginViewModel {
+            return LoginViewModel(dispatcherProvider, loginUiState)
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.viewmodel.login
 
-interface LoginScreenInteractionListener {
+interface LoginInteractionListener {
     fun onUserNameUpdated(username: String)
     fun onPasswordUpdate(password: String)
     fun onShowPasswordClicked()

@@ -1,6 +1,6 @@
 package com.example.viewmodel.login
 
-data class LoginScreenUiState(
+data class LoginUiState(
     val username: String = "",
     val password: String = "",
     val isLoginButtonLoading: Boolean = false,
