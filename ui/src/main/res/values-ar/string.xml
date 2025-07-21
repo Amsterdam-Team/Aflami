@@ -209,4 +209,8 @@
     <string name="search_error_unknown">حدث خطأ غير متوقع.</string>
     <string name="there_is_no_production_company">لا توجد شركة إنتاج!</string>
     <string name="there_is_no_reviews">لا توجد مراجعات!</string>
+
+    <!-- - Home  -->
+    <string name="upcoming">القادمة</string>
+
 </resources>

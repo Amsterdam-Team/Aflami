@@ -10,6 +10,7 @@ import com.example.repository.dto.remote.review.ReviewsResponse
 
 interface MovieServiceProvider {
     suspend fun getPopularMovies(): RemoteMovieResponse
+    suspend fun getUpcomingMovies(): RemoteMovieResponse
     suspend fun getMoviesByKeyword(keyword: String, page: Int): RemoteMovieResponse
     suspend fun getActorIdByName(name: String, page: Int): RemoteActorSearchResponse
     suspend fun getMoviesByActorId(actorIds: String): RemoteMovieResponse

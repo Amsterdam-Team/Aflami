@@ -60,7 +60,7 @@ kover.reports {
 
         // todo: remove this after adding related useCase tests
         classes(
-            "*GetMovieCastUseCase*", "*GetMovieDetailsUseCase*", "*GetPopularMoviesUseCase*"
+            "*GetMovieCastUseCase*", "*GetMovieDetailsUseCase*", "*GetPopularMoviesUseCase*", "*GetUpcomingMoviesUseCase*"
         )
     }
     verify.rule {

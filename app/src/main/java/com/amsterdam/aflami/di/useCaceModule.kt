@@ -8,6 +8,7 @@ import com.example.domain.useCase.GetMoviesByActorUseCase
 import com.example.domain.useCase.GetMoviesByCountryUseCase
 import com.example.domain.useCase.GetPopularMoviesUseCase
 import com.example.domain.useCase.GetSuggestedCountriesUseCase
+import com.example.domain.useCase.GetUpcomingMoviesUseCase
 import com.example.domain.useCase.IncrementMovieGenreInterestUseCase
 import com.example.domain.useCase.IncrementTvShowGenreInterestUseCase
 import com.example.domain.useCase.RecentSearchesUseCase
@@ -26,4 +27,5 @@ val useCaseModule = module {
     singleOf(::IncrementMovieGenreInterestUseCase)
     singleOf(::IncrementTvShowGenreInterestUseCase)
     singleOf(::GetPopularMoviesUseCase)
+    singleOf(::GetUpcomingMoviesUseCase)
 }

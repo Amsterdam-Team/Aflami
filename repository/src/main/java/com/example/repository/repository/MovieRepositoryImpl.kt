@@ -134,6 +134,10 @@ class MovieRepositoryImpl(
         return movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
     }
 
+    override suspend fun getUpcomingMovies(): List<Movie> {
+        return movieRemoteMapper.toEntityList(movieRemoteDataSource.getUpcomingMovies().results)
+    }
+
     private suspend fun getCachedMovies(
         keyword: String,
         searchType: SearchType,

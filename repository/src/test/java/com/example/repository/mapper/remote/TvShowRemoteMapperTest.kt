@@ -1,143 +1,91 @@
-/*
 package com.example.repository.mapper.remote
 
-import com.example.entity.category.TvShowGenre
-import com.example.repository.dto.remote.RemoteTvShowItemDto
-import com.example.repository.dto.remote.RemoteTvShowResponse
+import com.example.entity.TvShow
+import com.example.repository.mapper.remote.testFactory.createRemoteTvShowItemDto
+import com.example.repository.mapper.shared.toTvShowCategory
+import com.example.repository.utils.DateParser
 import com.google.common.truth.Truth.assertThat
+import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class TvShowRemoteMapperTest {
 
-    private val mapper = TvShowRemoteMapper(
+    private lateinit var dateParser: DateParser
+    private lateinit var mapper: TvShowRemoteMapper
+
+    @BeforeEach
+    fun setUp() {
         dateParser = mockk()
-    )
+        mapper = TvShowRemoteMapper(dateParser)
+    }
 
-    private fun createRemoteTvShowItemDto(
-        id: Long,
-        title: String,
-        overview: String,
-        posterPath: String? = "/poster.jpg",
-        releaseDate: String = "2020-01-01",
-        voteAverage: Double = 7.0,
-        originCountry: List<String> = listOf("US")
-    ): RemoteTvShowItemDto {
-        return RemoteTvShowItemDto(
-            adult = false,
-            backdropPath = null,
-            genreIds = listOf(16),
-            id = id,
-            originalLanguage = "en",
-            originalTitle = title,
-            overview = overview,
-            popularity = 88.8,
-            posterPath = posterPath,
-            releaseDate = releaseDate,
-            title = title,
-            voteAverage = voteAverage,
-            originCountry = originCountry,
-            voteCount = 1234
+    private val fakeDto = createRemoteTvShowItemDto()
+
+    @Test
+    fun `toEntity returns correct id`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
+
+        val result: TvShow = mapper.toEntity(fakeDto)
+
+        assertThat(result.id).isEqualTo(101)
+    }
+
+    @Test
+    fun `toEntity returns correct name`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
+
+        val result: TvShow = mapper.toEntity(fakeDto)
+
+        assertThat(result.name).isEqualTo("Test Show")
+    }
+
+    @Test
+    fun `toEntity returns correct description`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
+
+        val result: TvShow = mapper.toEntity(fakeDto)
+
+        assertThat(result.description).isEqualTo("A test TV show")
+    }
+
+    @Test
+    fun `toEntity returns correct production year`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
+
+        val result: TvShow = mapper.toEntity(fakeDto)
+
+        assertThat(result.productionYear).isEqualTo(2022u)
+    }
+
+    @Test
+    fun `toEntity returns correct category ids`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
+
+        val result: TvShow = mapper.toEntity(fakeDto)
+
+        assertThat(result.categories).containsExactly(
+            10765L.toTvShowCategory(),
+            18L.toTvShowCategory()
         )
     }
 
     @Test
-    fun `should map RemoteTvShowItemDto to TvShow correctly`() {
-        val dto = createRemoteTvShowItemDto(
-            id = 1L,
-            title = "Loki",
-            overview = "Time travel and mischief",
-            posterPath = "/loki.jpg",
-            releaseDate = "2021-06-09",
-            voteAverage = 8.5
-        )
+    fun `toEntity returns correct rating`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result = mapper.toEntity(dto)
+        val result: TvShow = mapper.toEntity(fakeDto)
 
-        assertThat(result.id).isEqualTo(1L)
-        assertThat(result.name).isEqualTo("Loki")
-        assertThat(result.description).isEqualTo("Time travel and mischief")
-        assertThat(result.posterUrl).isEqualTo("/loki.jpg")
-        assertThat(result.productionYear).isEqualTo(2021)
-        assertThat(result.rating).isEqualTo(8.5f)
-        assertThat(result.categories).containsExactly(TvShowGenre.ANIMATION)
+        assertThat(result.rating).isEqualTo(8.3f)
     }
 
     @Test
-    fun `should return empty poster when posterPath is null`() {
-        val dto = createRemoteTvShowItemDto(
-            id = 2L,
-            title = "No Image",
-            overview = "No poster",
-            posterPath = null
-        )
+    fun `toEntity returns correct popularity`() {
+        every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result = mapper.toEntity(dto)
+        val result: TvShow = mapper.toEntity(fakeDto)
 
-        assertThat(result.posterUrl).isEqualTo("")
-    }
-
-    @Test
-    fun `should return 0 as productionYear when releaseDate is invalid`() {
-        val dto = createRemoteTvShowItemDto(
-            id = 3L,
-            title = "Broken Date",
-            overview = "Bad date format",
-            releaseDate = "abcd"
-        )
-
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.productionYear).isEqualTo(0)
-    }
-
-    @Test
-    fun `should return 0 as productionYear when releaseDate is empty`() {
-        val dto = createRemoteTvShowItemDto(
-            id = 4L,
-            title = "No Date",
-            overview = "Missing release date",
-            releaseDate = ""
-        )
-
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.productionYear).isEqualTo(0)
-    }
-
-    @Test
-    fun `should map list of RemoteTvShowItemDto to list of TvShow`() {
-        val dtos = listOf(
-            createRemoteTvShowItemDto(101L, "Show A", "Desc A"),
-            createRemoteTvShowItemDto(102L, "Show B", "Desc B", releaseDate = "2015-03-05")
-        )
-
-        val response = RemoteTvShowResponse(
-            page = 1,
-            results = dtos,
-            totalPages = 1,
-            totalResults = 2
-        )
-
-        val result = mapper.toEntityList(dtos)
-
-        assertThat(result).hasSize(2)
-        assertThat(result[0].name).isEqualTo("Show A")
-        assertThat(result[1].productionYear).isEqualTo(2015)
-    }
-
-    @Test
-    fun `should return empty list when response has no results`() {
-        val response = RemoteTvShowResponse(
-            page = 1,
-            results = emptyList(),
-            totalPages = 0,
-            totalResults = 0
-        )
-
-        val result = mapper.toEntityList(emptyList())
-
-        assertThat(result).isEmpty()
+        assertThat(result.popularity).isEqualTo(99.9)
     }
 }
-*/

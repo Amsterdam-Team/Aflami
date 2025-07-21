@@ -17,6 +17,9 @@ interface MovieApiService {
     @GET(MOVIE_POPULAR)
     suspend fun getPopularMovies(): RemoteMovieResponse
 
+    @GET(MOVIE_UPCOMING)
+    suspend fun getUpcomingMovies(): RemoteMovieResponse
+
     @GET(SEARCH_MOVIE_URL)
     suspend fun getMoviesByKeyword(
         @Query(QUERY_KEY) keyword: String,
@@ -77,6 +80,9 @@ interface MovieApiService {
 
     companion object {
         private const val MOVIE_POPULAR = "movie/popular"
+
+        private const val MOVIE_UPCOMING = "movie/upcoming"
+
         private const val SEARCH_MOVIE_URL = "search/movie"
         private const val SEARCH_PERSON_URL =
             "search/person"

@@ -1,6 +1,7 @@
 package com.example.remotedatasource.datasource
 
 import com.example.remotedatasource.serviceProvider.MovieServiceProvider
+import com.example.remotedatasource.utils.apiHandler.responseCall
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
@@ -67,5 +68,9 @@ class MovieRemoteDataSourceImpl(
 
     override suspend fun getPopularMovies(): RemoteMovieResponse {
         return movieServiceProvider.getPopularMovies()
+    }
+
+    override suspend fun getUpcomingMovies(): RemoteMovieResponse {
+        return movieServiceProvider.getUpcomingMovies()
     }
 }
