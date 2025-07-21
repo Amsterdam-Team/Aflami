@@ -19,7 +19,7 @@ class MovieCategoryLocalMapper : EntityMapper<LocalMovieCategoryDto, Category>,
     override fun toDto(entity: Category, args: List<Any>): LocalMovieCategoryDto {
         return LocalMovieCategoryDto(
             categoryId = entity.id,
-            storedLanguage = args[0].toString(),
+            storedLanguage = args.first().toString(),
             name = entity.name,
         )
     }

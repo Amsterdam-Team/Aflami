@@ -11,7 +11,7 @@ class MovieRemoteLocalMapper(
     override fun toLocal(remote: RemoteMovieItemDto, args: List<Any>): LocalMovieDto {
         return LocalMovieDto(
             movieId = remote.id,
-            storedLanguage = args[0].toString(),
+            storedLanguage = args.first().toString(),
             name = remote.title,
             description = remote.overview,
             poster = remote.fullPosterUrl.orEmpty(),

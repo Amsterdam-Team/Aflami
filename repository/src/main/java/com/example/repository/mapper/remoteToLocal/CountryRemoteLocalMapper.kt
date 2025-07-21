@@ -8,7 +8,7 @@ class CountryRemoteLocalMapper: RemoteToLocalMapper<RemoteCountryDto, LocalCount
     override fun toLocal(remote: RemoteCountryDto, args: List<Any>): LocalCountryDto {
         return LocalCountryDto(
             name = remote.nativeName,
-            storedLanguage = args[0].toString(),
+            storedLanguage = args.first().toString(),
             isoCode = remote.isoCode
         )
     }

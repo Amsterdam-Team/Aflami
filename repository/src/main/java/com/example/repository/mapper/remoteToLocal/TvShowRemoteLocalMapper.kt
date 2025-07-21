@@ -11,7 +11,7 @@ class TvShowRemoteLocalMapper(
     override fun toLocal(remote: RemoteTvShowItemDto, args: List<Any>): LocalTvShowDto {
         return LocalTvShowDto(
             tvShowId = remote.id,
-            storedLanguage = args[0].toString(),
+            storedLanguage = args.first().toString(),
             name = remote.title,
             description = remote.overview,
             poster = remote.fullPosterPath.orEmpty(),

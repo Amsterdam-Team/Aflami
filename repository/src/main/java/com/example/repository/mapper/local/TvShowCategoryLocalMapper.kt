@@ -18,7 +18,7 @@ class TvShowCategoryLocalMapper : EntityMapper<LocalTvShowCategoryDto, Category>
     override fun toDto(entity: Category, args: List<Any>): LocalTvShowCategoryDto {
         return LocalTvShowCategoryDto(
             categoryId = entity.id,
-            storedLanguage = args[0].toString(),
+            storedLanguage = args.first().toString(),
             name = entity.name,
         )
     }
