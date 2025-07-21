@@ -96,7 +96,7 @@ class SeriesDetailsStateMapper(
                 number = episode.episodeNumber,
                 title = episode.title,
                 rating = movieDetailsStateMapper.ratingToRatingString(episode.rating),
-                imageUrl = episode.stillUrl,
+                imageUrl = episode.episodeImageUrl,
                 imageNumber = episode.episodeNumber,
                 description = episode.description,
                 duration = formatDuration(episode.runtime),

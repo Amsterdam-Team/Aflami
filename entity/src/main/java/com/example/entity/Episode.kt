@@ -7,7 +7,7 @@ data class Episode(
     val title: String,
     val episodeNumber: Int,
     val description: String,
-    val stillUrl: String,
+    val episodeImageUrl: String,
     val rating: Float,
     val airDate: LocalDate?,
     val seasonNumber: Int,
