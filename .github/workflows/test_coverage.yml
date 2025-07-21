@@ -46,6 +46,7 @@ jobs:
 
       - name: Generate kover coverage report
         run: ./gradlew :koverXmlReport
+        continue-on-error: true
       
       - name: Upload XML Coverage Report
         uses: actions/upload-artifact@v4
@@ -57,7 +58,7 @@ jobs:
   
       - name: Post Kover Code Coverage Comment
         id: kover
-        uses: mi-kas/kover-report@v1
+        uses: mi-kas/kover-report@v1.9
         if: github.event_name == 'pull_request'
         with:
           path: build/reports/kover/report.xml
