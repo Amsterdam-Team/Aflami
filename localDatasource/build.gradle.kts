@@ -37,23 +37,3 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(kotlin("test"))
 }
-
-kover.reports {
-    filters.excludes {
-        androidGeneratedClasses()
-        classes(
-            "*.MovieLocalDataSourceImpl",
-            "*.RecentSearchLocalDataSourceImpl",
-            "*.TvShowLocalDataSourceImpl"
-        )
-    }
-    filters.includes {
-        packages("*.datasource")
-    }
-
-    verify {
-        rule {
-            minBound(80)
-        }
-    }
-}

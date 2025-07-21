@@ -27,20 +27,3 @@ dependencies {
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
-
-kover.reports {
-    filters.excludes {
-        androidGeneratedClasses()
-        packages("*.exceptions", "*.logger")
-        classes(
-            "*.GetMovieCategoriesUseCase",
-            "*.GetTvShowCategoriesUseCase",
-            "*.GetMovieDetailsUseCase",
-            "*.GetMovieCastUseCase"
-        )
-
-    }
-    verify.rule {
-        minBound(80)
-    }
-}

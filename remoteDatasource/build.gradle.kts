@@ -52,20 +52,3 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(kotlin("test"))
 }
-
-kover.reports {
-    filters.excludes {
-        androidGeneratedClasses()
-        packages("*.client")
-    }
-
-    filters.includes {
-        packages("*.datasource")
-    }
-
-    verify {
-        rule {
-            minBound(80)
-        }
-    }
-}

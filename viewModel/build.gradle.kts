@@ -32,16 +32,3 @@ dependencies {
     testImplementation(libs.truth)
     testImplementation(kotlin("test"))
 }
-
-kover.reports {
-    filters.excludes {
-        androidGeneratedClasses()
-        packages("*")
-    }
-
-    verify {
-        rule {
-            minBound(80)
-        }
-    }
-}

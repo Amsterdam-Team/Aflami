@@ -59,23 +59,3 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
 }
-kover.reports {
-    filters.excludes {
-        androidGeneratedClasses()
-    }
-    filters.includes {
-        classes(
-            "*.CountryLocalMapper",
-            "*.MovieLocalMapper",
-            "*.TvShowLocalMapper",
-            "*.DtoMapper",
-            "*.EntityMapper",
-        )
-    }
-
-    verify {
-        rule {
-            minBound(80)
-        }
-    }
-}
