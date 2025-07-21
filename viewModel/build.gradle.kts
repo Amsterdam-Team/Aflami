@@ -1,8 +1,7 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.android.junit5)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -14,7 +13,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.datetime)
 
@@ -22,14 +21,14 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
 
     // mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     // junit 5
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
     //truth
-    testImplementation (libs.truth)
+    testImplementation(libs.truth)
     testImplementation(kotlin("test"))
 }

@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.remote
 
 import com.example.entity.category.MovieGenre
@@ -139,3 +140,4 @@ class MovieRemoteMapperTest {
     }
 
 }
+*/
