@@ -60,6 +60,11 @@ interface MovieApiService {
         @Path("movieId") movieId: Long
     ): RemoteMovieGalleryResponse
 
+    @GET(MOVIE_IMAGES_ENDPOINT)
+    suspend fun getMoviePosters(
+        @Path("movieId") movieId: Long
+    ): RemoteMovieGalleryResponse
+
     @GET(MOVIE_DETAILS_ENDPOINT)
     suspend fun getProductionCompany(
         @Path("movieId") movieId: Long

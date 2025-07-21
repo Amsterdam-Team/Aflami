@@ -48,7 +48,6 @@ class MovieRemoteDataSourceImpl(
 
     override suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse {
         return responseCall {
-            // Call the new Retrofit method
             movieApiService.getCastByMovieId(movieId)
         }
     }
@@ -85,7 +84,7 @@ class MovieRemoteDataSourceImpl(
 
     override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
         return responseCall {
-            movieApiService.getMovieGallery(movieId) // Using the existing getMovieGallery Retrofit call
+            movieApiService.getMoviePosters(movieId)
         }
     }
 
