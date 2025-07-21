@@ -12,19 +12,17 @@ class GetAndFilterTvShowsByKeywordUseCase(
     suspend operator fun invoke(
         keyword: String,
         page: Int = 1,
+        tvShowsPerPage: Int = 20,
         rating: Int = 0,
         tvGenre: TvShowGenre = TvShowGenre.ALL
     ): List<TvShow> {
         val userInterest = tvShowRepository.getAllGenreInterests()
-
-        return tvShowRepository
-            .getTvShowByKeyword(keyword = keyword, page = page)
+        return tvShowRepository.getTvShowByKeyword(keyword = keyword, page, tvShowsPerPage)
             .filterMoviesWithRatingAndGenre(rating, genre = tvGenre)
             .sortedByDescending { movie ->
                 movie.categories.maxOfOrNull { userInterest[it] ?: 0 }
             }
     }
-
 
     private fun List<TvShow>.filterMoviesWithRatingAndGenre(
         rating: Int,
