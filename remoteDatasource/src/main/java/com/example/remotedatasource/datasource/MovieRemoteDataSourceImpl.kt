@@ -8,7 +8,7 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
 
@@ -73,7 +73,7 @@ class MovieRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
+    override suspend fun getMovieGallery(movieId: Long): RemoteGalleryResponse {
         return responseCall {
             networkClient.get("movie/$movieId/images")
         }
@@ -91,8 +91,8 @@ class MovieRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
-        return responseCall<RemoteMovieGalleryResponse> {
+    override suspend fun getMoviePosters(movieId: Long): RemoteGalleryResponse {
+        return responseCall<RemoteGalleryResponse> {
             networkClient.get("movie/$movieId/images")
         }
     }

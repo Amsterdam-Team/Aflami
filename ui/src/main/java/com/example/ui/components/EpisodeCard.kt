@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.IconButton
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
@@ -107,6 +109,8 @@ private fun EpisodeBanner(
             model = episodeBanner,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            onLoading = { ImageLoadingIndicator() },
+            onError = { ImageErrorIndicator() },
         )
         RatingChip(
             rating = episodeRate.toString(),
