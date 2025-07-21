@@ -28,13 +28,13 @@ open class BaseViewModel<S, E>(
 
 
     protected fun updateState(updater: (S) -> S) {
-        viewModelScope.launch(dispatcherProvider.MainImmediate) {
+        viewModelScope.launch(dispatcherProvider.Default) {
             _state.update(updater)
         }
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        viewModelScope.launch(dispatcherProvider.MainImmediate) {
+        viewModelScope.launch(dispatcherProvider.Default) {
             _effect.emit(newEffect)
         }
     }

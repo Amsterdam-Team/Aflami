@@ -2,7 +2,6 @@ package com.example.repository.mapper.remote
 
 import com.example.entity.Actor
 import com.example.entity.Gender
-import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteCastDto
 import com.example.repository.mapper.shared.EntityMapper
 
@@ -11,7 +10,7 @@ class CastRemoteMapper : EntityMapper<RemoteCastDto, Actor> {
         return Actor(
             id = dto.id,
             name = dto.name,
-            imageUrl = BuildConfig.BASE_IMAGE_URL + dto.profilePath,
+            imageUrl = dto.fullProfilePath.orEmpty(),
             popularity = dto.popularity,
             gender = mapIntToGender(dto.gender)
         )

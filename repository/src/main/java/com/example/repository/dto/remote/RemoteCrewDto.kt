@@ -1,5 +1,6 @@
 package com.example.repository.dto.remote
 
+import com.example.repository.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -37,4 +38,7 @@ data class RemoteCrewDto(
     
     @SerialName("job")
     val job: String
-)
+){
+    val fullProfilePath: String?
+        get() = profilePath.let { BuildConfig.BASE_IMAGE_URL + it }
+}

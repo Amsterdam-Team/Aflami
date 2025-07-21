@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.imageviewer.ui.SafeImageView
 
 fun LazyListScope.GallerySection(gallery: List<String>) {
@@ -37,6 +39,8 @@ fun LazyListScope.GallerySection(gallery: List<String>) {
                     contentDescription = null,
                     model = image,
                     contentScale = ContentScale.Crop,
+                    onLoading = { ImageLoadingIndicator() },
+                    onError = { ImageErrorIndicator() },
                 )
             }
         }

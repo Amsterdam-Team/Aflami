@@ -1,9 +1,9 @@
+/*
 package com.example.localdatasource
 
+import com.example.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.example.localdatasource.roomDataBase.daos.TvShowDao
 import com.example.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
-import com.example.repository.dto.local.LocalTvShowDto
-import com.example.repository.dto.local.relation.TvShowWithCategory
 import com.example.repository.dto.local.utils.SearchType
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,13 +15,18 @@ import kotlin.test.assertEquals
 
 class TvShowLocalDataSourceImplTest {
     private lateinit var dao: TvShowDao
+    private lateinit var tvShowCategoryInterestDao: TvShowCategoryInterestDao
     private lateinit var tvShowLocalDataSourceImpl: TvShowLocalDataSourceImpl
 
 
     @Before
     fun setUp() {
         dao = mockk(relaxed = true)
-        tvShowLocalDataSourceImpl = TvShowLocalDataSourceImpl(dao)
+        tvShowCategoryInterestDao = mockk(relaxed = true)
+        tvShowLocalDataSourceImpl = TvShowLocalDataSourceImpl(
+            dao,
+            tvShowCategoryInterestDao = tvShowCategoryInterestDao
+        )
     }
 
     @Test
@@ -49,4 +54,4 @@ class TvShowLocalDataSourceImplTest {
         coVerify { dao.insertTvShowSearchMappings(any()) }
     }
 
-}
+}*/

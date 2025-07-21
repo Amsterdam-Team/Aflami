@@ -14,13 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,40 +23,53 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.designsystem.R
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.TextField
-import com.example.ui.components.appBar.DefaultAppBar
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.application.LocalNavController
-import com.example.ui.components.MovieCard
 import com.example.ui.components.NoDataContainer
 import com.example.ui.components.NoNetworkContainer
-import com.example.ui.navigation.Route.MovieDetails
-import com.example.viewmodel.search.actorSearch.ActorSearchEffect
-import com.example.viewmodel.search.actorSearch.SearchByActorInteractionListener
+import com.example.ui.navigation.Route
+import com.example.viewmodel.search.actorSearch.SearchActorEffect
+import com.example.viewmodel.search.actorSearch.SearchActorInteractionListener
+import com.example.ui.R
+import com.example.ui.components.MovieCard
+import com.example.ui.components.appBar.DefaultAppBar
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState
-import com.example.viewmodel.search.actorSearch.ActorSearchViewModel
+import com.example.viewmodel.search.actorSearch.SearchActorViewModel
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
+import kotlinx.coroutines.flow.emptyFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-    viewModel: ActorSearchViewModel = koinViewModel(),
+    viewModel: SearchActorViewModel = koinViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
+    val moviesFlow = uiState.value.movies.collectAsLazyPagingItems()
     val navController = LocalNavController.current
-    var isNoInternetConnection by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             effect?.let {
-                when (effect) {
-                    ActorSearchEffect.NavigateBack ->  navController.popBackStack()
-                    ActorSearchEffect.NoInternetConnection -> isNoInternetConnection = true
-                    is ActorSearchEffect.NavigateToMovieDetails -> navController.navigate(MovieDetails(effect.movieId))
+                when (it) {
 
+                    SearchActorEffect.NavigateBack -> {
+                        navController.popBackStack()
+                    }
+
+                    is SearchActorEffect.NavigateToDetailsScreen -> {
+                        navController.safeNavigate(Route.MovieDetails(it.movieId))
+                    }
                 }
             }
         }
@@ -69,85 +77,90 @@ fun SearchByActorScreen(
     SearchByActorContent(
         modifier = modifier,
         state = uiState.value,
+        moviesFlow = moviesFlow,
         interactionListener = viewModel,
-        isNoInternetConnection = isNoInternetConnection,
-        onRetryQuestClicked = {
-            isNoInternetConnection = false
-            viewModel.onRetryQuestClicked()
-        }
     )
 }
 
 @Composable
 private fun SearchByActorContent(
-    modifier: Modifier = Modifier,
     state: ActorSearchUiState,
-    interactionListener: SearchByActorInteractionListener,
-    isNoInternetConnection: Boolean,
-    onRetryQuestClicked: () -> Unit,
+    interactionListener: SearchActorInteractionListener,
+    moviesFlow: LazyPagingItems<MovieItemUiState>,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding()
+        modifier =
+            modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
     ) {
         DefaultAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
-            title = stringResource(R.string.find_by_actor),
+            title = stringResource(com.example.designsystem.R.string.find_by_actor),
             showNavigateBackButton = true,
-            onNavigateBackClicked = { interactionListener.onNavigateBackClicked() }
+            onNavigateBackClicked = interactionListener::onClickNavigateBack
         )
         TextField(
             text = state.keyword,
-            hintText = stringResource(R.string.find_by_actor),
-            onValueChange = { interactionListener.onUserSearch(it) },
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .padding(horizontal = 16.dp),
+            hintText = stringResource(com.example.designsystem.R.string.find_by_actor),
+            onValueChange = { interactionListener.onUserSearchChange(it) },
+            modifier =
+                Modifier
+                    .padding(top = 8.dp)
+                    .padding(horizontal = 16.dp),
         )
 
         AnimatedContent(
             targetState = state,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
-                        fadeOut(animationSpec = tween(300))
+                    fadeOut(animationSpec = tween(300))
             },
-            label = "Content Animation"
+            label = "Content Animation",
         ) { targetState ->
             when {
                 targetState.isLoading ->
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         LoadingContainer(modifier = Modifier)
                     }
-                isNoInternetConnection -> {
-                    NoNetworkContainer(
-                        onClickRetry = onRetryQuestClicked,
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally)
-                    )
+
+                targetState.error != null -> {
+                    if (targetState.error == ActorSearchUiState.SearchByActorError.NetworkError) {
+                        NoNetworkContainer(
+                            onClickRetry = interactionListener::onClickRetrySearch,
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.CenterHorizontally),
+                        )
+                    }
                 }
 
                 targetState.keyword.isBlank() -> {
                     NoDataContainer(
-                        imageRes = painterResource(com.example.ui.R.drawable.img_suggestion_magician),
-                        title = stringResource(R.string.find_by_actor),
-                        description = stringResource(R.string.find_by_actor_description),
+                        imageRes = painterResource(R.drawable.img_suggestion_magician),
+                        title = stringResource(com.example.designsystem.R.string.find_by_actor),
+                        description = stringResource(com.example.designsystem.R.string.find_by_actor_description),
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
                             .padding(top = 144.dp)
                     )
                 }
+                moviesFlow.loadState.refresh is LoadState.Loading -> LoadingContainer()
 
-                targetState.movies.isEmpty() -> {
+                moviesFlow.itemSnapshotList.isEmpty() -> {
                     NoDataContainer(
-                        imageRes = painterResource(com.example.ui.R.drawable.placeholder_no_result_found),
+                        imageRes = painterResource(R.drawable.placeholder_no_result_found),
                         title = stringResource(R.string.no_search_result),
                         description = stringResource(R.string.no_search_result_description),
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 144.dp)
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(top = 144.dp),
                     )
                 }
 
@@ -156,26 +169,21 @@ private fun SearchByActorContent(
                         columns = GridCells.Adaptive(160.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        contentPadding = PaddingValues(
+                            vertical = 12.dp,
+                            horizontal = 16.dp
+                        ),
                     ) {
-                        items(targetState.movies) { movie ->
+                        items(moviesFlow.itemCount) { index ->
+                            val movie = moviesFlow[index] ?: return@items
                             MovieCard(
-                                movieImage = {
-                                    SafeImageView(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxSize(),
-                                        contentDescription = movie.name,
-                                        model = movie.posterImageUrl,
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                },
+                                movieImage = { MovieImage(movie.posterImageUrl) },
                                 movieType = stringResource(R.string.movie),
                                 movieYear = movie.yearOfRelease,
                                 movieTitle = movie.name,
                                 movieRating = movie.rate,
-                            ){
-                                interactionListener.onMovieClicked(movie.id)
+                            ) {
+                                interactionListener.onClickMovie(movie.id)
                             }
                         }
                     }
@@ -185,6 +193,17 @@ private fun SearchByActorContent(
     }
 }
 
+@Composable
+private fun MovieImage(imageUrl: String) {
+    SafeImageView(
+        model = imageUrl,
+        contentScale = ContentScale.FillBounds,
+        contentDescription = null,
+        modifier = Modifier.fillMaxSize(),
+        onLoading = { ImageLoadingIndicator() },
+        onError = { ImageErrorIndicator() },
+    )
+}
 
 @Composable
 @ThemeAndLocalePreviews
@@ -192,13 +211,20 @@ private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
             state = ActorSearchUiState(),
-            interactionListener = object : SearchByActorInteractionListener {
-                override fun onUserSearch(query: String) {}
-                override fun onNavigateBackClicked() {}
-                override fun onRetryQuestClicked() {}
-                override fun onMovieClicked(movieId: Long) {}
-            },
-            isNoInternetConnection = false,
-            onRetryQuestClicked = {})
+            moviesFlow = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
+            interactionListener = object : SearchActorInteractionListener {
+                override fun onUserSearchChange(query: String) {
+                }
+
+                override fun onClickNavigateBack() {
+                }
+
+                override fun onClickRetrySearch() {
+                }
+
+                override fun onClickMovie(movieId: Long) {
+                }
+            }
+        )
     }
 }

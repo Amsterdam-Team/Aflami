@@ -1,12 +1,11 @@
 package com.example.ui.application
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.designsystem.components.Scaffold
@@ -14,6 +13,8 @@ import com.example.designsystem.theme.AflamiTheme
 import com.example.ui.navigation.BottomNavigation
 import com.example.ui.navigation.NavGraph
 import com.example.ui.navigation.Route
+import com.example.ui.utils.safeNavigate
+import com.example.ui.utils.safeNavigateToTab
 
 @Composable
 fun AflamiApp(){
@@ -27,8 +28,7 @@ fun AflamiApp(){
                 bottomBar = {
                     BottomNavigation(
                         currentDestination = currentDestination,
-                        onNavigate = { navController.navigate(it) },
-
+                        onNavigate = { navController.safeNavigateToTab(it) },
                     )
                 }
             ) {

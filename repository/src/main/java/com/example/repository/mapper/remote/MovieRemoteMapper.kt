@@ -2,7 +2,6 @@ package com.example.repository.mapper.remote
 
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
-import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.mapper.shared.EntityMapper
 import com.example.repository.mapper.shared.toMovieCategory
@@ -17,7 +16,7 @@ class MovieRemoteMapper(
             id = dto.id,
             name = dto.title,
             description = dto.overview,
-            posterUrl = BuildConfig.BASE_IMAGE_URL + dto.posterPath.orEmpty(),
+            posterUrl = dto.fullPosterUrl.orEmpty(),
             productionYear = dateParser.parseYear(dto.releaseDate).toUInt(),
             categories = mapGenreIdsToCategories(genresIds),
             rating = dto.voteAverage.toFloat(),

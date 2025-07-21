@@ -40,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.designsystem.R
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
@@ -59,11 +61,11 @@ import com.example.ui.screens.movieDetails.components.GallerySection
 import com.example.ui.screens.movieDetails.components.MoreLikeSection
 import com.example.ui.screens.movieDetails.components.MovieExtrasSection
 import com.example.ui.screens.movieDetails.components.MovieInfoSection
-import com.example.ui.screens.movieDetails.components.NoMovieImageHolder
 import com.example.ui.screens.movieDetails.components.PageIndicator
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.movieDetails.MovieDetailsEffect
 import com.example.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.example.viewmodel.movieDetails.MovieDetailsUiState
@@ -83,15 +85,13 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = koinViewModel()) {
         interactionListener = viewModel,
     )
     LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest {
-            when (it) {
-                MovieDetailsEffect.NavigateBackEffect -> navController.popBackStack()
-                MovieDetailsEffect.NavigateToCastsScreenEffect ->
-                    navController.navigate(
-                        Route.Cast(state.value.movieId),
-                    )
-
-                null -> {}
+        viewModel.effect.collectLatest { effect ->
+            effect?.let {
+                when (effect) {
+                    MovieDetailsEffect.NavigateBackEffect -> navController.popBackStack()
+                    MovieDetailsEffect.NavigateToCastsScreenEffect ->
+                        navController.safeNavigate(Route.Cast(state.value.movieId),)
+                }
             }
         }
     }
@@ -112,7 +112,7 @@ fun MovieContent(
     LaunchedEffect(true) {
         while (true) {
             delay(4000)
-            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10 ))
+            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10))
         }
     }
     AnimatedVisibility(
@@ -168,7 +168,8 @@ fun MovieContent(
                                 Modifier
                                     .fillMaxSize()
                                     .animateContentSize(),
-                            onError = { NoMovieImageHolder() },
+                            onLoading = { ImageLoadingIndicator() },
+                            onError = { ImageErrorIndicator() },
                         )
 
                     }
@@ -177,7 +178,7 @@ fun MovieContent(
                         modifier = Modifier
                             .zIndex(1f)
                             .padding(4.dp)
-                            .background(AppTheme.color.primaryVariant,RoundedCornerShape(100.dp))
+                            .background(AppTheme.color.primaryVariant, RoundedCornerShape(100.dp))
                             .padding(vertical = 4.dp, horizontal = 2.dp)
                             .align(Alignment.BottomEnd),
                         numberOfPages = state.moviePostersUrl.size,
@@ -251,7 +252,7 @@ fun MovieContent(
                         )
                         CastSection(
                             modifier = Modifier.padding(top = 24.dp),
-                            actors = state.actors,
+                            actors = state.actors.take(10),
                             onClickAllCast = interactionListener::onClickShowAllCast,
                         )
                         Spacer(

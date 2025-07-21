@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.junit5)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -19,7 +20,8 @@ android {
         buildConfig = true
     }
     defaultConfig {
-        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
+        testInstrumentationRunnerArguments["runnerBuilder"] =
+            "de.mannodermaus.junit5.AndroidJUnit5Builder"
 
         buildConfigField(
             "String",
@@ -37,6 +39,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.jupiter.junit.jupiter)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     // Date and Time
@@ -51,9 +54,9 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
     //truth
-    testImplementation (libs.truth)
+    testImplementation(libs.truth)
     //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
 }

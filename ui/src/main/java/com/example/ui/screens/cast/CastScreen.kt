@@ -30,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
@@ -150,6 +152,8 @@ private fun ActorCard(
             contentDescription = actorName,
             model = actorImage,
             contentScale = ContentScale.Crop,
+            onLoading = { ImageLoadingIndicator() },
+            onError = { ImageErrorIndicator() },
         )
 
         Text(

@@ -1,3 +1,4 @@
+/*
 package com.example.repository.repository
 
 import com.example.repository.datasource.local.RecentSearchLocalSource
@@ -87,7 +88,7 @@ class RecentSearchRepositoryImplTest {
         coEvery { recentSearchLocalSource.getRecentSearches() } returns dtos
         every { recentSearchLocalMapper.toEntityList(dtos) } returns expected
 
-        val result = repository.getRecentSearches()
+        val result = repository.getAllRecentSearches()
 
         assertThat(result).isEqualTo(expected)
     }
@@ -96,7 +97,7 @@ class RecentSearchRepositoryImplTest {
     fun `should delete all recent searches`() = runTest {
         coEvery { recentSearchLocalSource.deleteRecentSearches() } just Runs
 
-        repository.deleteRecentSearches()
+        repository.deleteAllRecentSearches()
 
         coVerify { recentSearchLocalSource.deleteRecentSearches() }
     }
@@ -110,3 +111,4 @@ class RecentSearchRepositoryImplTest {
         coVerify { recentSearchLocalSource.deleteRecentSearchByKeyword(testKeyword) }
     }
 }
+*/

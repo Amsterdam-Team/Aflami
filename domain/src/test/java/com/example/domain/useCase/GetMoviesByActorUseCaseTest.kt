@@ -27,12 +27,18 @@ class GetMoviesByActorUseCaseTest {
     @Test
     fun `getMoviesByActorUseCase should call getMoviesByActor exactly one time when called`() = runTest {
             getMoviesByActorUseCase("actorName")
-            coVerify(exactly = 1) { movieRepository.getMoviesByActor(any()) }
+            coVerify(exactly = 1) { movieRepository.getMoviesByActor(
+                any(),
+                page = 1
+            ) }
         }
 
     @Test
     fun `getMoviesByActorUseCase should return movies when data is available`() = runTest {
-        coEvery { movieRepository.getMoviesByActor("actorName") } returns fakeMovieList
+        coEvery { movieRepository.getMoviesByActor(
+            "actorName",
+            page = 1
+        ) } returns fakeMovieList
 
         val result = getMoviesByActorUseCase("actorName")
         assertThat(result).isEqualTo(fakeMovieList)
@@ -40,7 +46,10 @@ class GetMoviesByActorUseCaseTest {
 
     @Test
     fun `getMoviesByActorUseCase should return an empty list when repository returns no movies`() = runTest {
-        coEvery { movieRepository.getMoviesByActor(any()) } returns emptyList()
+        coEvery { movieRepository.getMoviesByActor(
+            any(),
+            page = 1
+        ) } returns emptyList()
 
         val result = getMoviesByActorUseCase("nonexistentActor")
         assertThat(result).isEmpty()
@@ -48,7 +57,10 @@ class GetMoviesByActorUseCaseTest {
 
     @Test
     fun `getMoviesByActorUseCase should return Aflami exception when an error happened`() = runTest {
-        coEvery { movieRepository.getMoviesByActor("actorName") } throws AflamiException()
+        coEvery { movieRepository.getMoviesByActor(
+            "actorName",
+            page = 1
+        ) } throws AflamiException()
         assertThrows<AflamiException> { getMoviesByActorUseCase("actorName") }
     }
 }

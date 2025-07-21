@@ -25,6 +25,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.designsystem.R
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.theme.AflamiTheme
@@ -39,12 +43,15 @@ import com.example.ui.screens.search.countrySearch.components.CountrySearchField
 import com.example.ui.screens.search.countrySearch.components.ExploreCountries
 import com.example.ui.screens.search.countrySearch.components.MoviesVerticalGrid
 import com.example.ui.screens.search.countrySearch.components.NoMoviesFound
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.CountrySearchEffect
 import com.example.viewmodel.search.countrySearch.CountrySearchErrorState
 import com.example.viewmodel.search.countrySearch.CountrySearchInteractionListener
 import com.example.viewmodel.search.countrySearch.CountrySearchUiState
 import com.example.viewmodel.search.countrySearch.CountrySearchViewModel
+import com.example.viewmodel.shared.uiStates.MovieItemUiState
+import kotlinx.coroutines.flow.emptyFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -53,6 +60,7 @@ internal fun SearchByCountryScreen(
 ) {
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val movies = state.movies.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -62,7 +70,7 @@ internal fun SearchByCountryScreen(
                         navController.popBackStack()
                     }
 
-                    CountrySearchEffect.NavigateToMovieDetails -> navController.navigate(
+                    CountrySearchEffect.NavigateToMovieDetails -> navController.safeNavigate(
                         MovieDetails(state.selectedMovieId)
                     )
                 }
@@ -72,6 +80,7 @@ internal fun SearchByCountryScreen(
 
     SearchByCountryContent(
         state = state,
+        movies = movies,
         interactionListener = viewModel,
     )
 }
@@ -79,6 +88,7 @@ internal fun SearchByCountryScreen(
 @Composable
 private fun SearchByCountryContent(
     state: CountrySearchUiState,
+    movies: LazyPagingItems<MovieItemUiState>,
     interactionListener: CountrySearchInteractionListener,
 ) {
     val focusManager = LocalFocusManager.current
@@ -103,13 +113,13 @@ private fun SearchByCountryContent(
         )
 
         AnimatedVisibility(
-            visible = state.isCountriesDropDownVisible,
+            visible = state.suggestedCountries.isNotEmpty(),
             enter = slideInVertically() + expandIn(),
             exit = slideOutVertically() + shrinkOut()
         ) {
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(4),
-                isVisible = true,
+                isVisible =  state.suggestedCountries.isNotEmpty(),
                 onItemClicked = interactionListener::onSelectCountry,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,11 +130,11 @@ private fun SearchByCountryContent(
         AnimatedContent(
             modifier = Modifier.fillMaxSize().weight(1f),
             targetState = state,
-            transitionSpec = { fadeIn(tween(1700)) togetherWith fadeOut(tween(1700)) }) { uiState ->
+            transitionSpec = { fadeIn() togetherWith fadeOut() }) { uiState ->
             when {
                 uiState.isLoading -> LoadingContainer()
                 uiState.keyword.isEmpty() -> ExploreCountries()
-                uiState.movies.isEmpty() && !uiState.isLoading -> NoMoviesFound()
+                movies.itemCount == 0 && uiState.suggestedCountries.isEmpty() -> NoMoviesFound()
                 uiState.errorUiState is CountrySearchErrorState.NoNetworkConnection -> {
                     NoNetworkContainer(
                         onClickRetry = interactionListener::onClickRetry,
@@ -132,7 +142,12 @@ private fun SearchByCountryContent(
                     )
                 }
 
-                else -> MoviesVerticalGrid(movies = uiState.movies, isVisible = true, onMovieClicked = interactionListener::onClickMovieCard)
+                else ->
+                    MoviesVerticalGrid(
+                        movies = movies,
+                        isVisible = true,
+                        onMovieClicked = interactionListener::onClickMovieCard,
+                )
 
             }
         }
@@ -145,6 +160,7 @@ private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryContent(
             state = CountrySearchUiState(),
+            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
             interactionListener = object : CountrySearchInteractionListener {
                 override fun onChangeSearchKeyword(keyword: String) {}
                 override fun onSelectCountry(country: CountryItemUiState) {}

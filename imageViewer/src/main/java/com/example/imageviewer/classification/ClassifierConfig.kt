@@ -3,7 +3,6 @@ package com.example.imageviewer.classification
 import com.example.imageviewer.classification.model.SafetyRule
 
 internal object SFWClassifierConfig {
-    const val NSFW_MODEL_PATH = "sfw.tflite"
     val NSFW_SAFETY_RULES = listOf(
         SafetyRule(labelName = "porn", labelIndex = 2, threshold = 0.01f),
         SafetyRule(labelName = "sexy", labelIndex = 3, threshold = 0.01f)

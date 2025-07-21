@@ -11,12 +11,18 @@ class GetAndFilterMoviesByKeywordUseCase(
 
     suspend operator fun invoke(
         keyword: String,
+        page: Int = 1,
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
-       return movieRepository
-           .getMoviesByKeyword(keyword = keyword)
-           .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
+        val userInterest = movieRepository.getAllGenreInterests()
+
+        return movieRepository
+            .getMoviesByKeyword(keyword = keyword, page = page)
+            .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
+            .sortedByDescending { movie ->
+                movie.categories.maxOfOrNull { userInterest[it] ?: 0 }
+            }
     }
 
 

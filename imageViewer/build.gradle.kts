@@ -11,14 +11,17 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui.tooling.preview.android)
+
     // Coil for image loading
     implementation(libs.coil.compose)
 
     // TensorFlow Lite for on-device ML
     implementation(files("libs/tensorflow-lite.aar"))
     implementation(files("libs/tensorflowlite_support_java.aar"))
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ml.modeldownloader)
+
+    implementation(libs.androidx.startup.runtime)
 }

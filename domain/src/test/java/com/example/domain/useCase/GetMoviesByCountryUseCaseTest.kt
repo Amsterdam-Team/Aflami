@@ -28,29 +28,53 @@ class GetMoviesByCountryUseCaseTest {
 
     @Test
     fun `getMoviesByCountryUseCase should call getMoviesByCountry exactly one time when called`() = runTest {
-        getMoviesByCountryUseCase(country)
-        coVerify(exactly = 1) { movieRepository.getMoviesByCountry(any()) }
+        getMoviesByCountryUseCase(
+            country,
+            page = 1
+        )
+        coVerify(exactly = 1) { movieRepository.getMoviesByCountry(
+            any(),
+            page = 1
+        ) }
     }
 
     @Test
     fun `getMoviesByCountryUseCase should return movies when data is available`() = runTest {
-        coEvery { movieRepository.getMoviesByCountry(country) } returns fakeMovieList
+        coEvery { movieRepository.getMoviesByCountry(
+            country,
+            page = 1
+        ) } returns fakeMovieList
 
-        val result = getMoviesByCountryUseCase(country)
+        val result = getMoviesByCountryUseCase(
+            country,
+            page = 1
+        )
         assertThat(result).isEqualTo(fakeMovieList)
     }
 
     @Test
     fun `getMoviesByCountryUseCase should return an empty list when repository returns no movies`() = runTest {
-        coEvery { movieRepository.getMoviesByCountry(any()) } returns emptyList()
+        coEvery { movieRepository.getMoviesByCountry(
+            any(),
+            page = 1
+        ) } returns emptyList()
 
-        val result = getMoviesByCountryUseCase(country)
+        val result = getMoviesByCountryUseCase(
+            country,
+            page = 1
+        )
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `getMoviesByCountryUseCase should return Aflami exception when an error happened`() = runTest {
-        coEvery { movieRepository.getMoviesByCountry(country) } throws AflamiException()
-        assertThrows<AflamiException> { getMoviesByCountryUseCase(country) }
+        coEvery { movieRepository.getMoviesByCountry(
+            country,
+            page = 1
+        ) } throws AflamiException()
+        assertThrows<AflamiException> { getMoviesByCountryUseCase(
+            country,
+            page = 1
+        ) }
     }
 }

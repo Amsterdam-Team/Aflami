@@ -3,6 +3,7 @@ package com.example.ui.screens.movieDetails.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,11 +42,8 @@ fun CastSection(
             )
         }
         LazyRow(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            userScrollEnabled = false
         ) {
             items(actors) {
                 ActorCard(actor = it)

@@ -19,6 +19,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
 import com.example.imageviewer.ui.SafeImageView
@@ -41,6 +43,8 @@ fun CompanyCard(productionCompany: ProductionCompanyUiState, modifier: Modifier 
             contentDescription = productionCompany.name,
             model = productionCompany.image,
             contentScale = ContentScale.FillBounds,
+            onLoading = { ImageLoadingIndicator() },
+            onError = { ImageErrorIndicator() },
         )
         Column(
             modifier = Modifier

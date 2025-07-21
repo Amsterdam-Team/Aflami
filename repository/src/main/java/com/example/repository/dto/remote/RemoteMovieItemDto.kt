@@ -1,5 +1,6 @@
 package com.example.repository.dto.remote
 
+import com.example.repository.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,4 +23,10 @@ data class RemoteMovieItemDto(
     @SerialName("origin_country") val originCountry: List<String> = emptyList(),
     @SerialName("runtime") val runtime: Int = 0,
     @SerialName("genres") val genres: List<GenreDto> = emptyList()
-)
+){
+    val fullPosterUrl: String?
+        get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+
+    val fullBackdropUrl: String?
+        get() = backdropPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+}

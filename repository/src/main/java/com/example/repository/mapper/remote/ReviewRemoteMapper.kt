@@ -1,7 +1,6 @@
 package com.example.repository.mapper.remote
 
 import com.example.entity.Review
-import com.example.repository.BuildConfig
 import com.example.repository.dto.remote.review.ReviewDto
 import com.example.repository.mapper.shared.EntityMapper
 import kotlinx.datetime.TimeZone
@@ -16,7 +15,7 @@ class ReviewRemoteMapper : EntityMapper<ReviewDto, Review> {
             rating = dto.authorDetails.rating ?: 0f,
             content = dto.content,
             date = dto.createdAt.toLocalDateTime(TimeZone.UTC).date,
-            imageUrl = BuildConfig.BASE_IMAGE_URL + dto.authorDetails.avatarPath
+            imageUrl = dto.authorDetails.fullAvatarPath.orEmpty()
         )
     }
 }

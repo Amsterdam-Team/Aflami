@@ -9,7 +9,10 @@ import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 
 interface TvShowsRemoteSource {
-    suspend fun getTvShowsByKeyword(keyword: String): RemoteTvShowResponse
+    suspend fun getTvShowsByKeyword(
+        keyword: String,
+        page: Int,
+    ): RemoteTvShowResponse
 
     suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse
 
@@ -25,4 +28,3 @@ interface TvShowsRemoteSource {
 
     suspend fun getEpisodesBySeasonNumber(tvShowId: Long, seasonNumber: Int): EpisodeResponse
 }
-

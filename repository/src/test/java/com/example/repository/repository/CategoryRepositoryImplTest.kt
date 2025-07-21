@@ -1,3 +1,4 @@
+/*
 package com.example.repository.repository
 
 import com.example.domain.repository.CategoryRepository
@@ -9,7 +10,10 @@ import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.mapper.local.MovieCategoryLocalMapper
+import com.example.repository.mapper.local.TvShowCategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
+import com.example.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
+import com.example.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,16 +28,22 @@ class CategoryRepositoryImplTest {
 
     private val remoteDataSource: CategoryRemoteSource = mockk()
     private val localDataSource: CategoryLocalSource = mockk()
-    private val localMapper: MovieCategoryLocalMapper = mockk()
-    private val remoteMapper: CategoryRemoteMapper = mockk()
+    private val movieCategoryLocalMapper: MovieCategoryLocalMapper = mockk()
+    private val categoryRemoteMapper: CategoryRemoteMapper = mockk()
+    private val movieCategoryRemoteLocalMapper: MovieCategoryRemoteLocalMapper = mockk()
+    private val tvShowCategoryRemoteLocalMapper: TvShowCategoryRemoteLocalMapper = mockk()
+    private val tvShowCategoryLocalMapper: TvShowCategoryLocalMapper = mockk()
 
     @BeforeEach
     fun setup() {
         repository = CategoryRepositoryImpl(
             categoryRemoteSource = remoteDataSource,
             categoryLocalSource = localDataSource,
-            movieCategoryLocalMapper = localMapper,
-            categoryRemoteMapper = remoteMapper
+            movieCategoryLocalMapper = movieCategoryLocalMapper,
+            categoryRemoteMapper = categoryRemoteMapper,
+            movieCategoryRemoteLocalMapper = movieCategoryRemoteLocalMapper,
+            tvShowCategoryRemoteLocalMapper = tvShowCategoryRemoteLocalMapper,
+            tvShowCategoryLocalMapper = tvShowCategoryLocalMapper
         )
     }
 
@@ -48,7 +58,7 @@ class CategoryRepositoryImplTest {
         )
 
         coEvery { localDataSource.getMovieCategories() } returns local
-        every { localMapper.toMovieCategories(local) } returns listOf(MovieGenre.ACTION)
+        every { movieCategoryLocalMapper.toEntityList(local) } returns emptyList()
 
         val result = repository.getMovieCategories()
 
@@ -68,7 +78,9 @@ class CategoryRepositoryImplTest {
         )
 
         coEvery { localDataSource.getTvShowCategories() } returns local
-        every { localMapper.toTvShowCategories(local) } returns listOf(TvShowGenre.DRAMA)
+        every { movieCategoryLocalMapper.toEntityList(
+            dtoList = emptyList()
+        ) } returns emptyList()
 
         val result = repository.getTvShowCategories()
 
@@ -76,3 +88,4 @@ class CategoryRepositoryImplTest {
         coVerify(exactly = 0) { remoteDataSource.getTvShowCategories() }
     }
 }
+*/

@@ -1,19 +1,18 @@
 [versions]
-agp = "8.10.1"
+agp = "8.11.1"
 coilCompose = "2.6.0"
 firebaseBom = "33.16.0"
 foundation = "1.8.3"
 kotlin = "2.0.21"
-kotlinSerialization = "2.0.21"
 coreKtx = "1.16.0"
 ktorSerializationKotlinxJson = "3.0.3"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2024.09.00"
 appcompat = "1.7.1"
-jetbrainsKotlinJvm = "2.0.21"
 koin = "4.0.3"
 navigationCompose = "2.9.0"
+pagingRuntime = "3.3.6"
 roomRuntime = "2.7.1"
 ktorClientCio = "3.1.2"
 ktorClientCore = "3.1.2"
@@ -37,14 +36,20 @@ espressoCore = "3.6.1"
 ktorClientContentNegotiation = "3.0.3"
 ktorVersion = "3.0.3"
 navigationCommonAndroid = "2.9.1"
+startupRuntime = "1.2.0"
+koverVersion = "0.9.1"
+junitJupiter = "5.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingRuntime" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-ml-modeldownloader = { module = "com.google.firebase:firebase-ml-modeldownloader" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -74,6 +79,7 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 androidx-navigation-common-android = { group = "androidx.navigation", name = "navigation-common-android", version.ref = "navigationCommonAndroid" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterApi" }
@@ -90,14 +96,15 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorVersion" }
+jupiter-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 google-service = { id = "com.google.gms.google-services", version.ref = "googleService" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-pref = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreferences" }
@@ -105,3 +112,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 aflami-custom-plugin = { id = "com.thechance.plugin" }
 android-junit5 = { id = "de.mannodermaus.android-junit5" }
 android-java-library = { id = "java-library" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }
