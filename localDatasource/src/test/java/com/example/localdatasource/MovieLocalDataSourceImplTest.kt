@@ -1,9 +1,8 @@
 package com.example.localdatasource
 
+import com.example.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.example.localdatasource.roomDataBase.daos.MovieDao
 import com.example.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
-import com.example.repository.dto.local.LocalMovieCategoryDto
-import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
@@ -12,20 +11,24 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MovieLocalDataSourceImplTest {
     private lateinit var dao: MovieDao
+    private lateinit var interestDao: MovieCategoryInterestDao
     private lateinit var movieLocalDataSourceImpl: MovieLocalDataSourceImpl
 
 
     @Before
     fun setUp() {
         dao = mockk(relaxed = true)
-        movieLocalDataSourceImpl = MovieLocalDataSourceImpl(dao)
+        interestDao = mockk(relaxed = true)
+        movieLocalDataSourceImpl = MovieLocalDataSourceImpl(
+            dao,
+            interestDao = interestDao
+        )
     }
 
     @Test

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 class TvShowRemoteToLocalMapperTest {
 
-    private val mapper = TvShowLocalMapper(MovieCategoryLocalMapper())
+    private val mapper = TvShowLocalMapper()
 
     @Test
     fun `should return TvShow with all fields and categories when mapping from LocalTvShowDto`() {
@@ -25,7 +25,7 @@ class TvShowRemoteToLocalMapperTest {
         )
         val categories = listOf(LocalTvShowCategoryDto(1L, "Drama"))
 
-        val result = mapper.toTvShow(TvShowWithCategory(dto, categories))
+        val result = mapper.toEntity(dto)
 
         assertThat(result.id).isEqualTo(1L)
         assertThat(result.name).isEqualTo("Breaking Bad")
@@ -48,7 +48,7 @@ class TvShowRemoteToLocalMapperTest {
             popularity = 0.0
         )
 
-        val result = mapper.toTvShow(TvShowWithCategory(dto, emptyList()))
+        val result = mapper.toEntity(dto)
 
         assertThat(result.categories).isEmpty()
     }
@@ -60,13 +60,13 @@ class TvShowRemoteToLocalMapperTest {
             name = "Stranger Things",
             description = "Mystery in Hawkins",
             posterUrl = "st.jpg",
-            productionYear = 2016,
+            productionYear = (2016).toUInt(),
             rating = 8.7f,
             popularity = 0.0,
             categories = listOf(TvShowGenre.SCIENCE_FICTION_FANTASY)
         )
 
-        val result = mapper.toLocalTvShow(domain)
+        val result = mapper.toDto(domain)
 
         assertThat(result.tvShowId).isEqualTo(3L)
         assertThat(result.name).isEqualTo("Stranger Things")
@@ -87,7 +87,7 @@ class TvShowRemoteToLocalMapperTest {
             listOf(LocalTvShowCategoryDto(2L, "Comedy"))
         )
         val tvShowsWithCategory = dtos.mapIndexed { index, localTvShowDto -> TvShowWithCategory(localTvShowDto, categories[index]) }
-        val result = mapper.toTvShows(tvShowsWithCategory)
+        val result = mapper.toEntityList(dtos)
 
         assertThat(result).hasSize(2)
     }
@@ -98,7 +98,7 @@ class TvShowRemoteToLocalMapperTest {
             LocalTvShowDto(1L, "BB", "Desc1", "bb.jpg", 2008, 9.5f, 0.0)
         )
         val tvShowsWithCategory = dtos.map { TvShowWithCategory(it, emptyList()) }
-        val result = mapper.toTvShows(tvShowsWithCategory)
+        val result = mapper.toEntityList(dtos)
 
         assertThat(result).hasSize(1)
         assertThat(result[0].categories).isEmpty()
@@ -107,11 +107,11 @@ class TvShowRemoteToLocalMapperTest {
     @Test
     fun `should return list of LocalTvShowDto when mapping from list of TvShow`() {
         val domains = listOf(
-            TvShow(1L, "BB", "Desc1", "bb.jpg", 2008, emptyList(), 9.5f, 0.0),
-            TvShow(2L, "Friends", "Desc2", "friends.jpg", 1994, emptyList(), 8.9f, 0.0)
+            TvShow(1L, "BB", "Desc1", "bb.jpg", (2008).toUInt(), emptyList(), 9.5f, 0.0),
+            TvShow(2L, "Friends", "Desc2", "friends.jpg", (1994).toUInt(), emptyList(), 8.9f, 0.0)
         )
 
-        val result = mapper.toLocalTvShows(domains)
+        val result = mapper.toDtoList(domains)
 
         assertThat(result).hasSize(2)
         assertThat(result[0].name).isEqualTo("BB")
@@ -120,14 +120,14 @@ class TvShowRemoteToLocalMapperTest {
 
     @Test
     fun `should return empty TvShow list when mapping empty LocalTvShowDto list`() {
-        val result = mapper.toTvShows(emptyList())
+        val result = mapper.toEntityList(emptyList())
 
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `should return empty LocalTvShowDto list when mapping empty TvShow list`() {
-        val result = mapper.toLocalTvShows(emptyList())
+        val result = mapper.toDtoList(emptyList())
 
         assertThat(result).isEmpty()
     }

@@ -15,7 +15,7 @@ class CategoryRemoteToLocalMapperTest {
     fun `should return LocalCategoryDto with same id and name when mapping from Category`() {
         val category = Category(id = 2, name = "Drama", imageUrl = "someImage.png")
 
-        val result = mapper.mapToLocalMovieCategory(category)
+        val result = mapper.toDto(category)
 
         assertThat(result.categoryId).isEqualTo(2)
         assertThat(result.name).isEqualTo("Drama")
@@ -28,7 +28,7 @@ class CategoryRemoteToLocalMapperTest {
             LocalMovieCategoryDto(categoryId = 35, name = "Comedy")
         )
 
-        val result = mapper.toMovieCategories(dtos)
+        val result = mapper.toEntityList(dtos)
 
         assertThat(result).hasSize(2)
         assertThat(result).containsExactly(
@@ -44,7 +44,7 @@ class CategoryRemoteToLocalMapperTest {
             Category(id = 2, name = "Comedy", imageUrl = "")
         )
 
-        val result = mapper.mapToLocalMovieCategories(domains)
+        val result = mapper.toDtoList(domains)
 
         assertThat(result).hasSize(2)
         assertThat(result.map { it.name }).containsExactly("Action", "Comedy")

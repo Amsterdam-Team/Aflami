@@ -1,7 +1,7 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.client.KtorClient
-import com.example.remotedatasource.utils.apiHandler.safeCall
+import com.example.remotedatasource.client.NetworkClient
+import com.example.remotedatasource.utils.apiHandler.responseCall
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
@@ -11,50 +11,42 @@ import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.request.parameter
-import io.ktor.client.statement.bodyAsText
-import kotlinx.serialization.json.Json
 
-class MovieRemoteSourceImpl(
-    private val ktorClient: KtorClient,
-    private val json: Json
+class MovieRemoteDataSourceImpl(
+    private val networkClient: NetworkClient
 ) : MovieRemoteSource {
-    override suspend fun getMoviesByKeyword(
-        keyword: String,
-        page: Int,
-    ): RemoteMovieResponse =
-        safeCall {
-            ktorClient.get(SEARCH_MOVIE_URL) {
+
+    override suspend fun getMoviesByKeyword(keyword: String, page: Int): RemoteMovieResponse {
+        return responseCall {
+            networkClient.get(SEARCH_MOVIE_URL) {
                 parameter(QUERY_KEY, keyword)
                 parameter(PAGE, page)
             }
         }
+    }
 
     override suspend fun getMoviesByActorName(name: String, page: Int): RemoteMovieResponse {
         val actorsByName = getActorIdByName(name, page)
             .actors
             .joinToString(separator = "|") { it.id.toString() }
 
-        return safeCall {
-            ktorClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
+        return responseCall {
+            networkClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
         }
     }
 
-    private suspend fun getActorIdByName(
-        name: String,
-        page: Int,
-    ): RemoteActorSearchResponse =
-        safeCall {
-            ktorClient.get(GET_ACTOR_NAME_BY_ID_URL) {
+    private suspend fun getActorIdByName(name: String, page: Int): RemoteActorSearchResponse {
+        return responseCall {
+            networkClient.get(GET_ACTOR_NAME_BY_ID_URL) {
                 parameter(QUERY_KEY, name)
                 parameter(PAGE, page)
             }
         }
+    }
 
-    override suspend fun getMoviesByCountryIsoCode(
-        countryIsoCode: String,
-        page: Int): RemoteMovieResponse {
-        return safeCall{
-            ktorClient.get(DISCOVER_MOVIE) {
+    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String, page: Int): RemoteMovieResponse {
+        return responseCall {
+            networkClient.get(DISCOVER_MOVIE) {
                 parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
                 parameter(PAGE, page)
             }
@@ -62,55 +54,55 @@ class MovieRemoteSourceImpl(
     }
 
     override suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse {
-        return safeCall {
-            val response = ktorClient.get(buildMovieCreditsEndpoint(movieId))
-            return json.decodeFromString<RemoteCastAndCrewResponse>(response.bodyAsText())
+        return responseCall {
+            networkClient.get(buildMovieCreditsEndpoint(movieId))
         }
     }
 
     private fun buildMovieCreditsEndpoint(movieId: Long) = "movie/$movieId/credits"
 
     override suspend fun getMovieReviews(movieId: Long): ReviewsResponse {
-        return safeCall<ReviewsResponse> {
-            val response = ktorClient.get("movie/$movieId/reviews")
-            return json.decodeFromString<ReviewsResponse>(response.bodyAsText())
+        return responseCall {
+            networkClient.get("movie/$movieId/reviews")
         }
     }
 
     override suspend fun getSimilarMovies(movieId: Long): RemoteMovieResponse {
-        return safeCall<RemoteMovieResponse> {
-            val response = ktorClient.get("movie/$movieId/similar")
-            return json.decodeFromString<RemoteMovieResponse>(response.bodyAsText())
+        return responseCall {
+            networkClient.get("movie/$movieId/similar")
         }
     }
 
     override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
-        return safeCall<RemoteMovieGalleryResponse> {
-            val response = ktorClient.get("movie/$movieId/images")
-            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+        return responseCall {
+            networkClient.get("movie/$movieId/images")
         }
     }
 
     override suspend fun getProductionCompany(movieId: Long): ProductionCompanyResponse {
-        return safeCall<ProductionCompanyResponse> {
-            val response = ktorClient.get("movie/$movieId")
-            return json.decodeFromString<ProductionCompanyResponse>(response.bodyAsText())
+        return responseCall {
+            networkClient.get("movie/$movieId")
         }
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto {
-        return safeCall<RemoteMovieItemDto> {
-            val response = ktorClient.get("movie/$movieId")
-            return json.decodeFromString<RemoteMovieItemDto>(response.bodyAsText())
+        return responseCall {
+            networkClient.get("movie/$movieId")
         }
     }
 
     override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
-        return safeCall<RemoteMovieGalleryResponse> {
-            val response = ktorClient.get("movie/$movieId/images")
-            return json.decodeFromString<RemoteMovieGalleryResponse>(response.bodyAsText())
+        return responseCall<RemoteMovieGalleryResponse> {
+            networkClient.get("movie/$movieId/images")
         }
     }
+
+    override suspend fun getPopularMovies(): RemoteMovieResponse {
+        return responseCall<RemoteMovieResponse> {
+            networkClient.get("movie/popular")
+        }
+    }
+
 
     private companion object {
         const val SEARCH_MOVIE_URL = "search/movie"

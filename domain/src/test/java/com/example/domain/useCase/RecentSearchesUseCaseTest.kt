@@ -70,7 +70,7 @@ class RecentSearchesUseCaseTest {
     @Test
     fun `recentSearchesUsaCase should call deleteAllRecentSearches one time when called`() = runTest {
         recentSearchesUseCase.deleteRecentSearches()
-        coVerify(exactly = 1) { recentSearchRepository.deleteRecentSearches() }
+        coVerify(exactly = 1) { recentSearchRepository.deleteAllRecentSearches() }
     }
 
     @Test
@@ -82,26 +82,26 @@ class RecentSearchesUseCaseTest {
     @Test
     fun `recentSearchesUsaCase should call getAllRecentSearches one time when called`() = runTest {
         recentSearchesUseCase.getRecentSearches()
-        coVerify(exactly = 1) { recentSearchRepository.getRecentSearches() }
+        coVerify(exactly = 1) { recentSearchRepository.getAllRecentSearches() }
     }
 
     @Test
     fun `recentSearchesUsaCase should return Recent search when data returned`() = runTest {
-        coEvery { recentSearchRepository.getRecentSearches() } returns listOf("Spider")
+        coEvery { recentSearchRepository.getAllRecentSearches() } returns listOf("Spider")
         val result = recentSearchesUseCase.getRecentSearches()
         assertThat(result).isEqualTo(listOf("Spider"))
     }
 
     @Test
     fun `recentSearchesUsaCase should return empty list when no data`() = runTest {
-        coEvery { recentSearchRepository.getRecentSearches() } returns emptyList()
+        coEvery { recentSearchRepository.getAllRecentSearches() } returns emptyList()
         val result = recentSearchesUseCase.getRecentSearches()
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `recentSearchesUsaCase should throw Aflami exception when error happened`() = runTest {
-        coEvery { recentSearchRepository.getRecentSearches() } throws AflamiException()
+        coEvery { recentSearchRepository.getAllRecentSearches() } throws AflamiException()
         assertThrows<AflamiException> { recentSearchesUseCase.getRecentSearches() }
     }
 
