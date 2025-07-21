@@ -1,11 +1,8 @@
 package com.example.remotedatasource
 
-import com.example.remotedatasource.client.NetworkClient
+import com.example.remotedatasource.api.CategoryApiService
 import com.example.remotedatasource.datasource.CategoryRemoteDataSourceImpl
 import com.example.repository.dto.remote.RemoteCategoryResponse
-import io.ktor.client.call.body
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -16,15 +13,15 @@ import org.junit.Test
 
 class CategoryRemoteDataSourceImplTest {
 
-    private lateinit var networkClient: NetworkClient
+    private lateinit var categoryApiService: CategoryApiService
     private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
     @Before
     fun setUp() {
-        networkClient = mockk()
-        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(networkClient)
+        categoryApiService = mockk()
+        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryApiService)
     }
 
     @Test
@@ -42,14 +39,9 @@ class CategoryRemoteDataSourceImplTest {
         val expectedCategoryResponse =
             jsonSerializer.decodeFromString<RemoteCategoryResponse>(jsonString)
 
-        val mockHttpResponse = mockk<HttpResponse>(relaxed = true)
-
-        coEvery { mockHttpResponse.status } returns HttpStatusCode.OK
-        coEvery { mockHttpResponse.body<RemoteCategoryResponse>() } returns expectedCategoryResponse
-
         coEvery {
-            networkClient.get("genre/movie/list", any())
-        } returns mockHttpResponse
+            categoryApiService.getMovieCategories()
+        } returns expectedCategoryResponse
 
         // When
         val categories = categoryRemoteDataSourceImpl.getMovieCategories()
@@ -75,14 +67,9 @@ class CategoryRemoteDataSourceImplTest {
         val expectedCategoryResponse =
             jsonSerializer.decodeFromString<RemoteCategoryResponse>(jsonString)
 
-        val mockHttpResponse = mockk<HttpResponse>(relaxed = true)
-
-        coEvery { mockHttpResponse.status } returns HttpStatusCode.OK
-        coEvery { mockHttpResponse.body<RemoteCategoryResponse>() } returns expectedCategoryResponse
-
         coEvery {
-            networkClient.get("genre/tv/list", any())
-        } returns mockHttpResponse
+            categoryApiService.getTvShowCategories()
+        } returns expectedCategoryResponse
 
         // When
         val categories = categoryRemoteDataSourceImpl.getTvShowCategories()

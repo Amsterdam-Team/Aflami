@@ -1,11 +1,8 @@
 package com.example.remotedatasource
 
-import com.example.remotedatasource.client.NetworkClient
+import com.example.remotedatasource.api.CountryApiService
 import com.example.remotedatasource.datasource.CountryRemoteDataSourceImpl
 import com.example.repository.dto.remote.RemoteCountryDto
-import io.ktor.client.call.body
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -14,19 +11,19 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
+
 class CountryRemoteDataSourceImplTest {
-    private lateinit var networkClient: NetworkClient
+    private lateinit var countryApiService: CountryApiService
     private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
-    private lateinit var httpResponse: HttpResponse
+
 
     private val jsonSerializer =
         Json { ignoreUnknownKeys = true }
 
     @Before
     fun setUp() {
-        networkClient = mockk()
-        httpResponse = mockk()
-        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(networkClient)
+        countryApiService = mockk()
+        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryApiService)
     }
 
     @Test
@@ -42,15 +39,9 @@ class CountryRemoteDataSourceImplTest {
         val expectedCountriesDtoList =
             jsonSerializer.decodeFromString<List<RemoteCountryDto>>(jsonString)
 
-        val mockHttpResponse = mockk<HttpResponse>(relaxed = true)
-
-        coEvery { mockHttpResponse.status } returns HttpStatusCode.OK
-
-        coEvery { mockHttpResponse.body<List<RemoteCountryDto>>() } returns expectedCountriesDtoList
-
         coEvery {
-            networkClient.get("configuration/countries", any())
-        } returns mockHttpResponse
+            countryApiService.getCountries()
+        } returns expectedCountriesDtoList
 
         //When
         val countries = countryRemoteDataSourceImpl.getCountries()
@@ -60,5 +51,4 @@ class CountryRemoteDataSourceImplTest {
         assertEquals("United States", countries[1].englishName)
         assertEquals(2, countries.size)
     }
-
 }
