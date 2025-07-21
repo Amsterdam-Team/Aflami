@@ -6,7 +6,7 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
@@ -451,11 +451,11 @@ class MovieRemoteDataSourceImplTest {
         """.trimIndent()
 
         val expectedGalleryResponse =
-            jsonSerializer.decodeFromString<RemoteMovieGalleryResponse>(jsonString)
+            jsonSerializer.decodeFromString<RemoteGalleryResponse>(jsonString)
 
         val mockHttpResponse = mockk<HttpResponse>(relaxed = true)
         coEvery { mockHttpResponse.status } returns HttpStatusCode.OK
-        coEvery { mockHttpResponse.body<RemoteMovieGalleryResponse>() } returns expectedGalleryResponse
+        coEvery { mockHttpResponse.body<RemoteGalleryResponse>() } returns expectedGalleryResponse
 
         coEvery {
             networkClient.get("movie/$movieId/images", any())
@@ -550,11 +550,11 @@ class MovieRemoteDataSourceImplTest {
         """.trimIndent()
 
         val expectedGalleryResponse =
-            jsonSerializer.decodeFromString<RemoteMovieGalleryResponse>(jsonString)
+            jsonSerializer.decodeFromString<RemoteGalleryResponse>(jsonString)
 
         val mockHttpResponse = mockk<HttpResponse>(relaxed = true)
         coEvery { mockHttpResponse.status } returns HttpStatusCode.OK
-        coEvery { mockHttpResponse.body<RemoteMovieGalleryResponse>() } returns expectedGalleryResponse
+        coEvery { mockHttpResponse.body<RemoteGalleryResponse>() } returns expectedGalleryResponse
 
         coEvery {
             networkClient.get("movie/$movieId/images", any())
