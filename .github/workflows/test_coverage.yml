@@ -58,13 +58,19 @@ jobs:
 
       - name: Post Kover Code Coverage Comment
         id: kover
-        uses: mi-kas/kover-report@v1.9
+        uses: madrapps/jacoco-report@v1.7.1
         if: github.event_name == 'pull_request'
         with:
           path: build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "🛡️ Kover Code Coverage Report"
           update-comment: true
-          min-coverage-overall: 80
-          min-coverage-changed-files: 80
-          coverage-counter-type: LINE
+          check-for-current-branch: true
+          coverage-counter-type: LINE,INSTRUCTION,BRANCH,METHOD,CLASS
+          include-all-sources: true
+          debug-mode: true
+          fail-if-coverage-less: true
+          fail-on-coverage-violation: true
+          failure-message: "Code coverage is currently at {coverage}%. Target is 80%."
+          success-message: "✅ Code coverage is at {coverage}%."
+          report-on-status: true
