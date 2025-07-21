@@ -1,6 +1,6 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.api.TvShowsApiService
+import com.example.remotedatasource.serviceProvider.TvShowsServiceProvider
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -14,15 +14,15 @@ import org.junit.Test
 
 class TvRemoteDataSourceImplTest {
 
-    private lateinit var tvApiService: TvShowsApiService
+    private lateinit var tvShowsServiceProvider: TvShowsServiceProvider
     private lateinit var tvRemoteDataSourceImpl: TvRemoteDataSourceImpl
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
     @Before
     fun setUp() {
-        tvApiService = mockk()
-        tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(tvApiService)
+        tvShowsServiceProvider = mockk()
+        tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(tvShowsServiceProvider)
     }
 
     @Test
@@ -61,17 +61,17 @@ class TvRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteTvShowResponse>(jsonString)
 
         coEvery {
-            tvApiService.getTvShowsByKeyword(keyword, page)
+            tvShowsServiceProvider.getTvShowsByKeyword(keyword, page)
         } returns expectedTvShowResponse
 
         // When
         val tvShows =
             tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
 
-        coVerify(exactly = 1) { tvApiService.getTvShowsByKeyword(keyword, page) }
+        coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowsByKeyword(keyword, page) }
 
+        // Then
         assertEquals(1, tvShows.results.size)
-
         assertEquals(
             "Game of Thrones",
             tvShows.results[0].title

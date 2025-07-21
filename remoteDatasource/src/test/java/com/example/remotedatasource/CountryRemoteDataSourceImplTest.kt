@@ -1,7 +1,7 @@
 package com.example.remotedatasource
 
-import com.example.remotedatasource.api.CountryApiService
 import com.example.remotedatasource.datasource.CountryRemoteDataSourceImpl
+import com.example.remotedatasource.serviceProvider.CountryServiceProvider
 import com.example.repository.dto.remote.RemoteCountryDto
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 
 class CountryRemoteDataSourceImplTest {
-    private lateinit var countryApiService: CountryApiService
+    private lateinit var countryServiceProvider: CountryServiceProvider
     private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
 
 
@@ -22,8 +22,8 @@ class CountryRemoteDataSourceImplTest {
 
     @Before
     fun setUp() {
-        countryApiService = mockk()
-        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryApiService)
+        countryServiceProvider = mockk()
+        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryServiceProvider)
     }
 
     @Test
@@ -40,7 +40,7 @@ class CountryRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<List<RemoteCountryDto>>(jsonString)
 
         coEvery {
-            countryApiService.getCountries()
+            countryServiceProvider.getCountries()
         } returns expectedCountriesDtoList
 
         //When

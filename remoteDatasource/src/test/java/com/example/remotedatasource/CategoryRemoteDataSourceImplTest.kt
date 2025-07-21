@@ -1,7 +1,7 @@
 package com.example.remotedatasource
 
-import com.example.remotedatasource.api.CategoryApiService
 import com.example.remotedatasource.datasource.CategoryRemoteDataSourceImpl
+import com.example.remotedatasource.serviceProvider.CategoryServiceProvider
 import com.example.repository.dto.remote.RemoteCategoryResponse
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -13,15 +13,15 @@ import org.junit.Test
 
 class CategoryRemoteDataSourceImplTest {
 
-    private lateinit var categoryApiService: CategoryApiService
+    private lateinit var categoryServiceProvider: CategoryServiceProvider
     private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
     @Before
     fun setUp() {
-        categoryApiService = mockk()
-        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryApiService)
+        categoryServiceProvider = mockk()
+        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryServiceProvider)
     }
 
     @Test
@@ -40,7 +40,7 @@ class CategoryRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteCategoryResponse>(jsonString)
 
         coEvery {
-            categoryApiService.getMovieCategories()
+            categoryServiceProvider.getMovieCategories()
         } returns expectedCategoryResponse
 
         // When
@@ -68,7 +68,7 @@ class CategoryRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteCategoryResponse>(jsonString)
 
         coEvery {
-            categoryApiService.getTvShowCategories()
+            categoryServiceProvider.getTvShowCategories()
         } returns expectedCategoryResponse
 
         // When
