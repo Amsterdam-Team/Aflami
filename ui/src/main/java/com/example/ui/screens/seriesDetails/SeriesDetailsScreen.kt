@@ -115,7 +115,9 @@ fun SeriesDetailsContent(
     val stroke = AppTheme.color.stroke
     val appBarColor by remember {
         derivedStateOf {
-            if (listState.firstVisibleItemIndex != 0) {
+            if (listState.firstVisibleItemIndex != 0 ||
+                listState.firstVisibleItemScrollOffset != 0
+            ) {
                 surface
             } else {
                 transparent
@@ -152,16 +154,14 @@ fun SeriesDetailsContent(
             )
         }
     }
-
     AnimatedVisibility(
         !state.isLoading && !state.networkError,
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
     ) {
-
         Box(
             modifier = Modifier.fillMaxSize()
-        ) {
+        ){
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -170,23 +170,7 @@ fun SeriesDetailsContent(
                     .navigationBarsPadding()
                     .animateContentSize()
             ) {
-                stickyHeader {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(appBarColor)
-                    ) {
-                        DefaultAppBar(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                .statusBarsPadding(),
-                            firstOption = painterResource(R.drawable.ic_outlined_star),
-                            lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                            onNavigateBackClicked = interaction::onNavigateBack
-                        )
-                        HorizontalDivider(color = dividerColor)
-                    }
-                }
+
                 item {
                     Box(
                         modifier = Modifier
@@ -295,6 +279,22 @@ fun SeriesDetailsContent(
                             )
                         }
                     }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor)
+            ) {
+                DefaultAppBar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .statusBarsPadding(),
+                    firstOption = painterResource(R.drawable.ic_outlined_star),
+                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                    onNavigateBackClicked = interaction::onNavigateBack
+                )
+                HorizontalDivider(color = dividerColor)
             }
         }
     }
