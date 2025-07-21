@@ -1,7 +1,7 @@
 package com.example.remotedatasource.client
 
 import com.example.remotedatasource.BuildConfig
-import com.example.remotedatasource.utils.getDeviceLanguage
+import com.example.repository.utils.getDeviceLanguage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
