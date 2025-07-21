@@ -377,7 +377,6 @@ private fun LazyListScope.SeasonsSection(
 private fun SeasonHeader(
     season: SeasonUiState,
     onClickSeasonMenu: (Int) -> Unit,
-
     ) {
     Column(
         modifier = Modifier
@@ -387,8 +386,8 @@ private fun SeasonHeader(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
                 .clickable { onClickSeasonMenu(season.seasonNumber) }
+                .padding(horizontal = 16.dp, vertical = 12.dp)
                 .animateContentSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -442,7 +441,6 @@ private fun SeriesDetailsContentPreview() {
     AflamiTheme {
         SeriesDetailsContent(
             state = SeriesDetailsUiState(),
-
             interaction = object : SeriesDetailsInteractionListener {
                 override fun onClickSeriesExtraItem(seriesExtras: SeriesExtras) {}
                 override fun onNavigateBack() {}
