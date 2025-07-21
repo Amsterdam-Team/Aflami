@@ -1,5 +1,8 @@
 package com.example.remotedatasource
 
+import com.example.domain.exceptions.NetworkException
+import com.example.domain.exceptions.NoInternetException
+import com.example.domain.exceptions.ServerErrorException
 import com.example.remotedatasource.datasource.CountryRemoteDataSourceImpl
 import com.example.remotedatasource.serviceProvider.CountryServiceProvider
 import com.example.repository.dto.remote.RemoteCountryDto
@@ -10,6 +13,7 @@ import kotlinx.serialization.json.Json
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 
 class CountryRemoteDataSourceImplTest {
@@ -50,5 +54,38 @@ class CountryRemoteDataSourceImplTest {
         assertEquals("EG", countries[0].isoCode)
         assertEquals("United States", countries[1].englishName)
         assertEquals(2, countries.size)
+    }
+
+    @Test
+    fun `getCountries should rethrow ServerErrorException from service provider when exception occurs`() = runTest {
+        // Given
+        coEvery { countryServiceProvider.getCountries() } throws ServerErrorException()
+
+        // When & Then
+        assertFailsWith<ServerErrorException> {
+            countryRemoteDataSourceImpl.getCountries()
+        }
+    }
+
+    @Test
+    fun `getCountries should rethrow NoInternetException from service provider when exception occurs`() = runTest {
+        // Given
+        coEvery { countryServiceProvider.getCountries() } throws NoInternetException()
+
+        // When & Then
+        assertFailsWith<NoInternetException> {
+            countryRemoteDataSourceImpl.getCountries()
+        }
+    }
+
+    @Test
+    fun `getCountries should rethrow NetworkException from service provider when exception occurs`() = runTest {
+        // Given
+        coEvery { countryServiceProvider.getCountries() } throws NetworkException()
+
+        // When & Then
+        assertFailsWith<NetworkException> {
+            countryRemoteDataSourceImpl.getCountries()
+        }
     }
 }

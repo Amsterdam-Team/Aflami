@@ -1,5 +1,8 @@
 package com.example.remotedatasource.datasource
 
+import com.example.domain.exceptions.NetworkException
+import com.example.domain.exceptions.NoInternetException
+import com.example.domain.exceptions.ServerErrorException
 import com.example.remotedatasource.serviceProvider.TvShowsServiceProvider
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import io.mockk.coEvery
@@ -11,6 +14,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 class TvRemoteDataSourceImplTest {
 
@@ -87,5 +91,60 @@ class TvRemoteDataSourceImplTest {
         assertEquals("/2yafLgJ9jL6t7jM0W7W9Bv0qP7j.jpg", tvShows.results[0].posterPath)
         assertEquals(8.4, tvShows.results[0].voteAverage, 0.001)
         assertEquals(20000, tvShows.results[0].voteCount)
+    }
+
+    @Test
+    fun `getTvShowsByKeyword should rethrow ServerErrorException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            val keyword = "test"
+            val page = 1
+            coEvery {
+                tvShowsServiceProvider.getTvShowsByKeyword(
+                    keyword,
+                    page
+                )
+            } throws ServerErrorException()
+
+            // When & Then
+            assertFailsWith<ServerErrorException> {
+                tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
+            }
+        }
+
+    @Test
+    fun `getTvShowsByKeyword should rethrow NoInternetException from service provider when exception occurs`() = runTest {
+        // Given
+        val keyword = "test"
+        val page = 1
+        coEvery {
+            tvShowsServiceProvider.getTvShowsByKeyword(
+                keyword,
+                page
+            )
+        } throws NoInternetException()
+
+        // When & Then
+        assertFailsWith<NoInternetException> {
+            tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
+        }
+    }
+
+    @Test
+    fun `getTvShowsByKeyword should rethrow NetworkException from service provider when exception occurs`() = runTest {
+        // Given
+        val keyword = "test"
+        val page = 1
+        coEvery {
+            tvShowsServiceProvider.getTvShowsByKeyword(
+                keyword,
+                page
+            )
+        } throws NetworkException()
+
+        // When & Then
+        assertFailsWith<NetworkException> {
+            tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
+        }
     }
 }
