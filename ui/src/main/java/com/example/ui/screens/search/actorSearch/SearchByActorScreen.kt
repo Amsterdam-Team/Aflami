@@ -34,16 +34,17 @@ import com.example.designsystem.components.TextField
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.imageviewer.ui.SafeImageView
-import com.example.ui.R
 import com.example.ui.application.LocalNavController
-import com.example.ui.components.MovieCard
 import com.example.ui.components.NoDataContainer
 import com.example.ui.components.NoNetworkContainer
-import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
-import com.example.viewmodel.search.actorSearch.ActorSearchUiState
 import com.example.viewmodel.search.actorSearch.SearchActorEffect
 import com.example.viewmodel.search.actorSearch.SearchActorInteractionListener
+import com.example.ui.R
+import com.example.ui.components.MovieCard
+import com.example.ui.components.appBar.DefaultAppBar
+import com.example.ui.utils.safeNavigate
+import com.example.viewmodel.search.actorSearch.ActorSearchUiState
 import com.example.viewmodel.search.actorSearch.SearchActorViewModel
 import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
@@ -67,7 +68,7 @@ fun SearchByActorScreen(
                     }
 
                     is SearchActorEffect.NavigateToDetailsScreen -> {
-                        navController.navigate(Route.MovieDetails(it.movieId))
+                        navController.safeNavigate(Route.MovieDetails(it.movieId))
                     }
                 }
             }

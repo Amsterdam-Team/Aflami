@@ -55,6 +55,7 @@ import com.example.ui.navigation.Route.MovieDetails
 import com.example.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.example.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.example.viewmodel.search.keywordSearch.SearchErrorState
 import com.example.viewmodel.search.keywordSearch.SearchInteractionListener
@@ -79,14 +80,12 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
             effect?.let {
                 when (effect) {
                     SearchUiEffect.NavigateBack -> navController.popBackStack()
-                    SearchUiEffect.NavigateToActorSearch -> navController.navigate(Route.SearchByActor)
-                    is SearchUiEffect.NavigateToMovieDetails -> navController.navigate(
-                        MovieDetails(
-                            effect.movieId
-                        )
+                    SearchUiEffect.NavigateToActorSearch -> navController.safeNavigate(Route.SearchByActor)
+                    is SearchUiEffect.NavigateToMovieDetails -> navController.safeNavigate(
+                        MovieDetails(effect.movieId)
                     )
 
-                    SearchUiEffect.NavigateToWorldSearch -> navController.navigate(Route.SearchByCountry)
+                    SearchUiEffect.NavigateToWorldSearch -> navController.safeNavigate(Route.SearchByCountry)
                 }
             }
         }
@@ -151,12 +150,7 @@ private fun SearchContent(
             FilterDialog(
                 filterState = state.filterItemUiState,
                 selectedTabOption = state.selectedTabOption,
-                onCancelButtonClicked = filterInteraction::onClickCancel,
-                onRatingStarChanged = filterInteraction::onChangeRatingStar,
-                onMovieGenreButtonChanged = filterInteraction::onChangeMovieGenre,
-                onTvGenreButtonChanged = filterInteraction::onChangeTvShowGenre,
-                onApplyButtonClicked = filterInteraction::onClickApply,
-                onClearButtonClicked = filterInteraction::onClickClear
+                interaction = filterInteraction
             )
         }
 

@@ -110,7 +110,4 @@ class RecentSearchLocalDataSourceImplTest {
         //Then
         coVerify { dao.deleteAllExpiredSearches(date) }
     }
-
-    
-
 }

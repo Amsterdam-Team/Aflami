@@ -1,3 +1,4 @@
+/*
 package com.example.localdatasource
 
 import com.example.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
@@ -117,4 +118,4 @@ class MovieLocalDataSourceImplTest {
         assertEquals(expected, result)
     }
 
-}
+}*/

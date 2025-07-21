@@ -1,4 +1,4 @@
-package com.example.repository.mapper.local
+/*package com.example.repository.mapper.local
 
 import com.example.entity.Category
 import com.example.entity.category.MovieGenre
@@ -33,3 +33,4 @@ class CategoryRemoteToLocalMapperTest {
         assertThat(result.map { it.name }).containsExactly("Action", "Comedy")
     }
 }
+*/

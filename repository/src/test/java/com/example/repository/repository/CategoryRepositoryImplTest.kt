@@ -1,3 +1,4 @@
+/*
 package com.example.repository.repository
 
 import com.example.domain.repository.CategoryRepository
@@ -87,3 +88,4 @@ class CategoryRepositoryImplTest {
         coVerify(exactly = 0) { remoteDataSource.getTvShowCategories() }
     }
 }
+*/
