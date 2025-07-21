@@ -12,7 +12,7 @@ class EpisodeRemoteMapper : EntityMapper<EpisodeDto, Episode> {
             title = dto.title,
             episodeNumber = dto.episodeNumber,
             description = dto.overview,
-            episodeImageUrl = dto.stillPath ?: "",
+            episodeImageUrl = dto.fullStillPath.orEmpty(),
             rating = dto.voteAverage.toFloat(),
             airDate = dto.airDate?.toLocalDate(),
             seasonNumber = dto.seasonNumber,

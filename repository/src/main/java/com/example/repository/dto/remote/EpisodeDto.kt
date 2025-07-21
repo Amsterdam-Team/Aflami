@@ -1,5 +1,6 @@
 package com.example.repository.dto.remote
 
+import com.example.repository.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,7 +12,10 @@ data class EpisodeDto(
     @SerialName("runtime") val runtime: String?,
     @SerialName("air_date") val airDate: String?,
     @SerialName("overview") val overview: String,
-    @SerialName("still_path") val stillPath: String? = null,
+    @SerialName("still_path") val stillPath: String?,
     @SerialName("vote_average") val voteAverage: String,
     @SerialName("season_number") val seasonNumber: Int,
-)
+) {
+    val fullStillPath: String?
+        get() = stillPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+}
