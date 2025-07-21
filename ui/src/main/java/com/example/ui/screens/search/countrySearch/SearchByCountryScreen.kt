@@ -43,6 +43,7 @@ import com.example.ui.screens.search.countrySearch.components.CountrySearchField
 import com.example.ui.screens.search.countrySearch.components.ExploreCountries
 import com.example.ui.screens.search.countrySearch.components.MoviesVerticalGrid
 import com.example.ui.screens.search.countrySearch.components.NoMoviesFound
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.search.countrySearch.CountryItemUiState
 import com.example.viewmodel.search.countrySearch.CountrySearchEffect
 import com.example.viewmodel.search.countrySearch.CountrySearchErrorState
@@ -69,7 +70,7 @@ internal fun SearchByCountryScreen(
                         navController.popBackStack()
                     }
 
-                    CountrySearchEffect.NavigateToMovieDetails -> navController.navigate(
+                    CountrySearchEffect.NavigateToMovieDetails -> navController.safeNavigate(
                         MovieDetails(state.selectedMovieId)
                     )
                 }
@@ -112,13 +113,13 @@ private fun SearchByCountryContent(
         )
 
         AnimatedVisibility(
-            visible = state.isCountriesDropDownVisible,
+            visible = state.suggestedCountries.isNotEmpty(),
             enter = slideInVertically() + expandIn(),
             exit = slideOutVertically() + shrinkOut()
         ) {
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(4),
-                isVisible = true,
+                isVisible =  state.suggestedCountries.isNotEmpty(),
                 onItemClicked = interactionListener::onSelectCountry,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,15 +128,13 @@ private fun SearchByCountryContent(
         }
 
         AnimatedContent(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier.fillMaxSize().weight(1f),
             targetState = state,
-            transitionSpec = { fadeIn(tween(1700)) togetherWith fadeOut(tween(1700)) }) { uiState ->
+            transitionSpec = { fadeIn() togetherWith fadeOut() }) { uiState ->
             when {
+                uiState.isLoading -> LoadingContainer()
                 uiState.keyword.isEmpty() -> ExploreCountries()
-                uiState.isLoading || movies.loadState.refresh is LoadState.Loading -> LoadingContainer()
-                movies.itemSnapshotList.isEmpty() -> NoMoviesFound()
+                movies.itemCount == 0 && uiState.suggestedCountries.isEmpty() -> NoMoviesFound()
                 uiState.errorUiState is CountrySearchErrorState.NoNetworkConnection -> {
                     NoNetworkContainer(
                         onClickRetry = interactionListener::onClickRetry,

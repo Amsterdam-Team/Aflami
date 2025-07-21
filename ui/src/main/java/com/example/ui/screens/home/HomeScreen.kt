@@ -32,6 +32,7 @@ import com.example.viewmodel.home.HomeUiState
 import com.example.viewmodel.home.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
+import com.example.ui.utils.safeNavigate
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koinViewModel()) {
@@ -42,7 +43,7 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koi
             it?.let {
                 when (it) {
                     HomeEffect.NavigateToSearchScreenEffect ->
-                        navController.navigate(Route.Search)
+                        navController.safeNavigate(Route.Search)
                 }
             }
         }
@@ -111,7 +112,6 @@ private fun HomeScreenContent(
 
                 }
     }
-
 }
 
 
