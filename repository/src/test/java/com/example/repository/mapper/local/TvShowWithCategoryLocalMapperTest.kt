@@ -1,10 +1,10 @@
 package com.example.repository.mapper.local
 
-import com.example.entity.TvShow
 import com.example.entity.category.TvShowGenre
-import com.example.repository.dto.local.LocalTvShowCategoryDto
-import com.example.repository.dto.local.LocalTvShowDto
-import com.example.repository.dto.local.relation.TvShowWithCategory
+import com.example.repository.mapper.local.testFactory.createLocalTvShowCategoryDtoList
+import com.example.repository.mapper.local.testFactory.createLocalTvShowDto
+import com.example.repository.mapper.local.testFactory.createTvShow
+import com.example.repository.mapper.local.testFactory.createTvShowWithCategory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -13,57 +13,39 @@ import org.junit.Test
 
 class TvShowWithCategoryLocalMapperTest {
 
- private lateinit var mapper: TvShowWithCategoryLocalMapper
- private val genreMapper: TvShowGenreLocalMapper = mockk()
+    private lateinit var mapper: TvShowWithCategoryLocalMapper
+    private val genreMapper: TvShowGenreLocalMapper = mockk()
 
- @Before
- fun setUp() {
-  mapper = TvShowWithCategoryLocalMapper(genreMapper)
- }
+    @Before
+    fun setUp() {
+        mapper = TvShowWithCategoryLocalMapper(genreMapper)
+    }
 
- @Test
- fun `toEntity maps TvShowWithCategory to TvShow correctly`() {
-  // Arrange: fake input
-  val localTvShow = LocalTvShowDto(
-   tvShowId = 1L,
-   name = "Breaking Bad",
-   description = "A high school chemistry teacher turns to a life of crime.",
-   poster = "https://poster.url/breakingbad.jpg",
-   productionYear = 2008,
-   rating = 9.5f,
-   popularity = 1000.0
-  )
+    @Test
+    fun `toEntity maps TvShowWithCategory to TvShow correctly`() {
+        // Arrange
+        val tvShowDto = createLocalTvShowDto()
+        val categories = createLocalTvShowCategoryDtoList()
+        val tvShowWithCategory = createTvShowWithCategory(dto = tvShowDto, categories = categories)
 
-  val localCategories = listOf(
-   LocalTvShowCategoryDto(categoryId = 10L, name = "DRAMA"),
-   LocalTvShowCategoryDto(categoryId = 11L, name = "CRIME")
-  )
+        val expectedGenres = listOf(TvShowGenre.DRAMA, TvShowGenre.CRIME)
+        every { genreMapper.toEntityList(categories) } returns expectedGenres
 
-  val tvShowWithCategory = TvShowWithCategory(
-   tvShow = localTvShow,
-   categories = localCategories
-  )
+        // Act
+        val result = mapper.toEntity(tvShowWithCategory)
 
-  val expectedGenres = listOf(TvShowGenre.DRAMA, TvShowGenre.CRIME)
+        // Assert
+        val expected = createTvShow(
+            id = tvShowDto.tvShowId,
+            name = tvShowDto.name,
+            description = tvShowDto.description,
+            posterUrl = tvShowDto.poster,
+            productionYear = tvShowDto.productionYear.toUInt(),
+            rating = tvShowDto.rating,
+            popularity = tvShowDto.popularity,
+            categories = expectedGenres
+        )
 
-  // Mock behavior
-  every { genreMapper.toEntityList(localCategories) } returns expectedGenres
-
-  // Act
-  val result = mapper.toEntity(tvShowWithCategory)
-
-  // Assert
-  assertThat(result).isEqualTo(
-   TvShow(
-    id = 1L,
-    name = "Breaking Bad",
-    description = "A high school chemistry teacher turns to a life of crime.",
-    posterUrl = "https://poster.url/breakingbad.jpg",
-    productionYear = 2008u,
-    rating = 9.5f,
-    categories = expectedGenres,
-    popularity = 1000.0
-   )
-  )
- }
+        assertThat(result).isEqualTo(expected)
+    }
 }
