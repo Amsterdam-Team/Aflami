@@ -19,7 +19,7 @@ data class TvShowDetailsRemoteResponse(
     @SerialName("first_air_date") val releaseDate: String,
     @SerialName("name") val title: String,
     @SerialName("vote_average") val voteAverage: Double,
-    @SerialName("seasons") val seasons: List<SeasonResponse> = emptyList(),
+    @SerialName("seasons") val seasons: List<SeasonDto> = emptyList(),
     @SerialName("number_of_seasons") val seasonCount: Int = 0,
 ){
     val fullPosterPath: String?

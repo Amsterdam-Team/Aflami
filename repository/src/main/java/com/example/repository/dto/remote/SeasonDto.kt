@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SeasonResponse(
+data class SeasonDto(
     @SerialName("id") val id: Long,
     @SerialName("name") val title: String,
     @SerialName("air_date") val airDate: String?,
