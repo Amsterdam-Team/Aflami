@@ -28,7 +28,7 @@ open class BaseViewModel<S, E>(
 
 
     protected fun updateState(updater: (S) -> S) {
-        viewModelScope.launch(dispatcherProvider.Default) {
+        viewModelScope.launch(dispatcherProvider.MainImmediate) {
             _state.update(updater)
         }
     }
