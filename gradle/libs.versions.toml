@@ -1,17 +1,15 @@
 [versions]
-agp = "8.10.1"
+agp = "8.11.1"
 coilCompose = "2.6.0"
 firebaseBom = "33.16.0"
 foundation = "1.8.3"
 kotlin = "2.0.21"
-kotlinSerialization = "2.0.21"
 coreKtx = "1.16.0"
 ktorSerializationKotlinxJson = "3.0.3"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2024.09.00"
 appcompat = "1.7.1"
-jetbrainsKotlinJvm = "2.0.21"
 koin = "4.0.3"
 navigationCompose = "2.9.0"
 pagingRuntime = "3.3.6"
@@ -39,6 +37,7 @@ ktorClientContentNegotiation = "3.0.3"
 ktorVersion = "3.0.3"
 navigationCommonAndroid = "2.9.1"
 startupRuntime = "1.2.0"
+koverVersion = "0.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -101,9 +100,9 @@ ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", vers
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 google-service = { id = "com.google.gms.google-services", version.ref = "googleService" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-pref = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePreferences" }
@@ -111,3 +110,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 aflami-custom-plugin = { id = "com.thechance.plugin" }
 android-junit5 = { id = "de.mannodermaus.android-junit5" }
 android-java-library = { id = "java-library" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }

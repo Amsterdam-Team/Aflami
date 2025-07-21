@@ -1,4 +1,4 @@
-name: Pull Requests
+name: Build And Test Coverage
 
 on:
   pull_request:
@@ -41,29 +41,30 @@ jobs:
       - name: Clean Project
         run: ./gradlew clean
 
-      - name: Compile Project
-        run: ./gradlew :app:assemble
+      - name: Run Unit Tests With Kover Report
+        run: ./gradlew koverVerify --build-cache
 
-      - name: Run Unit Tests
-        run: ./gradlew test
-  
-      - name: Comment on coverage for current branch
-        if: github.event_name == 'pull_request' && github.base_ref == 'develop'
-        uses: madrapps/jacoco-report@v1.7.1
+      - name: Generate kover coverage report
+        run: ./gradlew :koverXmlReport
+        continue-on-error: true
+
+      - name: Upload XML Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          paths: |
-            build/reports/jacoco/test/jacocoTestReport.xml
-          token: ${{ secrets.GITHUB_TOKEN }}  
+          name: kover-xml-report
+          path: '**/build/reports/kover/**/*.xml'
+
+
+      - name: Post Kover Code Coverage Comment
+        id: kover
+        uses: mi-kas/kover-report@v1.9
+        if: github.event_name == 'pull_request'
+        with:
+          path: build/reports/kover/report.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "🛡️ Kover Code Coverage Report"
+          update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
-          update-comment: true
-          title: "🛡️ Code Coverage Report"
-          check-for-current-branch: true
-          coverage-counter-type: LINE,INSTRUCTION,BRANCH,METHOD,CLASS
-          include-all-sources: true
-          debug-mode: true
-          fail-if-coverage-less: true
-          fail-on-coverage-violation: true
-          failure-message: "Code coverage is currently at {coverage}%. Target is 80%."
-          success-message: "✅ Code coverage is at {coverage}%."
-          report-on-status: true
+          coverage-counter-type: LINE
