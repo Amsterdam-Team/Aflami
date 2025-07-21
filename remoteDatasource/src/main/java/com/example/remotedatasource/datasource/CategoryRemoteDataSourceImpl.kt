@@ -1,18 +1,18 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.api.CategoryApiService
-import com.example.remotedatasource.utils.apiHandler.responseCall
+import com.example.remotedatasource.serviceProvider.CategoryServiceProvider
 import com.example.repository.datasource.remote.CategoryRemoteSource
 import com.example.repository.dto.remote.RemoteCategoryResponse
 
 class CategoryRemoteDataSourceImpl(
-    private val categoryApiService: CategoryApiService
+    private val categoryServiceProvider: CategoryServiceProvider
 ) : CategoryRemoteSource {
+
     override suspend fun getMovieCategories(): RemoteCategoryResponse {
-        return responseCall { categoryApiService.getMovieCategories() }
+        return categoryServiceProvider.getMovieCategories()
     }
 
     override suspend fun getTvShowCategories(): RemoteCategoryResponse {
-        return responseCall { categoryApiService.getTvShowCategories() }
+        return categoryServiceProvider.getTvShowCategories()
     }
 }
