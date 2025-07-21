@@ -44,16 +44,13 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.core)
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") // Or the latest stable version
-    implementation("com.squareup.okhttp3:okhttp:4.12.0") // Or the latest stable version
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") // For logging, similar to Ktor's logging
+    implementation(libs.retrofit.v290)
+    implementation(libs.okhttp.v4120)
+    implementation(libs.logging.interceptor.v4120)
 
-    // Converter for kotlinx.serialization with Retrofit
-    // This adapter allows Retrofit to use kotlinx.serialization for JSON parsing
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
 
-    // You'll also need the kotlinx-serialization-json if you don't have it already
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") // Or the latest stable version
+    implementation(libs.kotlinx.serialization.json.v160)
     // Unit Testing
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
