@@ -5,7 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
-import com.example.repository.dto.local.utils.DatabaseContract
+import com.example.repository.dto.local.utils.DatabaseConstants
 
 @Dao
 interface CategoryDao {
@@ -15,9 +15,9 @@ interface CategoryDao {
     @Upsert
     suspend fun upsertAllTvShowCategories(categories: List<LocalTvShowCategoryDto>)
 
-    @Query("SELECT * FROM ${DatabaseContract.MOVIE_CATEGORY_TABLE}")
+    @Query("SELECT * FROM ${DatabaseConstants.MOVIE_CATEGORY_TABLE}")
     suspend fun getAllMovieCategories(): List<LocalMovieCategoryDto>
 
-    @Query("SELECT * FROM ${DatabaseContract.TV_SHOW_CATEGORY_TABLE}")
+    @Query("SELECT * FROM ${DatabaseConstants.TV_SHOW_CATEGORY_TABLE}")
     suspend fun getAllTvShowCategories(): List<LocalTvShowCategoryDto>
 }
