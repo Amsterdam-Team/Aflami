@@ -60,7 +60,7 @@ jobs:
         uses: mi-kas/kover-report@v1
         if: github.event_name == 'pull_request'
         with:
-          path: '**/build/reports/kover/report.xml'
+          path: build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
