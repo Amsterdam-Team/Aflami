@@ -21,7 +21,7 @@ import org.junit.Test
 
 class MovieRemoteDataSourceImplTest {
 
-    private lateinit var movieServiceProvider: MovieServiceProvider // CHANGED
+    private lateinit var movieServiceProvider: MovieServiceProvider
     private lateinit var movieRemoteDataSourceImpl: MovieRemoteDataSourceImpl
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
@@ -29,7 +29,7 @@ class MovieRemoteDataSourceImplTest {
     @Before
     fun setUp() {
         movieServiceProvider = mockk() // CHANGED
-        movieRemoteDataSourceImpl = MovieRemoteDataSourceImpl(movieServiceProvider) // CHANGED
+        movieRemoteDataSourceImpl = MovieRemoteDataSourceImpl(movieServiceProvider)
     }
 
     @Test
@@ -68,14 +68,14 @@ class MovieRemoteDataSourceImplTest {
 
 
         coEvery {
-            movieServiceProvider.getMoviesByKeyword(keyword, page) // CHANGED
+            movieServiceProvider.getMoviesByKeyword(keyword, page)
         } returns expectedMovieResponse
 
         // When
         val movies = movieRemoteDataSourceImpl.getMoviesByKeyword(keyword, page)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getMoviesByKeyword(keyword, page) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getMoviesByKeyword(keyword, page) }
 
 
         assertEquals(1, movies.results.size)
@@ -142,20 +142,20 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteMovieResponse>(discoverMovieJson)
 
         coEvery {
-            movieServiceProvider.getActorIdByName(actorName, page) // CHANGED
+            movieServiceProvider.getActorIdByName(actorName, page)
         } returns expectedActorSearchResponse
 
 
         coEvery {
-            movieServiceProvider.getMoviesByActorId(actorId.toString()) // CHANGED
+            movieServiceProvider.getMoviesByActorId(actorId.toString())
         } returns expectedMovieResponse
 
         // When
         val movies = movieRemoteDataSourceImpl.getMoviesByActorName(actorName, page)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getActorIdByName(actorName, page) } // CHANGED
-        coVerify(exactly = 1) { movieServiceProvider.getMoviesByActorId(actorId.toString()) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getActorIdByName(actorName, page) }
+        coVerify(exactly = 1) { movieServiceProvider.getMoviesByActorId(actorId.toString()) }
 
 
         assertEquals(1, movies.results.size)
@@ -199,7 +199,7 @@ class MovieRemoteDataSourceImplTest {
                 jsonSerializer.decodeFromString<RemoteMovieResponse>(jsonString)
 
             coEvery {
-                movieServiceProvider.getMoviesByCountryIsoCode(countryIsoCode, page) // CHANGED
+                movieServiceProvider.getMoviesByCountryIsoCode(countryIsoCode, page)
             } returns expectedMovieResponse
 
             // When
@@ -207,7 +207,7 @@ class MovieRemoteDataSourceImplTest {
 
             // Then
             coVerify(exactly = 1) {
-                movieServiceProvider.getMoviesByCountryIsoCode( // CHANGED
+                movieServiceProvider.getMoviesByCountryIsoCode(
                     countryIsoCode,
                     page
                 )
@@ -264,14 +264,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteCastAndCrewResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getCastByMovieId(movieId) // CHANGED
+            movieServiceProvider.getCastByMovieId(movieId)
         } returns expectedCastAndCrewResponse
 
         // When
         val castAndCrew = movieRemoteDataSourceImpl.getCastByMovieId(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getCastByMovieId(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getCastByMovieId(movieId) }
 
         assertEquals(movieId.toInt(), castAndCrew.id)
         assertEquals(1, castAndCrew.cast.size)
@@ -314,14 +314,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<ReviewsResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getMovieReviews(movieId) // CHANGED
+            movieServiceProvider.getMovieReviews(movieId)
         } returns expectedReviewsResponse
 
         // When
         val reviews = movieRemoteDataSourceImpl.getMovieReviews(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getMovieReviews(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getMovieReviews(movieId) }
 
         assertEquals(movieId, reviews.id)
         assertEquals(1, reviews.results.size)
@@ -363,14 +363,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteMovieResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getSimilarMovies(movieId) // CHANGED
+            movieServiceProvider.getSimilarMovies(movieId)
         } returns expectedMovieResponse
 
         // When
         val similarMovies = movieRemoteDataSourceImpl.getSimilarMovies(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getSimilarMovies(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getSimilarMovies(movieId) }
 
         assertEquals(1, similarMovies.results.size)
         assertEquals("Se7en", similarMovies.results[0].title)
@@ -399,14 +399,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteMovieGalleryResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getMovieGallery(movieId) // CHANGED
+            movieServiceProvider.getMovieGallery(movieId)
         } returns expectedGalleryResponse
 
         // When
         val gallery = movieRemoteDataSourceImpl.getMovieGallery(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getMovieGallery(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getMovieGallery(movieId) }
 
         assertEquals(movieId, gallery.id)
         assertEquals(2, gallery.backdrops?.size)
@@ -455,14 +455,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteMovieItemDto>(jsonString)
 
         coEvery {
-            movieServiceProvider.getMovieDetailsById(movieId) // CHANGED
+            movieServiceProvider.getMovieDetailsById(movieId)
         } returns expectedMovieItemDto
 
         // When
         val movieDetails = movieRemoteDataSourceImpl.getMovieDetailsById(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getMovieDetailsById(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getMovieDetailsById(movieId) }
 
         assertEquals(movieId, movieDetails.id)
         assertEquals("Fight Club", movieDetails.title)
@@ -490,14 +490,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteMovieGalleryResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getMoviePosters(movieId) // CHANGED
+            movieServiceProvider.getMoviePosters(movieId)
         } returns expectedGalleryResponse
 
         // When
         val posters = movieRemoteDataSourceImpl.getMoviePosters(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getMoviePosters(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getMoviePosters(movieId) }
 
         assertEquals(movieId, posters.id)
         assertEquals(0, posters.backdrops?.size)
@@ -539,14 +539,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteMovieResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getPopularMovies() // CHANGED
+            movieServiceProvider.getPopularMovies()
         } returns expectedMovieResponse
 
         // When
         val popularMovies = movieRemoteDataSourceImpl.getPopularMovies()
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getPopularMovies() } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getPopularMovies() }
 
         assertEquals(1, popularMovies.results.size)
         assertEquals("Popular Movie", popularMovies.results[0].title)
@@ -600,14 +600,14 @@ class MovieRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<ProductionCompanyResponse>(jsonString)
 
         coEvery {
-            movieServiceProvider.getProductionCompany(movieId) // CHANGED
+            movieServiceProvider.getProductionCompany(movieId)
         } returns expectedProductionCompanyResponse
 
         // When
         val productionCompany = movieRemoteDataSourceImpl.getProductionCompany(movieId)
 
         // Then
-        coVerify(exactly = 1) { movieServiceProvider.getProductionCompany(movieId) } // CHANGED
+        coVerify(exactly = 1) { movieServiceProvider.getProductionCompany(movieId) }
 
         assertEquals(1, productionCompany.productionCompanies.size)
         assertEquals("Regency Enterprises", productionCompany.productionCompanies[0].name)
