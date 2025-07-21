@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.designsystem.components.ImageErrorIndicator
 import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
@@ -174,7 +177,12 @@ private fun SearchByActorContent(
                             horizontal = 16.dp
                         ),
                     ) {
-                        items(moviesFlow.itemCount) { index ->
+                        items(
+                            count = moviesFlow.itemCount,
+                            key = moviesFlow.itemKey {
+                                "${it.id}-${moviesFlow.itemSnapshotList.indexOf(it)}"
+                            },
+                        ) { index ->
                             val movie = moviesFlow[index] ?: return@items
                             MovieCard(
                                 movieImage = { MovieImage(movie.posterImageUrl) },

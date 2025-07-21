@@ -42,7 +42,7 @@ internal fun MoviesVerticalGrid(
         ) {
             items(
                 count = movies.itemCount,
-                key = movies.itemKey { it.id },
+                key = movies.itemKey { "${it.id}-${movies.itemSnapshotList.indexOf(it)}" },
             ) { index ->
                 val movie = movies[index] ?: return@items
                 MovieCard(
