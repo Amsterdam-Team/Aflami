@@ -5,6 +5,7 @@ import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.mapper.local.RecentSearchLocalMapper
+import com.example.repository.utils.getDeviceLanguage
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.hours
 
@@ -25,7 +26,9 @@ class RecentSearchRepositoryImpl(
     }
 
     override suspend fun getAllRecentSearches(): List<String> {
-        return recentSearchMapper.toEntityList(recentSearchLocalSource.getRecentSearches())
+        return recentSearchMapper.toEntityList(
+            recentSearchLocalSource.getRecentSearches(SearchType.BY_KEYWORD)
+        )
     }
 
     override suspend fun deleteAllRecentSearches() {
@@ -33,7 +36,11 @@ class RecentSearchRepositoryImpl(
     }
 
     override suspend fun deleteRecentSearch(searchKeyword: String) {
-        recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword)
+        recentSearchLocalSource.deleteRecentSearchByKeyword(
+            searchKeyword,
+            SearchType.BY_KEYWORD,
+            getDeviceLanguage()
+        )
     }
 
     private suspend fun addRecentSearch(searchKeyword: String, searchType: SearchType) {
@@ -41,6 +48,7 @@ class RecentSearchRepositoryImpl(
             LocalSearchDto(
                 searchKeyword,
                 searchType,
+                getDeviceLanguage(),
                 Clock.System.now().plus(1.hours)
             )
         )

@@ -8,9 +8,9 @@ import com.example.entity.Review
 import com.example.entity.category.MovieGenre
 
 interface MovieRepository {
-    suspend fun getMoviesByKeyword(keyword: String, page:Int): List<Movie>
-    suspend fun getMoviesByActor(actorName: String, page:Int): List<Movie>
-    suspend fun getMoviesByCountry(country: Country, page:Int): List<Movie>
+    suspend fun getMoviesByKeyword(keyword: String, page: Int, moviesPerPage: Int): List<Movie>
+    suspend fun getMoviesByActor(actorName: String, page: Int, moviesPerPage: Int): List<Movie>
+    suspend fun getMoviesByCountry(country: Country, page: Int, moviesPerPage: Int): List<Movie>
 
     suspend fun getActorsByMovieId(movieId: Long): List<Actor>
     suspend fun getMovieReviews(movieId : Long) : List<Review>

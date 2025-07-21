@@ -19,9 +19,10 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
         )
     }
 
-    override fun toDto(entity: TvShow): LocalTvShowDto {
+    override fun toDto(entity: TvShow, args: List<Any>): LocalTvShowDto {
         return LocalTvShowDto(
             tvShowId = entity.id,
+            storedLanguage = args[0].toString(),
             name = entity.name,
             description = entity.description,
             poster = entity.posterUrl,

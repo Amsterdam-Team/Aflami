@@ -8,15 +8,46 @@ import kotlinx.datetime.Clock
 class RecentSearchHandlerImpl(
     private val recentSearchLocalSource: RecentSearchLocalSource
 ) : RecentSearchHandler {
-    override suspend fun isRecentSearchExpired(keyword: String, searchType: SearchType) = try {
-        isSearchExpired(recentSearchLocalSource.getSearchByKeywordAndType(keyword, searchType))
-    } catch (_: Exception) {
-        true
+    override suspend fun isRecentSearchExpired(
+        keyword: String,
+        searchType: SearchType,
+        storedLanguage: String
+    ): Boolean {
+        return try {
+            isSearchExpired(
+                recentSearchLocalSource.getSearchByKeywordAndType(
+                    keyword,
+                    searchType,
+                    storedLanguage
+                )
+            )
+        } catch (_: Exception) {
+            true
+        }
     }
 
-    override suspend fun deleteRecentSearch(keyword: String, searchType: SearchType) =
-        recentSearchLocalSource.deleteRecentSearchByKeywordAndType(keyword, searchType)
+    override suspend fun deleteRecentSearch(
+        keyword: String,
+        searchType: SearchType,
+        storedLanguage: String
+    ) {
+        if (isSearchExpired(
+                recentSearchLocalSource.getSearchByKeywordAndType(
+                    keyword,
+                    searchType,
+                    storedLanguage
+                )
+            )
+        ) {
+            recentSearchLocalSource.deleteRecentSearchByKeywordAndType(
+                keyword,
+                searchType,
+                getDeviceLanguage()
+            )
+        }
+    }
 
-    private fun isSearchExpired(recentSearch: LocalSearchDto?) =
-        if (recentSearch == null) true else recentSearch.expireDate < Clock.System.now()
+    private fun isSearchExpired(recentSearch: LocalSearchDto?): Boolean {
+        return if (recentSearch == null) true else recentSearch.expireDate < Clock.System.now()
+    }
 }

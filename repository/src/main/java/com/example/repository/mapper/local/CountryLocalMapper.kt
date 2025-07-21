@@ -15,10 +15,11 @@ class CountryLocalMapper : EntityMapper<LocalCountryDto, Country>,
         )
     }
 
-    override fun toDto(entity: Country): LocalCountryDto {
+    override fun toDto(entity: Country, args: List<Any>): LocalCountryDto {
         return LocalCountryDto(
             name = entity.countryName,
-            isoCode = entity.countryIsoCode
+            storedLanguage = args[0].toString(),
+            isoCode = entity.countryIsoCode,
         )
     }
 }

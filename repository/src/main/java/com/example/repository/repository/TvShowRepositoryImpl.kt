@@ -11,6 +11,7 @@ import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
+import com.example.repository.utils.getDeviceLanguage
 
 class TvShowRepositoryImpl(
     private val localTvDataSource: TvShowLocalSource,
@@ -20,9 +21,17 @@ class TvShowRepositoryImpl(
     private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
     private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper
 ) : TvShowRepository {
-    override suspend fun getTvShowByKeyword(keyword: String, page: Int): List<TvShow> {
-        return getCachedTvShows(keyword)
-            ?: recentSearchHandler.deleteRecentSearch(keyword, SearchType.BY_KEYWORD)
+    override suspend fun getTvShowByKeyword(
+        keyword: String,
+        page: Int,
+        tvShowsPerPage: Int
+    ): List<TvShow> {
+        return getCachedTvShows(keyword, page, tvShowsPerPage)
+            ?: recentSearchHandler.deleteRecentSearch(
+                keyword,
+                SearchType.BY_KEYWORD,
+                getDeviceLanguage()
+            )
                 .let { getTvShowsFromRemote(keyword, page) }
                 .let { remoteTvShows ->
                     saveTvShowsToDatabase(remoteTvShows, keyword)
@@ -38,17 +47,34 @@ class TvShowRepositoryImpl(
         return localTvDataSource.getAllGenreInterests()
     }
 
-    private suspend fun getCachedTvShows(keyword: String): List<TvShow>? {
-        return recentSearchHandler.isRecentSearchExpired(keyword, SearchType.BY_KEYWORD)
+    private suspend fun getCachedTvShows(
+        keyword: String,
+        page: Int,
+        tvShowsPerPage: Int
+    ): List<TvShow>? {
+        return recentSearchHandler.isRecentSearchExpired(
+            keyword,
+            SearchType.BY_KEYWORD,
+            getDeviceLanguage()
+        )
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
-            ?.let { getTvShowFromLocal(keyword, SearchType.BY_KEYWORD) }
+            ?.let { getTvShowFromLocal(keyword, SearchType.BY_KEYWORD, page, tvShowsPerPage) }
             ?.takeIf { tvShows -> tvShows.isNotEmpty() }
     }
 
-    private suspend fun getTvShowFromLocal(keyword: String, searchType: SearchType): List<TvShow> {
+    private suspend fun getTvShowFromLocal(
+        keyword: String,
+        searchType: SearchType,
+        page: Int,
+        tvShowsPerPage: Int
+    ): List<TvShow> {
         return tvShowWithCategoryLocalMapper.toEntityList(
             localTvDataSource.getTvShowsByKeywordAndSearchType(
-                keyword, searchType
+                keyword,
+                searchType,
+                getDeviceLanguage(),
+                limit = tvShowsPerPage,
+                offset = tvShowsPerPage * (page - 1)
             )
         )
     }
@@ -61,8 +87,9 @@ class TvShowRepositoryImpl(
         remoteTvShows: RemoteTvShowResponse, keyword: String
     ) {
         localTvDataSource.addTvShows(
-            tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results),
+            tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results, listOf(getDeviceLanguage())),
             keyword,
+            storedLanguage = getDeviceLanguage()
         )
     }
 }
