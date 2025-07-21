@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -27,7 +28,13 @@ private fun BackgroundCircle(
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(AppTheme.color.backgroundCircles)
+            .background(
+                brush = Brush.linearGradient(
+                    0f to AppTheme.color.backgroundCircles,
+                    1f to AppTheme.color.backgroundCircles
+                ),
+                alpha = 0.16f
+            )
     )
 }
 
@@ -43,20 +50,21 @@ fun LoginBackground() {
     Box(
         modifier = Modifier
             .background(
-                brush = Brush.linearGradient(
+                brush = Brush.verticalGradient(
                     0f to AppTheme.color.loginGradient.first(),
                     0.775f to AppTheme.color.loginGradient.last()
                 )
             )
             .fillMaxSize(),
     ) {
-        repeat(circles.size){ index ->
+        repeat(circles.size) { index ->
             val circle = circles[index]
             val size = circle.size
             val xOffset = (circle.xCoord / 360f) * screenWidth
             val yOffset = (circle.yCoord / 800f) * screenHeight
             BackgroundCircle(
-                modifier = Modifier.size(size)
+                modifier = Modifier
+                    .size(size)
                     .offset(x = xOffset.dp, y = yOffset.dp)
             )
         }
@@ -69,7 +77,7 @@ fun LoginBackground() {
     backgroundColor = 0xFF0D090B,
 )
 @Composable
-private fun LoginBackgroundPreview(){
+private fun LoginBackgroundPreview() {
     AflamiTheme(isDarkTheme = true) {
         LoginBackground()
     }
