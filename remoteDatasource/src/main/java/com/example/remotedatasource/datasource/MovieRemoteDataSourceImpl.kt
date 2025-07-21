@@ -1,7 +1,6 @@
 package com.example.remotedatasource.datasource
 
-import com.example.remotedatasource.client.NetworkClient
-import com.example.remotedatasource.utils.apiHandler.responseCall
+import com.example.remotedatasource.serviceProvider.MovieServiceProvider
 import com.example.repository.datasource.remote.MovieRemoteSource
 import com.example.repository.dto.remote.ProductionCompanyResponse
 import com.example.repository.dto.remote.RemoteActorSearchResponse
@@ -10,19 +9,13 @@ import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
-import io.ktor.client.request.parameter
 
 class MovieRemoteDataSourceImpl(
-    private val networkClient: NetworkClient
+    private val movieServiceProvider: MovieServiceProvider
 ) : MovieRemoteSource {
 
     override suspend fun getMoviesByKeyword(keyword: String, page: Int): RemoteMovieResponse {
-        return responseCall {
-            networkClient.get(SEARCH_MOVIE_URL) {
-                parameter(QUERY_KEY, keyword)
-                parameter(PAGE, page)
-            }
-        }
+        return movieServiceProvider.getMoviesByKeyword(keyword, page)
     }
 
     override suspend fun getMoviesByActorName(name: String, page: Int): RemoteMovieResponse {
@@ -30,90 +23,49 @@ class MovieRemoteDataSourceImpl(
             .actors
             .joinToString(separator = "|") { it.id.toString() }
 
-        return responseCall {
-            networkClient.get(DISCOVER_MOVIE) { parameter(WITH_CAST_KEY, actorsByName) }
-        }
+        return movieServiceProvider.getMoviesByActorId(actorsByName)
     }
 
     private suspend fun getActorIdByName(name: String, page: Int): RemoteActorSearchResponse {
-        return responseCall {
-            networkClient.get(GET_ACTOR_NAME_BY_ID_URL) {
-                parameter(QUERY_KEY, name)
-                parameter(PAGE, page)
-            }
-        }
+        return movieServiceProvider.getActorIdByName(name, page)
     }
 
-    override suspend fun getMoviesByCountryIsoCode(countryIsoCode: String, page: Int): RemoteMovieResponse {
-        return responseCall {
-            networkClient.get(DISCOVER_MOVIE) {
-                parameter(WITH_ORIGIN_COUNTRY, countryIsoCode)
-                parameter(PAGE, page)
-            }
-        }
+    override suspend fun getMoviesByCountryIsoCode(
+        countryIsoCode: String,
+        page: Int
+    ): RemoteMovieResponse {
+        return movieServiceProvider.getMoviesByCountryIsoCode(countryIsoCode, page)
     }
 
     override suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse {
-        return responseCall {
-            networkClient.get(buildMovieCreditsEndpoint(movieId))
-        }
+        return movieServiceProvider.getCastByMovieId(movieId)
     }
 
-    private fun buildMovieCreditsEndpoint(movieId: Long) = "movie/$movieId/credits"
-
     override suspend fun getMovieReviews(movieId: Long): ReviewsResponse {
-        return responseCall {
-            networkClient.get("movie/$movieId/reviews")
-        }
+        return movieServiceProvider.getMovieReviews(movieId)
     }
 
     override suspend fun getSimilarMovies(movieId: Long): RemoteMovieResponse {
-        return responseCall {
-            networkClient.get("movie/$movieId/similar")
-        }
+        return movieServiceProvider.getSimilarMovies(movieId)
     }
 
     override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
-        return responseCall {
-            networkClient.get("movie/$movieId/images")
-        }
+        return movieServiceProvider.getMovieGallery(movieId)
     }
 
     override suspend fun getProductionCompany(movieId: Long): ProductionCompanyResponse {
-        return responseCall {
-            networkClient.get("movie/$movieId")
-        }
+        return movieServiceProvider.getProductionCompany(movieId)
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto {
-        return responseCall {
-            networkClient.get("movie/$movieId")
-        }
+        return movieServiceProvider.getMovieDetailsById(movieId)
     }
 
     override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
-        return responseCall<RemoteMovieGalleryResponse> {
-            networkClient.get("movie/$movieId/images")
-        }
+        return movieServiceProvider.getMoviePosters(movieId)
     }
 
     override suspend fun getPopularMovies(): RemoteMovieResponse {
-        return responseCall<RemoteMovieResponse> {
-            networkClient.get("movie/popular")
-        }
-    }
-
-
-    private companion object {
-        const val SEARCH_MOVIE_URL = "search/movie"
-        const val GET_ACTOR_NAME_BY_ID_URL = "search/person"
-
-        const val DISCOVER_MOVIE = "discover/movie"
-
-        const val WITH_CAST_KEY = "with_cast"
-        const val QUERY_KEY = "query"
-        const val PAGE = "page"
-
-        const val WITH_ORIGIN_COUNTRY = "with_origin_country"
+        return movieServiceProvider.getPopularMovies()
     }
 }
