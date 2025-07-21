@@ -237,11 +237,7 @@ private fun SuccessMediaItems(
     ) {
         items(
             selectedItems.itemCount,
-            key = selectedItems.itemKey {
-                val id = if (selectedTabOption == TabOption.MOVIES) (it as MovieItemUiState).id
-                         else (it as TvShowItemUiState).id
-                "${id}-${selectedItems.itemSnapshotList.indexOf(it)}"
-            },
+            key = selectedItems.itemKey { getItemKey(selectedTabOption, it, selectedItems) },
         ) { index ->
             val mediaItem = selectedItems[index] ?: return@items
             when (mediaItem) {
@@ -300,6 +296,16 @@ private fun SuccessMediaItems(
             }
         }
     }
+}
+
+private fun getItemKey(
+    selectedTabOption: TabOption,
+    item: Any,
+    selectedItems: LazyPagingItems<out Any>
+): String {
+    val id = if (selectedTabOption == TabOption.MOVIES) (item as MovieItemUiState).id
+             else (item as TvShowItemUiState).id
+    return "${id}-${selectedItems.itemSnapshotList.indexOf(item)}"
 }
 
 @Composable

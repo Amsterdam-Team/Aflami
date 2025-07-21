@@ -14,13 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -179,9 +177,7 @@ private fun SearchByActorContent(
                     ) {
                         items(
                             count = moviesFlow.itemCount,
-                            key = moviesFlow.itemKey {
-                                "${it.id}-${moviesFlow.itemSnapshotList.indexOf(it)}"
-                            },
+                            key = moviesFlow.itemKey { getItemKey(it, moviesFlow) },
                         ) { index ->
                             val movie = moviesFlow[index] ?: return@items
                             MovieCard(
@@ -200,6 +196,11 @@ private fun SearchByActorContent(
         }
     }
 }
+
+private fun getItemKey(
+    movie: MovieItemUiState,
+    moviesFlow: LazyPagingItems<MovieItemUiState>
+): String = "${movie.id}-${moviesFlow.itemSnapshotList.indexOf(movie)}"
 
 @Composable
 private fun MovieImage(imageUrl: String) {
