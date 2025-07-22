@@ -15,7 +15,7 @@ internal object ImageClassifierProvider {
     private var instance: SFWImageClassifier? = null
     private val mutex = Mutex()
 
-    suspend fun getInstance(): SFWImageClassifier {
+    suspend fun getInstance(): SFWImageClassifier? {
         return instance ?: mutex.withLock {
             instance ?: createInstance().also {
                 instance = it
@@ -23,7 +23,7 @@ internal object ImageClassifierProvider {
         }
     }
 
-    private suspend fun createInstance(): SFWImageClassifier {
+    private suspend fun createInstance(): SFWImageClassifier? {
         val modelFile = FirebaseModelManager.modelFile
         val options = Interpreter.Options().apply {
             setUseNNAPI(true)
@@ -35,9 +35,12 @@ internal object ImageClassifierProvider {
             val attempt = CoroutineScope(Dispatchers.IO).async {
                 FirebaseModelManager.getModelFileInstance()
             }
-            Interpreter(attempt.await(), options)
+            val modelFile = attempt.await()
+            if (modelFile != null) {
+                Interpreter(modelFile, options)
+            } else null
         }
-
+        if (interpreter == null) return null
         return SFWImageClassifier(interpreter)
     }
 }

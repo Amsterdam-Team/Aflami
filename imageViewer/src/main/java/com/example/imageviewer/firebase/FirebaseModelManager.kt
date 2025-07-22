@@ -3,36 +3,40 @@ package com.example.imageviewer.firebase
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
 import com.google.firebase.ml.modeldownloader.DownloadType
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.File
-import java.io.IOException
 
 internal object FirebaseModelManager {
-
     private const val MODEL_NAME = "NSFW-Detector"
 
     @Volatile
     var modelFile: File? = null
         private set
 
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    suspend fun getModelFileInstance(): File {
-        return modelFile ?: downloadAndCacheModel().also { modelFile = it }
+    private val modelDownloadJob: Deferred<File?> by lazy {
+        scope.async {
+            downloadModel()
+        }
     }
 
-    private suspend fun downloadAndCacheModel(): File {
-        val conditions = CustomModelDownloadConditions.Builder()
-            .requireWifi()
-            .build()
+    suspend fun getModelFileInstance(): File? {
+        return modelDownloadJob.await()
+    }
 
-        return runCatching {
+    private suspend fun downloadModel(): File? {
+        if (modelFile != null) return modelFile
+        val conditions = CustomModelDownloadConditions.Builder().build()
+
+        return run {
             FirebaseModelDownloader.getInstance()
                 .getModel(MODEL_NAME, DownloadType.LOCAL_MODEL, conditions)
                 .await()
-        }.map { customModel ->
-            customModel.file ?: throw IOException("Downloaded model file is null.")
-        }.onSuccess { file ->
-            modelFile = file
-        }.getOrThrow()
+        }.let {
+            modelFile = it.file
+            modelFile
+        }
     }
 }
