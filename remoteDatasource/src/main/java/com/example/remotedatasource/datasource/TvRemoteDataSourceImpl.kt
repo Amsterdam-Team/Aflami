@@ -2,7 +2,13 @@ package com.example.remotedatasource.datasource
 
 import com.example.remotedatasource.serviceProvider.TvShowsServiceProvider
 import com.example.repository.datasource.remote.TvShowsRemoteSource
+import com.example.repository.dto.remote.EpisodeResponse
+import com.example.repository.dto.remote.ProductionCompanyResponse
+import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteTvShowResponse
+import com.example.repository.dto.remote.TvShowDetailsRemoteResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
+import com.example.repository.dto.remote.review.ReviewsResponse
 
 class TvRemoteDataSourceImpl(
     private val tvShowsServiceProvider: TvShowsServiceProvider
@@ -13,48 +19,34 @@ class TvRemoteDataSourceImpl(
     }
 
     override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId")
-        }
+        return tvShowsServiceProvider.getTvShowDetailsById(tvShowId)
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId/credits")
-        }
+        return tvShowsServiceProvider.getTvShowCast(tvShowId)
     }
 
     override suspend fun getSimilarTvShows(tvShowId: Long): RemoteTvShowResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId/similar")
-        }
+        return tvShowsServiceProvider.getSimilarTvShows(tvShowId)
     }
 
     override suspend fun getTvShowReviews(tvShowId: Long): ReviewsResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId/reviews")
-        }
+        return tvShowsServiceProvider.getTvShowReviews(tvShowId)
     }
 
     override suspend fun getTvShowGallery(tvShowId: Long): RemoteGalleryResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId/images")
-        }
+        return tvShowsServiceProvider.getTvShowGallery(tvShowId)
     }
 
     override suspend fun getTvShowCompanyProduction(tvShowId: Long): ProductionCompanyResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId")
-        }
+        return tvShowsServiceProvider.getTvShowCompanyProduction(tvShowId)
     }
 
     override suspend fun getEpisodesBySeasonNumber(
         tvShowId: Long,
         seasonNumber: Int
     ): EpisodeResponse {
-        return responseCall {
-            networkClient.get("tv/$tvShowId/season/$seasonNumber")
-        }
+        return tvShowsServiceProvider.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
     }
 
     private companion object {
