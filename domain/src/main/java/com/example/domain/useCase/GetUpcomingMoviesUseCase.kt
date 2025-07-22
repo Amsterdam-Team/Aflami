@@ -9,7 +9,9 @@ class GetUpcomingMoviesUseCase(private val movieRepository: MovieRepository) {
         return movieRepository.getUpcomingMovies()
             .let { movies ->
                 if (genre == MovieGenre.ALL) movies
-                else movies.filter { it.categories.contains(genre) }
+                else movies.filter { movie ->
+                    movie.categories.isNotEmpty() && movie.categories.contains(genre)
+                }
             }
     }
 }
