@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.designsystem.R
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.ImageErrorIndicator
@@ -369,7 +371,8 @@ private fun LazyListScope.SeasonsSection(
                 }
             )
         }
-        items(if (season.isExpanded) season.episodes else emptyList(), key = { it.id }) {
+        val episodes = if (season.isExpanded) season.episodes else emptyList()
+        items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
             EpisodesMenu(it, state)
         }
     }
