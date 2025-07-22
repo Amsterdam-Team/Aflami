@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
@@ -63,7 +64,6 @@ private fun HomeScreenContent(
     interactionListener: HomeInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    //val isSectionsVisible by remember { mutableStateOf(!state.isLoading && state.error == null) }
     val isSectionsVisible = !state.isLoading && state.error == null
 
     LazyColumn(
@@ -77,7 +77,8 @@ private fun HomeScreenContent(
             HomeAppBar(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .zIndex(4f),
                 onSearchClicked = interactionListener::onClickSearch,
             )
         }
