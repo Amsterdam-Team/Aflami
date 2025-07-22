@@ -7,7 +7,7 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -396,7 +396,7 @@ class MovieRemoteDataSourceImplTest {
         """.trimIndent()
 
         val expectedGalleryResponse =
-            jsonSerializer.decodeFromString<RemoteMovieGalleryResponse>(jsonString)
+            jsonSerializer.decodeFromString<RemoteGalleryResponse>(jsonString)
 
         coEvery {
             movieServiceProvider.getMovieGallery(movieId)
@@ -487,7 +487,7 @@ class MovieRemoteDataSourceImplTest {
         """.trimIndent()
 
         val expectedGalleryResponse =
-            jsonSerializer.decodeFromString<RemoteMovieGalleryResponse>(jsonString)
+            jsonSerializer.decodeFromString<RemoteGalleryResponse>(jsonString)
 
         coEvery {
             movieServiceProvider.getMoviePosters(movieId)
