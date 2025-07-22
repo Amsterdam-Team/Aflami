@@ -7,6 +7,7 @@ import com.example.entity.category.MovieGenre
 import io.mockk.coEvery
 import io.mockk.mockk
 import com.google.common.truth.Truth.assertThat
+import io.mockk.coVerify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -42,13 +43,14 @@ class GetUpcomingMoviesUseCaseTest {
     }
 
     @Test
-    fun `invoke with a specific genre and no matching movies should return an empty list`() = runTest {
-        coEvery { movieRepository.getUpcomingMovies() } returns listOf(comedyMovie)
+    fun `invoke with a specific genre and no matching movies should return an empty list`() =
+        runTest {
+            coEvery { movieRepository.getUpcomingMovies() } returns listOf(comedyMovie)
 
-        val result = getUpcomingMoviesUseCase(MovieGenre.DRAMA)
+            val result = getUpcomingMoviesUseCase(MovieGenre.DRAMA)
 
-        assertThat(result).isEmpty()
-    }
+            assertThat(result).isEmpty()
+        }
 
     @Test
     fun `invoke should return an empty list when movie repository returns no movies`() = runTest {
@@ -60,24 +62,46 @@ class GetUpcomingMoviesUseCaseTest {
     }
 
 
-
     @Test
-    fun `invoke should exclude movies with empty category lists when filtering by genre`() = runTest {
-        coEvery { movieRepository.getUpcomingMovies() } returns listOf(emptyCategoryMovie, dramaMovie)
+    fun `invoke should exclude movies with empty category lists when filtering by genre`() =
+        runTest {
+            coEvery { movieRepository.getUpcomingMovies() } returns listOf(
+                emptyCategoryMovie,
+                dramaMovie
+            )
 
-        val result = getUpcomingMoviesUseCase(MovieGenre.DRAMA)
+            val result = getUpcomingMoviesUseCase(MovieGenre.DRAMA)
 
-        assertThat(result).isEqualTo(listOf(dramaMovie))
-    }
+            assertThat(result).isEqualTo(listOf(dramaMovie))
+        }
 
     @Test
     fun `invoke should propagate exception when movie repository throws`() = runTest {
         coEvery { movieRepository.getUpcomingMovies() } throws NoInternetException()
-        assertThrows<NoInternetException> { getUpcomingMoviesUseCase(MovieGenre.ALL)}
+        assertThrows<NoInternetException> { getUpcomingMoviesUseCase(MovieGenre.ALL) }
+    }
+
+    @Test
+    fun `invoke should return movies sorted by popularity then rating`() = runTest {
+        coEvery { movieRepository.getUpcomingMovies() } returns listOf(
+            highRatedButLessPopularMovie,
+            popularAndWellRatedMovie,
+            equallyPopularButLowerRatedMovie
+        )
+
+        val result = getUpcomingMoviesUseCase(MovieGenre.ACTION)
+
+        assertThat(result.map { it.name }).containsExactly(
+            popularAndWellRatedMovie.name,
+            equallyPopularButLowerRatedMovie.name,
+            highRatedButLessPopularMovie.name
+        ).inOrder()
+
+        coVerify(exactly = 1) { movieRepository.getUpcomingMovies() }
     }
 
     private companion object {
-         val baseMovie = Movie(
+        val baseMovie = Movie(
             id = 0L,
             name = "Base Movie",
             description = "A base movie for inheritance",
@@ -109,12 +133,6 @@ class GetUpcomingMoviesUseCaseTest {
             categories = listOf(MovieGenre.COMEDY)
         )
 
-        val multiGenreMovie = baseMovie.copy(
-            id = 4L,
-            name = "Multi-Genre Movie",
-            categories = listOf(MovieGenre.ACTION, MovieGenre.COMEDY)
-        )
-
         val emptyCategoryMovie = baseMovie.copy(
             id = 5L,
             name = "No Category Movie",
@@ -123,6 +141,46 @@ class GetUpcomingMoviesUseCaseTest {
 
         val actionDramaMovies = listOf(actionMovie, dramaMovie)
 
-    }
+        val popularAndWellRatedMovie = Movie(
+            id = 1L,
+            name = "Popular Hero",
+            description = "Blockbuster action movie",
+            posterUrl = "url1",
+            productionYear = 2024u,
+            categories = listOf(MovieGenre.ACTION),
+            rating = 8.5f,
+            popularity = 150.0,
+            originCountry = "US",
+            runTime = 120,
+            hasVideo = true
+        )
 
+        val equallyPopularButLowerRatedMovie = Movie(
+            id = 2L,
+            name = "Action Sequel",
+            description = "Another action movie",
+            posterUrl = "url2",
+            productionYear = 2024u,
+            categories = listOf(MovieGenre.ACTION),
+            rating = 7.0f,
+            popularity = 150.0,
+            originCountry = "US",
+            runTime = 110,
+            hasVideo = false
+        )
+
+        val highRatedButLessPopularMovie = Movie(
+            id = 3L,
+            name = "Underrated Gem",
+            description = "High quality but less known",
+            posterUrl = "url3",
+            productionYear = 2024u,
+            categories = listOf(MovieGenre.ACTION),
+            rating = 9.0f,
+            popularity = 100.0,
+            originCountry = "UK",
+            runTime = 105,
+            hasVideo = false
+        )
+    }
 }

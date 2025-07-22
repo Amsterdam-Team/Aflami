@@ -92,7 +92,7 @@ private fun HomeScreenContent(
             onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
             movies = state.upcomingMovies,
             onMovieClicked = interactionListener::onClickUpcomingMovieCard,
-            isVisible = isSectionsVisible && state.upcomingMovies.isNotEmpty()
+            isVisible = isSectionsVisible
         )
 
         homeErrorContent(
