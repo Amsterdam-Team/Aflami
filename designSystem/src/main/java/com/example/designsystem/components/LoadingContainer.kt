@@ -1,6 +1,5 @@
 package com.example.designsystem.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,7 @@ import com.example.designsystem.theme.AppTheme
 @Composable
 fun LoadingContainer(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.background(AppTheme.color.surface),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

@@ -22,4 +22,5 @@ interface MovieServiceProvider {
     suspend fun getMoviePosters(movieId: Long): RemoteGalleryResponse
     suspend fun getProductionCompany(movieId: Long): ProductionCompanyResponse
     suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto
+    suspend fun getTopRatedMovies() : RemoteMovieResponse
 }
