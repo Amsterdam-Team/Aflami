@@ -24,5 +24,7 @@ data class RemoteTvShowItemDto(
     @SerialName("number_of_seasons") val seasonCount: Int = 0,
 ){
     val fullPosterPath: String?
-        get() = posterPath.let { BuildConfig.BASE_IMAGE_URL + it }
+        get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+    val fullBackdropPath: String?
+        get() = backdropPath?.let { BuildConfig.BASE_IMAGE_URL + it }
 }

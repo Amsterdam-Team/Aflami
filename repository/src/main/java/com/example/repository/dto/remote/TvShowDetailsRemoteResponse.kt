@@ -24,4 +24,7 @@ data class TvShowDetailsRemoteResponse(
 ){
     val fullPosterPath: String?
         get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+
+    val fullBackdropPath: String?
+        get() = backdropPath?.let { BuildConfig.BASE_IMAGE_URL + it }
 }
