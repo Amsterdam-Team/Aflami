@@ -41,7 +41,7 @@ import com.example.repository.dto.local.TvShowCategoryCrossRefDto
         LocalMovieCategoryInterestDto::class,
         LocalTvShowCategoryInterestDto::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(InstantConverter::class, SearchTypeConverter::class)
 abstract class AflamiDatabase : RoomDatabase() {
@@ -54,7 +54,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun tvShowCategoryInterestDao(): TvShowCategoryInterestDao
 
     companion object {
-        private const val DATABASE_NAME = "AflamiDatabase"
+        private const val DATABASE_NAME = "AflamiDatabase.db"
 
         @Volatile
         private var instance: AflamiDatabase? = null

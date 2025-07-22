@@ -8,9 +8,10 @@ import com.example.repository.utils.DateParser
 class TvShowRemoteLocalMapper(
     private val dateParser: DateParser
 ) : RemoteToLocalMapper<RemoteTvShowItemDto, LocalTvShowDto> {
-    override fun toLocal(remote: RemoteTvShowItemDto): LocalTvShowDto {
+    override fun toLocal(remote: RemoteTvShowItemDto, args: List<Any>): LocalTvShowDto {
         return LocalTvShowDto(
             tvShowId = remote.id,
+            storedLanguage = args.first().toString(),
             name = remote.title,
             description = remote.overview,
             poster = remote.fullPosterPath.orEmpty(),

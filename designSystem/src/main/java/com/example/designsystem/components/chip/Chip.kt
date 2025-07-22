@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
@@ -80,7 +81,9 @@ fun Chip(
             text = label,
             color = labelColor,
             style = AppTheme.textStyle.label.small,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -94,7 +97,7 @@ private fun ChipPreview() {
                 painterResource(
                     R.drawable.ic_menu_square,
                 ),
-            label = "All",
+            label = "Documentary",
             isSelected = true,
         )
     }

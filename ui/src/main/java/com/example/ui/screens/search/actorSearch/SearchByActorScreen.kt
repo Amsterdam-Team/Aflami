@@ -27,6 +27,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.designsystem.components.ImageErrorIndicator
 import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
@@ -174,7 +175,10 @@ private fun SearchByActorContent(
                             horizontal = 16.dp
                         ),
                     ) {
-                        items(moviesFlow.itemCount) { index ->
+                        items(
+                            count = moviesFlow.itemCount,
+                            key = moviesFlow.itemKey { getItemKey(it, moviesFlow) },
+                        ) { index ->
                             val movie = moviesFlow[index] ?: return@items
                             MovieCard(
                                 movieImage = { MovieImage(movie.posterImageUrl) },
@@ -192,6 +196,11 @@ private fun SearchByActorContent(
         }
     }
 }
+
+private fun getItemKey(
+    movie: MovieItemUiState,
+    moviesFlow: LazyPagingItems<MovieItemUiState>
+): String = "${movie.id}-${moviesFlow.itemSnapshotList.indexOf(movie)}"
 
 @Composable
 private fun MovieImage(imageUrl: String) {

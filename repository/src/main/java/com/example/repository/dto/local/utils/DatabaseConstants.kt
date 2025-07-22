@@ -1,6 +1,6 @@
 package com.example.repository.dto.local.utils
 
-object DatabaseContract {
+object DatabaseConstants {
     const val MOVIE_TABLE = "movies"
     const val TV_SHOW_TABLE = "tv_shows"
     const val COUNTRY_TABLE = "countries"
@@ -11,10 +11,6 @@ object DatabaseContract {
     const val MOVIE_CATEGORY_CROSS_REF_TABLE = "movie_category_cross_ref"
     const val SEARCH_MOVIE_CROSS_REF_TABLE = "search_movie_cross_ref"
     const val TV_SHOW_CATEGORY_CROSS_REF_TABLE = "tv_show_category_cross_ref"
-
     const val MOVIE_CATEGORY_INTEREST_TABLE = "movie_category_interest"
     const val TV_SHOW_CATEGORY_INTEREST_TABLE = "tv_show_category_interest"
-
-    const val INTEREST_COUNT_FIELD = "interestCount"
-    const val GENRE_FIELD = "genre"
 }

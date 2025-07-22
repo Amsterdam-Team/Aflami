@@ -5,6 +5,7 @@ import com.example.remotedatasource.api.CategoryApiService
 import com.example.remotedatasource.api.CountryApiService
 import com.example.remotedatasource.api.MovieApiService
 import com.example.remotedatasource.api.TvShowsApiService
+import com.example.repository.utils.getDeviceLanguage
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -22,7 +23,6 @@ class RetrofitClient(
     private val SESSION_PARAM_NAME = "session_id"
 
     private val token = BuildConfig.BEARER_TOKEN
-    private val languageTag: String? = null
     private val sessionId: String? = null
 
     private val okHttpClient: OkHttpClient by lazy {
@@ -42,9 +42,7 @@ class RetrofitClient(
             val originalRequest = chain.request()
             val originalHttpUrlBuilder = originalRequest.url.newBuilder()
 
-            if (!languageTag.isNullOrBlank()) {
-                originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, languageTag)
-            }
+            originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, getDeviceLanguage())
 
             if (!sessionId.isNullOrBlank()) {
                 originalHttpUrlBuilder.addQueryParameter(SESSION_PARAM_NAME, sessionId)

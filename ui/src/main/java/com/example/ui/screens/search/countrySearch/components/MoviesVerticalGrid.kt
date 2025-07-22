@@ -42,7 +42,7 @@ internal fun MoviesVerticalGrid(
         ) {
             items(
                 count = movies.itemCount,
-                key = movies.itemKey { it.id },
+                key = movies.itemKey { getItemKey(it, movies) },
             ) { index ->
                 val movie = movies[index] ?: return@items
                 MovieCard(
@@ -68,6 +68,11 @@ internal fun MoviesVerticalGrid(
         }
     }
 }
+
+private fun getItemKey(
+    movie: MovieItemUiState,
+    movies: LazyPagingItems<MovieItemUiState>
+): String = "${movie.id}-${movies.itemSnapshotList.indexOf(movie)}"
 
 @Composable
 @ThemeAndLocalePreviews

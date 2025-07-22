@@ -9,28 +9,15 @@ import com.example.entity.TvShow
 import com.example.entity.category.TvShowGenre
 
 interface TvShowRepository {
-    suspend fun getTvShowByKeyword(
-        keyword: String,
-        page: Int
-    ): List<TvShow>
-
+    suspend fun getTvShowByKeyword(keyword: String, page: Int, tvShowsPerPage: Int): List<TvShow>
     suspend fun incrementGenreInterest(genre: TvShowGenre)
-
     suspend fun getAllGenreInterests(): Map<TvShowGenre, Int>
-
     suspend fun getTvShowDetails(tvShowId: Long): TvShow
-
     suspend fun getTvShowCast(tvShowId: Long): List<Actor>
-
     suspend fun getTvShowSeasons(tvShowId: Long): List<Season>
-
     suspend fun getEpisodesBySeasonNumber(tvShowId: Long, seasonNumber: Int): List<Episode>
-
     suspend fun getTvShowReviews(tvShowId: Long): List<Review>
-
     suspend fun getSimilarTvShows(tvShowId: Long): List<TvShow>
-
     suspend fun getTvShowGallery(tvShowId: Long): List<String>
-
     suspend fun getProductionCompany(tvShowId: Long): List<ProductionCompany>
 }

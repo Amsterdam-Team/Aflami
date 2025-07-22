@@ -29,7 +29,8 @@ class GetMoviesByActorUseCaseTest {
             getMoviesByActorUseCase("actorName")
             coVerify(exactly = 1) { movieRepository.getMoviesByActor(
                 any(),
-                page = 1
+                page = 1,
+                moviesPerPage = 20
             ) }
         }
 
@@ -37,7 +38,8 @@ class GetMoviesByActorUseCaseTest {
     fun `getMoviesByActorUseCase should return movies when data is available`() = runTest {
         coEvery { movieRepository.getMoviesByActor(
             "actorName",
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieList
 
         val result = getMoviesByActorUseCase("actorName")
@@ -48,7 +50,8 @@ class GetMoviesByActorUseCaseTest {
     fun `getMoviesByActorUseCase should return an empty list when repository returns no movies`() = runTest {
         coEvery { movieRepository.getMoviesByActor(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns emptyList()
 
         val result = getMoviesByActorUseCase("nonexistentActor")
@@ -59,7 +62,8 @@ class GetMoviesByActorUseCaseTest {
     fun `getMoviesByActorUseCase should return Aflami exception when an error happened`() = runTest {
         coEvery { movieRepository.getMoviesByActor(
             "actorName",
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } throws AflamiException()
         assertThrows<AflamiException> { getMoviesByActorUseCase("actorName") }
     }

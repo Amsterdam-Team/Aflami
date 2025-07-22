@@ -18,6 +18,10 @@ class MovieServiceProviderImpl(
         return responseCall { movieApiService.getPopularMovies() }
     }
 
+    override suspend fun getUpcomingMovies(): RemoteMovieResponse {
+        return responseCall { movieApiService.getUpcomingMovies() }
+    }
+
     override suspend fun getMoviesByKeyword(keyword: String, page: Int): RemoteMovieResponse {
         return responseCall { movieApiService.getMoviesByKeyword(keyword, page) }
     }

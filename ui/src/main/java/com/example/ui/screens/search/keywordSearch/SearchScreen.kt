@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.ImageErrorIndicator
@@ -241,7 +242,10 @@ private fun SuccessMediaItems(
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
         modifier = modifier,
     ) {
-        items(selectedItems.itemCount) { index ->
+        items(
+            selectedItems.itemCount,
+            key = selectedItems.itemKey { getItemKey(selectedTabOption, it, selectedItems) },
+        ) { index ->
             val mediaItem = selectedItems[index] ?: return@items
             when (mediaItem) {
                 is MovieItemUiState -> {
@@ -300,6 +304,16 @@ private fun SuccessMediaItems(
             }
         }
     }
+}
+
+private fun getItemKey(
+    selectedTabOption: TabOption,
+    item: Any,
+    selectedItems: LazyPagingItems<out Any>
+): String {
+    val id = if (selectedTabOption == TabOption.MOVIES) (item as MovieItemUiState).id
+             else (item as TvShowItemUiState).id
+    return "${id}-${selectedItems.itemSnapshotList.indexOf(item)}"
 }
 
 @Composable

@@ -8,6 +8,7 @@ import com.example.ui.screens.categories.categoriesScreenRoute
 import com.example.ui.screens.home.homeScreenRoute
 import com.example.ui.screens.letsPlay.letsPlayScreenRoute
 import com.example.ui.screens.lists.listsScreenRoute
+import com.example.ui.screens.login.loginScreenRoute
 import com.example.ui.screens.movieDetails.movieDetailsScreenRoute
 import com.example.ui.screens.profile.profileScreenRoute
 import com.example.ui.screens.search.keywordSearch.searchScreenRoute
@@ -21,6 +22,7 @@ fun NavGraph(
     startDestination: Any = Route.Tab.Home
 ){
     NavHost(navController = navController, startDestination = startDestination){
+        loginScreenRoute()
         homeScreenRoute()
         listsScreenRoute()
         letsPlayScreenRoute()

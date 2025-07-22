@@ -6,9 +6,10 @@ import com.example.repository.mapper.shared.RemoteToLocalMapper
 
 class MovieCategoryRemoteLocalMapper :
     RemoteToLocalMapper<RemoteCategoryDto, LocalMovieCategoryDto> {
-    override fun toLocal(remote: RemoteCategoryDto): LocalMovieCategoryDto {
+    override fun toLocal(remote: RemoteCategoryDto, args: List<Any>): LocalMovieCategoryDto {
         return LocalMovieCategoryDto(
             categoryId = remote.id,
+            storedLanguage = args.first().toString(),
             name = remote.name
         )
     }

@@ -8,6 +8,7 @@ import com.example.repository.dto.remote.RemoteCountryDto
 import com.example.repository.mapper.local.CountryLocalMapper
 import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.example.repository.mapper.remoteToLocal.CountryRemoteLocalMapper
+import com.example.repository.utils.getDeviceLanguage
 
 class CountryRepositoryImpl(
     private val localDataSource: CountryLocalSource,
@@ -32,13 +33,16 @@ class CountryRepositoryImpl(
 
     private suspend fun getCountriesFromLocal(): List<Country> {
         return try {
-            countryLocalMapper.toEntityList(localDataSource.getCountries())
+            countryLocalMapper.toEntityList(localDataSource.getCountries(getDeviceLanguage()))
         } catch (_: Exception) {
             emptyList()
         }
     }
 
     private suspend fun saveCountries(remoteCountries: List<RemoteCountryDto>) {
-        localDataSource.addCountries(countryRemoteLocalMapper.toLocalList(remoteCountries))
+        localDataSource.addCountries(countryRemoteLocalMapper.toLocalList(
+            remoteCountries,
+            listOf(getDeviceLanguage()))
+        )
     }
 }

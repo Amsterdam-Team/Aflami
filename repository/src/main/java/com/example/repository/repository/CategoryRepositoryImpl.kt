@@ -11,6 +11,7 @@ import com.example.repository.mapper.local.TvShowCategoryLocalMapper
 import com.example.repository.mapper.remote.CategoryRemoteMapper
 import com.example.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
+import com.example.repository.utils.getDeviceLanguage
 
 class CategoryRepositoryImpl(
     private val categoryRemoteSource: CategoryRemoteSource,
@@ -54,7 +55,10 @@ class CategoryRepositoryImpl(
         movieCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertMovieCategories(
-            movieCategoryRemoteLocalMapper.toLocalList(movieCategories.genres)
+            movieCategoryRemoteLocalMapper.toLocalList(
+                movieCategories.genres,
+                listOf(getDeviceLanguage())
+            )
         )
     }
 
@@ -74,7 +78,10 @@ class CategoryRepositoryImpl(
         tvShowCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertTvShowCategories(
-            tvShowCategoryRemoteLocalMapper.toLocalList(tvShowCategories.genres)
+            tvShowCategoryRemoteLocalMapper.toLocalList(
+                tvShowCategories.genres,
+                listOf(getDeviceLanguage())
+            )
         )
     }
 }

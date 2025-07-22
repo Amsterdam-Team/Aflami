@@ -16,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.components.LoadingIndicator
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.textStyle.AflamiTextStyle
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
@@ -30,6 +32,7 @@ fun PlainTextButton(
     isEnabled: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
+    style: TextStyle = AppTheme.textStyle.label.large,
     colors: ButtonColors = ButtonDefaults.textButtonColors(),
 ) {
     val contentColor by animateColorAsState(
@@ -55,7 +58,7 @@ fun PlainTextButton(
         Text(
             text = title,
             color = contentColor,
-            style = AppTheme.textStyle.label.large,
+            style = style,
         )
 
         val animatedPadding by animateDpAsState(

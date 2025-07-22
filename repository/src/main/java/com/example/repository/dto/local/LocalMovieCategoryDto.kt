@@ -2,14 +2,15 @@ package com.example.repository.dto.local
 
 import androidx.room.Entity
 import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.example.repository.dto.local.utils.DatabaseContract
+import com.example.repository.dto.local.utils.DatabaseConstants
 
 @Entity(
-    tableName = DatabaseContract.MOVIE_CATEGORY_TABLE,
+    tableName = DatabaseConstants.MOVIE_CATEGORY_TABLE,
+    primaryKeys = ["categoryId", "storedLanguage"],
     indices = [Index(value = ["name"], unique = true)]
 )
 data class LocalMovieCategoryDto(
-    @PrimaryKey(autoGenerate = false) val categoryId: Long,
+    val categoryId: Long,
+    val storedLanguage: String,
     val name: String
 )

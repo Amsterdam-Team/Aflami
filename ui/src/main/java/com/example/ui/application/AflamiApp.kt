@@ -34,7 +34,7 @@ fun AflamiApp(){
             ) {
                 NavGraph(
                     navController = navController,
-                    startDestination = Route.Tab.Home
+                    startDestination = Route.Login
                 )
             }
         }

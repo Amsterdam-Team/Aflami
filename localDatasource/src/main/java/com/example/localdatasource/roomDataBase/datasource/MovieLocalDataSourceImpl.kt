@@ -1,5 +1,6 @@
 package com.example.localdatasource.roomDataBase.datasource
 
+import androidx.room.Transaction
 import com.example.entity.category.MovieGenre
 import com.example.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.example.localdatasource.roomDataBase.daos.MovieDao
@@ -15,14 +16,17 @@ class MovieLocalDataSourceImpl(
     private val movieDao: MovieDao,
     private val interestDao: MovieCategoryInterestDao
 ) : MovieLocalSource {
-
     override suspend fun getMoviesByKeywordAndSearchType(
         keyword: String,
-        searchType: SearchType
+        searchType: SearchType,
+        storedLanguage: String,
+        limit: Int,
+        offset: Int
     ): List<MovieWithCategories> {
-        return movieDao.getMoviesByKeywordAndSearchType(keyword, searchType)
+        return movieDao.getMoviesByKeywordAndSearchType(keyword, searchType, storedLanguage, limit, offset)
     }
 
+    @Transaction
     override suspend fun addMoviesBySearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
@@ -30,23 +34,15 @@ class MovieLocalDataSourceImpl(
         expireDate: Instant
     ) {
         movieDao.insertMovies(movies)
-
         val entries = movies.map { movie ->
             SearchMovieCrossRefDto(
                 searchKeyword = searchKeyword,
                 searchType = searchType,
-                movieId = movie.movieId
+                movieId = movie.movieId,
+                storedLanguage = movie.storedLanguage,
             )
         }
-
         movieDao.insertSearchEntries(entries)
-    }
-
-    override suspend fun getSearchMovieCrossRefs(
-        searchKeyword: String,
-        searchType: SearchType
-    ): List<SearchMovieCrossRefDto> {
-        return movieDao.getSearchMoviesCrossRef(searchKeyword, searchType)
     }
 
     override suspend fun getMovieById(movieId : Long): LocalMovieDto {
@@ -60,5 +56,4 @@ class MovieLocalDataSourceImpl(
     override suspend fun getAllGenreInterests(): Map<MovieGenre, Int> {
         return interestDao.getAllInterests().associate { it.genre to it.interestCount }
     }
-
 }

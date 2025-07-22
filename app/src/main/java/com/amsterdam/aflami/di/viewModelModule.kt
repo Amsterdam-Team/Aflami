@@ -5,6 +5,7 @@ import com.example.viewmodel.movieDetails.MovieDetailsViewModel
 import com.example.viewmodel.cast.CastViewModel
 import com.example.viewmodel.home.HomeUiStateMapper
 import com.example.viewmodel.home.HomeViewModel
+import com.example.viewmodel.login.LoginViewModel
 import com.example.viewmodel.movieDetails.MovieDetailsUiStateMapper
 import com.example.viewmodel.utils.dispatcher.DefaultDispatcherProvider
 import com.example.viewmodel.search.actorSearch.SearchActorViewModel
@@ -22,6 +23,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     singleOf(::DefaultDispatcherProvider) { bind<DispatcherProvider>() }
+    viewModelOf(::LoginViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::MovieDetailsViewModel)
     viewModelOf(::CastViewModel)
