@@ -2,13 +2,10 @@ package com.example.ui.screens.home.sections
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.pager.HorizontalPager
@@ -23,25 +20,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.zIndex
-import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
-import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.R
 import com.example.designsystem.components.SectionTitle
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.imageviewer.ui.SafeImageView
 import com.example.ui.screens.home.component.PopularMovieCard
 import com.example.viewmodel.home.HomeUiState.PopularMovieItemUiState
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
-fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, isVisible: Boolean) {
-    val pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
-
+fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, pagerState: PagerState) {
     item {
-        AnimatedSectionVisibility(visible = isVisible) {
             SectionTitle(
                 title = stringResource(R.string.popular),
                 icon = painterResource(R.drawable.ic_fire),
@@ -50,30 +41,11 @@ fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, i
                     .zIndex(1f)
                     .padding(bottom = 12.dp)
             )
-        }
     }
 
     item {
-        AnimatedSectionVisibility(visible = isVisible) {
-            AutoScrollingPager(pagerState = pagerState)
-        }
-    }
-
-    item {
-        AnimatedSectionVisibility(visible = isVisible) {
-            BoxWithConstraints {
-                SafeImageView(
-                    model = popularMovies[pagerState.currentPage % popularMovies.size].posterUrl,
-                    contentDescription = popularMovies[pagerState.currentPage % popularMovies.size].name,
-                    onLoading = { },
-                    onError = { },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .requiredHeight(470.dp)
-                        .offset(y = -200.dp)
-                        .blur(10f, edgeTreatment = BlurEdgeTreatment.UNBOUNDED)
-                )
-
+        AutoScrollingPager(pagerState)
+        BoxWithConstraints {
                 val screenWidth = maxWidth
                 val itemWidth = 207.dp
                 val horizontalPadding = (screenWidth - itemWidth) / 2
@@ -96,13 +68,18 @@ fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, i
                         targetValue = lerp(276.dp, 300.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
                         label = "height"
                     )
+                    val rateAlpha by animateFloatAsState(
+                        targetValue = androidx.compose.ui.util.lerp(0f, 1f, 1f - currentPageOffset.coerceIn(0f, 1f)),
+                        label = "height"
+                    )
                     PopularMovieCard(
                         popularMovie = popularMovies[page % popularMovies.size],
-                        modifier = Modifier.size(width, height)
+                        ratingAlpha = rateAlpha,
+                        imageWidth = width,
+                        imageHeight = height,
                     )
                 }
             }
-        }
     }
 }
 
@@ -136,7 +113,7 @@ private fun PopularSectionPreview() {
         LazyColumn {
             popularSection(
                 popularMovies = dummyMovies,
-                isVisible = true
+                pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
             )
         }
     }
