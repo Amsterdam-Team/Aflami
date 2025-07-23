@@ -197,6 +197,7 @@ class MovieRepositoryImpl(
         page: Int,
         moviesPerPage: Int
     ): List<Movie> {
+        saveMovieWithCategories(remoteMovies)
         return saveMoviesWithSearch(remoteMovies, keyword, searchType)
             .let { getMoviesFromLocal(keyword, searchType, page, moviesPerPage) }
             .takeIf { movies -> movies.isNotEmpty() }
