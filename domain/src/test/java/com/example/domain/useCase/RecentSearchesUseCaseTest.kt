@@ -25,10 +25,11 @@ class RecentSearchesUseCaseTest {
     }
 
     @Test
-    fun `recentSearchesUsaCase should call addRecentSearch one time when keyword is valid`() = runTest {
-        recentSearchesUseCase.addRecentSearch("keyword")
-        coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(any()) }
-    }
+    fun `recentSearchesUsaCase should call addRecentSearch one time when keyword is valid`() =
+        runTest {
+            recentSearchesUseCase.addRecentSearch("keyword")
+            coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(any()) }
+        }
 
     @Test
     fun `recentSearchesUsaCase should not call addRecentSearch when keyword is empty`() = runTest {
@@ -37,28 +38,32 @@ class RecentSearchesUseCaseTest {
     }
 
     @Test
-    fun `recentSearchesUsaCase should not call addRecentSearch from recentSearchRepository when keyword is blank but not empty`() = runTest {
+    fun `recentSearchesUsaCase should not call addRecentSearch from recentSearchRepository when keyword is blank but not empty`() =
+        runTest {
             recentSearchesUseCase.addRecentSearch("   ")
             coVerify(exactly = 0) { recentSearchRepository.addRecentSearch("   ") }
         }
 
     @Test
-    fun `recentSearchesUsaCase should call addRecentSearchForCountry one time when called`() = runTest {
-        recentSearchesUseCase.addRecentSearchForCountry(country)
-        coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForCountry(any()) }
-    }
+    fun `recentSearchesUsaCase should call addRecentSearchForCountry one time when called`() =
+        runTest {
+            recentSearchesUseCase.addRecentSearchForCountry(country)
+            coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForCountry(any()) }
+        }
 
     @Test
-    fun `recentSearchesUsaCase should call addRecentSearchForActor one time when called`() = runTest {
-        recentSearchesUseCase.addRecentSearchForActor("keyword")
-        coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForActor(any()) }
-    }
+    fun `recentSearchesUsaCase should call addRecentSearchForActor one time when called`() =
+        runTest {
+            recentSearchesUseCase.addRecentSearchForActor("keyword")
+            coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForActor(any()) }
+        }
 
     @Test
-    fun `recentSearchesUsaCase should not call addRecentSearchForActor when keyword is empty`() = runTest {
-        recentSearchesUseCase.addRecentSearchForActor("")
-        coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForActor(any()) }
-    }
+    fun `recentSearchesUsaCase should not call addRecentSearchForActor when keyword is empty`() =
+        runTest {
+            recentSearchesUseCase.addRecentSearchForActor("")
+            coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForActor(any()) }
+        }
 
     @Test
     fun `recentSearchesUsaCase should not call addRecentSearchForActor from recentSearchRepository when keyword is blank but not empty`() =
@@ -68,10 +73,11 @@ class RecentSearchesUseCaseTest {
         }
 
     @Test
-    fun `recentSearchesUsaCase should call deleteAllRecentSearches one time when called`() = runTest {
-        recentSearchesUseCase.deleteRecentSearches()
-        coVerify(exactly = 1) { recentSearchRepository.deleteAllRecentSearches() }
-    }
+    fun `recentSearchesUsaCase should call deleteAllRecentSearches one time when called`() =
+        runTest {
+            recentSearchesUseCase.deleteRecentSearches()
+            coVerify(exactly = 1) { recentSearchRepository.deleteAllRecentSearches() }
+        }
 
     @Test
     fun `recentSearchesUsaCase should call deleteRecentSearch one time when called`() = runTest {
@@ -103,6 +109,33 @@ class RecentSearchesUseCaseTest {
     fun `recentSearchesUsaCase should throw Aflami exception when error happened`() = runTest {
         coEvery { recentSearchRepository.getAllRecentSearches() } throws AflamiException()
         assertThrows<AflamiException> { recentSearchesUseCase.getRecentSearches() }
+    }
+
+    @Test
+    fun `addRecentSearch should throw AflamiException when repository fails`() = runTest {
+        val keyword = "testKeyword"
+        coEvery { recentSearchRepository.addRecentSearch(keyword) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearch(keyword) }
+    }
+
+    @Test
+    fun `addRecentSearchForCountry should throw AflamiException when repository fails`() = runTest {
+        coEvery { recentSearchRepository.addRecentSearchForCountry(country.countryIsoCode) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearchForCountry(country) }
+    }
+
+    @Test
+    fun `addRecentSearchForActor should throw AflamiException when repository fails`() = runTest {
+        val actorName = "actorName"
+        coEvery { recentSearchRepository.addRecentSearchForActor(actorName) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearchForActor(actorName) }
+    }
+
+    @Test
+    fun `deleteRecentSearch should throw AflamiException when repository fails`() = runTest {
+        val searchKeyword = "testKeyword"
+        coEvery { recentSearchRepository.deleteRecentSearch(searchKeyword) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.deleteRecentSearch(searchKeyword) }
     }
 
 }

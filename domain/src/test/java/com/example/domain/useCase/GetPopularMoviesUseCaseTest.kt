@@ -1,15 +1,16 @@
 package com.example.domain.useCase
 
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.repository.MovieRepository
-import com.example.domain.useCase.utils.specificMovieList
+import com.example.domain.useCase.utils.fakeMovieList
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-
 
 class GetPopularMoviesUseCaseTest {
     private lateinit var movieRepository: MovieRepository
@@ -21,31 +22,30 @@ class GetPopularMoviesUseCaseTest {
         getPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository)
     }
 
-
     @Test
-    fun `should return popular movies when repository returns them`() = runTest {
-        // Given
-        coEvery { movieRepository.getPopularMovies() } returns specificMovieList
-
-        // When
-        val result = getPopularMoviesUseCase()
-
-        // Then
-        assertThat(result).isEqualTo(specificMovieList)
+    fun `should call getPopularMovies exactly once`() = runTest {
+        coEvery { movieRepository.getPopularMovies() } returns fakeMovieList
+        getPopularMoviesUseCase()
+        coVerify(exactly = 1) { movieRepository.getPopularMovies() }
     }
 
     @Test
-    fun `should throw exception when repository throw exception`() = runTest {
-        // Given
-        val expectedMessage = "Repository failure"
-        coEvery { movieRepository.getPopularMovies() } throws Exception(expectedMessage)
+    fun `should return list of popular movies when data is available`() = runTest {
+        coEvery { movieRepository.getPopularMovies() } returns fakeMovieList
+        val result = getPopularMoviesUseCase()
+        assertThat(result).isEqualTo(fakeMovieList)
+    }
 
-        // When
-        val exception = assertThrows<Exception> {
-            getPopularMoviesUseCase()
-        }
+    @Test
+    fun `should return empty list when no popular movies are available`() = runTest {
+        coEvery { movieRepository.getPopularMovies() } returns emptyList()
+        val result = getPopularMoviesUseCase()
+        assertThat(result).isEmpty()
+    }
 
-        // Then
-        assertThat(exception).hasMessageThat().isEqualTo(expectedMessage)
+    @Test
+    fun `should throw AflamiException when getPopularMovies fails`() = runTest {
+        coEvery { movieRepository.getPopularMovies() } throws AflamiException()
+        assertThrows<AflamiException> { getPopularMoviesUseCase() }
     }
 }

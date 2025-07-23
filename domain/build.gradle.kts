@@ -16,6 +16,7 @@ dependencies {
     api(project(":entity"))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.datetime)
     testImplementation(libs.truth)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)

@@ -161,7 +161,7 @@ val fakeMovieListWithRatings =
             originCountry = "",
             runTime = 1,
             hasVideo = true
-        ),  // Rounds to 6
+        ),
         Movie(
             id = 3,
             name = "Low Rated",
