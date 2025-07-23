@@ -1,6 +1,5 @@
 package com.example.viewmodel.home
 
-import android.util.Log
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetPopularMoviesUseCase
@@ -9,7 +8,6 @@ import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
 import com.example.viewmodel.home.HomeUiState.HomeError
 import com.example.viewmodel.search.mapper.selectByMovieGenre
-import com.example.viewmodel.search.mapper.toMoveUiStates
 import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 
@@ -37,7 +35,6 @@ class HomeViewModel(
     }
 
     private fun onGetPopularMovieSuccess(movies: List<Movie>) {
-        Log.e("bkh", "onGetPopularMovieSuccess: $movies")
         updateState { homeUiStateMapper.toUiState(movies) }
     }
 
@@ -62,7 +59,7 @@ class HomeViewModel(
     }
 
     private fun onGetUpcomingMovieSuccess(movies: List<Movie>) {
-        updateState { it.copy(upcomingMovies = movies.toMoveUiStates()) }
+        updateState { it.copy(upcomingMovies = homeUiStateMapper.toUpcomingMovieItemUiStates(movies)) }
     }
 
     override fun onClickUpcomingMovieCard(id: Long) {
@@ -70,9 +67,9 @@ class HomeViewModel(
     }
 
     override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {
-        updateState {
-            it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre))
-        }
+        if (genre == state.value.getSelectedUpcomingMovieGenre()) return
+
+        updateState { it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre)) }
         getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre)
     }
 

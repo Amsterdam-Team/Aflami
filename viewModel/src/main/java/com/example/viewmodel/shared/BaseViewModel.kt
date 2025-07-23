@@ -27,7 +27,7 @@ open class BaseViewModel<S, E>(
     val effect = _effect.asSharedFlow()
 
 
-    protected fun updateState(updater: (S) -> S) {
+    fun updateState(updater: (S) -> S) {
         viewModelScope.launch(dispatcherProvider.MainImmediate) {
             _state.update(updater)
         }
