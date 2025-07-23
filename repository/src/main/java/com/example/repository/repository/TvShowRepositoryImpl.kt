@@ -7,10 +7,10 @@ import com.example.entity.ProductionCompany
 import com.example.entity.Review
 import com.example.entity.Season
 import com.example.entity.TvShow
-import com.example.entity.category.TvShowGenre
 import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.utils.SearchType
+import com.example.repository.dto.remote.RemoteCategoryDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
@@ -58,14 +58,6 @@ class TvShowRepositoryImpl(
                 }
     }
 
-    override suspend fun incrementGenreInterest(genre: TvShowGenre) {
-        localTvDataSource.incrementGenreInterest(genre)
-    }
-
-    override suspend fun getAllGenreInterests(): Map<TvShowGenre, Int> {
-        return localTvDataSource.getAllGenreInterests()
-    }
-
     private suspend fun getCachedTvShows(
         keyword: String,
         page: Int,
@@ -82,7 +74,10 @@ class TvShowRepositoryImpl(
     }
 
     override suspend fun getTvShowDetails(tvShowId: Long): TvShow {
-        return tvShowDetailsRemoteMapper.toEntity(remoteTvDataSource.getTvShowDetailsById(tvShowId))
+        return tvShowDetailsRemoteMapper.toEntity(
+            remoteTvDataSource.getTvShowDetailsById(tvShowId)
+                .also { incrementUserInterestByTvShow(it.genres) }
+        )
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
@@ -152,5 +147,10 @@ class TvShowRepositoryImpl(
             keyword,
             storedLanguage = getDeviceLanguage()
         )
+    }
+
+    private suspend fun incrementUserInterestByTvShow(remoteCategories: List<RemoteCategoryDto>) {
+        remoteCategories.map(RemoteCategoryDto::id)
+            .map { localTvDataSource.incrementGenreInterest(it.toLong()) }
     }
 }

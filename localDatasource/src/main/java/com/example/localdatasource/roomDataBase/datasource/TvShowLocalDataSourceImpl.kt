@@ -47,11 +47,7 @@ class TvShowLocalDataSourceImpl(
         tvShowDao.insertTvShowSearchMappings(mappings)
     }
 
-    override suspend fun incrementGenreInterest(genre: TvShowGenre) {
-        tvShowCategoryInterestDao.incrementInterest(genre)
-    }
-
-    override suspend fun getAllGenreInterests(): Map<TvShowGenre, Int> {
-        return tvShowCategoryInterestDao.getAllInterests().associate { it.genre to it.interestCount }
+    override suspend fun incrementGenreInterest(categoryId: Long) {
+        tvShowCategoryInterestDao.incrementInterest(categoryId)
     }
 }

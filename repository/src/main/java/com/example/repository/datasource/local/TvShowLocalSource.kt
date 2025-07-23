@@ -20,7 +20,5 @@ interface TvShowLocalSource {
         storedLanguage: String
     )
 
-    suspend fun incrementGenreInterest(genre: TvShowGenre)
-
-    suspend fun getAllGenreInterests(): Map<TvShowGenre, Int>
+    suspend fun incrementGenreInterest(categoryId: Long)
 }

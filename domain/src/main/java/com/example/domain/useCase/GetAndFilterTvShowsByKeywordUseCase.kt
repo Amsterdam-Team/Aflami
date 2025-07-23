@@ -16,12 +16,8 @@ class GetAndFilterTvShowsByKeywordUseCase(
         rating: Int = 0,
         tvGenre: TvShowGenre = TvShowGenre.ALL
     ): List<TvShow> {
-        val userInterest = tvShowRepository.getAllGenreInterests()
         return tvShowRepository.getTvShowByKeyword(keyword = keyword, page, tvShowsPerPage)
             .filterMoviesWithRatingAndGenre(rating, genre = tvGenre)
-            .sortedByDescending { movie ->
-                movie.categories.maxOfOrNull { userInterest[it] ?: 0 }
-            }
     }
 
     private fun List<TvShow>.filterMoviesWithRatingAndGenre(
