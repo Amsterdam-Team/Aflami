@@ -158,8 +158,8 @@ class HomeViewModelTest {
         testScope.runTest {
             val genre = MovieGenre.ACTION
 
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(any()) } returns expectedUiState
             coEvery { getUpcomingMoviesUseCase(genre) } returns upcomingMovies
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
             viewModel = HomeViewModel(
                 getHomeScreenDataUseCase = getHomeScreenDataUseCase,
@@ -171,12 +171,15 @@ class HomeViewModelTest {
             viewModel.onChangeUpcomingMovieGenre(genre)
             advanceUntilIdle()
 
+            val previousState = viewModel.state.value
+
             clearMocks(getUpcomingMoviesUseCase)
 
+            //changing to the same genre again
             viewModel.onChangeUpcomingMovieGenre(genre)
             advanceUntilIdle()
 
-            coVerify(exactly = 0) { getUpcomingMoviesUseCase(any()) }
+            assertThat(viewModel.state.value).isEqualTo(previousState)
         }
 
     companion object {
