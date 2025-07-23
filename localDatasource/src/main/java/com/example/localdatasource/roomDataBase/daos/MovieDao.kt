@@ -35,7 +35,7 @@ interface MovieDao {
         ORDER BY COALESCE(SUM(genreInterest.interestCount), 0) DESC
     """
     )
-    suspend fun getSearchedByKeywordMoviesSortedByInterest(
+    suspend fun getMoviesBySearchKeywordSortedByInterest(
         keyword: String,
         searchType: SearchType,
         storedLanguage: String,

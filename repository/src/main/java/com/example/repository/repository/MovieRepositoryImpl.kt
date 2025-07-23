@@ -24,7 +24,6 @@ import com.example.repository.mapper.remoteToLocal.MovieGenreIdsRemoteLocalMappe
 import com.example.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.getDeviceLanguage
-import kotlinx.datetime.Clock
 
 
 class MovieRepositoryImpl(
@@ -234,8 +233,7 @@ class MovieRepositoryImpl(
                 listOf(getDeviceLanguage())
             ),
             searchKeyword = keyword,
-            searchType = searchType,
-            expireDate = Clock.System.now()
+            searchType = searchType
         )
     }
 

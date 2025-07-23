@@ -10,7 +10,6 @@ import com.example.repository.dto.local.MovieCategoryCrossRefDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
-import kotlinx.datetime.Instant
 
 
 class MovieLocalDataSourceImpl(
@@ -25,7 +24,7 @@ class MovieLocalDataSourceImpl(
         offset: Int
     ): List<MovieWithCategories> {
         return movieDao
-            .getSearchedByKeywordMoviesSortedByInterest(
+            .getMoviesBySearchKeywordSortedByInterest(
                 keyword,
                 searchType,
                 storedLanguage,
@@ -38,8 +37,7 @@ class MovieLocalDataSourceImpl(
     override suspend fun addMoviesBySearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
-        searchType: SearchType,
-        expireDate: Instant
+        searchType: SearchType
     ) {
         movieDao.insertMovies(movies)
         val entries = movies.map { movie ->

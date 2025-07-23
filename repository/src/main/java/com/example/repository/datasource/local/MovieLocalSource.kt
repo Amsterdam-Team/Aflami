@@ -4,7 +4,6 @@ import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
-import kotlinx.datetime.Instant
 
 interface MovieLocalSource {
     suspend fun getMoviesByKeywordAndSearchType(
@@ -19,7 +18,6 @@ interface MovieLocalSource {
         movies: List<LocalMovieDto>,
         searchKeyword: String,
         searchType: SearchType,
-        expireDate: Instant
     )
 
     suspend fun addMovieWithCategories(
