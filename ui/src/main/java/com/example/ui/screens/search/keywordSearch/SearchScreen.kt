@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
@@ -37,7 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.example.designsystem.R
 import com.example.designsystem.components.CenterOfScreenContainer
 import com.example.designsystem.components.ImageErrorIndicator
@@ -84,14 +82,15 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
                 when (effect) {
                     SearchUiEffect.NavigateBack -> navController.popBackStack()
                     SearchUiEffect.NavigateToActorSearch -> navController.safeNavigate(Route.SearchByActor)
-                    is SearchUiEffect.NavigateToMovieDetails ->
-                        navController.safeNavigate(
-                        MovieDetails(effect.movieId)
-                    )
-
                     SearchUiEffect.NavigateToWorldSearch -> navController.safeNavigate(Route.SearchByCountry)
-                    is SearchUiEffect.NavigateToTvShowDetails ->
+                    is SearchUiEffect.NavigateToMovieDetails -> {
+                        viewModel.onSaveSearchHistory()
+                        navController.safeNavigate(MovieDetails(effect.movieId))
+                    }
+                    is SearchUiEffect.NavigateToTvShowDetails -> {
+                        viewModel.onSaveSearchHistory()
                         navController.navigate(SeriesDetails(effect.tvShowId))
+                    }
                 }
             }
         }
@@ -134,8 +133,8 @@ private fun SearchContent(
             onNavigateBackClicked = interaction::onClickNavigateBack,
             onKeywordValuedChanged = interaction::onChangeSearchKeyword,
             onFilterButtonClicked = interaction::onClickFilterButton,
-            onSearchActionClicked = interaction::onClickSearchAction,
             onTabOptionClicked = interaction::onClickTabOption,
+            onSaveSearchHistory = interaction::onSaveSearchHistory,
             onHeaderSizeChanged = {
                 headerHeight = it.height.dp
             },
@@ -244,7 +243,7 @@ private fun SuccessMediaItems(
     ) {
         items(
             selectedItems.itemCount,
-            key = selectedItems.itemKey { getItemKey(selectedTabOption, it, selectedItems) },
+            key = { index -> getItemKey(selectedTabOption, index, selectedItems) },
         ) { index ->
             val mediaItem = selectedItems[index] ?: return@items
             when (mediaItem) {
@@ -308,12 +307,13 @@ private fun SuccessMediaItems(
 
 private fun getItemKey(
     selectedTabOption: TabOption,
-    item: Any,
+    index: Int,
     selectedItems: LazyPagingItems<out Any>
 ): String {
+    val item = selectedItems[index]
     val id = if (selectedTabOption == TabOption.MOVIES) (item as MovieItemUiState).id
              else (item as TvShowItemUiState).id
-    return "${id}-${selectedItems.itemSnapshotList.indexOf(item)}"
+    return "${id}-${index}"
 }
 
 @Composable
@@ -323,8 +323,8 @@ private fun SearchScreenHeader(
     onNavigateBackClicked: () -> Unit,
     onKeywordValuedChanged: (String) -> Unit,
     onFilterButtonClicked: () -> Unit,
-    onSearchActionClicked: () -> Unit,
     onTabOptionClicked: (TabOption) -> Unit,
+    onSaveSearchHistory: () -> Unit,
     modifier: Modifier = Modifier,
     onHeaderSizeChanged: (IntSize) -> Unit = {},
 ) {
@@ -357,7 +357,8 @@ private fun SearchScreenHeader(
                 KeyboardActions(
                     onSearch = {
                         keyboardController?.hide()
-                        onSearchActionClicked()
+                        onKeywordValuedChanged(keyword)
+                        onSaveSearchHistory()
                     },
                 ),
             imeAction = ImeAction.Search,

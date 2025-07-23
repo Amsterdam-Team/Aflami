@@ -14,20 +14,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.example.designsystem.components.ImageErrorIndicator
 import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.LoadingContainer
@@ -63,12 +65,12 @@ fun SearchByActorScreen(
         viewModel.effect.collect { effect ->
             effect?.let {
                 when (it) {
-
                     SearchActorEffect.NavigateBack -> {
+                        viewModel.onSaveSearchHistory()
                         navController.popBackStack()
                     }
-
                     is SearchActorEffect.NavigateToDetailsScreen -> {
+                        viewModel.onSaveSearchHistory()
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
                     }
                 }
@@ -80,6 +82,7 @@ fun SearchByActorScreen(
         state = uiState.value,
         moviesFlow = moviesFlow,
         interactionListener = viewModel,
+        onSaveSearchHistory = viewModel::onSaveSearchHistory,
     )
 }
 
@@ -88,8 +91,10 @@ private fun SearchByActorContent(
     state: ActorSearchUiState,
     interactionListener: SearchActorInteractionListener,
     moviesFlow: LazyPagingItems<MovieItemUiState>,
+    onSaveSearchHistory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier =
             modifier
@@ -106,6 +111,14 @@ private fun SearchByActorContent(
             text = state.keyword,
             hintText = stringResource(com.example.designsystem.R.string.find_by_actor),
             onValueChange = { interactionListener.onUserSearchChange(it) },
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    interactionListener.onUserSearchChange(state.keyword)
+                    onSaveSearchHistory()
+                },
+            ),
+            imeAction = ImeAction.Search,
             modifier =
                 Modifier
                     .padding(top = 8.dp)
@@ -177,7 +190,7 @@ private fun SearchByActorContent(
                     ) {
                         items(
                             count = moviesFlow.itemCount,
-                            key = moviesFlow.itemKey { getItemKey(it, moviesFlow) },
+                            key = { index -> "${moviesFlow[index]?.id}-$index" },
                         ) { index ->
                             val movie = moviesFlow[index] ?: return@items
                             MovieCard(
@@ -196,11 +209,6 @@ private fun SearchByActorContent(
         }
     }
 }
-
-private fun getItemKey(
-    movie: MovieItemUiState,
-    moviesFlow: LazyPagingItems<MovieItemUiState>
-): String = "${movie.id}-${moviesFlow.itemSnapshotList.indexOf(movie)}"
 
 @Composable
 internal fun MovieImage(imageUrl: String) {
@@ -222,18 +230,13 @@ private fun SearchByActorContentPreview() {
             state = ActorSearchUiState(),
             moviesFlow = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
             interactionListener = object : SearchActorInteractionListener {
-                override fun onUserSearchChange(query: String) {
-                }
-
-                override fun onClickNavigateBack() {
-                }
-
-                override fun onClickRetrySearch() {
-                }
-
-                override fun onClickMovie(movieId: Long) {
-                }
-            }
+                override fun onUserSearchChange(query: String) {}
+                override fun onClickNavigateBack() {}
+                override fun onClickRetrySearch() {}
+                override fun onClickMovie(movieId: Long) {}
+                override fun onSaveSearchHistory() {}
+            },
+            onSaveSearchHistory = {}
         )
     }
 }

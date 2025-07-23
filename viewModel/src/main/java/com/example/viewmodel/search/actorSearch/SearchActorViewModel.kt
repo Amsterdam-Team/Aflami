@@ -9,6 +9,7 @@ import androidx.paging.map
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetMoviesByActorUseCase
+import com.example.domain.useCase.RecentSearchesUseCase
 import com.example.paging.PagingSource
 import com.example.viewmodel.search.actorSearch.ActorSearchUiState.SearchByActorError
 import com.example.viewmodel.search.mapper.toMediaItemUiState
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class SearchActorViewModel(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
+    private val recentSearchesUseCase: RecentSearchesUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<ActorSearchUiState, SearchActorEffect>(
         ActorSearchUiState(),
@@ -94,6 +96,14 @@ class SearchActorViewModel(
 
     override fun onClickMovie(movieId: Long) {
         sendNewEffect(SearchActorEffect.NavigateToDetailsScreen(movieId))
+    }
+
+    override fun onSaveSearchHistory() {
+        tryToExecute(
+            action = { recentSearchesUseCase.addRecentSearchForActor(state.value.keyword) },
+            onSuccess = { },
+            onError = { },
+        )
     }
 
     private fun onError(aflamiException: AflamiException) {

@@ -212,8 +212,7 @@ class SearchViewModel(
         updateState { it.copy(keyword = keyword) }
     }
 
-    override fun onClickSearchAction() {
-        onChangeSearchKeyword(state.value.keyword)
+    override fun onSaveSearchHistory() {
         tryToExecute(
             action = { recentSearchesUseCase.addRecentSearch(state.value.keyword) },
             onSuccess = { fetchRecentSearches() },
@@ -224,6 +223,7 @@ class SearchViewModel(
 
     override fun onClickNavigateBack() {
         if (state.value.keyword.isNotEmpty()) {
+            onSaveSearchHistory()
             onClickClearSearch()
         } else {
             sendNewEffect(SearchUiEffect.NavigateBack)
