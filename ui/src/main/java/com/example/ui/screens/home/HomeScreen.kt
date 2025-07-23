@@ -137,8 +137,7 @@ private fun HomeScreenContent(
                 modifier = Modifier
                     .background(appBarColor)
                     .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .zIndex(4f),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 onSearchClicked = interactionListener::onClickSearch,
             )
             AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
