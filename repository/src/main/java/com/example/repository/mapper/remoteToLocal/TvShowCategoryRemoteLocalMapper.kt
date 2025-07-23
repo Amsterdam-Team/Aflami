@@ -8,7 +8,7 @@ class TvShowCategoryRemoteLocalMapper :
     RemoteToLocalMapper<RemoteCategoryDto, LocalTvShowCategoryDto> {
     override fun toLocal(remote: RemoteCategoryDto, args: List<Any>): LocalTvShowCategoryDto {
         return LocalTvShowCategoryDto(
-            categoryId = remote.id,
+            categoryId = remote.id.toLong(),
             storedLanguage = args.first().toString(),
             name = remote.name
         )

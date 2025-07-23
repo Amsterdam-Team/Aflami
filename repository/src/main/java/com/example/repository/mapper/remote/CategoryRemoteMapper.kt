@@ -7,7 +7,7 @@ import com.example.repository.mapper.shared.EntityMapper
 class CategoryRemoteMapper : EntityMapper<RemoteCategoryDto, Category> {
     override fun toEntity(dto: RemoteCategoryDto): Category {
         return Category(
-            id = dto.id,
+            id = dto.id.toLong(),
             name = dto.name,
             imageUrl = ""
         )

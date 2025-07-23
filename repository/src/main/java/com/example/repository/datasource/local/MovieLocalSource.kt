@@ -1,6 +1,6 @@
 package com.example.repository.datasource.local
 
-import com.example.entity.category.MovieGenre
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
@@ -22,9 +22,13 @@ interface MovieLocalSource {
         expireDate: Instant
     )
 
-    suspend fun getMovieById(movieId : Long) : LocalMovieDto
+    suspend fun addMovieWithCategories(
+        movie: LocalMovieDto,
+        categories: List<LocalMovieCategoryDto>,
+        storedLanguage: String
+    )
 
-    suspend fun incrementGenreInterest(genre: MovieGenre)
+    suspend fun getMovieById(movieId: Long): LocalMovieDto
 
-    suspend fun getAllGenreInterests(): Map<MovieGenre, Int>
+    suspend fun incrementGenreInterest(categoryId: Long)
 }

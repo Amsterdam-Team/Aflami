@@ -1,5 +1,6 @@
 package com.example.remotedatasource.serviceProvider.implementation
 
+import android.util.Log
 import com.example.remotedatasource.api.MovieApiService
 import com.example.remotedatasource.serviceProvider.MovieServiceProvider
 import com.example.remotedatasource.utils.apiHandler.responseCall

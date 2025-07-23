@@ -1,6 +1,5 @@
 package com.amsterdam.aflami.di
 
-import com.example.repository.utils.DateParser
 import com.example.repository.mapper.local.CountryLocalMapper
 import com.example.repository.mapper.local.MovieCategoryLocalMapper
 import com.example.repository.mapper.local.MovieGenreLocalMapper
@@ -22,9 +21,11 @@ import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
 import com.example.repository.mapper.remoteToLocal.CountryRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
+import com.example.repository.mapper.remoteToLocal.MovieGenreIdsRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
+import com.example.repository.utils.DateParser
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -45,6 +46,7 @@ val mapperModule = module {
     singleOf(::GalleryRemoteMapper)
     singleOf(::ProductionCompanyRemoteMapper)
     singleOf(::CountryRemoteLocalMapper)
+    singleOf(::MovieGenreIdsRemoteLocalMapper)
     singleOf(::MovieCategoryRemoteLocalMapper)
     singleOf(::MovieRemoteLocalMapper)
     singleOf(::TvShowCategoryRemoteLocalMapper)
