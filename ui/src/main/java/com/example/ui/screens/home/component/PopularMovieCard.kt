@@ -8,7 +8,6 @@ import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.RatingChip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,32 +22,46 @@ import androidx.compose.ui.unit.dp
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.components.Text
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import com.example.designsystem.R
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.viewmodel.home.HomeUiState.PopularMovieItemUiState
 
 @Composable
-fun PopularMovieCard(popularMovie: PopularMovieItemUiState, modifier: Modifier = Modifier) {
+fun PopularMovieCard(
+    popularMovie: PopularMovieItemUiState,
+    ratingAlpha: Float,
+    imageWidth : Dp,
+    imageHeight : Dp ,
+    modifier: Modifier = Modifier
+) {
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = modifier.clip(shape = RoundedCornerShape(24.dp))) {
-
-            SafeImageView(
-                model = popularMovie.posterUrl,
-                contentDescription = "",
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                onLoading = { ImageLoadingIndicator() },
-                onError = { ImageErrorIndicator() },
-            )
+    Column(modifier = modifier,horizontalAlignment = Alignment.CenterHorizontally) {
+        Box() {
+            Box (
+                Modifier.height(300.dp),
+                contentAlignment = Alignment
+                    .BottomCenter
+            ) {
+                SafeImageView(
+                    model = popularMovie.posterUrl,
+                    contentDescription = "",
+                    modifier =
+                        Modifier
+                            .size(imageWidth,imageHeight).clip(RoundedCornerShape(24.dp)),
+                    onLoading = { ImageLoadingIndicator() },
+                    onError = { ImageErrorIndicator() },
+                )
+            }
             RatingChip(
                 popularMovie.rating,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
+                    .alpha(ratingAlpha)
             )
             Box(
                 modifier = Modifier
@@ -86,7 +99,10 @@ private fun PopularMovieCardPreview() {
             popularMovie = dummyMovie,
             modifier = Modifier
                 .width(244.dp)
-                .height(300.dp)
+                .height(300.dp),
+            ratingAlpha = 1f,
+            imageWidth = 244.dp,
+            imageHeight = 300.dp
         )
     }
 }

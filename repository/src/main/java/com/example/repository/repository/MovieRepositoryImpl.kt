@@ -1,5 +1,4 @@
 package com.example.repository.repository
-
 import com.example.domain.repository.MovieRepository
 import com.example.entity.Actor
 import com.example.entity.Country
@@ -130,13 +129,16 @@ class MovieRepositoryImpl(
         return movieLocalSource.getAllGenreInterests()
     }
 
-    override suspend fun getPopularMovies(): List<Movie> {
-        return movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
-    }
 
     override suspend fun getUpcomingMovies(): List<Movie> {
         return movieRemoteMapper.toEntityList(movieRemoteDataSource.getUpcomingMovies().results)
     }
+
+    override suspend fun getPopularMovies(): List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
+
+    override suspend fun getTopRatedMovies() : List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getTopRatedMovies().results)
 
     private suspend fun getCachedMovies(
         keyword: String,
@@ -233,4 +235,5 @@ class MovieRepositoryImpl(
             expireDate = Clock.System.now()
         )
     }
+
 }

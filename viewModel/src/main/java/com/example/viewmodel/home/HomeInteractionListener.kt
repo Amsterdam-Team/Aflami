@@ -8,4 +8,6 @@ interface HomeInteractionListener {
 
     fun onClickUpcomingMovieCard(id: Long)
     fun onChangeUpcomingMovieGenre(genre: MovieGenre)
+    fun onClickMovie(movieId : Long)
+    fun onClickShowAllToRatedMovies()
 }

@@ -69,4 +69,9 @@ class MovieServiceProviderImpl(
     override suspend fun getMovieDetailsById(movieId: Long): RemoteMovieItemDto {
         return responseCall { movieApiService.getMovieDetailsById(movieId) }
     }
+
+    override suspend fun getTopRatedMovies() : RemoteMovieResponse {
+        return responseCall { movieApiService.getTopRatedMovies() }
+    }
+
 }
