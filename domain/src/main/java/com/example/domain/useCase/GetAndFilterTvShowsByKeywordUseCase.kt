@@ -18,9 +18,6 @@ class GetAndFilterTvShowsByKeywordUseCase(
     ): List<TvShow> {
         return tvShowRepository.getTvShowByKeyword(keyword = keyword, page, tvShowsPerPage)
             .filterMoviesWithRatingAndGenre(rating, genre = tvGenre)
-            .also {
-                println("nb: tv shows: ${it.map { it.categories }}")
-            }
     }
 
     private fun List<TvShow>.filterMoviesWithRatingAndGenre(
