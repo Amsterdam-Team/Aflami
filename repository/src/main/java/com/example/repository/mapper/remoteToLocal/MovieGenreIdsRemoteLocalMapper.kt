@@ -1,6 +1,7 @@
 package com.example.repository.mapper.remoteToLocal
 
 import com.example.repository.dto.local.LocalMovieCategoryDto
+import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.mapper.shared.RemoteToLocalMapper
 import com.example.repository.mapper.shared.toMovieCategory
 

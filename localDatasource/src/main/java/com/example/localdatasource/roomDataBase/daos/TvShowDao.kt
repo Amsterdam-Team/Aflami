@@ -4,19 +4,29 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.LocalTvShowWithSearchDto
+import com.example.repository.dto.local.TvShowCategoryCrossRefDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
 import com.example.repository.dto.local.utils.DatabaseConstants
 import com.example.repository.dto.local.utils.SearchType
 
 @Dao
 interface TvShowDao {
+
+    @Upsert
+    suspend fun insertTvShow(movies: LocalTvShowDto)
+
+
     @Upsert
     suspend fun addAllTvShows(tvShows: List<LocalTvShowDto>)
 
     @Upsert
     suspend fun insertTvShowSearchMappings(mappings: List<LocalTvShowWithSearchDto>)
+
+    @Upsert
+    suspend fun insertTvShowCategoryCrossRefs(crossRefs: List<TvShowCategoryCrossRefDto>)
 
     @Transaction
     @Query(

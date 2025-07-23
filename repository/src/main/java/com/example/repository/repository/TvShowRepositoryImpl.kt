@@ -1,5 +1,6 @@
 package com.example.repository.repository
 
+import com.example.domain.repository.CategoryRepository
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.Actor
 import com.example.entity.Episode
@@ -11,6 +12,7 @@ import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.utils.SearchType
 import com.example.repository.dto.remote.RemoteCategoryDto
+import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
@@ -21,13 +23,16 @@ import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.mapper.remote.SeasonRemoteMapper
 import com.example.repository.mapper.remote.TvShowDetailsRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
+import com.example.repository.mapper.remoteToLocal.TvShowGenreIdsRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.getDeviceLanguage
 
 class TvShowRepositoryImpl(
+    private val categoryRepository: CategoryRepository,
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
+    private val tvShowGenreIdsRemoteLocalMapper: TvShowGenreIdsRemoteLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val castRemoteMapper: CastRemoteMapper,
@@ -45,6 +50,7 @@ class TvShowRepositoryImpl(
         page: Int,
         tvShowsPerPage: Int
     ): List<TvShow> {
+        categoryRepository.getTvShowCategories()
         return getCachedTvShows(keyword, page, tvShowsPerPage)
             ?: recentSearchHandler.deleteRecentSearch(
                 keyword,
@@ -136,7 +142,9 @@ class TvShowRepositoryImpl(
     }
 
     private suspend fun getTvShowsFromRemote(keyword: String, page: Int): RemoteTvShowResponse {
-        return remoteTvDataSource.getTvShowsByKeyword(keyword, page)
+        return remoteTvDataSource.getTvShowsByKeyword(keyword, page).also { remoteTvShowResponse ->
+            saveTvShowWithCategories(remoteTvShowResponse)
+        }
     }
 
     private suspend fun saveTvShowsToDatabase(
@@ -145,6 +153,21 @@ class TvShowRepositoryImpl(
         localTvDataSource.addTvShows(
             tvShowRemoteLocalMapper.toLocalList(remoteTvShows.results, listOf(getDeviceLanguage())),
             keyword,
+            storedLanguage = getDeviceLanguage()
+        )
+    }
+
+    private suspend fun saveTvShowWithCategories(remoteTvShow: RemoteTvShowResponse) {
+        remoteTvShow.results.forEach { onSaveTvShowWithCategories(it) }
+    }
+
+    private suspend fun onSaveTvShowWithCategories(remoteTvShow: RemoteTvShowItemDto) {
+        localTvDataSource.addTvShowWithCategories(
+            tvShow = tvShowRemoteLocalMapper.toLocal(remoteTvShow, listOf(getDeviceLanguage())),
+            categories = tvShowGenreIdsRemoteLocalMapper.toLocalList(
+                remoteTvShow.genreIds,
+                listOf(getDeviceLanguage())
+            ),
             storedLanguage = getDeviceLanguage()
         )
     }
