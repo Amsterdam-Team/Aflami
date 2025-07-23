@@ -16,6 +16,7 @@ import com.example.repository.mapper.remote.CountryRemoteMapper
 import com.example.repository.mapper.remote.EpisodeRemoteMapper
 import com.example.repository.mapper.remote.GalleryRemoteMapper
 import com.example.repository.mapper.remote.MovieRemoteMapper
+import com.example.repository.mapper.local.WatchHistoryMapper
 import com.example.repository.mapper.remote.PostersRemoteMapper
 import com.example.repository.mapper.remote.ProductionCompanyRemoteMapper
 import com.example.repository.mapper.remote.ReviewRemoteMapper
@@ -62,5 +63,5 @@ val mapperModule = module {
     singleOf(::TvShowDetailsRemoteMapper)
     singleOf(::EpisodeRemoteMapper)
     singleOf(::SeasonRemoteMapper)
-
+    singleOf(::WatchHistoryMapper)
 }

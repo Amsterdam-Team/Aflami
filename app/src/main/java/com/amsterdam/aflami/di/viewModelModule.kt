@@ -19,6 +19,8 @@ import com.example.viewmodel.seriesDetails.SeriesDetailsStateMapper
 import com.example.viewmodel.seriesDetails.SeriesDetailsViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
 import org.koin.core.module.dsl.bind
+import com.example.viewmodel.continueWatching.ContinueWatchingUiStateMapper
+import com.example.viewmodel.continueWatching.ContinueWatchingViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
@@ -37,11 +39,15 @@ val viewModelModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::SeriesDetailsViewModel)
     viewModelOf(::TopRatedViewModel)
+    viewModelOf(::ContinueWatchingViewModel)
+    factoryOf(::MovieDetailsArgs)
+    factoryOf(::MovieDetailsUiStateMapper)
     // mappers
     factoryOf(::MovieDetailsUiStateMapper)
     factoryOf(::HomeUiStateMapper)
     factoryOf(::SeriesDetailsStateMapper)
     factoryOf(::TopRatedUiStateMapper)
+    factoryOf(::ContinueWatchingUiStateMapper)
     // args
     factoryOf(::MovieDetailsArgs)
     factoryOf(::SeriesDetailsArgs)

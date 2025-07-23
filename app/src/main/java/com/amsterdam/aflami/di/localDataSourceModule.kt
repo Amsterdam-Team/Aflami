@@ -6,11 +6,13 @@ import com.example.localdatasource.roomDataBase.datasource.CountryLocalDataSourc
 import com.example.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
 import com.example.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
+import com.example.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
 import com.example.repository.datasource.local.CategoryLocalSource
 import com.example.repository.datasource.local.CountryLocalSource
 import com.example.repository.datasource.local.MovieLocalSource
 import com.example.repository.datasource.local.RecentSearchLocalSource
 import com.example.repository.datasource.local.TvShowLocalSource
+import com.example.repository.datasource.local.WatchHistoryLocalDataSource
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -25,6 +27,7 @@ val localDataSourceModule = module {
     single { get<AflamiDatabase>().countryDao() }
     single { get<AflamiDatabase>().movieDao() }
     single { get<AflamiDatabase>().tvShowDao() }
+    single { get<AflamiDatabase>().watchHistoryDao()}
     single { get<AflamiDatabase>().recentSearchDao() }
     single { get<AflamiDatabase>().movieCategoryInterestDao() }
     single { get<AflamiDatabase>().tvShowCategoryInterestDao()}
@@ -35,4 +38,5 @@ val localDataSourceModule = module {
     singleOf(::MovieLocalDataSourceImpl) bind MovieLocalSource::class
     singleOf(::TvShowLocalDataSourceImpl) bind TvShowLocalSource::class
     singleOf(::RecentSearchLocalDataSourceImpl) bind RecentSearchLocalSource::class
+    singleOf(::WatchHistoryLocalDataSourceImpl) bind WatchHistoryLocalDataSource::class
 }
