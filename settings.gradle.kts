@@ -20,6 +20,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
         flatDir {
             dirs("libs")
         }
@@ -38,6 +39,5 @@ include(":domain")
 include(":entity")
 include(":repository")
 include(":imageViewer")
-include(":blurred")
 
 gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))

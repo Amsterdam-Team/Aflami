@@ -1,6 +1,5 @@
 package com.example.ui.screens.topRated
 
-import TopRatedBackgroundComponent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -31,6 +30,7 @@ import com.example.ui.components.NoNetworkContainer
 import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.screens.home.sections.AnimatedSectionVisibility
+import com.example.ui.screens.topRated.component.TopRatedBackgroundComponent
 import com.example.ui.screens.topRated.component.TopRatedMoviesGrid
 import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.topRated.TopRatedEffect

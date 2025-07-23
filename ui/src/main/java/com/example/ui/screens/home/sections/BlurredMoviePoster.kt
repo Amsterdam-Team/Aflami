@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
-import com.amsterdam.blurred.ui.modifier.blur
 import com.example.imageviewer.ui.SafeImageView
+import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
+import io.sifr.shaded.modifiers.blur
 
 @Composable
 fun BoxScope.BlurredMoviePoster(

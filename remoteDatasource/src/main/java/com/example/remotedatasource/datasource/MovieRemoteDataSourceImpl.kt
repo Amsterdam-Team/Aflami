@@ -8,7 +8,7 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 
 class MovieRemoteDataSourceImpl(
@@ -50,7 +50,7 @@ class MovieRemoteDataSourceImpl(
         return movieServiceProvider.getSimilarMovies(movieId)
     }
 
-    override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
+    override suspend fun getMovieGallery(movieId: Long): RemoteGalleryResponse {
         return movieServiceProvider.getMovieGallery(movieId)
     }
 
@@ -62,7 +62,7 @@ class MovieRemoteDataSourceImpl(
         return movieServiceProvider.getMovieDetailsById(movieId)
     }
 
-    override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
+    override suspend fun getMoviePosters(movieId: Long): RemoteGalleryResponse {
         return movieServiceProvider.getMoviePosters(movieId)
     }
 

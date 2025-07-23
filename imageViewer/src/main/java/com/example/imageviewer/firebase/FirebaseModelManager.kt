@@ -21,9 +21,7 @@ internal object FirebaseModelManager {
     }
 
     private suspend fun downloadAndCacheModel(): File {
-        val conditions = CustomModelDownloadConditions.Builder()
-            .requireWifi()
-            .build()
+        val conditions = CustomModelDownloadConditions.Builder().build()
 
         return runCatching {
             FirebaseModelDownloader.getInstance()

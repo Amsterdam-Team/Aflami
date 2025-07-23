@@ -1,3 +1,5 @@
+package com.example.ui.screens.topRated.component
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,11 +10,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.R
+import io.sifr.shaded.modifiers.blur
 
 @Composable
 fun TopRatedBackgroundComponent() {

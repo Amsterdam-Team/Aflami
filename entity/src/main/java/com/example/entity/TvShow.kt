@@ -10,5 +10,7 @@ data class TvShow(
     val productionYear: UInt,
     val categories: List<TvShowGenre>,
     val rating: Float,
-    val popularity: Double
+    val popularity: Double,
+    val seasonCount: Int,
+    val originCountry: String,
 )

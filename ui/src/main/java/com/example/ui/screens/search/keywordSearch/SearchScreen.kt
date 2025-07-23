@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
@@ -53,6 +54,7 @@ import com.example.ui.components.NoNetworkContainer
 import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.navigation.Route.MovieDetails
+import com.example.ui.navigation.Route.SeriesDetails
 import com.example.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.example.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
@@ -82,11 +84,14 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
                 when (effect) {
                     SearchUiEffect.NavigateBack -> navController.popBackStack()
                     SearchUiEffect.NavigateToActorSearch -> navController.safeNavigate(Route.SearchByActor)
-                    is SearchUiEffect.NavigateToMovieDetails -> navController.safeNavigate(
+                    is SearchUiEffect.NavigateToMovieDetails ->
+                        navController.safeNavigate(
                         MovieDetails(effect.movieId)
                     )
 
                     SearchUiEffect.NavigateToWorldSearch -> navController.safeNavigate(Route.SearchByCountry)
+                    is SearchUiEffect.NavigateToTvShowDetails ->
+                        navController.navigate(SeriesDetails(effect.tvShowId))
                 }
             }
         }
@@ -162,6 +167,7 @@ private fun SearchContent(
                 tvShowsFlow = tvShows,
                 onPageLoading = { isPageStillLoading = it },
                 onMovieClicked = interaction::onClickMovieCard,
+                onTvShowClicked = interaction::onClickTvShowCard,
             )
         }
 
@@ -220,6 +226,7 @@ private fun SuccessMediaItems(
     tvShowsFlow: LazyPagingItems<TvShowItemUiState>,
     onPageLoading: (Boolean) -> Unit,
     onMovieClicked: (movieId: Long) -> Unit,
+    onTvShowClicked: (tvShowId: Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
@@ -277,6 +284,7 @@ private fun SuccessMediaItems(
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
                         movieRating = mediaItem.rate,
+                        onClick = {onTvShowClicked(mediaItem.id)}
                     )
                 }
             }

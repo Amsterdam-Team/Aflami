@@ -1,11 +1,14 @@
 package com.example.domain.useCase.authentication
 
+import com.example.domain.exceptions.AflamiException
 import com.example.domain.repository.AuthenticationRepository
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class LoginWithUsernamePasswordTest {
     private lateinit var loginWithPasswordUseCase: LoginWithPasswordUseCase
@@ -26,5 +29,25 @@ class LoginWithUsernamePasswordTest {
             loginWithPasswordUseCase(username, password)
 
             coVerify { authenticationRepository.loginWithPassword(username, password) }
+        }
+
+    @Test
+    fun `should throw AflamiException when loginWithPassword fails`() =
+        runTest {
+            val username = "testuser"
+            val password = "testpassword"
+
+            coEvery {
+                authenticationRepository.loginWithPassword(
+                    username,
+                    password
+                )
+            } throws AflamiException()
+
+            assertThrows<AflamiException> {
+                loginWithPasswordUseCase(username, password)
+            }
+
+            coVerify(exactly = 1) { authenticationRepository.loginWithPassword(username, password) }
         }
 }

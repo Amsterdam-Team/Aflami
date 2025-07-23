@@ -12,7 +12,9 @@ val specificTvShowList = listOf(
         productionYear = (2023).toUInt(),
         categories = listOf(),
         rating = 1.0f,
-        popularity = 5.0
+        popularity = 5.0,
+        seasonCount = 3,
+        originCountry = "US",
     ),
     TvShow(
         id = 2,
@@ -24,7 +26,9 @@ val specificTvShowList = listOf(
             TvShowGenre.TALK
         ),
         rating = 5.0f,
-        popularity = 5.0
+        popularity = 5.0,
+        seasonCount = 4,
+        originCountry = "US",
     )
 )
 
@@ -39,6 +43,8 @@ val fakeTvShowList =
             categories = emptyList(),
             rating = 2.5f,
             popularity = 10.2,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 2,
@@ -49,6 +55,8 @@ val fakeTvShowList =
             categories = emptyList(),
             rating = 2.5f,
             popularity = 11.2,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 3,
@@ -59,6 +67,8 @@ val fakeTvShowList =
             categories = emptyList(),
             rating = 2.5f,
             popularity = 0.2,
+            seasonCount = 4,
+            originCountry = "US",
         ),
     )
 val fakeTvShowListWithRatings =
@@ -71,7 +81,9 @@ val fakeTvShowListWithRatings =
             productionYear = (2023).toUInt(),
             categories = emptyList(),
             rating = 8.0f,
-            popularity = 10.0
+            popularity = 10.0,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 2,
@@ -81,7 +93,9 @@ val fakeTvShowListWithRatings =
             productionYear = (2023).toUInt(),
             categories = emptyList(),
             rating = 5.5f,
-            popularity = 9.0
+            popularity = 9.0,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 3,
@@ -91,7 +105,9 @@ val fakeTvShowListWithRatings =
             productionYear = (2023).toUInt(),
             categories = emptyList(),
             rating = 3.0f,
-            popularity = 8.0
+            popularity = 8.0,
+            seasonCount = 4,
+            originCountry = "US"
         ),
     )
 val fakeTvShowListWithCategories =
@@ -104,7 +120,9 @@ val fakeTvShowListWithCategories =
             productionYear = (2023).toUInt(),
             categories = listOf(TvShowGenre.TALK),
             rating = 8.0f,
-            popularity = 10.0
+            popularity = 10.0,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 2,
@@ -114,7 +132,9 @@ val fakeTvShowListWithCategories =
             productionYear = (2023).toUInt(),
             categories = listOf(TvShowGenre.TALK),
             rating = 7.0f,
-            popularity = 9.0
+            popularity = 9.0,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 3,
@@ -127,7 +147,9 @@ val fakeTvShowListWithCategories =
                 TvShowGenre.COMEDY,
             ),
             rating = 7.5f,
-            popularity = 11.0
+            popularity = 11.0,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         TvShow(
             id = 4,
@@ -137,6 +159,8 @@ val fakeTvShowListWithCategories =
             productionYear = (2023).toUInt(),
             categories = listOf(TvShowGenre.TALK),
             rating = 6.0f,
-            popularity = 8.0
+            popularity = 8.0,
+            seasonCount = 4,
+            originCountry = "US",
         )
     )

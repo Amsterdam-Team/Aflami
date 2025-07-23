@@ -1,5 +1,4 @@
 package com.example.remotedatasource.serviceProvider.implementation
-
 import com.example.remotedatasource.api.MovieApiService
 import com.example.remotedatasource.serviceProvider.MovieServiceProvider
 import com.example.remotedatasource.utils.apiHandler.responseCall
@@ -8,7 +7,7 @@ import com.example.repository.dto.remote.RemoteActorSearchResponse
 import com.example.repository.dto.remote.RemoteCastAndCrewResponse
 import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
-import com.example.repository.dto.remote.movieGallery.RemoteMovieGalleryResponse
+import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
 
 class MovieServiceProviderImpl(
@@ -54,11 +53,11 @@ class MovieServiceProviderImpl(
         return responseCall { movieApiService.getSimilarMovies(movieId) }
     }
 
-    override suspend fun getMovieGallery(movieId: Long): RemoteMovieGalleryResponse {
+    override suspend fun getMovieGallery(movieId: Long): RemoteGalleryResponse {
         return responseCall { movieApiService.getMovieGallery(movieId) }
     }
 
-    override suspend fun getMoviePosters(movieId: Long): RemoteMovieGalleryResponse {
+    override suspend fun getMoviePosters(movieId: Long): RemoteGalleryResponse {
         return responseCall { movieApiService.getMoviePosters(movieId) }
     }
 

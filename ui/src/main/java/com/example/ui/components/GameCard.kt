@@ -28,8 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -45,8 +43,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
-import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.components.Icon
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AppTheme
@@ -54,6 +50,8 @@ import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.designsystem.utils.modifierExtensions.dropShadow
 import com.example.designsystem.utils.modifierExtensions.mirroredContent
 import com.example.ui.R
+import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
+import io.sifr.shaded.modifiers.blur
 
 @Composable
 fun GameCard(

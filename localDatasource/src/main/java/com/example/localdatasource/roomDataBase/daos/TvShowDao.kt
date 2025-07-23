@@ -13,10 +13,10 @@ import com.example.repository.dto.local.utils.SearchType
 @Dao
 interface TvShowDao {
     @Upsert
-    fun addAllTvShows(tvShows: List<LocalTvShowDto>)
+    suspend fun addAllTvShows(tvShows: List<LocalTvShowDto>)
 
     @Upsert
-    fun insertTvShowSearchMappings(mappings: List<LocalTvShowWithSearchDto>)
+    suspend fun insertTvShowSearchMappings(mappings: List<LocalTvShowWithSearchDto>)
 
     @Transaction
     @Query(

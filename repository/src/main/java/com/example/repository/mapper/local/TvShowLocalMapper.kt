@@ -15,7 +15,9 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             productionYear = dto.productionYear.toUInt(),
             rating = dto.rating,
             categories = emptyList(),
-            popularity = dto.popularity
+            popularity = dto.popularity,
+            seasonCount = dto.seasonCount,
+            originCountry = dto.originCountry,
         )
     }
 
@@ -28,7 +30,9 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             poster = entity.posterUrl,
             productionYear = entity.productionYear.toInt(),
             rating = entity.rating,
-            popularity = entity.popularity
+            popularity = entity.popularity,
+            seasonCount = entity.seasonCount,
+            originCountry = entity.originCountry,
         )
     }
 }

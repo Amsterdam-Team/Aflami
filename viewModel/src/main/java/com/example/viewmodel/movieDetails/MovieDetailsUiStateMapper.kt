@@ -52,7 +52,7 @@ class MovieDetailsUiStateMapper {
                     country = company.country
                 )
             },
-            gallery = movieGallery.map { it},
+            gallery = movieGallery.map { it },
             reviews = reviews.map {
                 ReviewUiState(
                     author = it.reviewerName,
@@ -60,12 +60,13 @@ class MovieDetailsUiStateMapper {
                     rating = ratingToRatingString(it.rating),
                     content = it.content,
                     date = dateToString(it.date),
-                    imageUrl = it.imageUrl.orEmpty().takeIf { it.isNotBlank() }
+                    imageUrl = it.imageUrl.takeIf { it.isNotBlank() }
                 )
             }
         )
     }
-    private fun productionYearToDate(year: UInt): String = "$year-01-01"
+
+    fun productionYearToDate(year: UInt): String = "$year-01-01"
 
     fun movieLengthToHourMinuteString(movieLength: Int): String {
         val hours = movieLength / 60
@@ -73,10 +74,13 @@ class MovieDetailsUiStateMapper {
         return "${hours}h ${minutes}m"
     }
 
-    fun dateToString(date: LocalDate): String {
-        val day   = date.dayOfMonth.toString().padStart(2, '0')
+    fun dateToString(date: LocalDate?): String {
+        if (date == null) {
+            return ""
+        }
+        val day = date.dayOfMonth.toString().padStart(2, '0')
         val month = date.monthNumber.toString().padStart(2, '0')
-        val year  = date.year.toString()
+        val year = date.year.toString()
         return "$year-$month-$day"
     }
 
@@ -86,5 +90,3 @@ class MovieDetailsUiStateMapper {
         return String.format(Locale.US, "%.1f", rounded)
     }
 }
-
-

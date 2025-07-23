@@ -14,6 +14,8 @@ import com.example.domain.useCase.GetTopRatedMoviesUseCase
 import com.example.domain.useCase.IncrementMovieGenreInterestUseCase
 import com.example.domain.useCase.IncrementTvShowGenreInterestUseCase
 import com.example.domain.useCase.RecentSearchesUseCase
+import com.example.domain.useCase.GetTvShowDetailsUseCase
+import com.example.domain.useCase.GetEpisodesBySeasonNumberUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -29,6 +31,8 @@ val useCaseModule = module {
     singleOf(::IncrementMovieGenreInterestUseCase)
     singleOf(::IncrementTvShowGenreInterestUseCase)
     singleOf(::GetPopularMoviesUseCase)
+    singleOf(::GetEpisodesBySeasonNumberUseCase)
+    singleOf(::GetTvShowDetailsUseCase)
     singleOf(::GetUpcomingMoviesUseCase)
     singleOf(::GetTopRatedMoviesUseCase)
     singleOf(::GetHomeScreenDataUseCase)
