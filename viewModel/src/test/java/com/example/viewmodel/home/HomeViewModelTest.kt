@@ -66,10 +66,17 @@ class HomeViewModelTest {
 
     @Test
     fun `onClickRetryLoading should clear error state`() = testScope.runTest {
-        coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
+        coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
 
-        viewModel.updateState { it.copy(error = HomeError.NetworkError) }
+        viewModel.onClickRetryLoading()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+
+        clearMocks(getUpcomingMoviesUseCase)
+        coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies)  } returns expectedUiState
+
         viewModel.onClickRetryLoading()
         advanceUntilIdle()
 
@@ -78,10 +85,17 @@ class HomeViewModelTest {
 
     @Test
     fun `onClickRetryLoading should clear error and reload movies`() = testScope.runTest {
+        coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
+
+        viewModel.onClickRetryLoading()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+
+        clearMocks(getUpcomingMoviesUseCase)
         coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
         every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
-        viewModel.updateState { it.copy(error = HomeError.NetworkError) }
         viewModel.onClickRetryLoading()
         advanceUntilIdle()
 
