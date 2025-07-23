@@ -1,6 +1,7 @@
 package com.example.domain.useCase
 
 import com.example.domain.repository.MovieRepository
+import com.example.domain.repository.WatchHistoryRepository
 import com.example.entity.Actor
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany
@@ -9,6 +10,7 @@ import com.example.entity.category.MovieGenre
 
 class GetMovieDetailsUseCase(
     private val movieRepository: MovieRepository,
+    private val addWatchHistoryUseCase: AddWatchHistoryUseCase,
     private val incrementGenreInterest: IncrementMovieGenreInterestUseCase
 ) {
     suspend operator fun invoke(movieId: Long): MovieDetails {
@@ -20,6 +22,7 @@ class GetMovieDetailsUseCase(
         val moviePosters = movieRepository.getMoviePosters(movieId).take(10)
         val productionsCompanies = movieRepository.getProductionCompany(movieId)
 
+
         return MovieDetails(
             movie = movie,
             reviews = reviews,
@@ -29,7 +32,10 @@ class GetMovieDetailsUseCase(
             movieGallery = movieGallery,
             moviePosters = moviePosters,
             productionsCompanies = productionsCompanies
-        ).also { incrementUserInterestByMovie(movie) }
+        ).also { incrementUserInterestByMovie(movie)
+            addWatchHistoryUseCase(movieId)
+        }
+
     }
 
     data class MovieDetails(
