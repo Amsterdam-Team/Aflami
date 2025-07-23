@@ -108,15 +108,16 @@ class CategoryRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `getMovieCategories should throw NetworkException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { categoryServiceProvider.getMovieCategories() } throws NetworkException()
+    fun `getMovieCategories should throw NetworkException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { categoryServiceProvider.getMovieCategories() } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
-            categoryRemoteDataSourceImpl.getMovieCategories()
+            // When & Then
+            assertFailsWith<NetworkException> {
+                categoryRemoteDataSourceImpl.getMovieCategories()
+            }
         }
-    }
 
     @Test
     fun `getTvShowCategories should rethrow ServerErrorException from service provider when exception occurs`() =
@@ -131,24 +132,26 @@ class CategoryRemoteDataSourceImplTest {
         }
 
     @Test
-    fun `getTvShowCategories should rethrow NoInternetException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { categoryServiceProvider.getTvShowCategories() } throws NoInternetException()
+    fun `getTvShowCategories should rethrow NoInternetException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { categoryServiceProvider.getTvShowCategories() } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
-            categoryRemoteDataSourceImpl.getTvShowCategories()
+            // When & Then
+            assertFailsWith<NoInternetException> {
+                categoryRemoteDataSourceImpl.getTvShowCategories()
+            }
         }
-    }
 
     @Test
-    fun `getTvShowCategories should rethrow NetworkException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { categoryServiceProvider.getTvShowCategories() } throws NetworkException()
+    fun `getTvShowCategories should rethrow NetworkException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { categoryServiceProvider.getTvShowCategories() } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
-            categoryRemoteDataSourceImpl.getTvShowCategories()
+            // When & Then
+            assertFailsWith<NetworkException> {
+                categoryRemoteDataSourceImpl.getTvShowCategories()
+            }
         }
-    }
 }

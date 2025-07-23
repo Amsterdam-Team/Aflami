@@ -1,5 +1,8 @@
 package com.example.remotedatasource
 
+import com.example.domain.exceptions.NetworkException
+import com.example.domain.exceptions.NoInternetException
+import com.example.domain.exceptions.ServerErrorException
 import com.example.remotedatasource.datasource.MovieRemoteDataSourceImpl
 import com.example.remotedatasource.serviceProvider.MovieServiceProvider
 import com.example.repository.dto.remote.ProductionCompanyResponse
@@ -18,6 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 class MovieRemoteDataSourceImplTest {
 
@@ -28,7 +32,7 @@ class MovieRemoteDataSourceImplTest {
 
     @Before
     fun setUp() {
-        movieServiceProvider = mockk() // CHANGED
+        movieServiceProvider = mockk()
         movieRemoteDataSourceImpl = MovieRemoteDataSourceImpl(movieServiceProvider)
     }
 
@@ -612,5 +616,50 @@ class MovieRemoteDataSourceImplTest {
         assertEquals(1, productionCompany.productionCompanies.size)
         assertEquals("Regency Enterprises", productionCompany.productionCompanies[0].name)
         assertEquals(508, productionCompany.productionCompanies[0].id)
+    }
+
+    @Test
+    fun `getPopularMovies should rethrow ServerErrorException from service provider`() = runTest {
+        // Given
+        coEvery { movieServiceProvider.getPopularMovies() } throws ServerErrorException()
+
+        // When & Then
+        assertFailsWith<ServerErrorException> {
+            movieRemoteDataSourceImpl.getPopularMovies()
+        }
+    }
+
+    @Test
+    fun `getPopularMovies should rethrow NoInternetException from service provider`() = runTest {
+        // Given
+        coEvery { movieServiceProvider.getPopularMovies() } throws NoInternetException()
+
+        // When & Then
+        assertFailsWith<NoInternetException> {
+            movieRemoteDataSourceImpl.getPopularMovies()
+        }
+    }
+
+    @Test
+    fun `getPopularMovies should rethrow NetworkException from service provider`() = runTest {
+        // Given
+        coEvery { movieServiceProvider.getPopularMovies() } throws NetworkException()
+
+        // When & Then
+        assertFailsWith<NetworkException> {
+            movieRemoteDataSourceImpl.getPopularMovies()
+        }
+    }
+    @Test
+    fun `getMoviesByActorName should rethrow NetworkException if actor search fails`() = runTest {
+        // Given
+        val actorName = "Leonardo DiCaprio"
+        val page = 1
+        coEvery { movieServiceProvider.getActorIdByName(actorName, page) } throws NetworkException()
+
+        // When & Then
+        assertFailsWith<NetworkException> {
+            movieRemoteDataSourceImpl.getMoviesByActorName(actorName, page)
+        }
     }
 }

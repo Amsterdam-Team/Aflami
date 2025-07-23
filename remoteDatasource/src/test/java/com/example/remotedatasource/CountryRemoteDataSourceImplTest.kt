@@ -57,35 +57,38 @@ class CountryRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `getCountries should rethrow ServerErrorException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { countryServiceProvider.getCountries() } throws ServerErrorException()
+    fun `getCountries should rethrow ServerErrorException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { countryServiceProvider.getCountries() } throws ServerErrorException()
 
-        // When & Then
-        assertFailsWith<ServerErrorException> {
-            countryRemoteDataSourceImpl.getCountries()
+            // When & Then
+            assertFailsWith<ServerErrorException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
         }
-    }
 
     @Test
-    fun `getCountries should rethrow NoInternetException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { countryServiceProvider.getCountries() } throws NoInternetException()
+    fun `getCountries should rethrow NoInternetException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { countryServiceProvider.getCountries() } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
-            countryRemoteDataSourceImpl.getCountries()
+            // When & Then
+            assertFailsWith<NoInternetException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
         }
-    }
 
     @Test
-    fun `getCountries should rethrow NetworkException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { countryServiceProvider.getCountries() } throws NetworkException()
+    fun `getCountries should rethrow NetworkException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { countryServiceProvider.getCountries() } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
-            countryRemoteDataSourceImpl.getCountries()
+            // When & Then
+            assertFailsWith<NetworkException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
         }
-    }
 }
