@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -35,5 +36,4 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.jupiter)
     testImplementation(kotlin("test"))
-
 }

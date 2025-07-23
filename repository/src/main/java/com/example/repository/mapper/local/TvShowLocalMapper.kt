@@ -15,19 +15,24 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             productionYear = dto.productionYear.toUInt(),
             rating = dto.rating,
             categories = emptyList(),
-            popularity = dto.popularity
+            popularity = dto.popularity,
+            seasonCount = dto.seasonCount,
+            originCountry = dto.originCountry,
         )
     }
 
-    override fun toDto(entity: TvShow): LocalTvShowDto {
+    override fun toDto(entity: TvShow, args: List<Any>): LocalTvShowDto {
         return LocalTvShowDto(
             tvShowId = entity.id,
+            storedLanguage = args.first().toString(),
             name = entity.name,
             description = entity.description,
             poster = entity.posterUrl,
             productionYear = entity.productionYear.toInt(),
             rating = entity.rating,
-            popularity = entity.popularity
+            popularity = entity.popularity,
+            seasonCount = entity.seasonCount,
+            originCountry = entity.originCountry,
         )
     }
 }

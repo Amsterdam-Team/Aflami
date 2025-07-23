@@ -33,6 +33,7 @@ fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
             text = actor.name,
             style = AppTheme.textStyle.label.small,
             color = AppTheme.color.body,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
     }

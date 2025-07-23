@@ -209,5 +209,9 @@
 
     <string name="there_is_no_production_company">There is no production company!</string>
     <string name="there_is_no_reviews">There is no reviews!</string>
+    <string name="there_is_no_similar_content">There is no similar content!</string>
+
+    <!-- - Home  -->
+    <string name="upcoming">Upcoming</string>
 
 </resources>

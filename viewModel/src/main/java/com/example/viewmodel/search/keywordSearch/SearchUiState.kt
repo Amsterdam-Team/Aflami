@@ -3,9 +3,9 @@ package com.example.viewmodel.search.keywordSearch
 import androidx.paging.PagingData
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
-import com.example.entity.category.MovieGenre
 import com.example.entity.category.TvShowGenre
 import com.example.viewmodel.shared.Selectable
+import com.example.viewmodel.shared.defaultMovieGenres
 import com.example.viewmodel.shared.uiStates.MovieGenreItemUiState
 import com.example.viewmodel.shared.uiStates.MovieItemUiState
 import com.example.viewmodel.shared.uiStates.TvGenreItemUiState
@@ -42,17 +42,6 @@ data class FilterItemUiState(
         get() = selectedStarIndex > 0 || selectableMovieGenres.any { it.selectableMovieGenre.isSelected }
 
     private companion object {
-        val defaultMovieGenres =
-            MovieGenre.entries.toTypedArray().mapIndexed { index, category ->
-                MovieGenreItemUiState(
-                    selectableMovieGenre =
-                        Selectable(
-                            item = category,
-                            isSelected = index == 0,
-                        ),
-                )
-            }
-
         val defaultTvShowGenres =
             TvShowGenre.entries.toTypedArray().mapIndexed { index, category ->
                 TvGenreItemUiState(

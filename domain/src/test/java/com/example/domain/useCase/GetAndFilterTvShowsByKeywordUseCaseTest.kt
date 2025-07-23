@@ -31,13 +31,15 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     fun `getAndFilterTvShowsByKeywordUseCase should call getTvShowByKeyword one time`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(
             any(),
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) } returns fakeTvShowList
 
         getAndFilterTvShowsByKeywordUseCase("keyword")
         coVerify { tvShowRepository.getTvShowByKeyword(
             "keyword",
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) }
     }
 
@@ -46,7 +48,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
         runTest {
             coEvery { tvShowRepository.getTvShowByKeyword(
                 any(),
-                page = 1
+                page = 1,
+                tvShowsPerPage = 20
             ) } returns fakeTvShowList
             val tvShows = getAndFilterTvShowsByKeywordUseCase("keyword")
             assertThat(fakeTvShowList).isEqualTo(tvShows)
@@ -57,7 +60,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
         runTest {
             coEvery { tvShowRepository.getTvShowByKeyword(
                 any(),
-                page = 1
+                page = 1,
+                tvShowsPerPage = 20
             ) } returns emptyList()
             assertThat(getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")).isEmpty()
         }
@@ -67,7 +71,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
         runTest {
             coEvery { tvShowRepository.getTvShowByKeyword(
                 any(),
-                page = 1
+                page = 1,
+                tvShowsPerPage = 20
             ) } returns specificTvShowList
 
             assertThat(
@@ -83,7 +88,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     fun `getAndFilterTvShowsByKeywordUseCase should return filtered tv shows when a minimum rating is specified`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(
             any(),
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) } returns fakeTvShowListWithRatings
 
         val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 6)
@@ -96,7 +102,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     fun `getAndFilterTvShowsByKeywordUseCase should return all tv shows when rating filter is 0`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(
             any(),
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) } returns fakeTvShowListWithRatings
 
         val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 0)
@@ -108,7 +115,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     fun `getAndFilterTvShowsByKeywordUseCase should return filtered tv shows when a genre is specified`(): Unit = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(
             any(),
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) } returns fakeTvShowListWithCategories
 
         val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.COMEDY)
@@ -123,7 +131,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     fun `getAndFilterTvShowsByKeywordUseCase should return all tv shows when genre filter is All`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(
             any(),
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) } returns fakeTvShowListWithCategories
 
         val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.ALL)
@@ -135,7 +144,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     fun `getAndFilterTvShowsByKeywordUseCase should return Aflami exception when an error happened`() = runTest {
         coEvery { tvShowRepository.getTvShowByKeyword(
             any(),
-            page = 1
+            page = 1,
+            tvShowsPerPage = 20
         ) } throws AflamiException()
         assertThrows<AflamiException> { getAndFilterTvShowsByKeywordUseCase("keyword") }
     }

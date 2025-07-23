@@ -1,11 +1,14 @@
 package com.example.repository.dto.local
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.example.repository.dto.local.utils.DatabaseContract
+import com.example.repository.dto.local.utils.DatabaseConstants
 
-@Entity(tableName = DatabaseContract.COUNTRY_TABLE)
+@Entity(
+    tableName = DatabaseConstants.COUNTRY_TABLE,
+    primaryKeys = ["isoCode", "storedLanguage"]
+)
 data class LocalCountryDto(
-    @PrimaryKey val isoCode: String,
-    val name: String
+    val isoCode: String,
+    val storedLanguage: String,
+    val name: String,
 )

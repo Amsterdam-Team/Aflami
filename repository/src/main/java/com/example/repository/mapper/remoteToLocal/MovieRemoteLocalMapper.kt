@@ -8,9 +8,10 @@ import com.example.repository.utils.DateParser
 class MovieRemoteLocalMapper(
     private val dateParser: DateParser
 ) : RemoteToLocalMapper<RemoteMovieItemDto, LocalMovieDto> {
-    override fun toLocal(remote: RemoteMovieItemDto): LocalMovieDto {
+    override fun toLocal(remote: RemoteMovieItemDto, args: List<Any>): LocalMovieDto {
         return LocalMovieDto(
             movieId = remote.id,
+            storedLanguage = args.first().toString(),
             name = remote.title,
             description = remote.overview,
             poster = remote.fullPosterUrl.orEmpty(),

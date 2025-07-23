@@ -14,11 +14,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
-import com.amsterdam.blurred.ui.modifier.blur
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.R
+import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
+import io.sifr.shaded.modifiers.blur
+
 
 @Composable
 fun GuessPicture(

@@ -19,8 +19,12 @@ data class RemoteTvShowItemDto(
     @SerialName("first_air_date") val releaseDate: String,
     @SerialName("name") val title: String,
     @SerialName("vote_average") val voteAverage: Double,
-    @SerialName("vote_count") val voteCount: Int
+    @SerialName("vote_count") val voteCount: Int,
+    @SerialName("seasons") val seasons: List<SeasonDto> = emptyList(),
+    @SerialName("number_of_seasons") val seasonCount: Int = 0,
 ){
     val fullPosterPath: String?
-        get() = posterPath.let { BuildConfig.BASE_IMAGE_URL + it }
+        get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+    val fullBackdropPath: String?
+        get() = backdropPath?.let { BuildConfig.BASE_IMAGE_URL + it }
 }

@@ -4,5 +4,5 @@ import com.example.repository.dto.local.LocalCountryDto
 
 interface CountryLocalSource {
     suspend fun addCountries(countries: List<LocalCountryDto>)
-    suspend fun getCountries(): List<LocalCountryDto>
+    suspend fun getCountries(storedLanguage: String): List<LocalCountryDto>
 }

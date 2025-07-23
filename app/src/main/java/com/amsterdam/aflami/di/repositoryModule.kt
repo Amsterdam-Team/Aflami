@@ -17,6 +17,8 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val repositoryModule = module {
+
+    // Handler
     singleOf(::RecentSearchHandlerImpl) bind RecentSearchHandler::class
 
     singleOf(::CountryRepositoryImpl) bind CountryRepository::class

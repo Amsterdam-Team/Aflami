@@ -13,7 +13,8 @@ android {
 dependencies {
     implementation(project(":designSystem"))
     implementation(project(":viewModel"))
-    implementation(project(":blurred"))
+    implementation(libs.sifr.shaded)
+
     implementation(project(":imageViewer"))
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.core.ktx)

@@ -6,26 +6,18 @@ import com.example.designsystem.theme.AppTheme
 
 object ButtonDefaults {
     @Composable
-    fun buttonColors() =
-        ButtonColors(
-            containerColor = AppTheme.color.onPrimary,
-            secondaryContainerColor = AppTheme.color.primary,
-            negativeContainerColor = AppTheme.color.redAccent,
-            disableContainerColor = AppTheme.color.stroke,
-        )
-
-    @Composable
     fun buttonColors(
-        containerColor: Color = Color.Unspecified,
-        secondaryContainerColor: Color = Color.Unspecified,
-        negativeContainerColor: Color = Color.Unspecified,
-        disableContainerColor: Color = Color.Unspecified,
-    ) = ButtonColors(
-        containerColor = containerColor,
-        secondaryContainerColor = secondaryContainerColor,
-        negativeContainerColor = negativeContainerColor,
-        disableContainerColor = disableContainerColor,
-    )
+        containerColor: Color = AppTheme.color.onPrimary,
+        secondaryContainerColor: Color = AppTheme.color.primary,
+        negativeContainerColor: Color = AppTheme.color.redAccent,
+        disableContainerColor: Color = AppTheme.color.stroke,
+    ) =
+        ButtonColors(
+            containerColor = containerColor,
+            secondaryContainerColor = secondaryContainerColor,
+            negativeContainerColor = negativeContainerColor,
+            disableContainerColor = disableContainerColor,
+        )
 
     @Composable
     fun brushColors() =

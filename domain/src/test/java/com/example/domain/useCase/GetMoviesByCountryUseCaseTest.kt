@@ -34,7 +34,8 @@ class GetMoviesByCountryUseCaseTest {
         )
         coVerify(exactly = 1) { movieRepository.getMoviesByCountry(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) }
     }
 
@@ -42,7 +43,8 @@ class GetMoviesByCountryUseCaseTest {
     fun `getMoviesByCountryUseCase should return movies when data is available`() = runTest {
         coEvery { movieRepository.getMoviesByCountry(
             country,
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieList
 
         val result = getMoviesByCountryUseCase(
@@ -56,7 +58,8 @@ class GetMoviesByCountryUseCaseTest {
     fun `getMoviesByCountryUseCase should return an empty list when repository returns no movies`() = runTest {
         coEvery { movieRepository.getMoviesByCountry(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns emptyList()
 
         val result = getMoviesByCountryUseCase(
@@ -70,7 +73,8 @@ class GetMoviesByCountryUseCaseTest {
     fun `getMoviesByCountryUseCase should return Aflami exception when an error happened`() = runTest {
         coEvery { movieRepository.getMoviesByCountry(
             country,
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } throws AflamiException()
         assertThrows<AflamiException> { getMoviesByCountryUseCase(
             country,

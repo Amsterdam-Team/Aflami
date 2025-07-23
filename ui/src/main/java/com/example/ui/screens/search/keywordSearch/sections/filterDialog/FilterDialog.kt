@@ -45,6 +45,7 @@ import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.g
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreIcon
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
+import com.example.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.example.viewmodel.search.mapper.getSelectedGenreType
 import com.example.viewmodel.search.keywordSearch.FilterItemUiState
 import com.example.viewmodel.search.keywordSearch.TabOption
@@ -53,12 +54,7 @@ import com.example.viewmodel.search.keywordSearch.TabOption
 internal fun FilterDialog(
     filterState: FilterItemUiState,
     selectedTabOption: TabOption,
-    onCancelButtonClicked: () -> Unit,
-    onRatingStarChanged: (Int) -> Unit,
-    onMovieGenreButtonChanged: (MovieGenre) -> Unit,
-    onTvGenreButtonChanged: (TvShowGenre) -> Unit,
-    onApplyButtonClicked: () -> Unit,
-    onClearButtonClicked: () -> Unit,
+    interaction: FilterInteractionListener,
     modifier: Modifier = Modifier,
 ) {
     val lazyState = rememberLazyListState()
@@ -74,7 +70,7 @@ internal fun FilterDialog(
     )
 
     Dialog(
-        onDismissRequest = { onCancelButtonClicked() },
+        onDismissRequest = interaction::onClickCancel,
         properties =
             DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -110,7 +106,7 @@ internal fun FilterDialog(
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = null,
-                    onClick = { onCancelButtonClicked() },
+                    onClick = interaction::onClickCancel,
                     tint = AppTheme.color.title,
                 )
             }
@@ -126,7 +122,7 @@ internal fun FilterDialog(
             RatingBar(
                 modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
                 selectedStarIndex = filterState.selectedStarIndex,
-                onRatingStarChanged = onRatingStarChanged,
+                onRatingStarChanged = interaction::onChangeRatingStar,
             )
             Text(
                 text = stringResource(R.string.genre),
@@ -158,7 +154,7 @@ internal fun FilterDialog(
                                 icon = getMovieGenreIcon(genreType),
                                 label = getMovieGenreLabel(genreType),
                                 isSelected = category.selectableMovieGenre.isSelected,
-                                onClick = { onMovieGenreButtonChanged(genreType) },
+                                onClick = { interaction.onChangeMovieGenre(genreType) },
                             )
                         }
 
@@ -174,7 +170,7 @@ internal fun FilterDialog(
                                 icon = getTvShowGenreIcon(genreType),
                                 label = getTvShowGenreLabel(genreType),
                                 isSelected = category.selectableTvShowGenre.isSelected,
-                                onClick = { onTvGenreButtonChanged(category.selectableTvShowGenre.item) },
+                                onClick = { interaction.onChangeTvShowGenre(category.selectableTvShowGenre.item) },
                             )
                         }
                     }
@@ -182,7 +178,7 @@ internal fun FilterDialog(
             }
             ConfirmButton(
                 title = stringResource(R.string.apply),
-                onClick = onApplyButtonClicked,
+                onClick = interaction::onClickApply,
                 isEnabled = filterState.hasFilterData,
                 isLoading = filterState.isLoading,
                 isNegative = false,
@@ -191,7 +187,7 @@ internal fun FilterDialog(
             OutlinedButton(
                 title = stringResource(R.string.clear),
                 onClick = {
-                    onClearButtonClicked()
+                    interaction.onClickClear()
                     isFilterCleared = true
                 },
                 isEnabled = true,
@@ -247,12 +243,15 @@ private fun FilterDialogPreview() {
         FilterDialog(
             filterState = FilterItemUiState(),
             selectedTabOption = TabOption.MOVIES,
-            onCancelButtonClicked = { },
-            onRatingStarChanged = { },
-            onMovieGenreButtonChanged = { },
-            onTvGenreButtonChanged = { },
-            onApplyButtonClicked = { },
-            onClearButtonClicked = { },
+            interaction = object : FilterInteractionListener {
+                override fun onClickCancel() {}
+                override fun onChangeRatingStar(ratingIndex: Int) {}
+                override fun onChangeMovieGenre(genreType: MovieGenre) {}
+                override fun onChangeTvShowGenre(genreType: TvShowGenre) {}
+                override fun onClickApply() {}
+                override fun onClickClear() {}
+
+            }
         )
     }
 }

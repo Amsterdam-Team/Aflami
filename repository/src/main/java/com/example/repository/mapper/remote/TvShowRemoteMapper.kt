@@ -19,7 +19,9 @@ class TvShowRemoteMapper(
             productionYear = dateParser.parseYear(dto.releaseDate).toUInt(),
             categories = mapGenreIdsToCategories(dto.genreIds),
             rating = dto.voteAverage.toFloat(),
-            popularity = dto.popularity
+            popularity = dto.popularity,
+            seasonCount = dto.seasonCount,
+            originCountry = dto.originCountry.firstOrNull() ?: "",
         )
     }
 

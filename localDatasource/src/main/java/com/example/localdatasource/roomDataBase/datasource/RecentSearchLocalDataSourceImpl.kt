@@ -14,29 +14,38 @@ class RecentSearchLocalDataSourceImpl(
         dao.upsertRecentSearch(recentSearch)
     }
 
-    override suspend fun getRecentSearches(): List<LocalSearchDto> {
-        return dao.getRecentSearches()
+    override suspend fun getRecentSearches(searchType: SearchType): List<LocalSearchDto> {
+        return dao.getRecentSearches(searchType)
     }
 
     override suspend fun getSearchByKeywordAndType(
         keyword: String,
-        searchType: SearchType
+        searchType: SearchType,
+        storedLanguage: String,
     ): LocalSearchDto? {
-        return dao.getSearchByKeywordAndType(keyword)
+        return dao.getSearchByKeywordAndType(keyword, searchType, storedLanguage)
     }
 
     override suspend fun deleteRecentSearches() {
         dao.deleteAllSearches()
     }
 
-    override suspend fun deleteRecentSearchByKeyword(keyword: String) {
-        dao.deleteSearchByKeyword(keyword)
-        dao.deleteSearchMovieCrossRefByKeyword(keyword)
+    override suspend fun deleteRecentSearchByKeyword(
+        keyword: String,
+        searchType: SearchType,
+        storedLanguage: String
+    ) {
+        dao.deleteSearchByKeyword(keyword, searchType, storedLanguage)
+        dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType, storedLanguage)
     }
 
-    override suspend fun deleteRecentSearchByKeywordAndType(keyword: String, searchType: SearchType) {
-        dao.deleteSearchByKeyword(keyword, searchType = searchType)
-        dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType = searchType)
+    override suspend fun deleteRecentSearchByKeywordAndType(
+        keyword: String,
+        searchType: SearchType,
+        storedLanguage: String
+    ) {
+        dao.deleteSearchByKeyword(keyword, searchType, storedLanguage)
+        dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType, storedLanguage)
     }
 
     override suspend fun deleteExpiredRecentSearches(date: Instant) {

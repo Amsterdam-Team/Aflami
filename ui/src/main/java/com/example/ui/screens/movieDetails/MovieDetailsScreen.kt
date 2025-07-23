@@ -65,6 +65,7 @@ import com.example.ui.screens.movieDetails.components.PageIndicator
 import com.example.ui.screens.movieDetails.components.PlayButton
 import com.example.ui.screens.movieDetails.components.ReviewSection
 import com.example.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.movieDetails.MovieDetailsEffect
 import com.example.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.example.viewmodel.movieDetails.MovieDetailsUiState
@@ -84,15 +85,13 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = koinViewModel()) {
         interactionListener = viewModel,
     )
     LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest {
-            when (it) {
-                MovieDetailsEffect.NavigateBackEffect -> navController.popBackStack()
-                MovieDetailsEffect.NavigateToCastsScreenEffect ->
-                    navController.navigate(
-                        Route.Cast(state.value.movieId),
-                    )
-
-                null -> {}
+        viewModel.effect.collectLatest { effect ->
+            effect?.let {
+                when (effect) {
+                    MovieDetailsEffect.NavigateBackEffect -> navController.popBackStack()
+                    MovieDetailsEffect.NavigateToCastsScreenEffect ->
+                        navController.safeNavigate(Route.Cast(state.value.movieId),)
+                }
             }
         }
     }
@@ -253,7 +252,7 @@ fun MovieContent(
                         )
                         CastSection(
                             modifier = Modifier.padding(top = 24.dp),
-                            actors = state.actors,
+                            actors = state.actors.take(10),
                             onClickAllCast = interactionListener::onClickShowAllCast,
                         )
                         Spacer(

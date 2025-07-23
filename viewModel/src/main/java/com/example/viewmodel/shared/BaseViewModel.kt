@@ -34,7 +34,7 @@ open class BaseViewModel<S, E>(
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        viewModelScope.launch(dispatcherProvider.MainImmediate) {
+        viewModelScope.launch(dispatcherProvider.Default) {
             _effect.emit(newEffect)
         }
     }

@@ -31,12 +31,14 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should call getMoviesByKeyword exactly one time`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieList
         getAndFilterMoviesByKeywordUseCase("keyword")
         coVerify(exactly = 1) { movieRepository.getMoviesByKeyword(
             "keyword",
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) }
     }
 
@@ -45,7 +47,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
         runTest {
             coEvery { movieRepository.getMoviesByKeyword(
                 any(),
-                page = 1
+                page = 1,
+                moviesPerPage = 20
             ) } returns specificMovieList
             val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 10, page = 1, movieGenre = MovieGenre.ANIMATION)
             assertThat(result).isEmpty()
@@ -55,7 +58,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return filtered movies when a minimum rating is specified`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieListWithRatings
 
         val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 6)
@@ -68,7 +72,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return all movies when rating filter is 0`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieListWithRatings
         val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 0)
         assertThat(result).isEqualTo(fakeMovieListWithRatings)
@@ -78,7 +83,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return filtered movies when a genre is specified`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieListWithCategories
 
         val result = getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.ACTION)
@@ -94,7 +100,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return all movies when genre filter is All`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieListWithCategories
 
         val result = getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.ALL)
@@ -106,7 +113,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return empty list when no movies match the specified genre`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns fakeMovieListWithCategories
         assertThat(getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.TV_MOVIE))
     }
@@ -115,7 +123,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return empty list when no movies returned`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } returns emptyList()
         assertThat(getAndFilterMoviesByKeywordUseCase("keyword"))
     }
@@ -124,7 +133,8 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
     fun `getAndFilterMoviesByKeywordUseCase should return Aflami exception when an error happened`() = runTest {
         coEvery { movieRepository.getMoviesByKeyword(
             any(),
-            page = 1
+            page = 1,
+            moviesPerPage = 20
         ) } throws AflamiException()
         assertThrows<AflamiException> { getAndFilterMoviesByKeywordUseCase("keyword") }
     }

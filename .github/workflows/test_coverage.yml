@@ -1,0 +1,72 @@
+name: Build And Test Coverage
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: gradle
+
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.FIREBASE_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+
+      - name: Create local.properties
+        env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          BASE_URL: ${{secrets.BASE_URL}}
+          REGISTER_URL: ${{secrets.REGISTER_URL}}
+        run: |
+          echo bearerToken=\"$BEARER_TOKEN\" > local.properties
+          echo baseUrl=\"$BASE_URL\" >> local.properties
+          echo baseImageUrl=\"${{ secrets.BASE_IMAGE_URL }}\" >> local.properties
+          echo movieSignUp=\"${{ secrets.REGISTER_URL }}\" >> local.properties
+
+      - name: Grant execute permissions for gradlew
+        run: chmod +x gradlew
+
+      - name: Clean Project
+        run: ./gradlew clean
+
+      - name: Run Unit Tests With Kover Report
+        run: ./gradlew koverVerify --build-cache
+
+      - name: Generate kover coverage report
+        run: ./gradlew :koverXmlReport
+        continue-on-error: true
+
+      - name: Upload XML Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kover-xml-report
+          path: '**/build/reports/kover/**/*.xml'
+
+
+      - name: Post Kover Code Coverage Comment
+        id: kover
+        uses: mi-kas/kover-report@v1.9
+        if: github.event_name == 'pull_request'
+        with:
+          path: build/reports/kover/report.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "🛡️ Kover Code Coverage Report"
+          update-comment: true
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          coverage-counter-type: LINE

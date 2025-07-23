@@ -288,6 +288,10 @@ class SearchViewModel(
         sendNewEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
     }
 
+    override fun onClickTvShowCard(tvShowId: Long) {
+        sendNewEffect(SearchUiEffect.NavigateToTvShowDetails(tvShowId))
+    }
+
     override fun onClickFilterButton() {
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
     }
