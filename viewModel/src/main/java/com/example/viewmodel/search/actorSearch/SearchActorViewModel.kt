@@ -86,6 +86,7 @@ class SearchActorViewModel(
     }
 
     override fun onClickNavigateBack() {
+        onSaveSearchHistory()
         sendNewEffect(SearchActorEffect.NavigateBack)
     }
 

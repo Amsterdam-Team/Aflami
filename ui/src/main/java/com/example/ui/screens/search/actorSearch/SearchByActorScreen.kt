@@ -65,10 +65,7 @@ fun SearchByActorScreen(
         viewModel.effect.collect { effect ->
             effect?.let {
                 when (it) {
-                    SearchActorEffect.NavigateBack -> {
-                        viewModel.onSaveSearchHistory()
-                        navController.popBackStack()
-                    }
+                    SearchActorEffect.NavigateBack -> navController.popBackStack()
                     is SearchActorEffect.NavigateToDetailsScreen -> {
                         viewModel.onSaveSearchHistory()
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
