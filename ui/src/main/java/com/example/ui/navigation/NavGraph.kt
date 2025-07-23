@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.ui.screens.cast.castScreenRoute
 import com.example.ui.screens.categories.categoriesScreenRoute
+import com.example.ui.screens.continueWatching.continueWatchingScreenRoute
 import com.example.ui.screens.home.homeScreenRoute
 import com.example.ui.screens.letsPlay.letsPlayScreenRoute
 import com.example.ui.screens.lists.listsScreenRoute
@@ -38,5 +39,6 @@ fun NavGraph(
         castScreenRoute()
         topRatedScreenRoute()
         registerScreenRoute()
+        continueWatchingScreenRoute()
     }
 }
