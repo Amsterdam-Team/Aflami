@@ -1,10 +1,10 @@
 package com.example.viewmodel.home
 
 import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetUpcomingMoviesUseCase
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
-import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetHomeScreenDataUseCase
 import com.example.domain.useCase.GetHomeScreenDataUseCase.HomeScreenData
 import com.example.viewmodel.home.HomeUiState.HomeError
@@ -21,7 +21,7 @@ class HomeViewModel(
     HomeInteractionListener {
 
     init {
-        getPopularMovies()
+        getHomeScreenData()
         getUpcomingMoviesBySelectedGenre()
     }
 
@@ -41,7 +41,7 @@ class HomeViewModel(
 
     override fun onClickRetryLoading() {
         updateState { it.copy(error = null) }
-        getPopularMovies()
+        getHomeScreenData()
         getUpcomingMoviesBySelectedGenre()
     }
 

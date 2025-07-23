@@ -1,6 +1,7 @@
 package com.example.viewmodel.home
 
 import com.example.domain.exceptions.NetworkException
+import com.example.domain.useCase.GetHomeScreenDataUseCase
 import com.example.domain.useCase.GetUpcomingMoviesUseCase
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test
 class HomeViewModelTest {
 
     private lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
+    private lateinit var getHomeScreenDataUseCase: GetHomeScreenDataUseCase
     private lateinit var homeUiStateMapper: HomeUiStateMapper
     private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var viewModel: HomeViewModel
@@ -33,14 +35,15 @@ class HomeViewModelTest {
 
     @BeforeEach
     fun setUp() {
+        getHomeScreenDataUseCase = mockk()
         getUpcomingMoviesUseCase = mockk()
         homeUiStateMapper = mockk()
         dispatcherProvider = TestDispatcherProvider()
         testScope = TestScope(dispatcherProvider.testDispatcher)
         viewModel = HomeViewModel(
-            getPopularMoviesUseCase = mockk(relaxed = true),
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
             homeUiStateMapper = homeUiStateMapper,
+            getHomeScreenDataUseCase = getHomeScreenDataUseCase,
             dispatcherProvider = dispatcherProvider
         )
     }
@@ -48,10 +51,10 @@ class HomeViewModelTest {
     @Test
     fun `init should load and expose upcoming movies mapped to UI state`() = testScope.runTest {
         coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.toUpcomingMovieItemUiStates(upcomingMovies) } returns expectedUiState
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
         viewModel = HomeViewModel(
-            getPopularMoviesUseCase = mockk(relaxed = true),
+            getHomeScreenDataUseCase = getHomeScreenDataUseCase,
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
             homeUiStateMapper = homeUiStateMapper,
             dispatcherProvider = dispatcherProvider
@@ -64,7 +67,7 @@ class HomeViewModelTest {
     @Test
     fun `onClickRetryLoading should clear error state`() = testScope.runTest {
         coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.toUpcomingMovieItemUiStates(upcomingMovies) } returns expectedUiState
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
         viewModel.updateState { it.copy(error = HomeError.NetworkError) }
         viewModel.onClickRetryLoading()
@@ -76,7 +79,7 @@ class HomeViewModelTest {
     @Test
     fun `onClickRetryLoading should clear error and reload movies`() = testScope.runTest {
         coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.toUpcomingMovieItemUiStates(upcomingMovies) } returns expectedUiState
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
         viewModel.updateState { it.copy(error = HomeError.NetworkError) }
         viewModel.onClickRetryLoading()
@@ -115,7 +118,7 @@ class HomeViewModelTest {
             val newGenre = MovieGenre.ACTION
 
             coEvery { getUpcomingMoviesUseCase(newGenre) } returns upcomingMovies
-            every { homeUiStateMapper.toUpcomingMovieItemUiStates(upcomingMovies) } returns expectedUiState
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
             viewModel.onChangeUpcomingMovieGenre(newGenre)
             advanceUntilIdle()
@@ -128,7 +131,7 @@ class HomeViewModelTest {
         testScope.runTest {
 
             coEvery { getUpcomingMoviesUseCase(comedyGenre) } returns upcomingComedyMovies
-            every { homeUiStateMapper.toUpcomingMovieItemUiStates(upcomingComedyMovies) } returns expectedComedyUiState
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingComedyMovies) } returns expectedComedyUiState
 
             viewModel.onChangeUpcomingMovieGenre(comedyGenre)
             advanceUntilIdle()
@@ -141,11 +144,11 @@ class HomeViewModelTest {
         testScope.runTest {
             val genre = MovieGenre.ACTION
 
-            every { homeUiStateMapper.toUpcomingMovieItemUiStates(any()) } returns expectedUiState
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(any()) } returns expectedUiState
             coEvery { getUpcomingMoviesUseCase(genre) } returns upcomingMovies
 
             viewModel = HomeViewModel(
-                getPopularMoviesUseCase = mockk(relaxed = true),
+                getHomeScreenDataUseCase = getHomeScreenDataUseCase,
                 getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
                 homeUiStateMapper = homeUiStateMapper,
                 dispatcherProvider = dispatcherProvider
