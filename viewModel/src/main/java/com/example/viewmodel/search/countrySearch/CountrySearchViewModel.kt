@@ -93,9 +93,7 @@ class CountrySearchViewModel(
             )
         }
         fetchMoviesByCountry(getSelectedCountry())
-        viewModelScope.launch {
-            recentSearchesUseCase.addRecentSearchForCountry(getSelectedCountry())
-        }
+        saveSearchHistory()
     }
 
     override fun onClickRetry() {
@@ -106,6 +104,14 @@ class CountrySearchViewModel(
             !hasSelectedCountry && hasKeyword -> fetchCountriesByKeyword(state.value.keyword)
             hasSelectedCountry -> fetchMoviesByCountry(getSelectedCountry())
         }
+    }
+
+    private fun saveSearchHistory() {
+        tryToExecute(
+            action = { recentSearchesUseCase.addRecentSearchForCountry(getSelectedCountry()) },
+            onSuccess = {},
+            onError = {}
+        )
     }
 
     private fun fetchMoviesByCountry(selectedCountry: Country) {

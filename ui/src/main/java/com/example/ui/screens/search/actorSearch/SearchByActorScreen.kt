@@ -82,7 +82,6 @@ fun SearchByActorScreen(
         state = uiState.value,
         moviesFlow = moviesFlow,
         interactionListener = viewModel,
-        onSaveSearchHistory = viewModel::onSaveSearchHistory,
     )
 }
 
@@ -91,7 +90,6 @@ private fun SearchByActorContent(
     state: ActorSearchUiState,
     interactionListener: SearchActorInteractionListener,
     moviesFlow: LazyPagingItems<MovieItemUiState>,
-    onSaveSearchHistory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -115,7 +113,7 @@ private fun SearchByActorContent(
                 onSearch = {
                     keyboardController?.hide()
                     interactionListener.onUserSearchChange(state.keyword)
-                    onSaveSearchHistory()
+                    interactionListener.onSaveSearchHistory()
                 },
             ),
             imeAction = ImeAction.Search,
@@ -236,7 +234,6 @@ private fun SearchByActorContentPreview() {
                 override fun onClickMovie(movieId: Long) {}
                 override fun onSaveSearchHistory() {}
             },
-            onSaveSearchHistory = {}
         )
     }
 }

@@ -99,6 +99,7 @@ class SearchActorViewModel(
     }
 
     override fun onSaveSearchHistory() {
+        if (state.value.keyword.isBlank()) return
         tryToExecute(
             action = { recentSearchesUseCase.addRecentSearchForActor(state.value.keyword) },
             onSuccess = { },

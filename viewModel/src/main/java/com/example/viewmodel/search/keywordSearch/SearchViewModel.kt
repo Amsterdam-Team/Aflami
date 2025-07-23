@@ -213,6 +213,7 @@ class SearchViewModel(
     }
 
     override fun onSaveSearchHistory() {
+        if (state.value.keyword.isBlank()) return
         tryToExecute(
             action = { recentSearchesUseCase.addRecentSearch(state.value.keyword) },
             onSuccess = { fetchRecentSearches() },
@@ -242,7 +243,7 @@ class SearchViewModel(
                 selectedTabOption = tabOption,
                 movies = state.value.movies,
                 tvShows = state.value.tvShows,
-                isLoading = true, // TODO: Check
+                isLoading = true,
                 filterItemUiState = FilterItemUiState(),
             )
         }
