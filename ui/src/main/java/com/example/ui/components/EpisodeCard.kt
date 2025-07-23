@@ -1,7 +1,6 @@
 package com.example.ui.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,19 +30,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.components.IconButton
+import com.example.designsystem.components.ImageErrorIndicator
+import com.example.designsystem.components.ImageLoadingIndicator
 import com.example.designsystem.components.RatingChip
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
+import com.example.imageviewer.ui.SafeImageView
 
 @Composable
 fun EpisodeCard(
-    episodeBanner: Painter,
-    episodeRate: Double,
+    episodeBanner: String,
+    episodeRate: String,
     episodeNumber: Int,
     episodeTitle: String,
-    episodeTime: Int,
+    episodeTime: String,
     publishedAt: String,
     episodeDescription: String,
     modifier: Modifier = Modifier,
@@ -89,8 +90,8 @@ fun EpisodeCard(
 
 @Composable
 private fun EpisodeBanner(
-    episodeBanner: Painter,
-    episodeRate: Double,
+    episodeBanner: String,
+    episodeRate: String,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -104,10 +105,12 @@ private fun EpisodeBanner(
                     shape = RoundedCornerShape(12.dp),
                 ),
     ) {
-        Image(
-            painter = episodeBanner,
+        SafeImageView(
+            model = episodeBanner,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            onLoading = { ImageLoadingIndicator() },
+            onError = { ImageErrorIndicator() },
         )
         RatingChip(
             rating = episodeRate.toString(),
@@ -123,7 +126,7 @@ private fun EpisodeBanner(
 private fun EpisodeInfo(
     episodeNumber: Int,
     episodeTitle: String,
-    episodeTime: Int,
+    episodeTime: String,
     publishedAt: String,
 ) {
     Column(
@@ -224,11 +227,11 @@ private fun EpisodeCardPreview() {
                     .background(AppTheme.color.surface),
         ) {
             EpisodeCard(
-                episodeBanner = painterResource(id = R.drawable.ic_camera_video),
-                episodeRate = 4.5,
+                episodeBanner = "",
+                episodeRate = "4.5",
                 episodeNumber = 1,
                 episodeTitle = "Recovering a body",
-                episodeTime = 58,
+                episodeTime = "58",
                 publishedAt = "3 Sep 2020",
                 episodeDescription = "In 1935, corrections officer Paul Edgecomb oversees ",
                 onPlayEpisodeClick = { },

@@ -37,6 +37,7 @@ import com.example.ui.application.LocalNavController
 import com.example.ui.navigation.Route
 import com.example.ui.screens.login.components.LoginBackground
 import com.example.ui.screens.login.components.getPasswordTextFieldIcon
+import com.example.ui.utils.safeNavigate
 import com.example.ui.utils.safeNavigateToTab
 import com.example.viewmodel.login.LoginEffect
 import com.example.viewmodel.login.LoginInteractionListener
@@ -57,6 +58,8 @@ fun LoginScreen(
                     LoginEffect.NavigateToHome -> {
                         navController.safeNavigateToTab(Route.Tab.Home)
                     }
+
+                    LoginEffect.NavigateToRegister ->  navController.safeNavigate(Route.Register)
                 }
             }
         }

@@ -31,7 +31,9 @@ fun createLocalTvShowDto(
         poster = poster,
         productionYear = productionYear,
         rating = rating,
-        popularity = popularity
+        popularity = popularity,
+        seasonCount = 4,
+        originCountry = "US",
     )
 }
 
@@ -53,7 +55,9 @@ fun createTvShow(
         productionYear = productionYear,
         rating = rating,
         popularity = popularity,
-        categories = categories
+        categories = categories,
+        seasonCount = 4,
+        originCountry = "US",
     )
 }
 

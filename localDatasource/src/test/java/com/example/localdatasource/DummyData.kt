@@ -45,6 +45,8 @@ val expectedTvShowWithCategory = listOf(
             productionYear = 2,
             popularity = 22.2,
             rating = 9.9f,
+            seasonCount = 4,
+            originCountry = "US",
         ),
         categories = emptyList()
     )
@@ -58,5 +60,7 @@ val tvShows = listOf(
         productionYear = 2,
         popularity = 22.2,
         rating = 9.9f,
+        seasonCount = 4,
+        originCountry = "US",
     )
 )

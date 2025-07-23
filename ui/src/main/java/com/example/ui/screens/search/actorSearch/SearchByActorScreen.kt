@@ -203,7 +203,7 @@ private fun getItemKey(
 ): String = "${movie.id}-${moviesFlow.itemSnapshotList.indexOf(movie)}"
 
 @Composable
-private fun MovieImage(imageUrl: String) {
+internal fun MovieImage(imageUrl: String) {
     SafeImageView(
         model = imageUrl,
         contentScale = ContentScale.FillBounds,

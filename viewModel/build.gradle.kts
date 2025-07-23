@@ -1,3 +1,9 @@
+import java.util.Properties
+
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
+val movieSignUp: String = properties.getProperty("movieSignUp") ?: ""
+
 plugins {
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.android.junit5)
@@ -6,6 +12,16 @@ plugins {
 
 android {
     namespace = "com.example.viewmodel"
+    buildFeatures {
+        buildConfig = true
+    }
+    defaultConfig {
+        buildConfigField(
+            "String",
+            "MOVIE_SIGN_UP_URL",
+            movieSignUp
+        )
+    }
 }
 
 dependencies {

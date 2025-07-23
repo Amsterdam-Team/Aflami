@@ -132,13 +132,15 @@ class MovieRepositoryImpl(
         )
     }
 
-    override suspend fun getPopularMovies(): List<Movie> {
-        return movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
-    }
-
     override suspend fun getUpcomingMovies(): List<Movie> {
         return movieRemoteMapper.toEntityList(movieRemoteDataSource.getUpcomingMovies().results)
     }
+
+    override suspend fun getPopularMovies(): List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
+
+    override suspend fun getTopRatedMovies(): List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getTopRatedMovies().results)
 
     private suspend fun getCachedMovies(
         keyword: String,
@@ -195,7 +197,6 @@ class MovieRepositoryImpl(
         page: Int,
         moviesPerPage: Int
     ): List<Movie> {
-        saveMovieWithCategories(remoteMovies)
         return saveMoviesWithSearch(remoteMovies, keyword, searchType)
             .let { getMoviesFromLocal(keyword, searchType, page, moviesPerPage) }
             .takeIf { movies -> movies.isNotEmpty() }

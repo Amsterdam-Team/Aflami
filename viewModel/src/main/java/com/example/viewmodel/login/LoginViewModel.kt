@@ -67,7 +67,7 @@ class LoginViewModel : BaseViewModel<LoginUiState, LoginEffect>, LoginInteractio
     }
 
     override fun onCreateAccountClicked() {
-
+        sendNewEffect(LoginEffect.NavigateToRegister)
     }
 
     private fun shouldEnableLoginButton(){

@@ -27,8 +27,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.blurred.blurProcessor.BlurEdgeTreatment
-import com.amsterdam.blurred.ui.modifier.blur
+import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
+import io.sifr.shaded.modifiers.blur
 import com.example.designsystem.components.Text
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme

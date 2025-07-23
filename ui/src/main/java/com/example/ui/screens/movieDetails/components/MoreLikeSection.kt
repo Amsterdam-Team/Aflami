@@ -20,7 +20,7 @@ import com.example.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
     if (similarMovies.isEmpty())
         item {
-            EmptyStateText(stringResource(com.example.ui.R.string.there_is_no_production_company))
+            EmptyStateText(stringResource(com.example.ui.R.string.there_is_no_similar_content))
         }
     else
         itemsIndexed(similarMovies, key = { index, _ -> index }) { index, similarMovie ->
