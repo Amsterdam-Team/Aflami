@@ -9,19 +9,20 @@ import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.example.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
 
 class TvShowsServiceProviderImplTest {
 
     private lateinit var tvShowsApiService: TvShowsApiService
     private lateinit var tvShowsServiceProviderImpl: TvShowsServiceProviderImpl
 
-    @Before
+    @BeforeEach
     fun setUp() {
         tvShowsApiService = mockk()
         tvShowsServiceProviderImpl = TvShowsServiceProviderImpl(tvShowsApiService)
@@ -41,10 +42,11 @@ class TvShowsServiceProviderImplTest {
         coEvery { tvShowsApiService.getTvShowsByKeyword(keyword, page) } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getTvShowsByKeyword(keyword, page)
+        val result = tvShowsServiceProviderImpl.getTvShowsByKeyword(keyword, page)
 
         // Then
         coVerify(exactly = 1) { tvShowsApiService.getTvShowsByKeyword(keyword, page) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -60,10 +62,11 @@ class TvShowsServiceProviderImplTest {
         coEvery { tvShowsApiService.getTvShowDetailsById(tvShowId) } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getTvShowDetailsById(tvShowId)
+        val result = tvShowsServiceProviderImpl.getTvShowDetailsById(tvShowId)
 
         // Then
         coVerify(exactly = 1) { tvShowsApiService.getTvShowDetailsById(tvShowId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -78,10 +81,11 @@ class TvShowsServiceProviderImplTest {
         coEvery { tvShowsApiService.getTvShowCast(tvShowId) } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getTvShowCast(tvShowId)
+        val result = tvShowsServiceProviderImpl.getTvShowCast(tvShowId)
 
         // Then
         coVerify(exactly = 1) { tvShowsApiService.getTvShowCast(tvShowId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -97,10 +101,11 @@ class TvShowsServiceProviderImplTest {
         coEvery { tvShowsApiService.getSimilarTvShows(tvShowId) } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getSimilarTvShows(tvShowId)
+        val result = tvShowsServiceProviderImpl.getSimilarTvShows(tvShowId)
 
         // Then
         coVerify(exactly = 1) { tvShowsApiService.getSimilarTvShows(tvShowId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -117,10 +122,11 @@ class TvShowsServiceProviderImplTest {
         coEvery { tvShowsApiService.getTvShowReviews(tvShowId) } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getTvShowReviews(tvShowId)
+        val result = tvShowsServiceProviderImpl.getTvShowReviews(tvShowId)
 
         // Then
         coVerify(exactly = 1) { tvShowsApiService.getTvShowReviews(tvShowId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -136,10 +142,11 @@ class TvShowsServiceProviderImplTest {
         coEvery { tvShowsApiService.getTvShowGallery(tvShowId) } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getTvShowGallery(tvShowId)
+        val result = tvShowsServiceProviderImpl.getTvShowGallery(tvShowId)
 
         // Then
         coVerify(exactly = 1) { tvShowsApiService.getTvShowGallery(tvShowId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -163,7 +170,7 @@ class TvShowsServiceProviderImplTest {
         } returns dummyResponse
 
         // When
-        tvShowsServiceProviderImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
+        val result = tvShowsServiceProviderImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
 
         // Then
         coVerify(exactly = 1) {
@@ -172,5 +179,6 @@ class TvShowsServiceProviderImplTest {
                 seasonNumber
             )
         }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 }

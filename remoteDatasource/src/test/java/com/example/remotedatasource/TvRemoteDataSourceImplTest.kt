@@ -1,8 +1,9 @@
-package com.example.remotedatasource.datasource
+package com.example.remotedatasource
 
 import com.example.domain.exceptions.NetworkException
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.exceptions.ServerErrorException
+import com.example.remotedatasource.datasource.TvRemoteDataSourceImpl
 import com.example.remotedatasource.serviceProvider.TvShowsServiceProvider
 import com.example.repository.dto.remote.EpisodeResponse
 import com.example.repository.dto.remote.ProductionCompanyResponse
@@ -11,16 +12,15 @@ import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.example.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class TvRemoteDataSourceImplTest {
 
@@ -29,7 +29,7 @@ class TvRemoteDataSourceImplTest {
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
-    @Before
+    @BeforeEach
     fun setUp() {
         tvShowsServiceProvider = mockk()
         tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(tvShowsServiceProvider)
@@ -37,7 +37,6 @@ class TvRemoteDataSourceImplTest {
 
     @Test
     fun `getTvShowsByKeyword should return a list of TV shows when executed`() = runTest {
-        // Given
         val keyword = "Game of Thrones"
         val page = 1
 
@@ -74,35 +73,26 @@ class TvRemoteDataSourceImplTest {
             tvShowsServiceProvider.getTvShowsByKeyword(keyword, page)
         } returns expectedTvShowResponse
 
-        // When
         val tvShows =
             tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
 
         coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowsByKeyword(keyword, page) }
 
-        // Then
-        assertEquals(1, tvShows.results.size)
-        assertEquals(
-            "Game of Thrones",
-            tvShows.results[0].title
-        )
-        assertEquals(1399, tvShows.results[0].id)
-        assertEquals(
-            "2011-04-17",
-            tvShows.results[0].releaseDate
-        )
-        assertNotNull(tvShows.results[0].overview)
-        assertEquals(450.0, tvShows.results[0].popularity, 0.001)
-        assertEquals("/suopoADq0bPmYhnN8jQePVKzfdg.jpg", tvShows.results[0].backdropPath)
-        assertEquals("/2yafLgJ9jL6t7jM0W7W9Bv0qP7j.jpg", tvShows.results[0].posterPath)
-        assertEquals(8.4, tvShows.results[0].voteAverage, 0.001)
-        assertEquals(20000, tvShows.results[0].voteCount)
+        assertThat(tvShows.results).hasSize(1)
+        assertThat(tvShows.results[0].title).isEqualTo("Game of Thrones")
+        assertThat(tvShows.results[0].id).isEqualTo(1399)
+        assertThat(tvShows.results[0].releaseDate).isEqualTo("2011-04-17")
+        assertThat(tvShows.results[0].overview).isNotNull()
+        assertThat(tvShows.results[0].popularity).isWithin(0.001).of(450.0)
+        assertThat(tvShows.results[0].backdropPath).isEqualTo("/suopoADq0bPmYhnN8jQePVKzfdg.jpg")
+        assertThat(tvShows.results[0].posterPath).isEqualTo("/2yafLgJ9jL6t7jM0W7W9Bv0qP7j.jpg")
+        assertThat(tvShows.results[0].voteAverage).isWithin(0.001).of(8.4)
+        assertThat(tvShows.results[0].voteCount).isEqualTo(20000)
     }
 
     @Test
     fun `getTvShowsByKeyword should rethrow ServerErrorException from service provider when exception occurs`() =
         runTest {
-            // Given
             val keyword = "test"
             val page = 1
             coEvery {
@@ -112,8 +102,7 @@ class TvRemoteDataSourceImplTest {
                 )
             } throws ServerErrorException()
 
-            // When & Then
-            assertFailsWith<ServerErrorException> {
+            assertThrows<ServerErrorException> {
                 tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
             }
         }
@@ -121,7 +110,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowsByKeyword should rethrow NoInternetException from service provider when exception occurs`() =
         runTest {
-            // Given
             val keyword = "test"
             val page = 1
             coEvery {
@@ -131,8 +119,7 @@ class TvRemoteDataSourceImplTest {
                 )
             } throws NoInternetException()
 
-            // When & Then
-            assertFailsWith<NoInternetException> {
+            assertThrows<NoInternetException> {
                 tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
             }
         }
@@ -140,7 +127,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowsByKeyword should rethrow NetworkException from service provider when exception occurs`() =
         runTest {
-            // Given
             val keyword = "test"
             val page = 1
             coEvery {
@@ -150,8 +136,7 @@ class TvRemoteDataSourceImplTest {
                 )
             } throws NetworkException()
 
-            // When & Then
-            assertFailsWith<NetworkException> {
+            assertThrows<NetworkException> {
                 tvRemoteDataSourceImpl.getTvShowsByKeyword(keyword, page)
             }
         }
@@ -159,7 +144,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowDetailsById should return detailed TV show information when executed`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             val jsonString = """
             {
@@ -203,25 +187,21 @@ class TvRemoteDataSourceImplTest {
 
             coEvery { tvShowsServiceProvider.getTvShowDetailsById(tvShowId) } returns expectedDetailsResponse
 
-            // When
             val details = tvRemoteDataSourceImpl.getTvShowDetailsById(tvShowId)
 
-            // Then
             coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowDetailsById(tvShowId) }
-            assertEquals(tvShowId, details.id)
-            assertEquals("Game of Thrones", details.title)
-            assertEquals(8, details.seasonCount)
+            assertThat(details.id).isEqualTo(tvShowId)
+            assertThat(details.title).isEqualTo("Game of Thrones")
+            assertThat(details.seasonCount).isEqualTo(8)
         }
 
     @Test
     fun `getTvShowDetailsById should rethrow ServerErrorException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             coEvery { tvShowsServiceProvider.getTvShowDetailsById(tvShowId) } throws ServerErrorException()
 
-            // When & Then
-            assertFailsWith<ServerErrorException> {
+            assertThrows<ServerErrorException> {
                 tvRemoteDataSourceImpl.getTvShowDetailsById(tvShowId)
             }
         }
@@ -229,31 +209,26 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowDetailsById should rethrow NoInternetException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             coEvery { tvShowsServiceProvider.getTvShowDetailsById(tvShowId) } throws NoInternetException()
 
-            // When & Then
-            assertFailsWith<NoInternetException> {
+            assertThrows<NoInternetException> {
                 tvRemoteDataSourceImpl.getTvShowDetailsById(tvShowId)
             }
         }
 
     @Test
     fun `getTvShowDetailsById should rethrow NetworkException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowDetailsById(tvShowId) } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
+        assertThrows<NetworkException> {
             tvRemoteDataSourceImpl.getTvShowDetailsById(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowCast should return cast and crew for a TV show when executed`() = runTest {
-        // Given
         val tvShowId = 1399L
         val jsonString = """
             {
@@ -297,66 +272,54 @@ class TvRemoteDataSourceImplTest {
 
         coEvery { tvShowsServiceProvider.getTvShowCast(tvShowId) } returns expectedCastAndCrewResponse
 
-        // When
         val castAndCrew = tvRemoteDataSourceImpl.getTvShowCast(tvShowId)
 
-        // Then
         coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowCast(tvShowId) }
-        assertEquals(
-            tvShowId.toInt(),
-            castAndCrew.id
-        )
-        assertEquals(1, castAndCrew.cast.size)
-        assertEquals("Peter Dinklage", castAndCrew.cast[0].name)
-        assertEquals("Tyrion Lannister", castAndCrew.cast[0].character)
-        assertEquals(1, castAndCrew.crew.size)
-        assertEquals("David Benioff", castAndCrew.crew[0].name)
-        assertEquals("Executive Producer", castAndCrew.crew[0].job)
-        assertEquals(4, castAndCrew.cast[0].castId)
-        assertEquals("52fe4250c3a36847f80149f3", castAndCrew.cast[0].creditId)
-        assertEquals(0, castAndCrew.cast[0].order)
-        assertEquals("52fe4250c3a36847f80149c9", castAndCrew.crew[0].creditId)
+        assertThat(castAndCrew.id).isEqualTo(tvShowId.toInt())
+        assertThat(castAndCrew.cast).hasSize(1)
+        assertThat(castAndCrew.cast[0].name).isEqualTo("Peter Dinklage")
+        assertThat(castAndCrew.cast[0].character).isEqualTo("Tyrion Lannister")
+        assertThat(castAndCrew.crew).hasSize(1)
+        assertThat(castAndCrew.crew[0].name).isEqualTo("David Benioff")
+        assertThat(castAndCrew.crew[0].job).isEqualTo("Executive Producer")
+        assertThat(castAndCrew.cast[0].castId).isEqualTo(4)
+        assertThat(castAndCrew.cast[0].creditId).isEqualTo("52fe4250c3a36847f80149f3")
+        assertThat(castAndCrew.cast[0].order).isEqualTo(0)
+        assertThat(castAndCrew.crew[0].creditId).isEqualTo("52fe4250c3a36847f80149c9")
     }
 
     @Test
     fun `getTvShowCast should rethrow ServerErrorException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowCast(tvShowId) } throws ServerErrorException()
 
-        // When & Then
-        assertFailsWith<ServerErrorException> {
+        assertThrows<ServerErrorException> {
             tvRemoteDataSourceImpl.getTvShowCast(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowCast should rethrow NoInternetException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowCast(tvShowId) } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
+        assertThrows<NoInternetException> {
             tvRemoteDataSourceImpl.getTvShowCast(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowCast should rethrow NetworkException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowCast(tvShowId) } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
+        assertThrows<NetworkException> {
             tvRemoteDataSourceImpl.getTvShowCast(tvShowId)
         }
     }
 
     @Test
     fun `getSimilarTvShows should return similar TV shows when executed`() = runTest {
-        // Given
         val tvShowId = 1399L
 
         val jsonString = """
@@ -390,55 +353,46 @@ class TvRemoteDataSourceImplTest {
 
         coEvery { tvShowsServiceProvider.getSimilarTvShows(tvShowId) } returns expectedSimilarTvShowResponse
 
-        // When
         val similarTvShows = tvRemoteDataSourceImpl.getSimilarTvShows(tvShowId)
 
-        // Then
         coVerify(exactly = 1) { tvShowsServiceProvider.getSimilarTvShows(tvShowId) }
-        assertEquals(1, similarTvShows.results.size)
-        assertEquals("House of the Dragon", similarTvShows.results[0].title)
-        assertEquals(1400, similarTvShows.results[0].id)
+        assertThat(similarTvShows.results).hasSize(1)
+        assertThat(similarTvShows.results[0].title).isEqualTo("House of the Dragon")
+        assertThat(similarTvShows.results[0].id).isEqualTo(1400)
     }
 
     @Test
     fun `getSimilarTvShows should rethrow ServerErrorException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getSimilarTvShows(tvShowId) } throws ServerErrorException()
 
-        // When & Then
-        assertFailsWith<ServerErrorException> {
+        assertThrows<ServerErrorException> {
             tvRemoteDataSourceImpl.getSimilarTvShows(tvShowId)
         }
     }
 
     @Test
     fun `getSimilarTvShows should rethrow NoInternetException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getSimilarTvShows(tvShowId) } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
+        assertThrows<NoInternetException> {
             tvRemoteDataSourceImpl.getSimilarTvShows(tvShowId)
         }
     }
 
     @Test
     fun `getSimilarTvShows should rethrow NetworkException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getSimilarTvShows(tvShowId) } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
+        assertThrows<NetworkException> {
             tvRemoteDataSourceImpl.getSimilarTvShows(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowReviews should return reviews for a TV show when executed`() = runTest {
-        // Given
         val tvShowId = 1399L
         val jsonString = """
             {
@@ -469,56 +423,47 @@ class TvRemoteDataSourceImplTest {
 
         coEvery { tvShowsServiceProvider.getTvShowReviews(tvShowId) } returns expectedReviewsResponse
 
-        // When
         val reviews = tvRemoteDataSourceImpl.getTvShowReviews(tvShowId)
 
-        // Then
         coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowReviews(tvShowId) }
-        assertEquals(tvShowId, reviews.id)
-        assertEquals(1, reviews.results.size)
-        assertEquals("Reviewer A", reviews.results[0].author)
-        assertEquals("An epic series with incredible depth.", reviews.results[0].content)
+        assertThat(reviews.id).isEqualTo(tvShowId)
+        assertThat(reviews.results).hasSize(1)
+        assertThat(reviews.results[0].author).isEqualTo("Reviewer A")
+        assertThat(reviews.results[0].content).isEqualTo("An epic series with incredible depth.")
     }
 
     @Test
     fun `getTvShowReviews should rethrow ServerErrorException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowReviews(tvShowId) } throws ServerErrorException()
 
-        // When & Then
-        assertFailsWith<ServerErrorException> {
+        assertThrows<ServerErrorException> {
             tvRemoteDataSourceImpl.getTvShowReviews(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowReviews should rethrow NoInternetException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowReviews(tvShowId) } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
+        assertThrows<NoInternetException> {
             tvRemoteDataSourceImpl.getTvShowReviews(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowReviews should rethrow NetworkException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowReviews(tvShowId) } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
+        assertThrows<NetworkException> {
             tvRemoteDataSourceImpl.getTvShowReviews(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowGallery should return TV show images when executed`() = runTest {
-        // Given
         val tvShowId = 1399L
         val jsonString = """
             {
@@ -538,50 +483,42 @@ class TvRemoteDataSourceImplTest {
 
         coEvery { tvShowsServiceProvider.getTvShowGallery(tvShowId) } returns expectedGalleryResponse
 
-        // When
         val gallery = tvRemoteDataSourceImpl.getTvShowGallery(tvShowId)
 
-        // Then
         coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowGallery(tvShowId) }
-        assertEquals(tvShowId, gallery.id)
-        assertEquals(1, gallery.backdrops?.size)
-        assertEquals(1, gallery.posters?.size)
-        assertEquals("/got_backdrop1.jpg", gallery.backdrops?.get(0)?.filePath)
-        assertEquals("/got_poster1.jpg", gallery.posters?.get(0)?.filePath)
+        assertThat(gallery.id).isEqualTo(tvShowId)
+        assertThat(gallery.backdrops).hasSize(1)
+        assertThat(gallery.posters).hasSize(1)
+        assertThat(gallery.backdrops?.get(0)?.filePath).isEqualTo("/got_backdrop1.jpg")
+        assertThat(gallery.posters?.get(0)?.filePath).isEqualTo("/got_poster1.jpg")
     }
 
     @Test
     fun `getTvShowGallery should rethrow ServerErrorException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowGallery(tvShowId) } throws ServerErrorException()
 
-        // When & Then
-        assertFailsWith<ServerErrorException> {
+        assertThrows<ServerErrorException> {
             tvRemoteDataSourceImpl.getTvShowGallery(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowGallery should rethrow NoInternetException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowGallery(tvShowId) } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
+        assertThrows<NoInternetException> {
             tvRemoteDataSourceImpl.getTvShowGallery(tvShowId)
         }
     }
 
     @Test
     fun `getTvShowGallery should rethrow NetworkException from service provider`() = runTest {
-        // Given
         val tvShowId = 1399L
         coEvery { tvShowsServiceProvider.getTvShowGallery(tvShowId) } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
+        assertThrows<NetworkException> {
             tvRemoteDataSourceImpl.getTvShowGallery(tvShowId)
         }
     }
@@ -589,7 +526,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowCompanyProduction should return production company details for a TV show when executed`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             val jsonString = """
             {
@@ -640,25 +576,21 @@ class TvRemoteDataSourceImplTest {
 
             coEvery { tvShowsServiceProvider.getTvShowCompanyProduction(tvShowId) } returns expectedProductionCompanyResponse
 
-            // When
             val productionCompany = tvRemoteDataSourceImpl.getTvShowCompanyProduction(tvShowId)
 
-            // Then
             coVerify(exactly = 1) { tvShowsServiceProvider.getTvShowCompanyProduction(tvShowId) }
-            assertEquals(1, productionCompany.productionCompanies.size)
-            assertEquals("HBO", productionCompany.productionCompanies[0].name)
-            assertEquals(14902, productionCompany.productionCompanies[0].id)
+            assertThat(productionCompany.productionCompanies).hasSize(1)
+            assertThat(productionCompany.productionCompanies[0].name).isEqualTo("HBO")
+            assertThat(productionCompany.productionCompanies[0].id).isEqualTo(14902)
         }
 
     @Test
     fun `getTvShowCompanyProduction should rethrow ServerErrorException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             coEvery { tvShowsServiceProvider.getTvShowCompanyProduction(tvShowId) } throws ServerErrorException()
 
-            // When & Then
-            assertFailsWith<ServerErrorException> {
+            assertThrows<ServerErrorException> {
                 tvRemoteDataSourceImpl.getTvShowCompanyProduction(tvShowId)
             }
         }
@@ -666,12 +598,10 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowCompanyProduction should rethrow NoInternetException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             coEvery { tvShowsServiceProvider.getTvShowCompanyProduction(tvShowId) } throws NoInternetException()
 
-            // When & Then
-            assertFailsWith<NoInternetException> {
+            assertThrows<NoInternetException> {
                 tvRemoteDataSourceImpl.getTvShowCompanyProduction(tvShowId)
             }
         }
@@ -679,12 +609,10 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getTvShowCompanyProduction should rethrow NetworkException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             coEvery { tvShowsServiceProvider.getTvShowCompanyProduction(tvShowId) } throws NetworkException()
 
-            // When & Then
-            assertFailsWith<NetworkException> {
+            assertThrows<NetworkException> {
                 tvRemoteDataSourceImpl.getTvShowCompanyProduction(tvShowId)
             }
         }
@@ -692,7 +620,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getEpisodesBySeasonNumber should return episodes for a given season when executed`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             val seasonNumber = 1
             val expectedSeasonId = 3624L
@@ -750,10 +677,8 @@ class TvRemoteDataSourceImplTest {
                 )
             } returns expectedEpisodeResponse
 
-            // When
             val episodes = tvRemoteDataSourceImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
 
-            // Then
             coVerify(exactly = 1) {
                 tvShowsServiceProvider.getEpisodesBySeasonNumber(
                     tvShowId,
@@ -761,28 +686,24 @@ class TvRemoteDataSourceImplTest {
                 )
             }
 
-            assertEquals(expectedSeasonId, episodes.id)
-            assertEquals(
-                seasonNumber.toLong(),
-                episodes.seasonNumber
-            )
+            assertThat(episodes.id).isEqualTo(expectedSeasonId)
+            assertThat(episodes.seasonNumber).isEqualTo(seasonNumber.toLong())
 
-            assertEquals(2, episodes.episodes.size)
-            assertEquals("Winter Is Coming", episodes.episodes[0].title)
-            assertEquals(1, episodes.episodes[0].episodeNumber)
-            assertEquals("62", episodes.episodes[0].runtime)
-            assertEquals("8.0", episodes.episodes[0].voteAverage)
+            assertThat(episodes.episodes).hasSize(2)
+            assertThat(episodes.episodes[0].title).isEqualTo("Winter Is Coming")
+            assertThat(episodes.episodes[0].episodeNumber).isEqualTo(1)
+            assertThat(episodes.episodes[0].runtime).isEqualTo("62")
+            assertThat(episodes.episodes[0].voteAverage).isEqualTo("8.0")
 
-            assertEquals("The Kingsroad", episodes.episodes[1].title)
-            assertEquals(2, episodes.episodes[1].episodeNumber)
-            assertEquals("56", episodes.episodes[1].runtime)
-            assertEquals("8.1", episodes.episodes[1].voteAverage)
+            assertThat(episodes.episodes[1].title).isEqualTo("The Kingsroad")
+            assertThat(episodes.episodes[1].episodeNumber).isEqualTo(2)
+            assertThat(episodes.episodes[1].runtime).isEqualTo("56")
+            assertThat(episodes.episodes[1].voteAverage).isEqualTo("8.1")
         }
 
     @Test
     fun `getEpisodesBySeasonNumber should rethrow ServerErrorException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             val seasonNumber = 1
             coEvery {
@@ -792,8 +713,7 @@ class TvRemoteDataSourceImplTest {
                 )
             } throws ServerErrorException()
 
-            // When & Then
-            assertFailsWith<ServerErrorException> {
+            assertThrows<ServerErrorException> {
                 tvRemoteDataSourceImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
             }
         }
@@ -801,7 +721,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getEpisodesBySeasonNumber should rethrow NoInternetException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             val seasonNumber = 1
             coEvery {
@@ -811,8 +730,7 @@ class TvRemoteDataSourceImplTest {
                 )
             } throws NoInternetException()
 
-            // When & Then
-            assertFailsWith<NoInternetException> {
+            assertThrows<NoInternetException> {
                 tvRemoteDataSourceImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
             }
         }
@@ -820,7 +738,6 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getEpisodesBySeasonNumber should rethrow NetworkException from service provider`() =
         runTest {
-            // Given
             val tvShowId = 1399L
             val seasonNumber = 1
             coEvery {
@@ -830,8 +747,7 @@ class TvRemoteDataSourceImplTest {
                 )
             } throws NetworkException()
 
-            // When & Then
-            assertFailsWith<NetworkException> {
+            assertThrows<NetworkException> {
                 tvRemoteDataSourceImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
             }
         }

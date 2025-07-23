@@ -8,19 +8,20 @@ import com.example.repository.dto.remote.RemoteMovieItemDto
 import com.example.repository.dto.remote.RemoteMovieResponse
 import com.example.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.example.repository.dto.remote.review.ReviewsResponse
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
 
 class MovieServiceProviderImplTest {
 
     private lateinit var movieApiService: MovieApiService
     private lateinit var movieServiceProviderImpl: MovieServiceProviderImpl
 
-    @Before
+    @BeforeEach
     fun setUp() {
         movieApiService = mockk()
         movieServiceProviderImpl = MovieServiceProviderImpl(movieApiService)
@@ -35,10 +36,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getPopularMovies() } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getPopularMovies()
+        val result = movieServiceProviderImpl.getPopularMovies()
 
         // Then
         coVerify(exactly = 1) { movieApiService.getPopularMovies() }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -50,10 +52,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getUpcomingMovies() } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getUpcomingMovies()
+        val result = movieServiceProviderImpl.getUpcomingMovies()
 
         // Then
         coVerify(exactly = 1) { movieApiService.getUpcomingMovies() }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -67,10 +70,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getMoviesByKeyword(keyword, page) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMoviesByKeyword(keyword, page)
+        val result = movieServiceProviderImpl.getMoviesByKeyword(keyword, page)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMoviesByKeyword(keyword, page) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -84,10 +88,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getActorIdByName(name, page) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getActorIdByName(name, page)
+        val result = movieServiceProviderImpl.getActorIdByName(name, page)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getActorIdByName(name, page) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -100,10 +105,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getMoviesByActorId(actorIds) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMoviesByActorId(actorIds)
+        val result = movieServiceProviderImpl.getMoviesByActorId(actorIds)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMoviesByActorId(actorIds) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -122,10 +128,11 @@ class MovieServiceProviderImplTest {
         } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMoviesByCountryIsoCode(countryIsoCode, page)
+        val result = movieServiceProviderImpl.getMoviesByCountryIsoCode(countryIsoCode, page)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMoviesByCountryIsoCode(countryIsoCode, page) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -138,10 +145,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getCastByMovieId(movieId) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getCastByMovieId(movieId)
+        val result = movieServiceProviderImpl.getCastByMovieId(movieId)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getCastByMovieId(movieId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -154,10 +162,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getMovieReviews(movieId) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMovieReviews(movieId)
+        val result = movieServiceProviderImpl.getMovieReviews(movieId)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMovieReviews(movieId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -170,10 +179,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getSimilarMovies(movieId) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getSimilarMovies(movieId)
+        val result = movieServiceProviderImpl.getSimilarMovies(movieId)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getSimilarMovies(movieId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -186,10 +196,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getMovieGallery(movieId) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMovieGallery(movieId)
+        val result = movieServiceProviderImpl.getMovieGallery(movieId)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMovieGallery(movieId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -202,10 +213,11 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getMoviePosters(movieId) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMoviePosters(movieId)
+        val result = movieServiceProviderImpl.getMoviePosters(movieId)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMoviePosters(movieId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -232,13 +244,13 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getMovieDetailsById(movieId) } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getMovieDetailsById(movieId)
+        val result = movieServiceProviderImpl.getMovieDetailsById(movieId)
 
         // Then
         coVerify(exactly = 1) { movieApiService.getMovieDetailsById(movieId) }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
-    // --- getTopRatedMovies tests ---
     @Test
     fun `getTopRatedMovies should call MovieApiService`() = runTest {
         // Given
@@ -248,9 +260,10 @@ class MovieServiceProviderImplTest {
         coEvery { movieApiService.getTopRatedMovies() } returns dummyResponse
 
         // When
-        movieServiceProviderImpl.getTopRatedMovies()
+        val result = movieServiceProviderImpl.getTopRatedMovies()
 
         // Then
         coVerify(exactly = 1) { movieApiService.getTopRatedMovies() }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 }

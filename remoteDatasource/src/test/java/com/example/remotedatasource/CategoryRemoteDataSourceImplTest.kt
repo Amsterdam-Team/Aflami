@@ -8,12 +8,12 @@ import com.example.remotedatasource.serviceProvider.CategoryServiceProvider
 import com.example.repository.dto.remote.RemoteCategoryResponse
 import io.mockk.coEvery
 import io.mockk.mockk
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class CategoryRemoteDataSourceImplTest {
 
@@ -22,7 +22,7 @@ class CategoryRemoteDataSourceImplTest {
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
-    @Before
+    @BeforeEach
     fun setUp() {
         categoryServiceProvider = mockk()
         categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryServiceProvider)
@@ -51,9 +51,9 @@ class CategoryRemoteDataSourceImplTest {
         val categories = categoryRemoteDataSourceImpl.getMovieCategories()
 
         // Then
-        assertEquals(2, categories.genres.size)
-        assertEquals("Action", categories.genres[0].name)
-        assertEquals(12, categories.genres[1].id)
+        assertThat(categories.genres).hasSize(2)
+        assertThat(categories.genres[0].name).isEqualTo("Action")
+        assertThat(categories.genres[1].id).isEqualTo(12)
     }
 
     @Test
@@ -79,9 +79,9 @@ class CategoryRemoteDataSourceImplTest {
         val categories = categoryRemoteDataSourceImpl.getTvShowCategories()
 
         // Then
-        assertEquals(2, categories.genres.size)
-        assertEquals("Action & Adventure", categories.genres[0].name)
-        assertEquals(16, categories.genres[1].id)
+        assertThat(categories.genres).hasSize(2)
+        assertThat(categories.genres[0].name).isEqualTo("Action & Adventure")
+        assertThat(categories.genres[1].id).isEqualTo(16)
     }
 
 
@@ -91,7 +91,7 @@ class CategoryRemoteDataSourceImplTest {
         coEvery { categoryServiceProvider.getMovieCategories() } throws ServerErrorException()
 
         // When & Then
-        assertFailsWith<ServerErrorException> {
+        assertThrows<ServerErrorException> {
             categoryRemoteDataSourceImpl.getMovieCategories()
         }
     }
@@ -102,7 +102,7 @@ class CategoryRemoteDataSourceImplTest {
         coEvery { categoryServiceProvider.getMovieCategories() } throws NoInternetException()
 
         // When & Then
-        assertFailsWith<NoInternetException> {
+        assertThrows<NoInternetException> {
             categoryRemoteDataSourceImpl.getMovieCategories()
         }
     }
@@ -114,7 +114,7 @@ class CategoryRemoteDataSourceImplTest {
             coEvery { categoryServiceProvider.getMovieCategories() } throws NetworkException()
 
             // When & Then
-            assertFailsWith<NetworkException> {
+            assertThrows<NetworkException> {
                 categoryRemoteDataSourceImpl.getMovieCategories()
             }
         }
@@ -126,7 +126,7 @@ class CategoryRemoteDataSourceImplTest {
             coEvery { categoryServiceProvider.getTvShowCategories() } throws ServerErrorException()
 
             // When & Then
-            assertFailsWith<ServerErrorException> {
+            assertThrows<ServerErrorException> {
                 categoryRemoteDataSourceImpl.getTvShowCategories()
             }
         }
@@ -138,7 +138,7 @@ class CategoryRemoteDataSourceImplTest {
             coEvery { categoryServiceProvider.getTvShowCategories() } throws NoInternetException()
 
             // When & Then
-            assertFailsWith<NoInternetException> {
+            assertThrows<NoInternetException> {
                 categoryRemoteDataSourceImpl.getTvShowCategories()
             }
         }
@@ -150,7 +150,7 @@ class CategoryRemoteDataSourceImplTest {
             coEvery { categoryServiceProvider.getTvShowCategories() } throws NetworkException()
 
             // When & Then
-            assertFailsWith<NetworkException> {
+            assertThrows<NetworkException> {
                 categoryRemoteDataSourceImpl.getTvShowCategories()
             }
         }

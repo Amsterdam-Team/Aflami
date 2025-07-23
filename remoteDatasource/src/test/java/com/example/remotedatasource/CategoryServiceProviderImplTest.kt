@@ -4,18 +4,20 @@ import com.example.remotedatasource.api.CategoryApiService
 import com.example.remotedatasource.serviceProvider.implementation.CategoryServiceProviderImpl
 import com.example.repository.dto.remote.RemoteCategoryResponse
 import io.mockk.coEvery
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
+
 
 class CategoryServiceProviderImplTest {
 
     private lateinit var categoryApiService: CategoryApiService
     private lateinit var categoryServiceProviderImpl: CategoryServiceProviderImpl
 
-    @Before
+    @BeforeEach
     fun setUp() {
         categoryApiService = mockk()
         categoryServiceProviderImpl = CategoryServiceProviderImpl(categoryApiService)
@@ -29,10 +31,11 @@ class CategoryServiceProviderImplTest {
         coEvery { categoryApiService.getMovieCategories() } returns dummyResponse
 
         // When
-        categoryServiceProviderImpl.getMovieCategories()
+        val result = categoryServiceProviderImpl.getMovieCategories()
 
         // Then
         coVerify(exactly = 1) { categoryApiService.getMovieCategories() }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 
     @Test
@@ -43,9 +46,10 @@ class CategoryServiceProviderImplTest {
         coEvery { categoryApiService.getTvShowCategories() } returns dummyResponse
 
         // When
-        categoryServiceProviderImpl.getTvShowCategories()
+        val result = categoryServiceProviderImpl.getTvShowCategories()
 
         // Then
         coVerify(exactly = 1) { categoryApiService.getTvShowCategories() }
+        assertThat(result).isEqualTo(dummyResponse)
     }
 }
