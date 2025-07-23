@@ -16,7 +16,7 @@ interface MovieDao {
     @Transaction
     @Query(
         """
-        SELECT movie.* FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
+        SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
         INNER JOIN (
           SELECT movieId, storedLanguage
           FROM ${DatabaseConstants.SEARCH_MOVIE_CROSS_REF_TABLE}
@@ -46,7 +46,7 @@ interface MovieDao {
 
     @Query(
         """
-      SELECT movie.* FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
+      SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
       LEFT JOIN ${DatabaseConstants.MOVIE_CATEGORY_CROSS_REF_TABLE} AS categoryCrossRef
         ON movie.movieId = categoryCrossRef.movieId
       LEFT JOIN ${DatabaseConstants.MOVIE_CATEGORY_INTEREST_TABLE} AS genreInterest

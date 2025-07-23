@@ -3,12 +3,10 @@ package com.example.repository.datasource.local
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.local.relation.TvShowWithCategory
-import com.example.repository.dto.local.utils.SearchType
 
 interface TvShowLocalSource {
-    suspend fun getTvShowsByKeywordAndSearchType(
+    suspend fun getTvShowsBySearchKeywordSortedByInterest(
         searchKeyword: String,
-        searchType: SearchType,
         storedLanguage: String,
         limit: Int,
         offset: Int

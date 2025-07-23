@@ -22,7 +22,7 @@ import com.example.repository.dto.local.LocalSearchDto
 import com.example.repository.dto.local.LocalTvShowCategoryDto
 import com.example.repository.dto.local.LocalTvShowCategoryInterestDto
 import com.example.repository.dto.local.LocalTvShowDto
-import com.example.repository.dto.local.LocalTvShowWithSearchDto
+import com.example.repository.dto.local.SearchTvShowCrossRefDto
 import com.example.repository.dto.local.MovieCategoryCrossRefDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.TvShowCategoryCrossRefDto
@@ -34,7 +34,7 @@ import com.example.repository.dto.local.TvShowCategoryCrossRefDto
         LocalTvShowCategoryDto::class,
         LocalMovieDto::class,
         LocalTvShowDto::class,
-        LocalTvShowWithSearchDto::class,
+        SearchTvShowCrossRefDto::class,
         MovieCategoryCrossRefDto::class,
         TvShowCategoryCrossRefDto::class,
         SearchMovieCrossRefDto::class,

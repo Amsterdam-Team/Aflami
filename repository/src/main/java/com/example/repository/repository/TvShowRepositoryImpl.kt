@@ -60,7 +60,9 @@ class TvShowRepositoryImpl(
                 .let { getTvShowsFromRemote(keyword, page) }
                 .let { remoteTvShows ->
                     saveTvShowsToDatabase(remoteTvShows, keyword)
-                    tvRemoteMapper.toEntityList(remoteTvShows.results)
+                        .let { getTvShowFromLocal(keyword, page, tvShowsPerPage) }
+                        .takeIf { tvShows -> tvShows.isNotEmpty() }
+                        ?: tvRemoteMapper.toEntityList(remoteTvShows.results)
                 }
     }
 
@@ -75,7 +77,7 @@ class TvShowRepositoryImpl(
             getDeviceLanguage()
         )
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
-            ?.let { getTvShowFromLocal(keyword, SearchType.BY_KEYWORD, page, tvShowsPerPage) }
+            ?.let { getTvShowFromLocal(keyword, page, tvShowsPerPage) }
             ?.takeIf { tvShows -> tvShows.isNotEmpty() }
     }
 
@@ -126,19 +128,21 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowFromLocal(
         keyword: String,
-        searchType: SearchType,
         page: Int,
         tvShowsPerPage: Int
     ): List<TvShow> {
-        return tvShowWithCategoryLocalMapper.toEntityList(
-            localTvDataSource.getTvShowsByKeywordAndSearchType(
-                keyword,
-                searchType,
-                getDeviceLanguage(),
-                limit = tvShowsPerPage,
-                offset = tvShowsPerPage * (page - 1)
+        return try {
+            tvShowWithCategoryLocalMapper.toEntityList(
+                localTvDataSource.getTvShowsBySearchKeywordSortedByInterest(
+                    searchKeyword = keyword,
+                    storedLanguage = getDeviceLanguage(),
+                    limit = tvShowsPerPage,
+                    offset = tvShowsPerPage * (page - 1)
+                )
             )
-        )
+        } catch (_: Exception) {
+            emptyList()
+        }
     }
 
     private suspend fun getTvShowsFromRemote(keyword: String, page: Int): RemoteTvShowResponse {
