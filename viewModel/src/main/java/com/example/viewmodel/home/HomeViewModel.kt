@@ -1,12 +1,12 @@
 package com.example.viewmodel.home
 
 import com.example.domain.exceptions.AflamiException
-import com.example.domain.useCase.GetUpcomingMoviesUseCase
-import com.example.entity.Movie
-import com.example.entity.category.MovieGenre
 import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetHomeScreenDataUseCase
 import com.example.domain.useCase.GetHomeScreenDataUseCase.HomeScreenData
+import com.example.domain.useCase.GetUpcomingMoviesUseCase
+import com.example.entity.Movie
+import com.example.entity.category.MovieGenre
 import com.example.viewmodel.home.HomeUiState.HomeError
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.shared.BaseViewModel
@@ -55,6 +55,10 @@ class HomeViewModel(
         sendNewEffect(HomeEffect.NavigateToTopRatedMoviesEffect)
     }
 
+    override fun onClickShowAllContinueWatchingMovies() {
+        sendNewEffect(HomeEffect.NavigateToContinueWatchingMoviesScreen)
+    }
+
     private fun getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre: MovieGenre = MovieGenre.ALL) {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
@@ -78,6 +82,10 @@ class HomeViewModel(
             it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre))
         }
         getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre)
+    }
+
+    override fun onClickContinueWatchingMovie(movieId: Long) {
+
     }
 
     private fun onError(exception: AflamiException) {

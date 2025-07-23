@@ -40,8 +40,9 @@ import com.example.ui.navigation.Route
 import com.example.ui.navigation.Route.MovieDetails
 import com.example.ui.screens.home.sections.AnimatedSectionVisibility
 import com.example.ui.screens.home.sections.BlurredMoviePoster
-import com.example.ui.screens.home.sections.topRatingSection
+import com.example.ui.screens.home.sections.continueWatchingSection
 import com.example.ui.screens.home.sections.popularSection
+import com.example.ui.screens.home.sections.topRatingSection
 import com.example.ui.screens.home.sections.upcomingMoviesSection
 import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.home.HomeEffect
@@ -62,14 +63,19 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koi
         homeViewModel.effect.collectLatest { effect ->
             effect?.let {
                 when (effect) {
-                    NavigateToSearchScreenEffect -> navController.safeNavigate(Route.Search)
+                    is NavigateToSearchScreenEffect -> navController.safeNavigate(Route.Search)
                     is NavigateToMovieDetailsEffect -> {
                         navController.safeNavigate(MovieDetails(movieId = effect.movieId))
                     }
 
-                    HomeEffect.NavigateToTopRatedMoviesEffect -> {
+                    is HomeEffect.NavigateToTopRatedMoviesEffect -> {
                         navController.safeNavigate(Route.TopRated)
                     }
+
+                    is HomeEffect.NavigateToContinueWatchingMoviesScreen -> {
+                        navController.safeNavigate(Route.ContinueWatching)
+                    }
+
                 }
             }
         }
@@ -114,9 +120,11 @@ private fun HomeScreenContent(
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .nestedScroll(nestedScrollConnection)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(nestedScrollConnection)
+    ) {
         AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
             BlurredMoviePoster(
                 posterUrl = state.popularMovies[pagerState.currentPage % state.popularMovies.size].posterUrl,
@@ -156,6 +164,12 @@ private fun HomeScreenContent(
                         onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                     )
 
+                    continueWatchingSection(
+                        continueWatchingMovies = state.continueWatchingMovies,
+                        onClickMovie = interactionListener::onClickContinueWatchingMovie,
+                        onClickShowAll = interactionListener::onClickShowAllToRatedMovies
+                    )
+
                     upcomingMoviesSection(
                         moviesGenres = state.upcomingMovieGenres,
                         onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
@@ -182,6 +196,8 @@ private fun HomeScreenPreview() {
                 override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {}
                 override fun onClickMovie(movieId: Long) {}
                 override fun onClickShowAllToRatedMovies() {}
+                override fun onClickShowAllContinueWatchingMovies() {}
+                override fun onClickContinueWatchingMovie(movieId: Long) {}
             }
         )
     }
