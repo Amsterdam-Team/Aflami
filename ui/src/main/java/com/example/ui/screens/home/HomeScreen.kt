@@ -77,8 +77,7 @@ private fun HomeScreenContent(
             HomeAppBar(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .padding(horizontal = 16.dp)
-                    .zIndex(4f),
+                    .padding(horizontal = 16.dp),
                 onSearchClicked = interactionListener::onClickSearch,
             )
         }
