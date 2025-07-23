@@ -60,9 +60,11 @@ class GetSuggestedCountriesUseCaseTest {
                 countriesWithDifferentCases[0]
             )
         }
+
     @Test
-    fun `getSuggestedCountriesUseCase should return Aflami exception when an error happened`() = runTest {
-        coEvery { countryRepository.getCountries() } throws AflamiException()
-        assertThrows<AflamiException> { getSuggestedCountriesUseCase("") }
-    }
+    fun `getSuggestedCountriesUseCase should return Aflami exception when an error happened`() =
+        runTest {
+            coEvery { countryRepository.getCountries() } throws AflamiException()
+            assertThrows<AflamiException> { getSuggestedCountriesUseCase("") }
+        }
 }
