@@ -4,4 +4,5 @@ sealed interface HomeEffect {
     object NavigateToSearchScreenEffect : HomeEffect
     data class NavigateToMovieDetailsEffect(val movieId : Long) : HomeEffect
     object NavigateToTopRatedMoviesEffect : HomeEffect
+    object NavigateToContinueWatchingMoviesScreen : HomeEffect
 }
