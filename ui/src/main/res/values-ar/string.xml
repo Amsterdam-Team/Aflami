@@ -71,7 +71,7 @@
     <string name="continue_as_guest">المتابعة كضيف</string>
     <string name="dont_have_account">ليس لديك حساب؟</string>
     <string name="create_account">إنشاء حساب</string>
-    <string name="incorrect_password">كلمة مرور خاطئة</string>
+    <string name="incorrect_username_or_password">كلمة مرور او اسم المستخدم خاطئة</string>
     <!-- -   -->
     <!-- - Mood Picker  -->
     <string name="mood_picker_title">محدد المزاج (احصل على فيلم)</string>

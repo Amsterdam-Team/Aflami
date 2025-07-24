@@ -34,7 +34,8 @@ fun BoxScope.BlurredMoviePoster(
                 .blur(
                     radius = 5f,
                     edgeTreatment = BlurEdgeTreatment.UNBOUNDED
-                ).background(Color(0x80000000))
+                )
+                .background(Color(0x80000000))
         )
 
         Box(

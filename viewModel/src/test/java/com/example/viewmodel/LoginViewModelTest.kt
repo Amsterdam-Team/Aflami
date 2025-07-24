@@ -1,9 +1,10 @@
 package com.example.viewmodel
 
+import com.example.domain.useCase.authentication.LoginWithPasswordUseCase
 import com.example.viewmodel.login.LoginViewModel
 import com.example.viewmodel.utils.TestDispatcherProvider
-import com.example.viewmodel.utils.viewmodelHelper.createLoginViewModel
 import com.google.common.truth.Truth.assertThat
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -21,11 +22,15 @@ class LoginViewModelTest {
 
     private val testDispatcherProvider = TestDispatcherProvider()
     private var testScope = TestScope(testDispatcherProvider.testDispatcher)
+    private val loginWithPasswordUseCase: LoginWithPasswordUseCase = mockk(relaxed = true)
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
-        viewModel = LoginViewModel(dispatcherProvider = testDispatcherProvider)
+        viewModel = LoginViewModel(
+            dispatcherProvider = testDispatcherProvider,
+            loginWithPasswordUseCase = loginWithPasswordUseCase
+        )
     }
 
     @AfterEach
@@ -60,7 +65,7 @@ class LoginViewModelTest {
     @Test
     fun `onUserNameUpdated should clear username errors`() =
         testScope.runTest {
-            viewModel = createLoginViewModel(testDispatcherProvider, usernameError = "Incorrect Username", username = "thisusername")
+
             val username = "testuser"
 
             viewModel.onUserNameUpdated(username)
@@ -73,7 +78,7 @@ class LoginViewModelTest {
     @Test
     fun `onPasswordUpdate should clear password errors`() =
         testScope.runTest {
-            viewModel = createLoginViewModel(testDispatcherProvider, passwordError = "Incorrect Password", password = "thispassword")
+
             val password = "testpassword"
 
             viewModel.onPasswordUpdate(password)
@@ -160,7 +165,7 @@ class LoginViewModelTest {
     @Test
     fun `clearing username should disable login button when password is set`() =
         testScope.runTest {
-            viewModel = createLoginViewModel(testDispatcherProvider, isLoginButtonEnabled = true, password = "password", username = "username")
+
 
             viewModel.onUserNameUpdated("")
             testScheduler.advanceUntilIdle()
@@ -172,7 +177,7 @@ class LoginViewModelTest {
     @Test
     fun `clearing password should disable login button when username is set`() =
         testScope.runTest {
-            viewModel = createLoginViewModel(testDispatcherProvider, isLoginButtonEnabled = true, username = "username")
+
 
             viewModel.onPasswordUpdate("")
             testScheduler.advanceUntilIdle()

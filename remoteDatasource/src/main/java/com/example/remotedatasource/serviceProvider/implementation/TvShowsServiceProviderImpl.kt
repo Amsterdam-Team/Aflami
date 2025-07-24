@@ -30,25 +30,30 @@ class TvShowsServiceProviderImpl(
     }
 
     override suspend fun getSimilarTvShows(tvShowId: Long): RemoteTvShowResponse {
-        return responseCall{ tvShowsApiService.getSimilarTvShows(tvShowId) }
+        return responseCall { tvShowsApiService.getSimilarTvShows(tvShowId) }
     }
 
     override suspend fun getTvShowReviews(tvShowId: Long): ReviewsResponse {
-        return responseCall{ tvShowsApiService.getTvShowReviews(tvShowId) }
+        return responseCall { tvShowsApiService.getTvShowReviews(tvShowId) }
     }
 
     override suspend fun getTvShowGallery(tvShowId: Long): RemoteGalleryResponse {
-        return responseCall{ tvShowsApiService.getTvShowGallery(tvShowId) }
+        return responseCall { tvShowsApiService.getTvShowGallery(tvShowId) }
     }
 
     override suspend fun getTvShowCompanyProduction(tvShowId: Long): ProductionCompanyResponse {
-        return responseCall{ tvShowsApiService.getProductionCompany(tvShowId) }
+        return responseCall { tvShowsApiService.getProductionCompany(tvShowId) }
     }
 
     override suspend fun getEpisodesBySeasonNumber(
         tvShowId: Long,
         seasonNumber: Int
     ): EpisodeResponse {
-        return responseCall{ tvShowsApiService.getEpisodesBySeasonNumber(tvShowId, seasonNumber) }
+        return responseCall {
+            tvShowsApiService.getEpisodesBySeasonNumber(
+                tvShowId,
+                seasonNumber
+            )
+        }
     }
 }

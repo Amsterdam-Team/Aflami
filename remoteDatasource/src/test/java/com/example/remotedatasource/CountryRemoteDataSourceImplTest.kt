@@ -6,14 +6,14 @@ import com.example.domain.exceptions.ServerErrorException
 import com.example.remotedatasource.datasource.CountryRemoteDataSourceImpl
 import com.example.remotedatasource.serviceProvider.CountryServiceProvider
 import com.example.repository.dto.remote.RemoteCountryDto
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 
 
 class CountryRemoteDataSourceImplTest {
@@ -24,7 +24,7 @@ class CountryRemoteDataSourceImplTest {
     private val jsonSerializer =
         Json { ignoreUnknownKeys = true }
 
-    @Before
+    @BeforeEach
     fun setUp() {
         countryServiceProvider = mockk()
         countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryServiceProvider)
@@ -51,41 +51,44 @@ class CountryRemoteDataSourceImplTest {
         val countries = countryRemoteDataSourceImpl.getCountries()
 
         //Then
-        assertEquals("EG", countries[0].isoCode)
-        assertEquals("United States", countries[1].englishName)
-        assertEquals(2, countries.size)
+        assertThat(countries[0].isoCode).isEqualTo("EG")
+        assertThat(countries[1].englishName).isEqualTo("United States")
+        assertThat(countries.size).isEqualTo(2)
     }
 
     @Test
-    fun `getCountries should rethrow ServerErrorException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { countryServiceProvider.getCountries() } throws ServerErrorException()
+    fun `getCountries should rethrow ServerErrorException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { countryServiceProvider.getCountries() } throws ServerErrorException()
 
-        // When & Then
-        assertFailsWith<ServerErrorException> {
-            countryRemoteDataSourceImpl.getCountries()
+            // When & Then
+            assertThrows<ServerErrorException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
         }
-    }
 
     @Test
-    fun `getCountries should rethrow NoInternetException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { countryServiceProvider.getCountries() } throws NoInternetException()
+    fun `getCountries should rethrow NoInternetException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { countryServiceProvider.getCountries() } throws NoInternetException()
 
-        // When & Then
-        assertFailsWith<NoInternetException> {
-            countryRemoteDataSourceImpl.getCountries()
+            // When & Then
+            assertThrows<NoInternetException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
         }
-    }
 
     @Test
-    fun `getCountries should rethrow NetworkException from service provider when exception occurs`() = runTest {
-        // Given
-        coEvery { countryServiceProvider.getCountries() } throws NetworkException()
+    fun `getCountries should rethrow NetworkException from service provider when exception occurs`() =
+        runTest {
+            // Given
+            coEvery { countryServiceProvider.getCountries() } throws NetworkException()
 
-        // When & Then
-        assertFailsWith<NetworkException> {
-            countryRemoteDataSourceImpl.getCountries()
+            // When & Then
+            assertThrows<NetworkException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
         }
-    }
 }
