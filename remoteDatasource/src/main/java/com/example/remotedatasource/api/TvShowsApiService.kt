@@ -52,7 +52,7 @@ interface TvShowsApiService {
     @GET(TV_SHOW_EPISODES_ENDPOINT)
     suspend fun getEpisodesBySeasonNumber(
         @Path("tvShowId") tvShowId: Long,
-        @Query("seasonNumber") seasonNumber: Int
+        @Path("seasonNumber") seasonNumber: Int
     ): EpisodeResponse
 
     companion object {
