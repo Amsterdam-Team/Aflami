@@ -25,13 +25,13 @@ import com.example.designsystem.components.SectionTitle
 import com.example.designsystem.theme.AflamiTheme
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
-import com.example.ui.screens.home.component.PopularMovieCard
-import com.example.viewmodel.home.HomeUiState.PopularMovieItemUiState
+import com.example.ui.screens.home.component.PopularMediaItemCard
+import com.example.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
-fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, pagerState: PagerState) {
+fun LazyListScope.popularSection(popularMovies: List<PopularMediaItemUiState>, pagerState: PagerState) {
     item {
             SectionTitle(
                 title = stringResource(R.string.popular),
@@ -72,7 +72,7 @@ fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, p
                         targetValue = androidx.compose.ui.util.lerp(0f, 1f, 1f - currentPageOffset.coerceIn(0f, 1f)),
                         label = "height"
                     )
-                    PopularMovieCard(
+                    PopularMediaItemCard(
                         popularMovie = popularMovies[page % popularMovies.size],
                         ratingAlpha = rateAlpha,
                         imageWidth = width,
@@ -102,7 +102,7 @@ private fun AutoScrollingPager(
 @Composable
 private fun PopularSectionPreview() {
     val dummyMovies = List(5) {
-        PopularMovieItemUiState(
+        PopularMediaItemUiState(
             name = "Movie $it",
             posterUrl = "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
             rating = (8.5f + it).toString()

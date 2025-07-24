@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -27,7 +27,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.theme.AflamiTheme
@@ -41,8 +40,8 @@ import com.example.ui.navigation.Route
 import com.example.ui.navigation.Route.MovieDetails
 import com.example.ui.screens.home.sections.AnimatedSectionVisibility
 import com.example.ui.screens.home.sections.BlurredMoviePoster
-import com.example.ui.screens.home.sections.topRatingSection
 import com.example.ui.screens.home.sections.popularSection
+import com.example.ui.screens.home.sections.topRatingSection
 import com.example.ui.screens.home.sections.upcomingMoviesSection
 import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.home.HomeEffect
@@ -103,7 +102,7 @@ private fun HomeScreenContent(
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
-    var blurOffsetY by remember { mutableStateOf(-12f) }
+    var blurOffsetY by remember { mutableFloatStateOf(-12f) }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -115,12 +114,14 @@ private fun HomeScreenContent(
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .nestedScroll(nestedScrollConnection)) {
-        AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(nestedScrollConnection)
+    ) {
+        AnimatedSectionVisibility(visible = state.popularMediaItems.isNotEmpty()) {
             BlurredMoviePoster(
-                posterUrl = state.popularMovies[pagerState.currentPage % state.popularMovies.size].posterUrl,
+                posterUrl = state.popularMediaItems[pagerState.currentPage % state.popularMediaItems.size].posterUrl,
                 modifier = Modifier.offset { IntOffset(x = 0, y = blurOffsetY.roundToInt()) }
             )
         }
@@ -140,7 +141,7 @@ private fun HomeScreenContent(
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 onSearchClicked = interactionListener::onClickSearch,
             )
-            AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
+            AnimatedSectionVisibility(visible = state.popularMediaItems.isNotEmpty()) {
                 LazyColumn(
                     modifier = modifier
                         .fillMaxSize(),
@@ -148,11 +149,11 @@ private fun HomeScreenContent(
                 ) {
 
                     popularSection(
-                        popularMovies = state.popularMovies,
+                        popularMovies = state.popularMediaItems,
                         pagerState = pagerState
                     )
                     topRatingSection(
-                        topRatedMovies = state.topRatedMovies,
+                        topRatedMediaItems = state.topRatedMediaItems,
                         onClickMovie = interactionListener::onClickMovie,
                         onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                     )

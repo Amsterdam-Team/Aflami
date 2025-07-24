@@ -126,6 +126,14 @@ class TvShowRepositoryImpl(
         )
     }
 
+    override suspend fun getPopularTvShows(): List<TvShow> {
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows().results)
+    }
+
+    override suspend fun getTopRatedTvShows(): List<TvShow> {
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getTopRatedTvShows().results)
+    }
+
     private suspend fun getTvShowFromLocal(
         keyword: String,
         page: Int,

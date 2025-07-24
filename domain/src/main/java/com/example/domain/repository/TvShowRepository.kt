@@ -6,9 +6,12 @@ import com.example.entity.ProductionCompany
 import com.example.entity.Review
 import com.example.entity.Season
 import com.example.entity.TvShow
-import com.example.entity.category.TvShowGenre
 
 interface TvShowRepository {
+
+    suspend fun getPopularTvShows(): List<TvShow>
+    suspend fun getTopRatedTvShows(): List<TvShow>
+
     suspend fun getTvShowByKeyword(keyword: String, page: Int, tvShowsPerPage: Int): List<TvShow>
     suspend fun getTvShowDetails(tvShowId: Long): TvShow
     suspend fun getTvShowCast(tvShowId: Long): List<Actor>

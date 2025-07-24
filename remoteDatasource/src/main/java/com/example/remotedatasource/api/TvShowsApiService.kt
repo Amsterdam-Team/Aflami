@@ -13,6 +13,12 @@ import retrofit2.http.Query
 
 interface TvShowsApiService {
 
+    @GET(TV_POPULAR)
+    suspend fun getPopularTvShows(): RemoteTvShowResponse
+
+    @GET(TOP_RATED_TV_SHOWS)
+    suspend fun getTopRatedTvShows(): RemoteTvShowResponse
+
     @GET(SEARCH_TV_URL)
     suspend fun getTvShowsByKeyword(
         @Query(QUERY_KEY) keyword: String,
@@ -56,6 +62,11 @@ interface TvShowsApiService {
     ): EpisodeResponse
 
     companion object {
+
+        private const val TV_POPULAR = "tv/popular"
+
+        private const val TOP_RATED_TV_SHOWS = "tv/top_rated"
+
         private const val SEARCH_TV_URL = "search/tv"
         private const val QUERY_KEY = "query"
         private const val PAGE_KEY = "page"

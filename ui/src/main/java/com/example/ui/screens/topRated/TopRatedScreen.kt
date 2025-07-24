@@ -31,7 +31,7 @@ import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.screens.home.sections.AnimatedSectionVisibility
 import com.example.ui.screens.topRated.component.TopRatedBackgroundComponent
-import com.example.ui.screens.topRated.component.TopRatedMoviesGrid
+import com.example.ui.screens.topRated.component.TopRatedMediaItemsGrid
 import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.topRated.TopRatedEffect
 import com.example.viewmodel.topRated.TopRatedInteractionListener
@@ -110,11 +110,11 @@ private fun TopRatedContent(
             }
 
             AnimatedSectionVisibility(
-                visible = state.topRatedMovies.isNotEmpty()
+                visible = state.topRatedMediaItems.isNotEmpty()
             ) {
-                TopRatedMoviesGrid(
+                TopRatedMediaItemsGrid(
                     gridState = gridState,
-                    topRatedMovies = state.topRatedMovies,
+                    items = state.topRatedMediaItems,
                     onClickMovie = interactionListener::onClickMovie,
                     modifier = Modifier.weight(1f).navigationBarsPadding()
                 )
