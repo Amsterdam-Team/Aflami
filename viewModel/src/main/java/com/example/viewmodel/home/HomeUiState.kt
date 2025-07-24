@@ -1,5 +1,6 @@
 package com.example.viewmodel.home
 
+import com.example.entity.category.MovieGenre
 import com.example.viewmodel.shared.defaultMovieGenres
 import com.example.viewmodel.shared.uiStates.MovieGenreItemUiState
 import com.example.viewmodel.shared.uiStates.MovieItemUiState
@@ -21,5 +22,11 @@ data class HomeUiState(
 
     sealed class HomeError{
         data object NetworkError : HomeError()
+    }
+
+    fun getSelectedUpcomingMovieGenre(): MovieGenre {
+        return upcomingMovieGenres
+            .firstOrNull { it.selectableMovieGenre.isSelected }
+            ?.selectableMovieGenre?.item ?: MovieGenre.ALL
     }
 }

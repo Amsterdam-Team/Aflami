@@ -48,10 +48,4 @@ class TvRemoteDataSourceImpl(
     ): EpisodeResponse {
         return tvShowsServiceProvider.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
     }
-
-    private companion object {
-        const val QUERY_KEY = "query"
-        const val PAGE = "page"
-        const val SEARCH_TV_URL = "search/tv"
-    }
 }
