@@ -1,26 +1,25 @@
 package com.example.ui.utils
 
-import android.webkit.WebView
-
-private fun buildHeaderCheckScript(text: String): String {
-    return """
-        (function() {
-            var headers = document.querySelectorAll('h2');
-            for (var i = 0; i < headers.length; i++) {
-                if (headers[i].innerText && headers[i].innerText.trim().includes('$text')) {
-                    return true;
-                }
-            }
-            return false;
-        })();
-    """.trimIndent()
+fun buildFormExistenceCheckScript(): String {
+    return "(function() { return document.querySelector('form[action=\"/signup\"]') !== null; })();"
 }
 
-fun checkLoginTitle(webView: WebView, onFound: () -> Unit) {
-    val script = buildHeaderCheckScript("Login to your account")
-    webView.evaluateJavascript(script) { result ->
-        if (result == "true") {
-            onFound()
+fun buildResetPasswordFormExistenceCheckScript(): String {
+    return "(function() { return document.querySelector('form[action=\"/reset-password\"]') !== null; })();"
+}
+
+fun createFormDetector(
+    onFormSubmittingComplete: () -> Unit
+): (isFormPresent: Boolean) -> Unit {
+    var hasInitialFormLoaded = false
+
+    return { isFormPresent ->
+        val isSuccess = hasInitialFormLoaded && !isFormPresent
+
+        if (isSuccess) {
+            onFormSubmittingComplete()
+        } else if (isFormPresent) {
+            hasInitialFormLoaded = true
         }
     }
 }

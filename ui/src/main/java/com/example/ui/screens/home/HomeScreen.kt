@@ -27,6 +27,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.theme.AflamiTheme
@@ -161,7 +162,7 @@ private fun HomeScreenContent(
                         onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
                         movies = state.upcomingMovies,
                         onMovieClicked = interactionListener::onClickUpcomingMovieCard,
-                        isVisible = isSectionsVisible && state.upcomingMovies.isNotEmpty()
+                        isVisible = isSectionsVisible
                     )
                 }
             }

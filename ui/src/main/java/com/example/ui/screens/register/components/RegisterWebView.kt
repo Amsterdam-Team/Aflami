@@ -4,9 +4,11 @@ import android.graphics.Bitmap
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.ui.utils.checkLoginTitle
+import com.example.ui.utils.buildFormExistenceCheckScript
+import com.example.ui.utils.createFormDetector
 
 
 @Composable
@@ -16,6 +18,9 @@ fun RegisterWebView(
     onLoadingStateChanged: (isLoading: Boolean) -> Unit,
     onRegistrationComplete: () -> Unit,
 ) {
+    val registrationDetector = remember(onRegistrationComplete) {
+        createFormDetector(onRegistrationComplete)
+    }
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -23,6 +28,7 @@ fun RegisterWebView(
                 settings.javaScriptEnabled = true
 
                 webViewClient = object : WebViewClient() {
+
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                         super.onPageStarted(view, url, favicon)
                         onLoadingStateChanged(true)
@@ -31,9 +37,11 @@ fun RegisterWebView(
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
                         onLoadingStateChanged(false)
-
-                        view?.let {
-                            checkLoginTitle(it, onFound = onRegistrationComplete)
+                        view ?: return
+                        val script = buildFormExistenceCheckScript()
+                        view.evaluateJavascript(script) { result ->
+                            val isFormPresent = result?.toBoolean() ?: false
+                            registrationDetector(isFormPresent)
                         }
                     }
                 }

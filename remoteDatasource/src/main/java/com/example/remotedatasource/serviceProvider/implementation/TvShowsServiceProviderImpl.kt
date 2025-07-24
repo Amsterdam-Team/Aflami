@@ -49,6 +49,11 @@ class TvShowsServiceProviderImpl(
         tvShowId: Long,
         seasonNumber: Int
     ): EpisodeResponse {
-        return responseCall{ tvShowsApiService.getEpisodesBySeasonNumber(tvShowId, seasonNumber) }
+        return responseCall {
+            tvShowsApiService.getEpisodesBySeasonNumber(
+                tvShowId,
+                seasonNumber
+            )
+        }
     }
 }

@@ -1,10 +1,10 @@
 package com.example.viewmodel.home
 
 import com.example.domain.exceptions.AflamiException
+import com.example.domain.exceptions.NetworkException
 import com.example.domain.useCase.GetUpcomingMoviesUseCase
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
-import com.example.domain.exceptions.NoInternetException
 import com.example.domain.useCase.GetHomeScreenDataUseCase
 import com.example.domain.useCase.GetHomeScreenDataUseCase.HomeScreenData
 import com.example.viewmodel.home.HomeUiState.HomeError
@@ -20,10 +20,10 @@ class HomeViewModel(
     BaseViewModel<HomeUiState, HomeEffect>(HomeUiState(), dispatcherProvider),
     HomeInteractionListener {
 
-
-        init {
-            getHomeScreenData()
-        }
+    init {
+        getHomeScreenData()
+        getUpcomingMoviesBySelectedGenre()
+    }
 
     private fun getHomeScreenData() {
         updateState { it.copy(isLoading = true) }
@@ -38,9 +38,11 @@ class HomeViewModel(
     fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData){
         updateState { homeUiStateMapper.toUiState(homeScreenData) }
     }
+
     override fun onClickRetryLoading() {
         updateState { it.copy(error = null) }
         getHomeScreenData()
+        getUpcomingMoviesBySelectedGenre()
     }
 
     override fun onClickSearch() {
@@ -74,20 +76,15 @@ class HomeViewModel(
     }
 
     override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {
-        updateState {
-            it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre))
-        }
+        if (genre == state.value.getSelectedUpcomingMovieGenre()) return
+
+        updateState { it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre)) }
         getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre)
     }
 
     private fun onError(exception: AflamiException) {
         when (exception) {
-            is NoInternetException -> updateState {
-                it.copy(
-                    error = HomeError.NetworkError
-                )
-            }
-
+            is NetworkException -> updateState { it.copy(error = HomeError.NetworkError) }
             else -> {}
         }
     }

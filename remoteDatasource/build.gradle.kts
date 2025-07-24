@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.kover)
+    alias(libs.plugins.android.junit5)
 }
 
 android {
@@ -46,9 +47,10 @@ dependencies {
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.kotlinx.serialization.json)
     // Unit Testing
+    testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit)
+    testImplementation(libs.truth)
     testImplementation(kotlin("test"))
 }

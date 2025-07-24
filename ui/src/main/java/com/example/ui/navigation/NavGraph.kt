@@ -12,9 +12,10 @@ import com.example.ui.screens.login.loginScreenRoute
 import com.example.ui.screens.movieDetails.movieDetailsScreenRoute
 import com.example.ui.screens.profile.profileScreenRoute
 import com.example.ui.screens.register.registerScreenRoute
-import com.example.ui.screens.search.keywordSearch.searchScreenRoute
+import com.example.ui.screens.resetPassword.resetPasswordScreenRoute
 import com.example.ui.screens.search.actorSearch.searchByActorScreenRoute
 import com.example.ui.screens.search.countrySearch.searchByCountryScreenRoute
+import com.example.ui.screens.search.keywordSearch.searchScreenRoute
 import com.example.ui.screens.seriesDetails.seriesDetailsScreenRoute
 import com.example.ui.screens.topRated.topRatedScreenRoute
 
@@ -22,8 +23,8 @@ import com.example.ui.screens.topRated.topRatedScreenRoute
 fun NavGraph(
     navController: NavHostController,
     startDestination: Any = Route.Tab.Home
-){
-    NavHost(navController = navController, startDestination = startDestination){
+) {
+    NavHost(navController = navController, startDestination = startDestination) {
         loginScreenRoute()
         homeScreenRoute()
         listsScreenRoute()
@@ -38,5 +39,6 @@ fun NavGraph(
         castScreenRoute()
         topRatedScreenRoute()
         registerScreenRoute()
+        resetPasswordScreenRoute()
     }
 }

@@ -36,4 +36,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.jupiter)
     testImplementation(kotlin("test"))
+
+    //Datastore
+    implementation(libs.androidx.datastore.preferences)
 }
