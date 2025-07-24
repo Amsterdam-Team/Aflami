@@ -13,7 +13,7 @@ data class EpisodeDto(
     @SerialName("air_date") val airDate: String?,
     @SerialName("overview") val overview: String,
     @SerialName("still_path") val stillPath: String?,
-    @SerialName("vote_average") val voteAverage: String,
+    @SerialName("vote_average") val voteAverage: Double,
     @SerialName("season_number") val seasonNumber: Int,
 ) {
     val fullStillPath: String?
