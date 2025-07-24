@@ -1,8 +1,5 @@
 package com.example.ui.screens.continueWatching
 
-
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +10,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -36,7 +30,6 @@ import com.example.viewmodel.continueWatching.ContinueWatchingEffect
 import com.example.viewmodel.continueWatching.ContinueWatchingInteractionListener
 import com.example.viewmodel.continueWatching.ContinueWatchingUiState
 import com.example.viewmodel.continueWatching.ContinueWatchingViewModel
-
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -67,71 +60,58 @@ fun ContinueWatchingContent(
     state: ContinueWatchingUiState,
     interactionListener: ContinueWatchingInteractionListener
 ) {
-    Box(
+    val gridState = rememberLazyGridState()
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppTheme.color.onPrimaryBody)
+            .background(AppTheme.color.surface)
     ) {
-
-        val gridState = rememberLazyGridState()
-        val scrollOffset = remember {
-            derivedStateOf { gridState.firstVisibleItemScrollOffset }
-        }
-
-        val appBarColor by animateColorAsState(
-            targetValue = if (scrollOffset.value > 10) AppTheme.color.surface else Color.Transparent,
-            animationSpec = tween(800),
-            label = "AppBarScrollColor"
+        DefaultAppBar(
+            title = stringResource(R.string.continue_watching),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(AppTheme.color.surface)
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            onNavigateBackClicked = interactionListener::onClickBack
         )
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(AppTheme.color.onPrimaryBody)
+        AnimatedSectionVisibility(
+            visible = state.isLoading
         ) {
-            DefaultAppBar(
-                title = stringResource(R.string.continue_watching),
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingContainer(modifier = Modifier.zIndex(10f))
+            }
+        }
+
+        AnimatedSectionVisibility(
+            visible = state.error == ContinueWatchingUiState.ContinueWatchingError.NetworkError
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                onNavigateBackClicked = interactionListener::onClickBack
-            )
-
-            AnimatedSectionVisibility(
-                visible = state.isLoading
+                    .fillMaxSize()
+                    .zIndex(10f),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LoadingContainer(modifier = Modifier.zIndex(10f))
-                }
-            }
-
-            AnimatedSectionVisibility(
-                visible = state.error == ContinueWatchingUiState.ContinueWatchingError.NetworkError
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize().zIndex(10f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    NoNetworkContainer(
-                        onClickRetry = interactionListener::onClickRetryLoading
-                    )
-                }
-            }
-
-            AnimatedSectionVisibility(
-                visible = state.continueWatchingMovies.isNotEmpty()
-            ) {
-                ContinueWatchingMoviesGrid(
-                    gridState = gridState,
-                    continueWatchingMovies = state.continueWatchingMovies,
-                    onClickMovie = interactionListener::onClickMovie,
-                    modifier = Modifier.weight(1f)
+                NoNetworkContainer(
+                    onClickRetry = interactionListener::onClickRetryLoading
                 )
             }
+        }
+
+        AnimatedSectionVisibility(
+            visible = state.continueWatchingMovies.isNotEmpty()
+        ) {
+            ContinueWatchingMoviesGrid(
+                gridState = gridState,
+                continueWatchingMovies = state.continueWatchingMovies,
+                onClickMovie = interactionListener::onClickMovie,
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }

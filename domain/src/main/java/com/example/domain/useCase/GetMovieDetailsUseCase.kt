@@ -1,7 +1,6 @@
 package com.example.domain.useCase
 
 import com.example.domain.repository.MovieRepository
-import com.example.domain.repository.WatchHistoryRepository
 import com.example.entity.Actor
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany
@@ -20,7 +19,6 @@ class GetMovieDetailsUseCase(
         val movieGallery = movieRepository.getMovieGallery(movieId)
         val moviePosters = movieRepository.getMoviePosters(movieId).take(10)
         val productionsCompanies = movieRepository.getProductionCompany(movieId)
-
 
         return MovieDetails(
             movie = movie,

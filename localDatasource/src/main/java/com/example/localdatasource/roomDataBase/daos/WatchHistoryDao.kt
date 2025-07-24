@@ -1,16 +1,16 @@
 package com.example.localdatasource.roomDataBase.daos
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.example.repository.dto.local.LocalMovieDto
 import com.example.repository.dto.local.WatchHistoryDto
 import com.example.repository.dto.local.utils.DatabaseConstants
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WatchHistoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert()
     suspend fun addToWatchHistory(item: WatchHistoryDto)
 
     @Query("""
@@ -20,5 +20,5 @@ interface WatchHistoryDao {
     ON m.movieId = w.movieId
     ORDER BY w.lastWatchedTime DESC
 """)
-    suspend fun getContinueWatching(): List<LocalMovieDto>
+    fun getContinueWatching(): Flow<List<LocalMovieDto>>
 }

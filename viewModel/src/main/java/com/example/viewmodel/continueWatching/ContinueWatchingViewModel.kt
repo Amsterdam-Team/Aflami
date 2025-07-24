@@ -6,6 +6,7 @@ import com.example.domain.useCase.GetContinueWatchingMoviesUseCase
 import com.example.entity.Movie
 import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.flow.firstOrNull
 
 class ContinueWatchingViewModel(
     private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
@@ -24,10 +25,16 @@ class ContinueWatchingViewModel(
     private fun getContinueWatchingMovies() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getContinueWatchingMoviesUseCase() },
+            action = ::loadContinueWatchingMovies,
             onSuccess = ::onGetContinueWatchingMoviesSuccess,
-            onError = ::onError
+            onError = ::onError,
+            onCompletion = ::onCompletion
         )
+    }
+
+    private suspend fun loadContinueWatchingMovies(): List<Movie> {
+        return getContinueWatchingMoviesUseCase()
+            .firstOrNull() ?: emptyList()
     }
 
     private fun onGetContinueWatchingMoviesSuccess(continueWatchingMovies: List<Movie>) {
@@ -38,16 +45,10 @@ class ContinueWatchingViewModel(
         when (exception) {
             is NoInternetException -> updateState {
                 it.copy(
-                    isLoading = false,
                     error = ContinueWatchingUiState.ContinueWatchingError.NetworkError
                 )
             }
-            else ->
-                updateState {
-                    it.copy(
-                        isLoading = false,
-                    )
-                }
+            else ->{}
         }
     }
 
@@ -63,5 +64,5 @@ class ContinueWatchingViewModel(
         sendNewEffect(ContinueWatchingEffect.NavigateBack)
     }
 
-
+    private fun onCompletion() = updateState { it.copy(isLoading = false) }
 }

@@ -25,7 +25,6 @@ import com.example.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.getDeviceLanguage
 
-
 class MovieRepositoryImpl(
     private val categoryRepository: CategoryRepository,
     private val movieLocalSource: MovieLocalSource,
@@ -106,10 +105,19 @@ class MovieRepositoryImpl(
     override suspend fun getMovieDetailsById(movieId: Long): Movie {
         return movieRemoteMapper.toEntity(
             movieRemoteDataSource.getMovieDetailsById(movieId)
-                .also { incrementUserInterestByMovie(it.genres) }
+                .also { incrementUserInterestByMovie(it.genres)
+                    cacheWatchedMovie(it)
+                }
         )
     }
 
+    private suspend fun cacheWatchedMovie(remoteMovieItemDto : RemoteMovieItemDto) {
+        movieLocalSource.insertMovie(
+            movieRemoteLocalMapper.toLocal(
+                remote = remoteMovieItemDto, args = listOf(getDeviceLanguage())
+            )
+        )
+    }
     override suspend fun getMovieReviews(movieId: Long): List<Review> {
         return reviewRemoteMapper.toEntityList(movieRemoteDataSource.getMovieReviews(movieId).results)
     }
@@ -257,4 +265,5 @@ class MovieRepositoryImpl(
         remoteCategories.map(RemoteCategoryDto::id)
             .map { movieLocalSource.incrementGenreInterest(it.toLong()) }
     }
+
 }

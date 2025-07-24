@@ -74,4 +74,8 @@ class MovieLocalDataSourceImpl(
     override suspend fun incrementGenreInterest(categoryId: Long) {
         interestDao.incrementInterest(categoryId)
     }
+
+    override suspend fun insertMovie(movie: LocalMovieDto) {
+        movieDao.insertMovie(movie)
+    }
 }

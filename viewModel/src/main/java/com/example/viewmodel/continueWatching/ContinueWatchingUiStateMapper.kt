@@ -15,7 +15,7 @@ class ContinueWatchingUiStateMapper {
                     name = movie.name,
                     rate = String.format("%.1f", movie.rating),
                     posterImageUrl = movie.posterUrl,
-                    yearOfRelease = movie.productionYear.toString()
+                    yearOfRelease = movie.releaseDate.toString()
                 )
             }
         )

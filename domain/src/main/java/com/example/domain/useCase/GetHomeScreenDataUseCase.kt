@@ -1,8 +1,8 @@
 package com.example.domain.useCase
 
 import com.example.entity.Movie
-import com.example.entity.WatchHistory
 import com.example.entity.category.MovieGenre
+import kotlinx.coroutines.flow.firstOrNull
 
 class GetHomeScreenDataUseCase(
     private val getTopRatedMoviesUseCase : GetTopRatedMoviesUseCase,
@@ -16,7 +16,7 @@ class GetHomeScreenDataUseCase(
             topRatedMovies = getTopRatedMoviesUseCase(),
             popularMovies = getPopularMoviesUseCase(),
             upComingMovies = getUpcomingMoviesUseCase(MovieGenre.ALL),
-            continueWatchingMovies = getContinueWatchingMoviesUseCase()
+            continueWatchingMovies = getContinueWatchingMoviesUseCase.invoke().firstOrNull() ?: emptyList()
         )
     }
     data class HomeScreenData(

@@ -1,4 +1,4 @@
-package com.example.ui.screens.register.components
+package com.example.ui.screens.resetPassword.components
 
 import android.graphics.Bitmap
 import android.webkit.WebView

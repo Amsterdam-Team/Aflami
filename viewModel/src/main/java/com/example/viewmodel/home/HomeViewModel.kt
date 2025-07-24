@@ -1,7 +1,9 @@
 package com.example.viewmodel.home
 
+import androidx.lifecycle.viewModelScope
 import com.example.domain.exceptions.AflamiException
 import com.example.domain.exceptions.NetworkException
+import com.example.domain.useCase.GetContinueWatchingMoviesUseCase
 import com.example.domain.useCase.GetUpcomingMoviesUseCase
 import com.example.entity.Movie
 import com.example.entity.category.MovieGenre
@@ -11,18 +13,22 @@ import com.example.viewmodel.home.HomeUiState.HomeError
 import com.example.viewmodel.search.mapper.selectByMovieGenre
 import com.example.viewmodel.shared.BaseViewModel
 import com.example.viewmodel.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val homeUiStateMapper: HomeUiStateMapper, dispatcherProvider: DispatcherProvider
+    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
+    private val homeUiStateMapper: HomeUiStateMapper,
+    private val dispatcherProvider: DispatcherProvider
 ) :
     BaseViewModel<HomeUiState, HomeEffect>(HomeUiState(), dispatcherProvider),
     HomeInteractionListener {
 
     init {
         getHomeScreenData()
-        getUpcomingMoviesBySelectedGenre()
+        observeContinueWatchingMovies()
     }
 
     private fun getHomeScreenData() {
@@ -42,7 +48,6 @@ class HomeViewModel(
     override fun onClickRetryLoading() {
         updateState { it.copy(error = null) }
         getHomeScreenData()
-        getUpcomingMoviesBySelectedGenre()
     }
 
     override fun onClickSearch() {
@@ -51,6 +56,10 @@ class HomeViewModel(
 
     override fun onClickMovie(movieId: Long) {
         sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId))
+    }
+
+    override fun onClickShowAllContinueWatchingMovies() {
+        sendNewEffect(HomeEffect.NavigateToContinueWatchingMoviesScreen)
     }
 
     override fun onClickShowAllToRatedMovies() {
@@ -80,6 +89,26 @@ class HomeViewModel(
 
         updateState { it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre)) }
         getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre)
+    }
+
+    private fun observeContinueWatchingMovies() {
+        tryToExecute(
+            action = { getContinueWatchingMoviesUseCase() },
+            onSuccess = ::handleContinueWatchingMoviesFlow,
+            onError = ::onError
+        )
+    }
+
+    private fun handleContinueWatchingMoviesFlow(moviesFlow: Flow<List<Movie>>) {
+        viewModelScope.launch(dispatcherProvider.IO) {
+            moviesFlow.collect { movies ->
+                updateState { currentState ->
+                    currentState.copy(
+                        continueWatchingMovies = homeUiStateMapper.moviesToMoviesItemsUiState(movies)
+                    )
+                }
+            }
+        }
     }
 
     private fun onError(exception: AflamiException) {

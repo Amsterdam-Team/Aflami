@@ -1,4 +1,4 @@
-package com.example.ui.screens.ResetPassword
+package com.example.ui.screens.resetPassword
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -16,7 +16,7 @@ import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.theme.AppTheme
 import com.example.ui.application.LocalNavController
 import com.example.ui.screens.home.sections.AnimatedSectionVisibility
-import com.example.ui.screens.register.components.ResetPasswordWebView
+import com.example.ui.screens.resetPassword.components.ResetPasswordWebView
 import com.example.viewmodel.resetPassword.ResetPasswordEffect
 import com.example.viewmodel.resetPassword.ResetPasswordUiState
 import com.example.viewmodel.resetPassword.ResetPasswordViewModel

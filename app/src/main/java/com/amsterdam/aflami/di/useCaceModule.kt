@@ -13,11 +13,8 @@ import com.example.domain.useCase.GetUpcomingMoviesUseCase
 import com.example.domain.useCase.GetTopRatedMoviesUseCase
 import com.example.domain.useCase.GetTvShowDetailsUseCase
 import com.example.domain.useCase.AddWatchHistoryUseCase
-import com.example.domain.useCase.GetUpcomingMoviesUseCase
-import com.example.domain.useCase.IncrementMovieGenreInterestUseCase
-import com.example.domain.useCase.IncrementTvShowGenreInterestUseCase
+import com.example.domain.useCase.GetContinueWatchingMoviesUseCase
 import com.example.domain.useCase.RecentSearchesUseCase
-import com.example.domain.useCase.GetTvShowDetailsUseCase
 import com.example.domain.useCase.GetEpisodesBySeasonNumberUseCase
 import com.example.domain.useCase.authentication.GetsSessionType
 import com.example.domain.useCase.authentication.LoginAsGuestUseCase

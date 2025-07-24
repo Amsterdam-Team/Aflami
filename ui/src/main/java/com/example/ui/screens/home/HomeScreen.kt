@@ -27,7 +27,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.designsystem.components.LoadingContainer
 import com.example.designsystem.theme.AflamiTheme
@@ -76,7 +75,6 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koi
                     is HomeEffect.NavigateToContinueWatchingMoviesScreen -> {
                         navController.safeNavigate(Route.ContinueWatching)
                     }
-
                 }
             }
         }
@@ -164,12 +162,12 @@ private fun HomeScreenContent(
                         onClickMovie = interactionListener::onClickMovie,
                         onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                     )
-
-                    continueWatchingSection(
-                        continueWatchingMovies = state.continueWatchingMovies,
-                        onClickMovie = interactionListener::onClickContinueWatchingMovie,
-                        onClickShowAll = interactionListener::onClickShowAllToRatedMovies
-                    )
+                    if (state.continueWatchingMovies.isNotEmpty())
+                        continueWatchingSection(
+                            continueWatchingMovies = state.continueWatchingMovies,
+                            onClickMovie = interactionListener::onClickMovie,
+                            onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
+                        )
 
                     upcomingMoviesSection(
                         moviesGenres = state.upcomingMovieGenres,
@@ -198,7 +196,6 @@ private fun HomeScreenPreview() {
                 override fun onClickMovie(movieId: Long) {}
                 override fun onClickShowAllToRatedMovies() {}
                 override fun onClickShowAllContinueWatchingMovies() {}
-                override fun onClickContinueWatchingMovie(movieId: Long) {}
             }
         )
     }

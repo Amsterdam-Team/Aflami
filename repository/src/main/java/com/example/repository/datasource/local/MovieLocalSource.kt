@@ -29,4 +29,6 @@ interface MovieLocalSource {
     suspend fun getMovieById(movieId: Long): LocalMovieDto
 
     suspend fun incrementGenreInterest(categoryId: Long)
+
+    suspend fun insertMovie(movie : LocalMovieDto)
 }
