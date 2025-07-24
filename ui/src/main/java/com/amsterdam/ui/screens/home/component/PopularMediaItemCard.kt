@@ -22,42 +22,43 @@ import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
-import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.viewmodel.home.HomeUiState.PopularMovieItemUiState
+import com.amsterdam.ui.components.RatingChip
+import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 
 @Composable
-fun PopularMovieCard(
-    popularMovie: PopularMovieItemUiState,
+fun PopularMediaItemCard(
+    popularMediaItems: PopularMediaItemUiState,
     ratingAlpha: Float,
-    imageWidth : Dp,
-    imageHeight : Dp ,
+    imageWidth: Dp,
+    imageHeight: Dp,
     modifier: Modifier = Modifier
 ) {
 
-    Column(modifier = modifier,horizontalAlignment = Alignment.CenterHorizontally) {
-        Box() {
-            Box (
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Box {
+            Box(
                 Modifier.height(300.dp),
                 contentAlignment = Alignment
                     .BottomCenter
             ) {
                 SafeImageView(
-                    model = popularMovie.posterUrl,
+                    model = popularMediaItems.posterUrl,
                     contentDescription = "",
                     modifier =
                         Modifier
-                            .size(imageWidth,imageHeight).clip(RoundedCornerShape(24.dp)),
+                            .size(imageWidth, imageHeight)
+                            .clip(RoundedCornerShape(24.dp)),
                     onLoading = { ImageLoadingIndicator() },
                     onError = { ImageErrorIndicator() },
                 )
             }
             RatingChip(
-                popularMovie.rating,
+                popularMediaItems.rating,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
@@ -74,7 +75,7 @@ fun PopularMovieCard(
             }
         }
         Text(
-            text = popularMovie.name,
+            text = popularMediaItems.name,
             style = AppTheme.textStyle.title.small,
             color = AppTheme.color.title, modifier = Modifier.padding(top = 8.dp),
             maxLines = 1,
@@ -88,15 +89,15 @@ fun PopularMovieCard(
 @ThemeAndLocalePreviews
 @Composable
 private fun PopularMovieCardPreview() {
-    val dummyMovie = PopularMovieItemUiState(
+    val dummyMovie = PopularMediaItemUiState(
         name = "Inception",
         posterUrl = "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
         rating = "8.8"
     )
 
     AflamiTheme {
-        PopularMovieCard(
-            popularMovie = dummyMovie,
+        PopularMediaItemCard(
+            popularMediaItems = dummyMovie,
             modifier = Modifier
                 .width(244.dp)
                 .height(300.dp),

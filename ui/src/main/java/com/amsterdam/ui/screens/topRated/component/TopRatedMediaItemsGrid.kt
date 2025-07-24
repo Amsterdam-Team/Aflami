@@ -16,15 +16,16 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 @Composable
-fun TopRatedMoviesGrid(
-    topRatedMovies: List<MovieItemUiState>,
+fun TopRatedMediaItemsGrid(
+    items: List<MediaItemUiState>,
     onClickMovie: (Long) -> Unit,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
-    ) {
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         state = gridState,
@@ -34,15 +35,19 @@ fun TopRatedMoviesGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(topRatedMovies) { movie ->
+        items(items) { item ->
+            val movieType =
+                if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
+                else stringResource(com.amsterdam.ui.R.string.tv)
+
             MovieCard(
-                movieImage = { MovieImage(movie.posterImageUrl) },
-                movieType = stringResource(com.amsterdam.ui.R.string.movie),
-                movieYear = movie.yearOfRelease,
-                movieTitle = movie.name,
-                movieRating = movie.rate
+                movieImage = { MovieImage(item.posterImageUrl) },
+                movieType = movieType,
+                movieYear = item.yearOfRelease,
+                movieTitle = item.name,
+                movieRating = item.rate
             ) {
-                onClickMovie(movie.id)
+                onClickMovie(item.id)
             }
         }
     }
@@ -53,7 +58,7 @@ fun TopRatedMoviesGrid(
 private fun TopRatedMoviesGridPreview() {
     AflamiTheme {
         val mockMovies = List(4) { index ->
-            MovieItemUiState(
+            MediaItemUiState(
                 id = index.toLong(),
                 name = "Movie $index",
                 posterImageUrl = "",
@@ -61,8 +66,8 @@ private fun TopRatedMoviesGridPreview() {
                 rate = (7 + index * 0.5).toString()
             )
         }
-        TopRatedMoviesGrid(
-            topRatedMovies = mockMovies,
+        TopRatedMediaItemsGrid(
+            items = mockMovies,
             onClickMovie = {}
         )
     }

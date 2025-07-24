@@ -31,7 +31,7 @@ import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.topRated.component.TopRatedBackgroundComponent
-import com.amsterdam.ui.screens.topRated.component.TopRatedMoviesGrid
+import com.amsterdam.ui.screens.topRated.component.TopRatedMediaItemsGrid
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.topRated.TopRatedEffect
 import com.amsterdam.viewmodel.topRated.TopRatedInteractionListener
@@ -110,11 +110,11 @@ private fun TopRatedContent(
             }
 
             AnimatedSectionVisibility(
-                visible = state.topRatedMovies.isNotEmpty()
+                visible = state.topRatedMediaItems.isNotEmpty()
             ) {
-                TopRatedMoviesGrid(
+                TopRatedMediaItemsGrid(
                     gridState = gridState,
-                    topRatedMovies = state.topRatedMovies,
+                    items = state.topRatedMediaItems,
                     onClickMovie = interactionListener::onClickMovie,
                     modifier = Modifier.weight(1f).navigationBarsPadding()
                 )

@@ -5,21 +5,25 @@ import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.shared.defaultMovieGenres
 import com.amsterdam.viewmodel.shared.uiStates.MovieGenreItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+
 
 data class HomeUiState(
-    val popularMovies : List<PopularMovieItemUiState> = emptyList(),
-    val upcomingMovies : List<MovieItemUiState> = emptyList(),
+    val popularMediaItems: List<PopularMediaItemUiState> = emptyList(),
+    val topRatedMediaItems: List<MediaItemUiState> = emptyList(),
+    val upcomingMovies: List<MovieItemUiState> = emptyList(),
     val upcomingMovieGenres: List<MovieGenreItemUiState> = defaultMovieGenres,
-    val topRatedMovies : List<MovieItemUiState> = emptyList(),
     val continueWatchingMovies : List<MovieItemUiState> = emptyList(),
     val moodPickerUiState: MoodPickerUiState = MoodPickerUiState(),
-    val isLoading : Boolean = false,
-    val error : HomeError? = null
-){
-    data class PopularMovieItemUiState(
-        val name : String = "",
-        val rating: String = "" ,
-        val posterUrl : String = ""
+    val isLoading: Boolean = false,
+    val error: HomeError? = null
+) {
+    data class PopularMediaItemUiState(
+        val name: String = "",
+        val rating: String = "",
+        val posterUrl: String = "",
+        val type: MediaType = MediaType.MOVIE
     )
 
     data class MoodPickerUiState(
@@ -38,7 +42,7 @@ data class HomeUiState(
         val openMovieDialog: Boolean = false,
     )
 
-    sealed class HomeError{
+    sealed class HomeError {
         data object NetworkError : HomeError()
     }
 

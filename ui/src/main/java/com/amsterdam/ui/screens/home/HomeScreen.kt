@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -110,7 +110,7 @@ private fun HomeScreenContent(
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
-    var blurOffsetY by remember { mutableStateOf(-12f) }
+    var blurOffsetY by remember { mutableFloatStateOf(-12f) }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -127,9 +127,9 @@ private fun HomeScreenContent(
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
     ) {
-        AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
+        AnimatedSectionVisibility(visible = state.popularMediaItems.isNotEmpty()) {
             BlurredMoviePoster(
-                posterUrl = state.popularMovies[pagerState.currentPage % state.popularMovies.size].posterUrl,
+                posterUrl = state.popularMediaItems[pagerState.currentPage % state.popularMediaItems.size].posterUrl,
                 modifier = Modifier.offset { IntOffset(x = 0, y = blurOffsetY.roundToInt()) }
             )
         }
@@ -150,7 +150,7 @@ private fun HomeScreenContent(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     onSearchClicked = interactionListener::onClickSearch,
                 )
-                AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
+                AnimatedSectionVisibility(visible = state.popularMediaItems.isNotEmpty()) {
                     LazyColumn(
                         modifier = modifier
                             .fillMaxSize(),
@@ -158,20 +158,20 @@ private fun HomeScreenContent(
                     ) {
 
                         popularSection(
-                            popularMovies = state.popularMovies,
+                            popularMediaItems = state.popularMediaItems,
                             pagerState = pagerState
                         )
                         topRatingSection(
-                            topRatedMovies = state.topRatedMovies,
+                            topRatedMediaItems = state.topRatedMediaItems,
                             onClickMovie = interactionListener::onClickMovie,
                             onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                         )
-                    if (state.continueWatchingMovies.isNotEmpty())
-                        continueWatchingSection(
-                            continueWatchingMovies = state.continueWatchingMovies,
-                            onClickMovie = interactionListener::onClickMovie,
-                            onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
-                        )
+                        if (state.continueWatchingMovies.isNotEmpty())
+                            continueWatchingSection(
+                                continueWatchingMovies = state.continueWatchingMovies,
+                                onClickMovie = interactionListener::onClickMovie,
+                                onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
+                            )
 
                         item { MoodPickerSection(state, interactionListener) }
 
@@ -186,7 +186,7 @@ private fun HomeScreenContent(
                 }
             }
 
-            AnimatedSectionVisibility (visible = state.moodPickerUiState.openMovieDialog) {
+            AnimatedSectionVisibility(visible = state.moodPickerUiState.openMovieDialog) {
                 MovieMoodPickerDialogDialog(
                     movie = state.moodPickerUiState.selectedMovie,
                     onClickViewDetails = interactionListener::onClickViewDetails,

@@ -29,8 +29,8 @@ import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.screens.home.component.PopularMovieCard
-import com.amsterdam.viewmodel.home.HomeUiState.PopularMovieItemUiState
+import com.amsterdam.ui.screens.home.component.PopularMediaItemCard
+import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.any
@@ -38,57 +38,65 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
-fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, pagerState: PagerState) {
+fun LazyListScope.popularSection(
+    popularMediaItems: List<PopularMediaItemUiState>,
+    pagerState: PagerState
+) {
     item {
-            SectionTitle(
-                title = stringResource(R.string.popular),
-                icon = painterResource(R.drawable.ic_fire),
-                tintColor = AppTheme.color.secondary,
-                modifier = Modifier
-                    .zIndex(1f)
-                    .padding(bottom = 12.dp)
-            )
+        SectionTitle(
+            title = stringResource(R.string.popular),
+            icon = painterResource(R.drawable.ic_fire),
+            tintColor = AppTheme.color.secondary,
+            modifier = Modifier
+                .zIndex(1f)
+                .padding(bottom = 12.dp)
+        )
     }
 
     item {
         AutoScrollingPager(pagerState)
         BoxWithConstraints {
-                val screenWidth = maxWidth
-                val itemWidth = 207.dp
-                val horizontalPadding = (screenWidth - itemWidth) / 2
-                HorizontalPager(
-                    state = pagerState,
-                    pageSpacing = 16.dp,
-                    contentPadding = PaddingValues(horizontal = horizontalPadding),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                ) { page ->
-                    val currentPageOffset = (
-                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                            ).absoluteValue
+            val screenWidth = maxWidth
+            val itemWidth = 207.dp
+            val horizontalPadding = (screenWidth - itemWidth) / 2
+            HorizontalPager(
+                state = pagerState,
+                pageSpacing = 16.dp,
+                contentPadding = PaddingValues(horizontal = horizontalPadding),
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) { page ->
+                val currentPageOffset = (
+                        (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                        ).absoluteValue
 
-                    val width by animateDpAsState(
-                        targetValue = lerp(207.dp, 244.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
-                        label = "width"
-                    )
+                val width by animateDpAsState(
+                    targetValue = lerp(207.dp, 244.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
+                    label = "width"
+                )
 
-                    val height by animateDpAsState(
-                        targetValue = lerp(276.dp, 300.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
-                        label = "height"
-                    )
-                    val rateAlpha by animateFloatAsState(
-                        targetValue = androidx.compose.ui.util.lerp(0f, 1f, 1f - currentPageOffset.coerceIn(0f, 1f)),
-                        label = "height"
-                    )
-                    PopularMovieCard(
-                        popularMovie = popularMovies[page % popularMovies.size],
-                        ratingAlpha = rateAlpha,
-                        imageWidth = width,
-                        imageHeight = height,
-                    )
-                }
+                val height by animateDpAsState(
+                    targetValue = lerp(276.dp, 300.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
+                    label = "height"
+                )
+                val rateAlpha by animateFloatAsState(
+                    targetValue = androidx.compose.ui.util.lerp(
+                        0f,
+                        1f,
+                        1f - currentPageOffset.coerceIn(0f, 1f)
+                    ),
+                    label = "height"
+                )
+                PopularMediaItemCard(
+                    popularMediaItems = popularMediaItems[page % popularMediaItems.size],
+                    ratingAlpha = rateAlpha,
+                    imageWidth = width,
+                    imageHeight = height,
+                )
             }
+        }
     }
 }
+
 @Composable
 private fun AutoScrollingPager(
     pagerState: PagerState,
@@ -129,7 +137,7 @@ private fun AutoScrollingPager(
 @Composable
 private fun PopularSectionPreview() {
     val dummyMovies = List(5) {
-        PopularMovieItemUiState(
+        PopularMediaItemUiState(
             name = "Movie $it",
             posterUrl = "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
             rating = (8.5f + it).toString()
@@ -139,7 +147,7 @@ private fun PopularSectionPreview() {
     AflamiTheme {
         LazyColumn {
             popularSection(
-                popularMovies = dummyMovies,
+                popularMediaItems = dummyMovies,
                 pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
             )
         }

@@ -16,38 +16,43 @@ import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 fun LazyListScope.topRatingSection(
-    topRatedMovies: List<MovieItemUiState>, onClickMovie: (Long) -> Unit,
+    topRatedMediaItems: List<MediaItemUiState>, onClickMovie: (Long) -> Unit,
     onClickShowAll: () -> Unit
 ) {
     item {
-            SectionTitle(
-                title = stringResource(R.string.top_rating),
-                icon = painterResource(R.drawable.ic_fire),
-                tintColor = AppTheme.color.secondary,
-                modifier = Modifier
-                    .zIndex(1f)
-                    .padding(top = 24.dp, bottom = 12.dp),
-                showAllLabel = true,
-                onAllLabelClicked = onClickShowAll
-            )
+        SectionTitle(
+            title = stringResource(R.string.top_rating),
+            icon = painterResource(R.drawable.ic_fire),
+            tintColor = AppTheme.color.secondary,
+            modifier = Modifier
+                .zIndex(1f)
+                .padding(top = 24.dp, bottom = 12.dp),
+            showAllLabel = true,
+            onAllLabelClicked = onClickShowAll
+        )
     }
     item {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-            items(topRatedMovies) { movie ->
+            items(topRatedMediaItems) { item ->
+                val movieType =
+                    if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
+                    else stringResource(com.amsterdam.ui.R.string.tv)
+
                 MovieCard(
-                    movieImage = { MovieImage(movie.posterImageUrl) },
-                    movieType = stringResource(com.amsterdam.ui.R.string.movie),
-                    movieYear = movie.yearOfRelease,
-                    movieTitle = movie.name,
-                    movieRating = movie.rate
+                    movieImage = { MovieImage(item.posterImageUrl) },
+                    movieType = movieType,
+                    movieYear = item.yearOfRelease,
+                    movieTitle = item.name,
+                    movieRating = item.rate
                 ) {
-                    onClickMovie(movie.id)
+                    onClickMovie(item.id)
                 }
             }
         }
