@@ -3,6 +3,8 @@ package com.example.ui.screens.home.sections
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,8 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,7 +31,10 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.utils.ThemeAndLocalePreviews
 import com.example.ui.screens.home.component.PopularMovieCard
 import com.example.viewmodel.home.HomeUiState.PopularMovieItemUiState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.any
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
@@ -82,18 +89,38 @@ fun LazyListScope.popularSection(popularMovies: List<PopularMovieItemUiState>, p
             }
     }
 }
-
 @Composable
 private fun AutoScrollingPager(
     pagerState: PagerState,
     intervalMillis: Long = 4000L
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(pagerState) {
-        while (true) {
-            delay(intervalMillis)
-            val nextPage = (pagerState.currentPage + 1) % Int.MAX_VALUE
-            pagerState.animateScrollToPage(nextPage)
+        var autoScrollJob: Job? = null
+        fun startAutoScroll() {
+            autoScrollJob?.cancel()
+            autoScrollJob = coroutineScope.launch {
+                while (true) {
+                    delay(intervalMillis)
+                    val nextPage = (pagerState.currentPage + 1) % Int.MAX_VALUE
+                    pagerState.animateScrollToPage(nextPage)
+                }
+            }
         }
+        startAutoScroll()
+        snapshotFlow { pagerState.interactionSource.interactions }
+            .collect { interactions ->
+                val isBeingDragged = interactions.any { it is DragInteraction.Start }
+                val isBeingPressed = interactions.any { it is PressInteraction.Press }
+
+                if (isBeingDragged || isBeingPressed) {
+                    autoScrollJob?.cancel()
+                } else if (autoScrollJob?.isCancelled == true || autoScrollJob == null) {
+                    delay(500)
+                    startAutoScroll()
+                }
+            }
     }
 }
 
