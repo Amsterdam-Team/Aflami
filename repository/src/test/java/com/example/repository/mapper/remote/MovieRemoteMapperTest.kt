@@ -163,8 +163,8 @@ class MovieRemoteMapperTest {
         val dto = createRemoteMovieItemDto(
             genreIds = emptyList(),
             genres = listOf(
-                com.example.repository.dto.remote.GenreDto(35, "Comedy"),
-                com.example.repository.dto.remote.GenreDto(18, "Drama")
+                com.example.repository.dto.remote.RemoteCategoryDto(35, "Comedy"),
+                com.example.repository.dto.remote.RemoteCategoryDto(18, "Drama")
             )
         )
         val result = mapper.toEntity(dto)

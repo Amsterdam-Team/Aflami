@@ -71,7 +71,7 @@
     <string name="continue_as_guest">Continue as guest</string>
     <string name="dont_have_account">Don’t have account?</string>
     <string name="create_account">Create account</string>
-    <string name="incorrect_password">incorrect password</string>
+    <string name="incorrect_username_or_password">incorrect username or password</string>
     <!-- -   -->
     <!-- - Mood Picker  -->
     <string name="mood_picker_title">Mood Picker (Get a Movie)</string>

@@ -9,7 +9,7 @@ fun Movie.toMediaItemUiState(): MovieItemUiState =
         id = id,
         name = name,
         posterImageUrl = posterUrl,
-        yearOfRelease = productionYear.toString(),
+        yearOfRelease = releaseDate.year.toString(),
         rate = DecimalFormat("#.#").format(rating).toString()
     )
 

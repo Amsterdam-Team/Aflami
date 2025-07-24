@@ -5,18 +5,16 @@ import com.example.entity.category.TvShowGenre
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.mapper.shared.EntityMapper
 import com.example.repository.mapper.shared.toTvShowCategory
-import com.example.repository.utils.DateParser
+import kotlinx.datetime.toLocalDate
 
-class TvShowRemoteMapper(
-    private val dateParser: DateParser
-) : EntityMapper<RemoteTvShowItemDto, TvShow> {
+class TvShowRemoteMapper() : EntityMapper<RemoteTvShowItemDto, TvShow> {
     override fun toEntity(dto: RemoteTvShowItemDto): TvShow {
         return TvShow(
             id = dto.id,
             name = dto.title,
             description = dto.overview,
             posterUrl = dto.fullPosterPath.orEmpty(),
-            productionYear = dateParser.parseYear(dto.releaseDate).toUInt(),
+            airDate = dto.releaseDate.toLocalDate(),
             categories = mapGenreIdsToCategories(dto.genreIds),
             rating = dto.voteAverage.toFloat(),
             popularity = dto.popularity,

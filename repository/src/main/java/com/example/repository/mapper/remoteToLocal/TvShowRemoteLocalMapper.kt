@@ -3,11 +3,9 @@ package com.example.repository.mapper.remoteToLocal
 import com.example.repository.dto.local.LocalTvShowDto
 import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.mapper.shared.RemoteToLocalMapper
-import com.example.repository.utils.DateParser
+import kotlinx.datetime.toLocalDate
 
-class TvShowRemoteLocalMapper(
-    private val dateParser: DateParser
-) : RemoteToLocalMapper<RemoteTvShowItemDto, LocalTvShowDto> {
+class TvShowRemoteLocalMapper() : RemoteToLocalMapper<RemoteTvShowItemDto, LocalTvShowDto> {
     override fun toLocal(remote: RemoteTvShowItemDto, args: List<Any>): LocalTvShowDto {
         return LocalTvShowDto(
             tvShowId = remote.id,
@@ -15,7 +13,7 @@ class TvShowRemoteLocalMapper(
             name = remote.title,
             description = remote.overview,
             poster = remote.fullPosterPath.orEmpty(),
-            productionYear = dateParser.parseYear(remote.releaseDate),
+            airDate = remote.releaseDate.toLocalDate(),
             rating = remote.voteAverage.toFloat(),
             popularity = remote.popularity,
             seasonCount = remote.seasonCount,

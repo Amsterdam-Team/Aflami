@@ -5,4 +5,5 @@ interface SearchActorInteractionListener {
     fun onClickNavigateBack()
     fun onClickRetrySearch()
     fun onClickMovie(movieId : Long)
+    fun onSaveSearchHistory()
 }

@@ -24,7 +24,7 @@ class SeriesDetailsStateMapper(
             posterUrl = tvShow.posterUrl,
             title = tvShow.name,
             categories = categories,
-            airDate = movieDetailsStateMapper.productionYearToDate(tvShow.productionYear),
+            airDate = tvShow.airDate.toString(),
             seasonCount = formatSeasonCount(seasons.size),
             originCountry = tvShow.originCountry,
             description = tvShow.description,
@@ -48,7 +48,7 @@ class SeriesDetailsStateMapper(
                 SimilarMovieUiState(
                     rate = movieDetailsStateMapper.ratingToRatingString(it.rating),
                     name = it.name,
-                    productionYear = it.productionYear.toString(),
+                    productionYear = it.airDate.year.toString(),
                     posterUrl = it.posterUrl
                 )
             },

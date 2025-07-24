@@ -90,10 +90,10 @@ class CountrySearchViewModel(
             it.copy(
                 keyword = country.countryName,
                 selectedCountryIsoCode = country.countryIsoCode,
-                suggestedCountries = emptyList(),
             )
         }
         fetchMoviesByCountry(getSelectedCountry())
+        saveSearchHistory()
     }
 
     override fun onClickRetry() {
@@ -106,11 +106,16 @@ class CountrySearchViewModel(
         }
     }
 
+    private fun saveSearchHistory() {
+        tryToExecute(
+            action = { recentSearchesUseCase.addRecentSearchForCountry(getSelectedCountry()) },
+            onSuccess = {},
+            onError = {}
+        )
+    }
+
     private fun fetchMoviesByCountry(selectedCountry: Country) {
         updateState { it.copy(isLoading = true) }
-
-        viewModelScope.launch { recentSearchesUseCase.addRecentSearchForCountry(selectedCountry) }
-
         tryToExecute(
             action = {
                 Pager(
@@ -142,7 +147,13 @@ class CountrySearchViewModel(
     }
 
     private fun onFetchMoviesSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
-        updateState { it.copy(movies = movies, isLoading = false) }
+        updateState {
+            it.copy(
+                movies = movies,
+                isLoading = false,
+                suggestedCountries = emptyList()
+            )
+        }
     }
 
     override fun onClickNavigateBack() {

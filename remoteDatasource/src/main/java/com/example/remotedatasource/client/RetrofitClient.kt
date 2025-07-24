@@ -1,6 +1,7 @@
 package com.example.remotedatasource.client
 
 import com.example.remotedatasource.BuildConfig
+import com.example.remotedatasource.api.AuthenticationApiService
 import com.example.remotedatasource.api.CategoryApiService
 import com.example.remotedatasource.api.CountryApiService
 import com.example.remotedatasource.api.MovieApiService
@@ -65,6 +66,8 @@ class RetrofitClient(
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
+
+    fun authenticationApiService(): AuthenticationApiService = retrofit.create(AuthenticationApiService::class.java)
 
     fun movieApiService(): MovieApiService = retrofit.create(MovieApiService::class.java)
     fun categoryApiService(): CategoryApiService = retrofit.create(CategoryApiService::class.java)

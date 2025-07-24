@@ -11,7 +11,6 @@ import com.example.entity.category.MovieGenre
 class GetMovieDetailsUseCase(
     private val movieRepository: MovieRepository,
     private val addWatchHistoryUseCase: AddWatchHistoryUseCase,
-    private val incrementGenreInterest: IncrementMovieGenreInterestUseCase
 ) {
     suspend operator fun invoke(movieId: Long): MovieDetails {
         val movie = movieRepository.getMovieDetailsById(movieId)
@@ -32,10 +31,9 @@ class GetMovieDetailsUseCase(
             movieGallery = movieGallery,
             moviePosters = moviePosters,
             productionsCompanies = productionsCompanies
-        ).also { incrementUserInterestByMovie(movie)
+        ).also {
             addWatchHistoryUseCase(movieId)
         }
-
     }
 
     data class MovieDetails(
@@ -48,8 +46,4 @@ class GetMovieDetailsUseCase(
         val moviePosters: List<String>,
         val productionsCompanies: List<ProductionCompany>
     )
-
-    private suspend fun incrementUserInterestByMovie(movie: Movie) {
-        return movie.categories.forEach { category -> incrementGenreInterest(category) }
-    }
 }

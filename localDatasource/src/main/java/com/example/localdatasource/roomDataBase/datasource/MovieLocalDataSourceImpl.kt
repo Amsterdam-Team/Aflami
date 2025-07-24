@@ -1,15 +1,15 @@
 package com.example.localdatasource.roomDataBase.datasource
 
 import androidx.room.Transaction
-import com.example.entity.category.MovieGenre
 import com.example.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.example.localdatasource.roomDataBase.daos.MovieDao
 import com.example.repository.datasource.local.MovieLocalSource
+import com.example.repository.dto.local.LocalMovieCategoryDto
 import com.example.repository.dto.local.LocalMovieDto
+import com.example.repository.dto.local.MovieCategoryCrossRefDto
 import com.example.repository.dto.local.SearchMovieCrossRefDto
 import com.example.repository.dto.local.relation.MovieWithCategories
 import com.example.repository.dto.local.utils.SearchType
-import kotlinx.datetime.Instant
 
 
 class MovieLocalDataSourceImpl(
@@ -23,15 +23,21 @@ class MovieLocalDataSourceImpl(
         limit: Int,
         offset: Int
     ): List<MovieWithCategories> {
-        return movieDao.getMoviesByKeywordAndSearchType(keyword, searchType, storedLanguage, limit, offset)
+        return movieDao
+            .getMoviesBySearchKeywordSortedByInterest(
+                keyword,
+                searchType,
+                storedLanguage,
+                limit,
+                offset
+            )
     }
 
     @Transaction
     override suspend fun addMoviesBySearchData(
         movies: List<LocalMovieDto>,
         searchKeyword: String,
-        searchType: SearchType,
-        expireDate: Instant
+        searchType: SearchType
     ) {
         movieDao.insertMovies(movies)
         val entries = movies.map { movie ->
@@ -45,15 +51,27 @@ class MovieLocalDataSourceImpl(
         movieDao.insertSearchEntries(entries)
     }
 
-    override suspend fun getMovieById(movieId : Long): LocalMovieDto {
+    override suspend fun addMovieWithCategories(
+        movie: LocalMovieDto,
+        categories: List<LocalMovieCategoryDto>,
+        storedLanguage: String
+    ) {
+        movieDao.insertMovie(movie)
+        val movieCrossRefs = categories.map { category ->
+            MovieCategoryCrossRefDto(
+                movieId = movie.movieId,
+                categoryId = category.categoryId,
+                storedLanguage = storedLanguage
+            )
+        }
+        movieDao.insertMovieCategoryCrossRefs(movieCrossRefs)
+    }
+
+    override suspend fun getMovieById(movieId: Long): LocalMovieDto {
         return movieDao.getMovieById(movieId)
     }
 
-    override suspend fun incrementGenreInterest(genre: MovieGenre) {
-        interestDao.incrementInterest(genre)
-    }
-
-    override suspend fun getAllGenreInterests(): Map<MovieGenre, Int> {
-        return interestDao.getAllInterests().associate { it.genre to it.interestCount }
+    override suspend fun incrementGenreInterest(categoryId: Long) {
+        interestDao.incrementInterest(categoryId)
     }
 }

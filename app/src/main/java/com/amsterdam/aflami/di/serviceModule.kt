@@ -1,14 +1,17 @@
 package com.amsterdam.aflami.di
 
+import com.example.remotedatasource.api.AuthenticationApiService
 import com.example.remotedatasource.api.CategoryApiService
 import com.example.remotedatasource.api.CountryApiService
 import com.example.remotedatasource.api.MovieApiService
 import com.example.remotedatasource.api.TvShowsApiService
 import com.example.remotedatasource.client.RetrofitClient
+import com.example.remotedatasource.serviceProvider.AuthenticationServiceProvider
 import com.example.remotedatasource.serviceProvider.CategoryServiceProvider
 import com.example.remotedatasource.serviceProvider.CountryServiceProvider
 import com.example.remotedatasource.serviceProvider.MovieServiceProvider
 import com.example.remotedatasource.serviceProvider.TvShowsServiceProvider
+import com.example.remotedatasource.serviceProvider.implementation.AuthenticationServiceProviderImpl
 import com.example.remotedatasource.serviceProvider.implementation.CategoryServiceProviderImpl
 import com.example.remotedatasource.serviceProvider.implementation.CountryServiceProviderImpl
 import com.example.remotedatasource.serviceProvider.implementation.MovieServiceProviderImpl
@@ -22,11 +25,13 @@ val serviceModule = module {
     single { Json { prettyPrint = true; isLenient = true; ignoreUnknownKeys = true } }
     singleOf(::RetrofitClient)
 
+    single { get<RetrofitClient>().authenticationApiService() } bind AuthenticationApiService::class
     single { get<RetrofitClient>().movieApiService() } bind MovieApiService::class
     single { get<RetrofitClient>().categoryApiService() } bind CategoryApiService::class
     single { get<RetrofitClient>().countryApiService() } bind CountryApiService::class
     single { get<RetrofitClient>().tvApiService() } bind TvShowsApiService::class
 
+    singleOf(::AuthenticationServiceProviderImpl) bind AuthenticationServiceProvider::class
     singleOf(::CategoryServiceProviderImpl) bind CategoryServiceProvider::class
     singleOf(::CountryServiceProviderImpl) bind CountryServiceProvider::class
     singleOf(::MovieServiceProviderImpl) bind MovieServiceProvider::class

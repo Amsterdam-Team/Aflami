@@ -3,6 +3,7 @@ package com.example.repository.dto.local
 import androidx.room.Entity
 import androidx.room.Index
 import com.example.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.LocalDate
 
 @Entity(
     tableName = DatabaseConstants.MOVIE_TABLE,
@@ -17,7 +18,7 @@ data class LocalMovieDto(
     val name: String,
     val description: String,
     val poster: String,
-    val productionYear: Int,
+    val releaseDate: LocalDate,
     val popularity: Double,
     val rating: Float,
     val originCountry: String,

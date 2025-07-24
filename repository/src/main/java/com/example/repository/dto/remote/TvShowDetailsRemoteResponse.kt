@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class TvShowDetailsRemoteResponse(
     @SerialName("adult") val adult: Boolean,
     @SerialName("backdrop_path") val backdropPath: String?,
-    @SerialName("genres") val genres: List<GenreDto>,
+    @SerialName("genres") val genres: List<RemoteCategoryDto>,
     @SerialName("id") val id: Long,
     @SerialName("origin_country") val originCountry: List<String>,
     @SerialName("original_language") val originalLanguage: String,
@@ -21,7 +21,7 @@ data class TvShowDetailsRemoteResponse(
     @SerialName("vote_average") val voteAverage: Double,
     @SerialName("seasons") val seasons: List<SeasonDto> = emptyList(),
     @SerialName("number_of_seasons") val seasonCount: Int = 0,
-){
+) {
     val fullPosterPath: String?
         get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
 

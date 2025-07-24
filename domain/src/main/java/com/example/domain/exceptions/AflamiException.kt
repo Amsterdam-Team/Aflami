@@ -4,6 +4,8 @@ open class AflamiException : Exception()
 
 open class NetworkException : AflamiException()
 
+class UnknownException : NetworkException()
+
 class NoInternetException : NetworkException()
 class ServerErrorException : NetworkException()
 

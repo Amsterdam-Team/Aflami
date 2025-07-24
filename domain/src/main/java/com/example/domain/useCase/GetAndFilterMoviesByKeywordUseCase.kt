@@ -16,14 +16,9 @@ class GetAndFilterMoviesByKeywordUseCase(
         rating: Int = 0,
         movieGenre: MovieGenre = MovieGenre.ALL
     ): List<Movie> {
-        val userInterest = movieRepository.getAllGenreInterests()
-
         return movieRepository
             .getMoviesByKeyword(keyword = keyword, page, moviesPerPage)
             .filterMoviesWithRatingAndGenre(rating, genre = movieGenre)
-            .sortedByDescending { movie ->
-                movie.categories.maxOfOrNull { userInterest[it] ?: 0 }
-            }
     }
 
 

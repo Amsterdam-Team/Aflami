@@ -3,6 +3,7 @@ import java.util.Properties
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
 val movieSignUp: String = properties.getProperty("movieSignUp") ?: ""
+val movieResetPassword: String = properties.getProperty("movieResetPassword") ?: ""
 
 plugins {
     alias(libs.plugins.aflami.custom.plugin)
@@ -20,6 +21,11 @@ android {
             "String",
             "MOVIE_SIGN_UP_URL",
             movieSignUp
+        )
+        buildConfigField(
+            "String",
+            "MOVIE_RESET_PASSWORD_URL",
+            movieResetPassword
         )
     }
 }

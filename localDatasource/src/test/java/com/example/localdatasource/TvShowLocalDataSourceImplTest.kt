@@ -30,16 +30,16 @@ class TvShowLocalDataSourceImplTest {
     }
 
     @Test
-    fun `getTvShowsByKeywordAndSearchType should call dao with correct data`() =runTest{
+    fun `getTvShowsBySearchKeywordSortedByInterest should call dao with correct data`() =runTest{
         //Given
         val searchKeyword = "action"
         val searchType = SearchType.BY_KEYWORD
 
-        coEvery { dao.getTvShowsBySearchKeyword(searchKeyword, searchType) } returns expectedTvShowWithCategory
+        coEvery { dao.getTvShowsBySearchKeywordSortedByInterest(searchKeyword, searchType) } returns expectedTvShowWithCategory
         //When
-       val result= tvShowLocalDataSourceImpl.getTvShowsByKeywordAndSearchType(searchKeyword, searchType)
+       val result= tvShowLocalDataSourceImpl.getTvShowsBySearchKeywordSortedByInterest(searchKeyword, searchType)
         //Then
-        coVerify { dao.getTvShowsBySearchKeyword(searchKeyword, searchType) }
+        coVerify { dao.getTvShowsBySearchKeywordSortedByInterest(searchKeyword, searchType) }
         assertEquals(expectedTvShowWithCategory, result)
 
     }

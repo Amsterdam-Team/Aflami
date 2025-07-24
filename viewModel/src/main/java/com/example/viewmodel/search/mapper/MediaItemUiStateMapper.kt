@@ -9,7 +9,7 @@ fun TvShow.toMediaItemUiState(): TvShowItemUiState =
         id = id,
         name = name,
         posterImageUrl = posterUrl,
-        yearOfRelease = productionYear.toString(),
+        yearOfRelease = airDate.year.toString(),
         rate = DecimalFormat("#.#").format(rating).toString()
     )
 

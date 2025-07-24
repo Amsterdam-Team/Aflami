@@ -20,7 +20,7 @@ class MovieDetailsUiStateMapper {
             movieTitle = movie.name,
             categories = categories,
             moviePostersUrl = moviePosters,
-            releaseDate = productionYearToDate(movie.productionYear),
+            releaseDate = movie.releaseDate.toString(),
             movieLength = movieLengthToHourMinuteString(movie.runTime),
             originCountry = movie.originCountry,
             description = movie.description,
@@ -41,7 +41,7 @@ class MovieDetailsUiStateMapper {
                 SimilarMovieUiState(
                     rate = ratingToRatingString(it.rating),
                     name = it.name,
-                    productionYear = it.productionYear.toString(),
+                    productionYear = it.releaseDate.year.toString(),
                     posterUrl = it.posterUrl
                 )
             },
@@ -65,8 +65,6 @@ class MovieDetailsUiStateMapper {
             }
         )
     }
-
-    fun productionYearToDate(year: UInt): String = "$year-01-01"
 
     fun movieLengthToHourMinuteString(movieLength: Int): String {
         val hours = movieLength / 60

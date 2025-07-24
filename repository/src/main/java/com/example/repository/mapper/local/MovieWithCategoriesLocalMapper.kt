@@ -13,7 +13,7 @@ class MovieWithCategoriesLocalMapper(
             name = dto.movie.name,
             description = dto.movie.description,
             posterUrl = dto.movie.poster,
-            productionYear = dto.movie.productionYear.toUInt(),
+            releaseDate = dto.movie.releaseDate,
             rating = dto.movie.rating,
             categories = movieGenreLocalMapper.toEntityList(dto.categories),
             popularity = dto.movie.popularity,

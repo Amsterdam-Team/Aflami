@@ -2,7 +2,6 @@ package com.example.ui.screens.search.countrySearch
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,11 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -91,8 +88,6 @@ private fun SearchByCountryContent(
     movies: LazyPagingItems<MovieItemUiState>,
     interactionListener: CountrySearchInteractionListener,
 ) {
-    val focusManager = LocalFocusManager.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +104,6 @@ private fun SearchByCountryContent(
         CountrySearchField(
             keyword = state.keyword,
             onKeywordValueChanged = interactionListener::onChangeSearchKeyword,
-            focusManager = focusManager
         )
 
         AnimatedVisibility(

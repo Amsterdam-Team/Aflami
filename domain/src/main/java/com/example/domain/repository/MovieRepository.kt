@@ -5,7 +5,6 @@ import com.example.entity.Country
 import com.example.entity.Movie
 import com.example.entity.ProductionCompany
 import com.example.entity.Review
-import com.example.entity.category.MovieGenre
 
 interface MovieRepository {
     suspend fun getMoviesByKeyword(keyword: String, page: Int, moviesPerPage: Int): List<Movie>
@@ -20,9 +19,6 @@ interface MovieRepository {
     suspend fun getMovieGallery(movieId : Long) : List<String>
     suspend fun getMoviePosters(movieId : Long) : List<String>
     suspend fun getProductionCompany(movieId : Long) : List<ProductionCompany>
-
-    suspend fun incrementGenreInterest(genre: MovieGenre)
-    suspend fun getAllGenreInterests(): Map<MovieGenre, Int>
     suspend fun getPopularMovies(): List<Movie>
     suspend fun getTopRatedMovies(): List<Movie>
     suspend fun getUpcomingMovies(): List<Movie>

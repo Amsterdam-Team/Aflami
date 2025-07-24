@@ -1,5 +1,6 @@
 package com.example.repository.repository
 
+import com.example.domain.repository.CategoryRepository
 import com.example.domain.repository.TvShowRepository
 import com.example.entity.Actor
 import com.example.entity.Episode
@@ -7,10 +8,11 @@ import com.example.entity.ProductionCompany
 import com.example.entity.Review
 import com.example.entity.Season
 import com.example.entity.TvShow
-import com.example.entity.category.TvShowGenre
 import com.example.repository.datasource.local.TvShowLocalSource
 import com.example.repository.datasource.remote.TvShowsRemoteSource
 import com.example.repository.dto.local.utils.SearchType
+import com.example.repository.dto.remote.RemoteCategoryDto
+import com.example.repository.dto.remote.RemoteTvShowItemDto
 import com.example.repository.dto.remote.RemoteTvShowResponse
 import com.example.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.example.repository.mapper.remote.CastRemoteMapper
@@ -21,13 +23,16 @@ import com.example.repository.mapper.remote.ReviewRemoteMapper
 import com.example.repository.mapper.remote.SeasonRemoteMapper
 import com.example.repository.mapper.remote.TvShowDetailsRemoteMapper
 import com.example.repository.mapper.remote.TvShowRemoteMapper
+import com.example.repository.mapper.remoteToLocal.TvShowGenreIdsRemoteLocalMapper
 import com.example.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.example.repository.utils.RecentSearchHandler
 import com.example.repository.utils.getDeviceLanguage
 
 class TvShowRepositoryImpl(
+    private val categoryRepository: CategoryRepository,
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
+    private val tvShowGenreIdsRemoteLocalMapper: TvShowGenreIdsRemoteLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val castRemoteMapper: CastRemoteMapper,
@@ -45,6 +50,7 @@ class TvShowRepositoryImpl(
         page: Int,
         tvShowsPerPage: Int
     ): List<TvShow> {
+        categoryRepository.getTvShowCategories()
         return getCachedTvShows(keyword, page, tvShowsPerPage)
             ?: recentSearchHandler.deleteRecentSearch(
                 keyword,
@@ -54,16 +60,10 @@ class TvShowRepositoryImpl(
                 .let { getTvShowsFromRemote(keyword, page) }
                 .let { remoteTvShows ->
                     saveTvShowsToDatabase(remoteTvShows, keyword)
-                    tvRemoteMapper.toEntityList(remoteTvShows.results)
+                        .let { getTvShowFromLocal(keyword, page, tvShowsPerPage) }
+                        .takeIf { tvShows -> tvShows.isNotEmpty() }
+                        ?: tvRemoteMapper.toEntityList(remoteTvShows.results)
                 }
-    }
-
-    override suspend fun incrementGenreInterest(genre: TvShowGenre) {
-        localTvDataSource.incrementGenreInterest(genre)
-    }
-
-    override suspend fun getAllGenreInterests(): Map<TvShowGenre, Int> {
-        return localTvDataSource.getAllGenreInterests()
     }
 
     private suspend fun getCachedTvShows(
@@ -77,12 +77,15 @@ class TvShowRepositoryImpl(
             getDeviceLanguage()
         )
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
-            ?.let { getTvShowFromLocal(keyword, SearchType.BY_KEYWORD, page, tvShowsPerPage) }
+            ?.let { getTvShowFromLocal(keyword, page, tvShowsPerPage) }
             ?.takeIf { tvShows -> tvShows.isNotEmpty() }
     }
 
     override suspend fun getTvShowDetails(tvShowId: Long): TvShow {
-        return tvShowDetailsRemoteMapper.toEntity(remoteTvDataSource.getTvShowDetailsById(tvShowId))
+        return tvShowDetailsRemoteMapper.toEntity(
+            remoteTvDataSource.getTvShowDetailsById(tvShowId)
+                .also { incrementUserInterestByTvShow(it.genres) }
+        )
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
@@ -125,23 +128,27 @@ class TvShowRepositoryImpl(
 
     private suspend fun getTvShowFromLocal(
         keyword: String,
-        searchType: SearchType,
         page: Int,
         tvShowsPerPage: Int
     ): List<TvShow> {
-        return tvShowWithCategoryLocalMapper.toEntityList(
-            localTvDataSource.getTvShowsByKeywordAndSearchType(
-                keyword,
-                searchType,
-                getDeviceLanguage(),
-                limit = tvShowsPerPage,
-                offset = tvShowsPerPage * (page - 1)
+        return try {
+            tvShowWithCategoryLocalMapper.toEntityList(
+                localTvDataSource.getTvShowsBySearchKeywordSortedByInterest(
+                    searchKeyword = keyword,
+                    storedLanguage = getDeviceLanguage(),
+                    limit = tvShowsPerPage,
+                    offset = tvShowsPerPage * (page - 1)
+                )
             )
-        )
+        } catch (_: Exception) {
+            emptyList()
+        }
     }
 
     private suspend fun getTvShowsFromRemote(keyword: String, page: Int): RemoteTvShowResponse {
-        return remoteTvDataSource.getTvShowsByKeyword(keyword, page)
+        return remoteTvDataSource.getTvShowsByKeyword(keyword, page).also { remoteTvShowResponse ->
+            saveTvShowWithCategories(remoteTvShowResponse)
+        }
     }
 
     private suspend fun saveTvShowsToDatabase(
@@ -152,5 +159,25 @@ class TvShowRepositoryImpl(
             keyword,
             storedLanguage = getDeviceLanguage()
         )
+    }
+
+    private suspend fun saveTvShowWithCategories(remoteTvShow: RemoteTvShowResponse) {
+        remoteTvShow.results.forEach { onSaveTvShowWithCategories(it) }
+    }
+
+    private suspend fun onSaveTvShowWithCategories(remoteTvShow: RemoteTvShowItemDto) {
+        localTvDataSource.addTvShowWithCategories(
+            tvShow = tvShowRemoteLocalMapper.toLocal(remoteTvShow, listOf(getDeviceLanguage())),
+            categories = tvShowGenreIdsRemoteLocalMapper.toLocalList(
+                remoteTvShow.genreIds,
+                listOf(getDeviceLanguage())
+            ),
+            storedLanguage = getDeviceLanguage()
+        )
+    }
+
+    private suspend fun incrementUserInterestByTvShow(remoteCategories: List<RemoteCategoryDto>) {
+        remoteCategories.map(RemoteCategoryDto::id)
+            .map { localTvDataSource.incrementGenreInterest(it.toLong()) }
     }
 }

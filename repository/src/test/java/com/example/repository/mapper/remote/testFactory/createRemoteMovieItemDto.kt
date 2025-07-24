@@ -1,6 +1,6 @@
 package com.example.repository.mapper.remote.testFactory
 
-import com.example.repository.dto.remote.GenreDto
+import com.example.repository.dto.remote.RemoteCategoryDto
 import com.example.repository.dto.remote.RemoteMovieItemDto
 
 fun createRemoteMovieItemDto(
@@ -8,7 +8,7 @@ fun createRemoteMovieItemDto(
     title: String = "Inception",
     overview: String = "A mind-bending thriller",
     genreIds: List<Int> = listOf(28, 12),
-    genres: List<GenreDto> = emptyList(),
+    genres: List<RemoteCategoryDto> = emptyList(),
     releaseDate: String = "2010-07-16",
     voteAverage: Double = 8.8,
     popularity: Double = 1000.0,
