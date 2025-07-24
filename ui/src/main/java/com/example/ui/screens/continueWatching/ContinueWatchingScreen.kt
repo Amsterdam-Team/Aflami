@@ -26,6 +26,7 @@ import com.example.ui.components.appBar.DefaultAppBar
 import com.example.ui.navigation.Route
 import com.example.ui.screens.continueWatching.component.ContinueWatchingMoviesGrid
 import com.example.ui.screens.home.sections.AnimatedSectionVisibility
+import com.example.ui.utils.safeNavigate
 import com.example.viewmodel.continueWatching.ContinueWatchingEffect
 import com.example.viewmodel.continueWatching.ContinueWatchingInteractionListener
 import com.example.viewmodel.continueWatching.ContinueWatchingUiState
@@ -43,7 +44,7 @@ fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = koinViewModel(
             it?.let {
                 when (it) {
                     is ContinueWatchingEffect.NavigateToMovieDetailsScreen -> {
-                        navController.navigate(Route.MovieDetails(it.movieId))
+                        navController.safeNavigate(Route.MovieDetails(it.movieId))
                     }
 
                     ContinueWatchingEffect.NavigateBack -> {

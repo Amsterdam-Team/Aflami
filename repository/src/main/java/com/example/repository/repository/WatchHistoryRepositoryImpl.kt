@@ -7,7 +7,7 @@ import com.example.repository.datasource.local.WatchHistoryLocalDataSource
 import com.example.repository.mapper.local.MovieLocalMapper
 import com.example.repository.mapper.local.WatchHistoryMapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class WatchHistoryRepositoryImpl(
     private val watchHistoryLocalDataSource: WatchHistoryLocalDataSource,
@@ -20,10 +20,9 @@ class WatchHistoryRepositoryImpl(
     }
 
     override suspend fun getContinueWatchingMovies(): Flow<List<Movie>> {
-        return flow {
-            watchHistoryLocalDataSource.getContinueWatching().collect{
-                emit(movieLocalMapper.toEntityList(it))
-            }
+        return watchHistoryLocalDataSource.getContinueWatching().map {
+            movieLocalMapper.toEntityList(it)
         }
     }
+
 }
