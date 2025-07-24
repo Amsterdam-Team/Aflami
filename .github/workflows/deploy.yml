@@ -31,14 +31,12 @@ jobs:
           BASE_IMAGE_URL: ${{ secrets.BASE_IMAGE_URL }}
           REGISTER_URL: ${{secrets.REGISTER_URL}}
           RESET_PASSWORD_URL: ${{secrets.RESET_PASSWORD_URL}}
-          MOVIE_RESET_PASSWORD_URL: ${{secrets.MOVIE_RESET_PASSWORD_URL}}
         run: |
           echo bearerToken=\"$BEARER_TOKEN\" > local.properties
           echo baseUrl=\"$BASE_URL\" >> local.properties
           echo baseImageUrl=\"$BASE_IMAGE_URL\" >> local.properties
           echo movieSignUp=\"$REGISTER_URL\" >> local.properties
-          echo resetPasswordUrl=\"$RESET_PASSWORD_URL\" >> local.properties
-          echo movieResetPassword=\"$MOVIE_RESET_PASSWORD_URL\" >> local.properties
+          echo movieResetPassword=\"$RESET_PASSWORD_URL\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
