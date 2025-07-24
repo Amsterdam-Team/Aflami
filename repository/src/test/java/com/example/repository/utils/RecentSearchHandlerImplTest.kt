@@ -23,7 +23,7 @@ class RecentSearchHandlerImplTest {
 
 
     @Test
-    fun `should return true when recent search keyword does not exist`() = runTest {
+    fun `isRecentSearchExpired should return true when recent search keyword does not exist`() = runTest {
         val recentSearch = createLocalSearchDto()
 
         coEvery {
@@ -52,7 +52,7 @@ class RecentSearchHandlerImplTest {
 
 
     @Test
-    fun `should return true when recent search keyword is expired`() = runTest {
+    fun `isRecentSearchExpired should return true when recent search keyword is expired`() = runTest {
         val recentSearch = createLocalSearchDto(
             searchKeyword = "New",
             expireDate = Clock.System.now().minus(1.minutes),
@@ -84,7 +84,7 @@ class RecentSearchHandlerImplTest {
 
 
     @Test
-    fun `should return false when recent search keyword is not expired`() =
+    fun `getSearchByKeywordAndType should return false when recent search keyword is not expired`() =
         runTest {
             val recentSearch = createLocalSearchDto(
                 searchKeyword = "New",
@@ -110,7 +110,7 @@ class RecentSearchHandlerImplTest {
 
 
     @Test
-    fun `should call delete search when recent search keyword is expired`() =
+    fun `deleteRecentSearch should call delete search when recent search keyword is expired`() =
         runTest {
             val recentSearch = createLocalSearchDto(
                 searchKeyword = "New",
@@ -142,7 +142,7 @@ class RecentSearchHandlerImplTest {
 
 
     @Test
-    fun `should not call delete search when recent search keyword is not expired`() =
+    fun `deleteRecentSearch should not call delete search when recent search keyword is not expired`() =
         runTest {
             val recentSearch = createLocalSearchDto(
                 searchKeyword = "New",
