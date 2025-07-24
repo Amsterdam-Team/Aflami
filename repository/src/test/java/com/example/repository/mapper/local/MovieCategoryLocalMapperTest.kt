@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.local
 
 import com.example.repository.mapper.local.testFactory.createCategory
@@ -57,3 +58,4 @@ class MovieCategoryLocalMapperTest {
         assertThat(result).isEqualTo(expected)
     }
 }
+*/

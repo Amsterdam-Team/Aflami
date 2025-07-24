@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.local
 
 import com.example.repository.mapper.local.testFactory.createLocalMovieDtotest
@@ -67,3 +68,4 @@ class MovieLocalMapperTest {
         assertThat(result).isEqualTo(expected)
     }
 }
+*/

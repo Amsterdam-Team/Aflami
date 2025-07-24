@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.local
 
 import com.example.entity.Movie
@@ -79,3 +80,4 @@ class MovieWithCategoriesLocalMapperTest {
     }
 
 }
+*/

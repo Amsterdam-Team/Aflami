@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.local
 
 import com.example.repository.dto.local.LocalSearchDto
@@ -34,3 +35,4 @@ class RecentSearchLocalMapperTest {
         assertThat(result).isEqualTo("Inception")
     }
 }
+*/

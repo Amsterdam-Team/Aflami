@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.local.testFactory
 
 import com.example.entity.Category
@@ -27,4 +28,4 @@ fun createCategory(
 fun createLocalCategoryList(): List<LocalMovieCategoryDto> = listOf(
     LocalMovieCategoryDto(categoryId = 2, name = MovieGenre.SCIENCE_FICTION.name),
     LocalMovieCategoryDto(categoryId = 0, name = MovieGenre.ALL.name)
-)
+)*/

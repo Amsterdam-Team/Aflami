@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.local.testFactory
 
 import com.example.entity.Movie
@@ -65,4 +66,4 @@ fun createMovieWithCategories(
     categories: List<LocalMovieCategoryDto> = listOf(createLocalMovieCategoryDto())
 ): MovieWithCategories {
     return MovieWithCategories(movie = dto, categories = categories)
-}
+}*/

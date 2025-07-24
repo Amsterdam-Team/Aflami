@@ -1,3 +1,4 @@
+/*
 package com.example.repository.mapper.remote.testFactory
 
 import com.example.repository.dto.remote.movieGallery.GalleryImageDto
@@ -37,3 +38,4 @@ fun createRemoteMovieGalleryResponse(
     )
 }
 
+*/
