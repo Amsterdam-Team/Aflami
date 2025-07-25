@@ -32,11 +32,13 @@ android {
 
 dependencies {
     api(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
     implementation(libs.kotlinx.datetime)
 
     // page 3
@@ -45,6 +47,7 @@ dependencies {
     // mockk
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+
     // junit 5
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)

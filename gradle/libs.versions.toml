@@ -1,4 +1,10 @@
 [versions]
+minSdk = "26"
+targetSdk = "36"
+compileSdk = "36"
+versionCode = "1"
+versionName = "1.0"
+jvmTarget = "11"
 agp = "8.10.1"
 androidTestCore = "1.7.0"
 coilCompose = "2.6.0"

@@ -13,10 +13,11 @@ android {
 dependencies {
     implementation(project(":designSystem"))
     implementation(project(":viewModel"))
-    implementation(libs.sifr.shaded)
-
     implementation(project(":imageViewer"))
+
+    implementation(libs.sifr.shaded)
     implementation(libs.koin.androidx.compose)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -24,9 +25,10 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.foundation)
+
+    implementation(libs.kotlinx.serialization.json)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
@@ -34,8 +36,4 @@ dependencies {
 
     // page 3
     implementation(libs.androidx.paging.compose)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
