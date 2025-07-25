@@ -19,7 +19,7 @@ class PagingSource<T : Any>(
             LoadResult.Page(
                 data,
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = page + 1,
+                nextKey = if (data.isEmpty()) null else page + 1,
             )
         } catch (e: Exception) {
             e.printStackTrace()
