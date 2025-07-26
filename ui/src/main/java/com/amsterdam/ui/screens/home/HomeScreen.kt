@@ -54,6 +54,7 @@ import com.amsterdam.viewmodel.home.HomeEffect.NavigateToSearchScreenEffect
 import com.amsterdam.viewmodel.home.HomeInteractionListener
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeViewModel
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
@@ -67,8 +68,13 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koi
             effect?.let {
                 when (effect) {
                     is NavigateToSearchScreenEffect -> navController.safeNavigate(Route.Search)
+
                     is NavigateToMovieDetailsEffect -> {
                         navController.safeNavigate(MovieDetails(movieId = effect.movieId))
+                    }
+
+                    is HomeEffect.NavigateToTvShowDetailsEffect -> {
+                        navController.safeNavigate(Route.SeriesDetails(tvShowId = effect.tvShowId))
                     }
 
                     is HomeEffect.NavigateToTopRatedMoviesEffect -> {
@@ -163,13 +169,13 @@ private fun HomeScreenContent(
                         )
                         topRatingSection(
                             topRatedMediaItems = state.topRatedMediaItems,
-                            onClickMovie = interactionListener::onClickMovie,
+                            onClickMediaItem = interactionListener::onClickMediaItem,
                             onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                         )
                         if (state.continueWatchingMovies.isNotEmpty())
                             continueWatchingSection(
                                 continueWatchingMovies = state.continueWatchingMovies,
-                                onClickMovie = interactionListener::onClickMovie,
+                                onClickMediaItem = interactionListener::onClickMediaItem,
                                 onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
                             )
 
@@ -211,7 +217,7 @@ private fun HomeScreenPreview() {
 
                 override fun onClickUpcomingMovieCard(id: Long) {}
                 override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {}
-                override fun onClickMovie(movieId: Long) {}
+                override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {}
                 override fun onClickShowAllToRatedMovies() {}
                 override fun onClickShowAllContinueWatchingMovies() {}
 

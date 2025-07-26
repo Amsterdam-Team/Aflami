@@ -180,7 +180,7 @@ class SearchByActorViewModelTest {
                     effect = searchByActorEffect
                 }
             }
-            viewModel.onClickMovie(movieId)
+            viewModel.onClickMediaItem(movieId)
             advanceUntilIdle()
             job.cancel()
 

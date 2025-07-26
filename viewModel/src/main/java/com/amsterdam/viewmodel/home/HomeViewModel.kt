@@ -15,6 +15,7 @@ import com.amsterdam.viewmodel.home.HomeUiState.HomeError
 import com.amsterdam.viewmodel.search.mapper.selectByMovieGenre
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -58,8 +59,12 @@ class HomeViewModel(
         sendNewEffect(HomeEffect.NavigateToSearchScreenEffect)
     }
 
-    override fun onClickMovie(movieId: Long) {
-        sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId))
+    override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
+        if (mediaType == MediaType.MOVIE)
+            sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(mediaId))
+        else
+            sendNewEffect(HomeEffect.NavigateToTvShowDetailsEffect(mediaId))
+
     }
 
     override fun onClickShowAllContinueWatchingMovies() {

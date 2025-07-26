@@ -16,9 +16,10 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 fun LazyListScope.continueWatchingSection(
-    continueWatchingMovies: List<MovieItemUiState>, onClickMovie: (Long) -> Unit,
+    continueWatchingMovies: List<MovieItemUiState>, onClickMediaItem: (Long, MediaType) -> Unit,
     onClickShowAll: () -> Unit
 ) {
     item {
@@ -45,7 +46,7 @@ fun LazyListScope.continueWatchingSection(
                     movieTitle = movie.name,
                     movieRating = movie.rate
                 ) {
-                    onClickMovie(movie.id)
+                    onClickMediaItem(movie.id, MediaType.MOVIE)
                 }
             }
         }

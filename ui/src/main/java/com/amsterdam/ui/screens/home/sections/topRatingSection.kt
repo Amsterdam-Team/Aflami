@@ -20,7 +20,7 @@ import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 fun LazyListScope.topRatingSection(
-    topRatedMediaItems: List<MediaItemUiState>, onClickMovie: (Long) -> Unit,
+    topRatedMediaItems: List<MediaItemUiState>, onClickMediaItem: (Long, MediaType) -> Unit,
     onClickShowAll: () -> Unit
 ) {
     item {
@@ -52,7 +52,7 @@ fun LazyListScope.topRatingSection(
                     movieTitle = item.name,
                     movieRating = item.rate
                 ) {
-                    onClickMovie(item.id)
+                    onClickMediaItem(item.id, item.mediaType)
                 }
             }
         }
