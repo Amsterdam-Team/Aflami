@@ -4,14 +4,15 @@ import com.amsterdam.repository.mapper.local.CountryLocalMapper
 import com.amsterdam.repository.mapper.local.MovieCategoryLocalMapper
 import com.amsterdam.repository.mapper.local.MovieGenreLocalMapper
 import com.amsterdam.repository.mapper.local.MovieLocalMapper
+import com.amsterdam.repository.mapper.local.MovieWatchHistoryMapper
 import com.amsterdam.repository.mapper.local.MovieWithCategoriesLocalMapper
 import com.amsterdam.repository.mapper.local.RecentSearchLocalMapper
 import com.amsterdam.repository.mapper.local.SessionTypeMapper
 import com.amsterdam.repository.mapper.local.TvShowCategoryLocalMapper
 import com.amsterdam.repository.mapper.local.TvShowGenreLocalMapper
 import com.amsterdam.repository.mapper.local.TvShowLocalMapper
+import com.amsterdam.repository.mapper.local.TvShowWatchHistoryMapper
 import com.amsterdam.repository.mapper.local.TvShowWithCategoryLocalMapper
-import com.amsterdam.repository.mapper.local.WatchHistoryMapper
 import com.amsterdam.repository.mapper.remote.CastRemoteMapper
 import com.amsterdam.repository.mapper.remote.CategoryRemoteMapper
 import com.amsterdam.repository.mapper.remote.CountryRemoteMapper
@@ -30,6 +31,7 @@ import com.amsterdam.repository.mapper.remoteToLocal.MovieGenreIdsRemoteLocalMap
 import com.amsterdam.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowGenreIdsRemoteLocalMapper
+import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteDetailsLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -56,6 +58,7 @@ val mapperModule = module {
     singleOf(::MovieRemoteLocalMapper)
     singleOf(::TvShowCategoryRemoteLocalMapper)
     singleOf(::TvShowRemoteLocalMapper)
+    singleOf(::TvShowRemoteDetailsLocalMapper)
     singleOf(::MovieCategoryLocalMapper)
     singleOf(::MovieGenreLocalMapper)
     singleOf(::MovieWithCategoriesLocalMapper)
@@ -66,5 +69,6 @@ val mapperModule = module {
     singleOf(::TvShowDetailsRemoteMapper)
     singleOf(::EpisodeRemoteMapper)
     singleOf(::SeasonRemoteMapper)
-    singleOf(::WatchHistoryMapper)
+    singleOf(::MovieWatchHistoryMapper)
+    singleOf(::TvShowWatchHistoryMapper)
 }

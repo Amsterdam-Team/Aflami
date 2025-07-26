@@ -1,5 +1,6 @@
 package com.amsterdam.repository.mapper.local
 
+import android.util.Log
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.mapper.shared.DtoMapper
@@ -18,7 +19,9 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             popularity = dto.popularity,
             seasonCount = dto.seasonCount,
             originCountry = dto.originCountry,
-        )
+        ).also {
+            Log.d("nb", "mapp tv: $it")
+        }
     }
 
     override fun toDto(entity: TvShow, args: List<Any>): LocalTvShowDto {

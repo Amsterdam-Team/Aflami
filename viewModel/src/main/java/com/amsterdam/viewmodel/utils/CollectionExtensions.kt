@@ -1,16 +1,29 @@
 package com.amsterdam.viewmodel.utils
 
-fun <T, R, C> getMixedMediaItemsList(
-        listA: List<T>,
-        listB: List<R>,
-        transformA: (T) -> C,
-        transformB: (R) -> C,
-    ): List<C> {
-        val combinedList = listA.map(transformA) + listB.map(transformB)
-        val combinedListBackward = listB.map(transformB) + listA.map(transformA)
+fun <T, R, C> getMixedItemsList(
+    firstList: List<T>,
+    secondList: List<R>,
+    transformFirst: (T) -> C,
+    transformSecond: (R) -> C
+): List<C> {
+    if (firstList.isEmpty() && secondList.isEmpty()) return emptyList()
 
-        return combinedList
-            .shuffled()
-            .takeUnless { it == combinedListBackward || it == combinedListBackward }
-            ?: getMixedMediaItemsList(listA, listB, transformA, transformB)
-    }
+    val combinedList = firstList.map(transformFirst) + secondList.map(transformSecond)
+    val combinedListBackward = secondList.map(transformSecond) + firstList.map(transformFirst)
+
+    return combinedList
+        .shuffled()
+        .takeUnless { it == combinedList || it == combinedListBackward }
+        ?: getMixedItemsList(firstList, secondList, transformFirst, transformSecond)
+}
+
+
+fun <T, R, C> getLinearItemsList(
+    firstList: List<T>,
+    secondList: List<R>,
+    transformFirst: (T) -> C,
+    transformSecond: (R) -> C,
+): List<C> {
+    if (firstList.isEmpty() && secondList.isEmpty()) return emptyList()
+    return firstList.map(transformFirst) + secondList.map(transformSecond)
+}

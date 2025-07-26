@@ -6,7 +6,7 @@ import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
-import com.amsterdam.viewmodel.utils.getMixedMediaItemsList
+import com.amsterdam.viewmodel.utils.getMixedItemsList
 
 class TopRatedUiStateMapper {
     @SuppressLint("DefaultLocale")
@@ -23,7 +23,7 @@ class TopRatedUiStateMapper {
         topRatedMovies: List<Movie>,
         topRatedTvShows: List<TvShow>
     ): List<MediaItemUiState> {
-        return getMixedMediaItemsList(
+        return getMixedItemsList(
             topRatedMovies,
             topRatedTvShows,
             ::movieToTopRatedMediaItemUiState,

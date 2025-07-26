@@ -8,10 +8,10 @@ import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
-import com.amsterdam.viewmodel.utils.getMixedMediaItemsList
+import com.amsterdam.viewmodel.utils.getLinearItemsList
+import com.amsterdam.viewmodel.utils.getMixedItemsList
 
 class HomeUiStateMapper {
-
     @SuppressLint("DefaultLocale")
     fun toUiState(homeScreenData: GetHomeScreenDataUseCase.HomeScreenData): HomeUiState {
         return HomeUiState(
@@ -24,7 +24,22 @@ class HomeUiStateMapper {
                 homeScreenData.topRatedTvShows
             ),
             upcomingMovies = moviesToMoviesItemsUiState(homeScreenData.upComingMovies),
-            continueWatchingMovies = moviesToMoviesItemsUiState(homeScreenData.continueWatchingMovies)
+            continueWatchingItems = getContinueWatchingMediaItems(
+                homeScreenData.continueWatchingMovies,
+                homeScreenData.continueWatchingTvShows
+            )
+        )
+    }
+
+    private fun getContinueWatchingMediaItems(
+        movies: List<Movie>,
+        tvShows: List<TvShow>
+    ): List<MediaItemUiState> {
+        return getLinearItemsList(
+            movies,
+            tvShows,
+            ::movieToMediaItemUiState,
+            ::tvShowToMediaItemUiState
         )
     }
 
@@ -32,7 +47,7 @@ class HomeUiStateMapper {
         popularMovies: List<Movie>,
         popularTvShows: List<TvShow>
     ): List<PopularMediaItemUiState> {
-        return getMixedMediaItemsList(
+        return getMixedItemsList(
             popularMovies,
             popularTvShows,
             ::movieToPopularMediaItemUiState,
@@ -44,14 +59,13 @@ class HomeUiStateMapper {
         topRatedMovies: List<Movie>,
         topRatedTvShows: List<TvShow>
     ): List<MediaItemUiState> {
-        return getMixedMediaItemsList(
+        return getMixedItemsList(
             topRatedMovies,
             topRatedTvShows,
-            ::movieToTopRatedMediaItemUiState,
-            ::tvShowToTopRatedMediaItemUiState
+            ::movieToMediaItemUiState,
+            ::tvShowToMediaItemUiState
         )
     }
-
 
     fun moviesToMoviesItemsUiState(movies: List<Movie>) = movies.map(::movieToMovieItemUiState)
 
@@ -76,7 +90,7 @@ class HomeUiStateMapper {
     }
 
     @SuppressLint("DefaultLocale")
-    private fun movieToTopRatedMediaItemUiState(movie: Movie): MediaItemUiState {
+    fun movieToMediaItemUiState(movie: Movie): MediaItemUiState {
         return MediaItemUiState(
             id = movie.id,
             name = movie.name,
@@ -88,7 +102,7 @@ class HomeUiStateMapper {
     }
 
     @SuppressLint("DefaultLocale")
-    private fun tvShowToTopRatedMediaItemUiState(tvShow: TvShow): MediaItemUiState {
+    fun tvShowToMediaItemUiState(tvShow: TvShow): MediaItemUiState {
         return MediaItemUiState(
             id = tvShow.id,
             name = tvShow.name,
@@ -100,7 +114,7 @@ class HomeUiStateMapper {
     }
 
     @SuppressLint("DefaultLocale")
-    private fun movieToMovieItemUiState(movie: Movie): MovieItemUiState {
+    fun movieToMovieItemUiState(movie: Movie): MovieItemUiState {
         return MovieItemUiState(
             id = movie.id,
             name = movie.name,

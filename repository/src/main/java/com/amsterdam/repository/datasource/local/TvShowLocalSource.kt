@@ -25,4 +25,6 @@ interface TvShowLocalSource {
     )
 
     suspend fun incrementGenreInterest(categoryId: Long)
+
+    suspend fun insertTvShow(tvShow : LocalTvShowDto)
 }

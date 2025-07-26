@@ -172,9 +172,9 @@ private fun HomeScreenContent(
                             onClickMediaItem = interactionListener::onClickMediaItem,
                             onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                         )
-                        if (state.continueWatchingMovies.isNotEmpty())
+                        if (state.continueWatchingItems.isNotEmpty())
                             continueWatchingSection(
-                                continueWatchingMovies = state.continueWatchingMovies,
+                                continueWatchingMediaItems = state.continueWatchingItems,
                                 onClickMediaItem = interactionListener::onClickMediaItem,
                                 onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
                             )

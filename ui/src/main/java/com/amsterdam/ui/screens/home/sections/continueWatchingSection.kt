@@ -15,11 +15,12 @@ import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 fun LazyListScope.continueWatchingSection(
-    continueWatchingMovies: List<MovieItemUiState>, onClickMediaItem: (Long, MediaType) -> Unit,
+    continueWatchingMediaItems: List<MediaItemUiState>,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     onClickShowAll: () -> Unit
 ) {
     item {
@@ -38,15 +39,19 @@ fun LazyListScope.continueWatchingSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-            items(continueWatchingMovies) { movie ->
+            items(continueWatchingMediaItems) { item ->
+                val movieType =
+                    if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
+                    else stringResource(com.amsterdam.ui.R.string.tv)
+
                 MovieCard(
-                    movieImage = { MovieImage(movie.posterImageUrl) },
-                    movieType = stringResource(com.amsterdam.ui.R.string.movie),
-                    movieYear = movie.yearOfRelease,
-                    movieTitle = movie.name,
-                    movieRating = movie.rate
+                    movieImage = { MovieImage(item.posterImageUrl) },
+                    movieType = movieType,
+                    movieYear = item.yearOfRelease,
+                    movieTitle = item.name,
+                    movieRating = item.rate
                 ) {
-                    onClickMediaItem(movie.id, MediaType.MOVIE)
+                    onClickMediaItem(item.id, item.mediaType)
                 }
             }
         }

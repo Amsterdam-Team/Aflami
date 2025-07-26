@@ -11,7 +11,8 @@ class GetHomeScreenDataUseCase(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
     private val getPopularTvShowsUseCase: GetPopularTvShowsUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase
+    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
+    private val getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase
 ) {
 
     suspend operator fun invoke(): HomeScreenData {
@@ -22,6 +23,8 @@ class GetHomeScreenDataUseCase(
             popularTvShows = getPopularTvShowsUseCase(),
             upComingMovies = getUpcomingMoviesUseCase(MovieGenre.ALL),
             continueWatchingMovies = getContinueWatchingMoviesUseCase().firstOrNull()
+                ?: emptyList(),
+            continueWatchingTvShows = getContinueWatchingTvShowsUseCase().firstOrNull()
                 ?: emptyList()
         )
     }
@@ -32,6 +35,7 @@ class GetHomeScreenDataUseCase(
         val popularMovies: List<Movie>,
         val popularTvShows: List<TvShow>,
         val upComingMovies: List<Movie>,
-        val continueWatchingMovies: List<Movie>
+        val continueWatchingMovies: List<Movie>,
+        val continueWatchingTvShows: List<TvShow>
     )
 }
