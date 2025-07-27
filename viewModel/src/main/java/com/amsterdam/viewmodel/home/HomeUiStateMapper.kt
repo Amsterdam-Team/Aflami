@@ -59,6 +59,7 @@ class HomeUiStateMapper {
     @SuppressLint("DefaultLocale")
     private fun movieToPopularMediaItemUiState(movie: Movie): PopularMediaItemUiState {
         return PopularMediaItemUiState(
+            id = movie.id,
             name = movie.name,
             rating = String.format("%.1f", movie.rating),
             posterUrl = movie.posterUrl,
@@ -69,6 +70,7 @@ class HomeUiStateMapper {
     @SuppressLint("DefaultLocale")
     private fun tvShowToPopularMediaItemUiState(tvShow: TvShow): PopularMediaItemUiState {
         return PopularMediaItemUiState(
+            id = tvShow.id,
             name = tvShow.name,
             rating = String.format("%.1f", tvShow.rating),
             posterUrl = tvShow.posterUrl,
