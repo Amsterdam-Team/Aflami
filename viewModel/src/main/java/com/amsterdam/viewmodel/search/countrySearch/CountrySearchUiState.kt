@@ -14,7 +14,7 @@ data class CountrySearchUiState(
     val movies: Flow<PagingData<MovieItemUiState>> = emptyFlow(),
     val isLoading: Boolean = false,
     val errorUiState: CountrySearchErrorState? = null,
-    val selectedMovieId : Long = 0
+    val selectedMovieId: Long = 0
 )
 
 data class CountryItemUiState(
@@ -23,10 +23,9 @@ data class CountryItemUiState(
 )
 
 sealed interface CountrySearchErrorState {
-    object NoNetworkConnection : CountrySearchErrorState
-    object UnknownError : CountrySearchErrorState
-
-    companion object{
+    data object NoNetworkConnection : CountrySearchErrorState
+    data object UnknownError : CountrySearchErrorState
+    companion object {
         fun toCountrySearchErrorState(exception: Throwable): CountrySearchErrorState {
             return when (exception) {
                 is NetworkException -> NoNetworkConnection
