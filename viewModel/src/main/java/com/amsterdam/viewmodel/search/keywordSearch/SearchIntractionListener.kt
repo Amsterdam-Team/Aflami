@@ -1,5 +1,6 @@
 package com.amsterdam.viewmodel.search.keywordSearch
 
+import androidx.paging.CombinedLoadStates
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.entity.category.TvShowGenre
 
@@ -20,6 +21,7 @@ interface SearchInteractionListener {
     fun onClickClearRecentSearch(keyword: String)
     fun onClickClearAllRecentSearches()
     fun onClickClearSearch()
+    fun onPagingLoadStateChanged(loadStates: CombinedLoadStates)
 }
 
 interface FilterInteractionListener {

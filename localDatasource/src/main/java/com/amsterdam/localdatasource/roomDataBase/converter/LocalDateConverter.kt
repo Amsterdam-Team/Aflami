@@ -7,7 +7,7 @@ import kotlinx.datetime.toLocalDate
 class LocalDateConverter {
     @TypeConverter
     fun localDateToString(localDate: LocalDate): String {
-        return if (localDate == LocalDate.fromEpochDays(0)) "" else localDate.toString()
+        return localDate.toString()
     }
 
     @TypeConverter

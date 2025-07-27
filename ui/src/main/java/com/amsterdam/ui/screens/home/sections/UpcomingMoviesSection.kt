@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
@@ -23,39 +24,50 @@ import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
-import com.amsterdam.viewmodel.shared.uiStates.MovieGenreItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesSectionUiState
 
 fun LazyListScope.upcomingMoviesSection(
-    movies: List<MovieItemUiState>,
+    state: UpcomingMoviesSectionUiState,
     onMovieClicked: (movieId: Long) -> Unit,
-    moviesGenres: List<MovieGenreItemUiState>,
     onChangeMovieGenre: (genreType: MovieGenre) -> Unit,
-    isVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isVisible: Boolean
 ) {
-    stickyHeader {
-        AnimatedSectionVisibility(isVisible) {
-            Column {
-                Text(
+    if (isVisible) {
+        if (state.isLoading) {
+            upcomingMoviesSectionPlaceholder()
+        } else {
+            stickyHeader {
+                Column(
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .background(AppTheme.color.surface)
-                        .padding(start = 16.dp, end = 16.dp, top = 24.dp),
-                    text = stringResource(R.string.upcoming),
-                    style = AppTheme.textStyle.title.medium,
-                    color = AppTheme.color.title,
-                    textAlign = TextAlign.Start,
-                )
+                        .padding(top = 26.dp, bottom = 16.dp)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                        text = stringResource(R.string.upcoming),
+                        style = AppTheme.textStyle.title.medium,
+                        color = AppTheme.color.title,
+                        textAlign = TextAlign.Start,
+                    )
+                }
+            }
 
+            item {
                 LazyRow(
-                    modifier = Modifier.background(AppTheme.color.surface),
-                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .background(AppTheme.color.surface),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(moviesGenres) { genreItem ->
+                    items(state.movieGenres) { genreItem ->
                         val genre = genreItem.selectableMovieGenre.item
                         Chip(
                             icon = getMovieGenreIcon(genre),
@@ -66,33 +78,45 @@ fun LazyListScope.upcomingMoviesSection(
                     }
                 }
             }
-        }
-    }
 
-    items(items = movies, key = { it.id }) { movie ->
-        AnimatedSectionVisibility(isVisible) {
-            with(movie) {
-                MovieCard(
-                    modifier = modifier
-                        .fillParentMaxWidth()
-                        .animateItem()
-                        .height(196.dp)
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                    movieImage = {
-                        SafeImageView(
-                            modifier = Modifier.fillMaxSize(),
-                            contentDescription = name,
-                            model = posterImageUrl,
-                            onLoading = { ImageLoadingIndicator() },
-                            onError = { ImageErrorIndicator() },
+            if (state.movies.isNotEmpty()) {
+                items(items = state.movies, key = { it.id }) { movie ->
+                    with(movie) {
+                        MovieCard(
+                            modifier = modifier
+                                .fillParentMaxWidth()
+                                .animateItem()
+                                .height(196.dp)
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                            movieImage = {
+                                SafeImageView(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentDescription = name,
+                                    model = posterImageUrl,
+                                    onLoading = { ImageLoadingIndicator() },
+                                    onError = { ImageErrorIndicator() },
+                                )
+                            },
+                            movieType = stringResource(R.string.movies),
+                            movieYear = yearOfRelease,
+                            movieTitle = name,
+                            movieRating = rate,
+                            onClick = { onMovieClicked(id) }
                         )
-                    },
-                    movieType = stringResource(R.string.movies),
-                    movieYear = yearOfRelease,
-                    movieTitle = name,
-                    movieRating = rate,
-                    onClick = { onMovieClicked(id) }
-                )
+                    }
+                }
+            } else {
+                item {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
+                        style = AppTheme.textStyle.label.medium,
+                        color = AppTheme.color.body,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }

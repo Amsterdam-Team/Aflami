@@ -1,7 +1,6 @@
 package com.amsterdam.viewmodel.search.keywordSearch
 
 import androidx.paging.PagingData
-import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.viewmodel.shared.Selectable
@@ -56,12 +55,10 @@ data class FilterItemUiState(
 }
 
 sealed interface SearchErrorState {
-    object NoNetworkConnection : SearchErrorState
-
-    object UnknownError : SearchErrorState
-
+    data object NoNetworkConnection : SearchErrorState
+    data object UnknownError : SearchErrorState
     companion object {
-        fun toSearchErrorState(exception: AflamiException): SearchErrorState =
+        fun toSearchErrorState(exception: Throwable): SearchErrorState =
             when (exception) {
                 is NetworkException -> NoNetworkConnection
                 else -> UnknownError

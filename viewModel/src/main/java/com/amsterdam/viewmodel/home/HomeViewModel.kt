@@ -19,7 +19,6 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 
@@ -44,13 +43,15 @@ class HomeViewModel(
             action = { getHomeScreenDataUseCase() },
             onSuccess = ::onGetHomeScreenDataSuccess,
             onError = ::onError,
-            onCompletion = ::onCompletion
         )
     }
 
     fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
         updateState {
-            homeUiStateMapper.toUiState(homeScreenData, state.value.continueWatchingItems)
+            homeUiStateMapper.toUiState(
+                homeScreenData,
+                state.value.continueWatchingMediaSectionUiState.mediaItems
+            )
         }
     }
 
@@ -71,20 +72,71 @@ class HomeViewModel(
         ) { movies, tvShows ->
             updateState { currentState ->
                 currentState.copy(
-                    continueWatchingItems = getLinearItemsList(
-                        movies,
-                        tvShows,
-                        homeUiStateMapper::movieToMediaItemUiState,
-                        homeUiStateMapper::tvShowToMediaItemUiState
+                    continueWatchingMediaSectionUiState = currentState.continueWatchingMediaSectionUiState.copy(
+                        mediaItems = getLinearItemsList(
+                            movies,
+                            tvShows,
+                            homeUiStateMapper::movieToMediaItemUiState,
+                            homeUiStateMapper::tvShowToMediaItemUiState
+                        )
                     )
                 )
             }
         }.launchIn(viewModelScope)
     }
 
+
+    private fun getUpcomingMoviesBySelectedGenre(
+        selectedUpcomingGenre: MovieGenre = MovieGenre.ALL,
+        isLoading: Boolean = true
+    ) {
+        updateState {
+            it.copy(
+                upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
+                    isLoading = isLoading
+                )
+            )
+        }
+        tryToExecute(
+            action = { getUpcomingMoviesUseCase(selectedUpcomingGenre) },
+            onSuccess = ::onGetUpcomingMovieSuccess,
+            onError = ::onError,
+        )
+    }
+
+    private fun onGetUpcomingMovieSuccess(movies: List<Movie>) {
+        updateState {
+            it.copy(
+                upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
+                    movies = homeUiStateMapper.moviesToMoviesItemsUiState(movies),
+                    isLoading = false
+                )
+            )
+        }
+    }
+
+    override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {
+        if (genre == state.value.upcomingMoviesSectionUiState.getSelectedUpcomingMovieGenre()) return
+
+        updateState {
+            it.copy(
+                upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
+                    movieGenres = it.upcomingMoviesSectionUiState.movieGenres.selectByMovieGenre(
+                        genre
+                    )
+                )
+            )
+        }
+        getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre, isLoading = false)
+    }
+
     override fun onClickRetryLoading() {
-        updateState { it.copy() }
-        getHomeScreenData()
+        updateState { it.copy(error = null) }
+        with(state.value) {
+            if (popularMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
+            if (topRatedMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
+            if (upcomingMoviesSectionUiState.movies.isEmpty()) getUpcomingMoviesBySelectedGenre()
+        }
     }
 
     override fun onClickSearch() {
@@ -169,29 +221,8 @@ class HomeViewModel(
         }
     }
 
-    private fun getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre: MovieGenre = MovieGenre.ALL) {
-        updateState { it.copy(isLoading = true) }
-        tryToExecute(
-            action = { getUpcomingMoviesUseCase(selectedUpcomingGenre) },
-            onSuccess = ::onGetUpcomingMovieSuccess,
-            onError = ::onError,
-            onCompletion = ::onCompletion
-        )
-    }
-
-    private fun onGetUpcomingMovieSuccess(movies: List<Movie>) {
-        updateState { it.copy(upcomingMovies = homeUiStateMapper.moviesToMoviesItemsUiState(movies)) }
-    }
-
     override fun onClickUpcomingMovieCard(id: Long) {
         sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = id))
-    }
-
-    override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {
-        if (genre == state.value.getSelectedUpcomingMovieGenre()) return
-
-        updateState { it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre)) }
-        getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre)
     }
 
     private fun onError(exception: AflamiException) {

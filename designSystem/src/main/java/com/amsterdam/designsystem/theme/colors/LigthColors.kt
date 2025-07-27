@@ -47,5 +47,6 @@ internal val lightThemeColors =
         overlayDark = listOf(Color(0x000D090B), Color(0xFF0D090B)),
         droppedShadowColor = Color(0x3DD85895),
         loginGradient = listOf(Color(0x3DD85895), Color(0x00D85895)),
-        topRatedGradientBackground = listOf(Color(0xCC64163B), Color(0x0064163B))
+        topRatedGradientBackground = listOf(Color(0xCC64163B), Color(0x0064163B)),
+        shimmerEffectGradient = listOf(Color(0x14000000), Color(0x00000000), Color(0x3D000000))
     )

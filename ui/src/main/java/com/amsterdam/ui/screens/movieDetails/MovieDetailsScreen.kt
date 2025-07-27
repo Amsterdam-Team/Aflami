@@ -67,6 +67,7 @@ import com.amsterdam.ui.screens.movieDetails.components.PlayButton
 import com.amsterdam.ui.screens.movieDetails.components.ReviewSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.ui.utils.safeNavigate
+import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState
@@ -90,8 +91,14 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = koinViewModel()) {
             effect?.let {
                 when (effect) {
                     MovieDetailsEffect.NavigateBackEffect -> navController.popBackStack()
-                    MovieDetailsEffect.NavigateToCastsScreenEffect ->
-                        navController.safeNavigate(Route.Cast(state.value.movieId))
+                    MovieDetailsEffect.NavigateToCastsScreenEffect -> {
+                        navController.safeNavigate(
+                            Route.Cast(
+                                mediaType = MediaType.MOVIE.name,
+                                mediaId = state.value.movieId
+                            )
+                        )
+                    }
                     MovieDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
                         Route.Login
                     )

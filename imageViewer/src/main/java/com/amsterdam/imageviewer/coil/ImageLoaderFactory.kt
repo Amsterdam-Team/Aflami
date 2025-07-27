@@ -11,9 +11,10 @@ internal object ImageLoaderFactory {
 
     fun build(
         context: Context,
-        classifier: NsfwDetectorClassifier,
+        classifier: NsfwDetectorClassifier?,
         policy: SafetyPolicy
-    ): ImageLoader {
+    ): ImageLoader? {
+        if (classifier == null) return null
         val classifier: CustomImageClassifier = when (policy) {
             is SafetyPolicy.SFWPolicy -> classifier
         }

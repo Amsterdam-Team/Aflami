@@ -1,6 +1,7 @@
 package com.amsterdam.aflami.di
 
 import com.amsterdam.viewmodel.application.ApplicationViewModel
+import com.amsterdam.viewmodel.cast.CastScreenArgs
 import com.amsterdam.viewmodel.cast.CastViewModel
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiStateMapper
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingViewModel
@@ -12,7 +13,7 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiStateMapper
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
 import com.amsterdam.viewmodel.register.RegisterViewModel
 import com.amsterdam.viewmodel.resetPassword.ResetPasswordViewModel
-import com.amsterdam.viewmodel.search.actorSearch.SearchActorViewModel
+import com.amsterdam.viewmodel.search.actorSearch.ActorSearchViewModel
 import com.amsterdam.viewmodel.search.countrySearch.CountrySearchViewModel
 import com.amsterdam.viewmodel.search.keywordSearch.SearchViewModel
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsArgs
@@ -35,18 +36,17 @@ val viewModelModule = module {
     viewModelOf(::RegisterViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::CountrySearchViewModel)
-    viewModelOf(::SearchActorViewModel)
+    viewModelOf(::ActorSearchViewModel)
     viewModelOf(::MovieDetailsViewModel)
     viewModelOf(::CastViewModel)
     viewModelOf(::CountrySearchViewModel)
-    viewModelOf(::SearchActorViewModel)
+    viewModelOf(::ActorSearchViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::SeriesDetailsViewModel)
     viewModelOf(::TopRatedViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::ResetPasswordViewModel)
     viewModelOf(::ContinueWatchingViewModel)
-    factoryOf(::MovieDetailsArgs)
     factoryOf(::MovieDetailsUiStateMapper)
     // mappers
     factoryOf(::MovieDetailsUiStateMapper)
@@ -57,4 +57,5 @@ val viewModelModule = module {
     // args
     factoryOf(::MovieDetailsArgs)
     factoryOf(::SeriesDetailsArgs)
+    factoryOf(::CastScreenArgs)
 }

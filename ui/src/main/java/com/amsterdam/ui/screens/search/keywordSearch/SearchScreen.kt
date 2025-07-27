@@ -53,6 +53,7 @@ import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.navigation.Route.SeriesDetails
+import com.amsterdam.ui.screens.search.keywordSearch.sections.ExploreMoviesAndShows
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
@@ -75,7 +76,16 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
     val movieFlow = state.movies.collectAsLazyPagingItems()
     val tvShowFlow = state.tvShows.collectAsLazyPagingItems()
     val navController = LocalNavController.current
-
+    LaunchedEffect(movieFlow.loadState) {
+        if (state.selectedTabOption == TabOption.MOVIES) {
+            viewModel.onPagingLoadStateChanged(movieFlow.loadState)
+        }
+    }
+    LaunchedEffect(tvShowFlow.loadState) {
+        if (state.selectedTabOption == TabOption.TV_SHOWS) {
+            viewModel.onPagingLoadStateChanged(tvShowFlow.loadState)
+        }
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             effect?.let {
@@ -175,6 +185,14 @@ private fun SearchContent(
             onWorldSearchCardClicked = interaction::onClickWorldSearchCard,
             onActorSearchCardClicked = interaction::onClickActorSearchCard
         )
+
+        AnimatedVisibility(
+            state.keyword.isEmpty() && state.recentSearches.isEmpty()
+        ) {
+            CenterOfScreenContainer(unneededSpace = headerHeight + 100.dp) {
+                ExploreMoviesAndShows()
+            }
+        }
 
         RecentSearchesSection(
             keyword = state.keyword,

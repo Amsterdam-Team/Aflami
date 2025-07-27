@@ -47,5 +47,6 @@ internal val darkThemeColors =
         primaryEnd = Color(0xFF973A66),
         droppedShadowColor = Color(0x3DD85895),
         loginGradient = listOf(Color(0x3DD85895), Color(0x00D85895)),
-        topRatedGradientBackground = listOf(Color(0xCC64163B), Color(0x0064163B))
+        topRatedGradientBackground = listOf(Color(0xCC64163B), Color(0x0064163B)),
+        shimmerEffectGradient = listOf(Color(0x14FFFFFF), Color(0x00FFFFFF), Color(0x3DFFFFFF))
     )

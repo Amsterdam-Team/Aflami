@@ -13,7 +13,8 @@ import com.amsterdam.viewmodel.home.HomeUiState
 @Composable
 fun MoodPickerSection(
     state: HomeUiState,
-    interactionListener: HomeInteractionListener
+    interactionListener: HomeInteractionListener,
+    modifier: Modifier=Modifier
 ) {
     MoodPickerCard(
         cardMoods = state.moodPickerUiState.moods.map {
@@ -21,7 +22,7 @@ fun MoodPickerSection(
                 it.name
             )
         },
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp),
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 26.dp),
         onSelectMood = {
             val mood =
                 Mood.getMoodByName(it.name)

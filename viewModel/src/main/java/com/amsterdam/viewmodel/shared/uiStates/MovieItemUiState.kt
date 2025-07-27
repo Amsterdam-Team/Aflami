@@ -5,5 +5,7 @@ data class MovieItemUiState(
     val name: String = "",
     val posterImageUrl: String = "",
     val yearOfRelease: String = "",
-    val rate: String = ""
+    val rate: String = "",
+    val categories: List<String> = emptyList()
+
 )

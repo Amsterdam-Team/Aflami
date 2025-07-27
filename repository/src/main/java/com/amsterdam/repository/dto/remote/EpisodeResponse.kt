@@ -1,6 +1,6 @@
 package com.amsterdam.repository.dto.remote
 
-import com.amsterdam.repository.BuildConfig
+import com.amsterdam.repository.utils.ImageBaseUrlsConstant.BASE_IMAGE_URL_W500
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,5 +16,5 @@ data class EpisodeResponse(
     @SerialName("vote_average") val voteAverage: Double,
 ) {
     val fullPosterPath: String?
-        get() = posterPath?.let { BuildConfig.BASE_IMAGE_URL + it }
+        get() = posterPath?.let { BASE_IMAGE_URL_W500 + it }
 }

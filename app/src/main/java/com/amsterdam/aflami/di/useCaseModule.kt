@@ -26,6 +26,7 @@ import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
+import com.amsterdam.domain.useCase.details.GetTvShowCastUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -36,6 +37,7 @@ val useCaseModule = module {
     singleOf(::GetAndFilterMoviesByKeywordUseCase)
     singleOf(::GetMoviesByCountryUseCase)
     singleOf(::GetMovieCastUseCase)
+    singleOf(::GetTvShowCastUseCase)
     singleOf(::GetMovieDetailsUseCase)
     singleOf(::GetMoviesByActorUseCase)
     singleOf(::GetSuggestedCountriesUseCase)

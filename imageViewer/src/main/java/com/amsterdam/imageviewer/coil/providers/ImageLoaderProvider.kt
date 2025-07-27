@@ -13,13 +13,13 @@ internal object ImageLoaderProvider {
     private var instance: ImageLoader? = null
     private val mutex = Mutex()
 
-    suspend fun getInstance(context: Context): ImageLoader {
+    suspend fun getInstance(context: Context): ImageLoader? {
         return instance ?: mutex.withLock {
             instance ?: createInstance(context.applicationContext)
         }
     }
 
-    private suspend fun createInstance(context: Context): ImageLoader {
+    private suspend fun createInstance(context: Context): ImageLoader? {
         val classifier = ImageClassifierProvider.getInstance(context)
 
         return ImageLoaderFactory.build(context, classifier, SafetyPolicy.SFWPolicy).also {

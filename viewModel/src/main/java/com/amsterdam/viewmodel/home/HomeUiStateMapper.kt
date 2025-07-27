@@ -1,10 +1,12 @@
 package com.amsterdam.viewmodel.home
 
 import android.annotation.SuppressLint
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase.HomeScreenData
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
+import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaSectionUiState
+import com.amsterdam.viewmodel.home.HomeUiState.TopRatedMediaSectionUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
@@ -13,48 +15,54 @@ import com.amsterdam.viewmodel.utils.getMixedItemsList
 class HomeUiStateMapper {
     @SuppressLint("DefaultLocale")
     fun toUiState(
-        homeScreenData: GetHomeScreenDataUseCase.HomeScreenData,
+        homeScreenData: HomeScreenData,
         continueWatchingItems: List<MediaItemUiState>
     ): HomeUiState {
         return HomeUiState(
-            popularMediaItems = getPopularMediaItems(
+            popularMediaSectionUiState = getPopularMediaItems(
                 homeScreenData.popularMovies,
                 homeScreenData.popularTvShows
             ),
-            topRatedMediaItems = getTopRatedMediaItems(
+            topRatedMediaSectionUiState = getTopRatedMediaItems(
                 homeScreenData.topRatedMovies,
                 homeScreenData.topRatedTvShows
             ),
-            upcomingMovies = moviesToMoviesItemsUiState(homeScreenData.upComingMovies),
-            continueWatchingItems = continueWatchingItems
+            upcomingMoviesSectionUiState = HomeUiState.UpcomingMoviesSectionUiState(
+                movies = moviesToMoviesItemsUiState(homeScreenData.upComingMovies)
+            ),
+            continueWatchingMediaSectionUiState = HomeUiState.ContinueWatchingMediaSectionUiState(
+                mediaItems = continueWatchingItems
+            )
         )
     }
 
     private fun getPopularMediaItems(
         popularMovies: List<Movie>,
         popularTvShows: List<TvShow>
-    ): List<PopularMediaItemUiState> {
-        return getMixedItemsList(
-            popularMovies,
-            popularTvShows,
-            ::movieToPopularMediaItemUiState,
-            ::tvShowToPopularMediaItemUiState
+    ): PopularMediaSectionUiState {
+        return PopularMediaSectionUiState(
+            getMixedItemsList(
+                popularMovies,
+                popularTvShows,
+                ::movieToPopularMediaItemUiState,
+                ::tvShowToPopularMediaItemUiState
+            )
         )
     }
 
     private fun getTopRatedMediaItems(
         topRatedMovies: List<Movie>,
         topRatedTvShows: List<TvShow>
-    ): List<MediaItemUiState> {
-        return getMixedItemsList(
-            topRatedMovies,
-            topRatedTvShows,
-            ::movieToMediaItemUiState,
-            ::tvShowToMediaItemUiState
+    ): TopRatedMediaSectionUiState {
+        return TopRatedMediaSectionUiState(
+            getMixedItemsList(
+                topRatedMovies,
+                topRatedTvShows,
+                ::movieToMediaItemUiState,
+                ::tvShowToMediaItemUiState
+            )
         )
     }
-
-    fun moviesToMoviesItemsUiState(movies: List<Movie>) = movies.map(::movieToMovieItemUiState)
 
     @SuppressLint("DefaultLocale")
     private fun movieToPopularMediaItemUiState(movie: Movie): PopularMediaItemUiState {
@@ -63,7 +71,8 @@ class HomeUiStateMapper {
             name = movie.name,
             rating = String.format("%.1f", movie.rating),
             posterUrl = movie.posterUrl,
-            type = MediaType.MOVIE
+            type = MediaType.MOVIE,
+            category = movie.categories.map { it.name }
         )
     }
 
@@ -112,4 +121,6 @@ class HomeUiStateMapper {
             yearOfRelease = movie.releaseDate.year.toString()
         )
     }
+
+    fun moviesToMoviesItemsUiState(movies: List<Movie>) = movies.map(::movieToMovieItemUiState)
 }

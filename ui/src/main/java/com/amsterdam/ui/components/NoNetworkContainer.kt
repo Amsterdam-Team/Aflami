@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
@@ -28,10 +29,7 @@ fun NoNetworkContainer(
     description: String = stringResource(R.string.offline_description),
 ) {
     Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -42,15 +40,18 @@ fun NoNetworkContainer(
         Text(
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
             text = title,
+            textAlign = TextAlign.Center,
             style = AppTheme.textStyle.title.medium,
             color = AppTheme.color.title,
         )
-
-        Text(
-            text = description,
-            style = AppTheme.textStyle.body.small,
-            color = AppTheme.color.body,
-        )
+        if(description.isNotEmpty()){
+            Text(
+                text = description,
+                textAlign = TextAlign.Center,
+                style = AppTheme.textStyle.body.small,
+                color = AppTheme.color.body,
+            )
+        }
         OutlinedButton(
             title = stringResource(R.string.retry),
             onClick = onClickRetry,

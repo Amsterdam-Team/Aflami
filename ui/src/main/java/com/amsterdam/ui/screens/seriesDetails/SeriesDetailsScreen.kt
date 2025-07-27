@@ -73,6 +73,7 @@ import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.amsterdam.ui.utils.safeNavigate
+import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsInteractionListener
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState
@@ -99,7 +100,14 @@ fun SeriesDetailsScreen(
             effect?.let {
                 when (it) {
                     SeriesDetailsEffect.NavigateBack -> navController.popBackStack()
-                    SeriesDetailsEffect.NavigateToCastScreen -> navController.safeNavigate(Route.Cast(state.tvShowId))
+                    SeriesDetailsEffect.NavigateToCastScreen -> {
+                        navController.safeNavigate(
+                            Route.Cast(
+                                mediaType = MediaType.TV_SHOW.name,
+                                mediaId = state.tvShowId
+                            )
+                        )
+                    }
                     SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(Route.Login)
                 }
             }

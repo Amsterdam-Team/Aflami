@@ -128,7 +128,7 @@ class TvShowRepositoryImpl(
     }
 
     override suspend fun getSimilarTvShows(tvShowId: Long): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getSimilarTvShows(tvShowId).results)
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getSimilarTvShows(tvShowId).results,)
     }
 
     override suspend fun getTvShowGallery(tvShowId: Long): List<String> {

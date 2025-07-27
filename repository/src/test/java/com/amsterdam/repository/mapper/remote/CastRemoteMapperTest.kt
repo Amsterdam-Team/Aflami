@@ -1,8 +1,8 @@
 package com.amsterdam.repository.mapper.remote
 
 import com.amsterdam.entity.Gender
-import com.amsterdam.repository.BuildConfig
 import com.amsterdam.repository.mapper.remote.testFactory.createRemoteCastDto
+import com.amsterdam.repository.utils.ImageBaseUrlsConstant.BASE_IMAGE_URL_W500
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test
 class CastRemoteMapperTest {
 
     private lateinit var mapper: CastRemoteMapper
-    private val baseImageUrl = BuildConfig.BASE_IMAGE_URL
 
     @BeforeEach
     fun setUp() {
@@ -38,7 +37,7 @@ class CastRemoteMapperTest {
         val dto = createRemoteCastDto(profilePath = "/actor.jpg")
         val result = mapper.toEntity(dto)
 
-        assertThat(result.imageUrl).isEqualTo("$baseImageUrl/actor.jpg")
+        assertThat(result.imageUrl).isEqualTo("$BASE_IMAGE_URL_W500/actor.jpg")
     }
 
     @Test
@@ -46,7 +45,7 @@ class CastRemoteMapperTest {
         val dto = createRemoteCastDto(profilePath = "")
         val result = mapper.toEntity(dto)
 
-        assertThat(result.imageUrl).isEqualTo(baseImageUrl)
+        assertThat(result.imageUrl).isEqualTo(BASE_IMAGE_URL_W500)
     }
 
     @Test
@@ -64,7 +63,7 @@ class CastRemoteMapperTest {
         assertThat(result.id).isEqualTo(999)
         assertThat(result.name).isEqualTo("Test Actor")
         assertThat(result.gender).isEqualTo(Gender.Male)
-        assertThat(result.imageUrl).isEqualTo("$baseImageUrl/test.jpg")
+        assertThat(result.imageUrl).isEqualTo("$BASE_IMAGE_URL_W500/test.jpg")
         assertThat(result.popularity).isEqualTo(123.45)
     }
 }
