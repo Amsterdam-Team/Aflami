@@ -181,7 +181,6 @@ private fun HomeScreenContent(
                 MoodPickerSection(
                     state,
                     interactionListener,
-                    modifier = Modifier.padding(bottom = 24.dp)
                 )
             }
 

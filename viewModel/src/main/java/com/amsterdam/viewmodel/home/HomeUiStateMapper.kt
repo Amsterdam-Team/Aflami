@@ -83,7 +83,8 @@ class HomeUiStateMapper {
             name = tvShow.name,
             rating = String.format("%.1f", tvShow.rating),
             posterUrl = tvShow.posterUrl,
-            type = MediaType.TV_SHOW
+            type = MediaType.TV_SHOW,
+            category = tvShow.categories.map { it.name }
         )
     }
 
