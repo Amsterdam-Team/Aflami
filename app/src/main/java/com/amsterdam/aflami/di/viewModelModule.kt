@@ -12,7 +12,7 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiStateMapper
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
 import com.amsterdam.viewmodel.register.RegisterViewModel
 import com.amsterdam.viewmodel.resetPassword.ResetPasswordViewModel
-import com.amsterdam.viewmodel.search.actorSearch.SearchActorViewModel
+import com.amsterdam.viewmodel.search.actorSearch.ActorSearchViewModel
 import com.amsterdam.viewmodel.search.countrySearch.CountrySearchViewModel
 import com.amsterdam.viewmodel.search.keywordSearch.SearchViewModel
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsArgs
@@ -35,11 +35,11 @@ val viewModelModule = module {
     viewModelOf(::RegisterViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::CountrySearchViewModel)
-    viewModelOf(::SearchActorViewModel)
+    viewModelOf(::ActorSearchViewModel)
     viewModelOf(::MovieDetailsViewModel)
     viewModelOf(::CastViewModel)
     viewModelOf(::CountrySearchViewModel)
-    viewModelOf(::SearchActorViewModel)
+    viewModelOf(::ActorSearchViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::SeriesDetailsViewModel)
     viewModelOf(::TopRatedViewModel)
