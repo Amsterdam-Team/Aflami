@@ -21,8 +21,8 @@ import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 @Composable
 fun TopRatedMediaItemsGrid(
-    items: List<MediaItemUiState>,
-    onClickMovie: (Long) -> Unit,
+    topRatedMediaItems: List<MediaItemUiState>,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
 ) {
@@ -35,7 +35,7 @@ fun TopRatedMediaItemsGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items) { item ->
+        items(topRatedMediaItems) { item ->
             val movieType =
                 if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
                 else stringResource(com.amsterdam.ui.R.string.tv)
@@ -47,7 +47,7 @@ fun TopRatedMediaItemsGrid(
                 movieTitle = item.name,
                 movieRating = item.rate
             ) {
-                onClickMovie(item.id)
+                onClickMediaItem(item.id, item.mediaType)
             }
         }
     }
@@ -67,8 +67,8 @@ private fun TopRatedMoviesGridPreview() {
             )
         }
         TopRatedMediaItemsGrid(
-            items = mockMovies,
-            onClickMovie = {}
+            topRatedMediaItems = mockMovies,
+            onClickMediaItem = { _, _ -> }
         )
     }
 }

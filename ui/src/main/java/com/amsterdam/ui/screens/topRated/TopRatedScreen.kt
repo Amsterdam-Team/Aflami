@@ -53,6 +53,10 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = koinViewModel()) {
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
                     }
 
+                    is TopRatedEffect.NavigateToTvShowDetailsEffect -> {
+                        navController.safeNavigate(Route.SeriesDetails(it.tvShowId))
+                    }
+
                     TopRatedEffect.NavigateBack -> {
                         navController.popBackStack()
                     }
@@ -98,15 +102,17 @@ private fun TopRatedContent(
             AnimatedSectionVisibility(
                 visible = state.isLoading
             ) {
-                    LoadingContainer(modifier = Modifier.fillMaxSize().zIndex(10f))
+                LoadingContainer(modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(10f))
             }
 
             AnimatedSectionVisibility(
                 visible = state.error == TopRatedUiState.TopRatedError.NetworkError
             ) {
-                    NoNetworkContainer(
-                        onClickRetry = interactionListener::onClickRetryLoading
-                    )
+                NoNetworkContainer(
+                    onClickRetry = interactionListener::onClickRetryLoading
+                )
             }
 
             AnimatedSectionVisibility(
@@ -114,9 +120,11 @@ private fun TopRatedContent(
             ) {
                 TopRatedMediaItemsGrid(
                     gridState = gridState,
-                    items = state.topRatedMediaItems,
-                    onClickMovie = interactionListener::onClickMovie,
-                    modifier = Modifier.weight(1f).navigationBarsPadding()
+                    topRatedMediaItems = state.topRatedMediaItems,
+                    onClickMediaItem = interactionListener::onClickMediaItem,
+                    modifier = Modifier
+                        .weight(1f)
+                        .navigationBarsPadding()
                 )
             }
         }

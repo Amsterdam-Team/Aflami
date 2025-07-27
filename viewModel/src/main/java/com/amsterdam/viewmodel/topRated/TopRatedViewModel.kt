@@ -4,7 +4,9 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase.TopRatedScreenData
+import com.amsterdam.viewmodel.continueWatching.ContinueWatchingEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 
@@ -50,8 +52,11 @@ class TopRatedViewModel(
         }
     }
 
-    override fun onClickMovie(movieId: Long) {
-        sendNewEffect(TopRatedEffect.NavigateToMovieDetailsScreen(movieId))
+    override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
+        if (mediaType == MediaType.MOVIE)
+            sendNewEffect(TopRatedEffect.NavigateToMovieDetailsScreen(mediaId))
+        else
+            sendNewEffect(TopRatedEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
