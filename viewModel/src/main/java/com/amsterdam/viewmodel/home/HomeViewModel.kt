@@ -4,14 +4,13 @@ import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.models.Mood
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase.HomeScreenData
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.entity.Movie
-import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.home.HomeUiState.HomeError
 import com.amsterdam.viewmodel.search.mapper.selectByMovieGenre
@@ -19,14 +18,15 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import com.amsterdam.viewmodel.utils.getLinearItemsList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 
 class HomeViewModel(
     private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
-    private val getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase,
+    private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val homeUiStateMapper: HomeUiStateMapper,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
     private val dispatcherProvider: DispatcherProvider,
@@ -34,8 +34,7 @@ class HomeViewModel(
     HomeInteractionListener {
 
     init {
-        observeContinueWatchingMovies()
-        observeContinueWatchingTvShows()
+        getContinueWatchingData()
         getHomeScreenData()
     }
 
@@ -50,7 +49,37 @@ class HomeViewModel(
     }
 
     fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
-        updateState { homeUiStateMapper.toUiState(homeScreenData) }
+        updateState {
+            homeUiStateMapper.toUiState(homeScreenData, state.value.continueWatchingItems)
+        }
+    }
+
+    private fun getContinueWatchingData() {
+        updateState { it.copy(isLoading = true) }
+        tryToExecute(
+            action = { getContinueWatchingScreenDataUseCase() },
+            onSuccess = ::onGetContinueWatchingScreenDataSuccess,
+            onError = ::onError,
+            onCompletion = ::onCompletion
+        )
+    }
+
+    fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
+        combine(
+            continueWatchingData.continueWatchingMovies,
+            continueWatchingData.continueWatchingTvShows
+        ) { movies, tvShows ->
+            updateState { currentState ->
+                currentState.copy(
+                    continueWatchingItems = getLinearItemsList(
+                        movies,
+                        tvShows,
+                        homeUiStateMapper::movieToMediaItemUiState,
+                        homeUiStateMapper::tvShowToMediaItemUiState
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     override fun onClickRetryLoading() {
@@ -163,50 +192,6 @@ class HomeViewModel(
 
         updateState { it.copy(upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre)) }
         getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre = genre)
-    }
-
-    private fun observeContinueWatchingMovies() {
-        tryToExecute(
-            action = { getContinueWatchingMoviesUseCase() },
-            onSuccess = ::handleContinueWatchingMoviesFlow,
-            onError = ::onError
-        )
-    }
-
-    private fun handleContinueWatchingMoviesFlow(moviesFlow: Flow<List<Movie>>) {
-        viewModelScope.launch(dispatcherProvider.IO) {
-            moviesFlow.collect { movies ->
-                updateState { currentState ->
-                    currentState.copy(
-                        continueWatchingItems = (currentState.continueWatchingItems + movies.map {
-                            homeUiStateMapper.movieToMediaItemUiState(it)
-                        }).toSet().toList().reversed()
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observeContinueWatchingTvShows() {
-        tryToExecute(
-            action = { getContinueWatchingTvShowsUseCase() },
-            onSuccess = ::handleContinueWatchingTvShowsFlow,
-            onError = ::onError
-        )
-    }
-
-    private fun handleContinueWatchingTvShowsFlow(tvShowsFlow: Flow<List<TvShow>>) {
-        viewModelScope.launch(dispatcherProvider.IO) {
-            tvShowsFlow.collect { tvShows ->
-                updateState { currentState ->
-                    currentState.copy(
-                        continueWatchingItems = (currentState.continueWatchingItems + tvShows.map {
-                            homeUiStateMapper.tvShowToMediaItemUiState(it)
-                        }).toSet().toList().reversed()
-                    )
-                }
-            }
-        }
     }
 
     private fun onError(exception: AflamiException) {

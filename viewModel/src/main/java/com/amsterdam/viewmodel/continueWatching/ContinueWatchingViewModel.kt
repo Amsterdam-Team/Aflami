@@ -1,19 +1,18 @@
 package com.amsterdam.viewmodel.continueWatching
 
+import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
-import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
-import com.amsterdam.viewmodel.home.HomeEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.getLinearItemsList
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 
 class ContinueWatchingViewModel(
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
-    private val getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase,
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
     dispatcherProvider: DispatcherProvider
@@ -39,28 +38,23 @@ class ContinueWatchingViewModel(
     }
 
     fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
-        updateState { continueWatchingUiStateMapper.toUiState(continueWatchingData) }
+        combine(
+            continueWatchingData.continueWatchingMovies,
+            continueWatchingData.continueWatchingTvShows
+        ) { movies, tvShows ->
+            updateState { currentState ->
+                currentState.copy(
+                    continueMediaItemUiStates = getLinearItemsList(
+                        movies,
+                        tvShows,
+                        continueWatchingUiStateMapper::movieToMediaItemUiState,
+                        continueWatchingUiStateMapper::tvShowToMediaItemUiState
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
-   /* private fun getContinueWatchingMovies() {
-        updateState { it.copy(isLoading = true) }
-        tryToExecute(
-            action = ::loadContinueWatchingMovies,
-            onSuccess = ::onGetContinueWatchingMoviesSuccess,
-            onError = ::onError,
-            onCompletion = ::onCompletion
-        )
-    }
-
-    private suspend fun loadContinueWatchingMovies(): List<Movie> {
-        return getContinueWatchingMoviesUseCase()
-            .firstOrNull() ?: emptyList()
-    }
-
-    private fun onGetContinueWatchingMoviesSuccess(continueWatchingMovies: List<Movie>) {
-        updateState { continueWatchingUiStateMapper.toUiState() }
-    }
-*/
     private fun onError(exception: AflamiException) {
         when (exception) {
             is NoInternetException -> updateState {

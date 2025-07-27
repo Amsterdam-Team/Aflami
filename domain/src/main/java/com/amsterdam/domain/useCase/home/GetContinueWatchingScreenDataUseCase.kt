@@ -2,22 +2,22 @@ package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.Flow
 
 class GetContinueWatchingScreenDataUseCase(
     private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
     private val getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase,
 ) {
 
-    suspend operator fun invoke(): ContinueWatchingScreenData {
+    operator fun invoke(): ContinueWatchingScreenData {
         return ContinueWatchingScreenData(
-            continueWatchingMovies = getContinueWatchingMoviesUseCase().firstOrNull() ?: emptyList(),
-            continueWatchingTvShows = getContinueWatchingTvShowsUseCase().firstOrNull() ?: emptyList(),
+            continueWatchingMovies = getContinueWatchingMoviesUseCase(),
+            continueWatchingTvShows = getContinueWatchingTvShowsUseCase()
         )
     }
 
     data class ContinueWatchingScreenData(
-        val continueWatchingMovies: List<Movie>,
-        val continueWatchingTvShows: List<TvShow>
+        val continueWatchingMovies: Flow<List<Movie>>,
+        val continueWatchingTvShows: Flow<List<TvShow>>
     )
 }

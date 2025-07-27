@@ -3,7 +3,6 @@ package com.amsterdam.domain.useCase.home
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.MovieGenre
-import kotlinx.coroutines.flow.firstOrNull
 
 class GetHomeScreenDataUseCase(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
@@ -11,8 +10,6 @@ class GetHomeScreenDataUseCase(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
     private val getPopularTvShowsUseCase: GetPopularTvShowsUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
-    private val getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase
 ) {
 
     suspend operator fun invoke(): HomeScreenData {
@@ -21,11 +18,7 @@ class GetHomeScreenDataUseCase(
             topRatedTvShows = getTopRatedTvShowsUseCase(),
             popularMovies = getPopularMoviesUseCase(),
             popularTvShows = getPopularTvShowsUseCase(),
-            upComingMovies = getUpcomingMoviesUseCase(MovieGenre.ALL),
-            continueWatchingMovies = getContinueWatchingMoviesUseCase().firstOrNull()
-                ?: emptyList(),
-            continueWatchingTvShows = getContinueWatchingTvShowsUseCase().firstOrNull()
-                ?: emptyList()
+            upComingMovies = getUpcomingMoviesUseCase(MovieGenre.ALL)
         )
     }
 
@@ -34,8 +27,6 @@ class GetHomeScreenDataUseCase(
         val topRatedTvShows: List<TvShow>,
         val popularMovies: List<Movie>,
         val popularTvShows: List<TvShow>,
-        val upComingMovies: List<Movie>,
-        val continueWatchingMovies: List<Movie>,
-        val continueWatchingTvShows: List<TvShow>
+        val upComingMovies: List<Movie>
     )
 }

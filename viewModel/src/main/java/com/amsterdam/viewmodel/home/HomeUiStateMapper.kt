@@ -8,12 +8,14 @@ import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
-import com.amsterdam.viewmodel.utils.getLinearItemsList
-import com.amsterdam.viewmodel.utils.getMixedItemsListGuaranteed
+import com.amsterdam.viewmodel.utils.getMixedItemsList
 
 class HomeUiStateMapper {
     @SuppressLint("DefaultLocale")
-    fun toUiState(homeScreenData: GetHomeScreenDataUseCase.HomeScreenData): HomeUiState {
+    fun toUiState(
+        homeScreenData: GetHomeScreenDataUseCase.HomeScreenData,
+        continueWatchingItems: List<MediaItemUiState>
+    ): HomeUiState {
         return HomeUiState(
             popularMediaItems = getPopularMediaItems(
                 homeScreenData.popularMovies,
@@ -24,22 +26,7 @@ class HomeUiStateMapper {
                 homeScreenData.topRatedTvShows
             ),
             upcomingMovies = moviesToMoviesItemsUiState(homeScreenData.upComingMovies),
-            continueWatchingItems = getContinueWatchingMediaItems(
-                homeScreenData.continueWatchingMovies,
-                homeScreenData.continueWatchingTvShows
-            )
-        )
-    }
-
-    private fun getContinueWatchingMediaItems(
-        movies: List<Movie>,
-        tvShows: List<TvShow>
-    ): List<MediaItemUiState> {
-        return getLinearItemsList(
-            movies,
-            tvShows,
-            ::movieToMediaItemUiState,
-            ::tvShowToMediaItemUiState
+            continueWatchingItems = continueWatchingItems
         )
     }
 
@@ -47,7 +34,7 @@ class HomeUiStateMapper {
         popularMovies: List<Movie>,
         popularTvShows: List<TvShow>
     ): List<PopularMediaItemUiState> {
-        return getMixedItemsListGuaranteed(
+        return getMixedItemsList(
             popularMovies,
             popularTvShows,
             ::movieToPopularMediaItemUiState,
@@ -59,7 +46,7 @@ class HomeUiStateMapper {
         topRatedMovies: List<Movie>,
         topRatedTvShows: List<TvShow>
     ): List<MediaItemUiState> {
-        return getMixedItemsListGuaranteed(
+        return getMixedItemsList(
             topRatedMovies,
             topRatedTvShows,
             ::movieToMediaItemUiState,

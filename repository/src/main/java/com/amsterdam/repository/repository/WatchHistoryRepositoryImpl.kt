@@ -1,6 +1,5 @@
 package com.amsterdam.repository.repository
 
-import android.util.Log
 import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.MovieWatchHistory
@@ -48,9 +47,7 @@ class WatchHistoryRepositoryImpl(
 
     override fun getContinueWatchingTvShows(): Flow<List<TvShow>> {
         return watchHistoryLocalDataSource.getTvShowContinueWatching().map {
-            Log.d("nb", "tv: $it")
             tvLocalMapper.toEntityList(it)
         }
     }
-
 }
