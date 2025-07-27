@@ -160,7 +160,7 @@ private fun HomeScreenContent(
                 state = state.popularMediaSectionUiState,
                 pagerState = pagerState,
                 onClickMediaItem = interactionListener::onClickMediaItem,
-                isVisible = state.error == null
+                isVisible = state.error == null && state.popularMediaSectionUiState.mediaItems.isNotEmpty()
             )
 
             continueWatchingSection(

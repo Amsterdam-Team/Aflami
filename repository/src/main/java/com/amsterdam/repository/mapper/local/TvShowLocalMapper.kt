@@ -19,9 +19,7 @@ class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow
             popularity = dto.popularity,
             seasonCount = dto.seasonCount,
             originCountry = dto.originCountry,
-        ).also {
-            Log.d("nb", "mapp tv: $it")
-        }
+        )
     }
 
     override fun toDto(entity: TvShow, args: List<Any>): LocalTvShowDto {
