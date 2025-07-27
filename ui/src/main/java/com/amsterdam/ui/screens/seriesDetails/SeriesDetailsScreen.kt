@@ -391,7 +391,7 @@ private fun LazyListScope.seasonsSection(
         }
         val episodes = if (season.isExpanded) season.episodes else emptyList()
         items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
-            EpisodesMenu(it, state)
+            EpisodesMenu(it)
         }
     }
 }
@@ -442,8 +442,6 @@ private fun SeasonHeader(
 @Composable
 private fun EpisodesMenu(
     episode: EpisodeUiState,
-    state: SeriesDetailsUiState,
-    isExpanded: Boolean = false
 ) {
     EpisodeCard(
         episodeBanner = episode.imageUrl,

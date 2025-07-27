@@ -26,7 +26,7 @@ fun createMovie(
         rating = rating,
         popularity = popularity,
         originCountry = originCountry,
-        runTime = runTime,
+        runTimeInMinutes = runTime,
         hasVideo = hasVideo,
     )
 }

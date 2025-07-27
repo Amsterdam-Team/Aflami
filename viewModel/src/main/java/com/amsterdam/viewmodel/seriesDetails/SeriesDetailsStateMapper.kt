@@ -99,7 +99,7 @@ class SeriesDetailsStateMapper(
                 imageUrl = episode.episodeImageUrl,
                 imageNumber = episode.episodeNumber,
                 description = episode.description,
-                duration = formatDuration(episode.runtime),
+                duration = formatDuration(episode.runTimeInMinutes),
                 airDate = movieDetailsStateMapper.dateToString(episode.airDate)
             )
         }
@@ -110,10 +110,11 @@ class SeriesDetailsStateMapper(
     private fun formatDuration(duration: Int): String {
         val hours = duration / 60
         val minutes = duration % 60
-        return if (hours > 0) {
-            "${hours}h ${minutes}m"
-        } else {
-            "${minutes}m"
+
+        return when {
+            hours > 0 && minutes > 0 -> "${hours}h ${minutes}m"
+            hours > 0 -> "${hours}h"
+            else -> "${minutes}m"
         }
     }
 }

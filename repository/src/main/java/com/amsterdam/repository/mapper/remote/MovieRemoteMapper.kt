@@ -20,7 +20,7 @@ class MovieRemoteMapper() : EntityMapper<RemoteMovieItemDto, Movie> {
             rating = dto.voteAverage.toFloat(),
             popularity = dto.popularity,
             originCountry = dto.originCountry.firstOrNull() ?: "",
-            runTime = dto.runtime,
+            runTimeInMinutes = dto.runtime,
             hasVideo = dto.video
         )
     }

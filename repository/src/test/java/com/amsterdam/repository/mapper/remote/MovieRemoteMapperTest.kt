@@ -138,14 +138,14 @@ class MovieRemoteMapperTest {
     }
 
     @Test
-    fun `toEntity should map runtime correctly`() {
+    fun `toEntity should map runTimeInMinutes correctly`() {
         val dto = createRemoteMovieItemDto(
             genreIds = listOf(28, 12),
             genres = emptyList()
         )
         val result = mapper.toEntity(dto)
 
-        assertThat(result.runTime).isEqualTo(dto.runtime)
+        assertThat(result.runTimeInMinutes).isEqualTo(dto.runTimeInMinutes)
     }
 
     @Test

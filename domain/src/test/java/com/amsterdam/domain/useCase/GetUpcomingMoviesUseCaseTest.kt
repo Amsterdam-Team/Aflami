@@ -112,7 +112,7 @@ class GetUpcomingMoviesUseCaseTest {
             rating = 7.5f,
             popularity = 100.0,
             originCountry = "US",
-            runTime = 120,
+            runTimeInMinutes = 120,
             hasVideo = true
         )
 
@@ -152,7 +152,7 @@ class GetUpcomingMoviesUseCaseTest {
             rating = 8.5f,
             popularity = 150.0,
             originCountry = "US",
-            runTime = 120,
+            runTimeInMinutes = 120,
             hasVideo = true
         )
 
@@ -166,7 +166,7 @@ class GetUpcomingMoviesUseCaseTest {
             rating = 7.0f,
             popularity = 150.0,
             originCountry = "US",
-            runTime = 110,
+            runTimeInMinutes = 110,
             hasVideo = false
         )
 
@@ -180,7 +180,7 @@ class GetUpcomingMoviesUseCaseTest {
             rating = 9.0f,
             popularity = 100.0,
             originCountry = "UK",
-            runTime = 105,
+            runTimeInMinutes = 105,
             hasVideo = false
         )
     }

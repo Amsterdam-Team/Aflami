@@ -41,7 +41,7 @@ fun createMovie(
     productionYear: UInt = 2014u,
     rating: Float = 9.0f,
     popularity: Double = 95.2,
-    runTime: Int = 169,
+    runTimeInMinutes: Int = 169,
     originCountry: String = "USA",
     hasVideo: Boolean = false,
     categories: List<MovieGenre> = emptyList()
@@ -54,7 +54,7 @@ fun createMovie(
         productionYear = productionYear,
         rating = rating,
         popularity = popularity,
-        runTime = runTime,
+        runTimeInMinutes = runTimeInMinutes,
         originCountry = originCountry,
         hasVideo = hasVideo,
         categories = categories

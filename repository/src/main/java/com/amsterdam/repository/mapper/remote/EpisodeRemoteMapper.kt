@@ -16,7 +16,7 @@ class EpisodeRemoteMapper : EntityMapper<EpisodeDto, Episode> {
             rating = dto.voteAverage.toFloat(),
             airDate = dto.airDate?.toSafeLocalDate(),
             seasonNumber = dto.seasonNumber,
-            runtime = dto.runtime?.toInt() ?: 0,
+            runTimeInMinutes = dto.runtime?.toInt() ?: 0,
         )
     }
 }

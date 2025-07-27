@@ -193,7 +193,7 @@ class HomeViewModelTest {
                 categories = listOf(MovieGenre.SCIENCE_FICTION),
                 popularity = 98.6,
                 originCountry = "US",
-                runTime = 145,
+                runTimeInMinutes = 145,
                 hasVideo = true
             ),
             Movie(
@@ -206,7 +206,7 @@ class HomeViewModelTest {
                 categories = listOf(MovieGenre.COMEDY),
                 popularity = 87.3,
                 originCountry = "UK",
-                runTime = 100,
+                runTimeInMinutes = 100,
                 hasVideo = false
             )
         )
@@ -248,7 +248,7 @@ class HomeViewModelTest {
                 categories = listOf(MovieGenre.COMEDY),
                 popularity = 87.3,
                 originCountry = "UK",
-                runTime = 100,
+                runTimeInMinutes = 100,
                 hasVideo = false
             )
         )

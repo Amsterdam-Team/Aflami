@@ -208,7 +208,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 rating = 7.0f,
                 popularity = 10.0,
                 originCountry = "",
-                runTime = 1,
+                runTimeInMinutes = 1,
                 hasVideo = true
             )
             val movie2 = Movie(
@@ -221,7 +221,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 rating = 8.0f,
                 popularity = 12.0,
                 originCountry = "",
-                runTime = 1,
+                runTimeInMinutes = 1,
                 hasVideo = true
             )
             val movie3 = Movie(
@@ -234,7 +234,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 rating = 7.5f,
                 popularity = 9.0,
                 originCountry = "",
-                runTime = 1,
+                runTimeInMinutes = 1,
                 hasVideo = true
             )
 
@@ -275,7 +275,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 rating = 6.0f,
                 popularity = 5.0,
                 originCountry = "",
-                runTime = 1,
+                runTimeInMinutes = 1,
                 hasVideo = true
             )
             val movieWithCategories = Movie(
@@ -288,7 +288,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 rating = 7.0f,
                 popularity = 8.0,
                 originCountry = "",
-                runTime = 1,
+                runTimeInMinutes = 1,
                 hasVideo = true
             )
 

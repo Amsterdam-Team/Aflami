@@ -67,7 +67,7 @@ class MovieWithCategoriesLocalMapperTest {
             rating = 8.7f,
             popularity = 80.0,
             originCountry = "USA",
-            runTime = 136,
+            runTimeInMinutes = 136,
             hasVideo = true,
             categories = expectedGenres
         )

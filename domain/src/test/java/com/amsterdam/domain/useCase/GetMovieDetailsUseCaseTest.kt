@@ -29,7 +29,7 @@ class GetMovieDetailsUseCaseTest {
     private val fakeMovie = Movie(
         id = 1L, name = "Test Movie", description = "Desc", posterUrl = "poster.jpg",
         productionYear = (2020).toUInt(), categories = listOf(MovieGenre.ACTION, MovieGenre.DRAMA),
-        rating = 8.0f, popularity = 100.0, originCountry = "USA", runTime = 120, hasVideo = true
+        rating = 8.0f, popularity = 100.0, originCountry = "USA", runTimeInMinutes = 120, hasVideo = true
     )
     private val fakeReviews = listOf(
         Review(1, "Reviewer1", "user1", 4.5f, "Great", LocalDate(2023, 1, 1), "url1"),

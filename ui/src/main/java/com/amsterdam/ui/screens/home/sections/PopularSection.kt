@@ -31,6 +31,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.screens.home.component.PopularMediaItemCard
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.any
@@ -40,7 +41,8 @@ import kotlin.math.absoluteValue
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
 fun LazyListScope.popularSection(
     popularMediaItems: List<PopularMediaItemUiState>,
-    pagerState: PagerState
+    pagerState: PagerState,
+    onMediaItemClicked: (Long, MediaType) -> Unit
 ) {
     item {
         SectionTitle(
@@ -87,10 +89,11 @@ fun LazyListScope.popularSection(
                     label = "height"
                 )
                 PopularMediaItemCard(
-                    popularMediaItems = popularMediaItems[page % popularMediaItems.size],
+                    popularMediaItem = popularMediaItems[page % popularMediaItems.size],
                     ratingAlpha = rateAlpha,
                     imageWidth = width,
                     imageHeight = height,
+                    onMediaItemClicked = onMediaItemClicked
                 )
             }
         }
@@ -148,7 +151,8 @@ private fun PopularSectionPreview() {
         LazyColumn {
             popularSection(
                 popularMediaItems = dummyMovies,
-                pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
+                pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE },
+                onMediaItemClicked = {_, _ ->}
             )
         }
     }

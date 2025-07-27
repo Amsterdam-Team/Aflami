@@ -1,6 +1,8 @@
 package com.amsterdam.ui.screens.home.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -29,25 +32,33 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 @Composable
 fun PopularMediaItemCard(
-    popularMediaItems: PopularMediaItemUiState,
+    popularMediaItem: PopularMediaItemUiState,
     ratingAlpha: Float,
     imageWidth: Dp,
     imageHeight: Dp,
+    onMediaItemClicked: (Long, MediaType) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = modifier,horizontalAlignment = Alignment.CenterHorizontally) {
         Box {
-            Box(
-                Modifier.height(300.dp),
+            Box (
+                Modifier
+                    .height(300.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { onMediaItemClicked(popularMediaItem.id, popularMediaItem.type) },
+                    ),
                 contentAlignment = Alignment
                     .BottomCenter
             ) {
                 SafeImageView(
-                    model = popularMediaItems.posterUrl,
+                    model = popularMediaItem.posterUrl,
                     contentDescription = "",
                     modifier =
                         Modifier
@@ -58,7 +69,7 @@ fun PopularMediaItemCard(
                 )
             }
             RatingChip(
-                popularMediaItems.rating,
+                popularMediaItem.rating,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
@@ -75,7 +86,7 @@ fun PopularMediaItemCard(
             }
         }
         Text(
-            text = popularMediaItems.name,
+            text = popularMediaItem.name,
             style = AppTheme.textStyle.title.small,
             color = AppTheme.color.title, modifier = Modifier.padding(top = 8.dp),
             maxLines = 1,
@@ -97,13 +108,14 @@ private fun PopularMovieCardPreview() {
 
     AflamiTheme {
         PopularMediaItemCard(
-            popularMediaItems = dummyMovie,
+            popularMediaItem = dummyMovie,
             modifier = Modifier
                 .width(244.dp)
                 .height(300.dp),
             ratingAlpha = 1f,
             imageWidth = 244.dp,
-            imageHeight = 300.dp
+            imageHeight = 300.dp,
+            onMediaItemClicked = {_, _ ->}
         )
     }
 }

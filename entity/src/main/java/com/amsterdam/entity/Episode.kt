@@ -11,5 +11,5 @@ data class Episode(
     val rating: Float,
     val airDate: LocalDate?,
     val seasonNumber: Int,
-    val runtime: Int,
+    val runTimeInMinutes: Int,
 )

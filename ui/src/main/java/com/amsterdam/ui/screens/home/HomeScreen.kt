@@ -172,12 +172,13 @@ private fun HomeScreenContent(
                             onClickMediaItem = interactionListener::onClickMediaItem,
                             onClickShowAll = interactionListener::onClickShowAllToRatedMovies
                         )
-                        if (state.continueWatchingItems.isNotEmpty())
+                        if (state.continueWatchingItems.isNotEmpty()) {
                             continueWatchingSection(
                                 continueWatchingMediaItems = state.continueWatchingItems,
                                 onClickMediaItem = interactionListener::onClickMediaItem,
                                 onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
                             )
+                        }
 
                         item { MoodPickerSection(state, interactionListener) }
 

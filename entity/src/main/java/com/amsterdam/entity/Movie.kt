@@ -13,6 +13,6 @@ data class Movie(
     val rating: Float,
     val popularity: Double,
     val originCountry: String,
-    val runTime: Int,
+    val runTimeInMinutes: Int,
     val hasVideo : Boolean,
 )

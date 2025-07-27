@@ -17,7 +17,7 @@ class MovieLocalMapper : EntityMapper<LocalMovieDto, Movie>,
             rating = dto.rating,
             categories = emptyList(),
             popularity = dto.popularity,
-            runTime = dto.movieLength,
+            runTimeInMinutes = dto.movieLength,
             originCountry = dto.originCountry,
             hasVideo = dto.hasVideo
         )
@@ -33,7 +33,7 @@ class MovieLocalMapper : EntityMapper<LocalMovieDto, Movie>,
             releaseDate = entity.releaseDate,
             rating = entity.rating,
             popularity = entity.popularity,
-            movieLength = entity.runTime,
+            movieLength = entity.runTimeInMinutes,
             originCountry = entity.originCountry,
             hasVideo = entity.hasVideo
         )

@@ -30,7 +30,7 @@ class MovieLocalMapperTest {
             productionYear = 2010u,
             rating = 8.8f,
             popularity = 99.5,
-            runTime = 148,
+            runTimeInMinutes = 148,
             originCountry = "USA",
             hasVideo = true,
             categories = emptyList()

@@ -30,7 +30,10 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-
+            manifestPlaceholders["crashlyticsCollectionEnabled"] = true
+        }
+        debug {
+            manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
     }
     compileOptions {

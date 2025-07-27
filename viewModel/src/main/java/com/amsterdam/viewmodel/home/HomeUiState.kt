@@ -20,6 +20,7 @@ data class HomeUiState(
     val error: HomeError? = null
 ) {
     data class PopularMediaItemUiState(
+        val id: Long = 0L,
         val name: String = "",
         val rating: String = "",
         val posterUrl: String = "",
