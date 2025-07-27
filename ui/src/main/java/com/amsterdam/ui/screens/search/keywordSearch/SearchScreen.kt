@@ -75,7 +75,16 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
     val movieFlow = state.movies.collectAsLazyPagingItems()
     val tvShowFlow = state.tvShows.collectAsLazyPagingItems()
     val navController = LocalNavController.current
-
+    LaunchedEffect(movieFlow.loadState) {
+        if (state.selectedTabOption == TabOption.MOVIES) {
+            viewModel.onPagingLoadStateChanged(movieFlow.loadState)
+        }
+    }
+    LaunchedEffect(tvShowFlow.loadState) {
+        if (state.selectedTabOption == TabOption.TV_SHOWS) {
+            viewModel.onPagingLoadStateChanged(tvShowFlow.loadState)
+        }
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             effect?.let {
