@@ -9,7 +9,7 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.getLinearItemsList
-import com.amsterdam.viewmodel.utils.getMixedItemsList
+import com.amsterdam.viewmodel.utils.getMixedItemsListGuaranteed
 
 class HomeUiStateMapper {
     @SuppressLint("DefaultLocale")
@@ -47,7 +47,7 @@ class HomeUiStateMapper {
         popularMovies: List<Movie>,
         popularTvShows: List<TvShow>
     ): List<PopularMediaItemUiState> {
-        return getMixedItemsList(
+        return getMixedItemsListGuaranteed(
             popularMovies,
             popularTvShows,
             ::movieToPopularMediaItemUiState,
@@ -59,7 +59,7 @@ class HomeUiStateMapper {
         topRatedMovies: List<Movie>,
         topRatedTvShows: List<TvShow>
     ): List<MediaItemUiState> {
-        return getMixedItemsList(
+        return getMixedItemsListGuaranteed(
             topRatedMovies,
             topRatedTvShows,
             ::movieToMediaItemUiState,

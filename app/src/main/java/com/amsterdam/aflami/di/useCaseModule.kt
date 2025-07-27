@@ -10,6 +10,7 @@ import com.amsterdam.domain.useCase.details.GetMovieCastUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
@@ -54,4 +55,5 @@ val useCaseModule = module {
     singleOf(::AddTvShowWatchHistoryUseCase)
     singleOf(::GetMoviesByMoodUseCase)
     singleOf(::GetTopRatedScreenDataUseCase)
+    singleOf(::GetContinueWatchingScreenDataUseCase)
 }
