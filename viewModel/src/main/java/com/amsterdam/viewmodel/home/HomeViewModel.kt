@@ -38,7 +38,13 @@ class HomeViewModel(
     }
 
     private fun getHomeScreenData() {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(
+            isLoading = true,
+            popularMediaSectionUiState = state.value.popularMediaSectionUiState.copy(isLoading = true),
+            topRatedMediaSectionUiState = state.value.topRatedMediaSectionUiState.copy(isLoading = true),
+            upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(isLoading = true),
+            continueWatchingMediaSectionUiState = state.value.continueWatchingMediaSectionUiState.copy(isLoading = true),
+        ) }
         tryToExecute(
             action = { getHomeScreenDataUseCase() },
             onSuccess = ::onGetHomeScreenDataSuccess,

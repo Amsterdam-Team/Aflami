@@ -1,7 +1,6 @@
 package com.amsterdam.ui.screens.home.sections
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.DragInteraction
@@ -111,8 +110,6 @@ fun LazyListScope.popularSection(
                             label = "height"
                         )
 
-                        Log.e("nb", "index ${page % state.mediaItems.size}")
-                        Log.e("nb", "items ${state.mediaItems}")
                         PopularMediaItemCard(
                             popularMediaItem = state.mediaItems[page % state.mediaItems.size],
                             ratingAlpha = rateAlpha,
@@ -125,7 +122,7 @@ fun LazyListScope.popularSection(
 
                 }
             }
-            Log.e("nb", "category index ${pagerState.currentPage % state.mediaItems.size}")
+
             item {
                 DisplayGenresForMovie(
                     modifier = Modifier
