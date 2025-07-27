@@ -40,7 +40,7 @@ fun PopularMediaItemCard(
     ratingAlpha: Float,
     imageWidth: Dp,
     imageHeight: Dp,
-    onMediaItemClicked: (Long, MediaType) -> Unit,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -52,7 +52,7 @@ fun PopularMediaItemCard(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = { onMediaItemClicked(popularMediaItem.id, popularMediaItem.type) },
+                        onClick = { onClickMediaItem(popularMediaItem.id, popularMediaItem.type) },
                     ),
                 contentAlignment = Alignment
                     .BottomCenter
@@ -115,7 +115,7 @@ private fun PopularMovieCardPreview() {
             ratingAlpha = 1f,
             imageWidth = 244.dp,
             imageHeight = 300.dp,
-            onMediaItemClicked = {_, _ ->}
+            onClickMediaItem = { _, _ ->}
         )
     }
 }

@@ -165,7 +165,8 @@ private fun HomeScreenContent(
 
                         popularSection(
                             popularMediaItems = state.popularMediaItems,
-                            pagerState = pagerState
+                            pagerState = pagerState,
+                            onClickMediaItem = interactionListener::onClickMediaItem
                         )
                         topRatingSection(
                             topRatedMediaItems = state.topRatedMediaItems,

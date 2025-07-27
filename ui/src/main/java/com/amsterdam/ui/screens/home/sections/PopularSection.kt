@@ -42,7 +42,7 @@ import kotlin.math.absoluteValue
 fun LazyListScope.popularSection(
     popularMediaItems: List<PopularMediaItemUiState>,
     pagerState: PagerState,
-    onMediaItemClicked: (Long, MediaType) -> Unit
+    onClickMediaItem: (Long, MediaType) -> Unit
 ) {
     item {
         SectionTitle(
@@ -93,7 +93,7 @@ fun LazyListScope.popularSection(
                     ratingAlpha = rateAlpha,
                     imageWidth = width,
                     imageHeight = height,
-                    onMediaItemClicked = onMediaItemClicked
+                    onClickMediaItem = onClickMediaItem
                 )
             }
         }
@@ -152,7 +152,7 @@ private fun PopularSectionPreview() {
             popularSection(
                 popularMediaItems = dummyMovies,
                 pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE },
-                onMediaItemClicked = {_, _ ->}
+                onClickMediaItem = { _, _ ->}
             )
         }
     }
