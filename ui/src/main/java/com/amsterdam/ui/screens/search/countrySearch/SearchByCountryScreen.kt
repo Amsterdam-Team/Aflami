@@ -1,15 +1,11 @@
 package com.amsterdam.ui.screens.search.countrySearch
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,14 +15,20 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.R
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
@@ -58,7 +60,9 @@ internal fun SearchByCountryScreen(
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = state.movies.collectAsLazyPagingItems()
-
+    LaunchedEffect(movies.loadState) {
+        viewModel.onPagingLoadStateChanged(movies.loadState)
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             effect?.let {
@@ -95,55 +99,59 @@ private fun SearchByCountryContent(
             .navigationBarsPadding()
             .padding(horizontal = 16.dp)
     ) {
-        DefaultAppBar(
-            title = stringResource(R.string.world_tour_title),
-            showNavigateBackButton = true,
-            onNavigateBackClicked = { interactionListener.onClickNavigateBack() },
-        )
+        var headerHeight by remember { mutableStateOf(0.dp) }
+        Column(Modifier.onSizeChanged { headerHeight = it.height.dp }) {
+            DefaultAppBar(
+                title = stringResource(R.string.world_tour_title),
+                showNavigateBackButton = true,
+                onNavigateBackClicked = { interactionListener.onClickNavigateBack() },
+            )
+            CountrySearchField(
+                keyword = state.keyword,
+                onKeywordValueChanged = interactionListener::onChangeSearchKeyword,
+            )
+        }
 
-        CountrySearchField(
-            keyword = state.keyword,
-            onKeywordValueChanged = interactionListener::onChangeSearchKeyword,
-        )
+        Box {
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = state,
+                transitionSpec = { fadeIn() togetherWith fadeOut() }) { uiState ->
+                CenterOfScreenContainer(headerHeight) {
+                    when {
+                        uiState.isLoading -> LoadingContainer()
+                        uiState.errorUiState is CountrySearchErrorState.NoNetworkConnection -> {
+                            NoNetworkContainer(
+                                onClickRetry = interactionListener::onClickRetry,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
 
-        AnimatedVisibility(
-            visible = state.suggestedCountries.isNotEmpty(),
-            enter = slideInVertically() + expandIn(),
-            exit = slideOutVertically() + shrinkOut()
-        ) {
+                        movies.itemCount == 0 &&
+                                !uiState.showSuggestedCountries &&
+                                !uiState.isLoading &&
+                                uiState.selectedCountryIsoCode.isNotBlank() -> NoMoviesFound()
+
+                        movies.itemCount == 0 -> ExploreCountries()
+
+                        else ->
+                            MoviesVerticalGrid(
+                                movies = movies,
+                                isVisible = true,
+                                onMovieClicked = interactionListener::onClickMovieCard,
+                            )
+
+                    }
+                }
+            }
             CountriesDropdownMenu(
                 items = state.suggestedCountries.take(4),
-                isVisible =  state.suggestedCountries.isNotEmpty(),
+                isVisible = state.showSuggestedCountries,
                 onItemClicked = interactionListener::onSelectCountry,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(AppTheme.color.profileOverlay)
             )
-        }
-
-        AnimatedContent(
-            modifier = Modifier.fillMaxSize().weight(1f),
-            targetState = state,
-            transitionSpec = { fadeIn() togetherWith fadeOut() }) { uiState ->
-            when {
-                uiState.isLoading -> LoadingContainer()
-                uiState.keyword.isEmpty() -> ExploreCountries()
-                movies.itemCount == 0 && uiState.suggestedCountries.isEmpty() -> NoMoviesFound()
-                uiState.errorUiState is CountrySearchErrorState.NoNetworkConnection -> {
-                    NoNetworkContainer(
-                        onClickRetry = interactionListener::onClickRetry,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-
-                else ->
-                    MoviesVerticalGrid(
-                        movies = movies,
-                        isVisible = true,
-                        onMovieClicked = interactionListener::onClickMovieCard,
-                )
-
-            }
         }
     }
 }
@@ -160,9 +168,8 @@ private fun SearchByCriteriaPreview() {
                 override fun onSelectCountry(country: CountryItemUiState) {}
                 override fun onClickNavigateBack() {}
                 override fun onClickRetry() {}
-                override fun onClickMovieCard(movieId: Long) {
-                    TODO("Not yet implemented")
-                }
+                override fun onClickMovieCard(movieId: Long) {}
+                override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {}
             },
         )
     }

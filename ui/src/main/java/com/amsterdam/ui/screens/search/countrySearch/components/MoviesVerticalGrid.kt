@@ -33,7 +33,7 @@ internal fun MoviesVerticalGrid(
 ) {
     AnimatedVisibility(isVisible) {
         LazyVerticalGrid(
-            modifier = modifier,
+            modifier = modifier.fillMaxSize(),
             columns = GridCells.Adaptive(160.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
