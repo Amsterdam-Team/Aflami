@@ -1,22 +1,12 @@
 package com.amsterdam.viewmodel.home
 
 import android.annotation.SuppressLint
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import kotlin.collections.map
 
 class HomeUiStateMapper {
-
-    @SuppressLint("DefaultLocale")
-    fun toUiState(homeScreenData: GetHomeScreenDataUseCase.HomeScreenData): HomeUiState {
-        return HomeUiState(
-            popularMovies = moviesToPopularMoviesUiState(homeScreenData.popularMovies),
-            topRatedMovies = moviesToMoviesItemsUiState(homeScreenData.topRatedMovies),
-            upcomingMovies = moviesToMoviesItemsUiState(homeScreenData.upComingMovies),
-            continueWatchingMovies = moviesToMoviesItemsUiState(homeScreenData.continueWatchingMovies)
-        )
-    }
 
     fun moviesToPopularMoviesUiState(movies: List<Movie>) = movies.map(::movieToPopularMovieUiState)
     fun moviesToMoviesItemsUiState(movies: List<Movie>) = movies.map(::movieToMovieItemUiState)

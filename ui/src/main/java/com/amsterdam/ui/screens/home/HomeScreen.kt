@@ -1,10 +1,11 @@
 package com.amsterdam.ui.screens.home
 
+import com.amsterdam.ui.screens.home.sections.continueWatchingSection
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -43,9 +43,7 @@ import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialogDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.home.sections.BlurredMoviePoster
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
-import com.amsterdam.ui.screens.home.sections.continueWatchingSection
 import com.amsterdam.ui.screens.home.sections.popularSection
-import com.amsterdam.ui.screens.home.sections.topRatingSection
 import com.amsterdam.ui.screens.home.sections.upcomingMoviesSection
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.home.HomeEffect
@@ -54,6 +52,7 @@ import com.amsterdam.viewmodel.home.HomeEffect.NavigateToSearchScreenEffect
 import com.amsterdam.viewmodel.home.HomeInteractionListener
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeViewModel
+import com.example.ui.screens.home.sections.topRatingSection
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
@@ -102,9 +101,7 @@ private fun HomeScreenContent(
     val scrollOffset = remember {
         derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
     }
-    val isSectionsVisible by remember(state.isLoading, state.error) {
-        derivedStateOf { !state.isLoading && state.error == null }
-    }
+
     val appBarColor by animateColorAsState(
         targetValue = if (scrollOffset.value > 10) AppTheme.color.surface else Color.Transparent,
         animationSpec = tween(800),
@@ -127,22 +124,19 @@ private fun HomeScreenContent(
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
     ) {
-        AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
+        AnimatedSectionVisibility(visible = state.popularMoviesSectionUiState.movies.isNotEmpty()) {
             BlurredMoviePoster(
-                posterUrl = state.popularMovies[pagerState.currentPage % state.popularMovies.size].posterUrl,
+                posterUrl = state.popularMoviesSectionUiState.movies[pagerState.currentPage % state.popularMoviesSectionUiState.movies.size].posterUrl,
                 modifier = Modifier.offset { IntOffset(x = 0, y = blurOffsetY.roundToInt()) }
             )
         }
-        AnimatedSectionVisibility(state.isLoading) {
-            LoadingContainer(modifier = modifier.fillMaxSize())
-        }
-        AnimatedSectionVisibility(visible = state.error != null) {
-            NoNetworkContainer(
-                onClickRetry = interactionListener::onClickRetryLoading
-            )
-        }
-        Box {
-            Column(modifier = Modifier.padding(bottom = 100.dp)) {
+
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 100.dp),
+            state = lazyListState,
+        ) {
+            item {
                 HomeAppBar(
                     modifier = Modifier
                         .background(appBarColor)
@@ -150,53 +144,56 @@ private fun HomeScreenContent(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     onSearchClicked = interactionListener::onClickSearch,
                 )
-                AnimatedSectionVisibility(visible = state.popularMovies.isNotEmpty()) {
-                    LazyColumn(
-                        modifier = modifier
-                            .fillMaxSize(),
-                        state = lazyListState,
-                    ) {
+            }
 
-                        popularSection(
-                            popularMovies = state.popularMovies,
-                            pagerState = pagerState,
-                            onMovieClicked = interactionListener::onClickMovie
-                        )
-                        topRatingSection(
-                            topRatedMovies = state.topRatedMovies,
-                            onClickMovie = interactionListener::onClickMovie,
-                            onClickShowAll = interactionListener::onClickShowAllToRatedMovies
-                        )
-                        if (state.continueWatchingMovies.isNotEmpty()) {
-                            continueWatchingSection(
-                                continueWatchingMovies = state.continueWatchingMovies,
-                                onClickMovie = interactionListener::onClickMovie,
-                                onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies
-                            )
-                        }
+            popularSection(
+                state = state.popularMoviesSectionUiState,
+                pagerState = pagerState,
+                isVisible = state.error == null,
+                onClickMovie = interactionListener::onClickMovie
+            )
 
-                        item { MoodPickerSection(state, interactionListener) }
+            continueWatchingSection(
+                state = state.continueWatchingMoviesSectionUiState,
+                onClickMovie = interactionListener::onClickMovie,
+                onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies,
+                isVisible = state.continueWatchingMoviesSectionUiState.movies.isNotEmpty(),
+            )
 
-                        upcomingMoviesSection(
-                            moviesGenres = state.upcomingMovieGenres,
-                            onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
-                            movies = state.upcomingMovies,
-                            onMovieClicked = interactionListener::onClickUpcomingMovieCard,
-                            isVisible = isSectionsVisible
-                        )
-                    }
+            topRatingSection(
+                state = state.topRatedMoviesSectionUiState,
+                onClickMovie = interactionListener::onClickMovie,
+                onClickShowAll = interactionListener::onClickShowAllToRatedMovies,
+                isVisible = state.error == null
+            )
+
+            item { MoodPickerSection(state, interactionListener) }
+
+            upcomingMoviesSection(
+                state = state.upcomingMoviesSectionUiState,
+                onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
+                onMovieClicked = interactionListener::onClickUpcomingMovieCard,
+                isVisible = state.error == null
+            )
+
+            item {
+                AnimatedSectionVisibility(
+                    visible = state.error != null,
+                    modifier = Modifier.fillParentMaxWidth().padding(top = 16.dp)
+                ) {
+                    NoNetworkContainer(onClickRetry = interactionListener::onClickRetryLoading, description = "")
                 }
             }
+        }
 
-            AnimatedSectionVisibility (visible = state.moodPickerUiState.openMovieDialog) {
-                MovieMoodPickerDialogDialog(
-                    movie = state.moodPickerUiState.selectedMovie,
-                    onClickViewDetails = interactionListener::onClickViewDetails,
-                    onClickGetAnotherMovie = interactionListener::onClickGetAnotherMovie,
-                    onDismiss = interactionListener::onDismissMoodPickerDialog,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+        AnimatedSectionVisibility(visible = state.moodPickerUiState.openMovieDialog) {
+            MovieMoodPickerDialogDialog(
+                movie = state.moodPickerUiState.selectedMovie,
+                onClickViewDetails = interactionListener::onClickViewDetails,
+                onClickGetAnotherMovie = interactionListener::onClickGetAnotherMovie,
+                onDismiss = interactionListener::onDismissMoodPickerDialog,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

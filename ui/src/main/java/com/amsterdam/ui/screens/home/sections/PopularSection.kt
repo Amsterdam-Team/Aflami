@@ -24,12 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.zIndex
-import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.ui.R
 import com.amsterdam.ui.screens.home.component.PopularMovieCard
+import com.amsterdam.ui.screens.home.sections.placeholder.popularSectionPlaceholder
+import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMovieItemUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -39,61 +41,82 @@ import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
 fun LazyListScope.popularSection(
-    popularMovies: List<PopularMovieItemUiState>,
+    state: HomeUiState.PopularMoviesSectionUiState,
     pagerState: PagerState,
-    onMovieClicked: (Long) -> Unit
+    onClickMovie: (Long) -> Unit,
+    isVisible: Boolean
 ) {
-    item {
-            SectionTitle(
-                title = stringResource(R.string.popular),
-                icon = painterResource(R.drawable.ic_fire),
-                tintColor = AppTheme.color.secondary,
-                modifier = Modifier
-                    .zIndex(1f)
-                    .padding(bottom = 12.dp)
-            )
-    }
+    if (isVisible) {
+        if (state.isLoading) {
+            popularSectionPlaceholder()
+        } else {
+            item {
+                SectionTitle(
+                    title = stringResource(R.string.popular),
+                    icon = painterResource(com.amsterdam.designsystem.R.drawable.ic_fire),
+                    tintColor = AppTheme.color.secondary,
+                    modifier = Modifier
+                        .zIndex(1f)
+                        .padding(bottom = 12.dp)
+                )
+            }
 
-    item {
-        AutoScrollingPager(pagerState)
-        BoxWithConstraints {
-                val screenWidth = maxWidth
-                val itemWidth = 207.dp
-                val horizontalPadding = (screenWidth - itemWidth) / 2
-                HorizontalPager(
-                    state = pagerState,
-                    pageSpacing = 16.dp,
-                    contentPadding = PaddingValues(horizontal = horizontalPadding),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                ) { page ->
-                    val currentPageOffset = (
-                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                            ).absoluteValue
+            item {
+                AutoScrollingPager(pagerState)
+                BoxWithConstraints {
+                    val screenWidth = maxWidth
+                    val itemWidth = 207.dp
+                    val horizontalPadding = (screenWidth - itemWidth) / 2
+                    HorizontalPager(
+                        state = pagerState,
+                        pageSpacing = 16.dp,
+                        contentPadding = PaddingValues(horizontal = horizontalPadding),
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    ) { page ->
+                        val currentPageOffset = (
+                                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                                ).absoluteValue
 
-                    val width by animateDpAsState(
-                        targetValue = lerp(207.dp, 244.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
-                        label = "width"
-                    )
+                        val width by animateDpAsState(
+                            targetValue = lerp(
+                                207.dp,
+                                244.dp,
+                                1f - currentPageOffset.coerceIn(0f, 1f)
+                            ),
+                            label = "width"
+                        )
 
-                    val height by animateDpAsState(
-                        targetValue = lerp(276.dp, 300.dp, 1f - currentPageOffset.coerceIn(0f, 1f)),
-                        label = "height"
-                    )
-                    val rateAlpha by animateFloatAsState(
-                        targetValue = androidx.compose.ui.util.lerp(0f, 1f, 1f - currentPageOffset.coerceIn(0f, 1f)),
-                        label = "height"
-                    )
-                    PopularMovieCard(
-                        popularMovie = popularMovies[page % popularMovies.size],
-                        ratingAlpha = rateAlpha,
-                        imageWidth = width,
-                        imageHeight = height,
-                        onMovieClicked = onMovieClicked
-                    )
+                        val height by animateDpAsState(
+                            targetValue = lerp(
+                                276.dp,
+                                300.dp,
+                                1f - currentPageOffset.coerceIn(0f, 1f)
+                            ),
+                            label = "height"
+                        )
+                        val rateAlpha by animateFloatAsState(
+                            targetValue = androidx.compose.ui.util.lerp(
+                                0f,
+                                1f,
+                                1f - currentPageOffset.coerceIn(0f, 1f)
+                            ),
+                            label = "height"
+                        )
+                        PopularMovieCard(
+                            popularMovie = state.movies[page % state.movies.size],
+                            ratingAlpha = rateAlpha,
+                            imageWidth = width,
+                            imageHeight = height,
+                            onMovieClicked = { onClickMovie(it) },
+                        )
+                    }
                 }
             }
+        }
     }
+
 }
+
 @Composable
 private fun AutoScrollingPager(
     pagerState: PagerState,
@@ -141,12 +164,15 @@ private fun PopularSectionPreview() {
         )
     }
 
+
+
     AflamiTheme {
         LazyColumn {
             popularSection(
-                popularMovies = dummyMovies,
+                state = HomeUiState.PopularMoviesSectionUiState(movies = dummyMovies, false),
                 pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE },
-                onMovieClicked = {}
+                isVisible = true,
+                onClickMovie = {}
             )
         }
     }

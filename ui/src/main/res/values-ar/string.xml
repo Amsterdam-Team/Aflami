@@ -213,5 +213,6 @@
 
     <!-- - Home  -->
     <string name="upcoming">القادمة</string>
+    <string name="no_upcoming_movies_found_for_your_selection">لم يتم العثور على أفلام قادمة لاختيارك.</string>
 
 </resources>

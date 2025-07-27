@@ -213,5 +213,7 @@
 
     <!-- - Home  -->
     <string name="upcoming">Upcoming</string>
+    <string name="no_upcoming_movies_found_for_your_selection">No upcoming movies found for your selection.</string>
+    <string name="test">فسف</string>
 
 </resources>

@@ -7,15 +7,40 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieGenreItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 
 data class HomeUiState(
-    val popularMovies : List<PopularMovieItemUiState> = emptyList(),
-    val upcomingMovies : List<MovieItemUiState> = emptyList(),
-    val upcomingMovieGenres: List<MovieGenreItemUiState> = defaultMovieGenres,
-    val topRatedMovies : List<MovieItemUiState> = emptyList(),
-    val continueWatchingMovies : List<MovieItemUiState> = emptyList(),
+    val popularMoviesSectionUiState: PopularMoviesSectionUiState = PopularMoviesSectionUiState(),
+    val upcomingMoviesSectionUiState: UpcomingMoviesSectionUiState = UpcomingMoviesSectionUiState(),
+    val topRatedMoviesSectionUiState : TopRatedMoviesSectionUiState = TopRatedMoviesSectionUiState(),
+    val continueWatchingMoviesSectionUiState : ContinueWatchingMoviesSectionUiState = ContinueWatchingMoviesSectionUiState(),
     val moodPickerUiState: MoodPickerUiState = MoodPickerUiState(),
-    val isLoading : Boolean = false,
     val error : HomeError? = null
 ){
+    data class PopularMoviesSectionUiState(
+        val movies : List<PopularMovieItemUiState> = emptyList(),
+        val isLoading : Boolean = false,
+    )
+
+    data class TopRatedMoviesSectionUiState(
+        val movies : List<MovieItemUiState> = emptyList(),
+        val isLoading : Boolean = false,
+    )
+
+    data class ContinueWatchingMoviesSectionUiState(
+        val movies : List<MovieItemUiState> = emptyList(),
+        val isLoading : Boolean = false,
+    )
+
+    data class UpcomingMoviesSectionUiState(
+        val movies : List<MovieItemUiState> = emptyList(),
+        val movieGenres: List<MovieGenreItemUiState> = defaultMovieGenres,
+        val isLoading : Boolean = false,
+    ){
+        fun getSelectedUpcomingMovieGenre(): MovieGenre {
+            return movieGenres
+                .firstOrNull { it.selectableMovieGenre.isSelected }
+                ?.selectableMovieGenre?.item ?: MovieGenre.ALL
+        }
+    }
+
     data class PopularMovieItemUiState(
         val id: Long = 0L,
         val name : String = "",
@@ -41,11 +66,5 @@ data class HomeUiState(
 
     sealed class HomeError{
         data object NetworkError : HomeError()
-    }
-
-    fun getSelectedUpcomingMovieGenre(): MovieGenre {
-        return upcomingMovieGenres
-            .firstOrNull { it.selectableMovieGenre.isSelected }
-            ?.selectableMovieGenre?.item ?: MovieGenre.ALL
     }
 }
