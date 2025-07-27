@@ -124,7 +124,9 @@ private fun HomeScreenContent(
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
     ) {
-        AnimatedSectionVisibility(visible = state.popularMoviesSectionUiState.movies.isNotEmpty()) {
+        AnimatedSectionVisibility(
+            visible = state.popularMoviesSectionUiState.movies.isNotEmpty() && remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }.value == 0
+        ) {
             BlurredMoviePoster(
                 posterUrl = state.popularMoviesSectionUiState.movies[pagerState.currentPage % state.popularMoviesSectionUiState.movies.size].posterUrl,
                 modifier = Modifier.offset { IntOffset(x = 0, y = blurOffsetY.roundToInt()) }
@@ -136,7 +138,7 @@ private fun HomeScreenContent(
             contentPadding = PaddingValues(bottom = 100.dp),
             state = lazyListState,
         ) {
-            item {
+            stickyHeader {
                 HomeAppBar(
                     modifier = Modifier
                         .background(appBarColor)
