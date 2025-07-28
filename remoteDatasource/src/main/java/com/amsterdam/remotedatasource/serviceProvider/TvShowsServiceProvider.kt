@@ -9,6 +9,8 @@ import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 
 interface TvShowsServiceProvider {
+    suspend fun getPopularTvShows(): RemoteTvShowResponse
+    suspend fun getTopRatedTvShows(): RemoteTvShowResponse
     suspend fun getTvShowsByKeyword(keyword: String, page: Int): RemoteTvShowResponse
     suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse
     suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse

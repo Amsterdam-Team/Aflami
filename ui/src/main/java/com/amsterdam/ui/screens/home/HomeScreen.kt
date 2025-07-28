@@ -1,6 +1,5 @@
 package com.amsterdam.ui.screens.home
 
-import com.amsterdam.ui.screens.home.sections.continueWatchingSection
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -18,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -44,7 +43,9 @@ import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialogDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.home.sections.BlurredMoviePoster
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
+import com.amsterdam.ui.screens.home.sections.continueWatchingSection
 import com.amsterdam.ui.screens.home.sections.popularSection
+import com.amsterdam.ui.screens.home.sections.topRatingSection
 import com.amsterdam.ui.screens.home.sections.upcomingMoviesSection
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.home.HomeEffect
@@ -53,7 +54,7 @@ import com.amsterdam.viewmodel.home.HomeEffect.NavigateToSearchScreenEffect
 import com.amsterdam.viewmodel.home.HomeInteractionListener
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeViewModel
-import com.example.ui.screens.home.sections.topRatingSection
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
@@ -67,8 +68,13 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koi
             effect?.let {
                 when (effect) {
                     is NavigateToSearchScreenEffect -> navController.safeNavigate(Route.Search)
+
                     is NavigateToMovieDetailsEffect -> {
                         navController.safeNavigate(MovieDetails(movieId = effect.movieId))
+                    }
+
+                    is HomeEffect.NavigateToTvShowDetailsEffect -> {
+                        navController.safeNavigate(Route.SeriesDetails(tvShowId = effect.tvShowId))
                     }
 
                     is HomeEffect.NavigateToTopRatedMoviesEffect -> {
@@ -108,7 +114,7 @@ private fun HomeScreenContent(
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
-    var blurOffsetY by remember { mutableStateOf(-12f) }
+    var blurOffsetY by remember { mutableFloatStateOf(-12f) }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -127,10 +133,10 @@ private fun HomeScreenContent(
             .navigationBarsPadding()
     ) {
         AnimatedSectionVisibility(
-            visible = state.popularMoviesSectionUiState.movies.isNotEmpty() && remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }.value == 0
+            visible = state.popularMediaSectionUiState.mediaItems.isNotEmpty() && remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }.value == 0
         ) {
             BlurredMoviePoster(
-                posterUrl = state.popularMoviesSectionUiState.movies[pagerState.currentPage % state.popularMoviesSectionUiState.movies.size].posterUrl,
+                posterUrl = state.popularMediaSectionUiState.mediaItems[pagerState.currentPage % state.popularMediaSectionUiState.mediaItems.size].posterUrl,
                 modifier = Modifier.offset { IntOffset(x = 0, y = blurOffsetY.roundToInt()) }
             )
         }
@@ -151,28 +157,32 @@ private fun HomeScreenContent(
             }
 
             popularSection(
-                state = state.popularMoviesSectionUiState,
+                state = state.popularMediaSectionUiState,
                 pagerState = pagerState,
-                isVisible = state.error == null,
-                onClickMovie = interactionListener::onClickMovie
+                onClickMediaItem = interactionListener::onClickMediaItem,
+                isVisible = state.error == null && state.popularMediaSectionUiState.mediaItems.isNotEmpty()
             )
 
             continueWatchingSection(
-                state = state.continueWatchingMoviesSectionUiState,
-                onClickMovie = interactionListener::onClickMovie,
+                state = state.continueWatchingMediaSectionUiState,
+                isVisible = state.continueWatchingMediaSectionUiState.mediaItems.isNotEmpty(),
+                onClickMediaItem = interactionListener::onClickMediaItem,
                 onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies,
-                isVisible = state.continueWatchingMoviesSectionUiState.movies.isNotEmpty(),
             )
 
             topRatingSection(
-                state = state.topRatedMoviesSectionUiState,
-                onClickMovie = interactionListener::onClickMovie,
+                state = state.topRatedMediaSectionUiState,
+                onClickMediaItem = interactionListener::onClickMediaItem,
                 onClickShowAll = interactionListener::onClickShowAllToRatedMovies,
-                isVisible = state.error == null
+                isVisible = state.error == null,
             )
 
-            item { MoodPickerSection(state, interactionListener,modifier=Modifier.padding(bottom=24.dp)) }
-
+            item {
+                MoodPickerSection(
+                    state,
+                    interactionListener,
+                )
+            }
 
             upcomingMoviesSection(
                 state = state.upcomingMoviesSectionUiState,
@@ -184,9 +194,14 @@ private fun HomeScreenContent(
             item {
                 AnimatedSectionVisibility(
                     visible = state.error != null,
-                    modifier = Modifier.fillParentMaxWidth().padding(top = 16.dp)
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .padding(top = 16.dp)
                 ) {
-                    NoNetworkContainer(onClickRetry = interactionListener::onClickRetryLoading, description = "")
+                    NoNetworkContainer(
+                        onClickRetry = interactionListener::onClickRetryLoading,
+                        description = ""
+                    )
                 }
             }
         }
@@ -215,7 +230,7 @@ private fun HomeScreenPreview() {
 
                 override fun onClickUpcomingMovieCard(id: Long) {}
                 override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {}
-                override fun onClickMovie(movieId: Long) {}
+                override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {}
                 override fun onClickShowAllToRatedMovies() {}
                 override fun onClickShowAllContinueWatchingMovies() {}
 

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class GetContinueWatchingMoviesUseCase(private val watchHistoryRepository: WatchHistoryRepository) {
 
-    suspend operator fun invoke(): Flow<List<Movie>> {
+    operator fun invoke(): Flow<List<Movie>> {
         return watchHistoryRepository.getContinueWatchingMovies()
     }
 

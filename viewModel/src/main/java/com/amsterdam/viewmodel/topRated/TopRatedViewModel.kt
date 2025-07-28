@@ -2,34 +2,35 @@ package com.amsterdam.viewmodel.topRated
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
-import com.amsterdam.entity.Movie
+import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase.TopRatedScreenData
 import com.amsterdam.viewmodel.shared.BaseViewModel
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 
 class TopRatedViewModel(
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val getTopRatedScreenDataUseCase: GetTopRatedScreenDataUseCase,
     private val topRatedUiStateMapper: TopRatedUiStateMapper,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<TopRatedUiState, TopRatedEffect>(TopRatedUiState(), dispatcherProvider),
     TopRatedInteractionListener {
 
     init {
-        getTopRatedMovies()
+        getTopRatedScreenData()
     }
 
-    private fun getTopRatedMovies() {
+    private fun getTopRatedScreenData() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getTopRatedMoviesUseCase() },
+            action = { getTopRatedScreenDataUseCase() },
             onSuccess = ::onGetTopRatedMoviesSuccess,
             onError = ::onError
         )
     }
 
-    private fun onGetTopRatedMoviesSuccess(topRatedMovies: List<Movie>) {
-        updateState { topRatedUiStateMapper.toUiState(topRatedMovies) }
+    private fun onGetTopRatedMoviesSuccess(topRatedScreenData: TopRatedScreenData) {
+        updateState { topRatedUiStateMapper.toUiState(topRatedScreenData) }
     }
 
     private fun onError(exception: AflamiException) {
@@ -40,6 +41,7 @@ class TopRatedViewModel(
                     error = TopRatedError.NetworkError
                 )
             }
+
             else ->
                 updateState {
                     it.copy(
@@ -49,12 +51,15 @@ class TopRatedViewModel(
         }
     }
 
-    override fun onClickMovie(movieId: Long) {
-        sendNewEffect(TopRatedEffect.NavigateToMovieDetailsScreen(movieId))
+    override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
+        if (mediaType == MediaType.MOVIE)
+            sendNewEffect(TopRatedEffect.NavigateToMovieDetailsScreen(mediaId))
+        else
+            sendNewEffect(TopRatedEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
-        getTopRatedMovies()
+        getTopRatedScreenData()
     }
 
     override fun onClickBack() {

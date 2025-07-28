@@ -13,5 +13,6 @@ object DatabaseConstants {
     const val TV_SHOW_CATEGORY_CROSS_REF_TABLE = "tv_show_category_cross_ref"
     const val MOVIE_CATEGORY_INTEREST_TABLE = "movie_category_interest"
     const val TV_SHOW_CATEGORY_INTEREST_TABLE = "tv_show_category_interest"
-    const val WATCH_HISTORY_TABLE = "watch_history"
+    const val MOVIE_WATCH_HISTORY_TABLE = "movie_watch_history"
+    const val TV_WATCH_HISTORY_TABLE = "tv_watch_history"
 }

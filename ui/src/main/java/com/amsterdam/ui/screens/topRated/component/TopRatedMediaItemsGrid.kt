@@ -1,4 +1,4 @@
-package com.amsterdam.ui.screens.continueWatching.component
+package com.amsterdam.ui.screens.topRated.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,13 +16,13 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 @Composable
-fun ContinueWatchingMoviesGrid(
-    continueWatchingMovies: List<MovieItemUiState>,
-    onClickMovie: (Long) -> Unit,
+fun TopRatedMediaItemsGrid(
+    topRatedMediaItems: List<MediaItemUiState>,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
 ) {
@@ -35,15 +35,19 @@ fun ContinueWatchingMoviesGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(continueWatchingMovies) { movie ->
+        items(topRatedMediaItems) { item ->
+            val movieType =
+                if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
+                else stringResource(com.amsterdam.ui.R.string.tv)
+
             MovieCard(
-                movieImage = { MovieImage(movie.posterImageUrl) },
-                movieType = stringResource(com.amsterdam.ui.R.string.movie),
-                movieYear = movie.yearOfRelease,
-                movieTitle = movie.name,
-                movieRating = movie.rate
+                movieImage = { MovieImage(item.posterImageUrl) },
+                movieType = movieType,
+                movieYear = item.yearOfRelease,
+                movieTitle = item.name,
+                movieRating = item.rate
             ) {
-                onClickMovie(movie.id)
+                onClickMediaItem(item.id, item.mediaType)
             }
         }
     }
@@ -51,10 +55,10 @@ fun ContinueWatchingMoviesGrid(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun ContinueWatchingMoviesGridPreview() {
+private fun TopRatedMoviesGridPreview() {
     AflamiTheme {
         val mockMovies = List(4) { index ->
-            MovieItemUiState(
+            MediaItemUiState(
                 id = index.toLong(),
                 name = "Movie $index",
                 posterImageUrl = "",
@@ -62,9 +66,9 @@ private fun ContinueWatchingMoviesGridPreview() {
                 rate = (7 + index * 0.5).toString()
             )
         }
-        ContinueWatchingMoviesGrid(
-            continueWatchingMovies = mockMovies,
-            onClickMovie = {}
+        TopRatedMediaItemsGrid(
+            topRatedMediaItems = mockMovies,
+            onClickMediaItem = { _, _ -> }
         )
     }
 }

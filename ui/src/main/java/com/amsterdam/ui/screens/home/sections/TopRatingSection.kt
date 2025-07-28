@@ -1,4 +1,4 @@
-package com.example.ui.screens.home.sections
+package com.amsterdam.ui.screens.home.sections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,10 +18,11 @@ import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.home.sections.placeholder.movieSectionPlaceholder
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.home.HomeUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 fun LazyListScope.topRatingSection(
-    state: HomeUiState.TopRatedMoviesSectionUiState,
-    onClickMovie: (Long) -> Unit,
+    state: HomeUiState.TopRatedMediaSectionUiState,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     onClickShowAll: () -> Unit,
     isVisible: Boolean
 ) {
@@ -46,15 +47,20 @@ fun LazyListScope.topRatingSection(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) {
-                    items(state.movies) { movie ->
+                    items(state.mediaItems) { item ->
+                        val movieType = if (item.mediaType == MediaType.MOVIE)
+                            stringResource(R.string.movie)
+                        else
+                            stringResource(R.string.tv)
+
                         MovieCard(
-                            movieImage = { MovieImage(movie.posterImageUrl) },
-                            movieType = stringResource(R.string.movie),
-                            movieYear = movie.yearOfRelease,
-                            movieTitle = movie.name,
-                            movieRating = movie.rate
+                            movieImage = { MovieImage(item.posterImageUrl) },
+                            movieType = movieType,
+                            movieYear = item.yearOfRelease,
+                            movieTitle = item.name,
+                            movieRating = item.rate
                         ) {
-                            onClickMovie(movie.id)
+                            onClickMediaItem(item.id, item.mediaType)
                         }
                     }
                 }

@@ -4,10 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.models.Mood
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
+import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase.HomeScreenData
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
-import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
@@ -15,17 +16,16 @@ import com.amsterdam.viewmodel.home.HomeUiState.HomeError
 import com.amsterdam.viewmodel.search.mapper.selectByMovieGenre
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
-import kotlin.collections.get
-import kotlin.text.get
+import com.amsterdam.viewmodel.utils.getLinearItemsList
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 
 class HomeViewModel(
-    private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
+    private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val homeUiStateMapper: HomeUiStateMapper,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
     private val dispatcherProvider: DispatcherProvider,
@@ -33,85 +33,69 @@ class HomeViewModel(
     HomeInteractionListener {
 
     init {
-        getPopularMovies()
-        getTopRatedMovies()
-        getContinueWatchingMovies()
-        getUpcomingMoviesBySelectedGenre()
+        getContinueWatchingData()
+        getHomeScreenData()
     }
 
-    private fun getPopularMovies() {
-        updateState {
-            it.copy(popularMoviesSectionUiState = it.popularMoviesSectionUiState.copy(isLoading = true))
-        }
+    private fun getHomeScreenData() {
+        updateState { it.copy(
+            isLoading = true,
+            popularMediaSectionUiState = state.value.popularMediaSectionUiState.copy(isLoading = true),
+            topRatedMediaSectionUiState = state.value.topRatedMediaSectionUiState.copy(isLoading = true),
+            upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(isLoading = true),
+            continueWatchingMediaSectionUiState = state.value.continueWatchingMediaSectionUiState.copy(isLoading = true),
+        ) }
         tryToExecute(
-            action = { getPopularMoviesUseCase() },
-            onSuccess = ::onGetPopularMoviesSuccess,
+            action = { getHomeScreenDataUseCase() },
+            onSuccess = ::onGetHomeScreenDataSuccess,
             onError = ::onError,
         )
     }
 
-    private fun onGetPopularMoviesSuccess(movies: List<Movie>) {
+    fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
         updateState {
-            it.copy(
-                popularMoviesSectionUiState = it.popularMoviesSectionUiState.copy(
-                    movies = homeUiStateMapper.moviesToPopularMoviesUiState(movies),
-                    isLoading = false
-                )
+            homeUiStateMapper.toUiState(
+                homeScreenData,
+                state.value.continueWatchingMediaSectionUiState.mediaItems
             )
         }
     }
 
-    private fun getTopRatedMovies() {
-        updateState {
-            it.copy(
-                topRatedMoviesSectionUiState = it.topRatedMoviesSectionUiState.copy(
-                    isLoading = true
-                )
-            )
-        }
+    private fun getContinueWatchingData() {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getTopRatedMoviesUseCase() },
-            onSuccess = ::onGetTopRatedMoviesSuccess,
-            onError = ::onError
+            action = { getContinueWatchingScreenDataUseCase() },
+            onSuccess = ::onGetContinueWatchingScreenDataSuccess,
+            onError = ::onError,
+            onCompletion = ::onCompletion
         )
     }
 
-    private fun onGetTopRatedMoviesSuccess(movies: List<Movie>) {
-        updateState {
-            it.copy(
-                topRatedMoviesSectionUiState = it.topRatedMoviesSectionUiState.copy(
-                    movies = homeUiStateMapper.moviesToMoviesItemsUiState(movies),
-                    isLoading = false
-                )
-            )
-        }
-    }
-
-    private fun getContinueWatchingMovies() {
-        tryToExecute(
-            action = { getContinueWatchingMoviesUseCase() },
-            onSuccess = ::handleContinueWatchingMoviesFlow,
-            onError = ::onError
-        )
-    }
-
-    private fun handleContinueWatchingMoviesFlow(moviesFlow: Flow<List<Movie>>) {
-        viewModelScope.launch(dispatcherProvider.IO) {
-            moviesFlow.collect { movies ->
-                updateState { currentState ->
-                    currentState.copy(
-                        continueWatchingMoviesSectionUiState = currentState.continueWatchingMoviesSectionUiState.copy(
-                            movies = homeUiStateMapper.moviesToMoviesItemsUiState(
-                                movies
-                            )
-                        ),
+    fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
+        combine(
+            continueWatchingData.continueWatchingMovies,
+            continueWatchingData.continueWatchingTvShows
+        ) { movies, tvShows ->
+            updateState { currentState ->
+                currentState.copy(
+                    continueWatchingMediaSectionUiState = currentState.continueWatchingMediaSectionUiState.copy(
+                        mediaItems = getLinearItemsList(
+                            movies,
+                            tvShows,
+                            homeUiStateMapper::movieToMediaItemUiState,
+                            homeUiStateMapper::tvShowToMediaItemUiState
+                        )
                     )
-                }
+                )
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
-    private fun getUpcomingMoviesBySelectedGenre(selectedUpcomingGenre: MovieGenre = MovieGenre.ALL, isLoading: Boolean = true) {
+
+    private fun getUpcomingMoviesBySelectedGenre(
+        selectedUpcomingGenre: MovieGenre = MovieGenre.ALL,
+        isLoading: Boolean = true
+    ) {
         updateState {
             it.copy(
                 upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
@@ -137,10 +121,6 @@ class HomeViewModel(
         }
     }
 
-    override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = id))
-    }
-
     override fun onChangeUpcomingMovieGenre(genre: MovieGenre) {
         if (genre == state.value.upcomingMoviesSectionUiState.getSelectedUpcomingMovieGenre()) return
 
@@ -159,8 +139,8 @@ class HomeViewModel(
     override fun onClickRetryLoading() {
         updateState { it.copy(error = null) }
         with(state.value) {
-            if (popularMoviesSectionUiState.movies.isEmpty()) getPopularMovies()
-            if (topRatedMoviesSectionUiState.movies.isEmpty()) getTopRatedMovies()
+            if (popularMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
+            if (topRatedMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
             if (upcomingMoviesSectionUiState.movies.isEmpty()) getUpcomingMoviesBySelectedGenre()
         }
     }
@@ -169,8 +149,12 @@ class HomeViewModel(
         sendNewEffect(HomeEffect.NavigateToSearchScreenEffect)
     }
 
-    override fun onClickMovie(movieId: Long) {
-        sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId))
+    override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
+        if (mediaType == MediaType.MOVIE)
+            sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(mediaId))
+        else
+            sendNewEffect(HomeEffect.NavigateToTvShowDetailsEffect(mediaId))
+
     }
 
     override fun onClickShowAllContinueWatchingMovies() {
@@ -243,10 +227,16 @@ class HomeViewModel(
         }
     }
 
+    override fun onClickUpcomingMovieCard(id: Long) {
+        sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = id))
+    }
+
     private fun onError(exception: AflamiException) {
         when (exception) {
             is NetworkException -> updateState { it.copy(error = HomeError.NetworkError) }
             else -> {}
         }
     }
+
+    private fun onCompletion() = updateState { it.copy() }
 }

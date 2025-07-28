@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.theme.AppTheme
-import com.example.designsystem.components.RoundedShimmerPlaceholder
+import com.amsterdam.designsystem.components.RoundedShimmerPlaceholder
 
 fun LazyListScope.upcomingMoviesSectionPlaceholder() {
     stickyHeader {

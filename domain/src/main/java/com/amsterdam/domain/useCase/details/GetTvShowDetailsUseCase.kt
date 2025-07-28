@@ -1,6 +1,7 @@
 package com.amsterdam.domain.useCase.details
 
 import com.amsterdam.domain.repository.TvShowRepository
+import com.amsterdam.domain.useCase.common.AddTvShowWatchHistoryUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.ProductionCompany
 import com.amsterdam.entity.Review
@@ -10,6 +11,7 @@ import com.amsterdam.entity.category.TvShowGenre
 
 class GetTvShowDetailsUseCase(
     private val tvShowRepository: TvShowRepository,
+    private val addTvShowWatchHistoryUseCase: AddTvShowWatchHistoryUseCase
 ) {
 
     suspend operator fun invoke(tvShowId: Long): TvShowDetails {
@@ -30,7 +32,9 @@ class GetTvShowDetailsUseCase(
             similarTvShows = similarTvShows,
             gallery = gallery,
             productionsCompanies = productionsCompanies
-        )
+        ).also {
+            addTvShowWatchHistoryUseCase(tvShowId)
+        }
     }
 
     data class TvShowDetails(

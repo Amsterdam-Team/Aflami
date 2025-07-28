@@ -1,5 +1,6 @@
 package com.amsterdam.repository.mapper.local
 
+import android.util.Log
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.mapper.shared.DtoMapper

@@ -14,6 +14,13 @@ import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 class TvShowsServiceProviderImpl(
     private val tvShowsApiService: TvShowsApiService
 ) : TvShowsServiceProvider {
+    override suspend fun getPopularTvShows(): RemoteTvShowResponse {
+        return responseCall { tvShowsApiService.getPopularTvShows() }
+    }
+
+    override suspend fun getTopRatedTvShows(): RemoteTvShowResponse {
+        return responseCall { tvShowsApiService.getTopRatedTvShows() }
+    }
 
     override suspend fun getTvShowsByKeyword(keyword: String, page: Int): RemoteTvShowResponse {
         return responseCall {

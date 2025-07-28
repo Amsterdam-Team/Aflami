@@ -24,7 +24,7 @@ import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.continueWatching.component.ContinueWatchingMoviesGrid
+import com.amsterdam.ui.screens.continueWatching.component.ContinueWatchingMediaItemsGrid
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingEffect
@@ -45,6 +45,10 @@ fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = koinViewModel(
                 when (it) {
                     is ContinueWatchingEffect.NavigateToMovieDetailsScreen -> {
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
+                    }
+
+                    is ContinueWatchingEffect.NavigateToTvShowDetailsEffect -> {
+                        navController.safeNavigate(Route.SeriesDetails(it.tvShowId))
                     }
 
                     ContinueWatchingEffect.NavigateBack -> {
@@ -105,13 +109,13 @@ fun ContinueWatchingContent(
         }
 
         AnimatedSectionVisibility(
-            visible = state.continueWatchingMovies.isNotEmpty()
+            visible = state.continueMediaItemUiStates.isNotEmpty()
         ) {
-            ContinueWatchingMoviesGrid(
-                gridState = gridState,
-                continueWatchingMovies = state.continueWatchingMovies,
-                onClickMovie = interactionListener::onClickMovie,
-                modifier = Modifier.weight(1f)
+            ContinueWatchingMediaItemsGrid(
+                continueWatchingMediaItems = state.continueMediaItemUiStates,
+                onClickMediaItem = interactionListener::onClickMediaItem,
+                modifier = Modifier.weight(1f),
+                gridState = gridState
             )
         }
     }

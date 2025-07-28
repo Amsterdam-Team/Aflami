@@ -1,4 +1,4 @@
-package com.example.designsystem.components
+package com.amsterdam.designsystem.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -10,7 +10,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.example.designsystem.utils.modifierExtensions.shimmerEffect
+import com.amsterdam.designsystem.utils.modifierExtensions.shimmerEffect
 
 @Composable
 fun RoundedShimmerPlaceholder(
