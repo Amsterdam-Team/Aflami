@@ -97,6 +97,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
                         viewModel.onSaveSearchHistory()
                         navController.safeNavigate(MovieDetails(effect.movieId))
                     }
+
                     is SearchUiEffect.NavigateToTvShowDetails -> {
                         viewModel.onSaveSearchHistory()
                         navController.navigate(SeriesDetails(effect.tvShowId))
@@ -162,8 +163,15 @@ private fun SearchContent(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             visible = state.isDialogVisible,
         ) {
+            val currentFilterState =
+                if (state.selectedTabOption == TabOption.MOVIES) {
+                    state.movieFilterItemUiState
+                } else {
+                    state.tvShowFilterItemUiState
+                }
+
             FilterDialog(
-                filterState = state.filterItemUiState,
+                filterState = currentFilterState,
                 selectedTabOption = state.selectedTabOption,
                 interaction = filterInteraction
             )
@@ -301,7 +309,7 @@ private fun SuccessMediaItems(
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
                         movieRating = mediaItem.rate,
-                        onClick = {onTvShowClicked(mediaItem.id)}
+                        onClick = { onTvShowClicked(mediaItem.id) }
                     )
                 }
             }
@@ -330,7 +338,7 @@ private fun getItemKey(
 ): String {
     val item = selectedItems[index]
     val id = if (selectedTabOption == TabOption.MOVIES) (item as MovieItemUiState).id
-             else (item as TvShowItemUiState).id
+    else (item as TvShowItemUiState).id
     return "${id}-${index}"
 }
 
