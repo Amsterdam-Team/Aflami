@@ -8,8 +8,9 @@ import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
+import javax.inject.Inject
 
-class TvShowLocalDataSourceImpl(
+class TvShowLocalDataSourceImpl @Inject constructor(
     private val tvShowDao: TvShowDao,
     private val tvShowCategoryInterestDao: TvShowCategoryInterestDao
 ) : TvShowLocalSource {
@@ -62,5 +63,9 @@ class TvShowLocalDataSourceImpl(
 
     override suspend fun incrementGenreInterest(categoryId: Long) {
         tvShowCategoryInterestDao.incrementInterest(categoryId)
+    }
+
+    override suspend fun insertTvShow(tvShow: LocalTvShowDto) {
+        tvShowDao.insertTvShow(tvShow)
     }
 }

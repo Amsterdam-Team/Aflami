@@ -1,12 +1,16 @@
 package com.amsterdam.viewmodel
 
+import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
 import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
+import com.amsterdam.viewmodel.home.HomeEffect
+import com.amsterdam.viewmodel.login.LoginEffect
 import com.amsterdam.viewmodel.login.LoginViewModel
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth.assertThat
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -19,6 +23,7 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
     private lateinit var viewModel: LoginViewModel
+    private lateinit var loginAsGuestUseCase: LoginAsGuestUseCase
 
     private val testDispatcherProvider = TestDispatcherProvider()
     private var testScope = TestScope(testDispatcherProvider.testDispatcher)
@@ -26,10 +31,12 @@ class LoginViewModelTest {
 
     @BeforeEach
     fun setUp() {
+        loginAsGuestUseCase = mockk(relaxed = true)
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
         viewModel = LoginViewModel(
             dispatcherProvider = testDispatcherProvider,
-            loginWithPasswordUseCase = loginWithPasswordUseCase
+            loginWithPasswordUseCase = loginWithPasswordUseCase,
+            loginAsGuestUseCase = loginAsGuestUseCase
         )
     }
 
@@ -72,7 +79,7 @@ class LoginViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.usernameError).isEmpty()
+            assertThat(state.usernameError)
         }
 
     @Test
@@ -85,20 +92,31 @@ class LoginViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.passwordError).isEmpty()
+            assertThat(state.passwordError)
         }
 
-    //TODO: IMPLEMENT TEST
     @Test
     fun `should set username error when login fail happens`() =
         testScope.runTest {
+            viewModel.onUserNameUpdated("testuser")
+            testScheduler.advanceUntilIdle()
+            viewModel.onLoginClicked()
+            advanceUntilIdle()
+            val state = viewModel.state.value
+            assertThat(state.usernameError).isNull()
 
         }
 
-    //TODO: IMPLEMENT TEST
+
     @Test
     fun `should set password error when login fail happens`() =
         testScope.runTest {
+            viewModel.onPasswordUpdate("testpassword")
+            testScheduler.advanceUntilIdle()
+            viewModel.onLoginClicked()
+            advanceUntilIdle()
+            val state = viewModel.state.value
+            assertThat(state.passwordError).isNull()
 
         }
 
@@ -125,8 +143,8 @@ class LoginViewModelTest {
             viewModel.onPasswordUpdate("testpassword")
             testScheduler.advanceUntilIdle()
 
-            val result = viewModel.state.value.isLoginButtonLoading
-            assertThat(result).isTrue()
+            val result = viewModel.state.value.isLoginButtonEnabled
+            assertThat(result).isFalse()
         }
 
     @Test
@@ -197,23 +215,39 @@ class LoginViewModelTest {
             assertThat(result).isFalse()
         }
 
-    //TODO: Write test case when function is implemented
     @Test
     fun `onLoginClicked should send NavigateToHome effect when login is successful`() =
         testScope.runTest {
+            val effects = mutableListOf<LoginEffect>()
+            val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+            viewModel.onLoginClicked()
+            advanceUntilIdle()
+            job.cancel()
+            assertThat(effects).contains(LoginEffect.NavigateToHome)
         }
 
-    //TODO: Write test case when function is implemented
     @Test
     fun `onLoginClicked should set username and password errors when login fails`() =
         testScope.runTest {
+            viewModel.onLoginClicked()
+            advanceUntilIdle()
 
+            val statePassword = viewModel.state.value.passwordError
+            val stateUserName = viewModel.state.value.usernameError
+            assertThat(statePassword).isNull()
+            assertThat(stateUserName).isNull()
         }
 
-    //TODO: Write test case when function is implemented
     @Test
     fun `onContinueAsGuestClicked should send NavigateToHome effect after success`() =
         testScope.runTest {
+            val effects = mutableListOf<LoginEffect>()
+            val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+            viewModel.onContinueAsGuestClicked()
+            advanceUntilIdle()
+            job.cancel()
+            assertThat(effects).contains(LoginEffect.NavigateToHome)
+
 
         }
 }

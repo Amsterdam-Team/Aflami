@@ -1,11 +1,13 @@
 package com.amsterdam.repository.mapper.local
 
+import android.util.Log
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.mapper.shared.DtoMapper
 import com.amsterdam.repository.mapper.shared.EntityMapper
+import javax.inject.Inject
 
-class TvShowLocalMapper : EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow, LocalTvShowDto> {
+class TvShowLocalMapper @Inject constructor(): EntityMapper<LocalTvShowDto, TvShow>, DtoMapper<TvShow, LocalTvShowDto> {
     override fun toEntity(dto: LocalTvShowDto): TvShow {
         return TvShow(
             id = dto.tvShowId,

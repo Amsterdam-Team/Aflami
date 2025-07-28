@@ -1,8 +1,9 @@
 package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.domain.utils.SessionType
+import javax.inject.Inject
 
-class SessionTypeMapper {
+class SessionTypeMapper @Inject constructor(){
     fun toLocalSessionType(sessionType: SessionType): String{
         return when(sessionType){
             SessionType.NOT_LOGGED_IN -> NOT_LOGGED_IN

@@ -4,7 +4,7 @@ import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.entity.Country
 import com.amsterdam.entity.Movie
 
-class GetMoviesByCountryUseCase(private val movieRepository: MovieRepository) {
+class GetMoviesByCountryUseCase (private val movieRepository: MovieRepository) {
     suspend operator fun invoke(
         country: Country,
         page: Int = 1,

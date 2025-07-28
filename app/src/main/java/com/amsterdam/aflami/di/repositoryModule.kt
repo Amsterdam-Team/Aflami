@@ -1,40 +1,72 @@
 package com.amsterdam.aflami.di
 
-import com.amsterdam.domain.repository.AuthenticationRepository
-import com.amsterdam.domain.repository.CategoryRepository
-import com.amsterdam.domain.repository.CountryRepository
-import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.repository.RecentSearchRepository
-import com.amsterdam.domain.repository.TvShowRepository
-import com.amsterdam.domain.repository.WatchHistoryRepository
-import com.amsterdam.repository.repository.AuthenticationRepositoryImpl
-import com.amsterdam.repository.repository.CategoryRepositoryImpl
-import com.amsterdam.repository.repository.CountryRepositoryImpl
-import com.amsterdam.repository.repository.MovieRepositoryImpl
-import com.amsterdam.repository.repository.RecentSearchRepositoryImpl
-import com.amsterdam.repository.repository.TvShowRepositoryImpl
-import com.amsterdam.repository.repository.WatchHistoryRepositoryImpl
+import com.amsterdam.domain.repository.*
+import com.amsterdam.repository.repository.*
 import com.amsterdam.repository.security.CryptoData
 import com.amsterdam.repository.security.CryptoDataImpl
 import com.amsterdam.repository.utils.RecentSearchHandler
 import com.amsterdam.repository.utils.RecentSearchHandlerImpl
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val repositoryModule = module {
-    // crypto
-    singleOf(::CryptoDataImpl) bind CryptoData::class
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
 
-    // Handler
-    singleOf(::RecentSearchHandlerImpl) bind RecentSearchHandler::class
+    @Binds
+    @Singleton
+    abstract fun bindCryptoData(
+        impl: CryptoDataImpl
+    ): CryptoData
 
-    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
-    singleOf(::CountryRepositoryImpl) bind CountryRepository::class
-    singleOf(::CategoryRepositoryImpl) bind CategoryRepository::class
-    singleOf(::MovieRepositoryImpl) bind MovieRepository::class
-    singleOf(::RecentSearchRepositoryImpl) bind RecentSearchRepository::class
-    singleOf(::TvShowRepositoryImpl) bind TvShowRepository::class
-    singleOf(::WatchHistoryRepositoryImpl) bind WatchHistoryRepository::class
+    @Binds
+    @Singleton
+    abstract fun bindRecentSearchHandler(
+        impl: RecentSearchHandlerImpl
+    ): RecentSearchHandler
 
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationRepository(
+        impl: AuthenticationRepositoryImpl
+    ): AuthenticationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCountryRepository(
+        impl: CountryRepositoryImpl
+    ): CountryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(
+        impl: CategoryRepositoryImpl
+    ): CategoryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieRepository(
+        impl: MovieRepositoryImpl
+    ): MovieRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRecentSearchRepository(
+        impl: RecentSearchRepositoryImpl
+    ): RecentSearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTvShowRepository(
+        impl: TvShowRepositoryImpl
+    ): TvShowRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindWatchHistoryRepository(
+        impl: WatchHistoryRepositoryImpl
+    ): WatchHistoryRepository
 }

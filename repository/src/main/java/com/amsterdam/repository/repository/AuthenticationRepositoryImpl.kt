@@ -7,8 +7,9 @@ import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
 import com.amsterdam.repository.mapper.local.SessionTypeMapper
 import com.amsterdam.repository.security.CryptoData
+import javax.inject.Inject
 
-class AuthenticationRepositoryImpl(
+class AuthenticationRepositoryImpl @Inject constructor(
     private val authenticationRemoteSource: AuthenticationRemoteSource,
     private val authenticationLocalSource: AuthenticationLocalSource,
     private val sessionTypeMapper: SessionTypeMapper,

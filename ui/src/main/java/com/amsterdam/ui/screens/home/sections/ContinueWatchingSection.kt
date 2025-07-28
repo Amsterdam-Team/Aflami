@@ -9,25 +9,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.ui.R
 import androidx.compose.ui.zIndex
 import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.home.sections.placeholder.movieSectionPlaceholder
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiState
 import com.amsterdam.viewmodel.home.HomeUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 
 fun LazyListScope.continueWatchingSection(
-    state: HomeUiState.ContinueWatchingMoviesSectionUiState,
-    onClickMovie: (Long) -> Unit,
+    state: HomeUiState.ContinueWatchingMediaSectionUiState,
+    isVisible: Boolean,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     onClickShowAll: () -> Unit,
-    isVisible: Boolean
 ) {
-    if (isVisible){
-        if (state.isLoading){
+    if (isVisible) {
+        if (state.isLoading) {
             movieSectionPlaceholder()
         } else {
             item {
@@ -46,15 +46,20 @@ fun LazyListScope.continueWatchingSection(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) {
-                    items(state.movies) { movie ->
+                    items(state.mediaItems) { item ->
+                        val movieType = if (item.mediaType == MediaType.MOVIE)
+                            stringResource(R.string.movie)
+                        else
+                            stringResource(R.string.tv)
+
                         MovieCard(
-                            movieImage = { MovieImage(movie.posterImageUrl) },
-                            movieType = stringResource(com.amsterdam.ui.R.string.movie),
-                            movieYear = movie.yearOfRelease,
-                            movieTitle = movie.name,
-                            movieRating = movie.rate
+                            movieImage = { MovieImage(item.posterImageUrl) },
+                            movieType = movieType,
+                            movieYear = item.yearOfRelease,
+                            movieTitle = item.name,
+                            movieRating = item.rate
                         ) {
-                            onClickMovie(movie.id)
+                            onClickMediaItem(item.id, item.mediaType)
                         }
                     }
                 }

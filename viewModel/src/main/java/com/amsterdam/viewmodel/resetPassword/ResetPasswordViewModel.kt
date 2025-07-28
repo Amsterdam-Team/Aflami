@@ -3,9 +3,11 @@ package com.amsterdam.viewmodel.resetPassword
 import com.amsterdam.viewmodel.BuildConfig
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-
-class ResetPasswordViewModel(dispatcherProvider: DispatcherProvider) :
+@HiltViewModel
+class ResetPasswordViewModel @Inject constructor(dispatcherProvider: DispatcherProvider) :
     BaseViewModel<ResetPasswordUiState, ResetPasswordEffect>(
         ResetPasswordUiState(),
         dispatcherProvider

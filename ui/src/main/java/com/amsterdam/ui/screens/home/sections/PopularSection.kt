@@ -33,13 +33,16 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.entity.category.MovieGenre
+import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.ui.R
-import com.amsterdam.ui.screens.home.component.PopularMovieCard
+import com.amsterdam.ui.screens.home.component.PopularMediaItemCard
 import com.amsterdam.ui.screens.home.sections.placeholder.popularSectionPlaceholder
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.amsterdam.viewmodel.home.HomeUiState
-import com.amsterdam.viewmodel.home.HomeUiState.PopularMovieItemUiState
+import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.any
@@ -48,9 +51,9 @@ import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
 fun LazyListScope.popularSection(
-    state: HomeUiState.PopularMoviesSectionUiState,
+    state: HomeUiState.PopularMediaSectionUiState,
     pagerState: PagerState,
-    onClickMovie: (Long) -> Unit,
+    onClickMediaItem: (Long, MediaType) -> Unit,
     isVisible: Boolean
 ) {
     if (isVisible) {
@@ -107,23 +110,24 @@ fun LazyListScope.popularSection(
                             label = "height"
                         )
 
-                        PopularMovieCard(
-                            popularMovie = state.movies[page % state.movies.size],
+                        PopularMediaItemCard(
+                            popularMediaItem = state.mediaItems[page % state.mediaItems.size],
                             ratingAlpha = rateAlpha,
                             imageWidth = width,
                             imageHeight = height,
-                            onMovieClicked = { onClickMovie(it) },
+                            onClickMediaItem = onClickMediaItem
                         )
                     }
 
 
                 }
             }
+
             item {
                 DisplayGenresForMovie(
                     modifier = Modifier
                         .zIndex(2f),
-                    categories = state.movies[pagerState.currentPage % state.movies.size].category,
+                    mediaItem = state.mediaItems[pagerState.currentPage % state.mediaItems.size],
                 )
             }
         }
@@ -133,7 +137,7 @@ fun LazyListScope.popularSection(
 
 @Composable
 private fun DisplayGenresForMovie(
-    categories: List<String>,
+    mediaItem: PopularMediaItemUiState,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -144,11 +148,18 @@ private fun DisplayGenresForMovie(
         horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        items(categories) { category ->
-            MovieGenre.entries.find { it.name.equals(category, ignoreCase = true) }
-                ?.let { genre ->
-                    CategoryChip(categoryName = getMovieGenreLabel(genre))
-                }
+        items(mediaItem.category) { category ->
+            if (mediaItem.type == MediaType.MOVIE) {
+                MovieGenre.entries.find { it.name.equals(category, ignoreCase = true) }
+                    ?.let { genre ->
+                        CategoryChip(categoryName = getMovieGenreLabel(genre))
+                    }
+            } else {
+                TvShowGenre.entries.find { it.name.equals(category, ignoreCase = true) }
+                    ?.let { genre ->
+                        CategoryChip(categoryName = getTvShowGenreLabel(genre))
+                    }
+            }
         }
     }
 
@@ -194,27 +205,27 @@ private fun AutoScrollingPager(
 @Composable
 private fun PopularSectionPreview() {
     val dummyMovies = List(5) {
-        PopularMovieItemUiState(
+        PopularMediaItemUiState(
             name = "Movie $it",
             posterUrl = "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
             rating = (8.5f + it).toString(),
             category = listOf(
-                MovieGenre.values().random().name,
-                MovieGenre.values().random().name,
-                MovieGenre.values().random().name
+                MovieGenre.entries.random().name,
+                MovieGenre.entries.random().name,
+                MovieGenre.entries.random().name
             )
         )
     }
 
-
-
     AflamiTheme {
         LazyColumn {
             popularSection(
-                state = HomeUiState.PopularMoviesSectionUiState(movies = dummyMovies, false),
+                state = HomeUiState.PopularMediaSectionUiState(
+                    mediaItems = dummyMovies
+                ),
                 pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE },
-                isVisible = true,
-                onClickMovie = {}
+                onClickMediaItem = { _, _ -> },
+                isVisible = true
             )
         }
     }

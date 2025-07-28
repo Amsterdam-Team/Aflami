@@ -1,4 +1,4 @@
-package com.example.designsystem.utils.modifierExtensions
+package com.amsterdam.designsystem.utils.modifierExtensions
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat

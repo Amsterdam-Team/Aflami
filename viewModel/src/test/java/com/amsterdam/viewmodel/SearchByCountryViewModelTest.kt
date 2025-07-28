@@ -217,22 +217,22 @@ class SearchByCountryViewModelTest {
     }
 
     @Test
-    fun `should update movies state when getMoviesByCountryUseCase return list of movie `() =
+    fun `should update mediaItems state when getMoviesByCountryUseCase return list of movie `() =
         testScope.runTest {
             val countryUiState = CountryItemUiState("Egypt", "eg")
-            val movies = listOf(createMovie())
+            val mediaItems = listOf(createMovie())
 
             viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
 
-            assertThat(viewModel.state.value.movies).isEqualTo(movies.toMoveUiStates())
+            assertThat(viewModel.state.value.mediaItems).isEqualTo(mediaItems.toMoveUiStates())
         }
 
     @Test
     fun `should set state to MOVIES_LOADED when getMoviesByCountryUseCase return list of movie`() =
         testScope.runTest {
             val countryUiState = CountryItemUiState("Egypt", "eg")
-            val movies = listOf(createMovie())
+            val mediaItems = listOf(createMovie())
 
             viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
@@ -257,18 +257,18 @@ class SearchByCountryViewModelTest {
         }
 
     @Test
-    fun `should reload movies when onRetryRequestClicked calls getMoviesByCountry`() =
+    fun `should reload mediaItems when onRetryRequestClicked calls getMoviesByCountry`() =
         testScope.runTest {
             val countryUiState = CountryItemUiState("Egypt", "eg")
-            val movies = listOf(createMovie())
-            //coEvery { getMoviesByCountryUseCase(any()) } returns movies
+            val mediaItems = listOf(createMovie())
+            //coEvery { getMoviesByCountryUseCase(any()) } returns mediaItems
 
             viewModel.onSelectCountry(countryUiState)
             testScope.advanceUntilIdle()
             viewModel.onClickRetry()
             testScope.advanceUntilIdle()
 
-            assertThat(viewModel.state.value.movies).isEqualTo(movies.toMoveUiStates())
+            assertThat(viewModel.state.value.mediaItems).isEqualTo(mediaItems.toMoveUiStates())
         }
 
     @Test

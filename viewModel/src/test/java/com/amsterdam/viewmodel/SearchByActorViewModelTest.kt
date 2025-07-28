@@ -90,22 +90,22 @@ class SearchByActorViewModelTest {
 
 
     @Test
-    fun `onUserSearchChange should update movies state when getMoviesByActorUseCase returns a list of movies`() =
+    fun `onUserSearchChange should update mediaItems state when getMoviesByActorUseCase returns a list of mediaItems`() =
         testScope.runTest {
             val keyword = "Tom Hanks"
-            val movies = listOf(createMovie(id = 1, name = "Forrest Gump"))
-            coEvery { getMoviesByActorUseCase(keyword) } returns movies
+            val mediaItems = listOf(createMovie(id = 1, name = "Forrest Gump"))
+            coEvery { getMoviesByActorUseCase(keyword) } returns mediaItems
 
             viewModel.onUserSearchChange(keyword)
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.movies).isEqualTo(movies.toMoveUiStates())
+            assertThat(state.mediaItems).isEqualTo(mediaItems.toMoveUiStates())
             assertThat(state.isLoading).isFalse()
         }
 
     @Test
-    fun `onUserSearchChange should update state to empty movies when getMoviesByActorUseCase returns an empty list`() =
+    fun `onUserSearchChange should update state to empty mediaItems when getMoviesByActorUseCase returns an empty list`() =
         testScope.runTest {
             val keyword = "Unknown Actor"
             coEvery { getMoviesByActorUseCase(keyword) } returns emptyList()
@@ -155,8 +155,8 @@ class SearchByActorViewModelTest {
         coVerify(exactly = 1) { getMoviesByActorUseCase(keyword) }
         assertThat(viewModel.state.value.error).isEqualTo(ActorSearchUiState.SearchByActorError.NetworkError)
 
-        val movies = listOf(createMovie(id = 2, name = "I Am Legend"))
-        coEvery { getMoviesByActorUseCase(keyword) } returns movies
+        val mediaItems = listOf(createMovie(id = 2, name = "I Am Legend"))
+        coEvery { getMoviesByActorUseCase(keyword) } returns mediaItems
 
         viewModel.onClickRetrySearch()
         advanceTimeBy(500L)
@@ -180,7 +180,7 @@ class SearchByActorViewModelTest {
                     effect = searchByActorEffect
                 }
             }
-            viewModel.onClickMovie(movieId)
+            viewModel.onClickMediaItem(movieId)
             advanceUntilIdle()
             job.cancel()
 

@@ -45,7 +45,7 @@ fun LazyListScope.upcomingMoviesSection(
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .background(AppTheme.color.surface)
-                        .padding(top = 26.dp, bottom = 16.dp)
+                        .padding(top = 24.dp, bottom = 16.dp)
                 ) {
                     Text(
                         modifier = Modifier

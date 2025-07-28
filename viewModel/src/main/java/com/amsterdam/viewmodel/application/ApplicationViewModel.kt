@@ -5,9 +5,12 @@ import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ApplicationViewModel(
+@HiltViewModel
+class ApplicationViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider,
     private val getsSessionType: GetsSessionType
 ): BaseViewModel<ApplicationUiState, Unit>(ApplicationUiState(), dispatcherProvider) {

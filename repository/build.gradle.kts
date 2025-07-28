@@ -37,6 +37,8 @@ dependencies {
     // kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.javax.inject)
+
     // junit 5
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.jupiter.junit.jupiter)

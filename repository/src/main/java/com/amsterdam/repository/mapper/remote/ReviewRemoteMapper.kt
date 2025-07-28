@@ -5,8 +5,9 @@ import com.amsterdam.repository.dto.remote.review.ReviewDto
 import com.amsterdam.repository.mapper.shared.EntityMapper
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import javax.inject.Inject
 
-class ReviewRemoteMapper : EntityMapper<ReviewDto, Review> {
+class ReviewRemoteMapper @Inject constructor(): EntityMapper<ReviewDto, Review> {
     override fun toEntity(dto: ReviewDto): Review {
         return Review(
             id = dto.id.hashCode().toLong(),

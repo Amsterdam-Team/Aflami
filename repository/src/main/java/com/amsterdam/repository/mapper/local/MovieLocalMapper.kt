@@ -4,8 +4,9 @@ import com.amsterdam.entity.Movie
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.mapper.shared.DtoMapper
 import com.amsterdam.repository.mapper.shared.EntityMapper
+import javax.inject.Inject
 
-class MovieLocalMapper : EntityMapper<LocalMovieDto, Movie>,
+class MovieLocalMapper @Inject constructor(): EntityMapper<LocalMovieDto, Movie>,
     DtoMapper<Movie, LocalMovieDto> {
     override fun toEntity(dto: LocalMovieDto): Movie {
         return Movie(

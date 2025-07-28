@@ -12,8 +12,9 @@ import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
+import javax.inject.Inject
 
-class SeriesDetailsStateMapper(
+class SeriesDetailsStateMapper @Inject constructor(
     private val movieDetailsStateMapper: MovieDetailsUiStateMapper
 ){
 

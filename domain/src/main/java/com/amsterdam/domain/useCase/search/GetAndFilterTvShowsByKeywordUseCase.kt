@@ -5,7 +5,7 @@ import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.TvShowGenre
 import kotlin.math.floor
 
-class GetAndFilterTvShowsByKeywordUseCase(
+class GetAndFilterTvShowsByKeywordUseCase (
     private val tvShowRepository: TvShowRepository
 ) {
 

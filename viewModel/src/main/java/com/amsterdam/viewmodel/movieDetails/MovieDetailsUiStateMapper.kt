@@ -9,9 +9,10 @@ import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 import kotlinx.datetime.LocalDate
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class MovieDetailsUiStateMapper {
+class MovieDetailsUiStateMapper @Inject constructor() {
 
     fun toUiState(domain: GetMovieDetailsUseCase.MovieDetails): MovieDetailsUiState = with(domain) {
         MovieDetailsUiState(

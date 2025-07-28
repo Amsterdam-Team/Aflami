@@ -26,8 +26,9 @@ import com.amsterdam.repository.mapper.remoteToLocal.MovieGenreIdsRemoteLocalMap
 import com.amsterdam.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
 import com.amsterdam.repository.utils.getDeviceLanguage
+import javax.inject.Inject
 
-class MovieRepositoryImpl(
+class MovieRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val movieLocalSource: MovieLocalSource,
     private val movieRemoteDataSource: MovieRemoteSource,
@@ -108,19 +109,21 @@ class MovieRepositoryImpl(
     override suspend fun getMovieDetailsById(movieId: Long): Movie {
         return movieRemoteMapper.toEntity(
             movieRemoteDataSource.getMovieDetailsById(movieId)
-                .also { incrementUserInterestByMovie(it.genres)
+                .also {
+                    incrementUserInterestByMovie(it.genres)
                     cacheWatchedMovie(it)
                 }
         )
     }
 
-    private suspend fun cacheWatchedMovie(remoteMovieItemDto : RemoteMovieItemDto) {
+    private suspend fun cacheWatchedMovie(remoteMovieItemDto: RemoteMovieItemDto) {
         movieLocalSource.insertMovie(
             movieRemoteLocalMapper.toLocal(
                 remote = remoteMovieItemDto, args = listOf(getDeviceLanguage())
             )
         )
     }
+
     override suspend fun getMovieReviews(movieId: Long): List<Review> {
         return reviewRemoteMapper.toEntityList(movieRemoteDataSource.getMovieReviews(movieId).results)
     }
@@ -263,6 +266,7 @@ class MovieRepositoryImpl(
             storedLanguage = getDeviceLanguage()
         )
     }
+
     override suspend fun getMoviesByGenres(movieGenres: List<MovieGenre>): List<Movie> {
         return movieGenreLocalMapper.toDtoList(movieGenres).let { genresIds ->
             movieRemoteMapper.toEntityList(movieRemoteDataSource.getMoviesByGenreIds(genresIds).results)

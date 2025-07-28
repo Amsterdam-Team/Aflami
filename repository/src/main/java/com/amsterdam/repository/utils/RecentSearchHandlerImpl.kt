@@ -4,8 +4,9 @@ import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.dto.local.LocalSearchDto
 import com.amsterdam.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Clock
+import javax.inject.Inject
 
-class RecentSearchHandlerImpl(
+class RecentSearchHandlerImpl @Inject constructor(
     private val recentSearchLocalSource: RecentSearchLocalSource
 ) : RecentSearchHandler {
     override suspend fun isRecentSearchExpired(

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.LoadingContainer
@@ -31,17 +32,16 @@ import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.topRated.component.TopRatedBackgroundComponent
-import com.amsterdam.ui.screens.topRated.component.TopRatedMoviesGrid
+import com.amsterdam.ui.screens.topRated.component.TopRatedMediaItemsGrid
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.topRated.TopRatedEffect
 import com.amsterdam.viewmodel.topRated.TopRatedInteractionListener
 import com.amsterdam.viewmodel.topRated.TopRatedUiState
 import com.amsterdam.viewmodel.topRated.TopRatedViewModel
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TopRatedScreen(viewModel: TopRatedViewModel = koinViewModel()) {
+fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     TopRatedContent(state, viewModel)
@@ -51,6 +51,10 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = koinViewModel()) {
                 when (it) {
                     is TopRatedEffect.NavigateToMovieDetailsScreen -> {
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
+                    }
+
+                    is TopRatedEffect.NavigateToTvShowDetailsEffect -> {
+                        navController.safeNavigate(Route.SeriesDetails(it.tvShowId))
                     }
 
                     TopRatedEffect.NavigateBack -> {
@@ -98,25 +102,29 @@ private fun TopRatedContent(
             AnimatedSectionVisibility(
                 visible = state.isLoading
             ) {
-                    LoadingContainer(modifier = Modifier.fillMaxSize().zIndex(10f))
+                LoadingContainer(modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(10f))
             }
 
             AnimatedSectionVisibility(
                 visible = state.error == TopRatedUiState.TopRatedError.NetworkError
             ) {
-                    NoNetworkContainer(
-                        onClickRetry = interactionListener::onClickRetryLoading
-                    )
+                NoNetworkContainer(
+                    onClickRetry = interactionListener::onClickRetryLoading
+                )
             }
 
             AnimatedSectionVisibility(
-                visible = state.topRatedMovies.isNotEmpty()
+                visible = state.topRatedMediaItems.isNotEmpty()
             ) {
-                TopRatedMoviesGrid(
+                TopRatedMediaItemsGrid(
                     gridState = gridState,
-                    topRatedMovies = state.topRatedMovies,
-                    onClickMovie = interactionListener::onClickMovie,
-                    modifier = Modifier.weight(1f).navigationBarsPadding()
+                    topRatedMediaItems = state.topRatedMediaItems,
+                    onClickMediaItem = interactionListener::onClickMediaItem,
+                    modifier = Modifier
+                        .weight(1f)
+                        .navigationBarsPadding()
                 )
             }
         }

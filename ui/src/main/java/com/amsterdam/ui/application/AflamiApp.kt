@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -14,11 +15,10 @@ import com.amsterdam.ui.navigation.BottomNavigation
 import com.amsterdam.ui.navigation.NavGraph
 import com.amsterdam.ui.utils.safeNavigateToTab
 import com.amsterdam.viewmodel.application.ApplicationViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AflamiApp(
-    viewModel: ApplicationViewModel = koinViewModel()
+    viewModel: ApplicationViewModel = hiltViewModel()
 ){
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()

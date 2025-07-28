@@ -29,8 +29,7 @@ import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.R
-import com.example.designsystem.components.RoundedShimmerPlaceholder
+import com.amsterdam.designsystem.components.RoundedShimmerPlaceholder
 import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")

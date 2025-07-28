@@ -4,8 +4,9 @@ import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.mapper.shared.RemoteToLocalMapper
 import com.amsterdam.repository.utils.toSafeLocalDate
+import javax.inject.Inject
 
-class MovieRemoteLocalMapper() : RemoteToLocalMapper<RemoteMovieItemDto, LocalMovieDto> {
+class MovieRemoteLocalMapper @Inject constructor(): RemoteToLocalMapper<RemoteMovieItemDto, LocalMovieDto> {
     override fun toLocal(remote: RemoteMovieItemDto, args: List<Any>): LocalMovieDto {
         return LocalMovieDto(
             movieId = remote.id,

@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
@@ -75,10 +76,9 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = koinViewModel()) {
+fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsState()
     val navController = LocalNavController.current
 

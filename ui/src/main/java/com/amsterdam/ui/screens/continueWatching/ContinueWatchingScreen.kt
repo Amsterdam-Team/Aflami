@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.LoadingContainer
@@ -24,7 +25,7 @@ import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.continueWatching.component.ContinueWatchingMoviesGrid
+import com.amsterdam.ui.screens.continueWatching.component.ContinueWatchingMediaItemsGrid
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingEffect
@@ -32,10 +33,9 @@ import com.amsterdam.viewmodel.continueWatching.ContinueWatchingInteractionListe
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiState
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingViewModel
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = koinViewModel()) {
+fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     ContinueWatchingContent(state, viewModel)
@@ -45,6 +45,10 @@ fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = koinViewModel(
                 when (it) {
                     is ContinueWatchingEffect.NavigateToMovieDetailsScreen -> {
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
+                    }
+
+                    is ContinueWatchingEffect.NavigateToTvShowDetailsEffect -> {
+                        navController.safeNavigate(Route.SeriesDetails(it.tvShowId))
                     }
 
                     ContinueWatchingEffect.NavigateBack -> {
@@ -105,13 +109,13 @@ fun ContinueWatchingContent(
         }
 
         AnimatedSectionVisibility(
-            visible = state.continueWatchingMovies.isNotEmpty()
+            visible = state.continueMediaItemUiStates.isNotEmpty()
         ) {
-            ContinueWatchingMoviesGrid(
-                gridState = gridState,
-                continueWatchingMovies = state.continueWatchingMovies,
-                onClickMovie = interactionListener::onClickMovie,
-                modifier = Modifier.weight(1f)
+            ContinueWatchingMediaItemsGrid(
+                continueWatchingMediaItems = state.continueMediaItemUiStates,
+                onClickMediaItem = interactionListener::onClickMediaItem,
+                modifier = Modifier.weight(1f),
+                gridState = gridState
             )
         }
     }

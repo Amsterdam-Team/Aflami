@@ -3,8 +3,10 @@ package com.amsterdam.viewmodel
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.details.GetMovieCastUseCase
+import com.amsterdam.domain.useCase.details.GetTvShowCastUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
+import com.amsterdam.viewmodel.cast.CastScreenArgs
 import com.amsterdam.viewmodel.cast.CastUiEffect
 import com.amsterdam.viewmodel.cast.CastUiState
 import com.amsterdam.viewmodel.cast.CastViewModel
@@ -28,7 +30,8 @@ import org.junit.jupiter.api.Test
 class CastViewModelTest {
     private lateinit var viewModel: CastViewModel
     private lateinit var getMovieCastUseCase: GetMovieCastUseCase
-    private lateinit var args: MovieDetailsArgs
+    private lateinit var args: CastScreenArgs
+    private lateinit var tvShowCastUseCase: GetTvShowCastUseCase
     private val testDispatcherProvider = TestDispatcherProvider()
     private var testScope = TestScope(
         testDispatcherProvider.testDispatcher
@@ -38,13 +41,16 @@ class CastViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
         getMovieCastUseCase = mockk(relaxed = true)
+        tvShowCastUseCase = mockk(relaxed = true)
         args = mockk {
-            every { movieId } returns 100
+            every { mediaId } returns 100
+            every { mediaType } returns "movie"
         }
         viewModel = CastViewModel(
             getMovieCastUseCase = getMovieCastUseCase,
             args = args,
-            dispatcherProvider = testDispatcherProvider
+            dispatcherProvider = testDispatcherProvider,
+            getTvShowCastUseCase = tvShowCastUseCase
         )
 
     }
@@ -93,7 +99,8 @@ class CastViewModelTest {
         viewModel = CastViewModel(
             getMovieCastUseCase = getMovieCastUseCase,
             args = args,
-            dispatcherProvider = testDispatcherProvider
+            dispatcherProvider = testDispatcherProvider,
+            getTvShowCastUseCase = tvShowCastUseCase
         )
 
         val states = mutableListOf<CastUiState>()
@@ -118,12 +125,12 @@ class CastViewModelTest {
         val exception = mockk<AflamiException>(relaxed = true)
         coEvery {
             getMovieCastUseCase(
-                movieId = args.movieId!!,
+                movieId = args.mediaId!!,
             )
         } throws exception
 
         // When
-        viewModel = CastViewModel(getMovieCastUseCase, args, testDispatcherProvider)
+        viewModel = CastViewModel(getMovieCastUseCase, tvShowCastUseCase,args, testDispatcherProvider)
 
         // Then
         val actual = viewModel.state.value
@@ -135,12 +142,12 @@ class CastViewModelTest {
         // Given
         coEvery {
             getMovieCastUseCase(
-                movieId = args.movieId!!,
+                movieId = args.mediaId!!,
             )
         } returns emptyList()
 
         // When
-        viewModel = CastViewModel(getMovieCastUseCase, args, testDispatcherProvider)
+        viewModel = CastViewModel(getMovieCastUseCase, tvShowCastUseCase,args, testDispatcherProvider)
 
         // Then
         val actual = viewModel.state.value
@@ -170,7 +177,7 @@ class CastViewModelTest {
        // Given & When
        val exception = mockk<NoInternetException>(relaxed = true)
        coEvery { getMovieCastUseCase(100) } throws exception
-       viewModel = CastViewModel(getMovieCastUseCase, args, testDispatcherProvider)
+       viewModel = CastViewModel(getMovieCastUseCase, tvShowCastUseCase,args, testDispatcherProvider)
        val states = mutableListOf<CastUiState>()
        val job = launch {
            viewModel.state.collect { states.add(it) }

@@ -1,15 +1,22 @@
 package com.amsterdam.viewmodel.continueWatching
 
+import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
-import com.amsterdam.entity.Movie
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
 import com.amsterdam.viewmodel.shared.BaseViewModel
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
-import kotlinx.coroutines.flow.firstOrNull
+import com.amsterdam.viewmodel.utils.getLinearItemsList
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
-class ContinueWatchingViewModel(
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
+@HiltViewModel
+class ContinueWatchingViewModel @Inject constructor(
+    private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<ContinueWatchingUiState, ContinueWatchingEffect>(
@@ -19,26 +26,36 @@ class ContinueWatchingViewModel(
     ContinueWatchingInteractionListener {
 
     init {
-        getContinueWatchingMovies()
+        getContinueWatchingData()
     }
 
-    private fun getContinueWatchingMovies() {
+
+    private fun getContinueWatchingData() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = ::loadContinueWatchingMovies,
-            onSuccess = ::onGetContinueWatchingMoviesSuccess,
+            action = { getContinueWatchingScreenDataUseCase() },
+            onSuccess = ::onGetContinueWatchingScreenDataSuccess,
             onError = ::onError,
             onCompletion = ::onCompletion
         )
     }
 
-    private suspend fun loadContinueWatchingMovies(): List<Movie> {
-        return getContinueWatchingMoviesUseCase()
-            .firstOrNull() ?: emptyList()
-    }
-
-    private fun onGetContinueWatchingMoviesSuccess(continueWatchingMovies: List<Movie>) {
-        updateState { continueWatchingUiStateMapper.toUiState(continueWatchingMovies) }
+    fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
+        combine(
+            continueWatchingData.continueWatchingMovies,
+            continueWatchingData.continueWatchingTvShows
+        ) { movies, tvShows ->
+            updateState { currentState ->
+                currentState.copy(
+                    continueMediaItemUiStates = getLinearItemsList(
+                        movies,
+                        tvShows,
+                        continueWatchingUiStateMapper::movieToMediaItemUiState,
+                        continueWatchingUiStateMapper::tvShowToMediaItemUiState
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun onError(exception: AflamiException) {
@@ -52,12 +69,15 @@ class ContinueWatchingViewModel(
         }
     }
 
-    override fun onClickMovie(movieId: Long) {
-        sendNewEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(movieId))
+    override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
+        if (mediaType == MediaType.MOVIE)
+            sendNewEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
+        else
+            sendNewEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
-        getContinueWatchingMovies()
+        getContinueWatchingData()
     }
 
     override fun onClickBack() {

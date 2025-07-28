@@ -58,4 +58,6 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.truth)
     testImplementation(kotlin("test"))
+
+    implementation(libs.javax.inject)
 }

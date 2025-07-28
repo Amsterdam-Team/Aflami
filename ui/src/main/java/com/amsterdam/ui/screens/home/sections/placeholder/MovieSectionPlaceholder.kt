@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.designsystem.components.RoundedShimmerPlaceholder
+import com.amsterdam.designsystem.components.RoundedShimmerPlaceholder
 
 fun LazyListScope.movieSectionPlaceholder(modifier: Modifier = Modifier) {
     item {
