@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
@@ -51,11 +52,10 @@ import com.amsterdam.viewmodel.search.countrySearch.CountrySearchUiState
 import com.amsterdam.viewmodel.search.countrySearch.CountrySearchViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SearchByCountryScreen(
-    viewModel: CountrySearchViewModel = koinViewModel()
+    viewModel: CountrySearchViewModel = hiltViewModel()
 ) {
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()

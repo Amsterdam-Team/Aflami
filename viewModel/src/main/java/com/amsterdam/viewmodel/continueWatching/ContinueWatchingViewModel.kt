@@ -11,8 +11,11 @@ import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
-class ContinueWatchingViewModel(
+@HiltViewModel
+class ContinueWatchingViewModel @Inject constructor(
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
     dispatcherProvider: DispatcherProvider

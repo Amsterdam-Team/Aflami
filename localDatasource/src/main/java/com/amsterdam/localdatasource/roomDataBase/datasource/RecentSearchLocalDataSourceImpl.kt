@@ -5,8 +5,9 @@ import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.dto.local.LocalSearchDto
 import com.amsterdam.repository.dto.local.utils.SearchType
 import kotlinx.datetime.Instant
+import javax.inject.Inject
 
-class RecentSearchLocalDataSourceImpl(
+class RecentSearchLocalDataSourceImpl @Inject constructor(
     private val dao: RecentSearchDao
 ) : RecentSearchLocalSource {
 

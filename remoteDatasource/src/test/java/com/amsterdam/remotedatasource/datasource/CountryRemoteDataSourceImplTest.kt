@@ -1,7 +1,6 @@
-package com.amsterdam.remotedatasource
+package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.remotedatasource.api.CountryApiService
-import com.amsterdam.remotedatasource.serviceProvider.implementation.CountryServiceProviderImpl
 import com.amsterdam.repository.dto.remote.RemoteCountryDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -11,26 +10,24 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class CountryServiceProviderImplTest {
+class CountryRemoteDataSourceImplTest {
 
     private lateinit var countryApiService: CountryApiService
-    private lateinit var countryServiceProviderImpl: CountryServiceProviderImpl
+    private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         countryApiService = mockk()
-        countryServiceProviderImpl = CountryServiceProviderImpl(countryApiService)
+        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryApiService)
     }
 
     @Test
     fun `getCountries should call CountryApiService`() = runTest {
         // Given
-        val dummyResponse =
-            emptyList<RemoteCountryDto>()
-        coEvery { countryApiService.getCountries() } returns dummyResponse
+        coEvery { countryApiService.getCountries() } returns emptyList()
 
         // When
-        countryServiceProviderImpl.getCountries()
+        countryRemoteDataSourceImpl.getCountries()
 
         // Then
         coVerify(exactly = 1) { countryApiService.getCountries() }
@@ -46,9 +43,10 @@ class CountryServiceProviderImplTest {
         coEvery { countryApiService.getCountries() } returns expectedResponse
 
         // When
-        val actualResponse = countryServiceProviderImpl.getCountries()
+        val actualResponse = countryRemoteDataSourceImpl.getCountries()
 
         // Then
         assertThat(actualResponse).isEqualTo(expectedResponse)
     }
+
 }

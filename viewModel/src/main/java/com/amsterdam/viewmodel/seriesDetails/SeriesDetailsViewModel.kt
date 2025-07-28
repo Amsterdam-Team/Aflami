@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.seriesDetails
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
@@ -14,9 +13,12 @@ import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SeriesDetailsViewModel(
+@HiltViewModel
+class SeriesDetailsViewModel @Inject constructor(
     args: SeriesDetailsArgs,
     private val seriesDetailsStateMapper: SeriesDetailsStateMapper,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,

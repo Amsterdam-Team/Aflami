@@ -4,8 +4,9 @@ import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowItemDto
 import com.amsterdam.repository.mapper.shared.RemoteToLocalMapper
 import com.amsterdam.repository.utils.toSafeLocalDate
+import javax.inject.Inject
 
-class TvShowRemoteLocalMapper() : RemoteToLocalMapper<RemoteTvShowItemDto, LocalTvShowDto> {
+class TvShowRemoteLocalMapper @Inject constructor(): RemoteToLocalMapper<RemoteTvShowItemDto, LocalTvShowDto> {
     override fun toLocal(remote: RemoteTvShowItemDto, args: List<Any>): LocalTvShowDto {
         return LocalTvShowDto(
             tvShowId = remote.id,

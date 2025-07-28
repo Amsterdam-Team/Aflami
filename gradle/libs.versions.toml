@@ -1,4 +1,8 @@
 [versions]
+hiltAndroid = "2.56.2"
+hiltAndroidCompiler = "2.56.2"
+hiltNavigationCompose = "1.2.0"
+javaxInject = "1"
 minSdk = "26"
 targetSdk = "36"
 compileSdk = "36"
@@ -17,7 +21,6 @@ lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2024.09.00"
 appcompat = "1.7.1"
-koin = "4.0.3"
 loggingInterceptor = "4.12.0"
 navigationCompose = "2.9.0"
 okhttp = "4.12.0"
@@ -56,6 +59,7 @@ android-test-core = { module = "de.mannodermaus.junit5:android-test-core", versi
 android-test-runner = { module = "de.mannodermaus.junit5:android-test-runner", version.ref = "androidTestCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingRuntime" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
@@ -73,10 +77,9 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
@@ -131,3 +134,4 @@ aflami-custom-plugin = { id = "com.thechance.plugin" }
 android-junit5 = { id = "de.mannodermaus.android-junit5" }
 android-java-library = { id = "java-library" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }
+hilt = { id = "com.google.dagger.hilt.android", version = "2.56.2" }

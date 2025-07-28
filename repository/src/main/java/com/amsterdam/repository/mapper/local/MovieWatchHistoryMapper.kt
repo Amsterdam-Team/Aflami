@@ -5,8 +5,9 @@ import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
 import com.amsterdam.repository.mapper.shared.DtoMapper
 import com.amsterdam.repository.mapper.shared.EntityMapper
 import com.amsterdam.repository.utils.getDeviceLanguage
+import javax.inject.Inject
 
-class MovieWatchHistoryMapper : EntityMapper<MovieWatchHistoryDto, MovieWatchHistory>,
+class MovieWatchHistoryMapper @Inject constructor(): EntityMapper<MovieWatchHistoryDto, MovieWatchHistory>,
     DtoMapper<MovieWatchHistory, MovieWatchHistoryDto> {
 
     override fun toEntity(dto: MovieWatchHistoryDto): MovieWatchHistory {

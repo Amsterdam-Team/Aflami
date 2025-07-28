@@ -7,8 +7,9 @@ import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.getMixedItemsList
+import javax.inject.Inject
 
-class TopRatedUiStateMapper {
+class TopRatedUiStateMapper @Inject constructor() {
     @SuppressLint("DefaultLocale")
     fun toUiState(topRatedScreenData: TopRatedScreenData): TopRatedUiState {
         return TopRatedUiState(

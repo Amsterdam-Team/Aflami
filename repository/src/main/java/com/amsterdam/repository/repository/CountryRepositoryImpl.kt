@@ -9,8 +9,9 @@ import com.amsterdam.repository.mapper.local.CountryLocalMapper
 import com.amsterdam.repository.mapper.remote.CountryRemoteMapper
 import com.amsterdam.repository.mapper.remoteToLocal.CountryRemoteLocalMapper
 import com.amsterdam.repository.utils.getDeviceLanguage
+import javax.inject.Inject
 
-class CountryRepositoryImpl(
+class CountryRepositoryImpl @Inject constructor(
     private val localDataSource: CountryLocalSource,
     private val remoteDataSource: CountryRemoteSource,
     private val countryRemoteMapper: CountryRemoteMapper,

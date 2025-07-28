@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.google.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.pref)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -66,17 +68,17 @@ dependencies {
     implementation(project(":entity"))
     implementation(project(":repository"))
 
-    // Koin
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.koin.core)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.room.runtime)
-
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //Datastore
     implementation(libs.androidx.datastore.preferences)
+    //hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    //room runtime
+    implementation(libs.androidx.room.runtime)
+    //kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
+
 }

@@ -5,8 +5,9 @@ import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.mapper.shared.DtoMapper
 import com.amsterdam.repository.mapper.shared.EntityMapper
 import com.amsterdam.repository.mapper.shared.mapCategoryIdToMovieGenre
+import javax.inject.Inject
 
-class MovieGenreLocalMapper : EntityMapper<LocalMovieCategoryDto, MovieGenre>,
+class MovieGenreLocalMapper @Inject constructor(): EntityMapper<LocalMovieCategoryDto, MovieGenre>,
     DtoMapper<MovieGenre, Long> {
     override fun toEntity(dto: LocalMovieCategoryDto): MovieGenre {
         return mapCategoryIdToMovieGenre(dto.categoryId)

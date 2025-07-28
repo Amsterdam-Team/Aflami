@@ -6,8 +6,9 @@ import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.mapper.shared.EntityMapper
 import com.amsterdam.repository.mapper.shared.mapCategoryIdToMovieGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
+import javax.inject.Inject
 
-class MovieRemoteMapper() : EntityMapper<RemoteMovieItemDto, Movie> {
+class MovieRemoteMapper @Inject constructor() : EntityMapper<RemoteMovieItemDto, Movie> {
 
     override fun toEntity(dto: RemoteMovieItemDto): Movie {
         return  toEntity(dto,isPoster = true)

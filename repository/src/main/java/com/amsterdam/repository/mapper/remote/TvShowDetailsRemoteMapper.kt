@@ -5,8 +5,9 @@ import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.shared.EntityMapper
 import com.amsterdam.repository.mapper.shared.mapCategoryIdToTvShowGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
+import javax.inject.Inject
 
-class TvShowDetailsRemoteMapper() : EntityMapper<TvShowDetailsRemoteResponse, TvShow> {
+class TvShowDetailsRemoteMapper @Inject constructor() : EntityMapper<TvShowDetailsRemoteResponse, TvShow> {
     override fun toEntity(dto: TvShowDetailsRemoteResponse): TvShow {
         return TvShow(
             id = dto.id,

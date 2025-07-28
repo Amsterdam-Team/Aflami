@@ -9,7 +9,7 @@ import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.TvShowGenre
 
-class GetTvShowDetailsUseCase(
+class GetTvShowDetailsUseCase (
     private val tvShowRepository: TvShowRepository,
     private val addTvShowWatchHistoryUseCase: AddTvShowWatchHistoryUseCase
 ) {

@@ -4,8 +4,9 @@ import com.amsterdam.entity.Country
 import com.amsterdam.repository.dto.local.LocalCountryDto
 import com.amsterdam.repository.mapper.shared.DtoMapper
 import com.amsterdam.repository.mapper.shared.EntityMapper
+import javax.inject.Inject
 
-class CountryLocalMapper : EntityMapper<LocalCountryDto, Country>,
+class CountryLocalMapper @Inject constructor(): EntityMapper<LocalCountryDto, Country>,
     DtoMapper<Country, LocalCountryDto> {
 
     override fun toEntity(dto: LocalCountryDto): Country {

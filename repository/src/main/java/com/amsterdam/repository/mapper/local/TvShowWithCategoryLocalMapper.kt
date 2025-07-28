@@ -3,8 +3,9 @@ package com.amsterdam.repository.mapper.local
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import com.amsterdam.repository.mapper.shared.EntityMapper
+import javax.inject.Inject
 
-class TvShowWithCategoryLocalMapper(
+class TvShowWithCategoryLocalMapper @Inject constructor(
     private val tvShowGenreLocalMapper: TvShowGenreLocalMapper
 ) : EntityMapper<TvShowWithCategory, TvShow> {
     override fun toEntity(dto: TvShowWithCategory): TvShow {

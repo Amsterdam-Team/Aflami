@@ -8,8 +8,11 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class TopRatedViewModel(
+@HiltViewModel
+class TopRatedViewModel @Inject constructor(
     private val getTopRatedScreenDataUseCase: GetTopRatedScreenDataUseCase,
     private val topRatedUiStateMapper: TopRatedUiStateMapper,
     dispatcherProvider: DispatcherProvider

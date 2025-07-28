@@ -11,8 +11,9 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.getMixedItemsList
+import javax.inject.Inject
 
-class HomeUiStateMapper {
+class HomeUiStateMapper @Inject constructor(){
     @SuppressLint("DefaultLocale")
     fun toUiState(
         homeScreenData: HomeScreenData,

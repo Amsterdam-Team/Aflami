@@ -8,8 +8,9 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
+import javax.inject.Inject
 
-class CryptoDataImpl : CryptoData {
+class CryptoDataImpl @Inject constructor() : CryptoData {
     private val cipher = Cipher.getInstance(TRANSFORMATION)
     private val keyStore =
         KeyStore.getInstance(KEYSTORE_KEY).apply {

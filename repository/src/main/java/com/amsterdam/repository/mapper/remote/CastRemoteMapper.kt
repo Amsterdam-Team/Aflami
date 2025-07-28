@@ -4,8 +4,9 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.amsterdam.repository.dto.remote.RemoteCastDto
 import com.amsterdam.repository.mapper.shared.EntityMapper
+import javax.inject.Inject
 
-class CastRemoteMapper : EntityMapper<RemoteCastDto, Actor> {
+class CastRemoteMapper @Inject constructor() : EntityMapper<RemoteCastDto, Actor> {
     override fun toEntity(dto: RemoteCastDto): Actor {
         return Actor(
             id = dto.id,

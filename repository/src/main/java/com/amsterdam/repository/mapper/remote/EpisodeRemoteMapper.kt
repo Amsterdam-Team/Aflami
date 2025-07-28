@@ -4,8 +4,9 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.repository.dto.remote.EpisodeDto
 import com.amsterdam.repository.mapper.shared.EntityMapper
 import com.amsterdam.repository.utils.toSafeLocalDate
+import javax.inject.Inject
 
-class EpisodeRemoteMapper : EntityMapper<EpisodeDto, Episode> {
+class EpisodeRemoteMapper @Inject constructor(): EntityMapper<EpisodeDto, Episode> {
     override fun toEntity(dto: EpisodeDto): Episode {
         return Episode(
             id = dto.id,

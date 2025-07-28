@@ -1,12 +1,11 @@
 package com.amsterdam.aflami.di
 
+import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import com.amsterdam.localdatasource.dataStore.appPreferences.AppDataStorePreferences
-import com.amsterdam.localdatasource.dataStore.datasource.AppPreferences
-import com.amsterdam.localdatasource.dataStore.datasource.AuthenticationLocalDataSourceImpl
+import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
@@ -21,40 +20,108 @@ import com.amsterdam.repository.datasource.local.MovieLocalSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
-import org.koin.android.ext.koin.androidApplication
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val localDataSourceModule = module {
-    // App Preferences
-    single<DataStore<Preferences>> {
-        PreferenceDataStoreFactory.create(
-            produceFile = { androidApplication().dataStoreFile("app.preferences_pb") }
-        )
+@Module
+@InstallIn(SingletonComponent::class)
+object LocalDataSourceProviderModule {
+
+    @Provides
+    @Singleton
+    fun provideDataStore(app: Application): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create {
+            app.dataStoreFile("app.preferences_pb")
+        }
     }
 
-    singleOf(::AppDataStorePreferences) bind AppPreferences::class
+    @Provides
+    @Singleton
+    fun provideDatabase(app: Application): AflamiDatabase {
+        return AflamiDatabase.getInstance(app)
+    }
 
-    // Database instance
-    single { AflamiDatabase.getInstance(androidApplication()) }
+    @Provides
+    @Singleton
+    fun provideCategoryDao(db: AflamiDatabase) = db.categoryDao()
 
-    // DAOs
-    single { get<AflamiDatabase>().categoryDao() }
-    single { get<AflamiDatabase>().countryDao() }
-    single { get<AflamiDatabase>().movieDao() }
-    single { get<AflamiDatabase>().tvShowDao() }
-    single { get<AflamiDatabase>().watchHistoryDao()}
-    single { get<AflamiDatabase>().recentSearchDao() }
-    single { get<AflamiDatabase>().movieCategoryInterestDao() }
-    single { get<AflamiDatabase>().tvShowCategoryInterestDao()}
+    @Provides
+    @Singleton
+    fun provideCountryDao(db: AflamiDatabase) = db.countryDao()
 
-// Local sources using singleOf with interface binding
-    singleOf(::AuthenticationLocalDataSourceImpl) bind AuthenticationLocalSource::class
-    singleOf(::CategoryLocalDataSourceImpl) bind CategoryLocalSource::class
-    singleOf(::CountryLocalDataSourceImpl) bind CountryLocalSource::class
-    singleOf(::MovieLocalDataSourceImpl) bind MovieLocalSource::class
-    singleOf(::TvShowLocalDataSourceImpl) bind TvShowLocalSource::class
-    singleOf(::RecentSearchLocalDataSourceImpl) bind RecentSearchLocalSource::class
-    singleOf(::WatchHistoryLocalDataSourceImpl) bind WatchHistoryLocalDataSource::class
+    @Provides
+    @Singleton
+    fun provideMovieDao(db: AflamiDatabase) = db.movieDao()
+
+    @Provides
+    @Singleton
+    fun provideTvShowDao(db: AflamiDatabase) = db.tvShowDao()
+
+    @Provides
+    @Singleton
+    fun provideWatchHistoryDao(db: AflamiDatabase) = db.watchHistoryDao()
+
+    @Provides
+    @Singleton
+    fun provideRecentSearchDao(db: AflamiDatabase) = db.recentSearchDao()
+
+    @Provides
+    @Singleton
+    fun provideMovieCategoryInterestDao(db: AflamiDatabase) = db.movieCategoryInterestDao()
+
+    @Provides
+    @Singleton
+    fun provideTvShowCategoryInterestDao(db: AflamiDatabase) = db.tvShowCategoryInterestDao()
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class LocalDataSourceBindsModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationLocalDataSource(
+        impl: AuthenticationLocalDataSourceImpl
+    ): AuthenticationLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryLocalDataSource(
+        impl: CategoryLocalDataSourceImpl
+    ): CategoryLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCountryLocalDataSource(
+        impl: CountryLocalDataSourceImpl
+    ): CountryLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieLocalDataSource(
+        impl: MovieLocalDataSourceImpl
+    ): MovieLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindTvShowLocalDataSource(
+        impl: TvShowLocalDataSourceImpl
+    ): TvShowLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRecentSearchLocalDataSource(
+        impl: RecentSearchLocalDataSourceImpl
+    ): RecentSearchLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindWatchHistoryLocalDataSource(
+        impl: WatchHistoryLocalDataSourceImpl
+    ): WatchHistoryLocalDataSource
+
 }

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.android.junit5)
     alias(libs.plugins.kover)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -43,6 +44,10 @@ dependencies {
 
     // page 3
     implementation(libs.androidx.paging.runtime)
+
+    //hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
     // mockk
     testImplementation(libs.mockk)

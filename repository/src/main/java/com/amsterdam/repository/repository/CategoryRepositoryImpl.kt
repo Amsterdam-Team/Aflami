@@ -12,8 +12,9 @@ import com.amsterdam.repository.mapper.remote.CategoryRemoteMapper
 import com.amsterdam.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
 import com.amsterdam.repository.utils.getDeviceLanguage
+import javax.inject.Inject
 
-class CategoryRepositoryImpl(
+class CategoryRepositoryImpl @Inject constructor(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
     private val movieCategoryLocalMapper: MovieCategoryLocalMapper,

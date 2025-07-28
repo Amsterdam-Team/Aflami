@@ -26,8 +26,9 @@ import com.amsterdam.repository.mapper.remoteToLocal.MovieGenreIdsRemoteLocalMap
 import com.amsterdam.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
 import com.amsterdam.repository.utils.getDeviceLanguage
+import javax.inject.Inject
 
-class MovieRepositoryImpl(
+class MovieRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val movieLocalSource: MovieLocalSource,
     private val movieRemoteDataSource: MovieRemoteSource,

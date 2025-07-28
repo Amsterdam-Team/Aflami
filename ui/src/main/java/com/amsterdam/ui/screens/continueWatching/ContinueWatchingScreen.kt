@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.LoadingContainer
@@ -32,10 +33,9 @@ import com.amsterdam.viewmodel.continueWatching.ContinueWatchingInteractionListe
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiState
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingViewModel
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = koinViewModel()) {
+fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     ContinueWatchingContent(state, viewModel)

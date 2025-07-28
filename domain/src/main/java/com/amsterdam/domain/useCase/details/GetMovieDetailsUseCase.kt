@@ -8,7 +8,7 @@ import com.amsterdam.entity.ProductionCompany
 import com.amsterdam.entity.Review
 import com.amsterdam.entity.category.MovieGenre
 
-class GetMovieDetailsUseCase(
+class GetMovieDetailsUseCase (
     private val movieRepository: MovieRepository,
     private val addWatchHistoryUseCase: AddMovieWatchHistoryUseCase,
 ) {

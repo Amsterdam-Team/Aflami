@@ -1,13 +1,11 @@
-package com.amsterdam.remotedatasource
+package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.exceptions.ServerErrorException
-import com.amsterdam.remotedatasource.datasource.CategoryRemoteDataSourceImpl
-import com.amsterdam.remotedatasource.serviceProvider.CategoryServiceProvider
+import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -17,15 +15,15 @@ import org.junit.jupiter.api.assertThrows
 
 class CategoryRemoteDataSourceImplTest {
 
-    private lateinit var categoryServiceProvider: CategoryServiceProvider
+    private lateinit var categoryApiService: CategoryApiService
     private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
 
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
 
     @BeforeEach
     fun setUp() {
-        categoryServiceProvider = mockk()
-        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryServiceProvider)
+        categoryApiService = mockk()
+        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryApiService)
     }
 
     @Test
@@ -44,7 +42,7 @@ class CategoryRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteCategoryResponse>(jsonString)
 
         coEvery {
-            categoryServiceProvider.getMovieCategories()
+            categoryApiService.getMovieCategories()
         } returns expectedCategoryResponse
 
         // When
@@ -72,7 +70,7 @@ class CategoryRemoteDataSourceImplTest {
             jsonSerializer.decodeFromString<RemoteCategoryResponse>(jsonString)
 
         coEvery {
-            categoryServiceProvider.getTvShowCategories()
+            categoryApiService.getTvShowCategories()
         } returns expectedCategoryResponse
 
         // When
@@ -86,32 +84,10 @@ class CategoryRemoteDataSourceImplTest {
 
 
     @Test
-    fun `getMovieCategories should rethrow ServerErrorException from service provider`() = runTest {
-        // Given
-        coEvery { categoryServiceProvider.getMovieCategories() } throws ServerErrorException()
-
-        // When & Then
-        assertThrows<ServerErrorException> {
-            categoryRemoteDataSourceImpl.getMovieCategories()
-        }
-    }
-
-    @Test
-    fun `getMovieCategories should rethrow NoInternetException from service provider`() = runTest {
-        // Given
-        coEvery { categoryServiceProvider.getMovieCategories() } throws NoInternetException()
-
-        // When & Then
-        assertThrows<NoInternetException> {
-            categoryRemoteDataSourceImpl.getMovieCategories()
-        }
-    }
-
-    @Test
     fun `getMovieCategories should throw NetworkException from service provider when exception occurs`() =
         runTest {
             // Given
-            coEvery { categoryServiceProvider.getMovieCategories() } throws NetworkException()
+            coEvery { categoryApiService.getMovieCategories() } throws NetworkException()
 
             // When & Then
             assertThrows<NetworkException> {
@@ -120,38 +96,44 @@ class CategoryRemoteDataSourceImplTest {
         }
 
     @Test
-    fun `getTvShowCategories should rethrow ServerErrorException from service provider when exception occurs`() =
-        runTest {
-            // Given
-            coEvery { categoryServiceProvider.getTvShowCategories() } throws ServerErrorException()
-
-            // When & Then
-            assertThrows<ServerErrorException> {
-                categoryRemoteDataSourceImpl.getTvShowCategories()
-            }
-        }
-
-    @Test
-    fun `getTvShowCategories should rethrow NoInternetException from service provider when exception occurs`() =
-        runTest {
-            // Given
-            coEvery { categoryServiceProvider.getTvShowCategories() } throws NoInternetException()
-
-            // When & Then
-            assertThrows<NoInternetException> {
-                categoryRemoteDataSourceImpl.getTvShowCategories()
-            }
-        }
-
-    @Test
     fun `getTvShowCategories should rethrow NetworkException from service provider when exception occurs`() =
         runTest {
             // Given
-            coEvery { categoryServiceProvider.getTvShowCategories() } throws NetworkException()
+            coEvery { categoryApiService.getTvShowCategories() } throws NetworkException()
 
             // When & Then
             assertThrows<NetworkException> {
                 categoryRemoteDataSourceImpl.getTvShowCategories()
             }
         }
+
+    @Test
+    fun `getMovieCategories should call CategoryApiService`() = runTest {
+        // Given
+        val dummyResponse =
+            RemoteCategoryResponse(emptyList())
+        coEvery { categoryApiService.getMovieCategories() } returns dummyResponse
+
+        // When
+        val result = categoryApiService.getMovieCategories()
+
+        // Then
+        coVerify(exactly = 1) { categoryApiService.getMovieCategories() }
+        assertThat(result).isEqualTo(dummyResponse)
+    }
+
+    @Test
+    fun `getTvShowCategories should call CategoryApiService`() = runTest {
+        // Given
+        val dummyResponse =
+            RemoteCategoryResponse(emptyList())
+        coEvery { categoryApiService.getTvShowCategories() } returns dummyResponse
+
+        // When
+        val result = categoryApiService.getTvShowCategories()
+
+        // Then
+        coVerify(exactly = 1) { categoryApiService.getTvShowCategories() }
+        assertThat(result).isEqualTo(dummyResponse)
+    }
 }

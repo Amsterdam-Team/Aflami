@@ -5,8 +5,9 @@ import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import javax.inject.Inject
 
-class ContinueWatchingUiStateMapper {
+class ContinueWatchingUiStateMapper @Inject constructor(){
     @SuppressLint("DefaultLocale")
     fun movieToMediaItemUiState(movie: Movie): MediaItemUiState {
         return MediaItemUiState(

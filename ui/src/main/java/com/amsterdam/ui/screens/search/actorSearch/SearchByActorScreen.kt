@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
@@ -56,12 +57,11 @@ import com.amsterdam.viewmodel.search.actorSearch.ActorSearchInteractionListener
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByActorScreen(
     modifier: Modifier = Modifier,
-    viewModel: ActorSearchViewModel = koinViewModel(),
+    viewModel: ActorSearchViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val movies = uiState.value.movies.collectAsLazyPagingItems()
@@ -133,7 +133,7 @@ private fun SearchByActorContent(
             targetState = state,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
-                    fadeOut(animationSpec = tween(300))
+                        fadeOut(animationSpec = tween(300))
             },
             label = "Content Animation",
         ) { targetState ->

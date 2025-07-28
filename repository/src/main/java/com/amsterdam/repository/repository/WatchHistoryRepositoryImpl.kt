@@ -12,8 +12,9 @@ import com.amsterdam.repository.mapper.local.TvShowLocalMapper
 import com.amsterdam.repository.mapper.local.TvShowWatchHistoryMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class WatchHistoryRepositoryImpl(
+class WatchHistoryRepositoryImpl @Inject constructor(
     private val watchHistoryLocalDataSource: WatchHistoryLocalDataSource,
     private val movieLocalMapper: MovieLocalMapper,
     private val tvLocalMapper: TvShowLocalMapper,
