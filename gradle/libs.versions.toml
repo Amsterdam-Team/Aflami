@@ -6,6 +6,7 @@ javaxInject = "1"
 minSdk = "26"
 targetSdk = "36"
 compileSdk = "36"
+turbine = "1.2.1"
 versionCode = "1"
 versionName = "1.0"
 jvmTarget = "11"
@@ -117,6 +118,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 jupiter-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 [plugins]
