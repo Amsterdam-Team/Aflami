@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.search.keywordSearch
 
-import android.R.attr.rating
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -81,18 +80,20 @@ class SearchViewModel(
                             getAndFilterMoviesByKeywordUseCase(
                                 keyword = keyword,
                                 page = page,
+                                rating = state.value.movieFilterItemUiState.selectedStarIndex,
+                                movieGenre = state.value.movieFilterItemUiState.selectableMovieGenres.getSelectedGenreType()
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
-            onError = {},
+            onError = ::onFetchError,
         )
     }
 
     private fun onFetchMoviesSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
-        applyMoviesFilter()
         updateState { it.copy(movies = movies) }
     }
 
@@ -107,24 +108,25 @@ class SearchViewModel(
                             getAndFilterTvShowsByKeywordUseCase(
                                 keyword = keyword,
                                 page = page,
-                                rating = rating,
+                                rating = state.value.tvShowFilterItemUiState.selectedStarIndex,
+                                tvGenre = state.value.tvShowFilterItemUiState.selectableTvShowGenres.getSelectedGenreType()
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
-            onError = {},
+            onError = ::onFetchError,
         )
     }
 
     private fun onFetchTvShowsSuccess(tvShows: Flow<PagingData<TvShowItemUiState>>) {
-        applyTvShowsFilter()
         updateState { it.copy(tvShows = tvShows) }
     }
 
     private fun applyMoviesFilter() {
-        val currentCategoryItemUiStates = state.value.filterItemUiState.selectableMovieGenres
+        val currentMovieFilterState = state.value.movieFilterItemUiState
         tryToExecute(
             action = {
                 Pager(
@@ -134,12 +136,13 @@ class SearchViewModel(
                             getAndFilterMoviesByKeywordUseCase(
                                 keyword = state.value.keyword,
                                 page = page,
-                                rating = state.value.filterItemUiState.selectedStarIndex,
-                                movieGenre = currentCategoryItemUiStates.getSelectedGenreType(),
+                                rating = currentMovieFilterState.selectedStarIndex,
+                                movieGenre = currentMovieFilterState.selectableMovieGenres.getSelectedGenreType(),
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFetchError,
@@ -151,13 +154,13 @@ class SearchViewModel(
         updateState {
             it.copy(
                 movies = movies,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                movieFilterItemUiState = it.movieFilterItemUiState.copy(isLoading = false),
             )
         }
     }
 
     private fun applyTvShowsFilter() {
-        val currentGenreItemUiStates = state.value.filterItemUiState.selectableTvShowGenres
+        val currentTvShowFilterState = state.value.tvShowFilterItemUiState
         tryToExecute(
             action = {
                 Pager(
@@ -167,8 +170,8 @@ class SearchViewModel(
                             getAndFilterTvShowsByKeywordUseCase(
                                 keyword = state.value.keyword,
                                 page = page,
-                                rating = state.value.filterItemUiState.selectedStarIndex,
-                                tvGenre = currentGenreItemUiStates.getSelectedGenreType(),
+                                rating = currentTvShowFilterState.selectedStarIndex,
+                                tvGenre = currentTvShowFilterState.selectableTvShowGenres.getSelectedGenreType(),
                             )
                         }
                     },
@@ -187,7 +190,7 @@ class SearchViewModel(
         updateState {
             it.copy(
                 tvShows = tvShows,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                tvShowFilterItemUiState = it.tvShowFilterItemUiState.copy(isLoading = false),
             )
         }
     }
@@ -196,7 +199,14 @@ class SearchViewModel(
         updateState { it.copy(errorUiState = SearchErrorState.toSearchErrorState(exception)) }
     }
 
-    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() {
+        updateState { currentState ->
+            when (currentState.selectedTabOption) {
+                TabOption.MOVIES -> currentState.copy(movieFilterItemUiState = FilterItemUiState())
+                TabOption.TV_SHOWS -> currentState.copy(tvShowFilterItemUiState = FilterItemUiState())
+            }
+        }
+    }
 
     private fun startLoading() = updateState { it.copy(isLoading = true) }
 
@@ -233,10 +243,7 @@ class SearchViewModel(
         updateState {
             it.copy(
                 selectedTabOption = tabOption,
-                movies = state.value.movies,
-                tvShows = state.value.tvShows,
                 isLoading = true,
-                filterItemUiState = FilterItemUiState(),
             )
         }
         onSearchKeywordChanged(_keyword.value)
@@ -271,7 +278,8 @@ class SearchViewModel(
             currentState.copy(
                 keyword = "",
                 isDialogVisible = false,
-                filterItemUiState = FilterItemUiState(),
+                movieFilterItemUiState = FilterItemUiState(),
+                tvShowFilterItemUiState = FilterItemUiState(),
             )
         }
     }
@@ -314,16 +322,30 @@ class SearchViewModel(
     }
 
     override fun onChangeRatingStar(ratingIndex: Int) {
-        updateState { it.copy(filterItemUiState = it.filterItemUiState.copy(selectedStarIndex = ratingIndex)) }
+        updateState { currentState ->
+            when (currentState.selectedTabOption) {
+                TabOption.MOVIES -> currentState.copy(
+                    movieFilterItemUiState = currentState.movieFilterItemUiState.copy(
+                        selectedStarIndex = ratingIndex
+                    )
+                )
+
+                TabOption.TV_SHOWS -> currentState.copy(
+                    tvShowFilterItemUiState = currentState.tvShowFilterItemUiState.copy(
+                        selectedStarIndex = ratingIndex
+                    )
+                )
+            }
+        }
     }
 
     override fun onChangeMovieGenre(genreType: MovieGenre) {
         updateState {
             it.copy(
-                filterItemUiState =
-                    state.value.filterItemUiState.copy(
+                movieFilterItemUiState =
+                    state.value.movieFilterItemUiState.copy(
                         selectableMovieGenres =
-                            it.filterItemUiState.selectableMovieGenres.selectByMovieGenre(
+                            it.movieFilterItemUiState.selectableMovieGenres.selectByMovieGenre(
                                 genreType,
                             ),
                     ),
@@ -334,10 +356,10 @@ class SearchViewModel(
     override fun onChangeTvShowGenre(genreType: TvShowGenre) {
         updateState {
             it.copy(
-                filterItemUiState =
-                    state.value.filterItemUiState.copy(
+                tvShowFilterItemUiState =
+                    state.value.tvShowFilterItemUiState.copy(
                         selectableTvShowGenres =
-                            it.filterItemUiState.selectableTvShowGenres.selectByTvGenre(
+                            it.tvShowFilterItemUiState.selectableTvShowGenres.selectByTvGenre(
                                 genreType,
                             ),
                     ),
@@ -349,16 +371,22 @@ class SearchViewModel(
         updateState {
             it.copy(
                 isDialogVisible = false,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false),
+                movieFilterItemUiState = it.movieFilterItemUiState.copy(isLoading = false),
+                tvShowFilterItemUiState = it.tvShowFilterItemUiState.copy(isLoading = false),
             )
         }
     }
 
     override fun onClickApply() {
-        updateState {
-            it.copy(
-                filterItemUiState = it.filterItemUiState.copy(isLoading = true),
+        updateState { currentState ->
+            currentState.copy(
                 isDialogVisible = false,
+                movieFilterItemUiState = if (currentState.selectedTabOption == TabOption.MOVIES) currentState.movieFilterItemUiState.copy(
+                    isLoading = true
+                ) else currentState.movieFilterItemUiState,
+                tvShowFilterItemUiState = if (currentState.selectedTabOption == TabOption.TV_SHOWS) currentState.tvShowFilterItemUiState.copy(
+                    isLoading = true
+                ) else currentState.tvShowFilterItemUiState,
             )
         }
 
