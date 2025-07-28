@@ -2,19 +2,18 @@ package com.amsterdam.viewmodel.baseViewModel
 
 import app.cash.turbine.test
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import kotlin.test.Test
@@ -41,7 +40,7 @@ class BaseViewModelTest {
 
     @Test
     fun `initial state should be zero`() = runTest {
-        assertEquals(0, testViewModel.state.value)
+        assertThat(testViewModel.state.value, equalTo(0))
     }
 
     @Test
@@ -55,14 +54,15 @@ class BaseViewModelTest {
         testViewModel.increment(1)
         advanceUntilIdle()
         job.cancel()
-        assertEquals(1, emissionCount)
+        assertThat(emissionCount, equalTo(1))
     }
+
     @Test
     fun `sendNewEffect should emit correct effect`() = runTest {
         val expectedEffect = "TestEffect"
         val job = launch {
             testViewModel.effect.collect {
-                assertEquals(expectedEffect, it)
+                assertThat(it, equalTo(expectedEffect))
             }
         }
         testViewModel.sendTestEffect(expectedEffect)
@@ -75,19 +75,7 @@ class BaseViewModelTest {
         val job = launch {
             testViewModel.effect.test {
                 testViewModel.executeWithError()
-                assertEquals("Error", awaitItem())
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-        advanceUntilIdle()
-        job.cancel()
-    }
-    @Test
-    fun `tryToExecute should emit  effect when exception thrown`() = runTest {
-        val job = launch {
-            testViewModel.effect.test {
-                testViewModel.executeWithSuccess()
-                assertEquals("Success", awaitItem())
+                assertThat(awaitItem(), equalTo("Error"))
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -95,4 +83,16 @@ class BaseViewModelTest {
         job.cancel()
     }
 
+    @Test
+    fun `tryToExecute should emit effect when exception not thrown`() = runTest {
+        val job = launch {
+            testViewModel.effect.test {
+                testViewModel.executeWithSuccess()
+                assertThat(awaitItem(), equalTo("Success"))
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+        advanceUntilIdle()
+        job.cancel()
+    }
 }
