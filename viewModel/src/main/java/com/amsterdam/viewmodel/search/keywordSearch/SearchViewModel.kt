@@ -89,7 +89,7 @@ class SearchViewModel(
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
-            onError = ::onFetchError,
+            onError = {},
         )
     }
 
@@ -117,7 +117,7 @@ class SearchViewModel(
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
-            onError = ::onFetchError,
+            onError = {},
         )
     }
 
@@ -142,10 +142,9 @@ class SearchViewModel(
                         }
                     },
                 ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
-                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onMoviesFilteredSuccess,
-            onError = ::onFetchError,
+            onError = {},
             onCompletion = ::onClickCancel,
         )
     }
