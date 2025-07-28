@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -48,10 +49,20 @@ fun Chip(
     val iconColor = if (isSelected) colors.iconSelectedColor else colors.iconUnselectedColor
     val labelColor = if (isSelected) colors.labelSelectedColor else colors.labelUnselectedColor
     val borderColor = if (isSelected) colors.borderSelectedColor else colors.borderUnselectedColor
+
+    val formattedLabel = remember(label) {
+        val words = label.split(" ")
+        if (words.size > 1) {
+            "${words.dropLast(1).joinToString(" ")}\n${words.last()}"
+        } else {
+            label
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
+        modifier = modifier.heightIn(min = 96.dp),
     ) {
         Box(
             modifier =
@@ -78,7 +89,7 @@ fun Chip(
             )
         }
         Text(
-            text = label,
+            text = formattedLabel,
             color = labelColor,
             style = AppTheme.textStyle.label.small,
             textAlign = TextAlign.Center,
@@ -92,13 +103,31 @@ fun Chip(
 @Composable
 private fun ChipPreview() {
     AflamiTheme {
-        Chip(
-            icon =
-                painterResource(
-                    R.drawable.ic_menu_square,
-                ),
-            label = "Documentary",
-            isSelected = true,
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Chip(
+                icon =
+                    painterResource(
+                        R.drawable.ic_menu_square,
+                    ),
+                label = "Science Fiction",
+                isSelected = true,
+            )
+            Chip(
+                icon =
+                    painterResource(
+                        R.drawable.ic_menu_square,
+                    ),
+                label = "Action",
+                isSelected = false,
+            )
+            Chip(
+                icon =
+                    painterResource(
+                        R.drawable.ic_menu_square,
+                    ),
+                label = "Action Adventure",
+                isSelected = false,
+            )
+        }
     }
 }
