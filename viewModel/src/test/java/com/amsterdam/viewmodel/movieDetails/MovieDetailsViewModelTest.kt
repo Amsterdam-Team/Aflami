@@ -2,6 +2,7 @@ package com.amsterdam.viewmodel.movieDetails
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
+import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.shared.Selectable
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test
 class MovieDetailsViewModelTest {
 
     private lateinit var viewModel: MovieDetailsViewModel
+    private val getsSessionType: GetsSessionType = mockk(relaxed = true)
     private val testDispatcherProvider = TestDispatcherProvider()
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase = mockk(relaxed = true)
     private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper = mockk(relaxed = true)
@@ -37,6 +39,7 @@ class MovieDetailsViewModelTest {
             args = testArgs,
             movieDetailsUiStateMapper = movieDetailsUiStateMapper,
             getMovieDetailsUseCase = getMovieDetailsUseCase,
+            getsSessionType,
             testDispatcherProvider
         )
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
@@ -58,6 +61,7 @@ class MovieDetailsViewModelTest {
             args = testArgs,
             movieDetailsUiStateMapper = movieDetailsUiStateMapper,
             getMovieDetailsUseCase = getMovieDetailsUseCase,
+            getsSessionType,
             testDispatcherProvider
         )
         advanceUntilIdle()
@@ -75,6 +79,7 @@ class MovieDetailsViewModelTest {
             args = testArgs,
             movieDetailsUiStateMapper = movieDetailsUiStateMapper,
             getMovieDetailsUseCase = getMovieDetailsUseCase,
+            getsSessionType,
             testDispatcherProvider
         )
         advanceUntilIdle()
@@ -91,6 +96,7 @@ class MovieDetailsViewModelTest {
             args = testArgs,
             movieDetailsUiStateMapper = movieDetailsUiStateMapper,
             getMovieDetailsUseCase = getMovieDetailsUseCase,
+            getsSessionType,
             testDispatcherProvider
         )
         advanceUntilIdle()
@@ -103,12 +109,13 @@ class MovieDetailsViewModelTest {
     fun `init should not do any thing for now when received unknown error`() = runTest {
         //Given
         coEvery { getMovieDetailsUseCase.invoke(any()) } throws AflamiException()
-        val defultState  = MovieDetailsUiState()
+        val defultState = MovieDetailsUiState()
         //When
         viewModel = MovieDetailsViewModel(
             args = testArgs,
             movieDetailsUiStateMapper = movieDetailsUiStateMapper,
             getMovieDetailsUseCase = getMovieDetailsUseCase,
+            getsSessionType,
             testDispatcherProvider
         )
         advanceUntilIdle()
@@ -132,6 +139,7 @@ class MovieDetailsViewModelTest {
                 args = testArgs,
                 movieDetailsUiStateMapper = movieDetailsUiStateMapper,
                 getMovieDetailsUseCase = getMovieDetailsUseCase,
+                getsSessionType,
                 testDispatcherProvider
             )
             //When
@@ -165,16 +173,65 @@ class MovieDetailsViewModelTest {
         collectJob.cancel()
         assertThat(effects.first()).isEqualTo(MovieDetailsEffect.NavigateBackEffect)
     }
+
     @Test
-    fun `onClickRetryRequest should call the use case to get the movie details data`() = runTest{
+    fun `onClickRetryRequest should call the use case to get the movie details data`() = runTest {
         //When
         advanceUntilIdle()
         viewModel.onClickRetryRequest()
         advanceUntilIdle()
         //Then
-        coVerify (exactly = 2){
+        coVerify(exactly = 2) {
             getMovieDetailsUseCase.invoke(0L)
         }
+    }
+
+    @Test
+    fun `onRateClicked should call the use case to get the movie details data`() = runTest {
+        //When
+        advanceUntilIdle()
+        viewModel.onRateClicked()
+        advanceUntilIdle()
+        //Then
+        coVerify(exactly = 1) {
+            getMovieDetailsUseCase.invoke(0L)
+        }
+    }
+
+    @Test
+    fun `onAddToListClicked should call the use case to get the movie details data`() = runTest {
+        //When
+        advanceUntilIdle()
+        viewModel.onAddToListClicked()
+        advanceUntilIdle()
+        //Then
+        coVerify(exactly = 1) {
+            getMovieDetailsUseCase.invoke(0L)
+        }
+
+    }
+
+    @Test
+    fun `onNavigateToLoginClicked should send NavigateToLoginScreenEffect when its call`() =
+        runTest {
+            val effects = mutableListOf<MovieDetailsEffect>()
+            val collectJob = launch {
+                viewModel.effect.collect { effects.add(it!!) }
+            }
+            viewModel.onNavigateToLoginClicked()
+            advanceUntilIdle()
+            collectJob.cancel()
+            assertThat(effects.first()).isEqualTo(MovieDetailsEffect.NavigateToLoginScreenEffect)
+        }
+
+    @Test
+    fun `onCancelClicked should hide the login dialog when its call`() = runTest {
+        //When
+        advanceUntilIdle()
+        viewModel.onCancelClicked()
+        advanceUntilIdle()
+        //Then
+        assertThat(viewModel.state.value.isLoginDialogVisible).isFalse()
     }
 
 }

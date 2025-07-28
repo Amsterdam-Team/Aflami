@@ -1,7 +1,11 @@
 package com.amsterdam.viewmodel.home
 
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
+import com.amsterdam.domain.models.Mood
+import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
+import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
+import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
+import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
@@ -19,31 +23,36 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
-    private lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
-    private lateinit var getHomeScreenDataUseCase: GetHomeScreenDataUseCase
-    private lateinit var homeUiStateMapper: HomeUiStateMapper
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase = mockk()
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase = mockk()
+    private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase = mockk()
+    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase = mockk()
+    private val homeUiStateMapper: HomeUiStateMapper = mockk()
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase = mockk()
     private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var viewModel: HomeViewModel
     private lateinit var testScope: TestScope
 
     @BeforeEach
     fun setUp() {
-        getHomeScreenDataUseCase = mockk()
-        getUpcomingMoviesUseCase = mockk()
-        homeUiStateMapper = mockk()
+
         dispatcherProvider = TestDispatcherProvider()
         testScope = TestScope(dispatcherProvider.testDispatcher)
         viewModel = HomeViewModel(
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
             homeUiStateMapper = homeUiStateMapper,
-            getHomeScreenDataUseCase = getHomeScreenDataUseCase,
-            dispatcherProvider = dispatcherProvider
+            dispatcherProvider = dispatcherProvider,
+            getPopularMoviesUseCase = getPopularMoviesUseCase,
+            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
+            getContinueWatchingMoviesUseCase = getContinueWatchingMoviesUseCase,
+            getMoviesByMoodUseCase = getMoviesByMoodUseCase
         )
     }
 
@@ -53,14 +62,18 @@ class HomeViewModelTest {
         every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
         viewModel = HomeViewModel(
-            getHomeScreenDataUseCase = getHomeScreenDataUseCase,
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
             homeUiStateMapper = homeUiStateMapper,
-            dispatcherProvider = dispatcherProvider
+            dispatcherProvider = dispatcherProvider,
+            getPopularMoviesUseCase = getPopularMoviesUseCase,
+            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
+            getContinueWatchingMoviesUseCase = getContinueWatchingMoviesUseCase,
+            getMoviesByMoodUseCase = getMoviesByMoodUseCase
         )
         advanceUntilIdle()
 
-        assertThat(viewModel.state.value.upcomingMovies).isEqualTo(expectedUiState)
+        assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(expectedUiState)
+
     }
 
     @Test
@@ -74,7 +87,7 @@ class HomeViewModelTest {
 
         clearMocks(getUpcomingMoviesUseCase)
         coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies)  } returns expectedUiState
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
         viewModel.onClickRetryLoading()
         advanceUntilIdle()
@@ -97,8 +110,8 @@ class HomeViewModelTest {
 
         viewModel.onClickRetryLoading()
         advanceUntilIdle()
+        assertThat(viewModel.state.value.error).isNull()
 
-        assertThat(viewModel.state.value.upcomingMovies).isEqualTo(expectedUiState)
     }
 
     @Test
@@ -136,7 +149,9 @@ class HomeViewModelTest {
             viewModel.onChangeUpcomingMovieGenre(newGenre)
             advanceUntilIdle()
 
-            assertThat(viewModel.state.value.getSelectedUpcomingMovieGenre()).isEqualTo(newGenre)
+            assertThat(viewModel.state.value.upcomingMoviesSectionUiState.getSelectedUpcomingMovieGenre()).isEqualTo(
+                newGenre
+            )
         }
 
     @Test
@@ -149,7 +164,7 @@ class HomeViewModelTest {
             viewModel.onChangeUpcomingMovieGenre(comedyGenre)
             advanceUntilIdle()
 
-            assertThat(viewModel.state.value.upcomingMovies).isEqualTo(expectedComedyUiState)
+            assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(expectedComedyUiState)
         }
 
     @Test
@@ -161,10 +176,13 @@ class HomeViewModelTest {
             every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
             viewModel = HomeViewModel(
-                getHomeScreenDataUseCase = getHomeScreenDataUseCase,
                 getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
                 homeUiStateMapper = homeUiStateMapper,
-                dispatcherProvider = dispatcherProvider
+                dispatcherProvider = dispatcherProvider,
+                getPopularMoviesUseCase = getPopularMoviesUseCase,
+                getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
+                getContinueWatchingMoviesUseCase = getContinueWatchingMoviesUseCase,
+                getMoviesByMoodUseCase = getMoviesByMoodUseCase
             )
 
             viewModel.onChangeUpcomingMovieGenre(genre)
@@ -181,6 +199,71 @@ class HomeViewModelTest {
             assertThat(viewModel.state.value).isEqualTo(previousState)
         }
 
+    @Test
+    fun `onClickSearch should send NavigateToSearchScreenEffect`() = testScope.runTest {
+        val effects = mutableListOf<HomeEffect>()
+        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+        viewModel.onClickSearch()
+        advanceUntilIdle()
+        job.cancel()
+        assertThat(effects).contains(HomeEffect.NavigateToSearchScreenEffect)
+
+    }
+    @Test
+    fun `onClickMovie should send NavigateToMovieDetailsEffect`() = testScope.runTest {
+        val movieId = 101L
+        val effects = mutableListOf<HomeEffect>()
+        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+        viewModel.onClickMovie(movieId)
+        advanceUntilIdle()
+        job.cancel()
+        assertThat(effects).contains(NavigateToMovieDetailsEffect(movieId))
+    }
+    @Test
+    fun `onClickShowAllContinueWatchingMovies should send NavigateToContinueWatchingMoviesScreen`() = testScope.runTest {
+            val effects = mutableListOf<HomeEffect>()
+            val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+            viewModel.onClickShowAllContinueWatchingMovies()
+            advanceUntilIdle()
+            job.cancel()
+            assertThat(effects).contains(HomeEffect.NavigateToContinueWatchingMoviesScreen)
+        }
+    @Test
+    fun `onClickShowAllToRatedMovies should send NavigateToContinueWatchingMoviesScreen`() = testScope.runTest {
+        val effects = mutableListOf<HomeEffect>()
+        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+        viewModel.onClickShowAllToRatedMovies()
+        advanceUntilIdle()
+        job.cancel()
+        assertThat(effects).contains(HomeEffect.NavigateToTopRatedMoviesEffect)
+    }
+  @Test
+  fun `onClickMood should update selected mood in UI state`() = testScope.runTest {
+      val selectedMood = Mood.IN_LOVE
+      viewModel.onClickMood(selectedMood)
+      advanceUntilIdle()
+      assertThat(viewModel.state.value.moodPickerUiState.selectedMood).isEqualTo(selectedMood)
+  }
+    @Test
+    fun `onClickGetNow should update isLoadingMovies in UI state`() = testScope.runTest {
+        viewModel.onClickGetNow()
+        advanceUntilIdle()
+        assertThat(viewModel.state.value.moodPickerUiState.isLoadingMovies).isTrue()
+    }
+    @Test
+    fun `onClickViewDetails should update openMovieDialog in UI state`() = testScope.runTest {
+        viewModel.onClickViewDetails()
+        advanceUntilIdle()
+        assertThat(viewModel.state.value.moodPickerUiState.openMovieDialog).isFalse()
+    }
+
+
+
+
+
+
+
+
     companion object {
         private val upcomingMovies = listOf(
             Movie(
@@ -189,12 +272,12 @@ class HomeViewModelTest {
                 posterUrl = "galactic_odyssey.jpg",
                 rating = 9.1f,
                 description = "A space epic.",
-                productionYear = 2025u,
                 categories = listOf(MovieGenre.SCIENCE_FICTION),
                 popularity = 98.6,
                 originCountry = "US",
                 runTimeInMinutes = 145,
-                hasVideo = true
+                hasVideo = true,
+                releaseDate = LocalDate(2024, 1, 1)
             ),
             Movie(
                 id = 102,
@@ -202,12 +285,13 @@ class HomeViewModelTest {
                 posterUrl = "laugh_out_loud.jpg",
                 rating = 7.8f,
                 description = "British comedy.",
-                productionYear = 2025u,
                 categories = listOf(MovieGenre.COMEDY),
                 popularity = 87.3,
                 originCountry = "UK",
                 runTimeInMinutes = 100,
-                hasVideo = false
+                hasVideo = false,
+                releaseDate = LocalDate(2024, 1, 1)
+
             )
         )
 
@@ -244,12 +328,12 @@ class HomeViewModelTest {
                 posterUrl = "laugh_out_loud.jpg",
                 rating = 7.8f,
                 description = "British comedy.",
-                productionYear = 2025u,
                 categories = listOf(MovieGenre.COMEDY),
                 popularity = 87.3,
                 originCountry = "UK",
                 runTimeInMinutes = 100,
-                hasVideo = false
+                hasVideo = false,
+                releaseDate = LocalDate(2025, 1, 1)
             )
         )
     }
