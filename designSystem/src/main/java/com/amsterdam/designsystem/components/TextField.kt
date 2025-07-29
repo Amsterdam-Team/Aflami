@@ -103,13 +103,15 @@ fun TextField(
                         width = 1.dp,
                         color = currentBorderColor,
                         shape = RoundedCornerShape(16.dp),
-                    ).clip(shape = RoundedCornerShape(16.dp))
+                    )
+                    .clip(shape = RoundedCornerShape(16.dp))
                     .clipToBounds()
                     .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
                     .defaultMinSize(minHeight = 56.dp)
                     .then(
                         if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier,
-                    ).then(
+                    )
+                    .then(
                         if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier,
                     ),
             verticalAlignment = Alignment.Top,
@@ -141,7 +143,7 @@ fun TextField(
                         .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = AppTheme.color.title),
                 singleLine = true,
-                visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
+                visualTransformation = if (isObscured) PasswordVisualTransformation('*') else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 },
@@ -178,6 +180,7 @@ private fun RowScope.InnerTextFieldWithHint(
         modifier =
             Modifier
                 .padding(vertical = 5.dp)
+                .background(Color.Transparent)
                 .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
         contentAlignment = Alignment.CenterStart,
     ) {
@@ -194,6 +197,7 @@ private fun RowScope.InnerTextFieldWithHint(
         }
     }
 }
+
 
 @Composable
 private fun VerticalDivider() {
@@ -250,7 +254,8 @@ private fun TrailingIcon(
                         } else {
                             Modifier
                         },
-                    ).padding(vertical = 16.dp)
+                    )
+                    .padding(vertical = 16.dp)
                     .padding(start = 12.dp, end = 16.dp)
                     .size(24.dp),
         )
@@ -279,7 +284,8 @@ private fun ColumnScope.AnimatedErrorBox(
                                 tailOffsetDp = 8.dp,
                                 isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl,
                             ),
-                    ).padding(bottom = 4.dp),
+                    )
+                    .padding(bottom = 4.dp),
         ) {
             Text(
                 text = message,

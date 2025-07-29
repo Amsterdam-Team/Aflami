@@ -41,7 +41,6 @@ import com.amsterdam.ui.screens.login.components.getPasswordErrorMessage
 import com.amsterdam.ui.screens.login.components.getPasswordTextFieldIcon
 import com.amsterdam.ui.screens.login.components.getUserNameErrorMessage
 import com.amsterdam.ui.utils.safeNavigate
-import com.amsterdam.ui.utils.safeNavigateToTab
 import com.amsterdam.viewmodel.login.LoginEffect
 import com.amsterdam.viewmodel.login.LoginInteractionListener
 import com.amsterdam.viewmodel.login.LoginUiState
@@ -54,13 +53,12 @@ fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
-    val usernameOrPasswordError = stringResource(R.string.incorrect_username_or_password)
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             effect?.let {
                 when (it) {
                     LoginEffect.NavigateToHome -> {
-                        navController.navigate(Route.Tab.Home){
+                        navController.navigate(Route.Tab.Home) {
                             popUpTo(0)
                         }
                     }
