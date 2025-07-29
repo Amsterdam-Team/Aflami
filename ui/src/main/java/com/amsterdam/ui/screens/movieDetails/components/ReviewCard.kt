@@ -47,7 +47,8 @@ fun ReviewCard(
                         strokeWidth = strokeWidth,
                         cap = Stroke.DefaultCap,
                     )
-                }.padding(horizontal = 16.dp, vertical = 12.dp),
+                }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             SafeImageView(
@@ -86,6 +87,7 @@ fun ReviewCard(
         }
         ExpandableText(
             text = review.content,
+            textColor = AppTheme.color.body,
             modifier = Modifier.padding(top = 12.dp),
         )
         Text(
