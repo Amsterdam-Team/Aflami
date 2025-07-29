@@ -80,7 +80,7 @@ class MovieDetailsUiStateMapper @Inject constructor() {
         val day = date.dayOfMonth.toString().padStart(2, '0')
         val month = date.monthNumber.toString().padStart(2, '0')
         val year = date.year.toString()
-        return "$year-$month-$day"
+        return "$day-$month-$year"
     }
 
     fun ratingToRatingString(rating: Float): String {
