@@ -1,5 +1,6 @@
 package com.amsterdam.ui.screens.movieDetails.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,7 +56,12 @@ fun ReviewCard(
                 modifier =
                     Modifier
                         .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp)),
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            width = 1.dp,
+                            color = strokeColor,
+                            shape = RoundedCornerShape(12.dp),
+                        ),
                 contentDescription = review.author,
                 model =
                     review.imageUrl
