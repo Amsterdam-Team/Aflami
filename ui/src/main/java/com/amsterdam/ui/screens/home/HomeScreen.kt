@@ -134,13 +134,6 @@ private fun HomeScreenContent(
             .navigationBarsPadding()
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
-            HomeAppBar(
-                modifier = Modifier
-                    .background(appBarColor)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                onSearchClicked = interactionListener::onClickSearch,
-            )
             AnimatedSectionVisibility(
                 visible = true,
                 modifier = Modifier
