@@ -25,12 +25,12 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
 import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,7 +87,8 @@ class SearchViewModel @Inject constructor(
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
             onError = {},
@@ -114,7 +115,8 @@ class SearchViewModel @Inject constructor(
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = {},
@@ -142,7 +144,8 @@ class SearchViewModel @Inject constructor(
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onMoviesFilteredSuccess,
             onError = ::onFetchError,
@@ -199,7 +202,8 @@ class SearchViewModel @Inject constructor(
         updateState { it.copy(errorUiState = SearchErrorState.toSearchErrorState(exception)) }
     }
 
-    private fun resetFilterState() = updateState { it.copy(filterItemUiState = FilterItemUiState()) }
+    private fun resetFilterState() =
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
 
     private fun startLoading() = updateState { it.copy(isLoading = true) }
 
@@ -207,6 +211,15 @@ class SearchViewModel @Inject constructor(
         _keyword.update { oldText -> keyword }
         updateState { it.copy(keyword = keyword) }
     }
+
+    override fun onTriggerSearch() {
+        val keyword = _keyword.value.trim()
+        _keyword.value = keyword
+        if (keyword.isBlank()) return
+        startLoading()
+        onSearchKeywordChanged(keyword)
+    }
+
 
     override fun onSaveSearchHistory() {
         if (state.value.keyword.isBlank()) return

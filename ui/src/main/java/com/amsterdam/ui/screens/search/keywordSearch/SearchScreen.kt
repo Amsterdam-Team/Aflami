@@ -148,6 +148,8 @@ private fun SearchContent(
             onHeaderSizeChanged = {
                 headerHeight = it.height.dp
             },
+            onSearchConfirmed = interaction::onTriggerSearch,
+
         )
 
         AnimatedVisibility(
@@ -340,6 +342,7 @@ private fun SearchScreenHeader(
     selectedTabOption: TabOption,
     onNavigateBackClicked: () -> Unit,
     onKeywordValuedChanged: (String) -> Unit,
+    onSearchConfirmed: () -> Unit,
     onFilterButtonClicked: () -> Unit,
     onTabOptionClicked: (TabOption) -> Unit,
     onSaveSearchHistory: () -> Unit,
@@ -377,6 +380,7 @@ private fun SearchScreenHeader(
                         keyboardController?.hide()
                         onKeywordValuedChanged(keyword)
                         onSaveSearchHistory()
+                        onSearchConfirmed()
                     },
                 ),
             imeAction = ImeAction.Search,

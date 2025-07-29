@@ -7,6 +7,7 @@ import com.amsterdam.entity.category.TvShowGenre
 interface SearchInteractionListener {
     fun onClickNavigateBack()
     fun onChangeSearchKeyword(keyword: String)
+    fun onTriggerSearch()
     fun onSaveSearchHistory()
     fun onClickFilterButton()
     fun onClickWorldSearchCard()
