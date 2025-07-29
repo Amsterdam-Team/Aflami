@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.components.ExpandableText
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
@@ -48,8 +49,7 @@ fun ReviewCard(
                         strokeWidth = strokeWidth,
                         cap = Stroke.DefaultCap,
                     )
-                }
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                }.padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             SafeImageView(
@@ -79,14 +79,17 @@ fun ReviewCard(
                 Text(
                     text = review.author,
                     maxLines = 1,
-                    style = AppTheme.textStyle.title.medium,
+                    style =
+                        AppTheme.textStyle.title.medium,
                     overflow = TextOverflow.Ellipsis,
                     color = AppTheme.color.title,
+                    lineHeight = 28.sp,
                 )
                 Text(
                     text = review.username,
                     style = AppTheme.textStyle.label.small,
                     color = AppTheme.color.hint,
+                    lineHeight = 16.sp,
                 )
             }
             RatingChip(review.rating)

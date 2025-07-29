@@ -2,7 +2,7 @@ package com.amsterdam.designsystem.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,10 +82,14 @@ fun ExpandableText(
         }
     }
 
-    BasicText(
+    Text(
         text = annotatedText,
-        modifier = modifier.fillMaxWidth().animateContentSize(),
-        maxLines = if (isExpanded) Int.MAX_VALUE else minimizedMaxLines,
+        style = style,
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .animateContentSize(),
+            maxLines = if (isExpanded) Int.MAX_VALUE else minimizedMaxLines,
         onTextLayout = { textLayoutResult ->
             if (!isExpanded && textLayoutResult.hasVisualOverflow) {
                 isClickable = true
