@@ -146,8 +146,8 @@ class TvShowRepositoryImpl @Inject constructor(
         return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows().results)
     }
 
-    override suspend fun getTopRatedTvShows(): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getTopRatedTvShows().results)
+    override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getTopRatedTvShows(page).results)
     }
 
     private suspend fun getTvShowFromLocal(

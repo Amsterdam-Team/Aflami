@@ -1,9 +1,12 @@
 package com.amsterdam.viewmodel.topRated
 
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
+import androidx.paging.PagingData
+import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 data class TopRatedUiState(
-    val topRatedMediaItems: List<MediaItemUiState> = emptyList(),
+    val movies: Flow<PagingData<MovieItemUiState>> = emptyFlow(),
     val isLoading: Boolean = false,
     val error: TopRatedError? = null
 ) {

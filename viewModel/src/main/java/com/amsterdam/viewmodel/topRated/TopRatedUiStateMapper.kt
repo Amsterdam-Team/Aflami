@@ -1,22 +1,22 @@
 package com.amsterdam.viewmodel.topRated
 
 import android.annotation.SuppressLint
+import androidx.paging.PagingData
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase.TopRatedScreenData
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
+import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.getMixedItemsList
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TopRatedUiStateMapper @Inject constructor() {
     @SuppressLint("DefaultLocale")
-    fun toUiState(topRatedScreenData: TopRatedScreenData): TopRatedUiState {
+    fun toUiState(moviesPagingFlow: Flow<PagingData<MovieItemUiState>>): TopRatedUiState {
         return TopRatedUiState(
-            topRatedMediaItems = getTopRatedMediaItems(
-                topRatedScreenData.topRatedMovies,
-                topRatedScreenData.topRatedTvShows
-            )
+           movies =moviesPagingFlow
         )
     }
 

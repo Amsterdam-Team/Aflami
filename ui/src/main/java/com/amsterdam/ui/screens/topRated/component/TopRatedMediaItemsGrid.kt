@@ -12,17 +12,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
+import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun TopRatedMediaItemsGrid(
-    topRatedMediaItems: List<MediaItemUiState>,
     onClickMediaItem: (Long, MediaType) -> Unit,
+    movies: LazyPagingItems<MovieItemUiState>,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
 ) {
@@ -35,19 +41,19 @@ fun TopRatedMediaItemsGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(topRatedMediaItems) { item ->
-            val movieType =
-                if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
-                else stringResource(com.amsterdam.ui.R.string.tv)
-
+        items(
+            count = movies.itemCount,
+            key = { index -> "${movies[index]?.id}-$index" },
+        ) { index ->
+            val movie = movies[index] ?: return@items
             MovieCard(
-                movieImage = { MovieImage(item.posterImageUrl) },
-                movieType = movieType,
-                movieYear = item.yearOfRelease,
-                movieTitle = item.name,
-                movieRating = item.rate
+                movieImage = { MovieImage(movie.posterImageUrl) },
+                movieType = stringResource(R.string.movie),
+                movieYear = movie.yearOfRelease,
+                movieTitle = movie.name,
+                movieRating = movie.rate,
             ) {
-                onClickMediaItem(item.id, item.mediaType)
+               onClickMediaItem(movie.id, MediaType.MOVIE)
             }
         }
     }
@@ -57,18 +63,9 @@ fun TopRatedMediaItemsGrid(
 @Composable
 private fun TopRatedMoviesGridPreview() {
     AflamiTheme {
-        val mockMovies = List(4) { index ->
-            MediaItemUiState(
-                id = index.toLong(),
-                name = "Movie $index",
-                posterImageUrl = "",
-                yearOfRelease = "202${index}",
-                rate = (7 + index * 0.5).toString()
-            )
-        }
         TopRatedMediaItemsGrid(
-            topRatedMediaItems = mockMovies,
-            onClickMediaItem = { _, _ -> }
-        )
+            onClickMediaItem = { _, _ -> },
+            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
+            )
     }
 }

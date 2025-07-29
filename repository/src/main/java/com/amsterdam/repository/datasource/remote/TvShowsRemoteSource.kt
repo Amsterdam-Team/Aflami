@@ -11,7 +11,9 @@ import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 interface TvShowsRemoteSource {
 
     suspend fun getPopularTvShows(): RemoteTvShowResponse
-    suspend fun getTopRatedTvShows(): RemoteTvShowResponse
+    suspend fun getTopRatedTvShows(
+        page: Int
+    ): RemoteTvShowResponse
 
     suspend fun getTvShowsByKeyword(
         keyword: String,

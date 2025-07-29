@@ -152,8 +152,12 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getPopularMovies(): List<Movie> =
         movieRemoteMapper.toEntityList(movieRemoteDataSource.getPopularMovies().results)
 
-    override suspend fun getTopRatedMovies(): List<Movie> =
-        movieRemoteMapper.toEntityList(movieRemoteDataSource.getTopRatedMovies().results)
+    override suspend fun getTopRatedMovies(
+        page: Int,
+    ): List<Movie> =
+        movieRemoteMapper.toEntityList(movieRemoteDataSource.getTopRatedMovies(
+            page = page,
+        ).results)
 
     private suspend fun getCachedMovies(
         keyword: String,
