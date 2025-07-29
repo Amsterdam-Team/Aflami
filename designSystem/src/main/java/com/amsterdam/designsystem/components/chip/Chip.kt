@@ -10,9 +10,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,11 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
@@ -53,36 +50,10 @@ fun Chip(
     val iconColor = if (isSelected) colors.iconSelectedColor else colors.iconUnselectedColor
     val labelColor = if (isSelected) colors.labelSelectedColor else colors.labelUnselectedColor
     val borderColor = if (isSelected) colors.borderSelectedColor else colors.borderUnselectedColor
-
-    val formattedLabel = remember(label) {
-        val words = label.split(" ")
-        if (words.size >= 2) {
-            "${words.first()}\n${words.drop(1).joinToString(" ")}"
-        } else {
-            label
-        }
-    }
-
-    val containsLongWord = remember(label) {
-        label.split(" ").any { it.length > 7 }
-    }
-
-    val baseTextStyle = AppTheme.textStyle.label.small
-
-    val currentTextStyle: TextStyle = remember(containsLongWord, baseTextStyle) {
-        if (containsLongWord) {
-            baseTextStyle.copy(fontSize = (9.25).sp)
-        } else {
-            baseTextStyle
-        }
-    }
-
-
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .heightIn(min = 96.dp)
+        modifier = modifier.width(70.dp),
     ) {
         Box(
             modifier =
@@ -109,13 +80,13 @@ fun Chip(
             )
         }
         Text(
-            text = formattedLabel,
+            text = label,
             color = labelColor,
-            style = currentTextStyle,
+            style = AppTheme.textStyle.label.small,
             textAlign = TextAlign.Center,
             maxLines = 2,
+            minLines = 2,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.widthIn(max = 90.dp)
         )
     }
 }
