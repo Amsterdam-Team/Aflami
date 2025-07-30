@@ -58,6 +58,7 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.ExploreMoviesAndSh
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
+import com.amsterdam.ui.utils.formatAsRating
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.SearchErrorState
@@ -280,7 +281,7 @@ private fun SuccessMediaItems(
                         movieType = stringResource(R.string.movies),
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
-                        movieRating = mediaItem.rate,
+                        movieRating = mediaItem.rate.formatAsRating(),
                         onClick = { onMovieClicked(mediaItem.id) }
                     )
                 }
@@ -300,7 +301,7 @@ private fun SuccessMediaItems(
                         movieType = stringResource(R.string.tv_shows),
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
-                        movieRating = mediaItem.rate,
+                        movieRating = mediaItem.rate.formatAsRating(),
                         onClick = {onTvShowClicked(mediaItem.id)}
                     )
                 }
