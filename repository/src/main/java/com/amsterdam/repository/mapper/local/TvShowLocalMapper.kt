@@ -20,6 +20,7 @@ class TvShowLocalMapper @Inject constructor(): EntityMapper<LocalTvShowDto, TvSh
             popularity = dto.popularity,
             seasonCount = dto.seasonCount,
             originCountry = dto.originCountry,
+            productionCompanies = emptyList()
         )
     }
 

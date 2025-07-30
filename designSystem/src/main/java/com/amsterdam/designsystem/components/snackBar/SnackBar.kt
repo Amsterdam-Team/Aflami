@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,19 +34,20 @@ import com.amsterdam.designsystem.utils.modifierExtensions.dropShadow
 fun BoxScope.SnackBar(
     message: String,
     status: SnackBarStatus,
+    modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(12.dp)
     Box(
         modifier =
-            Modifier
+            modifier
                 .align(Alignment.TopCenter)
-                .padding(19.dp)
                 .fillMaxWidth()
                 .dropShadow(
                     blur = 8.dp,
                     shape = shape,
                     color = status.dropShadowColor(),
-                ).padding(1.dp)
+                )
+                .padding(1.dp)
                 .clip(shape = shape)
                 .clipToBounds()
                 .background(AppTheme.color.surfaceHigh, shape = shape)

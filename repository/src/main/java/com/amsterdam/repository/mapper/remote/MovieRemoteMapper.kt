@@ -8,13 +8,15 @@ import com.amsterdam.repository.mapper.shared.mapCategoryIdToMovieGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
 import javax.inject.Inject
 
-class MovieRemoteMapper @Inject constructor() : EntityMapper<RemoteMovieItemDto, Movie> {
-
+class MovieRemoteMapper @Inject constructor(
+    private val movieProductionCompanyRemoteMapper: ProductionCompanyRemoteMapper
+) : EntityMapper<RemoteMovieItemDto, Movie> {
+    
     override fun toEntity(dto: RemoteMovieItemDto): Movie {
-        return  toEntity(dto,isPoster = true)
+        return toEntity(dto, isPoster = true)
     }
 
-    fun toEntity(dto: RemoteMovieItemDto,isPoster : Boolean): Movie {
+    fun toEntity(dto: RemoteMovieItemDto, isPoster: Boolean): Movie {
         val genresIds = dto.genreIds.ifEmpty { dto.genres.map { it.id } }
         val imageUrl = if (isPoster) dto.fullPosterUrl else dto.fullBackdropUrl
         return Movie(
@@ -28,15 +30,19 @@ class MovieRemoteMapper @Inject constructor() : EntityMapper<RemoteMovieItemDto,
             popularity = dto.popularity,
             originCountry = dto.originCountry.firstOrNull() ?: "",
             runTimeInMinutes = dto.runtime,
-            hasVideo = dto.video
+            hasVideo = dto.video,
+            productionCompanies = movieProductionCompanyRemoteMapper.toEntityList(
+                dto.productionCompanies
+            )
         )
     }
 
-    fun toEntityList(dtoList: List<RemoteMovieItemDto>,isPoster: Boolean): List<Movie> {
+    fun toEntityList(dtoList: List<RemoteMovieItemDto>, isPoster: Boolean): List<Movie> {
         return dtoList.map { toEntity(it, isPoster) }
     }
 
     private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieGenre> {
         return genreIds.map { mapCategoryIdToMovieGenre(it.toLong()) }
     }
+
 }

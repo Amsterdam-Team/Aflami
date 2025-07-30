@@ -19,7 +19,8 @@ data class SearchUiState(
     val movies: Flow<PagingData<MovieItemUiState>> = emptyFlow(),
     val tvShows: Flow<PagingData<TvShowItemUiState>> = emptyFlow(),
     val isDialogVisible: Boolean = false,
-    val filterItemUiState: FilterItemUiState = FilterItemUiState(),
+    val movieFilterItemUiState: FilterItemUiState = FilterItemUiState(),
+    val tvShowFilterItemUiState: FilterItemUiState = FilterItemUiState(),
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
 )
@@ -38,7 +39,7 @@ data class FilterItemUiState(
     val isLoading: Boolean = false,
 ) {
     val hasFilterData: Boolean
-        get() = selectedStarIndex > 0 || selectableMovieGenres.any { it.selectableMovieGenre.isSelected }
+        get() = selectedStarIndex > 0 || selectableMovieGenres.any { it.selectableMovieGenre.isSelected } || selectableTvShowGenres.any { it.selectableTvShowGenre.isSelected }
 
     private companion object {
         val defaultTvShowGenres =

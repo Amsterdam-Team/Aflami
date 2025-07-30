@@ -1,23 +1,18 @@
 package com.amsterdam.ui.screens.login.components
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.amsterdam.ui.R
-import com.amsterdam.viewmodel.login.PasswordErrorState
-import com.amsterdam.viewmodel.login.UsernameErrorState
+import com.amsterdam.viewmodel.login.LoginErrorState
 
-@Composable
-fun getUserNameErrorMessage(usernameErrorState: UsernameErrorState?): String{
-    return when(usernameErrorState){
-        UsernameErrorState.InvalidCredentials -> stringResource(R.string.incorrect_username_or_password)
-        null -> ""
-    }
-}
-
-@Composable
-fun getPasswordErrorMessage(passwordErrorState: PasswordErrorState?): String{
-    return when(passwordErrorState){
-        PasswordErrorState.InvalidCredentials -> stringResource(R.string.incorrect_username_or_password)
-        null -> ""
+fun getLoginErrorMessage(loginErrorState: LoginErrorState?, context: Context): String{
+    return when(loginErrorState){
+        LoginErrorState.InvalidCredentials -> context.getString(R.string.incorrect_username_or_password)
+        LoginErrorState.AccountDisabled -> context.getString(R.string.account_disabled)
+        LoginErrorState.VerificationRequired -> context.getString(R.string.account_not_verified)
+        LoginErrorState.NoInternet -> context.getString(R.string.offline_message)
+        LoginErrorState.UnknownError -> context.getString(R.string.search_error_unknown)
+        else -> ""
     }
 }

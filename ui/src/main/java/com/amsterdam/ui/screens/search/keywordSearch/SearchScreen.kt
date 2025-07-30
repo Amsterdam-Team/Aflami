@@ -58,7 +58,6 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.ExploreMoviesAndSh
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
-import com.amsterdam.ui.utils.formatAsRating
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.SearchErrorState
@@ -91,13 +90,17 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
         viewModel.effect.collectLatest { effect ->
             effect?.let {
                 when (effect) {
-                    SearchUiEffect.NavigateBack -> navController.popBackStack()
+                    SearchUiEffect.NavigateBack -> navController.popBackStack(
+                        route = Route.Tab.Home,
+                        inclusive = false,
+                    )
                     SearchUiEffect.NavigateToActorSearch -> navController.safeNavigate(Route.SearchByActor)
                     SearchUiEffect.NavigateToWorldSearch -> navController.safeNavigate(Route.SearchByCountry)
                     is SearchUiEffect.NavigateToMovieDetails -> {
                         viewModel.onSaveSearchHistory()
                         navController.safeNavigate(MovieDetails(effect.movieId))
                     }
+
                     is SearchUiEffect.NavigateToTvShowDetails -> {
                         viewModel.onSaveSearchHistory()
                         navController.navigate(SeriesDetails(effect.tvShowId))
@@ -163,8 +166,15 @@ private fun SearchContent(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             visible = state.isDialogVisible,
         ) {
+            val currentFilterState =
+                if (state.selectedTabOption == TabOption.MOVIES) {
+                    state.movieFilterItemUiState
+                } else {
+                    state.tvShowFilterItemUiState
+                }
+
             FilterDialog(
-                filterState = state.filterItemUiState,
+                filterState = currentFilterState,
                 selectedTabOption = state.selectedTabOption,
                 interaction = filterInteraction
             )
@@ -281,7 +291,7 @@ private fun SuccessMediaItems(
                         movieType = stringResource(R.string.movies),
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
-                        movieRating = mediaItem.rate.formatAsRating(),
+                        movieRating = mediaItem.rate,
                         onClick = { onMovieClicked(mediaItem.id) }
                     )
                 }
@@ -301,8 +311,8 @@ private fun SuccessMediaItems(
                         movieType = stringResource(R.string.tv_shows),
                         movieYear = mediaItem.yearOfRelease,
                         movieTitle = mediaItem.name,
-                        movieRating = mediaItem.rate.formatAsRating(),
-                        onClick = {onTvShowClicked(mediaItem.id)}
+                        movieRating = mediaItem.rate,
+                        onClick = { onTvShowClicked(mediaItem.id) }
                     )
                 }
             }
@@ -331,7 +341,7 @@ private fun getItemKey(
 ): String {
     val item = selectedItems[index]
     val id = if (selectedTabOption == TabOption.MOVIES) (item as MovieItemUiState).id
-             else (item as TvShowItemUiState).id
+    else (item as TvShowItemUiState).id
     return "${id}-${index}"
 }
 

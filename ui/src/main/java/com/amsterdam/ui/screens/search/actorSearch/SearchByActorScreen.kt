@@ -115,7 +115,7 @@ private fun SearchByActorContent(
             )
             TextField(
                 text = state.keyword,
-                hintText = stringResource(com.amsterdam.designsystem.R.string.find_by_actor),
+                hintText = stringResource(com.amsterdam.designsystem.R.string.find_by_actor_hint),
                 onValueChange = { interactionListener.onUserSearchChange(it) },
                 keyboardActions = KeyboardActions(
                     onSearch = {
@@ -176,10 +176,8 @@ private fun SearchByActorContent(
                     when {
                         state.isLoading -> LoadingContainer(modifier = Modifier)
 
-                        state.error != null -> {
-                            if (state.error == ActorSearchErrorState.NoNetworkConnection) {
-                                NoNetworkContainer(interactionListener::onClickRetrySearch)
-                            }
+                        state.error == ActorSearchErrorState.NoNetworkConnection -> {
+                            NoNetworkContainer(interactionListener::onClickRetrySearch)
                         }
 
                         state.keyword.isBlank() -> {
@@ -191,7 +189,7 @@ private fun SearchByActorContent(
                             )
                         }
 
-                        movies.itemSnapshotList.isEmpty() -> {
+                        movies.itemCount == 0 -> {
                             NoDataContainer(
                                 imageRes = painterResource(R.drawable.placeholder_no_result_found),
                                 title = stringResource(R.string.no_search_result),

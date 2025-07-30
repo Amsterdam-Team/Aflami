@@ -294,9 +294,7 @@ fun MovieContent(
                                     .background(AppTheme.color.stroke),
                         )
                         MovieExtrasSection(
-                            modifier = Modifier
-                                .padding(top = 12.dp)
-                                .padding(horizontal = 16.dp),
+                            modifier = Modifier.padding(top = 12.dp),
                             extras = state.extraItem,
                             onClickExtras = interactionListener::onClickMovieExtras,
                         )

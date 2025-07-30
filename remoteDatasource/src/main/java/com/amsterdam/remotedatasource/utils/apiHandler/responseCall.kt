@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.utils.apiHandler
 
+import android.util.Log
 import com.amsterdam.domain.exceptions.AccessDeniedException
 import com.amsterdam.domain.exceptions.AccessRestrictedException
 import com.amsterdam.domain.exceptions.AccountDisabledException

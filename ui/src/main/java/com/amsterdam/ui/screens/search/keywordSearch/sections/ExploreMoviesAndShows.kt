@@ -21,7 +21,7 @@ import com.amsterdam.ui.R
 @Composable
 internal fun ExploreMoviesAndShows(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(vertical = 8.dp),
+        modifier = modifier.padding(horizontal = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -32,7 +32,7 @@ internal fun ExploreMoviesAndShows(modifier: Modifier = Modifier) {
         )
         Text(
             text = stringResource(R.string.search_description),
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = 12.dp),
             style = AppTheme.textStyle.body.small,
             color = AppTheme.color.body,
             textAlign = TextAlign.Center,

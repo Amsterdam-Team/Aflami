@@ -1,10 +1,12 @@
 package com.amsterdam.viewmodel.movieDetails
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
+import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.shared.BaseViewModel
@@ -45,7 +47,7 @@ class MovieDetailsViewModel @Inject constructor(
     private suspend fun getMovieDetails() =
         getMovieDetailsUseCase(state.value.movieId)
 
-    private fun onGetMovieDetailsSuccess(movieDetails: GetMovieDetailsUseCase.MovieDetails) =
+    private fun onGetMovieDetailsSuccess(movieDetails: MovieDetails) =
         updateState { movieDetailsUiStateMapper.toUiState(movieDetails) }
 
 
@@ -113,6 +115,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun onError(exception: AflamiException) {
+        Log.e("bk", "onError: $exception")
          when (exception) {
             is NoInternetException -> updateState { it.copy(networkError = true) }
             else -> {}

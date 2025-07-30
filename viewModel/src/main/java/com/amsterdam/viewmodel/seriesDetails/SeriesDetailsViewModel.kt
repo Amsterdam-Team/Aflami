@@ -3,10 +3,10 @@ package com.amsterdam.viewmodel.seriesDetails
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetails
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
+import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.entity.Episode
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
@@ -48,6 +48,7 @@ class SeriesDetailsViewModel @Inject constructor(
     private suspend fun getTvShowDetails(): TvShowDetails {
         return getTvShowDetailsUseCase(state.value.tvShowId)
     }
+
     private fun onGetTvShowDetailsSuccess(tvShowDetails: TvShowDetails) {
         updateState {
             seriesDetailsStateMapper.toUiState(tvShowDetails)
@@ -124,7 +125,6 @@ class SeriesDetailsViewModel @Inject constructor(
         }
         return getEpisodesBySeasonNumberUseCase(state.value.tvShowId, seasonNumber)
     }
-
 
     private fun onGetEpisodesSuccess(seasonNumber: Int, episodes: List<Episode>) {
         if (episodes.isEmpty()) {

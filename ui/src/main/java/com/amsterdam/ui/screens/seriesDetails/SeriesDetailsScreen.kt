@@ -291,9 +291,7 @@ fun SeriesDetailsContent(
                                     .background(AppTheme.color.stroke)
                             )
                             SeriesExtrasSection(
-                                modifier = Modifier
-                                    .padding(top = 12.dp)
-                                    .padding(horizontal = 16.dp),
+                                modifier = Modifier.padding(top = 12.dp),
                                 extras = state.extraItem,
                                 onClickExtras = interaction::onClickSeriesExtraItem
                             )
@@ -381,8 +379,12 @@ private fun SeriesExtrasSection(
     extras: List<Selectable<SeriesExtras>>,
     onClickExtras: (SeriesExtras) -> Unit
 ) {
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        extras.forEach {
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        items(items = extras) {
             val extrasSectionItemInfo = it.item.getSeriesExtrasSectionItemInfo()
             Chip(
                 modifier = Modifier.size(70.dp, 96.dp),
