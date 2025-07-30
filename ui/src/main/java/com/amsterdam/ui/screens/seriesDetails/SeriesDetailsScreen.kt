@@ -316,7 +316,6 @@ fun SeriesDetailsContent(
                                     )
                                 }
                             }
-                            SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
                             SeriesExtras.SEASONS -> seasonsSection(
                                 seasons = state.seasons,
                                 interaction = interaction
@@ -507,13 +506,11 @@ private fun SeriesDetailsContentPreview() {
                 override fun onClickRetryButton() {}
                 override fun onClickShowAllCast() {}
                 override fun onAddToListClicked() {}
-
                 override fun onRateClicked() {}
-
                 override fun onClickSeasonMenu(seasonNumber: Int) {}
                 override fun onNavigateToLoginClicked() {}
-
                 override fun onCancelClicked() {}
+                override fun onClickSimilarMovie(movieId: Long) {}
             }
         )
     }
