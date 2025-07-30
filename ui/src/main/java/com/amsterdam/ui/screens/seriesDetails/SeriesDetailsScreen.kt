@@ -113,6 +113,10 @@ fun SeriesDetailsScreen(
                     SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
                         Route.Login
                     )
+                    SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(Route.Login)
+                    is SeriesDetailsEffect.NavigateToMovieDetails -> {
+                        navController.safeNavigate(Route.MovieDetails(it.movieId))
+                    }
                 }
             }
         }
@@ -308,7 +312,12 @@ fun SeriesDetailsContent(
                                 interaction = interaction
                             )
 
-                            SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
+                            SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(
+                                similarMovies = state.similarSeries,
+                                onClick = { movieId ->
+                                    interaction.onClickSimilarMovie(movieId)
+                                }
+                            )
                             SeriesExtras.REVIEWS -> ReviewSection(state.reviews)
                             SeriesExtras.GALLERY -> GallerySection(state.gallery)
                             SeriesExtras.COMPANY_PRODUCTION -> CompanyProductionSection(
@@ -495,6 +504,7 @@ private fun SeriesDetailsContentPreview() {
                 override fun onNavigateToLoginClicked() {}
 
                 override fun onCancelClicked() {}
+                override fun onClickSimilarMovie(movieId: Long) {}
             }
         )
     }

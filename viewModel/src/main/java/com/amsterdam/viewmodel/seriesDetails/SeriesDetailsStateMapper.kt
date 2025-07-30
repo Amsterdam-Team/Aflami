@@ -46,6 +46,7 @@ class SeriesDetailsStateMapper @Inject constructor(
             seasons = mapToSeasonUiState(seasons),
             similarSeries = similarTvShows.map {
                 SimilarMovieUiState(
+                    movieId = it.id,
                     rate = movieDetailsStateMapper.ratingToRatingString(it.rating),
                     name = it.name,
                     productionYear = it.airDate.year.toString(),
