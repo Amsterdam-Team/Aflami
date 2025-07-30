@@ -222,16 +222,17 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onSaveSearchHistory() {
-        if (state.value.keyword.isBlank()) return
+        val keyword = state.value.keyword
+        if (keyword.isBlank()) return
         tryToExecute(
-            action = { recentSearchesUseCase.addRecentSearch(state.value.keyword) },
+            action = { recentSearchesUseCase.addRecentSearch(keyword) },
             onSuccess = { fetchRecentSearches() },
             onError = ::onFetchError,
         )
     }
 
     override fun onClickNavigateBack() {
-        if (state.value.keyword.isNotEmpty()) {
+        if (state.value.keyword.isNotBlank()) {
             onSaveSearchHistory()
             onClickClearSearch()
         } else {

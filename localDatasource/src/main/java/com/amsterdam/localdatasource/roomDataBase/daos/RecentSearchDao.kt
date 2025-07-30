@@ -35,13 +35,13 @@ interface RecentSearchDao {
         keyword: String, searchType: SearchType, storedLanguage: String
     ): LocalSearchDto?
 
-    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType and storedLanguage = :storedLanguage")
+    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType")
     suspend fun deleteSearchByKeyword(
-        keyword: String, searchType: SearchType, storedLanguage: String
+        keyword: String, searchType: SearchType
     )
 
-    @Query("DELETE FROM ${DatabaseConstants.SEARCH_MOVIE_CROSS_REF_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType and storedLanguage = :storedLanguage")
+    @Query("DELETE FROM ${DatabaseConstants.SEARCH_MOVIE_CROSS_REF_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType")
     suspend fun deleteSearchMovieCrossRefByKeyword(
-        keyword: String, searchType: SearchType, storedLanguage: String
+        keyword: String, searchType: SearchType
     )
 }
