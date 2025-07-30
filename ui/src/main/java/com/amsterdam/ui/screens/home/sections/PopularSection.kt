@@ -27,8 +27,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -52,10 +53,7 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.any
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
@@ -156,36 +154,26 @@ private fun AutoScrollingPager(
     pagerState: PagerState,
     intervalMillis: Long = 4000L
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
+    val interactionSource = pagerState.interactionSource
+    var isUserInteracting by remember { mutableStateOf(false) }
     LaunchedEffect(pagerState) {
-        var autoScrollJob: Job? = null
-        fun startAutoScroll() {
-            autoScrollJob?.cancel()
-            autoScrollJob = coroutineScope.launch {
-                while (true) {
-                    delay(intervalMillis)
-                    val nextPage = (pagerState.currentPage + 1) % Int.MAX_VALUE
-                    pagerState.animateScrollToPage(
-                        page = nextPage,
-                        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
-                    )
-                }
+        interactionSource.interactions.collect { interaction ->
+            isUserInteracting = when (interaction) {
+                is PressInteraction.Press,
+                is DragInteraction.Start -> true
+                else -> false
             }
         }
-        startAutoScroll()
-        snapshotFlow { pagerState.interactionSource.interactions }
-            .collect { interactions ->
-                val isBeingDragged = interactions.any { it is DragInteraction.Start }
-                val isBeingPressed = interactions.any { it is PressInteraction.Press }
-
-                if (isBeingDragged || isBeingPressed) {
-                    autoScrollJob?.cancel()
-                } else if (autoScrollJob?.isCancelled == true || autoScrollJob == null) {
-                    delay(500)
-                    startAutoScroll()
-                }
-            }
+    }
+    LaunchedEffect(isUserInteracting) {
+        while (!isUserInteracting) {
+            delay(intervalMillis)
+            val nextPage = (pagerState.currentPage + 1) % Int.MAX_VALUE
+            pagerState.animateScrollToPage(
+                page = nextPage,
+                animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+            )
+        }
     }
 }
 

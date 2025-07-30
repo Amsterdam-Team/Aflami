@@ -191,9 +191,27 @@ fun SeriesDetailsContent(
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
     ) {
-        Box(
+        Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor)
+            ) {
+                DefaultAppBar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .statusBarsPadding(),
+                    firstOption = painterResource(R.drawable.ic_outlined_star),
+                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                    onNavigateBackClicked = interaction::onNavigateBack,
+                    onFirstOptionClicked = interaction::onRateClicked,
+                    onLastOptionClicked = interaction::onAddToListClicked
+                )
+                HorizontalDivider(color = dividerColor)
+            }
+
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -315,30 +333,14 @@ fun SeriesDetailsContent(
                             }
                             SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
                             SeriesExtras.REVIEWS -> ReviewSection(state.reviews)
-                            SeriesExtras.GALLERY -> GallerySection(state.gallery)
+                            SeriesExtras.GALLERY -> item {
+                                GallerySection(gallery = state.gallery)
+                            }
                             SeriesExtras.COMPANY_PRODUCTION -> CompanyProductionSection(
                                 state.productionCompanies
                             )
                         }
                     }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = interaction::onNavigateBack,
-                    onFirstOptionClicked = interaction::onRateClicked,
-                    onLastOptionClicked = interaction::onAddToListClicked
-                )
-                HorizontalDivider(color = dividerColor)
             }
         }
     }
