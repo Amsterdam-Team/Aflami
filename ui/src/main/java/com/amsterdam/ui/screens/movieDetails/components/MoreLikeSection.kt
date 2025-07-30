@@ -17,7 +17,10 @@ import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.components.UpcomingCard
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
-fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
+fun LazyListScope.MoreLikeSection(
+    similarMovies: List<SimilarMovieUiState>,
+    onClick: (movieId: Long) -> Unit
+) {
     if (similarMovies.isEmpty())
         item {
             EmptyStateText(stringResource(com.amsterdam.ui.R.string.there_is_no_similar_content))
@@ -46,6 +49,7 @@ fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
                     .offset(y = yOffset.dp),
                 movieRating = similarMovie.rate,
+                onClick = { onClick(similarMovie.movieId) }
             )
         }
 }
