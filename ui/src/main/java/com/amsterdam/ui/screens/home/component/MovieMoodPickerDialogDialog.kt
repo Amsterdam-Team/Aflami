@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +50,6 @@ fun MovieMoodPickerDialogDialog(
         onDismiss = onDismiss,
         isDismissible = true,
         modifier = modifier,
-        behindDialogColor = AppTheme.color.dialogBackground
     ) {
         DialogContent(
             movie,
@@ -69,12 +69,6 @@ fun DialogContent(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                AppTheme.color.surface,
-                shape = RoundedCornerShape(16.dp)
-            )
             .padding(12.dp)
     ) {
         Row(
@@ -158,9 +152,13 @@ fun DialogContent(
 
                     Box(
                         modifier = Modifier
-                            .size(3.dp, 3.dp)
-                            .background(AppTheme.color.onPrimaryBody)
                             .padding(horizontal = 4.dp)
+                            .size(3.dp, 3.dp)
+
+                            .background(
+                                AppTheme.color.onPrimaryBody,
+                                shape = CircleShape
+                            )
                             .align(Alignment.CenterVertically)
                     )
 

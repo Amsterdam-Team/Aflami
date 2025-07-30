@@ -307,6 +307,16 @@ fun SeriesDetailsContent(
                     ?.item
                     ?.let { selectedExtra ->
                         when (selectedExtra) {
+                            SeriesExtras.SEASONS -> {
+                                val visibleSeasons = state.seasons.filter { it.episodeCount > 0 }
+                                if (visibleSeasons.isNotEmpty()) {
+                                    seasonsSection(
+                                        seasons = visibleSeasons,
+                                        interaction = interaction
+                                    )
+                                }
+                            }
+                            SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
                             SeriesExtras.SEASONS -> seasonsSection(
                                 seasons = state.seasons,
                                 interaction = interaction
@@ -504,7 +514,6 @@ private fun SeriesDetailsContentPreview() {
                 override fun onNavigateToLoginClicked() {}
 
                 override fun onCancelClicked() {}
-                override fun onClickSimilarMovie(movieId: Long) {}
             }
         )
     }

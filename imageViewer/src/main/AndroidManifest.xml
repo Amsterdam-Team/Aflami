@@ -10,7 +10,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.amsterdam.imageviewer.FirebaseModelInitializer"
+                android:name="com.amsterdam.imageviewer.firebase.FirebaseModelInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

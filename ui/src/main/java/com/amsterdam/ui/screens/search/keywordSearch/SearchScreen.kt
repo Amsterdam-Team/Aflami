@@ -68,6 +68,7 @@ import com.amsterdam.viewmodel.search.keywordSearch.SearchViewModel
 import com.amsterdam.viewmodel.search.keywordSearch.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -90,25 +91,45 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
         viewModel.effect.collectLatest { effect ->
             effect?.let {
                 when (effect) {
-                    SearchUiEffect.NavigateBack -> navController.popBackStack(
-                        route = Route.Tab.Home,
-                        inclusive = false,
-                    )
-                    SearchUiEffect.NavigateToActorSearch -> navController.safeNavigate(Route.SearchByActor)
-                    SearchUiEffect.NavigateToWorldSearch -> navController.safeNavigate(Route.SearchByCountry)
+                    SearchUiEffect.NavigateBack -> {
+                        navController.popBackStack(
+                            route = Route.Tab.Home,
+                            inclusive = false,
+                        )
+                        delay(200)
+                        viewModel.navigationCompleted()
+                    }
+
+                    SearchUiEffect.NavigateToActorSearch -> {
+                        navController.safeNavigate(Route.SearchByActor)
+                        delay(200)
+                        viewModel.navigationCompleted()
+                    }
+
+                    SearchUiEffect.NavigateToWorldSearch -> {
+                        navController.safeNavigate(Route.SearchByCountry)
+                        delay(200)
+                        viewModel.navigationCompleted()
+                    }
+
                     is SearchUiEffect.NavigateToMovieDetails -> {
                         viewModel.onSaveSearchHistory()
                         navController.safeNavigate(MovieDetails(effect.movieId))
+                        delay(200)
+                        viewModel.navigationCompleted()
                     }
 
                     is SearchUiEffect.NavigateToTvShowDetails -> {
                         viewModel.onSaveSearchHistory()
                         navController.navigate(SeriesDetails(effect.tvShowId))
+                        delay(200)
+                        viewModel.navigationCompleted()
                     }
                 }
             }
         }
     }
+
 
     SearchContent(
         state = state,
