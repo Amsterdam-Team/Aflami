@@ -16,6 +16,7 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
@@ -46,13 +47,14 @@ fun ContinueWatchingMediaItemsGrid(
                 movieType = movieType,
                 movieYear = item.yearOfRelease,
                 movieTitle = item.name,
-                movieRating = item.rate
+                movieRating = item.rate.formateAsRate(),
             ) {
                 onClickMediaItem(item.id, item.mediaType)
             }
         }
     }
 }
+
 
 @ThemeAndLocalePreviews
 @Composable
@@ -64,7 +66,7 @@ private fun ContinueWatchingMoviesGridPreview() {
                 name = "Movie $index",
                 posterImageUrl = "",
                 yearOfRelease = "202${index}",
-                rate = (7 + index * 0.5).toString()
+                rate = "3.0"
             )
         }
         ContinueWatchingMediaItemsGrid(

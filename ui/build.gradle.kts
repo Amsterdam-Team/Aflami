@@ -56,7 +56,7 @@ private fun DependencyHandlerScope.appCompactDependencies() {
 }
 
 private fun DependencyHandlerScope.previewDependencies() {
-    debugImplementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.tooling.preview.android)
 }
 
 private fun DependencyHandlerScope.composeDependencies() {

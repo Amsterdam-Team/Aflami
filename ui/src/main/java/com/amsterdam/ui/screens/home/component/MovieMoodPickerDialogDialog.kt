@@ -34,6 +34,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 
 @SuppressLint("ContextCastToActivity")
@@ -119,7 +120,7 @@ fun DialogContent(
             )
 
             RatingChip(
-                movie.rate,
+                movie.rate.formateAsRate(),
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(4.dp)

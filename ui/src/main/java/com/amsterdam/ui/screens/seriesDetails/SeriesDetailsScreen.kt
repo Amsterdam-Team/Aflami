@@ -74,6 +74,7 @@ import com.amsterdam.ui.screens.movieDetails.components.ReviewSection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
@@ -219,7 +220,7 @@ fun SeriesDetailsContent(
                         )
 
                         RatingChip(
-                            state.rating,
+                            state.rating.formateAsRate(),
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
                                 .padding(vertical = 4.dp)
