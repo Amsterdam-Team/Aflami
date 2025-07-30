@@ -113,7 +113,6 @@ fun SeriesDetailsScreen(
                     SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
                         Route.Login
                     )
-                    SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(Route.Login)
                     is SeriesDetailsEffect.NavigateToMovieDetails -> {
                         navController.safeNavigate(Route.MovieDetails(it.movieId))
                     }
