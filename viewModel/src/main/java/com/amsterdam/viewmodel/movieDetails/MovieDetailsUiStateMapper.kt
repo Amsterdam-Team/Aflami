@@ -40,6 +40,7 @@ class MovieDetailsUiStateMapper @Inject constructor() {
             ),
             similarMovies = similarMovies.map {
                 SimilarMovieUiState(
+                    movieId = it.id,
                     rate = ratingToRatingString(it.rating),
                     name = it.name,
                     productionYear = it.releaseDate.year.toString(),
