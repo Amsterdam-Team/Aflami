@@ -36,7 +36,11 @@ class CategoryRepositoryImpl @Inject constructor(
     }
 
     private suspend fun getMovieCategoriesFromLocal(): List<Category> {
-        return onSuccessGetMovieCategoriesFromLocal(categoryLocalSource.getMovieCategories())
+        return onSuccessGetMovieCategoriesFromLocal(
+            categoryLocalSource.getMovieCategories(
+                getDeviceLanguage()
+            )
+        )
     }
 
     private fun onSuccessGetMovieCategoriesFromLocal(
@@ -64,7 +68,11 @@ class CategoryRepositoryImpl @Inject constructor(
     }
 
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
-        return tvShowCategoryLocalMapper.toEntityList(categoryLocalSource.getTvShowCategories())
+        return tvShowCategoryLocalMapper.toEntityList(
+            categoryLocalSource.getTvShowCategories(
+                getDeviceLanguage()
+            )
+        )
     }
 
     private suspend fun onSuccessLoadTvShowCategories(
