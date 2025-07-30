@@ -303,11 +303,15 @@ fun SeriesDetailsContent(
                     ?.item
                     ?.let { selectedExtra ->
                         when (selectedExtra) {
-                            SeriesExtras.SEASONS -> seasonsSection(
-                                seasons = state.seasons,
-                                interaction = interaction
-                            )
-
+                            SeriesExtras.SEASONS -> {
+                                val visibleSeasons = state.seasons.filter { it.episodeCount > 0 }
+                                if (visibleSeasons.isNotEmpty()) {
+                                    seasonsSection(
+                                        seasons = visibleSeasons,
+                                        interaction = interaction
+                                    )
+                                }
+                            }
                             SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarSeries)
                             SeriesExtras.REVIEWS -> ReviewSection(state.reviews)
                             SeriesExtras.GALLERY -> GallerySection(state.gallery)
