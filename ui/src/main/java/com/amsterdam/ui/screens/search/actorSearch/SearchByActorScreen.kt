@@ -49,7 +49,7 @@ import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.utils.formatAsRating
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchErrorState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchUiState
@@ -157,7 +157,7 @@ private fun SearchByActorContent(
                         movieType = stringResource(R.string.movie),
                         movieYear = movie.yearOfRelease,
                         movieTitle = movie.name,
-                        movieRating = movie.rate.formatAsRating(),
+                        movieRating = movie.rate.formateAsRate(),
                     ) {
                         interactionListener.onClickMovie(movie.id)
                     }
