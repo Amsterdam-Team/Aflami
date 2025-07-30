@@ -14,18 +14,13 @@ class ApplicationViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider,
     private val getsSessionType: GetsSessionType
 ): BaseViewModel<ApplicationUiState, Unit>(ApplicationUiState(), dispatcherProvider) {
-    init {
-        viewModelScope.launch {
-            setStartDestination()
-        }
-    }
 
-    private suspend fun setStartDestination(){
+    suspend fun setStartDestination(): ApplicationUiState.StartDestinations{
         val sessionType = getsSessionType()
-        when(sessionType){
-            SessionType.NOT_LOGGED_IN -> updateState { it.copy(startDestination = ApplicationUiState.StartDestinations.LOGIN) }
-            SessionType.LOGGED_IN -> updateState { it.copy(startDestination = ApplicationUiState.StartDestinations.HOME) }
-            SessionType.GUEST -> updateState { it.copy(startDestination = ApplicationUiState.StartDestinations.HOME) }
+        return when(sessionType){
+            SessionType.NOT_LOGGED_IN -> ApplicationUiState.StartDestinations.LOGIN
+            SessionType.LOGGED_IN ->  ApplicationUiState.StartDestinations.HOME
+            SessionType.GUEST ->  ApplicationUiState.StartDestinations.HOME
         }
     }
 }

@@ -1,25 +1,25 @@
 package com.amsterdam.ui.screens.search.actorSearch
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -103,6 +103,7 @@ private fun SearchByActorContent(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(Modifier.onSizeChanged { headerHeight = it.height.dp }) {
             DefaultAppBar(
@@ -113,7 +114,7 @@ private fun SearchByActorContent(
             )
             TextField(
                 text = state.keyword,
-                hintText = stringResource(com.amsterdam.designsystem.R.string.find_by_actor),
+                hintText = stringResource(com.amsterdam.designsystem.R.string.find_by_actor_hint),
                 onValueChange = { interactionListener.onUserSearchChange(it) },
                 keyboardActions = KeyboardActions(
                     onSearch = {
@@ -129,69 +130,74 @@ private fun SearchByActorContent(
                         .padding(horizontal = 16.dp),
             )
         }
-        AnimatedContent(
-            targetState = state,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith
-                        fadeOut(animationSpec = tween(300))
-            },
-            label = "Content Animation",
-        ) { targetState ->
-            CenterOfScreenContainer(headerHeight) {
-                when {
-                    targetState.isLoading -> LoadingContainer(modifier = Modifier)
+        if (
+            state.keyword.isNotBlank() &&
+            !state.isLoading &&
+            state.error == null &&
+            movies.itemCount != 0
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(160.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(
+                    vertical = 12.dp,
+                    horizontal = 16.dp
+                ),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                items(
+                    count = movies.itemCount,
+                    key = { index -> "${movies[index]?.id}-$index" },
+                ) { index ->
+                    val movie = movies[index] ?: return@items
+                    MovieCard(
+                        movieImage = { MovieImage(movie.posterImageUrl) },
+                        movieType = stringResource(R.string.movie),
+                        movieYear = movie.yearOfRelease,
+                        movieTitle = movie.name,
+                        movieRating = movie.rate,
+                    ) {
+                        interactionListener.onClickMovie(movie.id)
+                    }
+                }
+            }
+        }
+        else {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 8.dp)
+            ) {
+                CenterOfScreenContainer(headerHeight) {
+                    when {
+                        state.isLoading -> LoadingContainer(modifier = Modifier)
 
-                    targetState.error != null -> {
-                        if (targetState.error == ActorSearchErrorState.NoNetworkConnection) {
+                        state.error == ActorSearchErrorState.NoNetworkConnection -> {
                             NoNetworkContainer(interactionListener::onClickRetrySearch)
                         }
-                    }
 
-                    targetState.keyword.isBlank() -> {
-                        NoDataContainer(
-                            imageRes = painterResource(R.drawable.img_suggestion_magician),
-                            title = stringResource(com.amsterdam.designsystem.R.string.find_by_actor),
-                            description = stringResource(com.amsterdam.designsystem.R.string.find_by_actor_description),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
-                    }
-
-                    movies.itemSnapshotList.isEmpty() -> {
-                        NoDataContainer(
-                            imageRes = painterResource(R.drawable.placeholder_no_result_found),
-                            title = stringResource(R.string.no_search_result),
-                            description = stringResource(R.string.no_search_result_description),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
-                    }
-
-                    else -> {
-                        LazyVerticalGrid(
-                            columns = GridCells.Adaptive(160.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(
-                                vertical = 12.dp,
-                                horizontal = 16.dp
-                            ),
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            items(
-                                count = movies.itemCount,
-                                key = { index -> "${movies[index]?.id}-$index" },
-                            ) { index ->
-                                val movie = movies[index] ?: return@items
-                                MovieCard(
-                                    movieImage = { MovieImage(movie.posterImageUrl) },
-                                    movieType = stringResource(R.string.movie),
-                                    movieYear = movie.yearOfRelease,
-                                    movieTitle = movie.name,
-                                    movieRating = movie.rate,
-                                ) {
-                                    interactionListener.onClickMovie(movie.id)
-                                }
-                            }
+                        state.keyword.isBlank() -> {
+                            NoDataContainer(
+                                imageRes = painterResource(R.drawable.img_suggestion_magician),
+                                title = stringResource(com.amsterdam.designsystem.R.string.find_by_actor),
+                                description = stringResource(com.amsterdam.designsystem.R.string.find_by_actor_description),
+                                modifier = Modifier.padding(horizontal = 24.dp)
+                            )
                         }
+
+                        movies.itemCount == 0 -> {
+                            NoDataContainer(
+                                imageRes = painterResource(R.drawable.placeholder_no_result_found),
+                                title = stringResource(R.string.no_search_result),
+                                description = stringResource(R.string.no_search_result_description),
+                                modifier = Modifier.padding(horizontal = 24.dp)
+                            )
+                        }
+
+                        else -> {}
                     }
                 }
             }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +45,6 @@ import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.LoadingContainer
-import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
@@ -53,6 +53,7 @@ import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
+import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
@@ -99,6 +100,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                             )
                         )
                     }
+
                     MovieDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
                         Route.Login
                     )
@@ -243,13 +245,13 @@ fun MovieContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
                                 .offset(y = (-20).dp),
                     ) {
                         Text(
                             text = state.movieTitle,
                             style = AppTheme.textStyle.title.large,
                             color = AppTheme.color.title,
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         )
                         LazyRow(
                             modifier =
@@ -257,19 +259,24 @@ fun MovieContent(
                                     .fillMaxWidth()
                                     .padding(top = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp)
                         ) {
                             items(state.categories) {
                                 CategoryChip(categoryName = getMovieGenreLabel(it))
                             }
                         }
                         MovieInfoSection(
-                            modifier = Modifier.padding(top = 8.dp),
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .padding(horizontal = 16.dp),
                             releaseDate = state.releaseDate,
                             movieLength = state.movieLength,
                             originCountry = state.originCountry,
                         )
                         DescriptionSection(
-                            modifier = Modifier.padding(top = 24.dp),
+                            modifier = Modifier
+                                .padding(top = 24.dp)
+                                .padding(horizontal = 16.dp),
                             description = state.description,
                         )
                         CastSection(

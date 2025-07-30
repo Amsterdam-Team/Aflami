@@ -1,5 +1,7 @@
 package com.amsterdam.ui.screens.login
 
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -30,6 +37,7 @@ import com.amsterdam.designsystem.components.buttons.ButtonDefaults
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
 import com.amsterdam.designsystem.components.buttons.PlainTextButton
+import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -37,16 +45,15 @@ import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.login.components.LoginBackground
-import com.amsterdam.ui.screens.login.components.getPasswordErrorMessage
+import com.amsterdam.ui.screens.login.components.getLoginErrorMessage
 import com.amsterdam.ui.screens.login.components.getPasswordTextFieldIcon
-import com.amsterdam.ui.screens.login.components.getUserNameErrorMessage
 import com.amsterdam.ui.utils.safeNavigate
-import com.amsterdam.ui.utils.safeNavigateToTab
 import com.amsterdam.viewmodel.login.LoginEffect
+import com.amsterdam.viewmodel.login.LoginErrorState
 import com.amsterdam.viewmodel.login.LoginInteractionListener
 import com.amsterdam.viewmodel.login.LoginUiState
 import com.amsterdam.viewmodel.login.LoginViewModel
-import com.amsterdam.viewmodel.login.PasswordErrorState
+import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(
@@ -54,7 +61,8 @@ fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
-    val usernameOrPasswordError = stringResource(R.string.incorrect_username_or_password)
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             effect?.let {
@@ -67,6 +75,11 @@ fun LoginScreen(
 
                     LoginEffect.NavigateToRegister -> navController.safeNavigate(Route.Register)
                     LoginEffect.NavigateToResetPassword -> navController.safeNavigate(Route.ResetPassword)
+                    LoginEffect.ShowCredentialsError -> {
+                        SnackBarManager.showError(
+                            getLoginErrorMessage(state.loginError, context)
+                        )
+                    }
                 }
             }
         }
@@ -84,6 +97,12 @@ private fun LoginScreenContent(
     interactionListener: LoginInteractionListener
 ) {
     val scrollState = rememberScrollState()
+    val isLandscape = LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+    var show by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(3000)
+        show = true
+    }
     Box {
         LoginBackground()
         Column(
@@ -103,7 +122,7 @@ private fun LoginScreenContent(
                     containerColor = AppTheme.color.primaryVariant,
                     paddingValues = PaddingValues(horizontal = 6.dp, vertical = 9.dp),
                     withBorder = true,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    modifier = Modifier.padding(vertical = 24.dp)
                 )
 
                 Text(
@@ -122,8 +141,6 @@ private fun LoginScreenContent(
                     text = state.username,
                     onValueChange = interactionListener::onUserNameUpdated,
                     hintText = stringResource(R.string.user_name_hint),
-                    errorMessage = getUserNameErrorMessage(state.usernameError),
-                    isError = state.usernameError != null,
                     leadingIcon = com.amsterdam.designsystem.R.drawable.ic_user_square,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
@@ -131,8 +148,6 @@ private fun LoginScreenContent(
                     text = state.password,
                     onValueChange = interactionListener::onPasswordUpdate,
                     hintText = stringResource(R.string.password_hint),
-                    errorMessage = getPasswordErrorMessage(state.passwordError),
-                    isError = state.passwordError != null,
                     isTrailingClickEnabled = true,
                     onTrailingClick = interactionListener::onShowPasswordClicked,
                     leadingIcon = com.amsterdam.designsystem.R.drawable.ic_door_lock,
@@ -171,7 +186,12 @@ private fun LoginScreenContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp)
+                    .then(
+                        if (isLandscape){
+                            Modifier.padding(top = 32.dp)
+                        } else Modifier
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -203,7 +223,7 @@ private fun LoginScreenContentPreview() {
         LoginScreenContent(
             state = LoginUiState(
                 password = "password",
-                passwordError = PasswordErrorState.InvalidCredentials,
+                loginError = LoginErrorState.InvalidCredentials,
             ),
             interactionListener = object : LoginInteractionListener {
                 override fun onUserNameUpdated(username: String) {

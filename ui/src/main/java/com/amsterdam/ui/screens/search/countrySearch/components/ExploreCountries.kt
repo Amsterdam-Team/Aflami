@@ -21,7 +21,7 @@ import com.amsterdam.ui.R
 @Composable
 internal fun ExploreCountries(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(vertical = 8.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

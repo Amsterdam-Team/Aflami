@@ -1,6 +1,6 @@
 package com.amsterdam.viewmodel.movieDetails
 
-import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
+import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.shared.Selectable
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
@@ -14,12 +14,12 @@ import kotlin.math.roundToInt
 
 class MovieDetailsUiStateMapper @Inject constructor() {
 
-    fun toUiState(domain: GetMovieDetailsUseCase.MovieDetails): MovieDetailsUiState = with(domain) {
+    fun toUiState(domain: MovieDetails): MovieDetailsUiState = with(domain) {
         MovieDetailsUiState(
             movieId = movie.id,
             rating = ratingToRatingString(movie.rating),
             movieTitle = movie.name,
-            categories = categories,
+            categories = movie.categories,
             moviePostersUrl = moviePosters,
             releaseDate = movie.releaseDate.toString(),
             movieLength = movieLengthToHourMinuteString(movie.runTimeInMinutes),
@@ -46,7 +46,7 @@ class MovieDetailsUiStateMapper @Inject constructor() {
                     posterUrl = it.posterUrl
                 )
             },
-            productionCompany = productionsCompanies.map { company ->
+            productionCompany = movie.productionCompanies.map { company ->
                 ProductionCompanyUiState(
                     image = company.imageUrl,
                     name = company.name,

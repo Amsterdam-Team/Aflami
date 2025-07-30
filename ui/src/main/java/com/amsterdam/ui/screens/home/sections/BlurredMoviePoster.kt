@@ -45,7 +45,7 @@ fun BoxScope.BlurredMoviePoster(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xCC000000),
+                            Color(0x80FFFFFF),
                             Color.Transparent
                         ),
                         startY = 0f,

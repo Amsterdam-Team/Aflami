@@ -1,21 +1,29 @@
 package com.amsterdam.ui.screens.home.sections
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.zIndex
@@ -52,7 +61,6 @@ import kotlin.math.absoluteValue
 @SuppressLint("RestrictedApi", "ConfigurationScreenWidthHeight", "UnusedBoxWithConstraintsScope")
 fun LazyListScope.popularSection(
     state: HomeUiState.PopularMediaSectionUiState,
-    pagerState: PagerState,
     onClickMediaItem: (Long, MediaType) -> Unit,
     isVisible: Boolean
 ) {
@@ -61,77 +69,55 @@ fun LazyListScope.popularSection(
             popularSectionPlaceholder()
         } else {
             item {
-                SectionTitle(
-                    title = stringResource(R.string.popular),
-                    icon = painterResource(com.amsterdam.designsystem.R.drawable.ic_fire),
-                    tintColor = AppTheme.color.secondary,
-                    modifier = Modifier
-                        .zIndex(1f)
-                        .padding(bottom = 12.dp)
-                )
-            }
+                Box {
+                    val pagerState = rememberPagerState(
+                        initialPage = Int.MAX_VALUE / 2,
+                        pageCount = { Int.MAX_VALUE }
+                    )
 
-            item {
-                AutoScrollingPager(pagerState)
-                BoxWithConstraints {
-                    val screenWidth = maxWidth
-                    val itemWidth = 207.dp
-                    val horizontalPadding = (screenWidth - itemWidth) / 2
-                    HorizontalPager(
-                        state = pagerState,
-                        pageSpacing = 16.dp,
-                        contentPadding = PaddingValues(horizontal = horizontalPadding),
-                        modifier = Modifier.align(Alignment.TopCenter)
+                    Crossfade (
+                        targetState = pagerState.currentPage,
+                        animationSpec = tween(500, easing = FastOutSlowInEasing)
                     ) { page ->
-                        val currentPageOffset = (
-                                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                                ).absoluteValue
-
-                        val width by animateDpAsState(
-                            targetValue = lerp(
-                                207.dp,
-                                244.dp,
-                                1f - currentPageOffset.coerceIn(0f, 1f)
-                            ),
-                            label = "width"
-                        )
-
-                        val height by animateDpAsState(
-                            targetValue = lerp(
-                                276.dp, 300.dp, 1f - currentPageOffset.coerceIn(0f, 1f)
-                            ), label = "height"
-                        )
-                        val rateAlpha by animateFloatAsState(
-                            targetValue = androidx.compose.ui.util.lerp(
-                                0f,
-                                1f,
-                                1f - currentPageOffset.coerceIn(0f, 1f)
-                            ),
-                            label = "height"
-                        )
-
-                        PopularMediaItemCard(
-                            popularMediaItem = state.mediaItems[page % state.mediaItems.size],
-                            ratingAlpha = rateAlpha,
-                            imageWidth = width,
-                            imageHeight = height,
-                            onClickMediaItem = onClickMediaItem
+                        BlurredMoviePoster(
+                            posterUrl = state.mediaItems[page % state.mediaItems.size].posterUrl,
+                            modifier = Modifier.offset(y = (-26).dp)
                         )
                     }
 
+                    Column(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(top = 56.dp)
+                    ) {
+                        SectionTitle(
+                            title = stringResource(R.string.popular),
+                            icon = painterResource(com.amsterdam.designsystem.R.drawable.ic_fire),
+                            tintColor = AppTheme.color.secondary,
+                            modifier = Modifier
+                                .zIndex(1f)
+                                .padding(bottom = 12.dp)
+                        )
+                        AutoScrollingPager(pagerState)
+                        BoxWithConstraints {
+                            val screenWidth = maxWidth
+                            PopularMoviesPager(
+                                pagerState = pagerState,
+                                state = state,
+                                screenWidth = screenWidth,
+                                onClickMediaItem = onClickMediaItem
+                            )
+                        }
 
+                        DisplayGenresForMovie(
+                            modifier = Modifier
+                                .zIndex(2f),
+                            mediaItem = state.mediaItems[pagerState.currentPage % state.mediaItems.size],
+                        )
+                    }
                 }
             }
-
-            item {
-                DisplayGenresForMovie(
-                    modifier = Modifier
-                        .zIndex(2f),
-                    mediaItem = state.mediaItems[pagerState.currentPage % state.mediaItems.size],
-                )
-            }
         }
-
     }
 }
 
@@ -180,7 +166,10 @@ private fun AutoScrollingPager(
                 while (true) {
                     delay(intervalMillis)
                     val nextPage = (pagerState.currentPage + 1) % Int.MAX_VALUE
-                    pagerState.animateScrollToPage(nextPage)
+                    pagerState.animateScrollToPage(
+                        page = nextPage,
+                        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+                    )
                 }
             }
         }
@@ -200,6 +189,57 @@ private fun AutoScrollingPager(
     }
 }
 
+@Composable
+private fun PopularMoviesPager(
+    pagerState: PagerState,
+    state: HomeUiState.PopularMediaSectionUiState,
+    screenWidth: Dp,
+    modifier: Modifier = Modifier,
+    onClickMediaItem: (Long, MediaType) -> Unit
+){
+    val itemWidth = 207.dp
+    val horizontalPadding = (screenWidth - itemWidth) / 2
+    HorizontalPager(
+        state = pagerState,
+        pageSpacing = 16.dp,
+        contentPadding = PaddingValues(horizontal = horizontalPadding),
+        modifier = modifier
+    ) { page ->
+        val currentPageOffset =
+            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+
+        val width by animateDpAsState(
+            targetValue = lerp(
+                207.dp,
+                244.dp,
+                1f - currentPageOffset.coerceIn(0f, 1f)
+            ),
+            label = "width"
+        )
+
+        val height by animateDpAsState(
+            targetValue = lerp(
+                276.dp, 300.dp, 1f - currentPageOffset.coerceIn(0f, 1f)
+            ), label = "height"
+        )
+        val rateAlpha by animateFloatAsState(
+            targetValue = androidx.compose.ui.util.lerp(
+                0f,
+                1f,
+                1f - currentPageOffset.coerceIn(0f, 1f)
+            ),
+            label = "height"
+        )
+
+        PopularMediaItemCard(
+            popularMediaItem = state.mediaItems[page % state.mediaItems.size],
+            ratingAlpha = rateAlpha,
+            imageWidth = width,
+            imageHeight = height,
+            onClickMediaItem = onClickMediaItem
+        )
+    }
+}
 
 @ThemeAndLocalePreviews
 @Composable
@@ -223,7 +263,6 @@ private fun PopularSectionPreview() {
                 state = HomeUiState.PopularMediaSectionUiState(
                     mediaItems = dummyMovies
                 ),
-                pagerState = PagerState(currentPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE },
                 onClickMediaItem = { _, _ -> },
                 isVisible = true
             )

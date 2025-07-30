@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.RadioButton
 import com.amsterdam.designsystem.components.RadioState
-import com.amsterdam.designsystem.components.Score
 import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.components.TabsLayout
 import com.amsterdam.designsystem.components.TextField
@@ -215,12 +214,6 @@ fun DesignSystem() {
         GenreChip(
             genre = stringResource(R.string.action),
             selected = true,
-        )
-        Score(
-            1,
-        )
-        Score(
-            -1,
         )
         SectionTitle(
             title = stringResource(R.string.movies_birthday),

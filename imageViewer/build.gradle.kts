@@ -1,8 +1,6 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.aflami.custom.plugin)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -10,17 +8,35 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.androidx.compose.bom))
+    tensorFlowDependencies()
+    coilDependencies()
+    kotlinExtensionsDependencies()
+    composeBomDependencies()
+    firebaseDependencies()
+    androidxStartupDependencies()
+}
 
-    // Coil for image loading
-    implementation(libs.coil.compose)
-
-    // TensorFlow Lite for on-device ML
+private fun DependencyHandlerScope.tensorFlowDependencies() {
     implementation(libs.tensorflow.lite.task.vision)
+}
 
+private fun DependencyHandlerScope.coilDependencies() {
+    implementation(libs.coil.compose)
+}
+
+private fun DependencyHandlerScope.kotlinExtensionsDependencies() {
+    implementation(libs.androidx.core.ktx)
+}
+
+private fun DependencyHandlerScope.composeBomDependencies() {
+    implementation(platform(libs.androidx.compose.bom))
+}
+
+private fun DependencyHandlerScope.firebaseDependencies() {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.ml.modeldownloader)
+}
 
+private fun DependencyHandlerScope.androidxStartupDependencies() {
     implementation(libs.androidx.startup.runtime)
 }

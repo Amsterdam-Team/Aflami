@@ -1,9 +1,7 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -13,33 +11,67 @@ android {
 }
 
 dependencies {
+    modulesDependencies()
+    navigationDependencies()
+    lifeCycleDependencies()
+    sifrDependencies()
+    pagingDependencies()
+    kotlinExtensionsDependencies()
+    appCompactDependencies()
+    previewDependencies()
+    composeDependencies()
+    uiGraphicsDependencies()
+    hiltDependencies()
+}
+
+private fun DependencyHandlerScope.modulesDependencies() {
     implementation(project(":designSystem"))
     implementation(project(":viewModel"))
     implementation(project(":imageViewer"))
+}
 
-    implementation(libs.sifr.shaded)
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.foundation)
-
-    implementation(libs.kotlinx.serialization.json)
-
-    // Navigation
+private fun DependencyHandlerScope.navigationDependencies() {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.common.android)
+}
 
-    // page 3
+private fun DependencyHandlerScope.lifeCycleDependencies() {
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+}
+
+private fun DependencyHandlerScope.sifrDependencies() {
+    implementation(libs.sifr.shaded)
+}
+
+private fun DependencyHandlerScope.pagingDependencies() {
     implementation(libs.androidx.paging.compose)
-    //hilt
+}
+
+private fun DependencyHandlerScope.kotlinExtensionsDependencies() {
+    implementation(libs.androidx.core.ktx)
+}
+
+private fun DependencyHandlerScope.appCompactDependencies() {
+    implementation(libs.androidx.appcompat)
+}
+
+private fun DependencyHandlerScope.previewDependencies() {
+    debugImplementation(libs.androidx.ui.tooling.preview)
+}
+
+private fun DependencyHandlerScope.composeDependencies() {
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.foundation)
+}
+
+private fun DependencyHandlerScope.uiGraphicsDependencies() {
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+}
+
+private fun DependencyHandlerScope.hiltDependencies() {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation (libs.androidx.hilt.navigation.compose)
-
 }

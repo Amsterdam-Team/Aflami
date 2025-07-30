@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
 }
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
 }
 kotlin {
     compilerOptions {
