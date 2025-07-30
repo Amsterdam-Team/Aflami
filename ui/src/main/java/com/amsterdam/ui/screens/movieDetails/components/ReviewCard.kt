@@ -1,6 +1,7 @@
 package com.amsterdam.ui.screens.movieDetails.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,7 +50,8 @@ fun ReviewCard(
                         strokeWidth = strokeWidth,
                         cap = Stroke.DefaultCap,
                     )
-                }.padding(horizontal = 16.dp, vertical = 12.dp),
+                }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             SafeImageView(
@@ -71,6 +73,7 @@ fun ReviewCard(
                 onError = { ImageErrorIndicator() },
             )
             Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier =
                     Modifier
                         .weight(1f)
