@@ -25,6 +25,7 @@ class GetTvShowDetailsUseCase(
         val reviews: List<Review>,
         val similarTvShows: List<TvShow>,
         val gallery: List<String>,
+        val posters: List<String>,
         val productionsCompanies: List<ProductionCompany>
     )
 }

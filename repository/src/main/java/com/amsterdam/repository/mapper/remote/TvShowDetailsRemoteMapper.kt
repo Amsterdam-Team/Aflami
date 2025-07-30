@@ -14,7 +14,8 @@ class TvShowDetailsRemoteMapper @Inject constructor(
     private val reviewRemoteMapper: ReviewRemoteMapper,
     private val galleryRemoteMapper: GalleryRemoteMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
-    private val seasonRemoteMapper: SeasonRemoteMapper
+    private val seasonRemoteMapper: SeasonRemoteMapper,
+    private val posterRemoteMapper: PostersRemoteMapper,
 ) : EntityMapper<TvShowDetailsRemoteResponse, TvShowDetails> {
     override fun toEntity(dto: TvShowDetailsRemoteResponse): TvShowDetails {
         val tvShow = TvShow(
@@ -39,6 +40,7 @@ class TvShowDetailsRemoteMapper @Inject constructor(
                 reviews = reviewRemoteMapper.toEntityList(reviews.results),
                 similarTvShows = tvRemoteMapper.toEntityList(similar.results),
                 gallery = galleryRemoteMapper.toEntity(images),
+                posters = posterRemoteMapper.toEntity(images),
                 productionsCompanies = productionCompanyMapper.toEntityList(productionCompanies),
             )
         }
