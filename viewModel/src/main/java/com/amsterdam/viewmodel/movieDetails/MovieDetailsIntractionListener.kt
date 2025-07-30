@@ -11,4 +11,5 @@ interface MovieDetailsInteractionListener  {
     fun onRateClicked()
     fun onNavigateToLoginClicked()
     fun onCancelClicked()
+    fun onClickSimilarMovie(movieId: Long)
 }

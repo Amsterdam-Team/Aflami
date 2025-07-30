@@ -90,6 +90,10 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(isLoginDialogVisible = false) }
     }
 
+    override fun onClickSimilarMovie(movieId: Long) {
+        sendNewEffect(MovieDetailsEffect.NavigateToMovieDetails(movieId))
+    }
+
     override fun onAddToListClicked() {
         viewModelScope.launch {
             runIfLoggedIn(
