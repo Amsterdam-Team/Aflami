@@ -62,10 +62,8 @@ fun DefaultAppBar(
                     IconButton(
                         painter = painter,
                         contentDescription = firstOptionContentDescription,
-                        containerColor = AppTheme.color.primaryVariant,
                         tint = AppTheme.color.body,
                         paddingValues = PaddingValues(8.dp),
-                        withBorder = true,
                         onClick = onFirstOptionClicked,
                     )
                 }
@@ -76,10 +74,8 @@ fun DefaultAppBar(
                     IconButton(
                         painter = painter,
                         contentDescription = lastOptionContentDescription,
-                        containerColor = AppTheme.color.primaryVariant,
                         tint = AppTheme.color.body,
                         paddingValues = PaddingValues(8.dp),
-                        withBorder = true,
                         onClick = onLastOptionClicked,
                     )
                 }
