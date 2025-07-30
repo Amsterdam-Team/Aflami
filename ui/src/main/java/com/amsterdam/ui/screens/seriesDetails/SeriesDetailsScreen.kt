@@ -28,7 +28,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +46,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.Icon
@@ -69,6 +73,7 @@ import com.amsterdam.ui.screens.movieDetails.components.CompanyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.GallerySection
 import com.amsterdam.ui.screens.movieDetails.components.MoreLikeSection
+import com.amsterdam.ui.screens.movieDetails.components.PageIndicator
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
 import com.amsterdam.ui.screens.movieDetails.components.ReviewSection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
@@ -85,6 +90,7 @@ import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsViewModel
 import com.amsterdam.viewmodel.shared.Selectable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -153,6 +159,14 @@ fun SeriesDetailsContent(
             }
         }
     }
+    val pagerState = rememberPagerState { state.postersUrls.size }
+
+    LaunchedEffect(true) {
+        while (true) {
+            delay(4000)
+            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10))
+        }
+    }
 
     AnimatedVisibility(
         state.isLoading,
@@ -209,14 +223,32 @@ fun SeriesDetailsContent(
                             .fillMaxWidth()
                             .height(263.dp)
                     ) {
-                        SafeImageView(
-                            model = state.posterUrl,
-                            contentDescription = "",
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            SafeImageView(
+                                model = state.postersUrls[page],
+                                contentDescription = "",
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .animateContentSize(),
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
+                            )
+
+                        }
+
+                        PageIndicator(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .animateContentSize(),
-                            onLoading = { ImageLoadingIndicator() },
-                            onError = { ImageErrorIndicator() },
+                                .zIndex(1f)
+                                .padding(4.dp)
+                                .background(AppTheme.color.primaryVariant, RoundedCornerShape(100.dp))
+                                .padding(vertical = 4.dp, horizontal = 2.dp)
+                                .align(Alignment.BottomEnd),
+                            numberOfPages = state.postersUrls.size,
+                            selectedPage = pagerState.currentPage
                         )
 
                         RatingChip(
