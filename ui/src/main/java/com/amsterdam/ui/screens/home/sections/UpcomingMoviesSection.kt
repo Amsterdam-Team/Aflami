@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
@@ -15,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.Text
@@ -108,15 +108,19 @@ fun LazyListScope.upcomingMoviesSection(
                 }
             } else {
                 item {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
-                        style = AppTheme.textStyle.label.medium,
-                        color = AppTheme.color.body,
-                        textAlign = TextAlign.Center
-                    )
+                    CenterOfScreenContainer(
+                        unneededSpace = 230.dp
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 130.dp)
+                                .padding(16.dp),
+                            text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
+                            style = AppTheme.textStyle.label.medium,
+                            color = AppTheme.color.body,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
