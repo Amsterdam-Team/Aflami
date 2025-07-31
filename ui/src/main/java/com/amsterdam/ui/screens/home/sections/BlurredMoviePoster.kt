@@ -28,7 +28,7 @@ fun BoxScope.BlurredMoviePoster(
             model = posterUrl,
             contentDescription = null,
             onLoading = { },
-            isClassified = false,
+            isSafeEnabled = false,
             onError = { },
             modifier = Modifier
                 .matchParentSize()

@@ -1,5 +1,6 @@
 package com.amsterdam.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
@@ -13,6 +14,7 @@ class PagingSource<T : Any>(
         }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
+        Log.e("PagingSource", params.key.toString())
         val page = params.key ?: 1
         return try {
             val data = fetch(page)

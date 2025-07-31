@@ -30,7 +30,6 @@ import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
-import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesSectionUiState
 
 fun LazyListScope.upcomingMoviesSection(
@@ -107,7 +106,7 @@ fun LazyListScope.upcomingMoviesSection(
                             movieType = stringResource(R.string.movies),
                             movieYear = yearOfRelease,
                             movieTitle = name,
-                            movieRating = rate.formateAsRate(),
+                            movieRating = rate,
                             onClick = { onMovieClicked(id) }
                         )
                     }

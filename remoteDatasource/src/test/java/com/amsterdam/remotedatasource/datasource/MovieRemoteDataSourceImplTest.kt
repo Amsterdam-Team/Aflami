@@ -145,7 +145,8 @@ class MovieRemoteDataSourceImplTest {
             movieApiService.getMoviesByActorId(actorId.toString())
         } returns expectedMovieResponse
 
-        val movies = movieRemoteDataSourceImpl.getMoviesByActorName(actorName, page)
+
+        val movies = movieRemoteDataSourceImpl.getMoviesByActorIds(listOf(actorId), page)
 
         coVerify(exactly = 1) { movieApiService.getActorIdByName(actorName, page) }
         coVerify(exactly = 1) { movieApiService.getMoviesByActorId(actorId.toString()) }
@@ -540,11 +541,12 @@ class MovieRemoteDataSourceImplTest {
     @Test
     fun `getMoviesByActorName should rethrow NetworkException if actor search fails`() = runTest {
         val actorName = "Leonardo DiCaprio"
+        val actorId = 1234
         val page = 1
         coEvery { movieApiService.getActorIdByName(actorName, page) } throws NetworkException()
 
         assertThrows<NetworkException> {
-            movieRemoteDataSourceImpl.getMoviesByActorName(actorName, page)
+            movieRemoteDataSourceImpl.getMoviesByActorIds(listOf(actorId), page)
         }
     }
 
@@ -582,7 +584,7 @@ class MovieRemoteDataSourceImplTest {
         coEvery { movieApiService.getMoviesByActorId(actorId.toString()) } throws NetworkException()
 
         assertThrows<NetworkException> {
-            movieRemoteDataSourceImpl.getMoviesByActorName(actorName, page)
+            movieRemoteDataSourceImpl.getMoviesByActorIds(listOf(actorId), page)
         }
     }
 

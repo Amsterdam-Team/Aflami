@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
 import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
@@ -27,9 +28,12 @@ import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,22 +41,25 @@ class SearchViewModel @Inject constructor(
     private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
     private val getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase,
     private val recentSearchesUseCase: RecentSearchesUseCase,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     SearchInteractionListener,
     FilterInteractionListener {
     private val _keyword = MutableStateFlow("")
 
-    var isNavigating: Boolean = false
-        private set
 
     init {
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                observeSearchKeywordChanges()
+            }.launchIn(viewModelScope)
+
         fetchRecentSearches()
         observeSearchKeywordChanges()
     }
 
     private fun fetchRecentSearches() {
-        startLoading()
         tryToExecute(
             action = { recentSearchesUseCase.getRecentSearches() },
             onSuccess = ::onLoadRecentSearchesSuccess,
@@ -69,6 +76,11 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onSearchKeywordChanged(keyword: String) {
+        if (keyword.isBlank()) {
+            updateState { it.copy(movies = emptyFlow(), tvShows = emptyFlow(), errorUiState = null, isLoading = false) }
+            return
+        }
+
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByKeyword(keyword)
             TabOption.TV_SHOWS -> fetchTvShowsByKeyword(keyword)
@@ -217,6 +229,7 @@ class SearchViewModel @Inject constructor(
     private fun startLoading() = updateState { it.copy(isLoading = true) }
 
     override fun onChangeSearchKeyword(keyword: String) {
+        if (keyword.trim() == state.value.keyword.trim()) return
         _keyword.update { keyword }
         updateState { it.copy(keyword = keyword) }
     }
@@ -236,25 +249,16 @@ class SearchViewModel @Inject constructor(
             onSaveSearchHistory()
             onClickClearSearch()
         } else {
-            if (!isNavigating) {
-                isNavigating = true
-                sendNewEffect(SearchUiEffect.NavigateBack)
-            }
+            sendNewNavigationEffect(SearchUiEffect.NavigateBack)
         }
     }
 
     override fun onClickWorldSearchCard() {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToWorldSearch)
     }
 
     override fun onClickActorSearchCard() {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToActorSearch)
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToActorSearch)
     }
 
     override fun onClickRetryRequest() = onSearchKeywordChanged(_keyword.value)
@@ -300,6 +304,9 @@ class SearchViewModel @Inject constructor(
                 isDialogVisible = false,
                 movieFilterItemUiState = FilterItemUiState(),
                 tvShowFilterItemUiState = FilterItemUiState(),
+                isLoading = false,
+                movies = emptyFlow(),
+                tvShows = emptyFlow(),
             )
         }
     }
@@ -330,17 +337,12 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onClickMovieCard(movieId: Long) {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
+
     }
 
     override fun onClickTvShowCard(tvShowId: Long) {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToTvShowDetails(tvShowId))
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToTvShowDetails(tvShowId))
     }
 
     override fun onClickFilterButton() {
@@ -424,7 +426,4 @@ class SearchViewModel @Inject constructor(
 
     override fun onClickClear() = resetFilterState()
 
-    fun navigationCompleted() {
-        isNavigating = false
-    }
 }

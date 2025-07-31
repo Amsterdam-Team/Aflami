@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.search.mapper
 
-import android.icu.text.DecimalFormat
 import com.amsterdam.entity.Movie
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 
@@ -10,7 +9,7 @@ fun Movie.toMediaItemUiState(): MovieItemUiState =
         name = name,
         posterImageUrl = posterUrl,
         yearOfRelease = releaseDate.year.toString(),
-        rate = DecimalFormat("#.#").format(rating).toString()
+        rate = if (rating % 1 == 0.0f) "${rating.toInt()}" else "%.1f".format(rating)
     )
 
 fun List<Movie>.toMoveUiStates() = map(Movie::toMediaItemUiState)

@@ -2,7 +2,7 @@ package com.amsterdam.viewmodel.movieDetails
 
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 
-interface MovieDetailsInteractionListener  {
+interface MovieDetailsInteractionListener {
     fun onClickMovieExtras(movieExtras: MovieExtras)
     fun onClickShowAllCast()
     fun onClickBack()
@@ -12,4 +12,6 @@ interface MovieDetailsInteractionListener  {
     fun onNavigateToLoginClicked()
     fun onCancelClicked()
     fun onClickSimilarMovie(movieId: Long)
+    fun onDescriptionExpansionToggled()
+    fun onReviewExpansionToggled(reviewId: String)
 }

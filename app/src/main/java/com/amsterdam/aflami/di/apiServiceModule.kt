@@ -1,5 +1,6 @@
 package com.amsterdam.aflami.di
 
+import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.remotedatasource.api.AuthenticationApiService
 import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
@@ -28,7 +29,8 @@ object ServiceProvidesModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitClient(json: Json): RetrofitClient = RetrofitClient(json)
+    fun provideRetrofitClient(json: Json, preferences: AppPreferencesRepository): RetrofitClient =
+        RetrofitClient(json, preferences)
 
     @Provides
     @Singleton

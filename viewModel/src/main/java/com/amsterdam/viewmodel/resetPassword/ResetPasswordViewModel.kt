@@ -23,6 +23,6 @@ class ResetPasswordViewModel @Inject constructor(dispatcherProvider: DispatcherP
     }
 
     fun onResetPasswordComplete() {
-        sendNewEffect(ResetPasswordEffect.NavigateToSignIn)
+        sendNewNavigationEffect(ResetPasswordEffect.NavigateToSignIn)
     }
 }

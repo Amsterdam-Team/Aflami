@@ -7,6 +7,8 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieGenreItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 data class HomeUiState(
     val popularMediaSectionUiState: PopularMediaSectionUiState = PopularMediaSectionUiState(),
@@ -28,7 +30,7 @@ data class HomeUiState(
     )
 
     data class ContinueWatchingMediaSectionUiState(
-        val mediaItems: List<MediaItemUiState> = emptyList(),
+        val mediaItems: List<ContinueWatchingMediaItemUiState> = emptyList(),
         val isLoading: Boolean = false,
     )
 
@@ -51,7 +53,6 @@ data class HomeUiState(
         val posterUrl: String = "",
         val type: MediaType = MediaType.MOVIE,
         val category: List<String> = emptyList(),
-
         )
 
     data class MoodPickerUiState(
@@ -68,6 +69,17 @@ data class HomeUiState(
         val movies: List<MovieItemUiState> = emptyList(),
         val isLoadingMovies: Boolean = false,
         val openMovieDialog: Boolean = false,
+    )
+
+
+    data class ContinueWatchingMediaItemUiState(
+        val id: Long = 0,
+        val name: String = "",
+        val posterImageUrl: String = "",
+        val yearOfRelease: String = "",
+        val rate: String = "",
+        val dateAdded: Instant = Clock.System.now(),
+        val mediaType: MediaType = MediaType.MOVIE
     )
 
     sealed class HomeError {

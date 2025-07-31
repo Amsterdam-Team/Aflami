@@ -1,5 +1,6 @@
 package com.amsterdam.aflami.di
 
+import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.domain.repository.MovieRepository
@@ -27,6 +28,7 @@ import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
@@ -45,6 +47,11 @@ object UseCaseModule {
     @Provides
     fun provideGetsSessionType(repo: AuthenticationRepository): GetsSessionType =
         GetsSessionType(repo)
+
+
+    @Provides
+    fun provideSetCurrentLanguage(repo: AppPreferencesRepository): ManageLocaleLanguageUseCase =
+        ManageLocaleLanguageUseCase(repo)
 
     @Provides
     fun provideLoginAsGuestUseCase(repo: AuthenticationRepository): LoginAsGuestUseCase =
