@@ -2,6 +2,7 @@ package com.amsterdam.viewmodel.seriesDetails
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
@@ -167,6 +168,12 @@ class SeriesDetailsViewModel @Inject constructor(
     private fun onError(exception: AflamiException) {
         when (exception) {
             is NoInternetException -> updateState {
+                it.copy(
+                    isLoading = false,
+                    networkError = true
+                )
+            }
+            is NetworkException -> updateState {
                 it.copy(
                     isLoading = false,
                     networkError = true

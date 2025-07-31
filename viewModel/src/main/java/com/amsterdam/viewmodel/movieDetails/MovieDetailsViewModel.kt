@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
@@ -122,6 +123,7 @@ class MovieDetailsViewModel @Inject constructor(
         Log.e("bk", "onError: $exception")
          when (exception) {
             is NoInternetException -> updateState { it.copy(networkError = true) }
+            is NetworkException -> updateState { it.copy(networkError = true) }
             else -> {}
         }
     }
