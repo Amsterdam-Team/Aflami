@@ -16,8 +16,8 @@ class TvShowsServiceProviderImpl @Inject constructor(
         return responseCall { tvShowsApiService.getPopularTvShows() }
     }
 
-    override suspend fun getTopRatedTvShows(): RemoteTvShowResponse {
-        return responseCall { tvShowsApiService.getTopRatedTvShows() }
+    override suspend fun getTopRatedTvShows(page: Int): RemoteTvShowResponse {
+        return responseCall { tvShowsApiService.getTopRatedTvShows(page) }
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse {

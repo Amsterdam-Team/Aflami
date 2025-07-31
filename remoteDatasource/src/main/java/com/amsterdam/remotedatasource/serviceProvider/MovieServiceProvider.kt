@@ -14,6 +14,6 @@ interface MovieServiceProvider {
     suspend fun getMoviesByCountryIsoCode(countryIsoCode: String, page: Int): RemoteMovieResponse
     suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse
     suspend fun getMovieDetailsById(movieId: Long): RemoteMovieDetailsResponse
-    suspend fun getTopRatedMovies() : RemoteMovieResponse
+    suspend fun getTopRatedMovies(page: Int) : RemoteMovieResponse
     suspend fun getMoviesByGenreIds(genresIds: List<Long>): RemoteMovieResponse
 }

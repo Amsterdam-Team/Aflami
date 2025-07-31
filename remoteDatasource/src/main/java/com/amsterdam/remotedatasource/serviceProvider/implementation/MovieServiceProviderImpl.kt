@@ -49,8 +49,8 @@ class MovieServiceProviderImpl @Inject constructor(
         return responseCall { movieApiService.getMovieDetailsById(movieId) }
     }
 
-    override suspend fun getTopRatedMovies() : RemoteMovieResponse {
-        return responseCall { movieApiService.getTopRatedMovies() }
+    override suspend fun getTopRatedMovies(page: Int) : RemoteMovieResponse {
+        return responseCall { movieApiService.getTopRatedMovies(page) }
     }
 
     override suspend fun getMoviesByGenreIds(genresIds: List<Long>): RemoteMovieResponse {
