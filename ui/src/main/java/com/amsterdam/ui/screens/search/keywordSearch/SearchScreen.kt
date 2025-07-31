@@ -37,6 +37,8 @@ import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
+import com.amsterdam.ui.screens.search.keywordSearch.sections.SearchScreenHeaderSection
+import com.amsterdam.ui.screens.search.keywordSearch.sections.SuccessMediaItemsSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
