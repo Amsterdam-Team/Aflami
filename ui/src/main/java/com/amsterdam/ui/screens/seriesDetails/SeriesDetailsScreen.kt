@@ -185,7 +185,7 @@ fun SeriesDetailsContent(
     }
     val animatedTopPadding by animateDpAsState(
         targetValue = topPadding,
-        animationSpec = tween(animationDuration),
+        animationSpec = tween(animationDuration), label = ""
     )
 
 
