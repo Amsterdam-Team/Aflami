@@ -6,6 +6,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -289,17 +291,21 @@ fun SeriesDetailsContent(
                                 color = AppTheme.color.title,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
-                            LazyRow(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp)
-                            ) {
-                                items(state.categories) {
-                                    CategoryChip(categoryName = getTvShowGenreLabel(it))
+
+                            if(state.categories.isNotEmpty()){
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                ) {
+                                    items(state.categories) {
+                                        CategoryChip(categoryName = getTvShowGenreLabel(it))
+                                    }
                                 }
                             }
+
                             SeriesInfoSection(
                                 modifier = Modifier
                                     .padding(top = 8.dp)
@@ -308,12 +314,14 @@ fun SeriesDetailsContent(
                                 seasonCount = state.seasonCount,
                                 originCountry = state.originCountry,
                             )
+
                             DescriptionSection(
                                 modifier = Modifier
                                     .padding(top = 24.dp)
-                                    .padding(horizontal = 24.dp),
+                                    .padding(horizontal = 16.dp),
                                 description = state.description
                             )
+
                             CastSection(
                                 modifier = Modifier.padding(top = 24.dp),
                                 actors = state.cast,
@@ -400,28 +408,36 @@ private fun SeriesInfoSection(
 ) {
     val items = listOf(airDate, seasonCount, originCountry)
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items.forEachIndexed { index, item ->
-            Text(
-                text = item,
-                style = AppTheme.textStyle.label.small,
-                color = AppTheme.color.hint
-            )
+    if (!items.all{it.isEmpty()}) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items.forEachIndexed { index, item ->
+                AnimatedVisibility(
+                    visible = item.isNotEmpty(),
+                    enter = slideInVertically(),
+                    exit = slideOutVertically()
+                ) {
+                    Text(
+                        text = item,
+                        style = AppTheme.textStyle.label.small,
+                        color = AppTheme.color.hint
+                    )
 
-            if (index < items.lastIndex) {
-                Box(
-                    modifier = Modifier
-                        .size(4.dp)
-                        .background(AppTheme.color.stroke, shape = CircleShape)
-                )
+                    if (index < items.lastIndex) {
+                        Box(
+                            modifier = Modifier
+                                .size(4.dp)
+                                .background(AppTheme.color.stroke, shape = CircleShape)
+                        )
+                    }
+                }
             }
         }
     }
+
 }
 
 @Composable

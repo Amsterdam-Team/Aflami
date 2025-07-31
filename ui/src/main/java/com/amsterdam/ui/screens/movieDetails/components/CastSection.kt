@@ -1,6 +1,10 @@
 package com.amsterdam.ui.screens.movieDetails.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -22,27 +26,33 @@ fun CastSection(
     actors: List<ActorUiState>,
     onClickAllCast: () -> Unit
 ) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            SectionTitle(
-                title = stringResource(R.string.cast),
-                showAllLabel = true,
-                onAllLabelClicked = onClickAllCast,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
-        LazyRow(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-            items(actors) {
-                ActorCard(actor = it)
+    AnimatedVisibility(
+        visible = actors.isNotEmpty(),
+        enter = slideInVertically(),
+        exit = slideOutVertically()
+    ) {
+        Column(modifier = modifier) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                SectionTitle(
+                    title = stringResource(R.string.cast),
+                    showAllLabel = true,
+                    onAllLabelClicked = onClickAllCast,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(actors) {
+                    ActorCard(actor = it)
+                }
             }
         }
     }
