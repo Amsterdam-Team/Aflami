@@ -56,7 +56,7 @@ class TopRatedViewModel @Inject constructor(
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTopRatedMoviesSuccess,
-            onError = ::onError
+            onError = {}
         )
     }
 
