@@ -8,7 +8,9 @@ interface MovieRemoteSource {
 
     suspend fun getMoviesByKeyword(keyword: String, page:Int): RemoteMovieResponse
 
-    suspend fun getMoviesByActorName(name: String, page:Int): RemoteMovieResponse
+    suspend fun getMoviesByActorIds(actorIds: List<Int>, page: Int): RemoteMovieResponse
+
+    suspend fun getActorIdsByName(name: String, page: Int): List<Int>
 
     suspend fun getMoviesByCountryIsoCode(countryIsoCode: String, page:Int): RemoteMovieResponse
 

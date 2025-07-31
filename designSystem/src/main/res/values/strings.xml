@@ -205,4 +205,5 @@
     <!-- - Cast  -->
     <string name="cast_not_available">"Cast Not Available"</string>
     <string name="we_could_not_find_cast_information">"We couldn't find cast information for this title right now. Please try again later."</string>
+    <string name="there_is_no_seasons">It Seem Like There Is No Seasons Yet</string>
 </resources>

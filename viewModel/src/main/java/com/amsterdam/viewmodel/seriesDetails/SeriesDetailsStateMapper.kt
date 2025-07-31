@@ -24,6 +24,7 @@ class SeriesDetailsStateMapper @Inject constructor(
             rating = movieDetailsStateMapper.ratingToRatingString(tvShow.rating),
             posterUrl = tvShow.posterUrl,
             title = tvShow.name,
+            categories = tvShow.categories,
             airDate = tvShow.airDate.toString(),
             seasonCount = formatSeasonCount(seasons.size),
             originCountry = tvShow.originCountry,
