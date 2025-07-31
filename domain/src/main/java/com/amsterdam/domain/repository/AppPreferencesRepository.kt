@@ -1,6 +1,8 @@
 package com.amsterdam.domain.repository
 
+import kotlinx.coroutines.flow.Flow
+
 interface AppPreferencesRepository {
-    suspend fun getDeviceLanguage(): String
+    fun getDeviceLanguage(): Flow<String>
     suspend fun setDeviceLanguage(language: String)
 }

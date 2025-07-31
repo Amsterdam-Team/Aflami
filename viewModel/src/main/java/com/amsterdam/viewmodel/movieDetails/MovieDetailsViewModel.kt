@@ -14,6 +14,8 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,9 +23,9 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(
     args: MovieDetailsArgs,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
-    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
     private val getsSessionType: GetsSessionType,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsEffect>(
     MovieDetailsUiState(),
@@ -33,11 +35,12 @@ class MovieDetailsViewModel @Inject constructor(
     init {
         val movieId = args.movieId!!
         updateState { it.copy(movieId = movieId) }
-        loadMovieDetails()
-    }
 
-    suspend fun setCurrentLanguage(language: String) {
-        manageLocaleLanguageUseCase.setDeviceLanguage(language)
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                loadMovieDetails()
+            }.launchIn(viewModelScope)
+
         loadMovieDetails()
     }
 

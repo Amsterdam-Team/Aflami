@@ -15,6 +15,8 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,9 +25,9 @@ class SeriesDetailsViewModel @Inject constructor(
     args: SeriesDetailsArgs,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getEpisodesBySeasonNumberUseCase: GetEpisodesBySeasonNumberUseCase,
-    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val seriesDetailsStateMapper: SeriesDetailsStateMapper,
     private val getsSessionType: GetsSessionType,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SeriesDetailsUiState, SeriesDetailsEffect>(
     SeriesDetailsUiState(),
@@ -35,11 +37,12 @@ class SeriesDetailsViewModel @Inject constructor(
     init {
         val tvShowId = args.tvShowId!!
         updateState { it.copy(tvShowId = tvShowId) }
-        loadTvShowDetails()
-    }
 
-    suspend fun setCurrentLanguage(language: String) {
-        manageLocaleLanguageUseCase.setDeviceLanguage(language)
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                loadTvShowDetails()
+            }.launchIn(viewModelScope)
+
         loadTvShowDetails()
     }
 

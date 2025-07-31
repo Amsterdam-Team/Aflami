@@ -82,11 +82,6 @@ import kotlinx.coroutines.flow.collectLatest
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsState()
     val navController = LocalNavController.current
-    val localConfigurations = LocalConfiguration.current.locales
-
-    LaunchedEffect(localConfigurations) {
-        viewModel.setCurrentLanguage(localConfigurations[0].language.lowercase())
-    }
 
     MovieContent(
         state = state.value,

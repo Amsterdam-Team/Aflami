@@ -12,6 +12,7 @@ import com.amsterdam.repository.mapper.local.TvShowCategoryLocalMapper
 import com.amsterdam.repository.mapper.remote.CategoryRemoteMapper
 import com.amsterdam.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
@@ -39,7 +40,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private suspend fun getMovieCategoriesFromLocal(): List<Category> {
         return onSuccessGetMovieCategoriesFromLocal(
             categoryLocalSource.getMovieCategories(
-                preferences.getDeviceLanguage()
+                preferences.getDeviceLanguage().first()
             )
         )
     }
@@ -71,7 +72,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
         return tvShowCategoryLocalMapper.toEntityList(
             categoryLocalSource.getTvShowCategories(
-                preferences.getDeviceLanguage()
+                preferences.getDeviceLanguage().first()
             )
         )
     }

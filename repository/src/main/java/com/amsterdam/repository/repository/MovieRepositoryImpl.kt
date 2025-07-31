@@ -22,6 +22,7 @@ import com.amsterdam.repository.mapper.remote.MovieRemoteMapper
 import com.amsterdam.repository.mapper.remoteToLocal.MovieGenreIdsRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -46,7 +47,7 @@ class MovieRepositoryImpl @Inject constructor(
         return categoryRepository.getMovieCategories().let {
             getCachedMovies(keyword, SearchType.BY_KEYWORD, page, moviesPerPage)
                 ?: recentSearchHandler.deleteRecentSearch(
-                    keyword, SearchType.BY_KEYWORD, preferences.getDeviceLanguage()
+                    keyword, SearchType.BY_KEYWORD, preferences.getDeviceLanguage().first()
                 ).let {
                     getMoviesByKeywordFromRemote(
                         keyword,
@@ -66,7 +67,7 @@ class MovieRepositoryImpl @Inject constructor(
         return categoryRepository.getMovieCategories().let {
             getCachedMovies(actorName, SearchType.BY_ACTOR, page, moviesPerPage)
                 ?: recentSearchHandler.deleteRecentSearch(
-                    actorName, SearchType.BY_ACTOR, preferences.getDeviceLanguage()
+                    actorName, SearchType.BY_ACTOR, preferences.getDeviceLanguage().first()
                 ).let {
                     getMoviesByActorNameFromRemote(
                         actorName,
@@ -88,7 +89,7 @@ class MovieRepositoryImpl @Inject constructor(
                 ?: recentSearchHandler.deleteRecentSearch(
                     country.countryIsoCode,
                     SearchType.BY_COUNTRY,
-                    preferences.getDeviceLanguage()
+                    preferences.getDeviceLanguage().first()
                 )
                     .let {
                         getMoviesByCountryIsoCodeFromRemote(
@@ -118,7 +119,7 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun cacheWatchedMovie(remoteMovieItemDto: RemoteMovieItemDto) {
         movieLocalSource.insertMovie(
             movieRemoteLocalMapper.toLocal(
-                remote = remoteMovieItemDto, args = listOf(preferences.getDeviceLanguage())
+                remote = remoteMovieItemDto, args = listOf(preferences.getDeviceLanguage().first())
             )
         )
     }
@@ -142,7 +143,7 @@ class MovieRepositoryImpl @Inject constructor(
         return recentSearchHandler.isRecentSearchExpired(
             keyword,
             searchType,
-            preferences.getDeviceLanguage()
+            preferences.getDeviceLanguage().first()
         )
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
             ?.let { getMoviesFromLocal(keyword, searchType, page, moviesPerPage) }
@@ -215,7 +216,7 @@ class MovieRepositoryImpl @Inject constructor(
                 movieLocalSource.getMoviesByKeywordAndSearchType(
                     keyword = keyword,
                     searchType = searchType,
-                    storedLanguage = preferences.getDeviceLanguage(),
+                    storedLanguage = preferences.getDeviceLanguage().first(),
                     limit = moviesPerPage,
                     offset = moviesPerPage * (page - 1)
                 )
@@ -231,7 +232,7 @@ class MovieRepositoryImpl @Inject constructor(
         movieLocalSource.addMoviesBySearchData(
             movies = movieRemoteLocalMapper.toLocalList(
                 remoteMovies.results,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             ),
             searchKeyword = keyword,
             searchType = searchType
@@ -246,13 +247,13 @@ class MovieRepositoryImpl @Inject constructor(
         movieLocalSource.addMovieWithCategories(
             movie = movieRemoteLocalMapper.toLocal(
                 remoteMovie,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             ),
             categories = movieGenreIdsRemoteLocalMapper.toLocalList(
                 remoteMovie.genreIds,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             ),
-            storedLanguage = preferences.getDeviceLanguage()
+            storedLanguage = preferences.getDeviceLanguage().first()
         )
     }
 

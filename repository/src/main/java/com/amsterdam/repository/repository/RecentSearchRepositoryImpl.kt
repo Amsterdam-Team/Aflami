@@ -6,6 +6,7 @@ import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.dto.local.LocalSearchDto
 import com.amsterdam.repository.dto.local.utils.SearchType
 import com.amsterdam.repository.mapper.local.RecentSearchLocalMapper
+import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.hours
@@ -49,7 +50,7 @@ class RecentSearchRepositoryImpl @Inject constructor(
             LocalSearchDto(
                 searchKeyword,
                 searchType,
-                preferences.getDeviceLanguage(),
+                preferences.getDeviceLanguage().first(),
                 Clock.System.now().plus(1.hours)
             )
         )

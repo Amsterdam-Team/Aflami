@@ -13,13 +13,14 @@ import com.amsterdam.viewmodel.utils.getLinearItemsList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class ContinueWatchingViewModel @Inject constructor(
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
-    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<ContinueWatchingUiState, ContinueWatchingEffect>(
     ContinueWatchingUiState(),
@@ -28,11 +29,11 @@ class ContinueWatchingViewModel @Inject constructor(
     ContinueWatchingInteractionListener {
 
     init {
-        getContinueWatchingData()
-    }
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                getContinueWatchingData()
+            }.launchIn(viewModelScope)
 
-    suspend fun setCurrentLanguage(language: String) {
-        manageLocaleLanguageUseCase.setDeviceLanguage(language)
         getContinueWatchingData()
     }
 

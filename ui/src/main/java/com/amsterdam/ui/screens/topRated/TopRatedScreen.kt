@@ -45,11 +45,6 @@ import kotlinx.coroutines.flow.collectLatest
 fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-    val localConfigurations = LocalConfiguration.current.locales
-
-    LaunchedEffect(localConfigurations) {
-        viewModel.setCurrentLanguage(localConfigurations[0].language.lowercase())
-    }
 
     TopRatedContent(state, viewModel)
     LaunchedEffect(Unit) {

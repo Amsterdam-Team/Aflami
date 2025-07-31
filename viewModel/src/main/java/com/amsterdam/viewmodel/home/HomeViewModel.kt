@@ -23,27 +23,28 @@ import com.amsterdam.viewmodel.utils.getLinearItemsList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val homeUiStateMapper: HomeUiStateMapper,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
-    private val dispatcherProvider: DispatcherProvider,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
+    dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState(), dispatcherProvider),
     HomeInteractionListener {
 
     init {
-        getContinueWatchingData()
-        getHomeScreenData()
-    }
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                getHomeScreenData()
+            }.launchIn(viewModelScope)
 
-    suspend fun setCurrentLanguage(language: String) {
-        manageLocaleLanguageUseCase.setDeviceLanguage(language)
+        getContinueWatchingData()
         getHomeScreenData()
     }
 

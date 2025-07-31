@@ -1,5 +1,6 @@
 package com.amsterdam.viewmodel.topRated
 
+import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
@@ -10,6 +11,8 @@ import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,11 +25,11 @@ class TopRatedViewModel @Inject constructor(
     TopRatedInteractionListener {
 
     init {
-        getTopRatedScreenData()
-    }
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                getTopRatedScreenData()
+            }.launchIn(viewModelScope)
 
-    suspend fun setCurrentLanguage(language: String) {
-        manageLocaleLanguageUseCase.setDeviceLanguage(language)
         getTopRatedScreenData()
     }
 

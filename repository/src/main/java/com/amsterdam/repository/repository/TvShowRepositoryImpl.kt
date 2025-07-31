@@ -25,6 +25,7 @@ import com.amsterdam.repository.mapper.remoteToLocal.TvShowGenreIdsRemoteLocalMa
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteDetailsLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class TvShowRepositoryImpl @Inject constructor(
@@ -65,7 +66,7 @@ class TvShowRepositoryImpl @Inject constructor(
             ?: recentSearchHandler.deleteRecentSearch(
                 keyword,
                 SearchType.BY_KEYWORD,
-                preferences.getDeviceLanguage()
+                preferences.getDeviceLanguage().first()
             )
                 .let { getTvShowsFromRemote(keyword, page) }
                 .let { remoteTvShows ->
@@ -84,7 +85,7 @@ class TvShowRepositoryImpl @Inject constructor(
         return recentSearchHandler.isRecentSearchExpired(
             keyword,
             SearchType.BY_KEYWORD,
-            preferences.getDeviceLanguage()
+            preferences.getDeviceLanguage().first()
         )
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
             ?.let { getTvShowFromLocal(keyword, page, tvShowsPerPage) }
@@ -105,7 +106,7 @@ class TvShowRepositoryImpl @Inject constructor(
     private suspend fun cacheWatchedTvShow(remoteTvShowItemDto: TvShowDetailsRemoteResponse) {
         localTvDataSource.insertTvShow(
             tvShowRemoteDetailsLocalMapper.toLocal(
-                remote = remoteTvShowItemDto, args = listOf(preferences.getDeviceLanguage())
+                remote = remoteTvShowItemDto, args = listOf(preferences.getDeviceLanguage().first())
             )
         )
     }
@@ -135,7 +136,7 @@ class TvShowRepositoryImpl @Inject constructor(
             tvShowWithCategoryLocalMapper.toEntityList(
                 localTvDataSource.getTvShowsBySearchKeywordSortedByInterest(
                     searchKeyword = keyword,
-                    storedLanguage = preferences.getDeviceLanguage(),
+                    storedLanguage = preferences.getDeviceLanguage().first(),
                     limit = tvShowsPerPage,
                     offset = tvShowsPerPage * (page - 1)
                 )
@@ -157,10 +158,10 @@ class TvShowRepositoryImpl @Inject constructor(
         localTvDataSource.addTvShows(
             tvShowRemoteLocalMapper.toLocalList(
                 remoteTvShows.results,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             ),
             keyword,
-            storedLanguage = preferences.getDeviceLanguage()
+            storedLanguage = preferences.getDeviceLanguage().first()
         )
     }
 
@@ -178,7 +179,7 @@ class TvShowRepositoryImpl @Inject constructor(
                 remoteTvShow.genreIds,
                 listOf(preferences.getDeviceLanguage())
             ),
-            storedLanguage = preferences.getDeviceLanguage()
+            storedLanguage = preferences.getDeviceLanguage().first()
         )
     }
 
