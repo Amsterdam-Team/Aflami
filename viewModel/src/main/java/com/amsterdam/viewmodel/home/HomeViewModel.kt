@@ -10,6 +10,7 @@ import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase.HomeScreenData
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.home.HomeUiState.HomeError
@@ -19,15 +20,16 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val homeUiStateMapper: HomeUiStateMapper,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
@@ -40,14 +42,25 @@ class HomeViewModel @Inject constructor(
         getHomeScreenData()
     }
 
+    suspend fun setCurrentLocaleLanguage(language: String) {
+        manageLocaleLanguageUseCase.setCurrentLanguage(language)
+        getHomeScreenData()
+    }
+
     private fun getHomeScreenData() {
-        updateState { it.copy(
-            isLoading = true,
-            popularMediaSectionUiState = state.value.popularMediaSectionUiState.copy(isLoading = true),
-            topRatedMediaSectionUiState = state.value.topRatedMediaSectionUiState.copy(isLoading = true),
-            upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(isLoading = true),
-            continueWatchingMediaSectionUiState = state.value.continueWatchingMediaSectionUiState.copy(isLoading = true),
-        ) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                popularMediaSectionUiState = state.value.popularMediaSectionUiState.copy(isLoading = true),
+                topRatedMediaSectionUiState = state.value.topRatedMediaSectionUiState.copy(isLoading = true),
+                upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(
+                    isLoading = true
+                ),
+                continueWatchingMediaSectionUiState = state.value.continueWatchingMediaSectionUiState.copy(
+                    isLoading = true
+                ),
+            )
+        }
         tryToExecute(
             action = { getHomeScreenDataUseCase() },
             onSuccess = ::onGetHomeScreenDataSuccess,
@@ -55,7 +68,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
+    private fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
         updateState {
             homeUiStateMapper.toUiState(
                 homeScreenData,

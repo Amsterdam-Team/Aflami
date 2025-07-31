@@ -2,6 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.CategoryRepository
 import com.amsterdam.entity.Category
+import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
@@ -11,12 +12,12 @@ import com.amsterdam.repository.mapper.local.TvShowCategoryLocalMapper
 import com.amsterdam.repository.mapper.remote.CategoryRemoteMapper
 import com.amsterdam.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
-import com.amsterdam.repository.utils.getDeviceLanguage
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
+    private val preferences: AppPreferences,
     private val movieCategoryLocalMapper: MovieCategoryLocalMapper,
     private val categoryRemoteMapper: CategoryRemoteMapper,
     private val movieCategoryRemoteLocalMapper: MovieCategoryRemoteLocalMapper,
@@ -38,7 +39,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private suspend fun getMovieCategoriesFromLocal(): List<Category> {
         return onSuccessGetMovieCategoriesFromLocal(
             categoryLocalSource.getMovieCategories(
-                getDeviceLanguage()
+                preferences.getCurrentLanguage()
             )
         )
     }
@@ -62,7 +63,7 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryLocalSource.upsertMovieCategories(
             movieCategoryRemoteLocalMapper.toLocalList(
                 movieCategories.genres,
-                listOf(getDeviceLanguage())
+                listOf(preferences.getCurrentLanguage())
             )
         )
     }
@@ -70,7 +71,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
         return tvShowCategoryLocalMapper.toEntityList(
             categoryLocalSource.getTvShowCategories(
-                getDeviceLanguage()
+                preferences.getCurrentLanguage()
             )
         )
     }
@@ -89,7 +90,7 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryLocalSource.upsertTvShowCategories(
             tvShowCategoryRemoteLocalMapper.toLocalList(
                 tvShowCategories.genres,
-                listOf(getDeviceLanguage())
+                listOf(preferences.getCurrentLanguage())
             )
         )
     }

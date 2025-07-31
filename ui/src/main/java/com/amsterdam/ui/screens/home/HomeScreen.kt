@@ -59,6 +59,11 @@ import kotlinx.coroutines.flow.collectLatest
 fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hiltViewModel()) {
     val navController = LocalNavController.current
     val state by homeViewModel.state.collectAsStateWithLifecycle()
+    val localConfigurations = LocalConfiguration.current.locales
+
+    LaunchedEffect(localConfigurations) {
+        homeViewModel.setCurrentLocaleLanguage(localConfigurations[0].language.lowercase())
+    }
     LaunchedEffect(Unit) {
         homeViewModel.effect.collectLatest { effect ->
             effect?.let {
