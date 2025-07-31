@@ -126,6 +126,23 @@ class SeriesDetailsViewModel @Inject constructor(
         sendNewNavigationEffect(SeriesDetailsEffect.NavigateToMovieDetails(movieId))
     }
 
+    override fun onDescriptionExpansionToggled() {
+        updateState { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
+    }
+
+    override fun onReviewExpansionToggled(reviewId: String) {
+        updateState { state ->
+            val updatedReviews = state.reviews.map { review ->
+                if (review.username == reviewId) {
+                    review.copy(isExpanded = !review.isExpanded)
+                } else {
+                    review
+                }
+            }
+            state.copy(reviews = updatedReviews)
+        }
+    }
+
     private suspend fun getEpisodesForSeason(seasonNumber: Int): List<Episode> {
         val updatedSeasons = state.value.seasons.map {
             if (it.seasonNumber == seasonNumber && it.episodes.isNotEmpty()) {

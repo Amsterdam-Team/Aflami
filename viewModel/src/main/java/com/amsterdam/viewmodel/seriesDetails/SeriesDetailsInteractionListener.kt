@@ -13,4 +13,6 @@ interface SeriesDetailsInteractionListener {
     fun onNavigateToLoginClicked()
     fun onCancelClicked()
     fun onClickSimilarMovie(movieId: Long)
+    fun onDescriptionExpansionToggled()
+    fun onReviewExpansionToggled(reviewId: String)
 }

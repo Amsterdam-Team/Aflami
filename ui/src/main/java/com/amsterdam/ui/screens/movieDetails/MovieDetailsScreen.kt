@@ -129,7 +129,6 @@ fun MovieContent(
     val pagerState = rememberPagerState { state.moviePostersUrl.size }
 
 
-
     LaunchedEffect(true) {
         while (true) {
             delay(4000)
@@ -267,6 +266,8 @@ fun MovieContent(
                                 .padding(top = 24.dp)
                                 .padding(horizontal = 16.dp),
                             description = state.description,
+                            isExpanded = state.isDescriptionExpanded,
+                            onToggleExpansion = interactionListener::onDescriptionExpansionToggled
                         )
                         CastSection(
                             modifier = Modifier.padding(top = 24.dp),
@@ -306,12 +307,10 @@ fun MovieContent(
                                 interactionListener.onClickSimilarMovie(selectedMovieId)
                             }
                         )
-
-                        MovieExtras.REVIEWS -> reviewSection(state.reviews)
+                        MovieExtras.REVIEWS -> reviewSection(state.reviews, interactionListener)
                         MovieExtras.GALLERY -> item {
                             GallerySection(gallery = state.gallery)
                         }
-
                         MovieExtras.COMPANY_PRODUCTION -> companyProductionSection(state.productionCompany)
                     }
                 }
@@ -354,6 +353,8 @@ private fun SearchByActorContentPreview() {
                     override fun onNavigateToLoginClicked() {}
                     override fun onCancelClicked() {}
                     override fun onClickSimilarMovie(movieId: Long) {}
+                    override fun onDescriptionExpansionToggled() {}
+                    override fun onReviewExpansionToggled(reviewId: String) {}
                 },
         )
     }

@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class SeriesDetailsStateMapper @Inject constructor(
     private val movieDetailsStateMapper: MovieDetailsUiStateMapper
-){
+) {
 
     fun toUiState(seriesDetails: TvShowDetails): SeriesDetailsUiState = with(seriesDetails) {
         SeriesDetailsUiState(
