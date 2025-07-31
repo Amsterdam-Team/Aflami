@@ -7,6 +7,7 @@ import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetails
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.entity.Episode
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
@@ -20,9 +21,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SeriesDetailsViewModel @Inject constructor(
     args: SeriesDetailsArgs,
-    private val seriesDetailsStateMapper: SeriesDetailsStateMapper,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getEpisodesBySeasonNumberUseCase: GetEpisodesBySeasonNumberUseCase,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
+    private val seriesDetailsStateMapper: SeriesDetailsStateMapper,
     private val getsSessionType: GetsSessionType,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SeriesDetailsUiState, SeriesDetailsEffect>(
@@ -33,6 +35,11 @@ class SeriesDetailsViewModel @Inject constructor(
     init {
         val tvShowId = args.tvShowId!!
         updateState { it.copy(tvShowId = tvShowId) }
+        loadTvShowDetails()
+    }
+
+    suspend fun setCurrentLocaleLanguage(language: String) {
+        manageLocaleLanguageUseCase.setCurrentLanguage(language)
         loadTvShowDetails()
     }
 

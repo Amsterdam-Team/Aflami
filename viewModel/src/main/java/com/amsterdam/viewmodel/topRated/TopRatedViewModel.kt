@@ -4,6 +4,7 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase.TopRatedScreenData
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
@@ -14,12 +15,18 @@ import javax.inject.Inject
 @HiltViewModel
 class TopRatedViewModel @Inject constructor(
     private val getTopRatedScreenDataUseCase: GetTopRatedScreenDataUseCase,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val topRatedUiStateMapper: TopRatedUiStateMapper,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<TopRatedUiState, TopRatedEffect>(TopRatedUiState(), dispatcherProvider),
     TopRatedInteractionListener {
 
     init {
+        getTopRatedScreenData()
+    }
+
+    suspend fun setCurrentLocaleLanguage(language: String) {
+        manageLocaleLanguageUseCase.setCurrentLanguage(language)
         getTopRatedScreenData()
     }
 

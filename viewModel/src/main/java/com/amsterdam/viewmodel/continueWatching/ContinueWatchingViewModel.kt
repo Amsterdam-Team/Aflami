@@ -5,18 +5,20 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel
 class ContinueWatchingViewModel @Inject constructor(
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<ContinueWatchingUiState, ContinueWatchingEffect>(
@@ -29,6 +31,10 @@ class ContinueWatchingViewModel @Inject constructor(
         getContinueWatchingData()
     }
 
+    suspend fun setCurrentLocaleLanguage(language: String) {
+        manageLocaleLanguageUseCase.setCurrentLanguage(language)
+        getContinueWatchingData()
+    }
 
     private fun getContinueWatchingData() {
         updateState { it.copy(isLoading = true) }
@@ -65,7 +71,8 @@ class ContinueWatchingViewModel @Inject constructor(
                     error = ContinueWatchingUiState.ContinueWatchingError.NetworkError
                 )
             }
-            else ->{}
+
+            else -> {}
         }
     }
 

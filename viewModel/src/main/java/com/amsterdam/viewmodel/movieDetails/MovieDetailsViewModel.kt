@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
+import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.shared.BaseViewModel
@@ -19,8 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     args: MovieDetailsArgs,
-    private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
+    private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
     private val getsSessionType: GetsSessionType,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsEffect>(
@@ -34,11 +36,16 @@ class MovieDetailsViewModel @Inject constructor(
         loadMovieDetails()
     }
 
+    suspend fun setCurrentLocaleLanguage(language: String) {
+        manageLocaleLanguageUseCase.setCurrentLanguage(language)
+        loadMovieDetails()
+    }
+
     private fun loadMovieDetails() {
         updateState { it.copy(isLoading = true, networkError = false) }
         tryToExecute(
             action = ::getMovieDetails,
-            onSuccess =::onGetMovieDetailsSuccess,
+            onSuccess = ::onGetMovieDetailsSuccess,
             onError = ::onError,
             onCompletion = ::onCompletion
         )
@@ -114,13 +121,13 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun showMustLoginDialog(dialogType: MovieAndSeriesDetailsDialogType){
+    private fun showMustLoginDialog(dialogType: MovieAndSeriesDetailsDialogType) {
         updateState { it.copy(isLoginDialogVisible = true, dialogType = dialogType) }
     }
 
     private fun onError(exception: AflamiException) {
         Log.e("bk", "onError: $exception")
-         when (exception) {
+        when (exception) {
             is NoInternetException -> updateState { it.copy(networkError = true) }
             else -> {}
         }

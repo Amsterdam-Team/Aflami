@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -44,6 +45,12 @@ import kotlinx.coroutines.flow.collectLatest
 fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
+    val localConfigurations = LocalConfiguration.current.locales
+
+    LaunchedEffect(localConfigurations) {
+        viewModel.setCurrentLocaleLanguage(localConfigurations[0].language.lowercase())
+    }
+
     TopRatedContent(state, viewModel)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {

@@ -98,6 +98,12 @@ fun SeriesDetailsScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
+    val localConfigurations = LocalConfiguration.current.locales
+
+    LaunchedEffect(localConfigurations) {
+        viewModel.setCurrentLocaleLanguage(localConfigurations[0].language.lowercase())
+    }
+
     SeriesDetailsContent(
         state = state,
         interaction = viewModel
