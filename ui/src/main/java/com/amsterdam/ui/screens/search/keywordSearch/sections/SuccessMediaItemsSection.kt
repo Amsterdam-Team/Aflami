@@ -15,7 +15,7 @@ import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState
 import com.amsterdam.viewmodel.search.keywordSearch.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
@@ -50,7 +50,7 @@ fun SuccessMediaItemsSection(
                 val mediaItem = selectedItems[index]
                 when (mediaItem) {
                     is MovieItemUiState -> {
-                        MovieCard(
+                        MediaCard(
                             movieImage = {
                                 SafeImageView(
                                     modifier = Modifier.fillMaxSize(),
@@ -70,7 +70,7 @@ fun SuccessMediaItemsSection(
                     }
 
                     is TvShowItemUiState -> {
-                        MovieCard(
+                        MediaCard(
                             movieImage = {
                                 SafeImageView(
                                     modifier = Modifier.fillMaxSize(),
