@@ -55,7 +55,7 @@ class CastViewModel @Inject constructor(
 
     private fun onGetCastCompletion() = updateState { it.copy(isLoading = false) }
 
-    override fun onClickNavigateBack() = sendNewEffect(CastUiEffect.NavigateBack)
+    override fun onClickNavigateBack() = sendNewNavigationEffect(CastUiEffect.NavigateBack)
 
     override fun onClickRetrySearch() = fetchCast()
 

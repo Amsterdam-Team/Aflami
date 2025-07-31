@@ -71,9 +71,9 @@ class ContinueWatchingViewModel @Inject constructor(
 
     override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
         if (mediaType == MediaType.MOVIE)
-            sendNewEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
+            sendNewNavigationEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
         else
-            sendNewEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
+            sendNewNavigationEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
@@ -81,7 +81,7 @@ class ContinueWatchingViewModel @Inject constructor(
     }
 
     override fun onClickBack() {
-        sendNewEffect(ContinueWatchingEffect.NavigateBack)
+        sendNewNavigationEffect(ContinueWatchingEffect.NavigateBack)
     }
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }

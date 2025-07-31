@@ -177,6 +177,7 @@
     <string name="gallary">المعرض</string>
     <string name="company_production">شركة الإنتاج</string>
     <string name="read_more">اقرأ المزيد</string>
+    <string name="read_less">اقرأ أقل</string>
     <string name="rate">تقييم</string>
     <string name="rate_title">قيمه</string>
     <string name="rate_message">اختر مدى إعجابك به</string>

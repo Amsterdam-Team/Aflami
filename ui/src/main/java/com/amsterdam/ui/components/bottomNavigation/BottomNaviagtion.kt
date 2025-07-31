@@ -1,4 +1,4 @@
-package com.amsterdam.ui.navigation
+package com.amsterdam.ui.components.bottomNavigation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -11,22 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.amsterdam.designsystem.components.bottomNavBar.BottomBarItems
-import com.amsterdam.designsystem.components.bottomNavBar.BottomNavBar
+import com.amsterdam.designsystem.components.bottomNavBar.NavigationBar
+import com.amsterdam.ui.navigation.Route
 
-private val navigationBarItems =
-    mapOf(
-        BottomBarItems.HOME to Route.Tab.Home,
-        BottomBarItems.LISTS to Route.Tab.Lists,
-        BottomBarItems.CATEGORIES to Route.Tab.Categories,
-        BottomBarItems.LETS_PLAY to Route.Tab.LetsPlay,
-        BottomBarItems.PROFILE to Route.Tab.Profile,
-    )
 
 @Composable
 fun BottomNavigation(
     currentDestination: NavDestination?,
-    onNavigate: (Any) -> Unit,
+    onNavigate: (Route) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val visible =
@@ -54,7 +46,7 @@ fun BottomNavigation(
     ) {
         BottomNavBar(
             modifier = modifier,
-            items = navigationBarItems,
+            items = BottomBarItems.entries,
             selectedBottomBarItems = selectedDestination,
             onDestinationClicked = { onNavigate(it) },
         )
@@ -62,16 +54,16 @@ fun BottomNavigation(
 }
 
 private fun getSelectedDestination(currentDestination: NavDestination?): BottomBarItems =
-    navigationBarItems.entries
-        .find { (_, route) ->
+    BottomBarItems.entries
+        .find { entry ->
             currentDestination?.hierarchy?.any { navDestination ->
-                navDestination.hasRoute(route::class)
+                navDestination.hasRoute(entry.route::class)
             } == true
-        }?.key ?: BottomBarItems.PROFILE
+        } ?: BottomBarItems.PROFILE
 
 private fun shouldShowBottomNavigation(currentDestination: NavDestination?): Boolean =
-    navigationBarItems.entries
-        .map { it.value::class }
+    BottomBarItems.entries
+        .map { it.route::class }
         .any { route ->
             currentDestination?.hierarchy?.any { destination ->
                 destination.hasRoute(route)

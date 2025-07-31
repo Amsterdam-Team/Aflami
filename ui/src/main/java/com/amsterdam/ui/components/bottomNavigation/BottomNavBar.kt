@@ -1,11 +1,6 @@
-package com.amsterdam.designsystem.components.bottomNavBar
+package com.amsterdam.ui.components.bottomNavigation
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -13,23 +8,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import com.amsterdam.designsystem.components.Icon
+import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.components.bottomNavBar.NavigationBar
+import com.amsterdam.designsystem.components.bottomNavBar.NavigationBarItem
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.ui.navigation.Route
 
 @Composable
 fun BottomNavBar(
-    items: Map<BottomBarItems, Any>,
-    selectedBottomBarItems: BottomBarItems,
     modifier: Modifier = Modifier,
-    onDestinationClicked: (destination: Any) -> Unit = {},
-) {
+    items: List<BottomBarItems> = BottomBarItems.entries,
+    selectedBottomBarItems: BottomBarItems = BottomBarItems.HOME,
+    onDestinationClicked: (destination: Route) -> Unit = {},
+    ) {
     NavigationBar(
         modifier = modifier,
         containerColor = AppTheme.color.surface,
     ) {
-        items.entries.forEach { destination ->
-            val isSelected = selectedBottomBarItems == destination.key
+        items.forEach { destination ->
+            val isSelected = selectedBottomBarItems == destination
             val labelColor by animateColorAsState(
                 targetValue = if (isSelected) AppTheme.color.body else AppTheme.color.hint,
             )
@@ -39,11 +39,11 @@ fun BottomNavBar(
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    onDestinationClicked(destination.value)
+                    onDestinationClicked(destination.route)
                 },
                 label = {
                     Text(
-                        text = stringResource(destination.key.label),
+                        text = stringResource(destination.label),
                         color = labelColor,
                         style = AppTheme.textStyle.label.small,
                         maxLines = 1,
@@ -53,15 +53,12 @@ fun BottomNavBar(
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = destination.key.icon),
+                        painter = painterResource(id = destination.icon),
                         contentDescription = null,
                         tint = iconColor,
                     )
                 },
-                colors =
-                    NavigationBarItemDefaults.colors(
-                        indicatorColor = AppTheme.color.primaryVariant,
-                    ),
+                indicatorColor = AppTheme.color.primaryVariant,
             )
         }
     }
@@ -72,15 +69,7 @@ fun BottomNavBar(
 private fun BottomNavBarPreview() {
     AflamiTheme {
         BottomNavBar(
-            items =
-                mapOf(
-                    BottomBarItems.HOME to "home",
-                    BottomBarItems.LISTS to "lists",
-                    BottomBarItems.CATEGORIES to "categories",
-                    BottomBarItems.LETS_PLAY to "letsPlay",
-                    BottomBarItems.PROFILE to "profile",
-                ),
-            selectedBottomBarItems = BottomBarItems.HOME,
+
         )
     }
 }

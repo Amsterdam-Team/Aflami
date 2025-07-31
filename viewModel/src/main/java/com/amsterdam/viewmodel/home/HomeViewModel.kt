@@ -149,23 +149,23 @@ class HomeViewModel @Inject constructor(
     }
 
     override fun onClickSearch() {
-        sendNewEffect(HomeEffect.NavigateToSearchScreenEffect)
+        sendNewNavigationEffect(HomeEffect.NavigateToSearchScreenEffect)
     }
 
     override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
         if (mediaType == MediaType.MOVIE)
-            sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(mediaId))
+            sendNewNavigationEffect(HomeEffect.NavigateToMovieDetailsEffect(mediaId))
         else
-            sendNewEffect(HomeEffect.NavigateToTvShowDetailsEffect(mediaId))
+            sendNewNavigationEffect(HomeEffect.NavigateToTvShowDetailsEffect(mediaId))
 
     }
 
     override fun onClickShowAllContinueWatchingMovies() {
-        sendNewEffect(HomeEffect.NavigateToContinueWatchingMoviesScreen)
+        sendNewNavigationEffect(HomeEffect.NavigateToContinueWatchingMoviesScreen)
     }
 
     override fun onClickShowAllToRatedMovies() {
-        sendNewEffect(HomeEffect.NavigateToTopRatedMoviesEffect)
+        sendNewNavigationEffect(HomeEffect.NavigateToTopRatedMoviesEffect)
     }
 
     override fun onClickMood(mood: Mood) {
@@ -195,7 +195,7 @@ class HomeViewModel @Inject constructor(
 
     override fun onClickViewDetails() {
         onDismissMoodPickerDialog()
-        sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = state.value.moodPickerUiState.selectedMovie.id))
+        sendNewNavigationEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = state.value.moodPickerUiState.selectedMovie.id))
     }
 
     override fun onClickGetAnotherMovie() {
@@ -231,7 +231,7 @@ class HomeViewModel @Inject constructor(
     }
 
     override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = id))
+        sendNewNavigationEffect(HomeEffect.NavigateToMovieDetailsEffect(movieId = id))
     }
 
     private fun onError(exception: AflamiException) {

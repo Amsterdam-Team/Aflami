@@ -177,6 +177,7 @@
     <string name="gallary">Gallery</string>
     <string name="company_production">Company production</string>
     <string name="read_more">Read more</string>
+    <string name="read_less">Read less</string>
     <string name="rate">Rate</string>
     <string name="rate_title">Rate it</string>
     <string name="rate_message">Select how much you like it</string>

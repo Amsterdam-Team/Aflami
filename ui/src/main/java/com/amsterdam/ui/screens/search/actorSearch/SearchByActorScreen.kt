@@ -50,7 +50,6 @@ import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.utils.formateAsRate
-import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchErrorState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchUiState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchEffect
@@ -72,13 +71,11 @@ fun SearchByActorScreen(
     }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            effect?.let {
-                when (it) {
-                    ActorSearchEffect.NavigateBack -> navController.popBackStack()
-                    is ActorSearchEffect.NavigateToDetailsScreen -> {
-                        viewModel.onSaveSearchHistory()
-                        navController.safeNavigate(Route.MovieDetails(it.movieId))
-                    }
+            when (effect) {
+                ActorSearchEffect.NavigateBack -> navController.navigateUp()
+                is ActorSearchEffect.NavigateToDetailsScreen -> {
+                    viewModel.onSaveSearchHistory()
+                    navController.navigate(Route.MovieDetails(effect.movieId))
                 }
             }
         }

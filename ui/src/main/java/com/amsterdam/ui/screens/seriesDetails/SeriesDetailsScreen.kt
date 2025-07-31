@@ -3,6 +3,7 @@ package com.amsterdam.ui.screens.seriesDetails
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -71,18 +72,17 @@ import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
-import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
 import com.amsterdam.ui.screens.movieDetails.components.GallerySection
-import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
-import com.amsterdam.ui.screens.movieDetails.components.reviewSection
+import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
+import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
+import com.amsterdam.ui.screens.seriesDetails.component.reviewSection
 import com.amsterdam.ui.utils.formateAsRate
-import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsInteractionListener
@@ -107,25 +107,22 @@ fun SeriesDetailsScreen(
     )
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            effect?.let {
-                when (it) {
-                    SeriesDetailsEffect.NavigateBack -> navController.popBackStack()
-                    SeriesDetailsEffect.NavigateToCastScreen -> {
-                        navController.safeNavigate(
-                            Route.Cast(
-                                mediaType = MediaType.TV_SHOW.name,
-                                mediaId = state.tvShowId
-                            )
+            when (effect) {
+                SeriesDetailsEffect.NavigateBack -> navController.navigateUp()
+                SeriesDetailsEffect.NavigateToCastScreen -> {
+                    navController.navigate(
+                        Route.Cast(
+                            mediaType = MediaType.TV_SHOW.name,
+                            mediaId = state.tvShowId
                         )
-                    }
-
-                    SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
-                        Route.Login
                     )
+                }
 
-                    is SeriesDetailsEffect.NavigateToMovieDetails -> {
-                        navController.safeNavigate(Route.MovieDetails(it.movieId))
-                    }
+                SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
+                    Route.Login
+                )
+                is SeriesDetailsEffect.NavigateToMovieDetails -> {
+                    navController.navigate(Route.MovieDetails(effect.movieId))
                 }
             }
         }
@@ -176,6 +173,21 @@ fun SeriesDetailsContent(
         }
     }
 
+    val topPadding by remember {
+        derivedStateOf {
+            if (listState.firstVisibleItemIndex >= 1) {
+                96.dp
+            } else {
+                0.dp
+            }
+        }
+    }
+    val animatedTopPadding by animateDpAsState(
+        targetValue = topPadding,
+        animationSpec = tween(animationDuration), label = ""
+    )
+
+
     AnimatedVisibility(
         state.isLoading,
         enter = fadeIn(tween(animationDuration)),
@@ -213,32 +225,15 @@ fun SeriesDetailsContent(
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize(),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = interaction::onNavigateBack,
-                    onFirstOptionClicked = interaction::onRateClicked,
-                    onLastOptionClicked = interaction::onAddToListClicked
-                )
-                HorizontalDivider(color = dividerColor)
-            }
-
             LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AppTheme.color.surface)
+                    .padding(top = animatedTopPadding)
                     .navigationBarsPadding()
                     .animateContentSize()
             ) {
@@ -293,7 +288,7 @@ fun SeriesDetailsContent(
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
 
-                            if(state.categories.isNotEmpty()){
+                            if (state.categories.isNotEmpty()) {
                                 LazyRow(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -320,9 +315,10 @@ fun SeriesDetailsContent(
                                 modifier = Modifier
                                     .padding(top = 24.dp)
                                     .padding(horizontal = 16.dp),
-                                description = state.description
+                                description = state.description,
+                                isExpanded = state.isDescriptionExpanded,
+                                onToggleExpansion = interaction::onDescriptionExpansionToggled
                             )
-
                             CastSection(
                                 modifier = Modifier.padding(top = 24.dp),
                                 actors = state.cast,
@@ -336,7 +332,8 @@ fun SeriesDetailsContent(
                                     .background(AppTheme.color.stroke)
                             )
                             SeriesExtrasSection(
-                                modifier = Modifier.padding(top = 12.dp)
+                                modifier = Modifier
+                                    .padding(top = 12.dp)
                                     .onGloballyPositioned { coordinates ->
                                         seriesExtrasSectionYOffsetDp =
                                             coordinates.positionOnScreen().y.dp
@@ -354,18 +351,21 @@ fun SeriesDetailsContent(
                     ?.let { selectedExtra ->
                         when (selectedExtra) {
                             SeriesExtras.SEASONS -> {
-                                    seasonsSection(seasons = state.seasons, interaction = interaction)
+                                seasonsSection(seasons = state.seasons, interaction = interaction)
                             }
+
                             SeriesExtras.MORE_LIKE_THIS -> moreLikeSection(
                                 similarMovies = state.similarSeries,
                                 onClick = { movieId ->
                                     interaction.onClickSimilarMovie(movieId)
                                 }
                             )
-                            SeriesExtras.REVIEWS -> reviewSection(state.reviews)
+
+                            SeriesExtras.REVIEWS -> reviewSection(state.reviews, interaction)
                             SeriesExtras.GALLERY -> item {
                                 GallerySection(gallery = state.gallery)
                             }
+
                             SeriesExtras.COMPANY_PRODUCTION -> companyProductionSection(
                                 state.productionCompanies
                             )
@@ -377,7 +377,7 @@ fun SeriesDetailsContent(
                     val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
                     val spacerHeight: Dp by remember {
                         derivedStateOf {
-                            if (seriesExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)){
+                            if (seriesExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
                                 screenHeightDp
                             } else {
                                 0.dp
@@ -387,6 +387,24 @@ fun SeriesDetailsContent(
 
                     Spacer(modifier = Modifier.height(spacerHeight))
                 }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor)
+            ) {
+                DefaultAppBar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .statusBarsPadding(),
+                    firstOption = painterResource(R.drawable.ic_outlined_star),
+                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                    onNavigateBackClicked = interaction::onNavigateBack,
+                    onFirstOptionClicked = interaction::onRateClicked,
+                    onLastOptionClicked = interaction::onAddToListClicked
+                )
+                HorizontalDivider(color = dividerColor)
             }
         }
     }
@@ -401,7 +419,7 @@ private fun SeriesInfoSection(
 ) {
     val items = listOf(airDate, seasonCount, originCountry)
 
-    if (!items.all{it.isEmpty()}) {
+    if (!items.all { it.isEmpty() }) {
         Row(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -558,6 +576,8 @@ private fun SeriesDetailsContentPreview() {
                 override fun onNavigateToLoginClicked() {}
                 override fun onCancelClicked() {}
                 override fun onClickSimilarMovie(movieId: Long) {}
+                override fun onDescriptionExpansionToggled() {}
+                override fun onReviewExpansionToggled(reviewId: String) {}
             }
         )
     }

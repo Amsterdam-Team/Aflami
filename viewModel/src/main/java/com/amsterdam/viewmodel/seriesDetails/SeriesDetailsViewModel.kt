@@ -2,6 +2,7 @@ package com.amsterdam.viewmodel.seriesDetails
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
@@ -66,7 +67,7 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onNavigateBack() {
-        sendNewEffect(SeriesDetailsEffect.NavigateBack)
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateBack)
     }
 
     override fun onClickRetryButton() {
@@ -74,7 +75,7 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onClickShowAllCast() {
-        sendNewEffect(SeriesDetailsEffect.NavigateToCastScreen)
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToCastScreen)
     }
 
     override fun onAddToListClicked() {
@@ -104,7 +105,7 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onNavigateToLoginClicked() {
-        sendNewEffect(SeriesDetailsEffect.NavigateToLoginScreenEffect)
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToLoginScreenEffect)
     }
 
     override fun onCancelClicked() {
@@ -112,7 +113,24 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onClickSimilarMovie(movieId: Long) {
-        sendNewEffect(SeriesDetailsEffect.NavigateToMovieDetails(movieId))
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToMovieDetails(movieId))
+    }
+
+    override fun onDescriptionExpansionToggled() {
+        updateState { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
+    }
+
+    override fun onReviewExpansionToggled(reviewId: String) {
+        updateState { state ->
+            val updatedReviews = state.reviews.map { review ->
+                if (review.username == reviewId) {
+                    review.copy(isExpanded = !review.isExpanded)
+                } else {
+                    review
+                }
+            }
+            state.copy(reviews = updatedReviews)
+        }
     }
 
     private suspend fun getEpisodesForSeason(seasonNumber: Int): List<Episode> {
@@ -167,6 +185,12 @@ class SeriesDetailsViewModel @Inject constructor(
     private fun onError(exception: AflamiException) {
         when (exception) {
             is NoInternetException -> updateState {
+                it.copy(
+                    isLoading = false,
+                    networkError = true
+                )
+            }
+            is NetworkException -> updateState {
                 it.copy(
                     isLoading = false,
                     networkError = true

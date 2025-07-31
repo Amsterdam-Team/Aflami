@@ -31,10 +31,14 @@ fun ExpandableText(
     style: TextStyle = AppTheme.textStyle.body.small,
     textColor: Color = AppTheme.color.hint,
     showMoreText: String = stringResource(R.string.read_more),
+    showLessText: String = stringResource(R.string.read_less),
     showMoreStyle: TextStyle = AppTheme.textStyle.label.medium,
+    showLessStyle: TextStyle = AppTheme.textStyle.label.medium,
     showMoreColor: Color = AppTheme.color.primary,
+    showLessColor: Color = AppTheme.color.primary,
+    isExpanded: Boolean,
+    onToggleExpansion: () -> Unit
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
     var isClickable by remember { mutableStateOf(false) }
     var lastCharacterIndex by remember { mutableIntStateOf(0) }
 
@@ -53,26 +57,50 @@ fun ExpandableText(
         letterSpacing = showMoreStyle.letterSpacing
     )
 
-
+    val showLessSpanStyle = SpanStyle(
+        color = showLessColor,
+        fontSize = showLessStyle.fontSize,
+        fontWeight = showLessStyle.fontWeight,
+        fontStyle = showLessStyle.fontStyle,
+        letterSpacing = showLessStyle.letterSpacing
+    )
 
     val annotatedText = buildAnnotatedString {
         if (isClickable && !isExpanded) {
-            val adjustedText = text.substring(0, lastCharacterIndex-4)
+            val safeEnd = (lastCharacterIndex - 4).coerceAtLeast(0)
+            val trimmedText = text.take(safeEnd)
                 .dropLast(showMoreText.length)
                 .dropLastWhile { it.isWhitespace() || it == '.' }
+
             withStyle(textSpanStyle) {
-                append(adjustedText)
+                append(trimmedText)
                 append(" ")
             }
 
             withLink(
                 link = LinkAnnotation.Clickable(
                     tag = showMoreText,
-                    linkInteractionListener = { isExpanded = true }
+                    linkInteractionListener = { onToggleExpansion() }
                 )
             ) {
                 withStyle(showMoreSpanStyle) {
                     append(showMoreText)
+                }
+            }
+        } else if (isExpanded) {
+            withStyle(textSpanStyle) {
+                append(text)
+                append(" ")
+            }
+
+            withLink(
+                link = LinkAnnotation.Clickable(
+                    tag = showLessText,
+                    linkInteractionListener = { onToggleExpansion() }
+                )
+            ) {
+                withStyle(showLessSpanStyle) {
+                    append(showLessText)
                 }
             }
         } else {
@@ -89,7 +117,7 @@ fun ExpandableText(
             modifier
                 .fillMaxWidth()
                 .animateContentSize(),
-            maxLines = if (isExpanded) Int.MAX_VALUE else minimizedMaxLines,
+        maxLines = if (isExpanded) Int.MAX_VALUE else minimizedMaxLines,
         onTextLayout = { textLayoutResult ->
             if (!isExpanded && textLayoutResult.hasVisualOverflow) {
                 isClickable = true
@@ -101,11 +129,26 @@ fun ExpandableText(
 
 @ThemeAndLocalePreviews
 @Composable
+fun ExpandableTextExpandedPreview() {
+    AflamiTheme {
+        ExpandableText(
+            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor.",
+            minimizedMaxLines = 3,
+            isExpanded = true,
+            onToggleExpansion = {}
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
 fun ExpandableTextPreview() {
     AflamiTheme {
         ExpandableText(
             text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor.",
-            minimizedMaxLines = 3
+            minimizedMaxLines = 3,
+            isExpanded = false,
+            onToggleExpansion = {}
         )
     }
 }
