@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
@@ -41,7 +42,7 @@ fun TopRatedMediaItemsGrid(
     ) {
         items(
             count = mediaItems.itemCount,
-            key = { index -> "${mediaItems[index]?.id}-$index" },
+            key = { mediaItems.itemKey { it.id } },
         ) { index ->
             val media = mediaItems[index] ?: return@items
             val mediaType = when (media.mediaType) {
