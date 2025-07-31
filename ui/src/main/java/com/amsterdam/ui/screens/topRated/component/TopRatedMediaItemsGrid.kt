@@ -42,7 +42,6 @@ fun TopRatedMediaItemsGrid(
     ) {
         items(
             count = mediaItems.itemCount,
-            key = { mediaItems.itemKey { it.id } },
         ) { index ->
             val media = mediaItems[index] ?: return@items
             val mediaType = when (media.mediaType) {
