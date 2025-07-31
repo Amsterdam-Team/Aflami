@@ -1,12 +1,12 @@
 package com.amsterdam.remotedatasource.client
 
+import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.remotedatasource.BuildConfig
 import com.amsterdam.remotedatasource.api.AuthenticationApiService
 import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
-import com.amsterdam.repository.datasource.local.AppPreferences
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 
 class RetrofitClient(
     private val json: Json,
-    private val preferences: AppPreferences
+    private val preferences: AppPreferencesRepository
 ) {
     private val TOKEN_HEADER_NAME = "Authorization"
     private val LANGUAGE_PARAM_NAME = "language"
