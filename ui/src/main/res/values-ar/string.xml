@@ -218,4 +218,7 @@
     <string name="upcoming">القادمة</string>
     <string name="no_upcoming_movies_found_for_your_selection">لم يتم العثور على أفلام قادمة لاختيارك.</string>
 
+    <!-- Details Screen -->
+    <string name="there_is_no_gallery">لا توجد صور</string>
+    <string name="there_is_no_company_production">لا توجد شركات إنتاج</string>
 </resources>

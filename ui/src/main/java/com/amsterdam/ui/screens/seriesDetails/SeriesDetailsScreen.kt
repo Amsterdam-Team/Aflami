@@ -71,12 +71,13 @@ import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
-import com.amsterdam.ui.screens.movieDetails.components.CompanyProductionSection
+import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
+import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
 import com.amsterdam.ui.screens.movieDetails.components.GallerySection
-import com.amsterdam.ui.screens.movieDetails.components.MoreLikeSection
+import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
-import com.amsterdam.ui.screens.movieDetails.components.ReviewSection
+import com.amsterdam.ui.screens.movieDetails.components.reviewSection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
@@ -353,25 +354,19 @@ fun SeriesDetailsContent(
                     ?.let { selectedExtra ->
                         when (selectedExtra) {
                             SeriesExtras.SEASONS -> {
-                                val visibleSeasons = state.seasons.filter { it.episodeCount > 0 }
-                                if (visibleSeasons.isNotEmpty()) {
-                                    seasonsSection(
-                                        seasons = visibleSeasons,
-                                        interaction = interaction
-                                    )
-                                }
+                                    seasonsSection(seasons = state.seasons, interaction = interaction)
                             }
-                            SeriesExtras.MORE_LIKE_THIS -> MoreLikeSection(
+                            SeriesExtras.MORE_LIKE_THIS -> moreLikeSection(
                                 similarMovies = state.similarSeries,
                                 onClick = { movieId ->
                                     interaction.onClickSimilarMovie(movieId)
                                 }
                             )
-                            SeriesExtras.REVIEWS -> ReviewSection(state.reviews)
+                            SeriesExtras.REVIEWS -> reviewSection(state.reviews)
                             SeriesExtras.GALLERY -> item {
                                 GallerySection(gallery = state.gallery)
                             }
-                            SeriesExtras.COMPANY_PRODUCTION -> CompanyProductionSection(
+                            SeriesExtras.COMPANY_PRODUCTION -> companyProductionSection(
                                 state.productionCompanies
                             )
                         }
@@ -380,8 +375,6 @@ fun SeriesDetailsContent(
                 item {
                     val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
                     val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
-
-
                     val spacerHeight: Dp by remember {
                         derivedStateOf {
                             if (seriesExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)){
@@ -468,18 +461,22 @@ private fun LazyListScope.seasonsSection(
     seasons: List<SeasonUiState>,
     interaction: SeriesDetailsInteractionListener
 ) {
-    seasons.forEachIndexed { index, season ->
-        stickyHeader {
-            SeasonHeader(
-                season = season,
-                onClickSeasonMenu = { seasonNumber ->
-                    interaction.onClickSeasonMenu(seasonNumber)
-                }
-            )
-        }
-        val episodes = if (season.isExpanded) season.episodes else emptyList()
-        items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
-            EpisodesMenu(it)
+    if (seasons.isEmpty()) {
+        item { EmptyStateText(stringResource(R.string.there_is_no_seasons)) }
+    } else {
+        seasons.forEachIndexed { index, season ->
+            stickyHeader {
+                SeasonHeader(
+                    season = season,
+                    onClickSeasonMenu = { seasonNumber ->
+                        interaction.onClickSeasonMenu(seasonNumber)
+                    }
+                )
+            }
+            val episodes = if (season.isExpanded) season.episodes else emptyList()
+            items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
+                EpisodesMenu(it)
+            }
         }
     }
 }
