@@ -1,8 +1,8 @@
 package com.amsterdam.ui.screens.movieDetails
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,37 +24,41 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
-import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.LoadingContainer
-import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
+import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
+import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
@@ -63,10 +68,10 @@ import com.amsterdam.ui.screens.movieDetails.components.GallerySection
 import com.amsterdam.ui.screens.movieDetails.components.MoreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieExtrasSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieInfoSection
-import com.amsterdam.ui.screens.movieDetails.components.PageIndicator
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
 import com.amsterdam.ui.screens.movieDetails.components.ReviewSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
@@ -99,9 +104,15 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                             )
                         )
                     }
+
                     MovieDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
                         Route.Login
                     )
+                    is MovieDetailsEffect.NavigateToMovieDetails -> {
+                        navController.navigate(
+                            Route.MovieDetails(effect.movieId)
+                        )
+                    }
                 }
             }
         }
@@ -116,9 +127,14 @@ fun MovieContent(
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
+    val screenHeightDp = configuration.screenHeightDp.dp
+    var movieExtrasSectionYOffsetDp by remember { mutableStateOf(0.dp) }
+
     val listState = rememberLazyListState()
     val animationDuration by remember { mutableIntStateOf(1000) }
     val pagerState = rememberPagerState { state.moviePostersUrl.size }
+
+
 
     LaunchedEffect(true) {
         while (true) {
@@ -177,33 +193,14 @@ fun MovieContent(
                             .fillMaxWidth()
                             .height(263.dp),
                 ) {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxSize()
-                    ) { page ->
-                        SafeImageView(
-                            model = state.moviePostersUrl[page],
-                            contentDescription = "",
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .animateContentSize(),
-                            onLoading = { ImageLoadingIndicator() },
-                            onError = { ImageErrorIndicator() },
+                    if(state.moviePostersUrl.isEmpty()) {
+                        ImageErrorIndicator()
+                    } else {
+                        DetailsPostersPager(
+                            pagerState = pagerState,
+                            postersUrl = state.moviePostersUrl
                         )
-
                     }
-
-                    PageIndicator(
-                        modifier = Modifier
-                            .zIndex(1f)
-                            .padding(4.dp)
-                            .background(AppTheme.color.primaryVariant, RoundedCornerShape(100.dp))
-                            .padding(vertical = 4.dp, horizontal = 2.dp)
-                            .align(Alignment.BottomEnd),
-                        numberOfPages = state.moviePostersUrl.size,
-                        selectedPage = pagerState.currentPage
-                    )
 
                     DefaultAppBar(
                         modifier =
@@ -217,7 +214,7 @@ fun MovieContent(
                         onLastOptionClicked = interactionListener::onAddToListClicked,
                     )
                     RatingChip(
-                        state.rating,
+                        state.rating.formateAsRate(),
                         modifier =
                             Modifier
                                 .align(Alignment.BottomStart)
@@ -243,13 +240,13 @@ fun MovieContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
                                 .offset(y = (-20).dp),
                     ) {
                         Text(
                             text = state.movieTitle,
                             style = AppTheme.textStyle.title.large,
                             color = AppTheme.color.title,
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         )
                         LazyRow(
                             modifier =
@@ -257,19 +254,24 @@ fun MovieContent(
                                     .fillMaxWidth()
                                     .padding(top = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp)
                         ) {
                             items(state.categories) {
                                 CategoryChip(categoryName = getMovieGenreLabel(it))
                             }
                         }
                         MovieInfoSection(
-                            modifier = Modifier.padding(top = 8.dp),
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .padding(horizontal = 16.dp),
                             releaseDate = state.releaseDate,
                             movieLength = state.movieLength,
                             originCountry = state.originCountry,
                         )
                         DescriptionSection(
-                            modifier = Modifier.padding(top = 24.dp),
+                            modifier = Modifier
+                                .padding(top = 24.dp)
+                                .padding(horizontal = 16.dp),
                             description = state.description,
                         )
                         CastSection(
@@ -286,7 +288,12 @@ fun MovieContent(
                                     .background(AppTheme.color.stroke),
                         )
                         MovieExtrasSection(
-                            modifier = Modifier.padding(top = 12.dp),
+                            modifier = Modifier
+                                .padding(top = 12.dp)
+                                .onGloballyPositioned { coordinates ->
+                                    movieExtrasSectionYOffsetDp =
+                                        coordinates.positionOnScreen().y.dp
+                                },
                             extras = state.extraItem,
                             onClickExtras = interactionListener::onClickMovieExtras,
                         )
@@ -299,16 +306,40 @@ fun MovieContent(
                 ?.item
                 ?.let { selectedExtra ->
                     when (selectedExtra) {
-                        MovieExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarMovies)
+                        MovieExtras.MORE_LIKE_THIS -> MoreLikeSection(
+                            similarMovies = state.similarMovies,
+                            onClick = { selectedMovieId ->
+                                interactionListener.onClickSimilarMovie(selectedMovieId)
+                            }
+                        )
                         MovieExtras.REVIEWS -> ReviewSection(state.reviews)
-                        MovieExtras.GALLERY -> GallerySection(state.gallery)
+                        MovieExtras.GALLERY -> item {
+                            GallerySection(gallery = state.gallery)
+                        }
                         MovieExtras.COMPANY_PRODUCTION -> CompanyProductionSection(state.productionCompany)
                     }
                 }
+
+            item {
+                val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
+                val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
+
+
+                val spacerHeight: Dp by remember {
+                    derivedStateOf {
+                        if (movieExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)){
+                            screenHeightDp
+                        } else {
+                            0.dp
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(spacerHeight))
+            }
         }
     }
 }
-
 
 @Composable
 @ThemeAndLocalePreviews
@@ -326,6 +357,7 @@ private fun SearchByActorContentPreview() {
                     override fun onRateClicked() {}
                     override fun onNavigateToLoginClicked() {}
                     override fun onCancelClicked() {}
+                    override fun onClickSimilarMovie(movieId: Long) {}
                 },
         )
     }

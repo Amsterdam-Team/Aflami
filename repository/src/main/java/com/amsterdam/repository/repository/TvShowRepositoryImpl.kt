@@ -4,8 +4,6 @@ import com.amsterdam.domain.repository.CategoryRepository
 import com.amsterdam.domain.repository.TvShowRepository
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
-import com.amsterdam.entity.ProductionCompany
-import com.amsterdam.entity.Review
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
@@ -18,9 +16,6 @@ import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.amsterdam.repository.mapper.remote.CastRemoteMapper
 import com.amsterdam.repository.mapper.remote.EpisodeRemoteMapper
-import com.amsterdam.repository.mapper.remote.GalleryRemoteMapper
-import com.amsterdam.repository.mapper.remote.ProductionCompanyRemoteMapper
-import com.amsterdam.repository.mapper.remote.ReviewRemoteMapper
 import com.amsterdam.repository.mapper.remote.SeasonRemoteMapper
 import com.amsterdam.repository.mapper.remote.TvShowDetailsRemoteMapper
 import com.amsterdam.repository.mapper.remote.TvShowRemoteMapper
@@ -38,17 +33,23 @@ class TvShowRepositoryImpl @Inject constructor(
     private val tvShowGenreIdsRemoteLocalMapper: TvShowGenreIdsRemoteLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
-    private val castRemoteMapper: CastRemoteMapper,
-    private val reviewRemoteMapper: ReviewRemoteMapper,
-    private val galleryRemoteMapper: GalleryRemoteMapper,
-    private val remoteProductionCompanyMapper: ProductionCompanyRemoteMapper,
     private val seasonRemoteMapper: SeasonRemoteMapper,
     private val episodeRemoteMapper: EpisodeRemoteMapper,
     private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
     private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper,
     private val tvShowRemoteDetailsLocalMapper: TvShowRemoteDetailsLocalMapper,
-    private val tvShowDetailsRemoteMapper: TvShowDetailsRemoteMapper
+    private val tvShowDetailsRemoteMapper: TvShowDetailsRemoteMapper,
+    private val castRemoteMapper: CastRemoteMapper,
 ) : TvShowRepository {
+    override suspend fun getPopularTvShows(): List<TvShow> {
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows())
+    }
+
+
+    override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
+        return remoteTvDataSource.getTvShowCast(tvShowId).cast.map { castRemoteMapper.toEntity(it) }
+    }
+
     override suspend fun getTvShowByKeyword(
         keyword: String,
         page: Int,
@@ -104,10 +105,6 @@ class TvShowRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
-        return remoteTvDataSource.getTvShowCast(tvShowId).cast.map { castRemoteMapper.toEntity(it) }
-    }
-
     override suspend fun getTvShowSeasons(tvShowId: Long): List<Season> {
         return seasonRemoteMapper.toEntityList(remoteTvDataSource.getTvShowDetailsById(tvShowId).seasons)
     }
@@ -122,28 +119,6 @@ class TvShowRepositoryImpl @Inject constructor(
                 seasonNumber
             ).episodes
         )
-    }
-
-    override suspend fun getTvShowReviews(tvShowId: Long): List<Review> {
-        return reviewRemoteMapper.toEntityList(remoteTvDataSource.getTvShowReviews(tvShowId).results)
-    }
-
-    override suspend fun getSimilarTvShows(tvShowId: Long): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getSimilarTvShows(tvShowId).results,)
-    }
-
-    override suspend fun getTvShowGallery(tvShowId: Long): List<String> {
-        return galleryRemoteMapper.toEntity(remoteTvDataSource.getTvShowGallery(tvShowId))
-    }
-
-    override suspend fun getProductionCompany(tvShowId: Long): List<ProductionCompany> {
-        return remoteProductionCompanyMapper.toEntityList(
-            remoteTvDataSource.getTvShowCompanyProduction(tvShowId).productionCompanies
-        )
-    }
-
-    override suspend fun getPopularTvShows(): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows().results)
     }
 
     override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {

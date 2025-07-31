@@ -12,4 +12,5 @@ interface SeriesDetailsInteractionListener {
     fun onClickSeasonMenu(seasonNumber: Int)
     fun onNavigateToLoginClicked()
     fun onCancelClicked()
+    fun onClickSimilarMovie(movieId: Long)
 }

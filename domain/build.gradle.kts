@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.kover)
 }
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
 }
 kotlin {
     compilerOptions {
@@ -13,17 +13,28 @@ kotlin {
     }
 }
 dependencies {
-    api(project(":entity"))
+    modulesDependencies()
+    coroutinesDependencies()
+    kotlinDateTimeDependencies()
+    testDependencies()
+}
 
+private fun DependencyHandlerScope.modulesDependencies() {
+    api(project(":entity"))
+}
+
+private fun DependencyHandlerScope.coroutinesDependencies() {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+}
 
+private fun DependencyHandlerScope.kotlinDateTimeDependencies() {
     implementation(libs.kotlinx.datetime)
+}
 
+private fun DependencyHandlerScope.testDependencies() {
     testImplementation(libs.truth)
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
 }

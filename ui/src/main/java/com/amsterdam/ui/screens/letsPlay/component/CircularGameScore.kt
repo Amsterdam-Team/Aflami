@@ -1,22 +1,22 @@
-package com.amsterdam.designsystem.components
+package com.amsterdam.ui.screens.letsPlay.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun Score(
+fun CircularGameScore(
     score: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -46,9 +46,9 @@ fun Score(
 private fun ScorePreview() {
     AflamiTheme {
         Column {
-            Score(score = -1)
-            Score(score = 1)
-            Score(score = 0)
+            CircularGameScore(score = -1)
+            CircularGameScore(score = 1)
+            CircularGameScore(score = 0)
         }
     }
 }

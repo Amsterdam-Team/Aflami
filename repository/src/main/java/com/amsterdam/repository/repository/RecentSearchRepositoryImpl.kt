@@ -39,8 +39,7 @@ class RecentSearchRepositoryImpl @Inject constructor(
     override suspend fun deleteRecentSearch(searchKeyword: String) {
         recentSearchLocalSource.deleteRecentSearchByKeywordAndType(
             searchKeyword,
-            SearchType.BY_KEYWORD,
-            getDeviceLanguage()
+            SearchType.BY_KEYWORD
         )
     }
 

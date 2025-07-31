@@ -1,6 +1,4 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
@@ -20,39 +18,58 @@ android {
 }
 
 dependencies {
+
+    modulesDependencies()
+    roomDependencies()
+    testDependencies()
+    jsonSerializationDependencies()
+    coroutinesDependencies()
+    kotlinExtensionsDependencies()
+    kotlinDateTimeDependencies()
+    appCompactDependencies()
+    injectDependencies()
+}
+
+private fun DependencyHandlerScope.modulesDependencies() {
     api(project(":domain"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.kotlinx.coroutines.core)
+}
 
-    // Room
+private fun DependencyHandlerScope.roomDependencies() {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+}
 
-    // Date and Time
-    implementation(libs.kotlinx.datetime)
-
-    // kotlinx.serialization
-    implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.javax.inject)
-
-    // junit 5
+private fun DependencyHandlerScope.testDependencies() {
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.jupiter.junit.jupiter)
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
-
-    //truth
     testImplementation(libs.truth)
-
-    //mockk
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+}
 
+private fun DependencyHandlerScope.jsonSerializationDependencies() {
+    implementation(libs.kotlinx.serialization.json)
+}
+
+private fun DependencyHandlerScope.coroutinesDependencies() {
+    implementation(libs.kotlinx.coroutines.core)
+}
+
+private fun DependencyHandlerScope.kotlinExtensionsDependencies() {
+    implementation(libs.androidx.core.ktx)
+}
+
+private fun DependencyHandlerScope.kotlinDateTimeDependencies() {
+    implementation(libs.kotlinx.datetime)
+}
+
+private fun DependencyHandlerScope.appCompactDependencies() {
+    implementation(libs.androidx.appcompat)
+}
+
+private fun DependencyHandlerScope.injectDependencies() {
+    implementation(libs.javax.inject)
 }

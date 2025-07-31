@@ -141,7 +141,7 @@ fun TextField(
                         .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = AppTheme.color.title),
                 singleLine = true,
-                visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
+                visualTransformation = if (isObscured) PasswordVisualTransformation('*') else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 },
@@ -155,7 +155,7 @@ fun TextField(
                 val imageColor by animateColorAsState(
                     targetValue = if (text.isBlank()) AppTheme.color.hint else AppTheme.color.title,
                 )
-                VerticalDivider()
+                if (leadingIcon == null) VerticalDivider()
                 TrailingIcon(trailingIcon, imageColor, isTrailingClickEnabled, onTrailingClick)
             }
         }

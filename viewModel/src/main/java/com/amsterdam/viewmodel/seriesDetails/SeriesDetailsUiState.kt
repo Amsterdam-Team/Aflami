@@ -32,6 +32,7 @@ data class SeriesDetailsUiState(
     val similarSeries: List<SimilarMovieUiState> = emptyList(),
     val reviews: List<ReviewUiState> = emptyList(),
     val gallery: List<String> = emptyList(),
+    val postersUrls: List<String> = emptyList(),
     val productionCompanies: List<ProductionCompanyUiState> = emptyList(),
     val isLoading: Boolean = false,
     val networkError: Boolean = false,

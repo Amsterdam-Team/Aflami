@@ -9,6 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
+import com.amsterdam.designsystem.TopAppBar
 import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -61,10 +62,8 @@ fun DefaultAppBar(
                     IconButton(
                         painter = painter,
                         contentDescription = firstOptionContentDescription,
-                        containerColor = AppTheme.color.primaryVariant,
                         tint = AppTheme.color.body,
                         paddingValues = PaddingValues(8.dp),
-                        withBorder = true,
                         onClick = onFirstOptionClicked,
                     )
                 }
@@ -75,10 +74,8 @@ fun DefaultAppBar(
                     IconButton(
                         painter = painter,
                         contentDescription = lastOptionContentDescription,
-                        containerColor = AppTheme.color.primaryVariant,
                         tint = AppTheme.color.body,
                         paddingValues = PaddingValues(8.dp),
-                        withBorder = true,
                         onClick = onLastOptionClicked,
                     )
                 }

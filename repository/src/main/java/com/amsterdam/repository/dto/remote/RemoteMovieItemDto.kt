@@ -16,6 +16,7 @@ data class RemoteMovieItemDto(
     @SerialName("overview") val overview: String,
     @SerialName("popularity") val popularity: Double,
     @SerialName("poster_path") val posterPath: String?,
+    @SerialName("production_companies") val productionCompanies: List<ProductionCompanyDto> = emptyList(),
     @SerialName("release_date") val releaseDate: String,
     @SerialName("title") val title: String,
     @SerialName("video") val video: Boolean,

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReviewsResponse(
     @SerialName("id")
-    val id: Long,
+    val id: Long? = null,
     @SerialName("page")
     val page: Int,
     @SerialName("results")

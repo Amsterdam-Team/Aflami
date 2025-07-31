@@ -6,6 +6,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -29,7 +30,7 @@ fun BottomNavigation(
     modifier: Modifier = Modifier,
 ) {
     val visible =
-        remember(currentDestination) {
+        rememberSaveable(currentDestination) {
             shouldShowBottomNavigation(currentDestination)
         }
 

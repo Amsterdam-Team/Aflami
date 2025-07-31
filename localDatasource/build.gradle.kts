@@ -1,8 +1,6 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kover)
     alias(libs.plugins.android.junit5)
 }
@@ -21,39 +19,53 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":repository"))
+    modulesDependencies()
+    roomDependencies()
+    androidTestDependencies()
+    coroutineDependencies()
+    dateTimeDependencies()
+    unitTestDependencies()
+    datastoreDependencies()
+}
 
-    // Room
+private fun DependencyHandlerScope.modulesDependencies() {
+    implementation(project(":repository"))
+}
+
+private fun DependencyHandlerScope.roomDependencies() {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-    testImplementation(libs.androidx.room.testing)
+}
 
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
-    // Date and Time
-    implementation(libs.kotlinx.datetime)
-
-    // Unit Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.truth)
-    testImplementation(kotlin("test"))
-
-    // android test junit 5
+private fun DependencyHandlerScope.androidTestDependencies() {
     androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.junit.jupiter.api)
+    androidTestImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.android.test.core)
     androidTestRuntimeOnly(libs.android.test.runner)
     androidTestImplementation(libs.truth)
+}
 
-    androidTestImplementation(libs.kotlinx.coroutines.test.v171)
+private fun DependencyHandlerScope.coroutineDependencies() {
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+}
 
-    //Datastore
+private fun DependencyHandlerScope.dateTimeDependencies() {
+    implementation(libs.kotlinx.datetime)
+}
+
+private fun DependencyHandlerScope.unitTestDependencies() {
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.truth)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+}
+
+private fun DependencyHandlerScope.datastoreDependencies() {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.javax.inject)

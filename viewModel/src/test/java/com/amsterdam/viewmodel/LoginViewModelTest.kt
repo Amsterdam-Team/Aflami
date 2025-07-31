@@ -2,7 +2,6 @@ package com.amsterdam.viewmodel
 
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
 import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
-import com.amsterdam.viewmodel.home.HomeEffect
 import com.amsterdam.viewmodel.login.LoginEffect
 import com.amsterdam.viewmodel.login.LoginViewModel
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
@@ -79,7 +78,7 @@ class LoginViewModelTest {
             advanceUntilIdle()
 
             val state = viewModel.state.value
-            assertThat(state.usernameError)
+            assertThat(state.loginError)
         }
 
     @Test
@@ -103,7 +102,7 @@ class LoginViewModelTest {
             viewModel.onLoginClicked()
             advanceUntilIdle()
             val state = viewModel.state.value
-            assertThat(state.usernameError).isNull()
+            assertThat(state.loginError).isNull()
 
         }
 
@@ -233,7 +232,7 @@ class LoginViewModelTest {
             advanceUntilIdle()
 
             val statePassword = viewModel.state.value.passwordError
-            val stateUserName = viewModel.state.value.usernameError
+            val stateUserName = viewModel.state.value.loginError
             assertThat(statePassword).isNull()
             assertThat(stateUserName).isNull()
         }

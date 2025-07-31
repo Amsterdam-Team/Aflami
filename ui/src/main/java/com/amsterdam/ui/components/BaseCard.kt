@@ -48,7 +48,11 @@ fun BaseCard(
             modifier
                 .size(328.dp, 196.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .border(width = 1.dp, color = AppTheme.color.stroke, shape = RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.dp,
+                    color = AppTheme.color.stroke,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
@@ -93,7 +97,7 @@ private fun BoxScope.MovieInfoSection(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text =
-            movieTitle,
+                movieTitle,
             maxLines = 1,
             style = AppTheme.textStyle.label.large,
             overflow = TextOverflow.Ellipsis,
