@@ -77,6 +77,7 @@ fun PopularMediaItemCard(
             )
             Box(
                 modifier = Modifier
+                    .alpha(ratingAlpha)
                     .size(64.dp)
                     .background(color = AppTheme.color.onPrimary, shape = CircleShape)
                     .align(Alignment.Center),
