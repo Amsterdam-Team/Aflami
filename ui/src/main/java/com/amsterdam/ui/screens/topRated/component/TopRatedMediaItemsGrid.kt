@@ -17,7 +17,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
@@ -48,7 +48,7 @@ fun TopRatedMediaItemsGrid(
                 MediaType.MOVIE -> stringResource(R.string.movie)
                 MediaType.TV_SHOW -> stringResource(R.string.tv_shows)
             }
-            MovieCard(
+            MediaCard(
                 movieImage = { MovieImage(media.posterImageUrl) },
                 movieType = mediaType,
                 movieYear = media.yearOfRelease,

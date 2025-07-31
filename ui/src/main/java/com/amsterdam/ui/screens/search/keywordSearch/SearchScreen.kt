@@ -47,7 +47,7 @@ import com.amsterdam.designsystem.components.TextField
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalNavController
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
@@ -298,7 +298,7 @@ private fun SuccessMediaItems(
             val mediaItem = selectedItems[index] ?: return@items
             when (mediaItem) {
                 is MovieItemUiState -> {
-                    MovieCard(
+                    MediaCard(
                         movieImage = {
                             SafeImageView(
                                 modifier = Modifier.fillMaxSize(),
@@ -318,7 +318,7 @@ private fun SuccessMediaItems(
                 }
 
                 is TvShowItemUiState -> {
-                    MovieCard(
+                    MediaCard(
                         movieImage = {
                             SafeImageView(
                                 modifier = Modifier.fillMaxSize(),

@@ -20,7 +20,7 @@ import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -44,7 +44,7 @@ internal fun MoviesVerticalGrid(
                 key = { index -> "${movies[index]?.id}-${index}" },
             ) { index ->
                 val movie = movies[index] ?: return@items
-                MovieCard(
+                MediaCard(
                     movieImage = {
                         SafeImageView(
                             modifier =
