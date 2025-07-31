@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -24,8 +27,10 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -120,33 +125,52 @@ private fun HomeScreenContent(
         label = "AppBarScrollColor"
     )
     var blurOffsetY by remember { mutableFloatStateOf(-12f) }
-
+    var headerHeight by remember { mutableStateOf(0.dp) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .navigationBarsPadding()
+            .padding(horizontal = 16.dp)
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
-            HomeAppBar(
+            Column(
                 modifier = Modifier
-                    .background(appBarColor)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                onSearchClicked = interactionListener::onClickSearch,
-            )
-            AnimatedSectionVisibility(
-                visible = true,
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .zIndex(10f)
+                    .fillMaxSize()
             ) {
-                CenterOfScreenContainer(
-                    unneededSpace = 0.dp
+                HomeAppBar(
+                    modifier = Modifier
+                        .background(appBarColor)
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .onSizeChanged { headerHeight = it.height.dp },
+                    onSearchClicked = interactionListener::onClickSearch,
+                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(vertical = 8.dp)
                 ) {
-                    NoNetworkContainer(
-                        onClickRetry = interactionListener::onClickRetryLoading,
-                    )
+                    AnimatedSectionVisibility(
+                        visible = true,
+                        modifier = Modifier
+                            .zIndex(10f)
+
+                    ) {
+
+                        CenterOfScreenContainer(
+                            unneededSpace = headerHeight,
+                            modifier = Modifier.fillMaxSize()
+
+                        ) {
+                            NoNetworkContainer(
+                                onClickRetry = interactionListener::onClickRetryLoading,
+                            )
+                        }
+                    }
                 }
             }
         } else {
