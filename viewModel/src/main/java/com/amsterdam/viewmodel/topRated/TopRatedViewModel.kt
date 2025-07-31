@@ -44,16 +44,15 @@ class TopRatedViewModel @Inject constructor(
                     config = PagingConfig(pageSize = 20),
                     pagingSourceFactory = {
                         PagingSource { page ->
-                     getTopRatedScreenDataUseCase(page).topRatedMovies
+                   val result=  getTopRatedScreenDataUseCase(page)
+                            topRatedUiStateMapper.getTopRatedMediaItems(
+                                result.topRatedMovies,
+                                result.topRatedTvShows
+                            )
 
                         }
                     }
-                )
-                    .flow.map { pagingData ->
-                        pagingData.map {
-                            it.toMediaItemUiState()
-                        }
-                    }
+                ).flow
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTopRatedMoviesSuccess,
@@ -63,8 +62,8 @@ class TopRatedViewModel @Inject constructor(
 
 
 
-    private fun onGetTopRatedMoviesSuccess(moviesPagingFlow: Flow<PagingData<MovieItemUiState>>) {
-        updateState { topRatedUiStateMapper.toUiState(moviesPagingFlow) }
+    private fun onGetTopRatedMoviesSuccess(mediaPagingFlow: Flow<PagingData<MediaItemUiState>>) {
+        updateState { topRatedUiStateMapper.toUiState(mediaPagingFlow) }
     }
 
     private fun onError(exception: AflamiException) {

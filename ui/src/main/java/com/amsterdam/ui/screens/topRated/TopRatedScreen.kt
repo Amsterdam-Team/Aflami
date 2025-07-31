@@ -36,7 +36,6 @@ import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.topRated.component.TopRatedBackgroundComponent
 import com.amsterdam.ui.screens.topRated.component.TopRatedMediaItemsGrid
 import com.amsterdam.ui.utils.safeNavigate
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.topRated.TopRatedEffect
 import com.amsterdam.viewmodel.topRated.TopRatedInteractionListener
@@ -48,8 +47,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-    val movies = state.movies.collectAsLazyPagingItems()
-    TopRatedContent(state, viewModel,movies)
+    val movies = state.mediaItems.collectAsLazyPagingItems()
+    TopRatedContent(state, viewModel, movies)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
             it?.let {
@@ -75,8 +74,8 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
 private fun TopRatedContent(
     state: TopRatedUiState,
     interactionListener: TopRatedInteractionListener,
-    movies: LazyPagingItems<MovieItemUiState>,
-    ) {
+    mediaItems: LazyPagingItems<MediaItemUiState>,
+) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -108,9 +107,11 @@ private fun TopRatedContent(
             AnimatedSectionVisibility(
                 visible = state.isLoading
             ) {
-                LoadingContainer(modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(10f))
+                LoadingContainer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(10f)
+                )
             }
 
             AnimatedSectionVisibility(
@@ -122,11 +123,11 @@ private fun TopRatedContent(
             }
 
             AnimatedSectionVisibility(
-                visible = movies.itemCount > 0
+                visible = mediaItems.itemCount > 0
             ) {
                 TopRatedMediaItemsGrid(
                     gridState = gridState,
-                    movies = movies,
+                    mediaItems = mediaItems,
                     onClickMediaItem = interactionListener::onClickMediaItem,
                     modifier = Modifier
                         .weight(1f)

@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 fun TopRatedMediaItemsGrid(
     onClickMediaItem: (Long, MediaType) -> Unit,
-    movies: LazyPagingItems<MovieItemUiState>,
+    mediaItems: LazyPagingItems<MediaItemUiState>,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
 ) {
@@ -42,18 +42,22 @@ fun TopRatedMediaItemsGrid(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            count = movies.itemCount,
-            key = { index -> "${movies[index]?.id}-$index" },
+            count = mediaItems.itemCount,
+            key = { index -> "${mediaItems[index]?.id}-$index" },
         ) { index ->
-            val movie = movies[index] ?: return@items
+            val media = mediaItems[index] ?: return@items
+            val mediaType = when (media.mediaType) {
+                MediaType.MOVIE -> stringResource(R.string.movie)
+                MediaType.TV_SHOW -> stringResource(R.string.tv_shows)
+            }
             MovieCard(
-                movieImage = { MovieImage(movie.posterImageUrl) },
-                movieType = stringResource(R.string.movie),
-                movieYear = movie.yearOfRelease,
-                movieTitle = movie.name,
-                movieRating = movie.rate,
+                movieImage = { MovieImage(media.posterImageUrl) },
+                movieType = mediaType,
+                movieYear = media.yearOfRelease,
+                movieTitle = media.name,
+                movieRating = media.rate,
             ) {
-               onClickMediaItem(movie.id, MediaType.MOVIE)
+                onClickMediaItem(media.id, media.mediaType)
             }
         }
     }
@@ -65,7 +69,7 @@ private fun TopRatedMoviesGridPreview() {
     AflamiTheme {
         TopRatedMediaItemsGrid(
             onClickMediaItem = { _, _ -> },
-            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
-            )
+            mediaItems = emptyFlow<PagingData<MediaItemUiState>>().collectAsLazyPagingItems(),
+        )
     }
 }

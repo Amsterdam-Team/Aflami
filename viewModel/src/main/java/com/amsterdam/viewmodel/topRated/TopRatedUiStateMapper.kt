@@ -14,13 +14,13 @@ import javax.inject.Inject
 
 class TopRatedUiStateMapper @Inject constructor() {
     @SuppressLint("DefaultLocale")
-    fun toUiState(moviesPagingFlow: Flow<PagingData<MovieItemUiState>>): TopRatedUiState {
+    fun toUiState(mediaPagingFlow: Flow<PagingData<MediaItemUiState>>): TopRatedUiState {
         return TopRatedUiState(
-           movies =moviesPagingFlow
+           mediaItems =mediaPagingFlow
         )
     }
 
-    private fun getTopRatedMediaItems(
+    fun getTopRatedMediaItems(
         topRatedMovies: List<Movie>,
         topRatedTvShows: List<TvShow>
     ): List<MediaItemUiState> {
