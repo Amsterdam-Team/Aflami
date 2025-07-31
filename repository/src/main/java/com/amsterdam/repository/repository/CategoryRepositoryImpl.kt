@@ -64,7 +64,7 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryLocalSource.upsertMovieCategories(
             movieCategoryRemoteLocalMapper.toLocalList(
                 movieCategories.genres,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             )
         )
     }
@@ -91,7 +91,7 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryLocalSource.upsertTvShowCategories(
             tvShowCategoryRemoteLocalMapper.toLocalList(
                 tvShowCategories.genres,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             )
         )
     }

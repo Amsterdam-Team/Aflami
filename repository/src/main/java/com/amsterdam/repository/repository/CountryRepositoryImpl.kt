@@ -36,7 +36,12 @@ class CountryRepositoryImpl @Inject constructor(
 
     private suspend fun getCountriesFromLocal(): List<Country> {
         return try {
-            countryLocalMapper.toEntityList(localDataSource.getCountries(preferences.getDeviceLanguage().first()))
+
+            countryLocalMapper.toEntityList(
+                dtoList = localDataSource.getCountries(
+                    storedLanguage = preferences.getDeviceLanguage().first()
+                )
+            )
         } catch (_: Exception) {
             emptyList()
         }
@@ -44,9 +49,9 @@ class CountryRepositoryImpl @Inject constructor(
 
     private suspend fun saveCountries(remoteCountries: List<RemoteCountryDto>) {
         localDataSource.addCountries(
-            countryRemoteLocalMapper.toLocalList(
-                remoteCountries,
-                listOf(preferences.getDeviceLanguage())
+            countries = countryRemoteLocalMapper.toLocalList(
+                remoteList = remoteCountries,
+                args = listOf(preferences.getDeviceLanguage().first())
             )
         )
     }

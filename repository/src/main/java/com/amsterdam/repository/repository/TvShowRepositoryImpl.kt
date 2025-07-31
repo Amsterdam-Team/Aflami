@@ -173,11 +173,11 @@ class TvShowRepositoryImpl @Inject constructor(
         localTvDataSource.addTvShowWithCategories(
             tvShow = tvShowRemoteLocalMapper.toLocal(
                 remoteTvShow,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             ),
             categories = tvShowGenreIdsRemoteLocalMapper.toLocalList(
                 remoteTvShow.genreIds,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             ),
             storedLanguage = preferences.getDeviceLanguage().first()
         )

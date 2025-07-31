@@ -12,6 +12,7 @@ import com.amsterdam.repository.mapper.local.MovieWatchHistoryMapper
 import com.amsterdam.repository.mapper.local.TvShowLocalMapper
 import com.amsterdam.repository.mapper.local.TvShowWatchHistoryMapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
         watchHistoryLocalDataSource.addMovieToWatchHistory(
             movieWatchHistoryMapper.toDto(
                 item,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             )
         )
     }
@@ -43,7 +44,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
         watchHistoryLocalDataSource.addTvShowToWatchHistory(
             tvShowWatchHistoryMapper.toDto(
                 item,
-                listOf(preferences.getDeviceLanguage())
+                listOf(preferences.getDeviceLanguage().first())
             )
         )
     }
