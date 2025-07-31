@@ -2,6 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.CategoryRepository
 import com.amsterdam.domain.repository.TvShowRepository
+import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
@@ -42,7 +43,7 @@ class TvShowRepositoryImpl @Inject constructor(
     private val castRemoteMapper: CastRemoteMapper,
 ) : TvShowRepository {
     override suspend fun getPopularTvShows(): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows())
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows().results)
     }
 
 
@@ -86,7 +87,7 @@ class TvShowRepositoryImpl @Inject constructor(
             ?.takeIf { tvShows -> tvShows.isNotEmpty() }
     }
 
-    override suspend fun getTvShowDetails(tvShowId: Long): TvShow {
+    override suspend fun getTvShowDetails(tvShowId: Long): GetTvShowDetailsUseCase.TvShowDetails {
         return tvShowDetailsRemoteMapper.toEntity(
             remoteTvDataSource.getTvShowDetailsById(tvShowId)
                 .also {
