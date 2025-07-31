@@ -68,7 +68,6 @@ import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.reviewSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
-import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
@@ -223,7 +222,7 @@ fun MovieContent(
                         }
 
                         RatingChip(
-                            state.rating.formateAsRate(),
+                            state.rating,
                             modifier =
                                 Modifier
                                     .align(Alignment.BottomStart)
