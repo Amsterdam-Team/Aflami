@@ -57,11 +57,11 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun onForgotPasswordClicked() {
-        sendNewEffect(LoginEffect.NavigateToResetPassword)
+        sendNewNavigationEffect(LoginEffect.NavigateToResetPassword)
     }
 
     override fun onCreateAccountClicked() {
-        sendNewEffect(LoginEffect.NavigateToRegister)
+        sendNewNavigationEffect(LoginEffect.NavigateToRegister)
     }
 
     private fun shouldEnableLoginButton() {
@@ -89,7 +89,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun onLoginSuccess() {
-        sendNewEffect(LoginEffect.NavigateToHome)
+        sendNewNavigationEffect(LoginEffect.NavigateToHome)
     }
 
     private fun onLoginWithPasswordError(exception: AflamiException) {

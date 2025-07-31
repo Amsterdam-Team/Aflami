@@ -66,9 +66,9 @@ class TopRatedViewModel @Inject constructor(
 
     override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
         if (mediaType == MediaType.MOVIE)
-            sendNewEffect(TopRatedEffect.NavigateToMovieDetailsScreen(mediaId))
+            sendNewNavigationEffect(TopRatedEffect.NavigateToMovieDetailsScreen(mediaId))
         else
-            sendNewEffect(TopRatedEffect.NavigateToTvShowDetailsEffect(mediaId))
+            sendNewNavigationEffect(TopRatedEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
@@ -76,6 +76,6 @@ class TopRatedViewModel @Inject constructor(
     }
 
     override fun onClickBack() {
-        sendNewEffect(TopRatedEffect.NavigateBack)
+        sendNewNavigationEffect(TopRatedEffect.NavigateBack)
     }
 }

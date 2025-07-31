@@ -86,7 +86,7 @@ class ActorSearchViewModel @Inject constructor(
 
     override fun onClickNavigateBack() {
         onSaveSearchHistory()
-        sendNewEffect(ActorSearchEffect.NavigateBack)
+        sendNewNavigationEffect(ActorSearchEffect.NavigateBack)
     }
 
     override fun onClickRetrySearch() {
@@ -95,7 +95,7 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     override fun onClickMovie(movieId: Long) {
-        sendNewEffect(ActorSearchEffect.NavigateToDetailsScreen(movieId))
+        sendNewNavigationEffect(ActorSearchEffect.NavigateToDetailsScreen(movieId))
     }
 
     override fun onSaveSearchHistory() {

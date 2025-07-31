@@ -58,7 +58,9 @@ fun CastScreen(viewModel: CastViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            if (effect is CastUiEffect.NavigateBack) navController.popBackStack()
+            when (effect) {
+                CastUiEffect.NavigateBack -> navController.navigateUp()
+            }
         }
     }
 
@@ -152,7 +154,8 @@ private fun ActorCard(
                         width = 1.dp,
                         color = AppTheme.color.stroke,
                         shape = RoundedCornerShape(16.dp),
-                    ).clip(RoundedCornerShape(16.dp)),
+                    )
+                    .clip(RoundedCornerShape(16.dp)),
             contentDescription = actorName,
             model = actorImage,
             contentScale = ContentScale.Crop,

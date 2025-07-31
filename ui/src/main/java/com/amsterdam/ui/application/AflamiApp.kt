@@ -16,9 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import com.amsterdam.designsystem.components.Scaffold
 import com.amsterdam.designsystem.components.snackBar.SnackBarHost
 import com.amsterdam.designsystem.theme.AflamiTheme
-import com.amsterdam.ui.navigation.BottomNavigation
+import com.amsterdam.ui.components.bottomNavigation.BottomNavigation
 import com.amsterdam.ui.navigation.NavGraph
-import com.amsterdam.ui.utils.safeNavigateToTab
 import com.amsterdam.viewmodel.application.ApplicationViewModel
 import kotlinx.coroutines.runBlocking
 
@@ -44,7 +43,13 @@ fun AflamiApp(
                 bottomBar = {
                     BottomNavigation(
                         currentDestination = currentDestination,
-                        onNavigate = { navController.safeNavigateToTab(it) },
+                        onNavigate = {
+                            navController.navigate(it) {
+                                popUpTo(it) {
+                                    inclusive = true
+                                }
+                            }
+                        },
                     )
                 }
             ) {

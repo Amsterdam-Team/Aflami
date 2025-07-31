@@ -19,6 +19,6 @@ class RegisterViewModel @Inject constructor(dispatcherProvider: DispatcherProvid
     }
 
     fun onRegistrationComplete() {
-        sendNewEffect(RegisterEffect.NavigateToSignIn)
+        sendNewNavigationEffect(RegisterEffect.NavigateToSignIn)
     }
 }

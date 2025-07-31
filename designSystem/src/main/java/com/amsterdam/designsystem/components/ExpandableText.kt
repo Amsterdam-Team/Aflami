@@ -57,11 +57,13 @@ fun ExpandableText(
 
     val annotatedText = buildAnnotatedString {
         if (isClickable && !isExpanded) {
-            val adjustedText = text.substring(0, lastCharacterIndex-4)
+            val safeEnd = (lastCharacterIndex - 4).coerceAtLeast(0)
+            val trimmedText = text.take(safeEnd)
                 .dropLast(showMoreText.length)
                 .dropLastWhile { it.isWhitespace() || it == '.' }
+
             withStyle(textSpanStyle) {
-                append(adjustedText)
+                append(trimmedText)
                 append(" ")
             }
 
