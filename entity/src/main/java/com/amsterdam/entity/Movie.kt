@@ -15,4 +15,5 @@ data class Movie(
     val originCountry: String,
     val runTimeInMinutes: Int,
     val hasVideo : Boolean,
+    val productionCompanies: List<ProductionCompany>
 )

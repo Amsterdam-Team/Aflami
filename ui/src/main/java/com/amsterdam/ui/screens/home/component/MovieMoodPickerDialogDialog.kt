@@ -1,30 +1,24 @@
 package com.amsterdam.ui.screens.home.component
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Dialog
 import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
-import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
@@ -33,6 +27,9 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
+import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.screens.search.actorSearch.MovieImage
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 
 @SuppressLint("ContextCastToActivity")
@@ -49,7 +46,6 @@ fun MovieMoodPickerDialogDialog(
         onDismiss = onDismiss,
         isDismissible = true,
         modifier = modifier,
-        behindDialogColor = AppTheme.color.dialogBackground
     ) {
         DialogContent(
             movie,
@@ -69,12 +65,6 @@ fun DialogContent(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                AppTheme.color.surface,
-                shape = RoundedCornerShape(16.dp)
-            )
             .padding(12.dp)
     ) {
         Row(
@@ -107,73 +97,24 @@ fun DialogContent(
 
         )
 
-        Box(
+        MovieCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp)
-        ) {
-            SafeImageView(
-                model = movie.posterImageUrl,
-                contentDescription = stringResource(R.string.movie),
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(196.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                onLoading = { ImageLoadingIndicator() },
-                onError = { ImageErrorIndicator() },
-            )
-
-            RatingChip(
-                movie.rate,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(4.dp)
-            )
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(horizontal = 8.dp)
-            ) {
-                Text(
-                    text = movie.name,
-                    style = AppTheme.textStyle.label.large,
-                    color = AppTheme.color.onPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                .padding(top = 12.dp),
+            movieImage = {
+                SafeImageView(
+                    model = movie.posterImageUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    onLoading = { ImageLoadingIndicator() },
+                    onError = { ImageErrorIndicator() },
                 )
-
-                Row(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.movie),
-                        style = AppTheme.textStyle.label.small,
-                        color = AppTheme.color.onPrimaryBody,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .size(3.dp, 3.dp)
-                            .background(AppTheme.color.onPrimaryBody)
-                            .padding(horizontal = 4.dp)
-                            .align(Alignment.CenterVertically)
-                    )
-
-                    Text(
-                        text = movie.yearOfRelease,
-                        style = AppTheme.textStyle.label.small,
-                        color = AppTheme.color.onPrimaryBody,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-        }
+            },
+            movieType = stringResource(R.string.movie),
+            movieYear = movie.yearOfRelease,
+            movieTitle = movie.name,
+            movieRating = movie.rate.formateAsRate()
+        )
 
         ConfirmButton(
             title = stringResource(R.string.view_details),

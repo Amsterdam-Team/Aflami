@@ -5,6 +5,7 @@ import com.amsterdam.entity.Movie
 import com.amsterdam.entity.MovieWatchHistory
 import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.TvShowWatchHistory
+import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
 import com.amsterdam.repository.mapper.local.MovieLocalMapper
 import com.amsterdam.repository.mapper.local.MovieWatchHistoryMapper
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class WatchHistoryRepositoryImpl @Inject constructor(
     private val watchHistoryLocalDataSource: WatchHistoryLocalDataSource,
+    private val preferences: AppPreferences,
     private val movieLocalMapper: MovieLocalMapper,
     private val tvLocalMapper: TvShowLocalMapper,
     private val movieWatchHistoryMapper: MovieWatchHistoryMapper,
@@ -26,7 +28,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
         watchHistoryLocalDataSource.addMovieToWatchHistory(
             movieWatchHistoryMapper.toDto(
                 item,
-                emptyList()
+                listOf(preferences.getDeviceLanguage())
             )
         )
     }
@@ -41,7 +43,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
         watchHistoryLocalDataSource.addTvShowToWatchHistory(
             tvShowWatchHistoryMapper.toDto(
                 item,
-                emptyList()
+                listOf(preferences.getDeviceLanguage())
             )
         )
     }

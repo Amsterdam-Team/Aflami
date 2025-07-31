@@ -1,25 +1,35 @@
 package com.amsterdam.viewmodel.topRated
 
+import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.exceptions.NoInternetException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase.TopRatedScreenData
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class TopRatedViewModel @Inject constructor(
     private val getTopRatedScreenDataUseCase: GetTopRatedScreenDataUseCase,
     private val topRatedUiStateMapper: TopRatedUiStateMapper,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<TopRatedUiState, TopRatedEffect>(TopRatedUiState(), dispatcherProvider),
     TopRatedInteractionListener {
 
     init {
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                getTopRatedScreenData()
+            }.launchIn(viewModelScope)
+
         getTopRatedScreenData()
     }
 
@@ -38,7 +48,7 @@ class TopRatedViewModel @Inject constructor(
 
     private fun onError(exception: AflamiException) {
         when (exception) {
-            is NoInternetException -> updateState {
+            is NetworkException -> updateState {
                 it.copy(
                     isLoading = false,
                     error = TopRatedError.NetworkError
@@ -56,9 +66,9 @@ class TopRatedViewModel @Inject constructor(
 
     override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
         if (mediaType == MediaType.MOVIE)
-            sendNewEffect(TopRatedEffect.NavigateToMovieDetailsScreen(mediaId))
+            sendNewNavigationEffect(TopRatedEffect.NavigateToMovieDetailsScreen(mediaId))
         else
-            sendNewEffect(TopRatedEffect.NavigateToTvShowDetailsEffect(mediaId))
+            sendNewNavigationEffect(TopRatedEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
@@ -66,6 +76,6 @@ class TopRatedViewModel @Inject constructor(
     }
 
     override fun onClickBack() {
-        sendNewEffect(TopRatedEffect.NavigateBack)
+        sendNewNavigationEffect(TopRatedEffect.NavigateBack)
     }
 }

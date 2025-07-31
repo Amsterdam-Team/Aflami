@@ -11,19 +11,25 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.R
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.application.LocalNavController
@@ -33,7 +39,6 @@ import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.topRated.component.TopRatedBackgroundComponent
 import com.amsterdam.ui.screens.topRated.component.TopRatedMediaItemsGrid
-import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.topRated.TopRatedEffect
 import com.amsterdam.viewmodel.topRated.TopRatedInteractionListener
 import com.amsterdam.viewmodel.topRated.TopRatedUiState
@@ -44,22 +49,21 @@ import kotlinx.coroutines.flow.collectLatest
 fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
+
     TopRatedContent(state, viewModel)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
-            it?.let {
-                when (it) {
-                    is TopRatedEffect.NavigateToMovieDetailsScreen -> {
-                        navController.safeNavigate(Route.MovieDetails(it.movieId))
-                    }
+            when (it) {
+                is TopRatedEffect.NavigateToMovieDetailsScreen -> {
+                    navController.navigate(Route.MovieDetails(it.movieId))
+                }
 
-                    is TopRatedEffect.NavigateToTvShowDetailsEffect -> {
-                        navController.safeNavigate(Route.SeriesDetails(it.tvShowId))
-                    }
+                is TopRatedEffect.NavigateToTvShowDetailsEffect -> {
+                    navController.navigate(Route.SeriesDetails(it.tvShowId))
+                }
 
-                    TopRatedEffect.NavigateBack -> {
-                        navController.popBackStack()
-                    }
+                TopRatedEffect.NavigateBack -> {
+                    navController.navigateUp()
                 }
             }
         }
@@ -74,6 +78,7 @@ private fun TopRatedContent(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        var headerHeight by remember { mutableStateOf(0.dp) }
         TopRatedBackgroundComponent()
 
         val gridState = rememberLazyGridState()
@@ -88,31 +93,44 @@ private fun TopRatedContent(
             label = "AppBarScrollColor"
         )
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             DefaultAppBar(
                 title = stringResource(R.string.top_rating),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(appBarColor)
                     .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .onSizeChanged { headerHeight = it.height.dp },
                 onNavigateBackClicked = interactionListener::onClickBack
             )
 
             AnimatedSectionVisibility(
                 visible = state.isLoading
             ) {
-                LoadingContainer(modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(10f))
+                LoadingContainer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(10f)
+                )
             }
 
             AnimatedSectionVisibility(
                 visible = state.error == TopRatedUiState.TopRatedError.NetworkError
             ) {
-                NoNetworkContainer(
-                    onClickRetry = interactionListener::onClickRetryLoading
-                )
+                CenterOfScreenContainer(
+                    unneededSpace = headerHeight,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 8.dp)
+                        .verticalScroll(rememberScrollState())
+
+                ) {
+                    NoNetworkContainer(onClickRetry = interactionListener::onClickRetryLoading)
+                }
             }
 
             AnimatedSectionVisibility(

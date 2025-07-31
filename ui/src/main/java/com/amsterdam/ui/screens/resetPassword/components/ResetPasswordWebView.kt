@@ -1,6 +1,8 @@
 package com.amsterdam.ui.screens.resetPassword.components
 
 import android.graphics.Bitmap
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
@@ -31,12 +33,12 @@ fun ResetPasswordWebView(
 
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                         super.onPageStarted(view, url, favicon)
-                        onLoadingStateChanged(true)
+                        onLoadingStateChanged(false)
                     }
 
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
-                        onLoadingStateChanged(false)
+
                         view ?: return
                         val script = buildResetPasswordFormExistenceCheckScript()
                         view.evaluateJavascript(script) { result ->
@@ -44,9 +46,15 @@ fun ResetPasswordWebView(
                             resetPasswordDetector(isFormPresent)
                         }
                     }
+                    override fun onReceivedError(
+                        view: WebView?, request: WebResourceRequest?, error: WebResourceError?
+                    ) {
+                        super.onReceivedError(view, request, error)
+                        onLoadingStateChanged(false)
+                    }
                 }
 
-
+                onLoadingStateChanged(true)
                 loadUrl(urlToLoad)
             }
         }

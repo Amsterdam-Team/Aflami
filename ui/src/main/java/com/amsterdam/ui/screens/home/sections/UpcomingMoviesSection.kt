@@ -4,17 +4,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.Text
@@ -27,6 +34,7 @@ import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesSectionUiState
 
 fun LazyListScope.upcomingMoviesSection(
@@ -34,7 +42,8 @@ fun LazyListScope.upcomingMoviesSection(
     onMovieClicked: (movieId: Long) -> Unit,
     onChangeMovieGenre: (genreType: MovieGenre) -> Unit,
     modifier: Modifier = Modifier,
-    isVisible: Boolean
+    isVisible: Boolean,
+    onVerticalOffsetChange: (Dp) -> Unit
 ) {
     if (isVisible) {
         if (state.isLoading) {
@@ -63,7 +72,9 @@ fun LazyListScope.upcomingMoviesSection(
                 LazyRow(
                     modifier = Modifier
                         .fillParentMaxWidth()
-                        .background(AppTheme.color.surface),
+                        .background(AppTheme.color.surface)
+                        .onGloballyPositioned { onVerticalOffsetChange(it.positionOnScreen().y.dp) }
+                    ,
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -100,22 +111,26 @@ fun LazyListScope.upcomingMoviesSection(
                             movieType = stringResource(R.string.movies),
                             movieYear = yearOfRelease,
                             movieTitle = name,
-                            movieRating = rate,
+                            movieRating = rate.formateAsRate(),
                             onClick = { onMovieClicked(id) }
                         )
                     }
                 }
             } else {
                 item {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
-                        style = AppTheme.textStyle.label.medium,
-                        color = AppTheme.color.body,
-                        textAlign = TextAlign.Center
-                    )
+                    CenterOfScreenContainer(
+                        unneededSpace = 230.dp
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 130.dp)
+                                .padding(16.dp),
+                            text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
+                            style = AppTheme.textStyle.label.medium,
+                            color = AppTheme.color.body,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

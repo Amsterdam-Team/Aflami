@@ -6,6 +6,7 @@ import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
+import com.amsterdam.repository.datasource.local.AppPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +29,7 @@ object ServiceProvidesModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitClient(json: Json): RetrofitClient = RetrofitClient(json)
+    fun provideRetrofitClient(json: Json, preferences: AppPreferences): RetrofitClient = RetrofitClient(json, preferences)
 
     @Provides
     @Singleton

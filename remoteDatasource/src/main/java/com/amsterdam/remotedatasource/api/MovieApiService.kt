@@ -1,12 +1,9 @@
 package com.amsterdam.remotedatasource.api
 
-import com.amsterdam.repository.dto.remote.ProductionCompanyResponse
 import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
+import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
-import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
-import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -47,41 +44,16 @@ interface MovieApiService {
         @Path("movieId") movieId: Long
     ): RemoteCastAndCrewResponse
 
-    @GET(MOVIE_REVIEWS_ENDPOINT)
-    suspend fun getMovieReviews(
-        @Path("movieId") movieId: Long
-    ): ReviewsResponse
-
-    @GET(MOVIE_SIMILAR_ENDPOINT)
-    suspend fun getSimilarMovies(
-        @Path("movieId") movieId: Long
-    ): RemoteMovieResponse
-
-    @GET(MOVIE_IMAGES_ENDPOINT)
-    suspend fun getMovieGallery(
-        @Path("movieId") movieId: Long
-    ): RemoteGalleryResponse
-
-    @GET(MOVIE_IMAGES_ENDPOINT)
-    suspend fun getMoviePosters(
-        @Path("movieId") movieId: Long
-    ): RemoteGalleryResponse
-
-    @GET(MOVIE_DETAILS_ENDPOINT)
-    suspend fun getProductionCompany(
-        @Path("movieId") movieId: Long
-    ): ProductionCompanyResponse
-
     @GET(MOVIE_DETAILS_ENDPOINT)
     suspend fun getMovieDetailsById(
-        @Path("movieId") movieId: Long
-    ): RemoteMovieItemDto
+        @Path("movieId") movieId: Long,
+        @Query("append_to_response") appendToResponse: String = MOVIE_DETAILS_APPEND_PARAMETERS
+    ): RemoteMovieDetailsResponse
 
     @GET(DISCOVER_MOVIE)
     suspend fun getMoviesByGenreIds(
         @Query(GENRES) genresIds: List<Long>
     ): RemoteMovieResponse
-
 
     @GET(TOP_RATED_MOVIES)
     suspend fun getTopRatedMovies() : RemoteMovieResponse
@@ -92,18 +64,14 @@ interface MovieApiService {
         private const val MOVIE_UPCOMING = "movie/upcoming"
 
         private const val SEARCH_MOVIE_URL = "search/movie"
-        private const val SEARCH_PERSON_URL =
-            "search/person"
+        private const val SEARCH_PERSON_URL = "search/person"
         private const val DISCOVER_MOVIE = "discover/movie"
 
         const val GENRES = "with_genres"
 
+        const val MOVIE_DETAILS_APPEND_PARAMETERS = "reviews,credits,actors,similar,images,videos"
         private const val MOVIE_CREDITS_ENDPOINT = "movie/{movieId}/credits"
-        private const val MOVIE_REVIEWS_ENDPOINT = "movie/{movieId}/reviews"
-        private const val MOVIE_SIMILAR_ENDPOINT = "movie/{movieId}/similar"
-        private const val MOVIE_IMAGES_ENDPOINT = "movie/{movieId}/images"
-        private const val MOVIE_DETAILS_ENDPOINT =
-            "movie/{movieId}"
+        private const val MOVIE_DETAILS_ENDPOINT = "movie/{movieId}"
 
         private const val QUERY_KEY = "query"
         private const val PAGE_KEY = "page"

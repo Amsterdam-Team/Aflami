@@ -1,8 +1,12 @@
 package com.amsterdam.ui.screens.movieDetails.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
-import com.amsterdam.designsystem.components.Text
-import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 
 @Composable
@@ -23,29 +26,33 @@ fun CastSection(
     actors: List<ActorUiState>,
     onClickAllCast: () -> Unit
 ) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(R.string.cast),
-                style = AppTheme.textStyle.headline.small,
-                color = AppTheme.color.title,
-            )
-            Text(
-                text = stringResource(R.string.all),
-                style = AppTheme.textStyle.label.medium,
-                color = AppTheme.color.primary,
-                modifier = Modifier.clickable(onClick = onClickAllCast)
-            )
-        }
-        LazyRow(
-            modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(actors) {
-                ActorCard(actor = it)
+    AnimatedVisibility(
+        visible = actors.isNotEmpty(),
+        enter = slideInVertically(),
+        exit = slideOutVertically()
+    ) {
+        Column(modifier = modifier) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                SectionTitle(
+                    title = stringResource(R.string.cast),
+                    showAllLabel = true,
+                    onAllLabelClicked = onClickAllCast,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(actors) {
+                    ActorCard(actor = it)
+                }
             }
         }
     }

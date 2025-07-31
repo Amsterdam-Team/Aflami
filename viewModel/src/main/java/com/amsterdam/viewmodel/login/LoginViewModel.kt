@@ -18,14 +18,14 @@ class LoginViewModel @Inject constructor(
 
     override fun onUserNameUpdated(username: String) {
         updateState {
-            it.copy(username = username, usernameError = null)
+            it.copy(username = username, loginError = null)
         }
         shouldEnableLoginButton()
     }
 
     override fun onPasswordUpdate(password: String) {
         updateState {
-            it.copy(password = password, passwordError = null)
+            it.copy(password = password, loginError = null)
         }
         shouldEnableLoginButton()
     }
@@ -57,11 +57,11 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun onForgotPasswordClicked() {
-        sendNewEffect(LoginEffect.NavigateToResetPassword)
+        sendNewNavigationEffect(LoginEffect.NavigateToResetPassword)
     }
 
     override fun onCreateAccountClicked() {
-        sendNewEffect(LoginEffect.NavigateToRegister)
+        sendNewNavigationEffect(LoginEffect.NavigateToRegister)
     }
 
     private fun shouldEnableLoginButton() {
@@ -89,16 +89,16 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun onLoginSuccess() {
-        sendNewEffect(LoginEffect.NavigateToHome)
+        sendNewNavigationEffect(LoginEffect.NavigateToHome)
     }
 
     private fun onLoginWithPasswordError(exception: AflamiException) {
         updateState {
             it.copy(
-                usernameError = UsernameErrorState.toUsernameErrorState(exception),
-                passwordError = PasswordErrorState.toPasswordErrorState(exception)
+                loginError = LoginErrorState.toLoginErrorState(exception),
             )
         }
+        sendNewEffect(LoginEffect.ShowCredentialsError)
     }
 
     private fun onLoginComplete() {

@@ -2,7 +2,6 @@ package com.amsterdam.entity.category
 
 enum class MovieGenre {
     ALL,
-    ROMANCE,
     SCIENCE_FICTION,
     FAMILY,
     MYSTERY,
@@ -13,12 +12,13 @@ enum class MovieGenre {
     COMEDY,
     HORROR,
     WESTERN,
-    MUSIC,
+    ROMANCE,
     ADVENTURE,
     TV_MOVIE,
     FANTASY,
     THRILLER,
     DRAMA,
-    DOCUMENTARY,
-    ANIMATION
+    ANIMATION,
+    MUSIC,
+    DOCUMENTARY
 }

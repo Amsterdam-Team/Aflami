@@ -33,8 +33,7 @@ fun ResetPasswordScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                ResetPasswordEffect.NavigateToSignIn -> navController.popBackStack()
-                else -> {}
+                ResetPasswordEffect.NavigateToSignIn -> navController.navigateUp()
             }
         }
     }

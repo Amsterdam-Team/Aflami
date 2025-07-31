@@ -1,4 +1,4 @@
-package com.amsterdam.ui.components.appBar
+package com.amsterdam.designsystem
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,6 @@ import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.R
 
 @Composable
 fun TopAppBar(
@@ -72,19 +71,19 @@ private fun TopAppBarPreview() {
             },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(R.drawable.ic_filter_vertical),
+                    painter = painterResource(R.drawable.ic_outlined_add_to_favourite),
                     contentDescription = null,
                 )
             },
             middleIcon = {
                 Icon(
-                    painter = painterResource(R.drawable.ic_filter_vertical),
+                    painter = painterResource(R.drawable.ic_outlined_add_to_favourite),
                     contentDescription = null,
                 )
             },
             trailingIcon = {
                 Icon(
-                    painter = painterResource(R.drawable.ic_filter_vertical),
+                    painter = painterResource(R.drawable.ic_outlined_add_to_favourite),
                     contentDescription = null,
                 )
             },

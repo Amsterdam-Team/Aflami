@@ -15,8 +15,7 @@ class ResetPasswordViewModel @Inject constructor(dispatcherProvider: DispatcherP
 
 
     init {
-
-        //updateState { it.copy(resetPasswordUrl = BuildConfig.MOVIE_RESET_PASSWORD_URL) }
+        updateState { it.copy(resetPasswordUrl = BuildConfig.MOVIE_RESET_PASSWORD_URL) }
     }
 
     fun setLoading(isLoading: Boolean) {
@@ -24,6 +23,6 @@ class ResetPasswordViewModel @Inject constructor(dispatcherProvider: DispatcherP
     }
 
     fun onResetPasswordComplete() {
-        sendNewEffect(ResetPasswordEffect.NavigateToSignIn)
+        sendNewNavigationEffect(ResetPasswordEffect.NavigateToSignIn)
     }
 }

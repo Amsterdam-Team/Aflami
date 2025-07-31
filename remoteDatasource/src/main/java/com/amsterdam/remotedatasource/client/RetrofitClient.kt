@@ -6,8 +6,10 @@ import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
-import com.amsterdam.repository.utils.getDeviceLanguage
+import com.amsterdam.repository.datasource.local.AppPreferences
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,7 +19,8 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 class RetrofitClient(
-    private val json: Json
+    private val json: Json,
+    private val preferences: AppPreferences
 ) {
     private val TOKEN_HEADER_NAME = "Authorization"
     private val LANGUAGE_PARAM_NAME = "language"
@@ -43,7 +46,8 @@ class RetrofitClient(
             val originalRequest = chain.request()
             val originalHttpUrlBuilder = originalRequest.url.newBuilder()
 
-            originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, getDeviceLanguage())
+            val language = runBlocking { preferences.getDeviceLanguage().first() }
+            originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, language)
 
             if (!sessionId.isNullOrBlank()) {
                 originalHttpUrlBuilder.addQueryParameter(SESSION_PARAM_NAME, sessionId)
@@ -67,7 +71,8 @@ class RetrofitClient(
             .build()
     }
 
-    fun authenticationApiService(): AuthenticationApiService = retrofit.create(AuthenticationApiService::class.java)
+    fun authenticationApiService(): AuthenticationApiService =
+        retrofit.create(AuthenticationApiService::class.java)
 
     fun movieApiService(): MovieApiService = retrofit.create(MovieApiService::class.java)
     fun categoryApiService(): CategoryApiService = retrofit.create(CategoryApiService::class.java)

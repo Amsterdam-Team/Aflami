@@ -1,32 +1,34 @@
 package com.amsterdam.ui.screens.home
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,13 +46,11 @@ import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialogDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
-import com.amsterdam.ui.screens.home.sections.BlurredMoviePoster
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
 import com.amsterdam.ui.screens.home.sections.continueWatchingSection
 import com.amsterdam.ui.screens.home.sections.popularSection
 import com.amsterdam.ui.screens.home.sections.topRatingSection
 import com.amsterdam.ui.screens.home.sections.upcomingMoviesSection
-import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.home.HomeEffect
 import com.amsterdam.viewmodel.home.HomeEffect.NavigateToMovieDetailsEffect
 import com.amsterdam.viewmodel.home.HomeEffect.NavigateToSearchScreenEffect
@@ -59,33 +59,31 @@ import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hiltViewModel()) {
     val navController = LocalNavController.current
     val state by homeViewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         homeViewModel.effect.collectLatest { effect ->
-            effect?.let {
-                when (effect) {
-                    is NavigateToSearchScreenEffect -> navController.safeNavigate(Route.Search)
+            when (effect) {
+                is NavigateToSearchScreenEffect -> navController.navigate(Route.Search)
 
-                    is NavigateToMovieDetailsEffect -> {
-                        navController.safeNavigate(MovieDetails(movieId = effect.movieId))
-                    }
+                is NavigateToMovieDetailsEffect -> {
+                    navController.navigate(MovieDetails(movieId = effect.movieId))
+                }
 
-                    is HomeEffect.NavigateToTvShowDetailsEffect -> {
-                        navController.safeNavigate(Route.SeriesDetails(tvShowId = effect.tvShowId))
-                    }
+                is HomeEffect.NavigateToTvShowDetailsEffect -> {
+                    navController.navigate(Route.SeriesDetails(tvShowId = effect.tvShowId))
+                }
 
-                    is HomeEffect.NavigateToTopRatedMoviesEffect -> {
-                        navController.safeNavigate(Route.TopRated)
-                    }
+                is HomeEffect.NavigateToTopRatedMoviesEffect -> {
+                    navController.navigate(Route.TopRated)
+                }
 
-                    is HomeEffect.NavigateToContinueWatchingMoviesScreen -> {
-                        navController.safeNavigate(Route.ContinueWatching)
-                    }
+                is HomeEffect.NavigateToContinueWatchingMoviesScreen -> {
+                    navController.navigate(Route.ContinueWatching)
                 }
             }
         }
@@ -98,6 +96,7 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hil
     )
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 private fun HomeScreenContent(
     state: HomeUiState,
@@ -106,32 +105,23 @@ private fun HomeScreenContent(
 ) {
     val lazyListState = rememberLazyListState()
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
-
+    val configuration = LocalConfiguration.current
+    val screenHeightDp = configuration.screenHeightDp.dp
+    var upcomingMoviesSectionYOffsetDp by remember { mutableStateOf(0.dp) }
     val scrollOffset = remember {
         derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
     }
 
     val appBarColor by animateColorAsState(
-        targetValue = if (scrollOffset.value > 10) AppTheme.color.surface else Color.Transparent,
+        targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
-    var blurOffsetY by remember { mutableFloatStateOf(-12f) }
 
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val newOffset = blurOffsetY + available.y
-                blurOffsetY = newOffset.coerceIn(minimumValue = -1000f, maximumValue = -12f)
-                return Offset.Zero
-            }
-        }
-    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollConnection)
             .navigationBarsPadding()
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
@@ -171,50 +161,65 @@ private fun HomeScreenContent(
                 contentPadding = PaddingValues(bottom = 100.dp),
                 state = lazyListState,
             ) {
-                stickyHeader {
-                    HomeAppBar(
-                        modifier = Modifier
-                            .background(appBarColor)
-                            .statusBarsPadding()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        onSearchClicked = interactionListener::onClickSearch,
-                    )
-                }
+
 
                 popularSection(
                     state = state.popularMediaSectionUiState,
-                    pagerState = pagerState,
                     onClickMediaItem = interactionListener::onClickMediaItem,
-                    isVisible = state.error == null && state.popularMediaSectionUiState.mediaItems.isNotEmpty()
-                )
-
-                continueWatchingSection(
-                    state = state.continueWatchingMediaSectionUiState,
-                    isVisible = state.continueWatchingMediaSectionUiState.mediaItems.isNotEmpty(),
-                    onClickMediaItem = interactionListener::onClickMediaItem,
-                    onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies,
-                )
-
-                topRatingSection(
-                    state = state.topRatedMediaSectionUiState,
-                    onClickMediaItem = interactionListener::onClickMediaItem,
-                    onClickShowAll = interactionListener::onClickShowAllToRatedMovies,
-                    isVisible = state.error == null,
-                )
-
-                item {
-                    MoodPickerSection(
-                        state,
-                        interactionListener,
-                    )
-                }
-
-                upcomingMoviesSection(
-                    state = state.upcomingMoviesSectionUiState,
-                    onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
-                    onMovieClicked = interactionListener::onClickUpcomingMovieCard,
                     isVisible = state.error == null
                 )
+            continueWatchingSection(
+                state = state.continueWatchingMediaSectionUiState,
+                isVisible = state.continueWatchingMediaSectionUiState.mediaItems.isNotEmpty(),
+                onClickMediaItem = interactionListener::onClickMediaItem,
+                onClickShowAll = interactionListener::onClickShowAllContinueWatchingMovies,
+            )
+
+            topRatingSection(
+                state = state.topRatedMediaSectionUiState,
+                onClickMediaItem = interactionListener::onClickMediaItem,
+                onClickShowAll = interactionListener::onClickShowAllToRatedMovies,
+                isVisible = state.error == null,
+            )
+
+            item {
+                MoodPickerSection(
+                    state,
+                    interactionListener,
+                )
+            }
+
+            upcomingMoviesSection(
+                state = state.upcomingMoviesSectionUiState,
+                onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
+                onMovieClicked = interactionListener::onClickUpcomingMovieCard,
+                isVisible = state.error == null,
+                onVerticalOffsetChange = {
+                    upcomingMoviesSectionYOffsetDp = it
+                }
+            )
+
+            if (state.error == null){
+                if (!state.upcomingMoviesSectionUiState.isLoading){
+                    item {
+                        val lastVisibleItemInfo by remember { derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull() } }
+                        val totalItemsCount by remember { derivedStateOf { lazyListState.layoutInfo.totalItemsCount } }
+
+
+                        val spacerHeight: Dp by remember {
+                            derivedStateOf {
+                                if (upcomingMoviesSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)){
+                                    screenHeightDp
+                                } else {
+                                    0.dp
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(spacerHeight))
+                    }
+                }
+            }
 
                 item {
                     AnimatedSectionVisibility(
@@ -231,6 +236,13 @@ private fun HomeScreenContent(
                 }
             }
 
+            HomeAppBar(
+            modifier = Modifier
+                .background(appBarColor)
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp),
+            onSearchClicked = interactionListener::onClickSearch,
+        )
             AnimatedSectionVisibility(visible = state.moodPickerUiState.openMovieDialog) {
                 MovieMoodPickerDialogDialog(
                     movie = state.moodPickerUiState.selectedMovie,

@@ -5,19 +5,22 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel
 class ContinueWatchingViewModel @Inject constructor(
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
     private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<ContinueWatchingUiState, ContinueWatchingEffect>(
     ContinueWatchingUiState(),
@@ -26,9 +29,13 @@ class ContinueWatchingViewModel @Inject constructor(
     ContinueWatchingInteractionListener {
 
     init {
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                getContinueWatchingData()
+            }.launchIn(viewModelScope)
+
         getContinueWatchingData()
     }
-
 
     private fun getContinueWatchingData() {
         updateState { it.copy(isLoading = true) }
@@ -65,15 +72,16 @@ class ContinueWatchingViewModel @Inject constructor(
                     error = ContinueWatchingUiState.ContinueWatchingError.NetworkError
                 )
             }
-            else ->{}
+
+            else -> {}
         }
     }
 
     override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
         if (mediaType == MediaType.MOVIE)
-            sendNewEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
+            sendNewNavigationEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
         else
-            sendNewEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
+            sendNewNavigationEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
@@ -81,7 +89,7 @@ class ContinueWatchingViewModel @Inject constructor(
     }
 
     override fun onClickBack() {
-        sendNewEffect(ContinueWatchingEffect.NavigateBack)
+        sendNewNavigationEffect(ContinueWatchingEffect.NavigateBack)
     }
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }

@@ -17,12 +17,13 @@ import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.components.UpcomingCard
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
-fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
-    if (similarMovies.isEmpty())
-        item {
-            EmptyStateText(stringResource(com.amsterdam.ui.R.string.there_is_no_similar_content))
-        }
-    else
+fun LazyListScope.moreLikeSection(
+    similarMovies: List<SimilarMovieUiState>,
+    onClick: (movieId: Long) -> Unit
+) {
+    if (similarMovies.isEmpty()) {
+        item { EmptyStateText(stringResource(com.amsterdam.ui.R.string.there_is_no_similar_content)) }
+    } else {
         itemsIndexed(similarMovies, key = { index, _ -> index }) { index, similarMovie ->
             val yOffset = if (index == 0) -16 else 0
             UpcomingCard(
@@ -46,6 +47,8 @@ fun LazyListScope.MoreLikeSection(similarMovies: List<SimilarMovieUiState>) {
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
                     .offset(y = yOffset.dp),
                 movieRating = similarMovie.rate,
+                onClick = { onClick(similarMovie.movieId) }
             )
         }
+    }
 }

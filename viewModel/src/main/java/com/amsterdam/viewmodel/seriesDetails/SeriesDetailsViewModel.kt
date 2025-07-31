@@ -2,11 +2,13 @@ package com.amsterdam.viewmodel.seriesDetails
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.exceptions.NoInternetException
+import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetails
-import com.amsterdam.domain.useCase.authentication.GetsSessionType
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.entity.Episode
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
@@ -14,16 +16,19 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SeriesDetailsViewModel @Inject constructor(
     args: SeriesDetailsArgs,
-    private val seriesDetailsStateMapper: SeriesDetailsStateMapper,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getEpisodesBySeasonNumberUseCase: GetEpisodesBySeasonNumberUseCase,
+    private val seriesDetailsStateMapper: SeriesDetailsStateMapper,
     private val getsSessionType: GetsSessionType,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SeriesDetailsUiState, SeriesDetailsEffect>(
     SeriesDetailsUiState(),
@@ -33,6 +38,12 @@ class SeriesDetailsViewModel @Inject constructor(
     init {
         val tvShowId = args.tvShowId!!
         updateState { it.copy(tvShowId = tvShowId) }
+
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                loadTvShowDetails()
+            }.launchIn(viewModelScope)
+
         loadTvShowDetails()
     }
 
@@ -48,6 +59,7 @@ class SeriesDetailsViewModel @Inject constructor(
     private suspend fun getTvShowDetails(): TvShowDetails {
         return getTvShowDetailsUseCase(state.value.tvShowId)
     }
+
     private fun onGetTvShowDetailsSuccess(tvShowDetails: TvShowDetails) {
         updateState {
             seriesDetailsStateMapper.toUiState(tvShowDetails)
@@ -65,7 +77,7 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onNavigateBack() {
-        sendNewEffect(SeriesDetailsEffect.NavigateBack)
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateBack)
     }
 
     override fun onClickRetryButton() {
@@ -73,7 +85,7 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onClickShowAllCast() {
-        sendNewEffect(SeriesDetailsEffect.NavigateToCastScreen)
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToCastScreen)
     }
 
     override fun onAddToListClicked() {
@@ -103,11 +115,32 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onNavigateToLoginClicked() {
-        sendNewEffect(SeriesDetailsEffect.NavigateToLoginScreenEffect)
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToLoginScreenEffect)
     }
 
     override fun onCancelClicked() {
         updateState { it.copy(isLoginDialogVisible = false) }
+    }
+
+    override fun onClickSimilarMovie(movieId: Long) {
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToMovieDetails(movieId))
+    }
+
+    override fun onDescriptionExpansionToggled() {
+        updateState { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
+    }
+
+    override fun onReviewExpansionToggled(reviewId: String) {
+        updateState { state ->
+            val updatedReviews = state.reviews.map { review ->
+                if (review.username == reviewId) {
+                    review.copy(isExpanded = !review.isExpanded)
+                } else {
+                    review
+                }
+            }
+            state.copy(reviews = updatedReviews)
+        }
     }
 
     private suspend fun getEpisodesForSeason(seasonNumber: Int): List<Episode> {
@@ -124,7 +157,6 @@ class SeriesDetailsViewModel @Inject constructor(
         }
         return getEpisodesBySeasonNumberUseCase(state.value.tvShowId, seasonNumber)
     }
-
 
     private fun onGetEpisodesSuccess(seasonNumber: Int, episodes: List<Episode>) {
         if (episodes.isEmpty()) {
@@ -156,7 +188,7 @@ class SeriesDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun showMustLoginDialog(dialogType: MovieAndSeriesDetailsDialogType){
+    private fun showMustLoginDialog(dialogType: MovieAndSeriesDetailsDialogType) {
         updateState { it.copy(isLoginDialogVisible = true, dialogType = dialogType) }
     }
 
@@ -168,6 +200,13 @@ class SeriesDetailsViewModel @Inject constructor(
                     networkError = true
                 )
             }
+            is NetworkException -> updateState {
+                it.copy(
+                    isLoading = false,
+                    networkError = true
+                )
+            }
+
             else -> {}
         }
     }

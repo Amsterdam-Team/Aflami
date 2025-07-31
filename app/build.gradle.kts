@@ -51,34 +51,48 @@ android {
 }
 
 dependencies {
+    appModulesDependencies()
+    firebaseDependencies()
+    datastoreDependencies()
+    jsonSerializationDependencies()
+    roomDependencies()
+    androidxRuntimeDependencies()
+    hiltDependencies()
+}
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.perf)
-
-    // Modules Dependencies
-    implementation(project(":designSystem"))
+private fun DependencyHandlerScope.appModulesDependencies() {
     implementation(project(":ui"))
     implementation(project(":viewModel"))
     implementation(project(":localDatasource"))
     implementation(project(":remoteDatasource"))
     implementation(project(":domain"))
-    implementation(project(":entity"))
     implementation(project(":repository"))
+}
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+private fun DependencyHandlerScope.firebaseDependencies() {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.perf)
+}
 
-    //Datastore
+private fun DependencyHandlerScope.datastoreDependencies() {
     implementation(libs.androidx.datastore.preferences)
-    //hilt
+}
+
+private fun DependencyHandlerScope.jsonSerializationDependencies() {
+    implementation(libs.kotlinx.serialization.json)
+}
+
+private fun DependencyHandlerScope.roomDependencies() {
+    implementation(libs.androidx.room.runtime)
+}
+
+fun DependencyHandlerScope.androidxRuntimeDependencies() {
+    implementation(libs.androidx.runtime)
+}
+
+fun DependencyHandlerScope.hiltDependencies() {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-    //room runtime
-    implementation(libs.androidx.room.runtime)
-    //kotlin serialization
-    implementation(libs.kotlinx.serialization.json)
-
 }

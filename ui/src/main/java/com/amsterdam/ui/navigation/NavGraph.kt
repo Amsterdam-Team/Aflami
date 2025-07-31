@@ -23,7 +23,7 @@ import com.amsterdam.ui.screens.topRated.topRatedScreenRoute
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    startDestination: Any = Route.Tab.Home
+    startDestination: Route = Route.Tab.Home
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
         loginScreenRoute()
