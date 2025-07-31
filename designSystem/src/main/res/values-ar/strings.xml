@@ -205,5 +205,6 @@
     <!-- - Cast  -->
     <string name="cast_not_available">"الممثلون غير متوفرين"</string>
     <string name="we_could_not_find_cast_information">"لم نتمكن من العثور على معلومات الممثلين لهذا العنوان حالياً. يرجى المحاولة مرة أخرى لاحقاً."</string>
+    <string name="there_is_no_seasons">يبدو أنه لم تصدر مواسم بعد</string>
 
 </resources>
