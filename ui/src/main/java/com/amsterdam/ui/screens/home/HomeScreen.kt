@@ -62,7 +62,7 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hil
     val localConfigurations = LocalConfiguration.current.locales
 
     LaunchedEffect(localConfigurations) {
-        homeViewModel.setCurrentLocaleLanguage(localConfigurations[0].language.lowercase())
+        homeViewModel.setCurrentLanguage(localConfigurations[0].language.lowercase())
     }
     LaunchedEffect(Unit) {
         homeViewModel.effect.collectLatest { effect ->

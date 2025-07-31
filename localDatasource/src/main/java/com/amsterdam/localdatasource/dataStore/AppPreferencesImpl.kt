@@ -15,13 +15,13 @@ class AppPreferencesImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : AppPreferences {
 
-    override suspend fun setCurrentLanguage(language: String) {
+    override suspend fun setDeviceLanguage(language: String) {
         dataStore.edit { preferences ->
             preferences[CURRENT_LANGUAGE] = language
         }
     }
 
-    override suspend fun getCurrentLanguage(): String {
+    override suspend fun getDeviceLanguage(): String {
         return dataStore.data.map { preferences ->
             preferences[CURRENT_LANGUAGE] ?: LocaleList.getDefault()[0].language.lowercase()
         }.first()

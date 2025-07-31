@@ -48,7 +48,7 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val localConfigurations = LocalConfiguration.current.locales
 
     LaunchedEffect(localConfigurations) {
-        viewModel.setCurrentLocaleLanguage(localConfigurations[0].language.lowercase())
+        viewModel.setCurrentLanguage(localConfigurations[0].language.lowercase())
     }
 
     TopRatedContent(state, viewModel)

@@ -25,8 +25,8 @@ class TopRatedViewModel @Inject constructor(
         getTopRatedScreenData()
     }
 
-    suspend fun setCurrentLocaleLanguage(language: String) {
-        manageLocaleLanguageUseCase.setCurrentLanguage(language)
+    suspend fun setCurrentLanguage(language: String) {
+        manageLocaleLanguageUseCase.setDeviceLanguage(language)
         getTopRatedScreenData()
     }
 

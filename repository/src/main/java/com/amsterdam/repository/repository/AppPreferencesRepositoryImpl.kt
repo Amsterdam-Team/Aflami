@@ -7,8 +7,8 @@ import javax.inject.Inject
 class AppPreferencesRepositoryImpl @Inject constructor(
     private val preferences: AppPreferences
 ) : AppPreferencesRepository {
-    override suspend fun getCurrentLanguage(): String = preferences.getCurrentLanguage()
+    override suspend fun getDeviceLanguage(): String = preferences.getDeviceLanguage()
 
-    override suspend fun setCurrentLanguage(language: String) =
-        preferences.setCurrentLanguage(language)
+    override suspend fun setDeviceLanguage(language: String) =
+        preferences.setDeviceLanguage(language)
 }

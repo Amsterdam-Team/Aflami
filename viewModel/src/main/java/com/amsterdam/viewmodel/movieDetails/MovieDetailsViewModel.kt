@@ -36,8 +36,8 @@ class MovieDetailsViewModel @Inject constructor(
         loadMovieDetails()
     }
 
-    suspend fun setCurrentLocaleLanguage(language: String) {
-        manageLocaleLanguageUseCase.setCurrentLanguage(language)
+    suspend fun setCurrentLanguage(language: String) {
+        manageLocaleLanguageUseCase.setDeviceLanguage(language)
         loadMovieDetails()
     }
 

@@ -85,7 +85,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
     val localConfigurations = LocalConfiguration.current.locales
 
     LaunchedEffect(localConfigurations) {
-        viewModel.setCurrentLocaleLanguage(localConfigurations[0].language.lowercase())
+        viewModel.setCurrentLanguage(localConfigurations[0].language.lowercase())
     }
 
     MovieContent(

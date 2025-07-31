@@ -45,7 +45,7 @@ class RetrofitClient(
             val originalRequest = chain.request()
             val originalHttpUrlBuilder = originalRequest.url.newBuilder()
 
-            val language = runBlocking { preferences.getCurrentLanguage() }
+            val language = runBlocking { preferences.getDeviceLanguage() }
             originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, language)
 
             if (!sessionId.isNullOrBlank()) {

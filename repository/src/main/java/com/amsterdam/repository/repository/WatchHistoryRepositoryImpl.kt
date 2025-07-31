@@ -28,7 +28,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
         watchHistoryLocalDataSource.addMovieToWatchHistory(
             movieWatchHistoryMapper.toDto(
                 item,
-                listOf(preferences.getCurrentLanguage())
+                listOf(preferences.getDeviceLanguage())
             )
         )
     }
@@ -43,7 +43,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
         watchHistoryLocalDataSource.addTvShowToWatchHistory(
             tvShowWatchHistoryMapper.toDto(
                 item,
-                listOf(preferences.getCurrentLanguage())
+                listOf(preferences.getDeviceLanguage())
             )
         )
     }

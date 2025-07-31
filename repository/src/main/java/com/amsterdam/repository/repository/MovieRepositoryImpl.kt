@@ -46,7 +46,7 @@ class MovieRepositoryImpl @Inject constructor(
         return categoryRepository.getMovieCategories().let {
             getCachedMovies(keyword, SearchType.BY_KEYWORD, page, moviesPerPage)
                 ?: recentSearchHandler.deleteRecentSearch(
-                    keyword, SearchType.BY_KEYWORD, preferences.getCurrentLanguage()
+                    keyword, SearchType.BY_KEYWORD, preferences.getDeviceLanguage()
                 ).let {
                     getMoviesByKeywordFromRemote(
                         keyword,
@@ -66,7 +66,7 @@ class MovieRepositoryImpl @Inject constructor(
         return categoryRepository.getMovieCategories().let {
             getCachedMovies(actorName, SearchType.BY_ACTOR, page, moviesPerPage)
                 ?: recentSearchHandler.deleteRecentSearch(
-                    actorName, SearchType.BY_ACTOR, preferences.getCurrentLanguage()
+                    actorName, SearchType.BY_ACTOR, preferences.getDeviceLanguage()
                 ).let {
                     getMoviesByActorNameFromRemote(
                         actorName,
@@ -88,7 +88,7 @@ class MovieRepositoryImpl @Inject constructor(
                 ?: recentSearchHandler.deleteRecentSearch(
                     country.countryIsoCode,
                     SearchType.BY_COUNTRY,
-                    preferences.getCurrentLanguage()
+                    preferences.getDeviceLanguage()
                 )
                     .let {
                         getMoviesByCountryIsoCodeFromRemote(
@@ -118,7 +118,7 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun cacheWatchedMovie(remoteMovieItemDto: RemoteMovieItemDto) {
         movieLocalSource.insertMovie(
             movieRemoteLocalMapper.toLocal(
-                remote = remoteMovieItemDto, args = listOf(preferences.getCurrentLanguage())
+                remote = remoteMovieItemDto, args = listOf(preferences.getDeviceLanguage())
             )
         )
     }
@@ -142,7 +142,7 @@ class MovieRepositoryImpl @Inject constructor(
         return recentSearchHandler.isRecentSearchExpired(
             keyword,
             searchType,
-            preferences.getCurrentLanguage()
+            preferences.getDeviceLanguage()
         )
             .takeIf { isRecentSearchExpired -> !isRecentSearchExpired }
             ?.let { getMoviesFromLocal(keyword, searchType, page, moviesPerPage) }
@@ -215,7 +215,7 @@ class MovieRepositoryImpl @Inject constructor(
                 movieLocalSource.getMoviesByKeywordAndSearchType(
                     keyword = keyword,
                     searchType = searchType,
-                    storedLanguage = preferences.getCurrentLanguage(),
+                    storedLanguage = preferences.getDeviceLanguage(),
                     limit = moviesPerPage,
                     offset = moviesPerPage * (page - 1)
                 )
@@ -231,7 +231,7 @@ class MovieRepositoryImpl @Inject constructor(
         movieLocalSource.addMoviesBySearchData(
             movies = movieRemoteLocalMapper.toLocalList(
                 remoteMovies.results,
-                listOf(preferences.getCurrentLanguage())
+                listOf(preferences.getDeviceLanguage())
             ),
             searchKeyword = keyword,
             searchType = searchType
@@ -246,13 +246,13 @@ class MovieRepositoryImpl @Inject constructor(
         movieLocalSource.addMovieWithCategories(
             movie = movieRemoteLocalMapper.toLocal(
                 remoteMovie,
-                listOf(preferences.getCurrentLanguage())
+                listOf(preferences.getDeviceLanguage())
             ),
             categories = movieGenreIdsRemoteLocalMapper.toLocalList(
                 remoteMovie.genreIds,
-                listOf(preferences.getCurrentLanguage())
+                listOf(preferences.getDeviceLanguage())
             ),
-            storedLanguage = preferences.getCurrentLanguage()
+            storedLanguage = preferences.getDeviceLanguage()
         )
     }
 
