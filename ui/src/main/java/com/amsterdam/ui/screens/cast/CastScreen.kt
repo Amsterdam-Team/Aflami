@@ -9,9 +9,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -74,12 +76,13 @@ private fun CastContent(
             modifier
                 .fillMaxSize()
                 .background(color = AppTheme.color.surface)
-                .padding(horizontal = 16.dp)
-                .statusBarsPadding(),
+                .statusBarsPadding()
+                .navigationBarsPadding(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         DefaultAppBar(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = stringResource(R.string.cast),
             onNavigateBackClicked = interaction::onClickNavigateBack,
         )
@@ -88,7 +91,7 @@ private fun CastContent(
             modifier = Modifier.fillMaxSize(),
             targetState = Triple(state.isLoading, state.errorUiState, state.cast),
             transitionSpec = {
-                fadeIn(tween(1700)) togetherWith fadeOut(tween(1700))
+                fadeIn(tween(700)) togetherWith fadeOut(tween(700))
             },
         ) { (isLoading, errorState, cast) ->
 
@@ -117,6 +120,7 @@ private fun CastContent(
                         columns = GridCells.Adaptive(104.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         items(cast) { actor ->
                             ActorCard(actorImage = actor.actorImage, actorName = actor.actorName)

@@ -163,13 +163,17 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun getMoviesByActorNameFromRemote(
         actorName: String, searchType: SearchType, page: Int, moviesPerPage: Int
     ): List<Movie> {
-        return onSuccessGetRemoteMovies(
-            movieRemoteDataSource.getMoviesByActorName(actorName, page),
-            actorName,
-            searchType,
-            page,
-            moviesPerPage
-        )
+        return movieRemoteDataSource.getActorIdsByName(actorName, page).takeIf { actorIds ->
+            actorIds.isNotEmpty()
+        }?.let { actorIds ->
+            onSuccessGetRemoteMovies(
+                movieRemoteDataSource.getMoviesByActorIds(actorIds, page),
+                actorName,
+                searchType,
+                page,
+                moviesPerPage
+            )
+        } ?: emptyList()
     }
 
     private suspend fun getMoviesByCountryIsoCodeFromRemote(

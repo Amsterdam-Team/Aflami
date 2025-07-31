@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,6 +63,7 @@ fun GlobalSearchHub(
                 modifier = Modifier.height(40.dp),
                 contentScale = ContentScale.FillHeight,
             )
+            Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(globalSearchHubUI.labelRes),
                 style = AppTheme.textStyle.title.small,

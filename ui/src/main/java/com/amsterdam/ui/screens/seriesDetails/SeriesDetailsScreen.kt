@@ -3,6 +3,7 @@ package com.amsterdam.ui.screens.seriesDetails
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -176,6 +177,21 @@ fun SeriesDetailsContent(
         }
     }
 
+    val topPadding by remember {
+        derivedStateOf {
+            if (listState.firstVisibleItemIndex >= 1) {
+                96.dp
+            } else {
+                0.dp
+            }
+        }
+    }
+    val animatedTopPadding by animateDpAsState(
+        targetValue = topPadding,
+        animationSpec = tween(animationDuration),
+    )
+
+
     AnimatedVisibility(
         state.isLoading,
         enter = fadeIn(tween(animationDuration)),
@@ -213,32 +229,15 @@ fun SeriesDetailsContent(
         enter = fadeIn(tween(animationDuration)),
         exit = fadeOut(tween(animationDuration))
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize(),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = interaction::onNavigateBack,
-                    onFirstOptionClicked = interaction::onRateClicked,
-                    onLastOptionClicked = interaction::onAddToListClicked
-                )
-                HorizontalDivider(color = dividerColor)
-            }
-
             LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AppTheme.color.surface)
+                    .padding(top = animatedTopPadding)
                     .navigationBarsPadding()
                     .animateContentSize()
             ) {
@@ -336,7 +335,8 @@ fun SeriesDetailsContent(
                                     .background(AppTheme.color.stroke)
                             )
                             SeriesExtrasSection(
-                                modifier = Modifier.padding(top = 12.dp)
+                                modifier = Modifier
+                                    .padding(top = 12.dp)
                                     .onGloballyPositioned { coordinates ->
                                         seriesExtrasSectionYOffsetDp =
                                             coordinates.positionOnScreen().y.dp
@@ -387,6 +387,24 @@ fun SeriesDetailsContent(
 
                     Spacer(modifier = Modifier.height(spacerHeight))
                 }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor)
+            ) {
+                DefaultAppBar(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .statusBarsPadding(),
+                    firstOption = painterResource(R.drawable.ic_outlined_star),
+                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                    onNavigateBackClicked = interaction::onNavigateBack,
+                    onFirstOptionClicked = interaction::onRateClicked,
+                    onLastOptionClicked = interaction::onAddToListClicked
+                )
+                HorizontalDivider(color = dividerColor)
             }
         }
     }
