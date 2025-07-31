@@ -28,8 +28,6 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MovieCard
-import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 
 @SuppressLint("ContextCastToActivity")
@@ -113,7 +111,7 @@ fun DialogContent(
             movieType = stringResource(R.string.movie),
             movieYear = movie.yearOfRelease,
             movieTitle = movie.name,
-            movieRating = movie.rate.formateAsRate()
+            movieRating = movie.rate
         )
 
         ConfirmButton(

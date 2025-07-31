@@ -68,4 +68,11 @@ class TvShowLocalDataSourceImpl @Inject constructor(
     override suspend fun insertTvShow(tvShow: LocalTvShowDto) {
         tvShowDao.insertTvShow(tvShow)
     }
+
+    override suspend fun getTvShowById(
+        tvShowId: Long,
+        storedLanguage: String
+    ): LocalTvShowDto? {
+        return tvShowDao.getTvShowById(tvShowId, storedLanguage)
+    }
 }

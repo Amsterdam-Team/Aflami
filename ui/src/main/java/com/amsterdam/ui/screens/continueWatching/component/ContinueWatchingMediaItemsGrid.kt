@@ -9,21 +9,27 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.ui.utils.formateAsRate
+import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingMediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import kotlinx.coroutines.flow.flowOf
 
 
 @Composable
 fun ContinueWatchingMediaItemsGrid(
-    continueWatchingMediaItems: List<MediaItemUiState>,
+    continueWatchingMediaItems: LazyPagingItems<ContinueWatchingMediaItemUiState>,
     onClickMediaItem: (Long, MediaType) -> Unit,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
@@ -37,7 +43,8 @@ fun ContinueWatchingMediaItemsGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(continueWatchingMediaItems) { item ->
+        items(continueWatchingMediaItems.itemCount, key = continueWatchingMediaItems.itemKey { it.id }){index->
+            val item = continueWatchingMediaItems[index] !!
             val movieType =
                 if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
                 else stringResource(com.amsterdam.ui.R.string.tv)
@@ -47,7 +54,7 @@ fun ContinueWatchingMediaItemsGrid(
                 movieType = movieType,
                 movieYear = item.yearOfRelease,
                 movieTitle = item.name,
-                movieRating = item.rate.formateAsRate(),
+                movieRating = item.rate,
             ) {
                 onClickMediaItem(item.id, item.mediaType)
             }
@@ -55,24 +62,28 @@ fun ContinueWatchingMediaItemsGrid(
     }
 }
 
-
 @ThemeAndLocalePreviews
 @Composable
 private fun ContinueWatchingMoviesGridPreview() {
     AflamiTheme {
         val mockMovies = List(4) { index ->
-            MediaItemUiState(
+            ContinueWatchingMediaItemUiState(
                 id = index.toLong(),
                 name = "Movie $index",
                 posterImageUrl = "",
                 yearOfRelease = "202${index}",
-                rate = "3.0"
+                rate = (7 + index * 0.5).toString(),
+                mediaType = MediaType.MOVIE
             )
         }
+
+        val mockPagingFlow = remember { flowOf(PagingData.from(mockMovies)) }
+
+        val lazyPagingItems = mockPagingFlow.collectAsLazyPagingItems()
+
         ContinueWatchingMediaItemsGrid(
-            continueWatchingMediaItems = mockMovies,
-            onClickMediaItem = { _, _ ->
-            }
+            continueWatchingMediaItems = lazyPagingItems,
+            onClickMediaItem = { _, _ -> }
         )
     }
 }
