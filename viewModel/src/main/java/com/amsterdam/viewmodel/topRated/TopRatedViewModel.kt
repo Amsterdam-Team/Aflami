@@ -18,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TopRatedViewModel @Inject constructor(
     private val getTopRatedScreenDataUseCase: GetTopRatedScreenDataUseCase,
-    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val topRatedUiStateMapper: TopRatedUiStateMapper,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<TopRatedUiState, TopRatedEffect>(TopRatedUiState(), dispatcherProvider),
     TopRatedInteractionListener {
