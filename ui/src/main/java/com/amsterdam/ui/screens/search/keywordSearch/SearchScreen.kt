@@ -41,7 +41,6 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSect
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SearchScreenHeaderSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuccessMediaItemsSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
-import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.SearchErrorState
 import com.amsterdam.viewmodel.search.keywordSearch.SearchInteractionListener
@@ -51,7 +50,6 @@ import com.amsterdam.viewmodel.search.keywordSearch.SearchViewModel
 import com.amsterdam.viewmodel.search.keywordSearch.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -72,42 +70,27 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
     }
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            effect?.let {
-                when (effect) {
-                    SearchUiEffect.NavigateBack -> {
-                        navController.popBackStack(
-                            route = Route.Tab.Home,
-                            inclusive = false,
-                        )
-                        delay(200)
-                        viewModel.navigationCompleted()
-                    }
+            when (effect) {
+                SearchUiEffect.NavigateBack -> {
+                    navController.navigateUp()
+                }
 
-                    SearchUiEffect.NavigateToActorSearch -> {
-                        navController.safeNavigate(Route.SearchByActor)
-                        delay(200)
-                        viewModel.navigationCompleted()
-                    }
+                SearchUiEffect.NavigateToActorSearch -> {
+                    navController.navigate(Route.SearchByActor)
+                }
 
-                    SearchUiEffect.NavigateToWorldSearch -> {
-                        navController.safeNavigate(Route.SearchByCountry)
-                        delay(200)
-                        viewModel.navigationCompleted()
-                    }
+                SearchUiEffect.NavigateToWorldSearch -> {
+                    navController.navigate(Route.SearchByCountry)
+                }
 
-                    is SearchUiEffect.NavigateToMovieDetails -> {
-                        viewModel.onSaveSearchHistory()
-                        navController.safeNavigate(MovieDetails(effect.movieId))
-                        delay(200)
-                        viewModel.navigationCompleted()
-                    }
+                is SearchUiEffect.NavigateToMovieDetails -> {
+                    viewModel.onSaveSearchHistory()
+                    navController.navigate(MovieDetails(effect.movieId))
+                }
 
-                    is SearchUiEffect.NavigateToTvShowDetails -> {
-                        viewModel.onSaveSearchHistory()
-                        navController.navigate(SeriesDetails(effect.tvShowId))
-                        delay(200)
-                        viewModel.navigationCompleted()
-                    }
+                is SearchUiEffect.NavigateToTvShowDetails -> {
+                    viewModel.onSaveSearchHistory()
+                    navController.navigate(SeriesDetails(effect.tvShowId))
                 }
             }
         }

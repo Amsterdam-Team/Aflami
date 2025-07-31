@@ -7,4 +7,5 @@ data class ReviewUiState(
         val content: String = "",
         val date: String = "",
         val imageUrl: String? = "",
+        val isExpanded: Boolean = false,
     )

@@ -17,8 +17,8 @@ data class MovieDetailsUiState(
     val movieLength: String = "",
     val originCountry: String = "",
     val description: String = "",
-    val hasVideo : Boolean = false,
-    val moviePostersUrl : List<String> = emptyList(),
+    val hasVideo: Boolean = false,
+    val moviePostersUrl: List<String> = emptyList(),
     val actors: List<ActorUiState> = emptyList(),
     val extraItem: List<Selectable<MovieExtras>> = listOf(
         Selectable(isSelected = true, MovieExtras.MORE_LIKE_THIS),
@@ -31,9 +31,10 @@ data class MovieDetailsUiState(
     val gallery: List<String> = emptyList(),
     val reviews: List<ReviewUiState> = emptyList(),
     val isLoading: Boolean = false,
-    val networkError : Boolean = false,
-    val isLoginDialogVisible : Boolean = false,
-    val dialogType: MovieAndSeriesDetailsDialogType? = null
+    val networkError: Boolean = false,
+    val isLoginDialogVisible: Boolean = false,
+    val dialogType: MovieAndSeriesDetailsDialogType? = null,
+    val isDescriptionExpanded: Boolean = false,
 ) {
 
     enum class MovieExtras {

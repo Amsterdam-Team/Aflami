@@ -147,7 +147,7 @@ class CountrySearchViewModel @Inject constructor(
 
     override fun onClickMovieCard(movieId: Long) {
         updateState { it.copy(selectedMovieId = movieId) }
-        sendNewEffect(CountrySearchEffect.NavigateToMovieDetails)
+        sendNewNavigationEffect(CountrySearchEffect.NavigateToMovieDetails)
     }
 
     override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {
@@ -191,6 +191,6 @@ class CountrySearchViewModel @Inject constructor(
     }
 
     override fun onClickNavigateBack() {
-        sendNewEffect(CountrySearchEffect.NavigateBack)
+        sendNewNavigationEffect(CountrySearchEffect.NavigateBack)
     }
 }

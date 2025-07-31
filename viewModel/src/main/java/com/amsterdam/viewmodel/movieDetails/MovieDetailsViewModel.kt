@@ -4,8 +4,9 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
-import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
+import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
@@ -13,6 +14,7 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +40,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(isLoading = true, networkError = false) }
         tryToExecute(
             action = ::getMovieDetails,
-            onSuccess =::onGetMovieDetailsSuccess,
+            onSuccess = ::onGetMovieDetailsSuccess,
             onError = ::onError,
             onCompletion = ::onCompletion
         )
@@ -62,11 +64,11 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onClickShowAllCast() {
-        sendNewEffect(MovieDetailsEffect.NavigateToCastsScreenEffect)
+        sendNewNavigationEffect(MovieDetailsEffect.NavigateToCastsScreenEffect)
     }
 
     override fun onClickBack() {
-        sendNewEffect(MovieDetailsEffect.NavigateBackEffect)
+        sendNewNavigationEffect(MovieDetailsEffect.NavigateBackEffect)
     }
 
     override fun onClickRetryRequest() {
@@ -83,7 +85,11 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onNavigateToLoginClicked() {
-        sendNewEffect(MovieDetailsEffect.NavigateToLoginScreenEffect)
+        viewModelScope.launch {
+            updateState { it.copy(isLoginDialogVisible = false) }
+            delay(300)
+            sendNewNavigationEffect(MovieDetailsEffect.NavigateToLoginScreenEffect)
+        }
     }
 
     override fun onCancelClicked() {
@@ -91,7 +97,24 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onClickSimilarMovie(movieId: Long) {
-        sendNewEffect(MovieDetailsEffect.NavigateToMovieDetails(movieId))
+        sendNewNavigationEffect(MovieDetailsEffect.NavigateToMovieDetails(movieId))
+    }
+
+    override fun onDescriptionExpansionToggled() {
+        updateState { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
+    }
+
+    override fun onReviewExpansionToggled(reviewId: String) {
+        updateState { state ->
+            val updatedReviews = state.reviews.map { review ->
+                if (review.username == reviewId) {
+                    review.copy(isExpanded = !review.isExpanded)
+                } else {
+                    review
+                }
+            }
+            state.copy(reviews = updatedReviews)
+        }
     }
 
     override fun onAddToListClicked() {
@@ -114,14 +137,15 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun showMustLoginDialog(dialogType: MovieAndSeriesDetailsDialogType){
+    private fun showMustLoginDialog(dialogType: MovieAndSeriesDetailsDialogType) {
         updateState { it.copy(isLoginDialogVisible = true, dialogType = dialogType) }
     }
 
     private fun onError(exception: AflamiException) {
         Log.e("bk", "onError: $exception")
-         when (exception) {
+        when (exception) {
             is NoInternetException -> updateState { it.copy(networkError = true) }
+            is NetworkException -> updateState { it.copy(networkError = true) }
             else -> {}
         }
     }

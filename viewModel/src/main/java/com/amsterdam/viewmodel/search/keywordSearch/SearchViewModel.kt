@@ -44,8 +44,6 @@ class SearchViewModel @Inject constructor(
     FilterInteractionListener {
     private val _keyword = MutableStateFlow("")
 
-    var isNavigating: Boolean = false
-        private set
 
     init {
         fetchRecentSearches()
@@ -242,25 +240,16 @@ class SearchViewModel @Inject constructor(
             onSaveSearchHistory()
             onClickClearSearch()
         } else {
-            if (!isNavigating) {
-                isNavigating = true
-                sendNewEffect(SearchUiEffect.NavigateBack)
-            }
+            sendNewNavigationEffect(SearchUiEffect.NavigateBack)
         }
     }
 
     override fun onClickWorldSearchCard() {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToWorldSearch)
     }
 
     override fun onClickActorSearchCard() {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToActorSearch)
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToActorSearch)
     }
 
     override fun onClickRetryRequest() = onSearchKeywordChanged(_keyword.value)
@@ -339,17 +328,12 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onClickMovieCard(movieId: Long) {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToMovieDetails(movieId))
+
     }
 
     override fun onClickTvShowCard(tvShowId: Long) {
-        if (!isNavigating) {
-            isNavigating = true
-            sendNewEffect(SearchUiEffect.NavigateToTvShowDetails(tvShowId))
-        }
+        sendNewNavigationEffect(SearchUiEffect.NavigateToTvShowDetails(tvShowId))
     }
 
     override fun onClickFilterButton() {
@@ -433,7 +417,4 @@ class SearchViewModel @Inject constructor(
 
     override fun onClickClear() = resetFilterState()
 
-    fun navigationCompleted() {
-        isNavigating = false
-    }
 }
