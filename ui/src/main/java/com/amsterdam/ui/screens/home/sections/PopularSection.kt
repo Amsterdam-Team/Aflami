@@ -75,7 +75,7 @@ fun LazyListScope.popularSection(
 
                     Crossfade (
                         targetState = pagerState.currentPage,
-                        animationSpec = tween(500, easing = FastOutSlowInEasing)
+                        animationSpec = tween(300)
                     ) { page ->
                         BlurredMoviePoster(
                             posterUrl = state.mediaItems[page % state.mediaItems.size].posterUrl,
@@ -107,11 +107,16 @@ fun LazyListScope.popularSection(
                             )
                         }
 
-                        DisplayGenresForMovie(
-                            modifier = Modifier
-                                .zIndex(2f),
-                            mediaItem = state.mediaItems[pagerState.currentPage % state.mediaItems.size],
-                        )
+                        Crossfade (
+                            targetState = pagerState.currentPage,
+                            animationSpec = tween(300)
+                        ) { page ->
+                            DisplayGenresForMovie(
+                                modifier = Modifier
+                                    .zIndex(2f),
+                                mediaItem = state.mediaItems[page % state.mediaItems.size],
+                            )
+                        }
                     }
                 }
             }
@@ -185,25 +190,17 @@ private fun PopularMoviesPager(
     modifier: Modifier = Modifier,
     onClickMediaItem: (Long, MediaType) -> Unit
 ){
-    val itemWidth = 207.dp
+    val itemWidth = 244.dp
     val horizontalPadding = (screenWidth - itemWidth) / 2
     HorizontalPager(
         state = pagerState,
         pageSpacing = 16.dp,
         contentPadding = PaddingValues(horizontal = horizontalPadding),
-        modifier = modifier
+        modifier = modifier,
+        key = { page -> state.mediaItems[page % state.mediaItems.size].id }
     ) { page ->
         val currentPageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-
-        val width by animateDpAsState(
-            targetValue = lerp(
-                207.dp,
-                244.dp,
-                1f - currentPageOffset.coerceIn(0f, 1f)
-            ),
-            label = "width"
-        )
 
         val height by animateDpAsState(
             targetValue = lerp(
@@ -222,7 +219,7 @@ private fun PopularMoviesPager(
         PopularMediaItemCard(
             popularMediaItem = state.mediaItems[page % state.mediaItems.size],
             ratingAlpha = rateAlpha,
-            imageWidth = width,
+            imageWidth = itemWidth,
             imageHeight = height,
             onClickMediaItem = onClickMediaItem
         )
