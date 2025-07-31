@@ -73,4 +73,7 @@ interface TvShowDao {
 
     @Upsert
     suspend fun insertTvShowCategoryCrossRefs(crossRefs: List<TvShowCategoryCrossRefDto>)
+
+    @Query(" SELECT * FROM ${DatabaseConstants.TV_SHOW_TABLE} WHERE tvShowId = :tvShowId and storedLanguage = :storedLanguage")
+    suspend fun getTvShowById(tvShowId: Long, storedLanguage: String): LocalTvShowDto?
 }

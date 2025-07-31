@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase.HomeScreenData
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
+import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingMediaItemUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaSectionUiState
 import com.amsterdam.viewmodel.home.HomeUiState.TopRatedMediaSectionUiState
@@ -17,7 +18,7 @@ class HomeUiStateMapper @Inject constructor(){
     @SuppressLint("DefaultLocale")
     fun toUiState(
         homeScreenData: HomeScreenData,
-        continueWatchingItems: List<MediaItemUiState>
+        continueWatchingItems: List<ContinueWatchingMediaItemUiState>
     ): HomeUiState {
         return HomeUiState(
             popularMediaSectionUiState = getPopularMediaItems(

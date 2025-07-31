@@ -1,15 +1,19 @@
 package com.amsterdam.viewmodel.cast
 
+import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.details.GetMovieCastUseCase
 import com.amsterdam.domain.useCase.details.GetTvShowCastUseCase
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.viewmodel.cast.CastUiState.CastErrorUiState
 import com.amsterdam.viewmodel.cast.mapper.toUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,11 +21,19 @@ class CastViewModel @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getTvShowCastUseCase: GetTvShowCastUseCase,
     private val args: CastScreenArgs,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<CastUiState, CastUiEffect>(CastUiState(), dispatcherProvider),
     CastInteractionListener {
 
-    init { fetchCast() }
+    init {
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                fetchCast()
+            }.launchIn(viewModelScope)
+
+        fetchCast()
+    }
 
     private fun fetchCast() {
         updateState { it.copy(isLoading = true) }

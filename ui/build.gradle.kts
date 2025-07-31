@@ -22,6 +22,7 @@ dependencies {
     composeDependencies()
     uiGraphicsDependencies()
     hiltDependencies()
+    kotlinxDateTime()
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
@@ -74,4 +75,8 @@ private fun DependencyHandlerScope.hiltDependencies() {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation (libs.androidx.hilt.navigation.compose)
+}
+
+private fun DependencyHandlerScope.kotlinxDateTime() {
+    implementation(libs.kotlinx.datetime)
 }

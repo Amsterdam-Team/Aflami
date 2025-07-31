@@ -8,12 +8,15 @@ import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,9 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     args: MovieDetailsArgs,
-    private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+    private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
     private val getsSessionType: GetsSessionType,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsEffect>(
     MovieDetailsUiState(),
@@ -33,6 +37,12 @@ class MovieDetailsViewModel @Inject constructor(
     init {
         val movieId = args.movieId!!
         updateState { it.copy(movieId = movieId) }
+
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                loadMovieDetails()
+            }.launchIn(viewModelScope)
+
         loadMovieDetails()
     }
 

@@ -3,6 +3,8 @@ package com.amsterdam.repository.dto.local
 import androidx.room.Entity
 import androidx.room.Index
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 @Entity(
@@ -23,5 +25,6 @@ data class LocalMovieDto(
     val rating: Float,
     val originCountry: String,
     val movieLength: Int,
-    val hasVideo : Boolean
+    val hasVideo : Boolean,
+    val insertedDate : Instant = Clock.System.now()
 )

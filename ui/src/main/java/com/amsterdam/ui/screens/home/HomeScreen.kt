@@ -62,6 +62,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hiltViewModel()) {
     val navController = LocalNavController.current
     val state by homeViewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         homeViewModel.effect.collectLatest { effect ->
             when (effect) {

@@ -3,6 +3,7 @@ package com.amsterdam.repository.dto.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 @Entity(
@@ -10,6 +11,5 @@ import kotlinx.datetime.Instant
 )
 data class MovieWatchHistoryDto(
     @PrimaryKey val movieId: Long,
-    val storedLanguage: String,
-    val lastWatchedTime: Instant
+    val watchedDate : Instant = Clock.System.now()
 )

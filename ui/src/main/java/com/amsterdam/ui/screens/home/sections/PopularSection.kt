@@ -65,7 +65,10 @@ fun LazyListScope.popularSection(
     if (isVisible) {
         if (state.isLoading) {
             popularSectionPlaceholder()
-        } else {
+        }
+        else if(state.mediaItems.isEmpty())
+            return
+        else {
             item {
                 Box {
                     val pagerState = rememberPagerState(

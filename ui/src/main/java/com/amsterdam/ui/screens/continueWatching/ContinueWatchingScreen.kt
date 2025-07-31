@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
@@ -104,12 +105,12 @@ fun ContinueWatchingContent(
                 )
             }
         }
-
+       val mediaItems =  state.continueMediaItemUiStates.collectAsLazyPagingItems()
         AnimatedSectionVisibility(
-            visible = state.continueMediaItemUiStates.isNotEmpty()
+            visible = mediaItems.itemCount > 0
         ) {
             ContinueWatchingMediaItemsGrid(
-                continueWatchingMediaItems = state.continueMediaItemUiStates,
+                continueWatchingMediaItems = mediaItems,
                 onClickMediaItem = interactionListener::onClickMediaItem,
                 modifier = Modifier.weight(1f),
                 gridState = gridState
