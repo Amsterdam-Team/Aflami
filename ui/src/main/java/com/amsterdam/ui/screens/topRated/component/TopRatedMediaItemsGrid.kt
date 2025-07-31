@@ -16,7 +16,6 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
@@ -46,7 +45,7 @@ fun TopRatedMediaItemsGrid(
                 movieType = movieType,
                 movieYear = item.yearOfRelease,
                 movieTitle = item.name,
-                movieRating = item.rate.formateAsRate()
+                movieRating = item.rate
             ) {
                 onClickMediaItem(item.id, item.mediaType)
             }

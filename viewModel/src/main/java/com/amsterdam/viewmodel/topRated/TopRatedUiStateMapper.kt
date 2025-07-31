@@ -37,7 +37,7 @@ class TopRatedUiStateMapper @Inject constructor() {
         return MediaItemUiState(
             id = movie.id,
             name = movie.name,
-            rate = String.format("%.1f", movie.rating),
+            rate = if (movie.rating % 1 == 0.0f) "${movie.rating.toInt()}" else "%.1f".format(movie.rating),
             posterImageUrl = movie.posterUrl,
             yearOfRelease = movie.releaseDate.year.toString(),
             mediaType = MediaType.MOVIE

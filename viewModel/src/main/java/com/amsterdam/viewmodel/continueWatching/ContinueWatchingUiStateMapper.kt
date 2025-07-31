@@ -13,7 +13,7 @@ class ContinueWatchingUiStateMapper @Inject constructor(){
         return MediaItemUiState(
             id = movie.id,
             name = movie.name,
-            rate = String.format("%.1f", movie.rating),
+            rate = if (movie.rating % 1 == 0.0f) "${movie.rating.toInt()}" else "%.1f".format(movie.rating),
             posterImageUrl = movie.posterUrl,
             yearOfRelease = movie.releaseDate.year.toString(),
             mediaType = MediaType.MOVIE
@@ -25,7 +25,7 @@ class ContinueWatchingUiStateMapper @Inject constructor(){
         return MediaItemUiState(
             id = tvShow.id,
             name = tvShow.name,
-            rate = String.format("%.1f", tvShow.rating),
+            rate = if (tvShow.rating % 1 == 0.0f) "${tvShow.rating.toInt()}" else "%.1f".format(tvShow.rating),
             posterImageUrl = tvShow.posterUrl,
             yearOfRelease = tvShow.airDate.year.toString(),
             mediaType = MediaType.TV_SHOW

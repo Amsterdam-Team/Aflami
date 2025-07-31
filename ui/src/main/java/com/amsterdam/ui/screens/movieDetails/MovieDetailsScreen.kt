@@ -67,7 +67,6 @@ import com.amsterdam.ui.screens.movieDetails.components.MovieInfoSection
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
 import com.amsterdam.ui.screens.movieDetails.components.reviewSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
-import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
@@ -210,7 +209,7 @@ fun MovieContent(
                         onLastOptionClicked = interactionListener::onAddToListClicked,
                     )
                     RatingChip(
-                        state.rating.formateAsRate(),
+                        state.rating,
                         modifier =
                             Modifier
                                 .align(Alignment.BottomStart)

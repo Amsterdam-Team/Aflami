@@ -70,7 +70,7 @@ class HomeUiStateMapper @Inject constructor(){
         return PopularMediaItemUiState(
             id = movie.id,
             name = movie.name,
-            rating = String.format("%.1f", movie.rating),
+            rating = if (movie.rating % 1 == 0.0f) "${movie.rating.toInt()}" else "%.1f".format(movie.rating),
             posterUrl = movie.posterUrl,
             type = MediaType.MOVIE,
             category = movie.categories.map { it.name }
@@ -82,7 +82,7 @@ class HomeUiStateMapper @Inject constructor(){
         return PopularMediaItemUiState(
             id = tvShow.id,
             name = tvShow.name,
-            rating = String.format("%.1f", tvShow.rating),
+            rating = if (tvShow.rating % 1 == 0.0f) "${tvShow.rating.toInt()}" else "%.1f".format(tvShow.rating),
             posterUrl = tvShow.posterUrl,
             type = MediaType.TV_SHOW,
             category = tvShow.categories.map { it.name }

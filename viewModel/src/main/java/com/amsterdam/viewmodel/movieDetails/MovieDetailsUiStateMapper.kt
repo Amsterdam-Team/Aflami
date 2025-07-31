@@ -85,8 +85,6 @@ class MovieDetailsUiStateMapper @Inject constructor() {
     }
 
     fun ratingToRatingString(rating: Float): String {
-        val clamped = rating.coerceIn(0f, 10f)
-        val rounded = (clamped * 10).roundToInt() / 10f
-        return String.format(Locale.US, "%.1f", rounded)
+       return if  (rating % 1 == 0.0f) "${rating.toInt()}" else "%.1f".format(rating)
     }
 }

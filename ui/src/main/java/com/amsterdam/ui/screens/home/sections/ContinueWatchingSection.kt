@@ -16,7 +16,6 @@ import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MovieCard
 import com.amsterdam.ui.screens.home.sections.placeholder.movieSectionPlaceholder
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.ui.utils.formateAsRate
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
@@ -58,7 +57,7 @@ fun LazyListScope.continueWatchingSection(
                             movieType = movieType,
                             movieYear = item.yearOfRelease,
                             movieTitle = item.name,
-                            movieRating = item.rate.formateAsRate()
+                            movieRating = item.rate
                         ) {
                             onClickMediaItem(item.id, item.mediaType)
                         }
