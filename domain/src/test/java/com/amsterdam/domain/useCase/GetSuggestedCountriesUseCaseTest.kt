@@ -1,6 +1,5 @@
 package com.amsterdam.domain.useCase
 
-
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
@@ -29,43 +28,62 @@ class GetSuggestedCountriesUseCaseTest {
     }
 
     @Test
-    fun `getSuggestedCountriesUseCase should call getCountries exactly one time`() = runTest {
+    fun `should call getCountries exactly once regardless of keyword`() = runTest {
         coEvery { countryRepository.getCountries() } returns emptyList()
         getSuggestedCountriesUseCase("keyword")
         coVerify(exactly = 1) { countryRepository.getCountries() }
     }
 
     @Test
-    fun `getSuggestedCountriesUseCase should return a list of suggested countries when a matching keyword is provided`() =
-        runTest {
-            coEvery { countryRepository.getCountries() } returns fakeCountryList
-            val countries = getSuggestedCountriesUseCase("EG")
-            assertThat(countries).isNotEmpty()
-        }
-
-    @Test
-    fun `getSuggestedCountriesUseCase should return empty list when no countries match the given keyword`() {
-        runTest {
-            coEvery { countryRepository.getCountries() } returns fakeCountryList
-            assertThat(getSuggestedCountriesUseCase("usa")).isEmpty()
-        }
+    fun `should return all countries when keyword is empty`() = runTest {
+        coEvery { countryRepository.getCountries() } returns fakeCountryList
+        val result = getSuggestedCountriesUseCase("")
+        assertThat(result).isEqualTo(fakeCountryList)
     }
 
     @Test
-    fun `getSuggestedCountriesUseCase should return filtered countries matching keyword case-insensitively when valid input is provided`(): Unit =
-        runTest {
-            coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
-
-            val result = getSuggestedCountriesUseCase("U")
-            assertThat(result).contains(
-                countriesWithDifferentCases[0]
-            )
-        }
+    fun `should return filtered countries when a matching keyword is provided`() = runTest {
+        coEvery { countryRepository.getCountries() } returns fakeCountryList
+        val result = getSuggestedCountriesUseCase("EG")
+        assertThat(result).hasSize(1)
+        assertThat(result.first().countryName).isEqualTo("EGYPT")
+    }
 
     @Test
-    fun `getSuggestedCountriesUseCase should return Aflami exception when an error happened`() =
-        runTest {
-            coEvery { countryRepository.getCountries() } throws AflamiException()
-            assertThrows<AflamiException> { getSuggestedCountriesUseCase("") }
-        }
+    fun `should return empty list when no countries match the given keyword`() = runTest {
+        coEvery { countryRepository.getCountries() } returns fakeCountryList
+        val result = getSuggestedCountriesUseCase("usa")
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `should return filtered countries matching keyword case-insensitively`() = runTest {
+        coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
+
+        val result = getSuggestedCountriesUseCase("united")
+        assertThat(result).containsExactly(countriesWithDifferentCases[0])
+    }
+
+    @Test
+    fun `should return filtered countries with partial match`() = runTest {
+        // Given
+        coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
+
+        // When
+        val result = getSuggestedCountriesUseCase("a")
+
+        // Then
+        assertThat(result).containsExactly(
+            countriesWithDifferentCases[0],
+            countriesWithDifferentCases[1],
+            countriesWithDifferentCases[2],
+            countriesWithDifferentCases[3]
+        )
+    }
+
+    @Test
+    fun `should throw AflamiException when getCountries fails`() = runTest {
+        coEvery { countryRepository.getCountries() } throws AflamiException()
+        assertThrows<AflamiException> { getSuggestedCountriesUseCase("") }
+    }
 }

@@ -21,6 +21,7 @@ fun MovieInfoSection(
     originCountry: String,
     modifier: Modifier = Modifier
 ) {
+
     val items = listOf(releaseDate, movieLength, originCountry)
 
     Row(

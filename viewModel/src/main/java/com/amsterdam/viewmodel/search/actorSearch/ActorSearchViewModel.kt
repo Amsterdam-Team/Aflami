@@ -8,6 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
 import com.amsterdam.paging.PagingSource
@@ -19,7 +20,9 @@ import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +31,7 @@ import javax.inject.Inject
 class ActorSearchViewModel @Inject constructor(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
     private val recentSearchesUseCase: RecentSearchesUseCase,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<ActorSearchUiState, ActorSearchEffect>(
     ActorSearchUiState(),
@@ -37,6 +41,11 @@ class ActorSearchViewModel @Inject constructor(
     private val keywordFlow = MutableStateFlow("")
 
     init {
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                observeActorSearchQuery()
+            }.launchIn(viewModelScope)
+
         observeActorSearchQuery()
     }
 
@@ -45,6 +54,7 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     private fun executeActorSearch(query: String) {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = {
                 Pager(
@@ -67,8 +77,10 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     override fun onUserSearchChange(keyword: String) {
-        keywordFlow.update { keyword }
-        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
+        if (keyword.trim() != state.value.keyword.trim()) {
+            keywordFlow.update { keyword }
+        }
+        updateState { it.copy(keyword = keyword) }
     }
 
     private fun handleSearchResults(movies: Flow<PagingData<MovieItemUiState>>) {
@@ -77,7 +89,7 @@ class ActorSearchViewModel @Inject constructor(
 
     override fun onClickNavigateBack() {
         onSaveSearchHistory()
-        sendNewEffect(ActorSearchEffect.NavigateBack)
+        sendNewNavigationEffect(ActorSearchEffect.NavigateBack)
     }
 
     override fun onClickRetrySearch() {
@@ -86,7 +98,7 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     override fun onClickMovie(movieId: Long) {
-        sendNewEffect(ActorSearchEffect.NavigateToDetailsScreen(movieId))
+        sendNewNavigationEffect(ActorSearchEffect.NavigateToDetailsScreen(movieId))
     }
 
     override fun onSaveSearchHistory() {

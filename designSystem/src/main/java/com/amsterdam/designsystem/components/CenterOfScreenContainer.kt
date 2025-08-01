@@ -24,29 +24,39 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun CenterOfScreenContainer(
     unneededSpace: Dp,
+    isStatusBarTransparent: Boolean = false,
+    isNavigationBarTransparent: Boolean = false,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     var paddingValueDp by remember { mutableStateOf(0.dp) }
-    val screenHeight = getAppScreenHeight()
+    val screenHeight = getAvailableScreenHeight(isStatusBarTransparent, isNavigationBarTransparent)
+    val statusBarHeight = getStatusBarHeight()
+    val navigationBarHeight = getNavigationBarHeight()
+    val headerHeight = getHeaderHeight(
+        unneededSpace,
+        isStatusBarTransparent,
+        isNavigationBarTransparent,
+        statusBarHeight,
+        navigationBarHeight
+    )
     Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .padding(bottom = paddingValueDp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(bottom = paddingValueDp),
         contentAlignment = Alignment.Center,
     ) {
         Box(
-            modifier =
-                Modifier
-                    .onSizeChanged {
-                        paddingValueDp =
-                            getContainerSize(
-                                it,
-                                screenHeight,
-                                unneededSpace,
-                            )
-                    },
+            modifier = Modifier
+                .onSizeChanged {
+                    paddingValueDp = getContainerSize(
+                        it,
+                        screenHeight,
+                        headerHeight,
+                        if (isStatusBarTransparent) statusBarHeight else 0.dp,
+                        if (isNavigationBarTransparent) navigationBarHeight else 0.dp,
+                    )
+                }
         ) {
             content()
         }
@@ -54,29 +64,62 @@ fun CenterOfScreenContainer(
 }
 
 @Composable
-private fun getAppScreenHeight(): Dp {
-    val fullScreenHeight =
-        LocalContext.current.resources.displayMetrics.heightPixels.dp
-    val statusBarHeight =
-        with(LocalDensity.current) { WindowInsets.safeDrawing.getTop(this).toDp() }
-    val navigationBarHeight =
-        with(LocalDensity.current) { WindowInsets.safeDrawing.getBottom(this).toDp() }
+private fun getHeaderHeight(
+    unneededSpace: Dp,
+    isStatusBarTransparent: Boolean,
+    isNavigationBarTransparent: Boolean,
+    statusBarHeight: Dp,
+    navigationBarHeight: Dp
+): Dp {
+    return unneededSpace + when {
+        isStatusBarTransparent && isNavigationBarTransparent -> statusBarHeight + navigationBarHeight
+        isStatusBarTransparent -> statusBarHeight
+        isNavigationBarTransparent -> navigationBarHeight
+        else -> 0.dp
+    }
+}
+
+@Composable
+private fun getAvailableScreenHeight(
+    isStatusBarTransparent: Boolean,
+    isNavigationBarTransparent: Boolean
+): Dp {
+    val fullScreenHeight = getScreenHeight()
+    val statusBarHeight = if (isStatusBarTransparent) 0.dp else getStatusBarHeight()
+    val navigationBarHeight = if (isNavigationBarTransparent) 0.dp else getNavigationBarHeight()
 
     val screenHeight = remember { fullScreenHeight - statusBarHeight - navigationBarHeight }
     return screenHeight
+}
+
+@Composable
+private fun getScreenHeight(): Dp {
+    return LocalContext.current.resources.displayMetrics.heightPixels.dp
+}
+
+@Composable
+private fun getStatusBarHeight(): Dp {
+    return with(LocalDensity.current) { WindowInsets.safeDrawing.getTop(this).toDp() }
+}
+
+@Composable
+private fun getNavigationBarHeight(): Dp {
+    return with(LocalDensity.current) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 }
 
 private fun getContainerSize(
     size: IntSize,
     screenHeight: Dp,
     headerHeight: Dp,
+    statusBarHeight: Dp = 0.dp,
+    navigationBarHeight: Dp = 0.dp,
 ): Dp {
     val containerHeight = size.height.dp
     return if (screenHeight > headerHeight * 2 + containerHeight) {
-            headerHeight / 2
-        } else {
-            0.dp
-        }
+        (statusBarHeight + navigationBarHeight + headerHeight) / 2
+    } else {
+        0.dp
+    }
 }
 
 @ThemeAndLocalePreviews

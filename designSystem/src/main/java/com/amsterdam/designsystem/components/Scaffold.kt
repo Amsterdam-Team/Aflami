@@ -1,6 +1,7 @@
 package com.amsterdam.designsystem.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,7 @@ fun Scaffold(
     snackbarHost: @Composable () -> Unit = {},
     containerColor: Color = AppTheme.color.surface,
     contentColor: Color = Color.Unspecified,
-    content: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
 ) {
     MaterialScaffold(
         modifier = modifier,
@@ -28,7 +29,7 @@ fun Scaffold(
         snackbarHost = snackbarHost,
         containerColor = containerColor,
         contentColor = contentColor,
-        content = { content() },
+        content = { content(it) },
     )
 }
 

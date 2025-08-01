@@ -40,11 +40,7 @@ class RecentSearchHandlerImpl @Inject constructor(
                 )
             )
         ) {
-            recentSearchLocalSource.deleteRecentSearchByKeywordAndType(
-                keyword,
-                searchType,
-                getDeviceLanguage()
-            )
+            recentSearchLocalSource.deleteRecentSearchByKeywordAndType(keyword, searchType)
         }
     }
 

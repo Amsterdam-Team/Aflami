@@ -3,6 +3,8 @@ package com.amsterdam.repository.dto.local
 import androidx.room.Entity
 import androidx.room.Index
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Clock.System
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 @Entity(
@@ -22,5 +24,6 @@ data class LocalTvShowDto(
     val rating: Float,
     val popularity: Double,
     val seasonCount: Int,
-    val originCountry: String
+    val originCountry: String,
+    val insertedDate : Instant = System.now()
 )

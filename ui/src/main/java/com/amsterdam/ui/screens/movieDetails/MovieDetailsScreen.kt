@@ -2,7 +2,7 @@ package com.amsterdam.ui.screens.movieDetails
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,51 +24,57 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.R
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.ImageErrorIndicator
-import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.LoadingContainer
-import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.components.divider.HorizontalDivider
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
+import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
+import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
-import com.amsterdam.ui.screens.movieDetails.components.CompanyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
-import com.amsterdam.ui.screens.movieDetails.components.GallerySection
-import com.amsterdam.ui.screens.movieDetails.components.MoreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieExtrasSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieInfoSection
-import com.amsterdam.ui.screens.movieDetails.components.PageIndicator
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
-import com.amsterdam.ui.screens.movieDetails.components.ReviewSection
+import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
+import com.amsterdam.ui.screens.movieDetails.components.gallerySection
+import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
+import com.amsterdam.ui.screens.movieDetails.components.reviewSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
-import com.amsterdam.ui.utils.safeNavigate
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
@@ -79,7 +86,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     MovieContent(
@@ -88,19 +95,24 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
     )
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            effect?.let {
-                when (effect) {
-                    MovieDetailsEffect.NavigateBackEffect -> navController.popBackStack()
-                    MovieDetailsEffect.NavigateToCastsScreenEffect -> {
-                        navController.safeNavigate(
-                            Route.Cast(
-                                mediaType = MediaType.MOVIE.name,
-                                mediaId = state.value.movieId
-                            )
+            when (effect) {
+                MovieDetailsEffect.NavigateBackEffect -> navController.navigateUp()
+                MovieDetailsEffect.NavigateToCastsScreenEffect -> {
+                    navController.navigate(
+                        Route.Cast(
+                            mediaType = MediaType.MOVIE.name,
+                            mediaId = state.value.movieId
                         )
-                    }
-                    MovieDetailsEffect.NavigateToLoginScreenEffect -> navController.safeNavigate(
-                        Route.Login
+                    )
+                }
+
+                MovieDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
+                    Route.Login
+                )
+
+                is MovieDetailsEffect.NavigateToMovieDetails -> {
+                    navController.navigate(
+                        Route.MovieDetails(effect.movieId)
                     )
                 }
             }
@@ -116,9 +128,36 @@ fun MovieContent(
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
+    val screenHeightDp = configuration.screenHeightDp.dp
+    var movieExtrasSectionYOffsetDp by remember { mutableStateOf(0.dp) }
+    var headerHeight by remember { mutableStateOf(0) }
     val listState = rememberLazyListState()
     val animationDuration by remember { mutableIntStateOf(1000) }
     val pagerState = rememberPagerState { state.moviePostersUrl.size }
+    val deviceWidth = configuration.screenWidthDp
+
+    val surface = AppTheme.color.surface
+    val transparent = AppTheme.color.surface.copy(alpha = 0f)
+    val stroke = AppTheme.color.stroke
+
+    val scrollOffset = remember {
+        derivedStateOf { listState.firstVisibleItemScrollOffset }
+    }
+    val appBarColor by animateColorAsState(
+        targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
+        animationSpec = tween(800),
+        label = "AppBarScrollColor"
+    )
+
+    val dividerColor by remember {
+        derivedStateOf {
+            if (listState.firstVisibleItemIndex != 0) {
+                stroke
+            } else {
+                transparent
+            }
+        }
+    }
 
     LaunchedEffect(true) {
         while (true) {
@@ -126,189 +165,247 @@ fun MovieContent(
             pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10))
         }
     }
-    AnimatedVisibility(
-        state.isLoading,
-        enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration)),
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            LoadingContainer()
-        }
-    }
 
-    AnimatedVisibility(
-        state.networkError,
-        enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration)),
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surface)
+            .navigationBarsPadding()
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            NoNetworkContainer(
-                onClickRetry = interactionListener::onClickRetryRequest,
-            )
-        }
-    }
-    AnimatedVisibility(
-        modifier = Modifier,
-        visible = state.isLoginDialogVisible
-    ) {
-        MustLoginDialog(
-            title = state.dialogType.getMovieAndSeriesDetailsDialogTitle(),
-            onDismiss = interactionListener::onCancelClicked,
-            onClickLogin = interactionListener::onNavigateToLoginClicked,
-        )
-    }
-    AnimatedVisibility(
-        !state.isLoading && !state.networkError,
-        enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration)),
-    ) {
-        LazyColumn(
-            state = listState,
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(AppTheme.color.surface)
-                    .navigationBarsPadding(),
+        AnimatedVisibility(
+            state.isLoading,
+            enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration)),
         ) {
-            item {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(263.dp),
-                ) {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxSize()
-                    ) { page ->
-                        SafeImageView(
-                            model = state.moviePostersUrl[page],
-                            contentDescription = "",
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .animateContentSize(),
-                            onLoading = { ImageLoadingIndicator() },
-                            onError = { ImageErrorIndicator() },
-                        )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                LoadingContainer()
+            }
+        }
 
-                    }
-
-                    PageIndicator(
-                        modifier = Modifier
-                            .zIndex(1f)
-                            .padding(4.dp)
-                            .background(AppTheme.color.primaryVariant, RoundedCornerShape(100.dp))
-                            .padding(vertical = 4.dp, horizontal = 2.dp)
-                            .align(Alignment.BottomEnd),
-                        numberOfPages = state.moviePostersUrl.size,
-                        selectedPage = pagerState.currentPage
-                    )
-
-                    DefaultAppBar(
-                        modifier =
-                            Modifier
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                .statusBarsPadding(),
-                        firstOption = painterResource(R.drawable.ic_outlined_star),
-                        lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                        onNavigateBackClicked = interactionListener::onClickBack,
-                        onFirstOptionClicked = interactionListener::onRateClicked,
-                        onLastOptionClicked = interactionListener::onAddToListClicked,
-                    )
-                    RatingChip(
-                        state.rating,
-                        modifier =
-                            Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(bottom = 4.dp, start = 4.dp, end = 4.dp),
+        AnimatedVisibility(
+            state.networkError,
+            enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                contentAlignment = Alignment.Center
+            ) {
+                CenterOfScreenContainer(unneededSpace = headerHeight.dp) {
+                    NoNetworkContainer(
+                        onClickRetry = interactionListener::onClickRetryRequest,
                     )
                 }
             }
-            item {
-                Column(
+        }
+        AnimatedVisibility(
+            modifier = Modifier,
+            visible = state.isLoginDialogVisible
+        ) {
+            MustLoginDialog(
+                title = state.dialogType.getMovieAndSeriesDetailsDialogTitle(),
+                onDismiss = interactionListener::onCancelClicked,
+                onClickLogin = interactionListener::onNavigateToLoginClicked,
+            )
+        }
+        AnimatedVisibility(
+            !state.isLoading && !state.networkError,
+            enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration)),
+        ) {
+            Box {
+
+                LazyColumn(
+                    state = listState,
                     modifier =
                         Modifier
-                            .fillMaxWidth()
-                            .background(AppTheme.color.surface),
+                            .fillMaxSize()
+                            .background(AppTheme.color.surface)
+                            .navigationBarsPadding(),
                 ) {
-                    PlayButton(
-                        modifier =
-                            Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .offset(y = (-32).dp),
-                        isActive = state.hasVideo,
-                    )
-                    Column(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .offset(y = (-20).dp),
-                    ) {
-                        Text(
-                            text = state.movieTitle,
-                            style = AppTheme.textStyle.title.large,
-                            color = AppTheme.color.title,
-                        )
-                        LazyRow(
+                    item {
+                        Box(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    .height(263.dp),
                         ) {
-                            items(state.categories) {
-                                CategoryChip(categoryName = getMovieGenreLabel(it))
+                            if (state.moviePostersUrl.isEmpty()) {
+                                ImageErrorIndicator()
+                            } else {
+                                DetailsPostersPager(
+                                    pagerState = pagerState,
+                                    postersUrl = state.moviePostersUrl
+                                )
                             }
+
+                            RatingChip(
+                                state.rating,
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(bottom = 4.dp, start = 4.dp, end = 4.dp),
+                            )
                         }
-                        MovieInfoSection(
-                            modifier = Modifier.padding(top = 8.dp),
-                            releaseDate = state.releaseDate,
-                            movieLength = state.movieLength,
-                            originCountry = state.originCountry,
-                        )
-                        DescriptionSection(
-                            modifier = Modifier.padding(top = 24.dp),
-                            description = state.description,
-                        )
-                        CastSection(
-                            modifier = Modifier.padding(top = 24.dp),
-                            actors = state.actors.take(10),
-                            onClickAllCast = interactionListener::onClickShowAllCast,
-                        )
-                        Spacer(
+                    }
+                    item {
+                        Column(
                             modifier =
                                 Modifier
-                                    .padding(top = 24.dp)
-                                    .requiredWidth(screenWidthDp)
-                                    .height(1.dp)
-                                    .background(AppTheme.color.stroke),
-                        )
-                        MovieExtrasSection(
-                            modifier = Modifier.padding(top = 12.dp),
-                            extras = state.extraItem,
-                            onClickExtras = interactionListener::onClickMovieExtras,
-                        )
+                                    .fillMaxWidth()
+                                    .background(AppTheme.color.surface),
+                        ) {
+                            PlayButton(
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .offset(y = (-32).dp),
+                                isActive = state.hasVideo,
+                            )
+                            Column(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .offset(y = (-20).dp),
+                            ) {
+                                Text(
+                                    text = state.movieTitle,
+                                    style = AppTheme.textStyle.title.large,
+                                    color = AppTheme.color.title,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                                LazyRow(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                ) {
+                                    items(state.categories) {
+                                        CategoryChip(categoryName = getMovieGenreLabel(it))
+                                    }
+                                }
+                                MovieInfoSection(
+                                    modifier = Modifier
+                                        .padding(top = 8.dp)
+                                        .padding(horizontal = 16.dp),
+                                    releaseDate = state.releaseDate,
+                                    movieLength = state.movieLength,
+                                    originCountry = state.originCountry,
+                                )
+                                DescriptionSection(
+                                    modifier = Modifier
+                                        .padding(top = 24.dp)
+                                        .padding(horizontal = 16.dp),
+                                    description = state.description,
+                                    isExpanded = state.isDescriptionExpanded,
+                                    onToggleExpansion = interactionListener::onDescriptionExpansionToggled
+                                )
+                                CastSection(
+                                    modifier = Modifier.padding(top = 24.dp),
+                                    actors = state.actors.take(10),
+                                    onClickAllCast = interactionListener::onClickShowAllCast,
+                                )
+                                Spacer(
+                                    modifier =
+                                        Modifier
+                                            .padding(top = 24.dp)
+                                            .requiredWidth(screenWidthDp)
+                                            .height(1.dp)
+                                            .background(AppTheme.color.stroke),
+                                )
+                                MovieExtrasSection(
+                                    modifier = Modifier
+                                        .padding(top = 12.dp)
+                                        .onGloballyPositioned { coordinates ->
+                                            movieExtrasSectionYOffsetDp =
+                                                coordinates.positionOnScreen().y.dp
+                                        },
+                                    extras = state.extraItem,
+                                    onClickExtras = interactionListener::onClickMovieExtras,
+                                )
+                            }
+                        }
+                    }
+
+                    state.extraItem
+                        .find { it.isSelected }
+                        ?.item
+                        ?.let { selectedExtra ->
+                            when (selectedExtra) {
+                                MovieExtras.MORE_LIKE_THIS -> moreLikeSection(
+                                    similarMovies = state.similarMovies,
+                                    deviceWidth = deviceWidth,
+                                    onClick = { selectedMovieId ->
+                                        interactionListener.onClickSimilarMovie(selectedMovieId)
+                                    }
+                                )
+
+                                MovieExtras.REVIEWS -> reviewSection(
+                                    state.reviews,
+                                    interactionListener
+                                )
+
+                                MovieExtras.GALLERY -> gallerySection(
+                                    gallery = state.gallery,
+                                    deviceWidth = deviceWidth
+                                )
+
+                                MovieExtras.COMPANY_PRODUCTION -> companyProductionSection(
+                                    state.productionCompany,
+                                    deviceWidth = deviceWidth
+                                )
+                            }
+                        }
+
+                    item {
+                        val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
+                        val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
+
+
+                        val spacerHeight: Dp by remember {
+                            derivedStateOf {
+                                if (movieExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
+                                    screenHeightDp
+                                } else {
+                                    0.dp
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(spacerHeight))
                     }
                 }
+
+            }
+        }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor)
+            ) {
+                DefaultAppBar(
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .statusBarsPadding()
+                            .zIndex(10f)
+                            .onSizeChanged { headerHeight = it.height },
+                    firstOption = painterResource(R.drawable.ic_outlined_star),
+                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                    onNavigateBackClicked = interactionListener::onClickBack,
+                    onFirstOptionClicked = interactionListener::onRateClicked,
+                    onLastOptionClicked = interactionListener::onAddToListClicked,
+                )
+
+                HorizontalDivider(color = dividerColor)
             }
 
-            state.extraItem
-                .find { it.isSelected }
-                ?.item
-                ?.let { selectedExtra ->
-                    when (selectedExtra) {
-                        MovieExtras.MORE_LIKE_THIS -> MoreLikeSection(state.similarMovies)
-                        MovieExtras.REVIEWS -> ReviewSection(state.reviews)
-                        MovieExtras.GALLERY -> GallerySection(state.gallery)
-                        MovieExtras.COMPANY_PRODUCTION -> CompanyProductionSection(state.productionCompany)
-                    }
-                }
-        }
     }
 }
-
 
 @Composable
 @ThemeAndLocalePreviews
@@ -326,6 +423,9 @@ private fun SearchByActorContentPreview() {
                     override fun onRateClicked() {}
                     override fun onNavigateToLoginClicked() {}
                     override fun onCancelClicked() {}
+                    override fun onClickSimilarMovie(movieId: Long) {}
+                    override fun onDescriptionExpansionToggled() {}
+                    override fun onReviewExpansionToggled(reviewId: String) {}
                 },
         )
     }

@@ -1,9 +1,11 @@
 package com.amsterdam.viewmodel.continueWatching
 
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
-
+import androidx.paging.PagingData
+import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingMediaItemUiState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 data class ContinueWatchingUiState(
-    val continueMediaItemUiStates: List<MediaItemUiState> = emptyList(),
+    val continueMediaItemUiStates:  Flow<PagingData<ContinueWatchingMediaItemUiState>> = emptyFlow(),
     val isLoading: Boolean = false,
     val error: ContinueWatchingError? = null
 ) {

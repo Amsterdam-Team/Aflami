@@ -1,6 +1,7 @@
 package com.amsterdam.domain.useCase.authentication
 
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.InvalidCredentialsException
 import com.amsterdam.domain.repository.AuthenticationRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -45,6 +46,26 @@ class LoginWithUsernamePasswordTest {
             } throws AflamiException()
 
             assertThrows<AflamiException> {
+                loginWithPasswordUseCase(username, password)
+            }
+
+            coVerify(exactly = 1) { authenticationRepository.loginWithPassword(username, password) }
+        }
+
+    @Test
+    fun `should throw InvalidCredentialsException for incorrect credentials`() =
+        runTest {
+            val username = "wronguser"
+            val password = "wrongpassword"
+
+            coEvery {
+                authenticationRepository.loginWithPassword(
+                    username,
+                    password
+                )
+            } throws InvalidCredentialsException()
+
+            assertThrows<InvalidCredentialsException> {
                 loginWithPasswordUseCase(username, password)
             }
 

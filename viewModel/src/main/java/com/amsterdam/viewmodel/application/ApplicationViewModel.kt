@@ -1,31 +1,31 @@
 package com.amsterdam.viewmodel.application
 
-import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class ApplicationViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val getsSessionType: GetsSessionType
-): BaseViewModel<ApplicationUiState, Unit>(ApplicationUiState(), dispatcherProvider) {
-    init {
-        viewModelScope.launch {
-            setStartDestination()
+) : BaseViewModel<ApplicationUiState, Unit>(ApplicationUiState(), dispatcherProvider) {
+
+    suspend fun setStartDestination(): ApplicationUiState.StartDestinations {
+        val sessionType = getsSessionType()
+        return when (sessionType) {
+            SessionType.NOT_LOGGED_IN -> ApplicationUiState.StartDestinations.LOGIN
+            SessionType.LOGGED_IN -> ApplicationUiState.StartDestinations.HOME
+            SessionType.GUEST -> ApplicationUiState.StartDestinations.HOME
         }
     }
 
-    private suspend fun setStartDestination(){
-        val sessionType = getsSessionType()
-        when(sessionType){
-            SessionType.NOT_LOGGED_IN -> updateState { it.copy(startDestination = ApplicationUiState.StartDestinations.LOGIN) }
-            SessionType.LOGGED_IN -> updateState { it.copy(startDestination = ApplicationUiState.StartDestinations.HOME) }
-            SessionType.GUEST -> updateState { it.copy(startDestination = ApplicationUiState.StartDestinations.HOME) }
-        }
+    suspend fun onConfigurationChanged(locale: Locale) {
+        manageLocaleLanguageUseCase.setDeviceLanguage(locale.language.lowercase())
     }
 }

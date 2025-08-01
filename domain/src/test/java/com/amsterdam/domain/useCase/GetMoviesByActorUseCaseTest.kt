@@ -24,57 +24,101 @@ class GetMoviesByActorUseCaseTest {
     }
 
     @Test
-    fun `getMoviesByActorUseCase should call getMoviesByActor exactly one time when called`() =
-        runTest {
-            getMoviesByActorUseCase("actorName")
-            coVerify(exactly = 1) {
-                movieRepository.getMoviesByActor(
-                    any(),
-                    page = 1,
-                    moviesPerPage = 20
-                )
-            }
-        }
+    fun `should call getMoviesByActor with correct default parameters`() = runTest {
+        // Given
+        val actorName = "actorName"
 
-    @Test
-    fun `getMoviesByActorUseCase should return movies when data is available`() = runTest {
-        coEvery {
+        // When
+        getMoviesByActorUseCase(actorName)
+
+        // Then
+        coVerify(exactly = 1) {
             movieRepository.getMoviesByActor(
-                "actorName",
+                actorName = actorName,
                 page = 1,
                 moviesPerPage = 20
             )
+        }
+    }
+
+    @Test
+    fun `should call getMoviesByActor with correct non-default parameters`() = runTest {
+        // Given
+        val actorName = "actorName"
+        val page = 2
+        val moviesPerPage = 10
+
+        // When
+        getMoviesByActorUseCase(actorName, page, moviesPerPage)
+
+        // Then
+        coVerify(exactly = 1) {
+            movieRepository.getMoviesByActor(
+                actorName = actorName,
+                page = page,
+                moviesPerPage = moviesPerPage
+            )
+        }
+    }
+
+    @Test
+    fun `should return movies when repository returns data`() = runTest {
+        // Given
+        val actorName = "actorName"
+        coEvery {
+            movieRepository.getMoviesByActor(
+                actorName = actorName,
+                page = any(),
+                moviesPerPage = any()
+            )
         } returns fakeMovieList
 
-        val result = getMoviesByActorUseCase("actorName")
+        // When
+        val result = getMoviesByActorUseCase(actorName)
+
+        // Then
         assertThat(result).isEqualTo(fakeMovieList)
     }
 
     @Test
-    fun `getMoviesByActorUseCase should return an empty list when repository returns no movies`() =
-        runTest {
-            coEvery {
-                movieRepository.getMoviesByActor(
-                    any(),
-                    page = 1,
-                    moviesPerPage = 20
-                )
-            } returns emptyList()
+    fun `should return an empty list when repository returns no movies`() = runTest {
+        // Given
+        val actorName = "nonexistentActor"
+        coEvery {
+            movieRepository.getMoviesByActor(
+                actorName = actorName,
+                page = any(),
+                moviesPerPage = any()
+            )
+        } returns emptyList()
 
-            val result = getMoviesByActorUseCase("nonexistentActor")
-            assertThat(result).isEmpty()
-        }
+        // When
+        val result = getMoviesByActorUseCase(actorName)
+
+        // Then
+        assertThat(result).isEmpty()
+    }
 
     @Test
-    fun `getMoviesByActorUseCase should return Aflami exception when an error happened`() =
-        runTest {
-            coEvery {
-                movieRepository.getMoviesByActor(
-                    "actorName",
-                    page = 1,
-                    moviesPerPage = 20
-                )
-            } throws AflamiException()
-            assertThrows<AflamiException> { getMoviesByActorUseCase("actorName") }
+    fun `should throw AflamiException when repository call fails`() = runTest {
+        // Given
+        val actorName = "actorName"
+        coEvery {
+            movieRepository.getMoviesByActor(
+                actorName = actorName,
+                page = any(),
+                moviesPerPage = any()
+            )
+        } throws AflamiException()
+
+        // When & Then
+        assertThrows<AflamiException> { getMoviesByActorUseCase(actorName) }
+        coVerify(exactly = 1) {
+            movieRepository.getMoviesByActor(
+                actorName = actorName,
+                page = 1,
+                moviesPerPage = 20
+            )
         }
+    }
 }

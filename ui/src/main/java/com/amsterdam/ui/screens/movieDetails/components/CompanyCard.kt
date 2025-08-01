@@ -42,9 +42,10 @@ fun CompanyCard(productionCompany: ProductionCompanyUiState, modifier: Modifier 
                 .fillMaxHeight(),
             contentDescription = productionCompany.name,
             model = productionCompany.image,
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.FillWidth,
             onLoading = { ImageLoadingIndicator() },
             onError = { ImageErrorIndicator() },
+            isSafeEnabled = false,
         )
         Column(
             modifier = Modifier

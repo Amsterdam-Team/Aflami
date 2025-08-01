@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
@@ -26,7 +27,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,6 +39,7 @@ class CountrySearchViewModel @Inject constructor(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
     private val recentSearchesUseCase: RecentSearchesUseCase,
+    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<CountrySearchUiState, CountrySearchEffect>(
     CountrySearchUiState(),
@@ -43,7 +47,14 @@ class CountrySearchViewModel @Inject constructor(
 ), CountrySearchInteractionListener {
     private val _keyword = MutableStateFlow("")
 
-    init { observeKeywordFlow() }
+    init {
+        manageLocaleLanguageUseCase.getDeviceLanguage()
+            .onEach {
+                observeKeywordFlow()
+            }.launchIn(viewModelScope)
+
+        observeKeywordFlow()
+    }
 
     private fun observeKeywordFlow() {
         viewModelScope.launch { _keyword.debounceSearch(::fetchCountriesByKeyword) }
@@ -147,7 +158,7 @@ class CountrySearchViewModel @Inject constructor(
 
     override fun onClickMovieCard(movieId: Long) {
         updateState { it.copy(selectedMovieId = movieId) }
-        sendNewEffect(CountrySearchEffect.NavigateToMovieDetails)
+        sendNewNavigationEffect(CountrySearchEffect.NavigateToMovieDetails)
     }
 
     override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {
@@ -191,6 +202,6 @@ class CountrySearchViewModel @Inject constructor(
     }
 
     override fun onClickNavigateBack() {
-        sendNewEffect(CountrySearchEffect.NavigateBack)
+        sendNewNavigationEffect(CountrySearchEffect.NavigateBack)
     }
 }

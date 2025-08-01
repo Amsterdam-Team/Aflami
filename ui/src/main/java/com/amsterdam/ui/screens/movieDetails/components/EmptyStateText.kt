@@ -12,11 +12,13 @@ import com.amsterdam.designsystem.theme.AppTheme
 @Composable
 fun EmptyStateText(text: String) {
     Text(
-        text = text, modifier = Modifier
-            .padding(top = 32.dp)
-            .fillMaxWidth(),
+        text = text,
+        modifier =
+            Modifier
+                .padding(top = 32.dp, bottom = 51.dp)
+                .fillMaxWidth(),
         textAlign = TextAlign.Center,
         style = AppTheme.textStyle.label.large,
-        color = AppTheme.color.body
+        color = AppTheme.color.body,
     )
 }

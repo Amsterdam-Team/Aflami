@@ -10,6 +10,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -26,35 +27,41 @@ class GetUpcomingMoviesUseCaseTest {
     }
 
     @Test
-    fun `invoke with ALL genre should return all movies`() = runTest {
-        coEvery { movieRepository.getUpcomingMovies() } returns actionDramaMovies
+    fun `should call getUpcomingMovies exactly once`() = runTest {
+        coEvery { movieRepository.getUpcomingMovies() } returns emptyList()
+        getUpcomingMoviesUseCase(MovieGenre.ALL)
+        coVerify(exactly = 1) { movieRepository.getUpcomingMovies() }
+    }
+
+    @Test
+    fun `should return all movies when genre is ALL`() = runTest {
+        coEvery { movieRepository.getUpcomingMovies() } returns allMovies
 
         val result = getUpcomingMoviesUseCase(MovieGenre.ALL)
 
-        assertThat(result).isEqualTo(actionDramaMovies)
+        assertThat(result).isEqualTo(allMovies)
     }
 
     @Test
-    fun `invoke with a specific genre should return only movies matching that genre`() = runTest {
-        coEvery { movieRepository.getUpcomingMovies() } returns actionDramaMovies
+    fun `should return movies that match a specific genre`() = runTest {
+        coEvery { movieRepository.getUpcomingMovies() } returns allMovies
 
         val result = getUpcomingMoviesUseCase(MovieGenre.ACTION)
 
-        assertThat(result).isEqualTo(listOf(actionMovie))
+        assertThat(result).containsExactly(actionMovie, actionDramaMovie).inOrder()
     }
 
     @Test
-    fun `invoke with a specific genre and no matching movies should return an empty list`() =
-        runTest {
-            coEvery { movieRepository.getUpcomingMovies() } returns listOf(comedyMovie)
+    fun `should return an empty list when no movies match the genre`() = runTest {
+        coEvery { movieRepository.getUpcomingMovies() } returns listOf(comedyMovie)
 
-            val result = getUpcomingMoviesUseCase(MovieGenre.DRAMA)
+        val result = getUpcomingMoviesUseCase(MovieGenre.DRAMA)
 
-            assertThat(result).isEmpty()
-        }
+        assertThat(result).isEmpty()
+    }
 
     @Test
-    fun `invoke should return an empty list when movie repository returns no movies`() = runTest {
+    fun `should return an empty list when repository returns no movies`() = runTest {
         coEvery { movieRepository.getUpcomingMovies() } returns emptyList()
 
         val result = getUpcomingMoviesUseCase(MovieGenre.ALL)
@@ -62,9 +69,8 @@ class GetUpcomingMoviesUseCaseTest {
         assertThat(result).isEmpty()
     }
 
-
     @Test
-    fun `invoke should exclude movies with empty category lists when filtering by genre`() =
+    fun `should exclude movies with empty category lists when filtering by genre`() =
         runTest {
             coEvery { movieRepository.getUpcomingMovies() } returns listOf(
                 emptyCategoryMovie,
@@ -77,29 +83,28 @@ class GetUpcomingMoviesUseCaseTest {
         }
 
     @Test
-    fun `invoke should propagate exception when movie repository throws`() = runTest {
+    fun `should propagate exception when movie repository throws`() = runTest {
         coEvery { movieRepository.getUpcomingMovies() } throws NoInternetException()
         assertThrows<NoInternetException> { getUpcomingMoviesUseCase(MovieGenre.ALL) }
     }
 
     @Test
-    fun `invoke should return movies sorted by popularity then rating`() = runTest {
-        coEvery { movieRepository.getUpcomingMovies() } returns listOf(
-            highRatedButLessPopularMovie,
-            popularAndWellRatedMovie,
-            equallyPopularButLowerRatedMovie
-        )
+    fun `should return movies sorted by popularity then rating when multiple genres are present`() =
+        runTest {
+            coEvery { movieRepository.getUpcomingMovies() } returns listOf(
+                highRatedButLessPopularMovie,
+                popularAndWellRatedMovie,
+                equallyPopularButLowerRatedMovie
+            )
 
-        val result = getUpcomingMoviesUseCase(MovieGenre.ACTION)
+            val result = getUpcomingMoviesUseCase(MovieGenre.ACTION)
 
-        assertThat(result.map { it.name }).containsExactly(
-            popularAndWellRatedMovie.name,
-            equallyPopularButLowerRatedMovie.name,
-            highRatedButLessPopularMovie.name
-        ).inOrder()
-
-        coVerify(exactly = 1) { movieRepository.getUpcomingMovies() }
-    }
+            assertThat(result).containsExactly(
+                popularAndWellRatedMovie,
+                equallyPopularButLowerRatedMovie,
+                highRatedButLessPopularMovie
+            ).inOrder()
+        }
 
     private companion object {
         val baseMovie = Movie(
@@ -107,13 +112,14 @@ class GetUpcomingMoviesUseCaseTest {
             name = "Base Movie",
             description = "A base movie for inheritance",
             posterUrl = "https://example.com/poster.jpg",
-            productionYear = 2023u,
+            releaseDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 7.5f,
             popularity = 100.0,
             originCountry = "US",
             runTimeInMinutes = 120,
-            hasVideo = true
+            hasVideo = true,
+            productionCompanies = emptyList()
         )
 
         val actionMovie = baseMovie.copy(
@@ -134,26 +140,33 @@ class GetUpcomingMoviesUseCaseTest {
             categories = listOf(MovieGenre.COMEDY)
         )
 
+        val actionDramaMovie = baseMovie.copy(
+            id = 4L,
+            name = "Action Drama Movie",
+            categories = listOf(MovieGenre.ACTION, MovieGenre.DRAMA)
+        )
+
         val emptyCategoryMovie = baseMovie.copy(
             id = 5L,
             name = "No Category Movie",
             categories = emptyList()
         )
 
-        val actionDramaMovies = listOf(actionMovie, dramaMovie)
+        val allMovies = listOf(actionMovie, dramaMovie, comedyMovie, actionDramaMovie)
 
         val popularAndWellRatedMovie = Movie(
             id = 1L,
             name = "Popular Hero",
             description = "Blockbuster action movie",
             posterUrl = "url1",
-            productionYear = 2024u,
+            releaseDate = LocalDate(2024, 1, 1),
             categories = listOf(MovieGenre.ACTION),
             rating = 8.5f,
             popularity = 150.0,
             originCountry = "US",
             runTimeInMinutes = 120,
-            hasVideo = true
+            hasVideo = true,
+            productionCompanies = emptyList()
         )
 
         val equallyPopularButLowerRatedMovie = Movie(
@@ -161,13 +174,14 @@ class GetUpcomingMoviesUseCaseTest {
             name = "Action Sequel",
             description = "Another action movie",
             posterUrl = "url2",
-            productionYear = 2024u,
+            releaseDate = LocalDate(2024, 1, 1),
             categories = listOf(MovieGenre.ACTION),
             rating = 7.0f,
             popularity = 150.0,
             originCountry = "US",
             runTimeInMinutes = 110,
-            hasVideo = false
+            hasVideo = false,
+            productionCompanies = emptyList()
         )
 
         val highRatedButLessPopularMovie = Movie(
@@ -175,13 +189,14 @@ class GetUpcomingMoviesUseCaseTest {
             name = "Underrated Gem",
             description = "High quality but less known",
             posterUrl = "url3",
-            productionYear = 2024u,
+            releaseDate = LocalDate(2024, 1, 1),
             categories = listOf(MovieGenre.ACTION),
             rating = 9.0f,
             popularity = 100.0,
             originCountry = "UK",
             runTimeInMinutes = 105,
-            hasVideo = false
+            hasVideo = false,
+            productionCompanies = emptyList()
         )
     }
 }

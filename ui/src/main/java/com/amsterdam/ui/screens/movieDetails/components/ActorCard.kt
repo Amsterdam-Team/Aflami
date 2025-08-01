@@ -1,6 +1,8 @@
 package com.amsterdam.ui.screens.movieDetails.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,7 +14,9 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 
@@ -29,12 +33,26 @@ fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
             onLoading = { ImageLoadingIndicator() },
             onError = { ImageErrorIndicator() },
         )
+        Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = actor.name,
             style = AppTheme.textStyle.label.small,
             color = AppTheme.color.body,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun ActorCardPreview() {
+    AflamiTheme {
+        ActorCard(
+            actor = ActorUiState(
+                name = "Emma Watson",
+                photo = "https://example.com/emma_watson.jpg"
+            )
         )
     }
 }

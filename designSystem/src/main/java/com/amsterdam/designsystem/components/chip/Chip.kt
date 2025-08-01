@@ -9,7 +9,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -51,7 +53,7 @@ fun Chip(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
+        modifier = modifier.width(70.dp),
     ) {
         Box(
             modifier =
@@ -83,6 +85,7 @@ fun Chip(
             style = AppTheme.textStyle.label.small,
             textAlign = TextAlign.Center,
             maxLines = 2,
+            minLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
     }
@@ -92,13 +95,32 @@ fun Chip(
 @Composable
 private fun ChipPreview() {
     AflamiTheme {
-        Chip(
-            icon =
-                painterResource(
-                    R.drawable.ic_menu_square,
-                ),
-            label = "Documentary",
-            isSelected = true,
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+            Chip(
+                icon = painterResource(R.drawable.ic_menu_square),
+                label = "Science Fiction",
+                isSelected = true,
+            )
+            Chip(
+                icon = painterResource(R.drawable.ic_menu_square),
+                label = "Action",
+                isSelected = false,
+            )
+            Chip(
+                icon = painterResource(R.drawable.ic_menu_square),
+                label = "Horror Thriller",
+                isSelected = false,
+            )
+            Chip(
+                icon = painterResource(R.drawable.ic_menu_square),
+                label = "FantasyAdventureMovieGenre",
+                isSelected = false,
+            )
+            Chip(
+                icon = painterResource(R.drawable.ic_menu_square),
+                label = "Short",
+                isSelected = true,
+            )
+        }
     }
 }

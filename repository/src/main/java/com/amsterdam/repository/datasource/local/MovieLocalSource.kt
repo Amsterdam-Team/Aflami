@@ -26,7 +26,7 @@ interface MovieLocalSource {
         storedLanguage: String
     )
 
-    suspend fun getMovieById(movieId: Long): LocalMovieDto
+    suspend fun getMovieById(movieId: Long, storedLanguage: String): LocalMovieDto?
 
     suspend fun incrementGenreInterest(categoryId: Long)
 

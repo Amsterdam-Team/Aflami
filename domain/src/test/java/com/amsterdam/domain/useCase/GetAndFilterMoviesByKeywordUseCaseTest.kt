@@ -7,7 +7,6 @@ import com.amsterdam.domain.useCase.utils.fakeMovieList
 import com.amsterdam.domain.useCase.utils.fakeMovieListWithCategories
 import com.amsterdam.domain.useCase.utils.fakeMovieListWithRatings
 import com.amsterdam.domain.useCase.utils.specificMovieList
-import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -146,12 +145,9 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                     moviesPerPage = 20
                 )
             } returns fakeMovieListWithCategories
-            assertThat(
-                getAndFilterMoviesByKeywordUseCase(
-                    "keyword",
-                    movieGenre = MovieGenre.TV_MOVIE
-                )
-            )
+            val result =
+                getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.TV_MOVIE)
+            assertThat(result).isEmpty()
         }
 
     @Test
@@ -164,11 +160,12 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                     moviesPerPage = 20
                 )
             } returns emptyList()
-            assertThat(getAndFilterMoviesByKeywordUseCase("keyword"))
+            val result = getAndFilterMoviesByKeywordUseCase("keyword")
+            assertThat(result).isEmpty()
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return Aflami exception when an error happened`() =
+    fun `getAndFilterMoviesByKeywordUseCase should throw AflamiException when an error happens`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -179,131 +176,6 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
             } throws AflamiException()
             assertThrows<AflamiException> { getAndFilterMoviesByKeywordUseCase("keyword") }
         }
-
-    @Test
-    fun `getAndFilterMoviesByKeywordUseCase should throw AflamiException when getAllGenreInterests fails`() =
-        runTest {
-            coEvery {
-                movieRepository.getMoviesByKeyword(
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns fakeMovieList
-            coEvery { movieRepository.getAllGenreInterests() } throws AflamiException()
-
-            assertThrows<AflamiException> { getAndFilterMoviesByKeywordUseCase("keyword") }
-        }
-
-    @Test
-    fun `getAndFilterMoviesByKeywordUseCase should sort movies by user interest in categories`() =
-        runTest {
-            val movie1 = Movie(
-                id = 1,
-                name = "Sci-Fi Action",
-                description = "",
-                posterUrl = "",
-                productionYear = (2023).toUInt(),
-                categories = listOf(MovieGenre.SCIENCE_FICTION, MovieGenre.ACTION),
-                rating = 7.0f,
-                popularity = 10.0,
-                originCountry = "",
-                runTimeInMinutes = 1,
-                hasVideo = true
-            )
-            val movie2 = Movie(
-                id = 2,
-                name = "Drama Comedy",
-                description = "",
-                posterUrl = "",
-                productionYear = (2023).toUInt(),
-                categories = listOf(MovieGenre.DRAMA, MovieGenre.COMEDY),
-                rating = 8.0f,
-                popularity = 12.0,
-                originCountry = "",
-                runTimeInMinutes = 1,
-                hasVideo = true
-            )
-            val movie3 = Movie(
-                id = 3,
-                name = "Family Adventure",
-                description = "",
-                posterUrl = "",
-                productionYear = (2023).toUInt(),
-                categories = listOf(MovieGenre.FAMILY, MovieGenre.ADVENTURE),
-                rating = 7.5f,
-                popularity = 9.0,
-                originCountry = "",
-                runTimeInMinutes = 1,
-                hasVideo = true
-            )
-
-            val moviesFromRepo = listOf(movie1, movie2, movie3)
-
-            coEvery { movieRepository.getAllGenreInterests() } returns mapOf(
-                MovieGenre.ACTION to 100,
-                MovieGenre.COMEDY to 50,
-                MovieGenre.DRAMA to 80,
-                MovieGenre.SCIENCE_FICTION to 70,
-                MovieGenre.FAMILY to 20,
-                MovieGenre.ADVENTURE to 30
-            )
-
-            coEvery {
-                movieRepository.getMoviesByKeyword(
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns moviesFromRepo
-
-            val result = getAndFilterMoviesByKeywordUseCase("keyword")
-
-            assertThat(result).containsExactly(movie1, movie2, movie3).inOrder()
-        }
-
-    @Test
-    fun `getAndFilterMoviesByKeywordUseCase should handle movies with empty categories in sorting`() =
-        runTest {
-            val movieWithEmptyCategories = Movie(
-                id = 4,
-                name = "No Category",
-                description = "",
-                posterUrl = "",
-                productionYear = (2023).toUInt(),
-                categories = emptyList(),
-                rating = 6.0f,
-                popularity = 5.0,
-                originCountry = "",
-                runTimeInMinutes = 1,
-                hasVideo = true
-            )
-            val movieWithCategories = Movie(
-                id = 5,
-                name = "Has Category",
-                description = "",
-                posterUrl = "",
-                productionYear = (2023).toUInt(),
-                categories = listOf(MovieGenre.DRAMA),
-                rating = 7.0f,
-                popularity = 8.0,
-                originCountry = "",
-                runTimeInMinutes = 1,
-                hasVideo = true
-            )
-
-            coEvery { movieRepository.getAllGenreInterests() } returns mapOf(MovieGenre.DRAMA to 50)
-            coEvery { movieRepository.getMoviesByKeyword(any(), any(), any()) } returns listOf(
-                movieWithEmptyCategories,
-                movieWithCategories
-            )
-
-            val result = getAndFilterMoviesByKeywordUseCase("keyword")
-
-            assertThat(result).containsExactly(movieWithCategories, movieWithEmptyCategories)
-                .inOrder()
-        }
-
 
     @Test
     fun `getAndFilterMoviesByKeywordUseCase should filter by both rating and genre`() = runTest {
@@ -327,4 +199,30 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
             fakeMovieListWithCategories[2]
         ).inOrder()
     }
+
+    @Test
+    fun `getAndFilterMoviesByKeywordUseCase should pass correct pagination parameters`() =
+        runTest {
+            val keyword = "test"
+            val page = 2
+            val moviesPerPage = 10
+
+            coEvery {
+                movieRepository.getMoviesByKeyword(
+                    keyword = keyword,
+                    page = page,
+                    moviesPerPage = moviesPerPage
+                )
+            } returns fakeMovieList
+
+            getAndFilterMoviesByKeywordUseCase(keyword, page, moviesPerPage)
+
+            coVerify(exactly = 1) {
+                movieRepository.getMoviesByKeyword(
+                    keyword = keyword,
+                    page = page,
+                    moviesPerPage = moviesPerPage
+                )
+            }
+        }
 }

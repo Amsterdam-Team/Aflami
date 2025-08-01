@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.Text
@@ -23,7 +26,8 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.adaptiveGrid
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
@@ -31,10 +35,12 @@ import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesSectionUiState
 
 fun LazyListScope.upcomingMoviesSection(
     state: UpcomingMoviesSectionUiState,
+    deviceWidth: Int,
     onMovieClicked: (movieId: Long) -> Unit,
     onChangeMovieGenre: (genreType: MovieGenre) -> Unit,
     modifier: Modifier = Modifier,
-    isVisible: Boolean
+    isVisible: Boolean,
+    onVerticalOffsetChange: (Dp) -> Unit
 ) {
     if (isVisible) {
         if (state.isLoading) {
@@ -63,7 +69,9 @@ fun LazyListScope.upcomingMoviesSection(
                 LazyRow(
                     modifier = Modifier
                         .fillParentMaxWidth()
-                        .background(AppTheme.color.surface),
+                        .background(AppTheme.color.surface)
+                        .onGloballyPositioned { onVerticalOffsetChange(it.positionOnScreen().y.dp) }
+                    ,
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -80,42 +88,52 @@ fun LazyListScope.upcomingMoviesSection(
             }
 
             if (state.movies.isNotEmpty()) {
-                items(items = state.movies, key = { it.id }) { movie ->
-                    with(movie) {
-                        MovieCard(
-                            modifier = modifier
-                                .fillParentMaxWidth()
-                                .animateItem()
-                                .height(196.dp)
-                                .padding(horizontal = 16.dp, vertical = 4.dp),
-                            movieImage = {
-                                SafeImageView(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentDescription = name,
-                                    model = posterImageUrl,
-                                    onLoading = { ImageLoadingIndicator() },
-                                    onError = { ImageErrorIndicator() },
-                                )
-                            },
-                            movieType = stringResource(R.string.movies),
-                            movieYear = yearOfRelease,
-                            movieTitle = name,
-                            movieRating = rate,
-                            onClick = { onMovieClicked(id) }
-                        )
-                    }
+                adaptiveGrid(
+                    items = state.movies,
+                    itemMinWidth = 320,
+                    modifier = Modifier.padding(
+                        vertical = 12.dp,
+                        horizontal = 16.dp
+                    ),
+                    itemsHorizontalPadding = 8.dp,
+                    itemsVerticalPadding = 8.dp,
+                    deviceWidth = deviceWidth,
+                ) { movie ->
+                    MediaCard(
+                        modifier = modifier
+                            .weight(1f)
+                            .height(196.dp),
+                        movieImage = {
+                            SafeImageView(
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = movie.name,
+                                model = movie.posterImageUrl,
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
+                            )
+                        },
+                        movieType = stringResource(R.string.movies),
+                        movieYear = movie.yearOfRelease,
+                        movieTitle = movie.name,
+                        movieRating = movie.rate,
+                        onClick = { onMovieClicked(movie.id) }
+                    )
                 }
             } else {
                 item {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
-                        style = AppTheme.textStyle.label.medium,
-                        color = AppTheme.color.body,
-                        textAlign = TextAlign.Center
-                    )
+                    CenterOfScreenContainer(
+                        unneededSpace = 230.dp
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 130.dp)
+                                .padding(16.dp),
+                            text = stringResource(R.string.no_upcoming_movies_found_for_your_selection),
+                            style = AppTheme.textStyle.label.medium,
+                            color = AppTheme.color.body,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

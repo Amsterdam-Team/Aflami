@@ -3,6 +3,6 @@ package com.amsterdam.entity
 import kotlinx.datetime.Instant
 
 data class MovieWatchHistory(
-    val movieId: Long,
+    val movie: Movie,
     val lastWatchedTime: Instant
 )

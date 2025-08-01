@@ -17,81 +17,96 @@ import org.junit.jupiter.api.assertThrows
 class GetMoviesByCountryUseCaseTest {
     private lateinit var movieRepository: MovieRepository
     private lateinit var getMoviesByCountryUseCase: GetMoviesByCountryUseCase
-    private lateinit var country: Country
+    private val country = Country("EGYPT", "EG")
 
     @BeforeEach
     fun setUp() {
         movieRepository = mockk(relaxed = true)
-        country = Country("EGYPT", "EG")
         getMoviesByCountryUseCase = GetMoviesByCountryUseCase(movieRepository)
     }
 
     @Test
-    fun `getMoviesByCountryUseCase should call getMoviesByCountry exactly one time when called`() =
-        runTest {
-            getMoviesByCountryUseCase(
-                country,
-                page = 1
-            )
-            coVerify(exactly = 1) {
-                movieRepository.getMoviesByCountry(
-                    any(),
-                    page = 1,
-                    moviesPerPage = 20
-                )
-            }
-        }
+    fun `should call getMoviesByCountry with default pagination parameters`() = runTest {
+        // When
+        getMoviesByCountryUseCase(country)
 
-    @Test
-    fun `getMoviesByCountryUseCase should return movies when data is available`() = runTest {
-        coEvery {
+        // Then
+        coVerify(exactly = 1) {
             movieRepository.getMoviesByCountry(
-                country,
+                country = country,
                 page = 1,
                 moviesPerPage = 20
             )
+        }
+    }
+
+    @Test
+    fun `should call getMoviesByCountry with custom pagination parameters`() = runTest {
+        // Given
+        val page = 3
+        val moviesPerPage = 50
+
+        // When
+        getMoviesByCountryUseCase(country, page, moviesPerPage)
+
+        // Then
+        coVerify(exactly = 1) {
+            movieRepository.getMoviesByCountry(
+                country = country,
+                page = page,
+                moviesPerPage = moviesPerPage
+            )
+        }
+    }
+
+    @Test
+    fun `should return movies when repository returns data`() = runTest {
+        // Given
+        coEvery {
+            movieRepository.getMoviesByCountry(
+                country = country,
+                page = any(),
+                moviesPerPage = any()
+            )
         } returns fakeMovieList
 
-        val result = getMoviesByCountryUseCase(
-            country,
-            page = 1
-        )
+        // When
+        val result = getMoviesByCountryUseCase(country)
+
+        // Then
         assertThat(result).isEqualTo(fakeMovieList)
     }
 
     @Test
-    fun `getMoviesByCountryUseCase should return an empty list when repository returns no movies`() =
-        runTest {
-            coEvery {
-                movieRepository.getMoviesByCountry(
-                    any(),
-                    page = 1,
-                    moviesPerPage = 20
-                )
-            } returns emptyList()
-
-            val result = getMoviesByCountryUseCase(
-                country,
-                page = 1
+    fun `should return an empty list when repository returns no movies`() = runTest {
+        // Given
+        coEvery {
+            movieRepository.getMoviesByCountry(
+                country = country,
+                page = any(),
+                moviesPerPage = any()
             )
-            assertThat(result).isEmpty()
-        }
+        } returns emptyList()
+
+        // When
+        val result = getMoviesByCountryUseCase(country)
+
+        // Then
+        assertThat(result).isEmpty()
+    }
 
     @Test
-    fun `getMoviesByCountryUseCase should return Aflami exception when an error happened`() =
-        runTest {
-            coEvery {
-                movieRepository.getMoviesByCountry(
-                    country,
-                    page = 1,
-                    moviesPerPage = 20
-                )
-            } throws AflamiException()
-            assertThrows<AflamiException> {
-                getMoviesByCountryUseCase(
-                    country,
-                    page = 1
-                )
-            }
-        }
+    fun `should throw AflamiException when repository call fails`() = runTest {
+        // Given
+        coEvery {
+            movieRepository.getMoviesByCountry(
+                country = country,
+                page = any(),
+                moviesPerPage = any()
+            )
+        } throws AflamiException()
+
+        // When & Then
+        assertThrows<AflamiException> { getMoviesByCountryUseCase(country) }
+    }
 }

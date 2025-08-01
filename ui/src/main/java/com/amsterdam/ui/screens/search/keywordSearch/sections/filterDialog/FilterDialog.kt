@@ -83,7 +83,8 @@ internal fun FilterDialog(
                     .background(
                         color = AppTheme.color.surface,
                         shape = RoundedCornerShape(12.dp),
-                    ).verticalScroll(rememberScrollState())
+                    )
+                    .verticalScroll(rememberScrollState())
                     .padding(vertical = 12.dp),
         ) {
             Row(
@@ -96,7 +97,6 @@ internal fun FilterDialog(
                 Text(
                     text = stringResource(R.string.filter_result),
                     color = AppTheme.color.title,
-                    fontStyle = AppTheme.textStyle.title.large.fontStyle,
                     style = AppTheme.textStyle.title.large,
                     modifier =
                         Modifier
@@ -105,7 +105,7 @@ internal fun FilterDialog(
 
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
-                    contentDescription = null,
+                    contentDescription = "",
                     onClick = interaction::onClickCancel,
                     tint = AppTheme.color.title,
                 )
@@ -113,7 +113,6 @@ internal fun FilterDialog(
             Text(
                 text = stringResource(R.string.imdb_rating),
                 color = AppTheme.color.title,
-                fontStyle = AppTheme.textStyle.title.small.fontStyle,
                 style = AppTheme.textStyle.title.small,
                 modifier =
                     Modifier
@@ -127,7 +126,6 @@ internal fun FilterDialog(
             Text(
                 text = stringResource(R.string.genre),
                 color = AppTheme.color.title,
-                fontStyle = AppTheme.textStyle.title.small.fontStyle,
                 style = AppTheme.textStyle.title.small,
                 modifier =
                     Modifier
@@ -141,7 +139,7 @@ internal fun FilterDialog(
                 state = lazyState,
                 contentPadding = PaddingValues(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
             ) {
                 when (selectedTabOption) {
                     TabOption.MOVIES -> {
@@ -220,7 +218,7 @@ private fun RatingBar(
                                 R.drawable.ic_outlined_star
                             },
                     ),
-                contentDescription = null,
+                contentDescription = "",
                 tint = AppTheme.color.yellowAccent,
                 modifier =
                     Modifier

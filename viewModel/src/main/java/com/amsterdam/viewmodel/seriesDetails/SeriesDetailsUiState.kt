@@ -32,12 +32,14 @@ data class SeriesDetailsUiState(
     val similarSeries: List<SimilarMovieUiState> = emptyList(),
     val reviews: List<ReviewUiState> = emptyList(),
     val gallery: List<String> = emptyList(),
+    val postersUrls: List<String> = emptyList(),
     val productionCompanies: List<ProductionCompanyUiState> = emptyList(),
     val isLoading: Boolean = false,
     val networkError: Boolean = false,
     val hasVideo: Boolean = false,
-    val isLoginDialogVisible : Boolean = false,
-    val dialogType: MovieAndSeriesDetailsDialogType? = null
+    val isLoginDialogVisible: Boolean = false,
+    val dialogType: MovieAndSeriesDetailsDialogType? = null,
+    val isDescriptionExpanded: Boolean = false
 ) {
     enum class SeriesExtras {
         SEASONS,

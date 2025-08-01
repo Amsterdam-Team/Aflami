@@ -74,4 +74,18 @@ class GetMovieCastUseCaseTest {
         }
         coVerify(exactly = 1) { movieRepository.getActorsByMovieId(movieId) }
     }
+
+    @Test
+    fun `should handle a negative movie id and return an empty list`() = runTest {
+        // Given
+        val invalidMovieId = -1L
+        coEvery { movieRepository.getActorsByMovieId(invalidMovieId) } returns emptyList()
+
+        // When
+        val result = getMovieCastUseCase(invalidMovieId)
+
+        // Then
+        coVerify(exactly = 1) { movieRepository.getActorsByMovieId(invalidMovieId) }
+        assertThat(result).isEmpty()
+    }
 }

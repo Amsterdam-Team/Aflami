@@ -15,9 +15,9 @@ interface CategoryDao {
     @Upsert
     suspend fun upsertAllTvShowCategories(categories: List<LocalTvShowCategoryDto>)
 
-    @Query("SELECT * FROM ${DatabaseConstants.MOVIE_CATEGORY_TABLE}")
-    suspend fun getAllMovieCategories(): List<LocalMovieCategoryDto>
+    @Query("SELECT * FROM ${DatabaseConstants.MOVIE_CATEGORY_TABLE} WHERE storedLanguage = :storedLanguage")
+    suspend fun getAllMovieCategories(storedLanguage: String): List<LocalMovieCategoryDto>
 
-    @Query("SELECT * FROM ${DatabaseConstants.TV_SHOW_CATEGORY_TABLE}")
-    suspend fun getAllTvShowCategories(): List<LocalTvShowCategoryDto>
+    @Query("SELECT * FROM ${DatabaseConstants.TV_SHOW_CATEGORY_TABLE} WHERE storedLanguage = :storedLanguage")
+    suspend fun getAllTvShowCategories(storedLanguage: String): List<LocalTvShowCategoryDto>
 }

@@ -2,6 +2,7 @@ package com.amsterdam.domain.useCase.utils
 
 import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.TvShowGenre
+import kotlinx.datetime.LocalDate
 
 val specificTvShowList = listOf(
     TvShow(
@@ -9,19 +10,20 @@ val specificTvShowList = listOf(
         name = "Low Rated",
         description = "",
         posterUrl = "",
-        productionYear = (2023).toUInt(),
+        airDate = LocalDate(2023, 1, 1),
         categories = listOf(),
         rating = 1.0f,
         popularity = 5.0,
         seasonCount = 3,
         originCountry = "US",
+        productionCompanies = emptyList()
     ),
     TvShow(
         id = 2,
         name = "Wrong Category",
         description = "",
         posterUrl = "",
-        productionYear = (2023).toUInt(),
+        airDate = LocalDate(2023, 1, 1),
         categories = listOf(
             TvShowGenre.TALK
         ),
@@ -29,6 +31,7 @@ val specificTvShowList = listOf(
         popularity = 5.0,
         seasonCount = 4,
         originCountry = "US",
+        productionCompanies = emptyList()
     )
 )
 
@@ -39,36 +42,39 @@ val fakeTvShowList =
             name = "abc",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 2.5f,
             popularity = 10.2,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 2,
             name = "dfg",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 2.5f,
             popularity = 11.2,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 3,
             name = "hij",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 2.5f,
             popularity = 0.2,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
     )
 val fakeTvShowListWithRatings =
@@ -78,36 +84,39 @@ val fakeTvShowListWithRatings =
             name = "High Rated",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 8.0f,
             popularity = 10.0,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 2,
             name = "Medium Rated",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 5.5f,
             popularity = 9.0,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 3,
             name = "Low Rated",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = emptyList(),
             rating = 3.0f,
             popularity = 8.0,
             seasonCount = 4,
-            originCountry = "US"
+            originCountry = "US",
+            productionCompanies = emptyList()
         ),
     )
 val fakeTvShowListWithCategories =
@@ -117,31 +126,33 @@ val fakeTvShowListWithCategories =
             name = "Action Show",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = listOf(TvShowGenre.TALK),
             rating = 8.0f,
             popularity = 10.0,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 2,
             name = "Comedy Show",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = listOf(TvShowGenre.TALK),
             rating = 7.0f,
             popularity = 9.0,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 3,
             name = "Action & Drama",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = listOf(
                 TvShowGenre.TALK,
                 TvShowGenre.COMEDY,
@@ -150,17 +161,19 @@ val fakeTvShowListWithCategories =
             popularity = 11.0,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         ),
         TvShow(
             id = 4,
             name = "Thriller",
             description = "",
             posterUrl = "",
-            productionYear = (2023).toUInt(),
+            airDate = LocalDate(2023, 1, 1),
             categories = listOf(TvShowGenre.TALK),
             rating = 6.0f,
             popularity = 8.0,
             seasonCount = 4,
             originCountry = "US",
+            productionCompanies = emptyList()
         )
     )

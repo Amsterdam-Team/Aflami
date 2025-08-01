@@ -76,6 +76,6 @@ interface MovieDao {
     @Upsert
     suspend fun insertMovieCategoryCrossRefs(crossRefs: List<MovieCategoryCrossRefDto>)
 
-    @Query(" SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} WHERE movieId = :movieId")
-    fun getMovieById(movieId: Long): LocalMovieDto
+    @Query(" SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} WHERE movieId = :movieId and storedLanguage = :storedLanguage")
+    suspend fun getMovieById(movieId: Long,storedLanguage : String): LocalMovieDto?
 }

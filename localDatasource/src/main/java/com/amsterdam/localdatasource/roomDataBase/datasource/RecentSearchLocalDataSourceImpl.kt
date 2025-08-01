@@ -33,11 +33,10 @@ class RecentSearchLocalDataSourceImpl @Inject constructor(
 
     override suspend fun deleteRecentSearchByKeywordAndType(
         keyword: String,
-        searchType: SearchType,
-        storedLanguage: String
+        searchType: SearchType
     ) {
-        dao.deleteSearchByKeyword(keyword, searchType, storedLanguage)
-        dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType, storedLanguage)
+        dao.deleteSearchByKeyword(keyword, searchType)
+        dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType)
     }
 
     override suspend fun deleteExpiredRecentSearches(date: Instant) {

@@ -60,6 +60,7 @@ fun MoodPickerCard(
                                 AppTheme.color.yellowAccent,
                             ),
                     ),
+                    alpha = 0.7f,
                 )
                 .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp)),
     ) {
@@ -171,15 +172,13 @@ private fun MoodIcon(
         painter = painterResource(iconRes),
         contentDescription = null,
         tint = tint,
-        modifier =
-            Modifier
-                .padding(4.dp)
-                .size(24.dp)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                    onClick = onClick,
-                ),
+        modifier = Modifier
+            .size(32.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                onClick = onClick,
+            ),
     )
 }
 
@@ -224,10 +223,10 @@ private fun CustomMoodPickerCardPreview() {
             cardMoods = listOf(
                 CardMood.SAD,
                 CardMood.ANGRY,
-                CardMood.IN_LOVE,
-                CardMood.CONFUSED,
-                CardMood.THINKING,
-                CardMood.UN_HAPPY
+                CardMood.ROMANTIC,
+                CardMood.ANGRY,
+                CardMood.DEPRESSED,
+                CardMood.SAD_DIZZY
             ),
             onSelectMood = {},
         )

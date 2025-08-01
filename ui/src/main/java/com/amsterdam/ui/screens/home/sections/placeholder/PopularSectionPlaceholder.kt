@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.pager.HorizontalPager
@@ -38,8 +39,9 @@ fun LazyListScope.popularSectionPlaceholder(
     item {
         Row(
             modifier = Modifier
+                .statusBarsPadding()
                 .zIndex(1f)
-                .padding(bottom = 12.dp, start = 16.dp, end = 16.dp),
+                .padding(bottom = 12.dp, start = 16.dp, end = 16.dp, top = 56.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             RoundedShimmerPlaceholder(height = 30.dp, width = 77.dp, cornerRadius = 8.dp)

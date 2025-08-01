@@ -1,6 +1,7 @@
 package com.amsterdam.imageviewer.classification
 
 import com.amsterdam.imageviewer.classification.model.NsfwDetectorRule
+
 internal object NsfwDetectorConfig {
     val NSFW_DETECTION_RULE = NsfwDetectorRule(
         nudeIndex = 1,

@@ -25,7 +25,7 @@ fun ImageErrorIndicator(
         contentAlignment = Alignment.Center,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_cancel),
+            painter = painterResource(id = R.drawable.ic_film_roll),
             colorFilter = ColorFilter.tint(color = Color.Gray),
             contentDescription = null,
             modifier = modifier.size(size),
