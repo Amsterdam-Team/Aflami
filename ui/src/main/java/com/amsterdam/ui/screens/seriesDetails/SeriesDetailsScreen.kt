@@ -123,8 +123,8 @@ fun SeriesDetailsScreen(
                 SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
                     Route.Login
                 )
-                is SeriesDetailsEffect.NavigateToMovieDetails -> {
-                    navController.navigate(Route.MovieDetails(effect.movieId))
+                is SeriesDetailsEffect.NavigateToSeriesDetails -> {
+                    navController.navigate(Route.SeriesDetails(effect.tvShowId))
                 }
             }
         }
