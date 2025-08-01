@@ -56,7 +56,9 @@ interface MovieApiService {
     ): RemoteMovieResponse
 
     @GET(TOP_RATED_MOVIES)
-    suspend fun getTopRatedMovies() : RemoteMovieResponse
+    suspend fun getTopRatedMovies(
+        @Query(PAGE_KEY) page: Int
+    ) : RemoteMovieResponse
 
     companion object {
         private const val MOVIE_POPULAR = "movie/popular"

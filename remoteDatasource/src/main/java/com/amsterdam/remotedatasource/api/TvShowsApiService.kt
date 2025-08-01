@@ -14,7 +14,9 @@ interface TvShowsApiService {
     suspend fun getPopularTvShows(): RemoteTvShowResponse
 
     @GET(TOP_RATED_TV_SHOWS)
-    suspend fun getTopRatedTvShows(): RemoteTvShowResponse
+    suspend fun getTopRatedTvShows(
+        @Query(PAGE_KEY) page: Int
+    ): RemoteTvShowResponse
 
     @GET(SEARCH_TV_URL)
     suspend fun getTvShowsByKeyword(

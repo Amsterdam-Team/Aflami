@@ -40,7 +40,7 @@ class MovieDetailRemoteMapper @Inject constructor(
             movie = movieRemoteMapper.toEntity(remoteMovieItemDto),
             reviews = reviewRemoteMapper.toEntityList(response.reviews.results),
             actors = castRemoteMapper.toEntityList(response.credits.cast),
-            similarMovies = movieRemoteMapper.toEntityList(response.similar.results),
+            similarMovies = movieRemoteMapper.toEntityList(response.similar.results,isPoster = false),
             movieGallery = galleryRemoteMapper.toEntity(response.images),
             moviePosters = posterRemoteMapper.toEntity(response.images),
         )

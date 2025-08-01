@@ -2,7 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.CategoryRepository
 import com.amsterdam.domain.repository.TvShowRepository
-import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetails
+import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
@@ -48,9 +48,6 @@ class TvShowRepositoryImpl @Inject constructor(
         return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows().results)
     }
 
-    override suspend fun getTopRatedTvShows(): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getTopRatedTvShows().results)
-    }
 
     override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
         return remoteTvDataSource.getTvShowCast(tvShowId).cast.map { castRemoteMapper.toEntity(it) }
@@ -92,7 +89,7 @@ class TvShowRepositoryImpl @Inject constructor(
             ?.takeIf { tvShows -> tvShows.isNotEmpty() }
     }
 
-    override suspend fun getTvShowDetails(tvShowId: Long): TvShowDetails {
+    override suspend fun getTvShowDetails(tvShowId: Long): GetTvShowDetailsUseCase.TvShowDetails {
         return tvShowDetailsRemoteMapper.toEntity(
             remoteTvDataSource.getTvShowDetailsById(tvShowId)
                 .also {
@@ -125,6 +122,10 @@ class TvShowRepositoryImpl @Inject constructor(
                 seasonNumber
             ).episodes
         )
+    }
+
+    override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {
+        return tvRemoteMapper.toEntityList(remoteTvDataSource.getTopRatedTvShows(page).results)
     }
 
     private suspend fun getTvShowFromLocal(

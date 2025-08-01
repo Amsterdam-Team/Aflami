@@ -11,7 +11,7 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
-fun MovieCard(
+fun MediaCard(
     movieImage: @Composable () -> Unit,
     movieTitle: String,
     movieType: String,
@@ -37,7 +37,7 @@ fun MovieCard(
 @Composable
 private fun MovieCardPreview() {
     AflamiTheme {
-        MovieCard(
+        MediaCard(
             movieImage = { },
             movieType = "TV show",
             movieYear = "2016",

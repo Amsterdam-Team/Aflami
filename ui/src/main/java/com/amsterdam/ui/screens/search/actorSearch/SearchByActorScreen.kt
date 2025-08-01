@@ -44,7 +44,7 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
@@ -148,7 +148,7 @@ private fun SearchByActorContent(
                     key = { index -> "${movies[index]?.id}-$index" },
                 ) { index ->
                     val movie = movies[index] ?: return@items
-                    MovieCard(
+                    MediaCard(
                         movieImage = { MovieImage(movie.posterImageUrl) },
                         movieType = stringResource(R.string.movie),
                         movieYear = movie.yearOfRelease,

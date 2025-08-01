@@ -50,8 +50,10 @@ class MovieRemoteDataSourceImpl @Inject constructor(
     override suspend fun getUpcomingMovies(): RemoteMovieResponse {
         return responseCall { movieApiService.getUpcomingMovies() }
     }
-    override suspend fun getTopRatedMovies(): RemoteMovieResponse {
-        return responseCall { movieApiService.getTopRatedMovies() }
+    override suspend fun getTopRatedMovies(
+        page: Int
+    ): RemoteMovieResponse {
+        return responseCall { movieApiService.getTopRatedMovies(page) }
     }
     override suspend fun getMoviesByGenreIds(genresIds: List<Long>): RemoteMovieResponse {
         return responseCall { movieApiService.getMoviesByGenreIds(genresIds) }

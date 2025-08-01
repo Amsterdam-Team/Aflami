@@ -2,6 +2,7 @@ package com.amsterdam.ui.screens.seriesDetails
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -44,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
@@ -144,17 +146,16 @@ fun SeriesDetailsContent(
     val surface = AppTheme.color.surface
     val transparent = AppTheme.color.surface.copy(alpha = 0f)
     val stroke = AppTheme.color.stroke
-    val appBarColor by remember {
-        derivedStateOf {
-            if (listState.firstVisibleItemIndex != 0 ||
-                listState.firstVisibleItemScrollOffset != 0
-            ) {
-                surface
-            } else {
-                transparent
-            }
-        }
+    val scrollOffset = remember {
+        derivedStateOf { listState.firstVisibleItemScrollOffset }
     }
+
+    val appBarColor by animateColorAsState(
+        targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
+        animationSpec = tween(800),
+        label = "AppBarScrollColor"
+    )
+
     val dividerColor by remember {
         derivedStateOf {
             if (listState.firstVisibleItemIndex != 0) {
@@ -187,224 +188,231 @@ fun SeriesDetailsContent(
         animationSpec = tween(animationDuration), label = ""
     )
 
-
-    AnimatedVisibility(
-        state.isLoading,
-        enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(surface)
+            .navigationBarsPadding()
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            LoadingContainer()
+        AnimatedVisibility(
+            state.isLoading,
+            enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration))
+        ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                LoadingContainer()
+            }
         }
-    }
 
-    AnimatedVisibility(
-        state.networkError, enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration))
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            NoNetworkContainer(
-                onClickRetry = interaction::onClickRetryButton,
+        AnimatedVisibility(
+            state.networkError, enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration))
+        ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                NoNetworkContainer(
+                    onClickRetry = interaction::onClickRetryButton,
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier,
+            visible = state.isLoginDialogVisible
+        ) {
+            MustLoginDialog(
+                title = state.dialogType.getMovieAndSeriesDetailsDialogTitle(),
+                onDismiss = interaction::onCancelClicked,
+                onClickLogin = interaction::onNavigateToLoginClicked,
             )
         }
-    }
 
-    AnimatedVisibility(
-        modifier = Modifier,
-        visible = state.isLoginDialogVisible
-    ) {
-        MustLoginDialog(
-            title = state.dialogType.getMovieAndSeriesDetailsDialogTitle(),
-            onDismiss = interaction::onCancelClicked,
-            onClickLogin = interaction::onNavigateToLoginClicked,
-        )
-    }
-
-    AnimatedVisibility(
-        !state.isLoading && !state.networkError,
-        enter = fadeIn(tween(animationDuration)),
-        exit = fadeOut(tween(animationDuration))
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
+        AnimatedVisibility(
+            !state.isLoading && !state.networkError,
+            enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration))
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(AppTheme.color.surface)
-                    .padding(top = animatedTopPadding)
-                    .navigationBarsPadding()
-                    .animateContentSize()
+            Box(
+                modifier = Modifier.fillMaxSize(),
             ) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AppTheme.color.surface)
+                        .padding(top = animatedTopPadding)
+                        .navigationBarsPadding()
+                        .animateContentSize()
+                ) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(263.dp)
+                        ) {
+                            if (state.postersUrls.isEmpty()) {
+                                ImageErrorIndicator()
+                            } else {
+                                DetailsPostersPager(
+                                    pagerState = pagerState,
+                                    postersUrl = state.postersUrls
+                                )
+                            }
 
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(263.dp)
-                    ) {
-                        if (state.postersUrls.isEmpty()) {
-                            ImageErrorIndicator()
-                        } else {
-                            DetailsPostersPager(
-                                pagerState = pagerState,
-                                postersUrl = state.postersUrls
+                            RatingChip(
+                                state.rating,
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(vertical = 4.dp)
+                                    .padding(start = 4.dp)
                             )
                         }
-
-                        RatingChip(
-                            state.rating,
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(vertical = 4.dp)
-                                .padding(start = 4.dp)
-                        )
                     }
-                }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(AppTheme.color.surface)
-                    ) {
-
-                        PlayButton(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .offset(y = (-32).dp),
-                            isActive = state.hasVideo
-                        )
+                    item {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .offset(y = (-20).dp)
+                                .background(AppTheme.color.surface)
                         ) {
-
-                            Text(
-                                text = state.title,
-                                style = AppTheme.textStyle.title.large,
-                                color = AppTheme.color.title,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                            PlayButton(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .offset(y = (-32).dp),
+                                isActive = state.hasVideo
                             )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .offset(y = (-20).dp)
+                            ) {
 
-                            if (state.categories.isNotEmpty()) {
-                                LazyRow(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 12.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)
-                                ) {
-                                    items(state.categories) {
-                                        CategoryChip(categoryName = getTvShowGenreLabel(it))
+                                Text(
+                                    text = state.title,
+                                    style = AppTheme.textStyle.title.large,
+                                    color = AppTheme.color.title,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+
+                                if (state.categories.isNotEmpty()) {
+                                    LazyRow(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 12.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                    ) {
+                                        items(state.categories) {
+                                            CategoryChip(categoryName = getTvShowGenreLabel(it))
+                                        }
                                     }
                                 }
+
+                                SeriesInfoSection(
+                                    modifier = Modifier
+                                        .padding(top = 8.dp)
+                                        .padding(horizontal = 16.dp),
+                                    airDate = state.airDate,
+                                    seasonCount = state.seasonCount,
+                                    originCountry = state.originCountry,
+                                )
+
+                                DescriptionSection(
+                                    modifier = Modifier
+                                        .padding(top = 24.dp)
+                                        .padding(horizontal = 16.dp),
+                                    description = state.description,
+                                    isExpanded = state.isDescriptionExpanded,
+                                    onToggleExpansion = interaction::onDescriptionExpansionToggled
+                                )
+                                CastSection(
+                                    modifier = Modifier.padding(top = 24.dp),
+                                    actors = state.cast,
+                                    onClickAllCast = interaction::onClickShowAllCast
+                                )
+                                Spacer(
+                                    modifier = Modifier
+                                        .padding(top = 24.dp)
+                                        .requiredWidth(screenWidthDp)
+                                        .height(1.dp)
+                                        .background(AppTheme.color.stroke)
+                                )
+                                SeriesExtrasSection(
+                                    modifier = Modifier
+                                        .padding(top = 12.dp)
+                                        .onGloballyPositioned { coordinates ->
+                                            seriesExtrasSectionYOffsetDp =
+                                                coordinates.positionOnScreen().y.dp
+                                        },
+                                    extras = state.extraItem,
+                                    onClickExtras = interaction::onClickSeriesExtraItem
+                                )
                             }
 
-                            SeriesInfoSection(
-                                modifier = Modifier
-                                    .padding(top = 8.dp)
-                                    .padding(horizontal = 16.dp),
-                                airDate = state.airDate,
-                                seasonCount = state.seasonCount,
-                                originCountry = state.originCountry,
-                            )
-
-                            DescriptionSection(
-                                modifier = Modifier
-                                    .padding(top = 24.dp)
-                                    .padding(horizontal = 16.dp),
-                                description = state.description,
-                                isExpanded = state.isDescriptionExpanded,
-                                onToggleExpansion = interaction::onDescriptionExpansionToggled
-                            )
-                            CastSection(
-                                modifier = Modifier.padding(top = 24.dp),
-                                actors = state.cast,
-                                onClickAllCast = interaction::onClickShowAllCast
-                            )
-                            Spacer(
-                                modifier = Modifier
-                                    .padding(top = 24.dp)
-                                    .requiredWidth(screenWidthDp)
-                                    .height(1.dp)
-                                    .background(AppTheme.color.stroke)
-                            )
-                            SeriesExtrasSection(
-                                modifier = Modifier
-                                    .padding(top = 12.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        seriesExtrasSectionYOffsetDp =
-                                            coordinates.positionOnScreen().y.dp
-                                    },
-                                extras = state.extraItem,
-                                onClickExtras = interaction::onClickSeriesExtraItem
-                            )
                         }
-
                     }
-                }
-                state.extraItem
-                    .find { it.isSelected }
-                    ?.item
-                    ?.let { selectedExtra ->
-                        when (selectedExtra) {
-                            SeriesExtras.SEASONS -> {
-                                seasonsSection(seasons = state.seasons, interaction = interaction)
-                            }
-
-                            SeriesExtras.MORE_LIKE_THIS -> moreLikeSection(
-                                similarMovies = state.similarSeries,
-                                onClick = { movieId ->
-                                    interaction.onClickSimilarMovie(movieId)
+                    state.extraItem
+                        .find { it.isSelected }
+                        ?.item
+                        ?.let { selectedExtra ->
+                            when (selectedExtra) {
+                                SeriesExtras.SEASONS -> {
+                                    seasonsSection(
+                                        seasons = state.seasons,
+                                        interaction = interaction
+                                    )
                                 }
-                            )
 
-                            SeriesExtras.REVIEWS -> reviewSection(state.reviews, interaction)
-                            SeriesExtras.GALLERY -> item {
-                                GallerySection(gallery = state.gallery)
-                            }
+                                SeriesExtras.MORE_LIKE_THIS -> moreLikeSection(
+                                    similarMovies = state.similarSeries,
+                                    onClick = { movieId ->
+                                        interaction.onClickSimilarMovie(movieId)
+                                    }
+                                )
 
-                            SeriesExtras.COMPANY_PRODUCTION -> companyProductionSection(
-                                state.productionCompanies
-                            )
-                        }
-                    }
+                                SeriesExtras.REVIEWS -> reviewSection(state.reviews, interaction)
+                                SeriesExtras.GALLERY -> item {
+                                    GallerySection(gallery = state.gallery)
+                                }
 
-                item {
-                    val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
-                    val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
-                    val spacerHeight: Dp by remember {
-                        derivedStateOf {
-                            if (seriesExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
-                                screenHeightDp
-                            } else {
-                                0.dp
+                                SeriesExtras.COMPANY_PRODUCTION -> companyProductionSection(
+                                    state.productionCompanies
+                                )
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(spacerHeight))
+                    item {
+                        val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
+                        val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
+                        val spacerHeight: Dp by remember {
+                            derivedStateOf {
+                                if (seriesExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
+                                    screenHeightDp
+                                } else {
+                                    0.dp
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(spacerHeight))
+                    }
                 }
-            }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
+                Column(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = interaction::onNavigateBack,
-                    onFirstOptionClicked = interaction::onRateClicked,
-                    onLastOptionClicked = interaction::onAddToListClicked
-                )
-                HorizontalDivider(color = dividerColor)
+                        .fillMaxWidth()
+                        .background(appBarColor)
+                ) {
+                    DefaultAppBar(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .statusBarsPadding(),
+                        firstOption = painterResource(R.drawable.ic_outlined_star),
+                        lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                        onNavigateBackClicked = interaction::onNavigateBack,
+                        onFirstOptionClicked = interaction::onRateClicked,
+                        onLastOptionClicked = interaction::onAddToListClicked
+                    )
+                    HorizontalDivider(color = dividerColor)
+                }
             }
         }
     }

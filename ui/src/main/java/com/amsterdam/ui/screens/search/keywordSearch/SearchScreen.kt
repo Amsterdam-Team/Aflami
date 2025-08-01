@@ -36,11 +36,11 @@ import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.navigation.Route.SeriesDetails
-import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SearchScreenHeaderSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuccessMediaItemsSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
+import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.SearchErrorState
 import com.amsterdam.viewmodel.search.keywordSearch.SearchInteractionListener
@@ -96,6 +96,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
         }
     }
 
+
     SearchContent(
         state = state,
         movies = movieFlow,
@@ -140,7 +141,9 @@ private fun SearchContent(
             )
 
             AnimatedVisibility(state.keyword.isBlank()) {
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                Column(Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())) {
                     SuggestionsHubSection(
                         onWorldSearchCardClicked = interaction::onClickWorldSearchCard,
                         onActorSearchCardClicked = interaction::onClickActorSearchCard

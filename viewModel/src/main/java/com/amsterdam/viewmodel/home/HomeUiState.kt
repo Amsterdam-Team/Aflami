@@ -58,11 +58,11 @@ data class HomeUiState(
     data class MoodPickerUiState(
         val moods: List<Mood> = listOf(
             Mood.SAD,
-            Mood.THINKING,
-            Mood.IN_LOVE,
+            Mood.NEUTRAL,
+            Mood.ROMANTIC,
             Mood.ANGRY,
-            Mood.UN_HAPPY,
-            Mood.CONFUSED
+            Mood.DEPRESSED,
+            Mood.SAD_DIZZY
         ),
         val selectedMood: Mood? = null,
         val selectedMovie: MovieItemUiState = MovieItemUiState(),

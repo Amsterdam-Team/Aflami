@@ -14,7 +14,7 @@ import androidx.compose.ui.zIndex
 import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.home.sections.placeholder.movieSectionPlaceholder
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.home.HomeUiState
@@ -53,7 +53,7 @@ fun LazyListScope.topRatingSection(
                         else
                             stringResource(R.string.tv)
 
-                        MovieCard(
+                        MediaCard(
                             movieImage = { MovieImage(item.posterImageUrl) },
                             movieType = movieType,
                             movieYear = item.yearOfRelease,

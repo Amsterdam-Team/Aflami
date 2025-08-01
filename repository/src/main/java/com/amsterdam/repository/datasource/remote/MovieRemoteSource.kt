@@ -22,7 +22,7 @@ interface MovieRemoteSource {
 
     suspend fun getUpcomingMovies(): RemoteMovieResponse
 
-    suspend fun getTopRatedMovies(): RemoteMovieResponse
+    suspend fun getTopRatedMovies(page: Int): RemoteMovieResponse
 
     suspend fun getMoviesByGenreIds(genresIds: List<Long>): RemoteMovieResponse
 }

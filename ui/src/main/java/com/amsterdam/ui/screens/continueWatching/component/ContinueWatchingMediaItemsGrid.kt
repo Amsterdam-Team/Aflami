@@ -19,7 +19,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.components.MovieCard
+import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingMediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
@@ -49,7 +49,7 @@ fun ContinueWatchingMediaItemsGrid(
                 if (item.mediaType == MediaType.MOVIE) stringResource(com.amsterdam.ui.R.string.movie)
                 else stringResource(com.amsterdam.ui.R.string.tv)
 
-            MovieCard(
+            MediaCard(
                 movieImage = { MovieImage(item.posterImageUrl) },
                 movieType = movieType,
                 movieYear = item.yearOfRelease,
