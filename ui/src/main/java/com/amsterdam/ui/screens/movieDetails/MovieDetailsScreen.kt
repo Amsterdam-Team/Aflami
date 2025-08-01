@@ -43,7 +43,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -128,7 +127,6 @@ fun MovieContent(
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
-    val screenHeightDp = configuration.screenHeightDp.dp
     var movieExtrasSectionYOffsetDp by remember { mutableStateOf(0.dp) }
     var headerHeight by remember { mutableStateOf(0) }
     val listState = rememberLazyListState()
@@ -361,48 +359,31 @@ fun MovieContent(
                             }
                         }
 
-                    item {
-                        val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
-                        val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
-
-
-                        val spacerHeight: Dp by remember {
-                            derivedStateOf {
-                                if (movieExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
-                                    screenHeightDp
-                                } else {
-                                    0.dp
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(spacerHeight))
-                    }
                 }
 
             }
         }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .statusBarsPadding()
-                            .zIndex(10f)
-                            .onSizeChanged { headerHeight = it.height },
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = interactionListener::onClickBack,
-                    onFirstOptionClicked = interactionListener::onRateClicked,
-                    onLastOptionClicked = interactionListener::onAddToListClicked,
-                )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarColor)
+        ) {
+            DefaultAppBar(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .statusBarsPadding()
+                        .zIndex(10f)
+                        .onSizeChanged { headerHeight = it.height },
+                firstOption = painterResource(R.drawable.ic_outlined_star),
+                lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                onNavigateBackClicked = interactionListener::onClickBack,
+                onFirstOptionClicked = interactionListener::onRateClicked,
+                onLastOptionClicked = interactionListener::onAddToListClicked,
+            )
 
-                HorizontalDivider(color = dividerColor)
-            }
+            HorizontalDivider(color = dividerColor)
+        }
 
     }
 }

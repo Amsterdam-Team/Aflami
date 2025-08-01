@@ -396,22 +396,6 @@ fun SeriesDetailsContent(
                                 )
                             }
                         }
-
-                    item {
-                        val lastVisibleItemInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull() } }
-                        val totalItemsCount by remember { derivedStateOf { listState.layoutInfo.totalItemsCount } }
-                        val spacerHeight: Dp by remember {
-                            derivedStateOf {
-                                if (seriesExtrasSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
-                                    screenHeightDp
-                                } else {
-                                    0.dp
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(spacerHeight))
-                    }
                 }
             }
         }

@@ -6,11 +6,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -30,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -82,7 +78,6 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hil
                 is HomeEffect.NavigateToTopRatedMoviesEffect -> {
                     navController.navigate(Route.TopRated)
                 }
-
                 is HomeEffect.NavigateToContinueWatchingMoviesScreen -> {
                     navController.navigate(Route.ContinueWatching)
                 }
@@ -106,7 +101,6 @@ private fun HomeScreenContent(
 ) {
     val lazyListState = rememberLazyListState()
     val configuration = LocalConfiguration.current
-    val screenHeightDp = configuration.screenHeightDp.dp
     var upcomingMoviesSectionYOffsetDp by remember { mutableStateOf(0.dp) }
     val deviceWidth = configuration.screenWidthDp
 
@@ -126,7 +120,7 @@ private fun HomeScreenContent(
             .windowInsetsPadding(WindowInsets(bottom = LocalScaffoldBottomPadding.current))
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
-            Column (Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize()) {
                 HomeAppBar(
                     onSearchClicked = interactionListener::onClickSearch,
                     modifier = Modifier
@@ -134,7 +128,7 @@ private fun HomeScreenContent(
                         .statusBarsPadding()
                         .padding(horizontal = 16.dp),
                 )
-                Box (
+                Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
@@ -142,14 +136,15 @@ private fun HomeScreenContent(
                 ) {
                     NoNetworkContainer(
                         onClickRetry = interactionListener::onClickRetryLoading,
-                        modifier = Modifier.fillMaxSize().padding(vertical = 8.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 8.dp)
                     )
                 }
             }
         } else {
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 100.dp),
                 state = lazyListState,
             ) {
                 popularSection(
@@ -178,7 +173,6 @@ private fun HomeScreenContent(
                         interactionListener,
                     )
                 }
-
                 upcomingMoviesSection(
                     state = state.upcomingMoviesSectionUiState,
                     onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
@@ -189,28 +183,6 @@ private fun HomeScreenContent(
                     },
                     deviceWidth = deviceWidth,
                 )
-
-                if (state.error == null) {
-                    if (!state.upcomingMoviesSectionUiState.isLoading) {
-                        item {
-                            val lastVisibleItemInfo by remember { derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull() } }
-                            val totalItemsCount by remember { derivedStateOf { lazyListState.layoutInfo.totalItemsCount } }
-
-
-                            val spacerHeight: Dp by remember {
-                                derivedStateOf {
-                                    if (upcomingMoviesSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
-                                        screenHeightDp
-                                    } else {
-                                        0.dp
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(spacerHeight))
-                        }
-                    }
-                }
             }
             AnimatedSectionVisibility(visible = state.moodPickerUiState.openMovieDialog) {
                 MovieMoodPickerDialogDialog(
