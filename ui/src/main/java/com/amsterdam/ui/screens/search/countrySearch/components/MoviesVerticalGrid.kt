@@ -41,7 +41,6 @@ internal fun MoviesVerticalGrid(
         ) {
             items(
                 count = movies.itemCount,
-                key = { index -> "${movies[index]?.id}-${index}" },
             ) { index ->
                 val movie = movies[index] ?: return@items
                 MediaCard(

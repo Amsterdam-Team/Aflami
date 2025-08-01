@@ -26,6 +26,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
+import com.amsterdam.ui.components.adaptiveGrid
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
@@ -34,6 +35,7 @@ import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesSectionUiState
 
 fun LazyListScope.upcomingMoviesSection(
     state: UpcomingMoviesSectionUiState,
+    deviceWidth: Int,
     onMovieClicked: (movieId: Long) -> Unit,
     onChangeMovieGenre: (genreType: MovieGenre) -> Unit,
     modifier: Modifier = Modifier,
@@ -86,30 +88,36 @@ fun LazyListScope.upcomingMoviesSection(
             }
 
             if (state.movies.isNotEmpty()) {
-                items(items = state.movies, key = { it.id }) { movie ->
-                    with(movie) {
-                        MediaCard(
-                            modifier = modifier
-                                .fillParentMaxWidth()
-                                .animateItem()
-                                .height(196.dp)
-                                .padding(horizontal = 16.dp, vertical = 4.dp),
-                            movieImage = {
-                                SafeImageView(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentDescription = name,
-                                    model = posterImageUrl,
-                                    onLoading = { ImageLoadingIndicator() },
-                                    onError = { ImageErrorIndicator() },
-                                )
-                            },
-                            movieType = stringResource(R.string.movies),
-                            movieYear = yearOfRelease,
-                            movieTitle = name,
-                            movieRating = rate,
-                            onClick = { onMovieClicked(id) }
-                        )
-                    }
+                adaptiveGrid(
+                    items = state.movies,
+                    itemMinWidth = 320,
+                    modifier = Modifier.padding(
+                        vertical = 12.dp,
+                        horizontal = 16.dp
+                    ),
+                    itemsHorizontalPadding = 8.dp,
+                    itemsVerticalPadding = 8.dp,
+                    deviceWidth = deviceWidth,
+                ) { movie ->
+                    MediaCard(
+                        modifier = modifier
+                            .weight(1f)
+                            .height(196.dp),
+                        movieImage = {
+                            SafeImageView(
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = movie.name,
+                                model = movie.posterImageUrl,
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
+                            )
+                        },
+                        movieType = stringResource(R.string.movies),
+                        movieYear = movie.yearOfRelease,
+                        movieTitle = movie.name,
+                        movieRating = movie.rate,
+                        onClick = { onMovieClicked(movie.id) }
+                    )
                 }
             } else {
                 item {

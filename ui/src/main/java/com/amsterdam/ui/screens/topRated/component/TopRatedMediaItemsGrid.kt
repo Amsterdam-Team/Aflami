@@ -31,8 +31,9 @@ fun TopRatedMediaItemsGrid(
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
 ) {
+    
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(minSize = 156.dp),
         state = gridState,
         modifier = modifier
             .fillMaxWidth(),
