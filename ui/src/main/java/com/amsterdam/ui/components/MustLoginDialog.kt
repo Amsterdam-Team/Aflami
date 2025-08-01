@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -81,16 +82,17 @@ fun MustLoginDialog(
                 contentDescription = "",
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(shape = RoundedCornerShape(24.dp))
-                    .border(
-                        width = 1.dp, AppTheme.color.stroke,
-                        shape = RoundedCornerShape(24.dp)
-                    )
                     .dropShadow(
                         blur = 12.dp,
                         shape = RoundedCornerShape(24.dp),
                         color = AppTheme.color.droppedShadowColor
                     )
+                    .clip(shape = RoundedCornerShape(24.dp))
+                    .border(
+                        width = 1.dp, AppTheme.color.stroke,
+                        shape = RoundedCornerShape(24.dp)
+                    )
+
             )
             Text(
                 modifier = Modifier.padding(vertical = 12.dp),
@@ -111,7 +113,7 @@ fun MustLoginDialog(
         }
     }
 }
-
+@Preview(showBackground = true)
 @Composable
 @ThemeAndLocalePreviews
 fun CustomDialogPreview() {

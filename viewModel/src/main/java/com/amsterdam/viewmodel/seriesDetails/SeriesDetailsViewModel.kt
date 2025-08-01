@@ -123,7 +123,7 @@ class SeriesDetailsViewModel @Inject constructor(
     }
 
     override fun onClickSimilarMovie(movieId: Long) {
-        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToMovieDetails(movieId))
+        sendNewNavigationEffect(SeriesDetailsEffect.NavigateToSeriesDetails(movieId))
     }
 
     override fun onDescriptionExpansionToggled() {

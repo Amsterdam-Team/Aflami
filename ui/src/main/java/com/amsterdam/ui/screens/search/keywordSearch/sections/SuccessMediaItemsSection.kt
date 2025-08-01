@@ -45,7 +45,6 @@ fun SuccessMediaItemsSection(
         ) {
             items(
                 count = selectedItems.itemCount,
-                key = { index -> getItemKey(selectedTabOption, index, selectedItems) },
             ) { index ->
                 val mediaItem = selectedItems[index]
                 when (mediaItem) {
@@ -92,15 +91,4 @@ fun SuccessMediaItemsSection(
             }
         }
     }
-}
-
-private fun getItemKey(
-    selectedTabOption: TabOption,
-    index: Int,
-    selectedItems: LazyPagingItems<out Any>
-): String {
-    val item = selectedItems[index]
-    val id = if (selectedTabOption == TabOption.MOVIES) (item as MovieItemUiState).id
-    else (item as TvShowItemUiState).id
-    return "${id}-${index}"
 }

@@ -308,8 +308,9 @@ class SearchViewModel @Inject constructor(
                 movies = emptyFlow(),
                 tvShows = emptyFlow(),
             )
-            _keyword.update{""}
         }
+        _keyword.update { "" }
+
     }
 
     override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {
