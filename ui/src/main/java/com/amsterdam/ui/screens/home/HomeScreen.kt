@@ -1,29 +1,26 @@
 package com.amsterdam.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,9 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
@@ -51,7 +46,6 @@ import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialogDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
-import com.amsterdam.ui.screens.home.sections.BlurredMoviePoster
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
 import com.amsterdam.ui.screens.home.sections.continueWatchingSection
 import com.amsterdam.ui.screens.home.sections.popularSection
@@ -65,7 +59,6 @@ import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeViewModel
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hiltViewModel()) {
@@ -111,90 +104,54 @@ private fun HomeScreenContent(
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
-    val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
     var upcomingMoviesSectionYOffsetDp by remember { mutableStateOf(0.dp) }
     val scrollOffset = remember {
         derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
     }
-
+    var headerHeight by remember { mutableStateOf(0.dp) }
     val appBarColor by animateColorAsState(
         targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
-    var blurOffsetY by remember { mutableFloatStateOf(-12f) }
-    var headerHeight by remember { mutableStateOf(0.dp) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 16.dp)
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
-            Column(
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(top = (headerHeight / 2) + 8.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                HomeAppBar(
-                    modifier = Modifier
-                        .background(appBarColor)
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .onSizeChanged { headerHeight = it.height.dp },
-                    onSearchClicked = interactionListener::onClickSearch,
-                )
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(vertical = 8.dp)
+                CenterOfScreenContainer(
+                    unneededSpace = headerHeight / 2,
+                    isStatusBarTransparent = true
                 ) {
-                    AnimatedSectionVisibility(
-                        visible = true,
-                        modifier = Modifier
-                            .zIndex(10f)
-
-                    ) {
-
-                        CenterOfScreenContainer(
-                            unneededSpace = headerHeight,
-                            modifier = Modifier.fillMaxSize()
-
-                        ) {
-                            NoNetworkContainer(
-                                onClickRetry = interactionListener::onClickRetryLoading,
-                            )
-                        }
-                    }
+                    NoNetworkContainer(
+                        onClickRetry = interactionListener::onClickRetryLoading,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
                 }
             }
         } else {
-            AnimatedSectionVisibility(
-                visible = state.popularMediaSectionUiState.mediaItems.isNotEmpty() && remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }.value == 0
-            ) {
-                BlurredMoviePoster(
-                    posterUrl = state.popularMediaSectionUiState.mediaItems[pagerState.currentPage % state.popularMediaSectionUiState.mediaItems.size].posterUrl,
-                    modifier = Modifier.offset { IntOffset(x = 0, y = blurOffsetY.roundToInt()) }
-                )
-            }
-
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 100.dp),
                 state = lazyListState,
             ) {
-
-
                 popularSection(
                     state = state.popularMediaSectionUiState,
                     onClickMediaItem = interactionListener::onClickMediaItem,
                     isVisible = state.error == null
                 )
+
                 continueWatchingSection(
                     state = state.continueWatchingMediaSectionUiState,
                     isVisible = state.continueWatchingMediaSectionUiState.mediaItems.isNotEmpty(),
@@ -247,29 +204,7 @@ private fun HomeScreenContent(
                         }
                     }
                 }
-
-                item {
-                    AnimatedSectionVisibility(
-                        visible = state.error != null,
-                        modifier = Modifier
-                            .fillParentMaxWidth()
-                            .padding(top = 16.dp)
-                    ) {
-                        NoNetworkContainer(
-                            onClickRetry = interactionListener::onClickRetryLoading,
-                            description = ""
-                        )
-                    }
-                }
             }
-
-            HomeAppBar(
-                modifier = Modifier
-                    .background(appBarColor)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp),
-                onSearchClicked = interactionListener::onClickSearch,
-            )
             AnimatedSectionVisibility(visible = state.moodPickerUiState.openMovieDialog) {
                 MovieMoodPickerDialogDialog(
                     movie = state.moodPickerUiState.selectedMovie,
@@ -280,8 +215,19 @@ private fun HomeScreenContent(
                 )
             }
         }
+        HomeAppBar(
+            modifier = Modifier
+                .background(appBarColor)
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp)
+                .onSizeChanged {
+                    headerHeight = it.height.dp
+                },
+            onSearchClicked = interactionListener::onClickSearch,
+        )
     }
 }
+
 
 @ThemeAndLocalePreviews
 @Composable
