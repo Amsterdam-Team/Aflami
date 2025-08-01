@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -69,13 +70,13 @@ fun ContinueWatchingContent(
         modifier = Modifier
             .fillMaxSize()
             .background(AppTheme.color.surface)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         DefaultAppBar(
             title = stringResource(R.string.continue_watching),
             modifier = Modifier
                 .fillMaxWidth()
-                .background(AppTheme.color.surface)
-                .statusBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             onNavigateBackClicked = interactionListener::onClickBack
         )

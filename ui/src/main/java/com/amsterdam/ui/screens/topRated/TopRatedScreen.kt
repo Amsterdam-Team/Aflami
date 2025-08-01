@@ -83,7 +83,9 @@ private fun TopRatedContent(
     mediaItems: LazyPagingItems<MediaItemUiState>,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
     ) {
         var headerHeight by remember { mutableStateOf(0.dp) }
         TopRatedBackgroundComponent()
