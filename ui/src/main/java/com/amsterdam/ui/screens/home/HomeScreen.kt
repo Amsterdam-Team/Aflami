@@ -105,6 +105,7 @@ private fun HomeScreenContent(
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
     var upcomingMoviesSectionYOffsetDp by remember { mutableStateOf(0.dp) }
+    val deviceWidth = configuration.screenWidthDp
 
     val scrollOffset = remember {
         derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
@@ -161,7 +162,8 @@ private fun HomeScreenContent(
                 isVisible = state.error == null,
                 onVerticalOffsetChange = {
                     upcomingMoviesSectionYOffsetDp = it
-                }
+                },
+                deviceWidth = deviceWidth,
             )
 
             if (state.error == null){

@@ -28,10 +28,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
@@ -49,10 +49,10 @@ import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.viewmodel.search.actorSearch.ActorSearchErrorState
-import com.amsterdam.viewmodel.search.actorSearch.ActorSearchUiState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchEffect
+import com.amsterdam.viewmodel.search.actorSearch.ActorSearchErrorState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchInteractionListener
+import com.amsterdam.viewmodel.search.actorSearch.ActorSearchUiState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
@@ -145,7 +145,6 @@ private fun SearchByActorContent(
             ) {
                 items(
                     count = movies.itemCount,
-                    key = { index -> "${movies[index]?.id}-$index" },
                 ) { index ->
                     val movie = movies[index] ?: return@items
                     MediaCard(

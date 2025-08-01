@@ -62,7 +62,7 @@ import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
-import com.amsterdam.ui.screens.movieDetails.components.GallerySection
+import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.components.MovieExtrasSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieInfoSection
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
@@ -128,7 +128,7 @@ fun MovieContent(
     val listState = rememberLazyListState()
     val animationDuration by remember { mutableIntStateOf(1000) }
     val pagerState = rememberPagerState { state.moviePostersUrl.size }
-
+    val deviceWidth = configuration.screenWidthDp
 
     val surface = AppTheme.color.surface
     val transparent = AppTheme.color.surface.copy(alpha = 0f)
@@ -324,6 +324,7 @@ fun MovieContent(
                             when (selectedExtra) {
                                 MovieExtras.MORE_LIKE_THIS -> moreLikeSection(
                                     similarMovies = state.similarMovies,
+                                    deviceWidth = deviceWidth,
                                     onClick = { selectedMovieId ->
                                         interactionListener.onClickSimilarMovie(selectedMovieId)
                                     }
@@ -334,11 +335,9 @@ fun MovieContent(
                                     interactionListener
                                 )
 
-                                MovieExtras.GALLERY -> item {
-                                    GallerySection(gallery = state.gallery)
-                                }
+                                MovieExtras.GALLERY -> gallerySection(gallery = state.gallery, deviceWidth = deviceWidth)
 
-                                MovieExtras.COMPANY_PRODUCTION -> companyProductionSection(state.productionCompany)
+                                MovieExtras.COMPANY_PRODUCTION -> companyProductionSection(state.productionCompany, deviceWidth = deviceWidth)
                             }
                         }
 
