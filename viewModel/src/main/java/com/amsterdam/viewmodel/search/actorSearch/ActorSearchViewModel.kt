@@ -54,6 +54,7 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     private fun executeActorSearch(query: String) {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = {
                 Pager(
@@ -76,8 +77,10 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     override fun onUserSearchChange(keyword: String) {
-        keywordFlow.update { keyword }
-        updateState { it.copy(keyword = keyword, isLoading = keyword.isNotBlank()) }
+        if (keyword.trim() != state.value.keyword.trim()) {
+            keywordFlow.update { keyword }
+        }
+        updateState { it.copy(keyword = keyword) }
     }
 
     private fun handleSearchResults(movies: Flow<PagingData<MovieItemUiState>>) {

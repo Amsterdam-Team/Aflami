@@ -229,8 +229,9 @@ class SearchViewModel @Inject constructor(
     private fun startLoading() = updateState { it.copy(isLoading = true) }
 
     override fun onChangeSearchKeyword(keyword: String) {
-        if (keyword.trim() == state.value.keyword.trim()) return
-        _keyword.update { keyword }
+        if (keyword.trim() != state.value.keyword.trim()) {
+            _keyword.update { keyword }
+        }
         updateState { it.copy(keyword = keyword) }
     }
 
