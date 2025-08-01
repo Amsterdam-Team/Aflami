@@ -141,9 +141,11 @@ private fun SearchContent(
             )
 
             AnimatedVisibility(state.keyword.isBlank()) {
-                Column(Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())) {
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                ) {
                     SuggestionsHubSection(
                         onWorldSearchCardClicked = interaction::onClickWorldSearchCard,
                         onActorSearchCardClicked = interaction::onClickActorSearchCard
