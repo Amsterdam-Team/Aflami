@@ -308,6 +308,7 @@ class SearchViewModel @Inject constructor(
                 movies = emptyFlow(),
                 tvShows = emptyFlow(),
             )
+            _keyword.update{""}
         }
     }
 
@@ -317,6 +318,7 @@ class SearchViewModel @Inject constructor(
                 if (state.value.keyword.isNotBlank()) {
                     updateState { it.copy(isLoading = true, errorUiState = null) }
                 }
+
             }
 
             is LoadState.NotLoading -> {
