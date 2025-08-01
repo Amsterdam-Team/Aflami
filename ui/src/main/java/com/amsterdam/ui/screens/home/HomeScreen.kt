@@ -1,18 +1,20 @@
 package com.amsterdam.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -27,19 +29,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.domain.models.Mood
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.HomeAppBar
 import com.amsterdam.ui.navigation.Route
@@ -110,7 +111,6 @@ private fun HomeScreenContent(
     val scrollOffset = remember {
         derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
     }
-    var headerHeight by remember { mutableStateOf(0.dp) }
     val appBarColor by animateColorAsState(
         targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
         animationSpec = tween(800),
@@ -121,22 +121,26 @@ private fun HomeScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding()
+            .windowInsetsPadding(WindowInsets(bottom = LocalScaffoldBottomPadding.current))
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = (headerHeight / 2) + 8.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                CenterOfScreenContainer(
-                    unneededSpace = headerHeight / 2,
-                    isStatusBarTransparent = true
+            Column (Modifier.fillMaxSize()) {
+                HomeAppBar(
+                    onSearchClicked = interactionListener::onClickSearch,
+                    modifier = Modifier
+                        .background(appBarColor)
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp),
+                )
+                Box (
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     NoNetworkContainer(
                         onClickRetry = interactionListener::onClickRetryLoading,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.fillMaxSize().padding(vertical = 8.dp)
                     )
                 }
             }
@@ -214,17 +218,14 @@ private fun HomeScreenContent(
                     modifier = Modifier.fillMaxSize()
                 )
             }
+            HomeAppBar(
+                onSearchClicked = interactionListener::onClickSearch,
+                modifier = Modifier
+                    .background(appBarColor)
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp),
+            )
         }
-        HomeAppBar(
-            modifier = Modifier
-                .background(appBarColor)
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp)
-                .onSizeChanged {
-                    headerHeight = it.height.dp
-                },
-            onSearchClicked = interactionListener::onClickSearch,
-        )
     }
 }
 

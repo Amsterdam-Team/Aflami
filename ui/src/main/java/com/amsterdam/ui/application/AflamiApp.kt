@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -52,13 +54,17 @@ fun AflamiApp(
                         },
                     )
                 }
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    NavGraph(
-                        navController = navController,
-                        startDestination = startDestination
-                    )
-                    SnackBarHost()
+            ) { paddingValues ->
+                CompositionLocalProvider(
+                    LocalScaffoldBottomPadding provides paddingValues.calculateBottomPadding()
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        NavGraph(
+                            navController = navController,
+                            startDestination = startDestination
+                        )
+                        SnackBarHost()
+                    }
                 }
             }
         }
@@ -68,3 +74,5 @@ fun AflamiApp(
 val LocalNavController = staticCompositionLocalOf<NavController> {
     error("NavController not found")
 }
+
+val LocalScaffoldBottomPadding = compositionLocalOf { 0.dp }
