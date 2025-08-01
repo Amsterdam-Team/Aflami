@@ -33,7 +33,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -55,6 +58,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.amsterdam.designsystem.R
+import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.LoadingContainer
@@ -76,9 +80,9 @@ import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
-import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
 import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
+import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
@@ -123,6 +127,7 @@ fun SeriesDetailsScreen(
                 SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
                     Route.Login
                 )
+
                 is SeriesDetailsEffect.NavigateToSeriesDetails -> {
                     navController.navigate(Route.SeriesDetails(effect.tvShowId))
                 }
@@ -149,6 +154,7 @@ fun SeriesDetailsContent(
     val scrollOffset = remember {
         derivedStateOf { listState.firstVisibleItemScrollOffset }
     }
+    var headerHeight by remember { mutableStateOf(0) }
 
     val appBarColor by animateColorAsState(
         targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
@@ -209,10 +215,19 @@ fun SeriesDetailsContent(
             state.networkError, enter = fadeIn(tween(animationDuration)),
             exit = fadeOut(tween(animationDuration))
         ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                NoNetworkContainer(
-                    onClickRetry = interaction::onClickRetryButton,
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                contentAlignment = Alignment.Center
+            ) {
+                CenterOfScreenContainer(
+                    unneededSpace = headerHeight.dp,
+                ) {
+                    NoNetworkContainer(
+                        onClickRetry = interaction::onClickRetryButton,
+                    )
+                }
             }
         }
 
@@ -371,7 +386,10 @@ fun SeriesDetailsContent(
                                 )
 
                                 SeriesExtras.REVIEWS -> reviewSection(state.reviews, interaction)
-                                SeriesExtras.GALLERY -> gallerySection(gallery = state.gallery, deviceWidth = deviceWidth)
+                                SeriesExtras.GALLERY -> gallerySection(
+                                    gallery = state.gallery,
+                                    deviceWidth = deviceWidth
+                                )
 
                                 SeriesExtras.COMPANY_PRODUCTION -> companyProductionSection(
                                     state.productionCompanies, deviceWidth
@@ -395,26 +413,28 @@ fun SeriesDetailsContent(
                         Spacer(modifier = Modifier.height(spacerHeight))
                     }
                 }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(appBarColor)
-                ) {
-                    DefaultAppBar(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .statusBarsPadding(),
-                        firstOption = painterResource(R.drawable.ic_outlined_star),
-                        lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                        onNavigateBackClicked = interaction::onNavigateBack,
-                        onFirstOptionClicked = interaction::onRateClicked,
-                        onLastOptionClicked = interaction::onAddToListClicked
-                    )
-                    HorizontalDivider(color = dividerColor)
-                }
             }
         }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarColor)
+        ) {
+            DefaultAppBar(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .statusBarsPadding()
+                    .onSizeChanged { headerHeight = it.height },
+                firstOption = painterResource(R.drawable.ic_outlined_star),
+                lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                onNavigateBackClicked = interaction::onNavigateBack,
+                onFirstOptionClicked = interaction::onRateClicked,
+                onLastOptionClicked = interaction::onAddToListClicked
+            )
+            HorizontalDivider(color = dividerColor)
+        }
+
+
     }
 }
 
