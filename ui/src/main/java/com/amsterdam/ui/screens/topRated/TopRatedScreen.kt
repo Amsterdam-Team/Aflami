@@ -54,6 +54,9 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val navController = LocalNavController.current
     val mediaItems = state.mediaItems.collectAsLazyPagingItems()
     TopRatedContent(state, viewModel, mediaItems)
+    LaunchedEffect(mediaItems.loadState) {
+        viewModel.onPagingLoadStateChanged(mediaItems.loadState)
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
             when (it) {

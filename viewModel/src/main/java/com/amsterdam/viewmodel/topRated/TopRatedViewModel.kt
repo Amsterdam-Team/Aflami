@@ -1,6 +1,8 @@
 package com.amsterdam.viewmodel.topRated
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -96,6 +98,24 @@ class TopRatedViewModel @Inject constructor(
 
     override fun onClickRetryLoading() {
         getTopRatedScreenData()
+    }
+
+    override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {
+        when (val refreshState = loadStates.refresh
+        ) {
+            is LoadState.Loading -> {
+                updateState { it.copy(isLoading = true, error = null) }
+            }
+
+            is LoadState.NotLoading -> {
+                updateState { it.copy(isLoading = false) }
+            }
+
+            is LoadState.Error -> {
+                updateState { it.copy(isLoading = false) }
+                onError(refreshState.error as AflamiException)
+            }
+        }
     }
 
     override fun onClickBack() {
