@@ -6,6 +6,7 @@ import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.PopularTvShowDto
+import kotlinx.datetime.Instant
 import javax.inject.Inject
 
 class PopularTvShowLocalDataSourceImpl @Inject constructor(
@@ -26,7 +27,7 @@ class PopularTvShowLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteExpiredPopularTvShows(
-        expirationTime: Long,
+        expirationTime: Instant,
         storedLanguage: String
     ) {
         popularTvShowDao.deleteExpiredPopularTvShows(expirationTime, storedLanguage)

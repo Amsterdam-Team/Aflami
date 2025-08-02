@@ -6,6 +6,7 @@ import com.amsterdam.localdatasource.roomDataBase.daos.PopularMovieDao
 import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.PopularMovieDto
+import kotlinx.datetime.Instant
 import javax.inject.Inject
 
 
@@ -27,7 +28,7 @@ class PopularMovieLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteExpiredPopularMovies(
-        expirationTime: Long,
+        expirationTime: Instant,
         storedLanguage: String
     ) {
         popularMovieDao.deleteExpiredPopularMovies(expirationTime, storedLanguage)

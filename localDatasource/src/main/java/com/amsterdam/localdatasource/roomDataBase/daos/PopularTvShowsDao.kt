@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.amsterdam.repository.dto.local.PopularTvShowDto
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Instant
 
 @Dao
 interface PopularTvShowsDao {
@@ -17,5 +18,5 @@ interface PopularTvShowsDao {
             WHERE dateAdded < :expirationTime and storedLanguage = :storedLanguage
         """
     )
-    suspend fun deleteExpiredPopularTvShows(expirationTime: Long, storedLanguage: String)
+    suspend fun deleteExpiredPopularTvShows(expirationTime: Instant, storedLanguage: String)
 }

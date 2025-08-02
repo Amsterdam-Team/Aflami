@@ -134,7 +134,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getPopularMovies(): List<Movie> {
         return popularMovieLocalSource.deleteExpiredPopularMovies(
-            expirationTime = Clock.System.now().minus(1.days).toEpochMilliseconds(),
+            expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         ).let {
             movieLocalSource.getPopularMovies(preferences.getDeviceLanguage().first())

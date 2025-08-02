@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Instant
 
 @Dao
 interface PopularMovieDao {
@@ -17,5 +18,5 @@ interface PopularMovieDao {
             WHERE dateAdded < :expirationTime and storedLanguage = :storedLanguage
         """
     )
-    suspend fun deleteExpiredPopularMovies(expirationTime: Long, storedLanguage: String)
+    suspend fun deleteExpiredPopularMovies(expirationTime: Instant, storedLanguage: String)
 }

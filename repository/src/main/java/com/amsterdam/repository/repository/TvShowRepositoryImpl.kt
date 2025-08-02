@@ -50,7 +50,7 @@ class TvShowRepositoryImpl @Inject constructor(
 ) : TvShowRepository {
     override suspend fun getPopularTvShows(): List<TvShow> {
         return popularTvLocalSource.deleteExpiredPopularTvShows(
-            expirationTime = Clock.System.now().minus(1.days).toEpochMilliseconds(),
+            expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         ).let {
             localTvDataSource.getPopularTvShows(preferences.getDeviceLanguage().first())
