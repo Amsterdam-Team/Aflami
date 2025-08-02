@@ -75,4 +75,8 @@ class TvShowLocalDataSourceImpl @Inject constructor(
     ): LocalTvShowDto? {
         return tvShowDao.getTvShowById(tvShowId, storedLanguage)
     }
+
+    override suspend fun getPopularTvShows(storedLanguage: String): List<TvShowWithCategory> {
+        return tvShowDao.getPopularTvShows(storedLanguage)
+    }
 }

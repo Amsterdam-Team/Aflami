@@ -12,6 +12,7 @@ import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataSo
 import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.PopularMovieLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.PopularTvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
@@ -21,6 +22,7 @@ import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.local.CountryLocalSource
 import com.amsterdam.repository.datasource.local.MovieLocalSource
 import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
+import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
@@ -83,6 +85,10 @@ object LocalDataSourceProviderModule {
     @Provides
     @Singleton
     fun providePopularMovieDao(db: AflamiDatabase) = db.popularMovieDao()
+
+    @Provides
+    @Singleton
+    fun providePopularTvShowsDao(db: AflamiDatabase) = db.popularTvShowsDao()
 }
 
 @Module
@@ -142,4 +148,10 @@ abstract class LocalDataSourceBindsModule {
     abstract fun bindPopularMovieLocalDataSource(
         impl: PopularMovieLocalDataSourceImpl
     ): PopularMovieLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindPopularTvShowLocalDataSource(
+        impl: PopularTvShowLocalDataSourceImpl
+    ): PopularTvShowLocalSource
 }

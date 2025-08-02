@@ -8,6 +8,7 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.remote.TvShowsRemoteSource
 import com.amsterdam.repository.dto.local.utils.SearchType
@@ -26,12 +27,15 @@ import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteDetailsLocalMap
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.days
 
 class TvShowRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
+    private val popularTvLocalSource: PopularTvShowLocalSource,
     private val preferences: AppPreferences,
     private val tvShowGenreIdsRemoteLocalMapper: TvShowGenreIdsRemoteLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
@@ -45,7 +49,24 @@ class TvShowRepositoryImpl @Inject constructor(
     private val castRemoteMapper: CastRemoteMapper,
 ) : TvShowRepository {
     override suspend fun getPopularTvShows(): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getPopularTvShows().results)
+        return popularTvLocalSource.deleteExpiredPopularTvShows(
+            expirationTime = Clock.System.now().minus(1.days).toEpochMilliseconds(),
+            storedLanguage = preferences.getDeviceLanguage().first()
+        ).let {
+            localTvDataSource.getPopularTvShows(preferences.getDeviceLanguage().first())
+                .map { tvShowWithCategoryLocalMapper.toEntity(it) }
+                .takeIf { it.isNotEmpty() }
+                ?: remoteTvDataSource.getPopularTvShows()
+                    .let { remoteTvShows ->
+                        popularTvLocalSource.addPopularTvShows(
+                            tvShowRemoteLocalMapper.toLocalList(
+                                remoteTvShows.results,
+                                listOf(preferences.getDeviceLanguage().first())
+                            )
+                        )
+                        tvRemoteMapper.toEntityList(remoteTvShows.results)
+                    }
+        }
     }
 
 

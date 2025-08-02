@@ -16,4 +16,5 @@ object DatabaseConstants {
     const val MOVIE_WATCH_HISTORY_TABLE = "movie_watch_history"
     const val TV_WATCH_HISTORY_TABLE = "tv_watch_history"
     const val POPULAR_MOVIE_TABLE = "popular_movies"
+    const val POPULAR_TV_SHOW_TABLE = "popular_tv_shows"
 }

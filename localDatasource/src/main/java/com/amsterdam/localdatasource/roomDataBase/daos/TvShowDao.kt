@@ -62,8 +62,10 @@ interface TvShowDao {
     ): List<TvShowWithCategory>
 
     @Upsert
-    suspend fun insertTvShow(tvShow: LocalTvShowDto)
+    suspend fun insertTvShows(tvShows: List<LocalTvShowDto>)
 
+    @Upsert
+    suspend fun insertTvShow(tvShow: LocalTvShowDto)
 
     @Upsert
     suspend fun addAllTvShows(tvShows: List<LocalTvShowDto>)
@@ -76,4 +78,17 @@ interface TvShowDao {
 
     @Query(" SELECT * FROM ${DatabaseConstants.TV_SHOW_TABLE} WHERE tvShowId = :tvShowId and storedLanguage = :storedLanguage")
     suspend fun getTvShowById(tvShowId: Long, storedLanguage: String): LocalTvShowDto?
+
+    @Query(
+        """
+        SELECT * FROM ${DatabaseConstants.TV_SHOW_TABLE} AS movie
+        INNER JOIN ${DatabaseConstants.POPULAR_TV_SHOW_TABLE} AS popularMovies
+        ON movie.tvShowId = popularMovies.tvShowId
+        LEFT JOIN ${DatabaseConstants.TV_SHOW_CATEGORY_CROSS_REF_TABLE} AS categoryCrossRef
+        ON movie.tvShowId = categoryCrossRef.tvShowId
+        WHERE movie.storedLanguage = popularMovies.storedLanguage
+        AND movie.storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun getPopularTvShows(storedLanguage: String): List<TvShowWithCategory>
 }
