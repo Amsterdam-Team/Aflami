@@ -31,4 +31,6 @@ interface MovieLocalSource {
     suspend fun incrementGenreInterest(categoryId: Long)
 
     suspend fun insertMovie(movie : LocalMovieDto)
+
+    suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories>
 }

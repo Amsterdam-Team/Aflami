@@ -12,6 +12,7 @@ import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.CountryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
+import com.amsterdam.localdatasource.roomDataBase.daos.PopularMovieDao
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
@@ -26,6 +27,7 @@ import com.amsterdam.repository.dto.local.LocalTvShowCategoryInterestDto
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
+import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.SearchMovieCrossRefDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -45,7 +47,8 @@ import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
         TvShowCategoryCrossRefDto::class,
         SearchMovieCrossRefDto::class,
         LocalMovieCategoryInterestDto::class,
-        LocalTvShowCategoryInterestDto::class],
+        LocalTvShowCategoryInterestDto::class,
+        PopularMovieDto::class,],
     version = 1,
     exportSchema = false
 )
@@ -59,6 +62,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun watchHistoryDao(): WatchHistoryDao
     abstract fun movieCategoryInterestDao(): MovieCategoryInterestDao
     abstract fun tvShowCategoryInterestDao(): TvShowCategoryInterestDao
+    abstract fun popularMovieDao(): PopularMovieDao
 
     companion object {
         private const val DATABASE_NAME = "AflamiDatabase.db"

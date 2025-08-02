@@ -11,6 +11,7 @@ import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.PopularMovieLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
@@ -19,6 +20,7 @@ import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.local.CountryLocalSource
 import com.amsterdam.repository.datasource.local.MovieLocalSource
+import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
@@ -32,7 +34,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDataSourceProviderModule {
-
     @Provides
     @Singleton
     fun provideDataStore(app: Application): DataStore<Preferences> {
@@ -78,12 +79,15 @@ object LocalDataSourceProviderModule {
     @Provides
     @Singleton
     fun provideTvShowCategoryInterestDao(db: AflamiDatabase) = db.tvShowCategoryInterestDao()
+
+    @Provides
+    @Singleton
+    fun providePopularMovieDao(db: AflamiDatabase) = db.popularMovieDao()
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class LocalDataSourceBindsModule {
-
     @Binds
     @Singleton
     abstract fun bindAuthenticationLocalDataSource(
@@ -133,4 +137,9 @@ abstract class LocalDataSourceBindsModule {
         impl: WatchHistoryLocalDataSourceImpl
     ): WatchHistoryLocalDataSource
 
+    @Binds
+    @Singleton
+    abstract fun bindPopularMovieLocalDataSource(
+        impl: PopularMovieLocalDataSourceImpl
+    ): PopularMovieLocalSource
 }

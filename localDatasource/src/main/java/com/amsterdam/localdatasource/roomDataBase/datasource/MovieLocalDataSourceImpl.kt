@@ -79,4 +79,9 @@ class MovieLocalDataSourceImpl @Inject constructor(
     override suspend fun insertMovie(movie: LocalMovieDto) {
         movieDao.insertMovie(movie)
     }
+
+    override
+    suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories> {
+        return movieDao.getPopularMovies(storedLanguage)
+    }
 }

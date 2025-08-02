@@ -15,4 +15,5 @@ object DatabaseConstants {
     const val TV_SHOW_CATEGORY_INTEREST_TABLE = "tv_show_category_interest"
     const val MOVIE_WATCH_HISTORY_TABLE = "movie_watch_history"
     const val TV_WATCH_HISTORY_TABLE = "tv_watch_history"
+    const val POPULAR_MOVIE_TABLE = "popular_movies"
 }

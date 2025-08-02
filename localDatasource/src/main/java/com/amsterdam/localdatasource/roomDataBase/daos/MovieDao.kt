@@ -1,6 +1,7 @@
 package com.amsterdam.localdatasource.roomDataBase.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -43,7 +44,6 @@ interface MovieDao {
         offset: Int
     ): List<MovieWithCategories>
 
-
     @Query(
         """
       SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
@@ -63,12 +63,14 @@ interface MovieDao {
         offset: Int
     ): List<MovieWithCategories>
 
-
     @Upsert
     suspend fun insertMovies(movies: List<LocalMovieDto>)
 
     @Upsert
     suspend fun insertMovie(movies: LocalMovieDto)
+
+    @Delete
+    suspend fun deleteMovies(movies: List<LocalMovieDto>)
 
     @Upsert
     suspend fun insertSearchEntries(entries: List<SearchMovieCrossRefDto>)
@@ -78,4 +80,17 @@ interface MovieDao {
 
     @Query(" SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} WHERE movieId = :movieId and storedLanguage = :storedLanguage")
     suspend fun getMovieById(movieId: Long,storedLanguage : String): LocalMovieDto?
+
+    @Query(
+        """
+        SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
+        INNER JOIN ${DatabaseConstants.POPULAR_MOVIE_TABLE} AS popularMovies
+        ON movie.movieId = popularMovies.movieId
+        LEFT JOIN ${DatabaseConstants.MOVIE_CATEGORY_CROSS_REF_TABLE} AS categoryCrossRef
+        ON movie.movieId = categoryCrossRef.movieId
+        WHERE movie.storedLanguage = popularMovies.storedLanguage
+        AND movie.storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories>
 }
