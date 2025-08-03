@@ -23,30 +23,30 @@ abstract class RemoteDataSourceBindModule {
     @Binds
     @Singleton
     abstract fun bindAuthenticationRemoteSource(
-        impl: AuthenticationRemoteDataSourceImpl
+        authenticationRemoteDataSourceImpl: AuthenticationRemoteDataSourceImpl
     ): AuthenticationRemoteSource
 
     @Binds
     @Singleton
     abstract fun bindCategoryRemoteSource(
-        impl: CategoryRemoteDataSourceImpl
+        categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
     ): CategoryRemoteSource
 
     @Binds
     @Singleton
     abstract fun bindCountryRemoteSource(
-        impl: CountryRemoteDataSourceImpl
+        countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
     ): CountryRemoteSource
 
     @Binds
     @Singleton
     abstract fun bindMovieRemoteSource(
-        impl: MovieRemoteDataSourceImpl
+        movieRemoteDataSourceImpl: MovieRemoteDataSourceImpl
     ): MovieRemoteSource
 
     @Binds
     @Singleton
     abstract fun bindTvShowsRemoteSource(
-        impl: TvRemoteDataSourceImpl
+        tvRemoteDataSourceImpl: TvRemoteDataSourceImpl
     ): TvShowsRemoteSource
 }
