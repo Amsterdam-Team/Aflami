@@ -3,6 +3,7 @@ package com.amsterdam.repository.datasource.local
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.amsterdam.repository.dto.local.utils.SearchType
+import kotlinx.datetime.Instant
 
 interface MovieLocalSource {
     suspend fun getMoviesByKeywordAndSearchType(
@@ -36,4 +37,16 @@ interface MovieLocalSource {
     suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories>
 
     suspend fun getUpcomingMovies(storedLanguage: String): List<MovieWithCategories>
+
+    suspend fun addPopularMovies(movies: List<LocalMovieDto>)
+
+    suspend fun deleteExpiredPopularMovies(expirationTime: Instant, storedLanguage: String)
+
+    suspend fun addTopRatedMovies(movies: List<LocalMovieDto>)
+
+    suspend fun deleteAllExpiredTopRatedMovies(expirationTime: Instant, storedLanguage: String)
+
+    suspend fun addUpcomingMovies(movies: List<LocalMovieDto>)
+
+    suspend fun deleteExpiredUpcomingMovies(expirationTime: Instant, storedLanguage: String)
 }

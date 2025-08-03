@@ -5,10 +5,13 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.PopularTvShowDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
+import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Instant
 
 @Dao
 interface TvShowDao {
@@ -103,4 +106,26 @@ interface TvShowDao {
     """
     )
     suspend fun getTopRatedTvShows(storedLanguage: String): List<LocalTvShowDto>
+
+    @Upsert
+    suspend fun insertPopularTvShows(tvShows: List<PopularTvShowDto>)
+
+    @Query(
+        """
+            DELETE FROM ${DatabaseConstants.POPULAR_TV_SHOW_TABLE}
+            WHERE dateAdded < :expirationTime and storedLanguage = :storedLanguage
+        """
+    )
+    suspend fun deleteExpiredPopularTvShows(expirationTime: Instant, storedLanguage: String)
+
+    @Upsert
+    suspend fun insertTopRatedTvShows(tvShows: List<TopRatedTvShowDto>)
+
+    @Query(
+        """
+            DELETE FROM ${DatabaseConstants.TOP_RATED_TV_SHOW_TABLE} 
+            WHERE dateAdded < :expirationTime AND storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun deleteExpiredTopRatedTvShows(expirationTime: Instant, storedLanguage: String)
 }

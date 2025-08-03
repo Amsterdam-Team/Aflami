@@ -8,8 +8,6 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.datasource.local.AppPreferences
-import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
-import com.amsterdam.repository.datasource.local.TopRatedTvShowLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.remote.TvShowsRemoteSource
 import com.amsterdam.repository.dto.local.LocalTvShowDto
@@ -39,8 +37,6 @@ class TvShowRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
-    private val popularTvLocalSource: PopularTvShowLocalSource,
-    private val topRatedTvShowLocalSource: TopRatedTvShowLocalSource,
     private val tvShowLocalMapper: TvShowLocalMapper,
     private val preferences: AppPreferences,
     private val tvRemoteMapper: TvShowRemoteMapper,
@@ -77,7 +73,7 @@ class TvShowRepositoryImpl @Inject constructor(
     }
 
     private suspend fun deleteExpiredPopularTvShows() {
-        popularTvLocalSource.deleteExpiredPopularTvShows(
+        localTvDataSource.deleteExpiredPopularTvShows(
             expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         )
@@ -95,7 +91,7 @@ class TvShowRepositoryImpl @Inject constructor(
 
     private suspend fun savePopularTvShows(remoteTvShows: List<RemoteTvShowItemDto>) {
         saveTvShowWithCategories(remoteTvShows).also {
-            popularTvLocalSource.addPopularTvShows(
+            localTvDataSource.addPopularTvShows(
                 tvShowRemoteLocalMapper.toLocalList(
                     remoteTvShows,
                     listOf(preferences.getDeviceLanguage().first())
@@ -105,7 +101,7 @@ class TvShowRepositoryImpl @Inject constructor(
     }
 
     private suspend fun deleteExpiredTopRatedTvShows() {
-        topRatedTvShowLocalSource.deleteExpiredTopRatedTvShows(
+        localTvDataSource.deleteExpiredTopRatedTvShows(
             expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         )
@@ -123,7 +119,7 @@ class TvShowRepositoryImpl @Inject constructor(
 
     private suspend fun saveTopRatedTvShows(remoteTvShows: List<RemoteTvShowItemDto>) {
         saveTvShowWithCategories(remoteTvShows).also {
-            topRatedTvShowLocalSource.addTopRatedTvShows(
+            localTvDataSource.addTopRatedTvShows(
                 tvShowRemoteLocalMapper.toLocalList(
                     remoteTvShows,
                     listOf(preferences.getDeviceLanguage().first())

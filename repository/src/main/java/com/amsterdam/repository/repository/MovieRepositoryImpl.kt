@@ -9,9 +9,6 @@ import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalSource
-import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
-import com.amsterdam.repository.datasource.local.TopRatedMovieLocalSource
-import com.amsterdam.repository.datasource.local.UpcomingMovieLocalSource
 import com.amsterdam.repository.datasource.remote.MovieRemoteSource
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
@@ -36,10 +33,7 @@ import kotlin.time.Duration.Companion.days
 class MovieRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val movieLocalSource: MovieLocalSource,
-    private val topRatedMovieLocalSource: TopRatedMovieLocalSource,
     private val movieRemoteDataSource: MovieRemoteSource,
-    private val popularMovieLocalSource: PopularMovieLocalSource,
-    private val upcomingMovieLocalSource: UpcomingMovieLocalSource,
     private val preferences: AppPreferences,
     private val movieRemoteMapper: MovieRemoteMapper,
     private val movieLocalMapper: MovieLocalMapper,
@@ -171,7 +165,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     private suspend fun deleteExpiredUpcomingMovies() {
-        upcomingMovieLocalSource.deleteExpiredUpcomingMovies(
+        movieLocalSource.deleteExpiredUpcomingMovies(
             expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         )
@@ -189,7 +183,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     private suspend fun saveUpcomingMovies(remoteMovies: List<RemoteMovieItemDto>) {
         saveMovieWithCategories(remoteMovies).also {
-            upcomingMovieLocalSource.addUpcomingMovies(
+            movieLocalSource.addUpcomingMovies(
                 movieRemoteLocalMapper.toLocalList(
                     remoteMovies,
                     listOf(preferences.getDeviceLanguage().first())
@@ -199,7 +193,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     private suspend fun deleteExpiredPopularMovies() {
-        popularMovieLocalSource.deleteExpiredPopularMovies(
+        movieLocalSource.deleteExpiredPopularMovies(
             expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         )
@@ -217,7 +211,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     private suspend fun savePopularMovies(remoteMovies: List<RemoteMovieItemDto>) {
         saveMovieWithCategories(remoteMovies).also {
-            popularMovieLocalSource.addPopularMovies(
+            movieLocalSource.addPopularMovies(
                 movieRemoteLocalMapper.toLocalList(
                     remoteMovies,
                     listOf(preferences.getDeviceLanguage().first())
@@ -227,7 +221,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     private suspend fun deleteExpiredTopRatedMovies() {
-        topRatedMovieLocalSource.deleteAllExpiredTopRatedMovies(
+        movieLocalSource.deleteAllExpiredTopRatedMovies(
             expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
         )
@@ -245,7 +239,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     private suspend fun saveTopRatedMovies(remoteMovies: List<RemoteMovieItemDto>) {
         saveMovieWithCategories(remoteMovies).also {
-            topRatedMovieLocalSource.addTopRatedMovies(
+            movieLocalSource.addTopRatedMovies(
                 movieRemoteLocalMapper.toLocalList(
                     remoteMovies,
                     listOf(preferences.getDeviceLanguage().first())

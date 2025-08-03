@@ -7,10 +7,14 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
+import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.SearchMovieCrossRefDto
+import com.amsterdam.repository.dto.local.TopRatedMovieDto
+import com.amsterdam.repository.dto.local.UpcomingMovieDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
 import com.amsterdam.repository.dto.local.utils.SearchType
+import kotlinx.datetime.Instant
 
 @Dao
 interface MovieDao {
@@ -118,4 +122,37 @@ interface MovieDao {
     """
     )
     suspend fun getUpcomingMovies(storedLanguage: String): List<MovieWithCategories>
+
+    @Upsert
+    suspend fun insertPopularMovies(movies: List<PopularMovieDto>)
+
+    @Query(
+        """
+            DELETE FROM ${DatabaseConstants.POPULAR_MOVIE_TABLE}
+            WHERE dateAdded < :expirationTime and storedLanguage = :storedLanguage
+        """
+    )
+    suspend fun deleteExpiredPopularMovies(expirationTime: Instant, storedLanguage: String)
+
+    @Upsert
+    suspend fun insertTopRatedMovies(movies: List<TopRatedMovieDto>)
+
+    @Query(
+        """
+            DELETE FROM ${DatabaseConstants.TOP_RATED_MOVIE_TABLE} 
+            WHERE dateAdded < :expirationTime AND storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun deleteAllExpiredTopRatedMovies(expirationTime: Instant, storedLanguage: String)
+
+    @Upsert
+    suspend fun insertUpcomingMovies(movies: List<UpcomingMovieDto>)
+
+    @Query(
+        """
+            DELETE FROM ${DatabaseConstants.UPCOMING_MOVIE_TABLE}
+            WHERE dateAdded < :expirationTime and storedLanguage = :storedLanguage
+        """
+    )
+    suspend fun deleteExpiredUpcomingMovies(expirationTime: Instant, storedLanguage: String)
 }

@@ -11,26 +11,16 @@ import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.PopularMovieLocalDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.PopularTvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.TopRatedMovieLocalSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.TopRatedTvShowLocalSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.UpcomingMovieLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.local.CountryLocalSource
 import com.amsterdam.repository.datasource.local.MovieLocalSource
-import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
-import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
-import com.amsterdam.repository.datasource.local.TopRatedMovieLocalSource
-import com.amsterdam.repository.datasource.local.TopRatedTvShowLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
-import com.amsterdam.repository.datasource.local.UpcomingMovieLocalSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
 import dagger.Binds
 import dagger.Module
@@ -87,26 +77,6 @@ object LocalDataSourceProviderModule {
     @Provides
     @Singleton
     fun provideTvShowCategoryInterestDao(db: AflamiDatabase) = db.tvShowCategoryInterestDao()
-
-    @Provides
-    @Singleton
-    fun providePopularMovieDao(db: AflamiDatabase) = db.popularMovieDao()
-
-    @Provides
-    @Singleton
-    fun providePopularTvShowsDao(db: AflamiDatabase) = db.popularTvShowsDao()
-
-    @Provides
-    @Singleton
-    fun provideTopRatedMovieDao(db: AflamiDatabase) = db.topRatedMovieDao()
-
-    @Provides
-    @Singleton
-    fun provideTopRatedTvShowDao(db: AflamiDatabase) = db.topRatedTvShowDao()
-
-    @Provides
-    @Singleton
-    fun provideUpcomingMovieDao(db: AflamiDatabase) = db.upcomingMovieDao()
 }
 
 @Module
@@ -160,34 +130,4 @@ abstract class LocalDataSourceBindsModule {
     abstract fun bindWatchHistoryLocalDataSource(
         impl: WatchHistoryLocalDataSourceImpl
     ): WatchHistoryLocalDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindPopularMovieLocalDataSource(
-        impl: PopularMovieLocalDataSourceImpl
-    ): PopularMovieLocalSource
-
-    @Binds
-    @Singleton
-    abstract fun bindUpcomingMovieLocalDataSource(
-        impl: UpcomingMovieLocalDataSourceImpl
-    ): UpcomingMovieLocalSource
-
-    @Binds
-    @Singleton
-    abstract fun bindPopularTvShowLocalDataSource(
-        impl: PopularTvShowLocalDataSourceImpl
-    ): PopularTvShowLocalSource
-
-    @Binds
-    @Singleton
-    abstract fun bindTopRatedMovieLocalDataSource(
-        impl: TopRatedMovieLocalSourceImpl
-    ): TopRatedMovieLocalSource
-
-    @Binds
-    @Singleton
-    abstract fun bindTopRatedTvShowLocalDataSource(
-        impl: TopRatedTvShowLocalSourceImpl
-    ): TopRatedTvShowLocalSource
 }

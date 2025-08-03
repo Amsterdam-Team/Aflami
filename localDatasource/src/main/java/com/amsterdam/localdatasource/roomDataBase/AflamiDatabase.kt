@@ -12,14 +12,9 @@ import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.CountryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
-import com.amsterdam.localdatasource.roomDataBase.daos.PopularMovieDao
-import com.amsterdam.localdatasource.roomDataBase.daos.PopularTvShowsDao
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
-import com.amsterdam.localdatasource.roomDataBase.daos.TopRatedMovieDao
-import com.amsterdam.localdatasource.roomDataBase.daos.TopRatedTvShowDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
-import com.amsterdam.localdatasource.roomDataBase.daos.UpcomingMovieDao
 import com.amsterdam.localdatasource.roomDataBase.daos.WatchHistoryDao
 import com.amsterdam.repository.dto.local.LocalCountryDto
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
@@ -75,11 +70,6 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun watchHistoryDao(): WatchHistoryDao
     abstract fun movieCategoryInterestDao(): MovieCategoryInterestDao
     abstract fun tvShowCategoryInterestDao(): TvShowCategoryInterestDao
-    abstract fun popularMovieDao(): PopularMovieDao
-    abstract fun upcomingMovieDao(): UpcomingMovieDao
-    abstract fun popularTvShowsDao(): PopularTvShowsDao
-    abstract fun topRatedMovieDao(): TopRatedMovieDao
-    abstract fun topRatedTvShowDao(): TopRatedTvShowDao
 
     companion object {
         private const val DATABASE_NAME = "AflamiDatabase.db"

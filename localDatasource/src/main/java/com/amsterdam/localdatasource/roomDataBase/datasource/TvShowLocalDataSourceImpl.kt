@@ -5,9 +5,12 @@ import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.PopularTvShowDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
+import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
+import kotlinx.datetime.Instant
 import javax.inject.Inject
 
 class TvShowLocalDataSourceImpl @Inject constructor(
@@ -83,5 +86,43 @@ class TvShowLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getTopRatedTvShows(storedLanguage: String): List<LocalTvShowDto> {
         return tvShowDao.getTopRatedTvShows(storedLanguage)
+    }
+
+    @Transaction
+    override suspend fun addPopularTvShows(tvShows: List<LocalTvShowDto>) {
+        tvShowDao.insertTvShows(tvShows)
+        val entries = tvShows.map { tvShow ->
+            PopularTvShowDto(
+                tvShowId = tvShow.tvShowId,
+                storedLanguage = tvShow.storedLanguage,
+                dateAdded = tvShow.insertedDate
+            )
+        }
+        tvShowDao.insertPopularTvShows(entries)
+    }
+
+    override suspend fun deleteExpiredPopularTvShows(
+        expirationTime: Instant,
+        storedLanguage: String
+    ) {
+        tvShowDao.deleteExpiredPopularTvShows(expirationTime, storedLanguage)
+    }
+
+    override suspend fun addTopRatedTvShows(tvShows: List<LocalTvShowDto>) {
+        tvShowDao.insertTvShows(tvShows)
+        val entries = tvShows.map { tvShow ->
+            TopRatedTvShowDto(
+                tvShowId = tvShow.tvShowId,
+                storedLanguage = tvShow.storedLanguage
+            )
+        }
+        tvShowDao.insertTopRatedTvShows(entries)
+    }
+
+    override suspend fun deleteExpiredTopRatedTvShows(
+        expirationTime: Instant,
+        storedLanguage: String
+    ) {
+        tvShowDao.deleteExpiredTopRatedTvShows(expirationTime, storedLanguage)
     }
 }
