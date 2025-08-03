@@ -190,7 +190,7 @@ private fun PopularMoviesPager(
     onClickMediaItem: (Long, MediaType) -> Unit
 ){
     val itemWidth = remember { 244.dp }
-    val horizontalPadding = remember { (screenWidth - itemWidth) / 2 }
+    val horizontalPadding = remember { ((screenWidth - itemWidth) / 2).coerceAtLeast(0.dp) }
     HorizontalPager(
         state = pagerState,
         pageSize = PageSize.Fixed(itemWidth),
