@@ -81,13 +81,13 @@ interface TvShowDao {
 
     @Query(
         """
-        SELECT * FROM ${DatabaseConstants.TV_SHOW_TABLE} AS movie
-        INNER JOIN ${DatabaseConstants.POPULAR_TV_SHOW_TABLE} AS popularMovies
-        ON movie.tvShowId = popularMovies.tvShowId
+        SELECT DISTINCT tv.* FROM ${DatabaseConstants.TV_SHOW_TABLE} AS tv
+        INNER JOIN ${DatabaseConstants.POPULAR_TV_SHOW_TABLE} AS popularTv
+        ON tv.tvShowId = popularTv.tvShowId
         LEFT JOIN ${DatabaseConstants.TV_SHOW_CATEGORY_CROSS_REF_TABLE} AS categoryCrossRef
-        ON movie.tvShowId = categoryCrossRef.tvShowId
-        WHERE movie.storedLanguage = popularMovies.storedLanguage
-        AND movie.storedLanguage = :storedLanguage
+        ON tv.tvShowId = categoryCrossRef.tvShowId
+        WHERE tv.storedLanguage = popularTv.storedLanguage
+        AND tv.storedLanguage = :storedLanguage
     """
     )
     suspend fun getPopularTvShows(storedLanguage: String): List<TvShowWithCategory>

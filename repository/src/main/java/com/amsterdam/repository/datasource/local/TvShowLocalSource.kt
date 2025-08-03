@@ -1,6 +1,5 @@
 package com.amsterdam.repository.datasource.local
 
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 
@@ -20,7 +19,7 @@ interface TvShowLocalSource {
 
     suspend fun addTvShowWithCategories(
         tvShow: LocalTvShowDto,
-        categories: List<LocalTvShowCategoryDto>,
+        categoryIds: List<Long>,
         storedLanguage: String
     )
 

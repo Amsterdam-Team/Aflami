@@ -1,9 +1,9 @@
 package com.amsterdam.localdatasource.roomDataBase.datasource
 
+import androidx.room.Transaction
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -45,16 +45,17 @@ class TvShowLocalDataSourceImpl @Inject constructor(
         tvShowDao.insertTvShowSearchEntries(entries)
     }
 
+    @Transaction
     override suspend fun addTvShowWithCategories(
         tvShow: LocalTvShowDto,
-        categories: List<LocalTvShowCategoryDto>,
+        categoryIds: List<Long>,
         storedLanguage: String
     ) {
         tvShowDao.insertTvShow(tvShow)
-        val tvShowCrossRefs = categories.map { category ->
+        val tvShowCrossRefs = categoryIds.map { categoryId ->
             TvShowCategoryCrossRefDto(
                 tvShowId = tvShow.tvShowId,
-                categoryId = category.categoryId,
+                categoryId = categoryId,
                 storedLanguage = storedLanguage
             )
         }

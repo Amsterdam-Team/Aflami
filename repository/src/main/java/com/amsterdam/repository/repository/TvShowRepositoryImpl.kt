@@ -24,7 +24,6 @@ import com.amsterdam.repository.mapper.remote.EpisodeRemoteMapper
 import com.amsterdam.repository.mapper.remote.SeasonRemoteMapper
 import com.amsterdam.repository.mapper.remote.TvShowDetailsRemoteMapper
 import com.amsterdam.repository.mapper.remote.TvShowRemoteMapper
-import com.amsterdam.repository.mapper.remoteToLocal.TvShowGenreIdsRemoteLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteDetailsLocalMapper
 import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
@@ -41,7 +40,6 @@ class TvShowRepositoryImpl @Inject constructor(
     private val topRatedTvShowLocalSource: TopRatedTvShowLocalSource,
     private val tvShowLocalMapper: TvShowLocalMapper,
     private val preferences: AppPreferences,
-    private val tvShowGenreIdsRemoteLocalMapper: TvShowGenreIdsRemoteLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val seasonRemoteMapper: SeasonRemoteMapper,
@@ -159,6 +157,7 @@ class TvShowRepositoryImpl @Inject constructor(
                 .takeIf { it.isNotEmpty() }
                 ?: remoteTvDataSource.getTopRatedTvShows(page)
                     .let { remoteTvShows ->
+                        saveTvShowWithCategories(remoteTvShows)
                         topRatedTvShowLocalSource.addTopRatedTvShows(
                             tvShowRemoteLocalMapper.toLocalList(
                                 remoteTvShows.results,
@@ -213,17 +212,16 @@ class TvShowRepositoryImpl @Inject constructor(
     }
 
     private suspend fun onSaveTvShowWithCategories(remoteTvShow: RemoteTvShowItemDto) {
-        localTvDataSource.addTvShowWithCategories(
-            tvShow = tvShowRemoteLocalMapper.toLocal(
-                remoteTvShow,
-                listOf(preferences.getDeviceLanguage().first())
-            ),
-            categories = tvShowGenreIdsRemoteLocalMapper.toLocalList(
-                remoteTvShow.genreIds,
-                listOf(preferences.getDeviceLanguage().first())
-            ),
-            storedLanguage = preferences.getDeviceLanguage().first()
-        )
+        categoryRepository.getTvShowCategories().also {
+            localTvDataSource.addTvShowWithCategories(
+                tvShow = tvShowRemoteLocalMapper.toLocal(
+                    remoteTvShow,
+                    listOf(preferences.getDeviceLanguage().first())
+                ),
+                categoryIds = remoteTvShow.genreIds.map(Int::toLong),
+                storedLanguage = preferences.getDeviceLanguage().first()
+            )
+        }
     }
 
     private suspend fun incrementUserInterestByTvShow(remoteCategories: List<RemoteCategoryDto>) {

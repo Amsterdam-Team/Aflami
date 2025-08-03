@@ -164,6 +164,7 @@ class MovieRepositoryImpl @Inject constructor(
                 .takeIf { it.isNotEmpty() }
                 ?: movieRemoteDataSource.getPopularMovies()
                     .let { remoteMovies ->
+                        saveMovieWithCategories(remoteMovies)
                         popularMovieLocalSource.addPopularMovies(
                             movieRemoteLocalMapper.toLocalList(
                                 remoteMovies.results,
