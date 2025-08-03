@@ -2,12 +2,9 @@ package com.amsterdam.localdatasource.roomDataBase.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Upsert
 import com.amsterdam.repository.dto.local.LocalSearchDto
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
-import com.amsterdam.repository.dto.local.utils.SearchType
-import kotlinx.datetime.Instant
 
 @Dao
 interface RecentSearchDao {
@@ -15,33 +12,16 @@ interface RecentSearchDao {
     suspend fun upsertRecentSearch(search: LocalSearchDto)
 
     @Query("""
-        SELECT searchKeyword, searchType, storedLanguage, expireDate
+        SELECT searchKeyword
         FROM ${DatabaseConstants.RECENT_SEARCH_TABLE}
-        WHERE searchType = :searchType
-        GROUP BY searchKeyword
-        ORDER BY expireDate DESC
     """)
-    suspend fun getRecentSearches(searchType: SearchType): List<LocalSearchDto>
+    suspend fun getRecentSearches(): List<LocalSearchDto>
 
     @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE}")
     suspend fun deleteAllSearches()
 
-    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE expireDate <= :expireDate")
-    suspend fun deleteAllExpiredSearches(expireDate: Instant)
-
-    @Transaction
-    @Query("SELECT * FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType and storedLanguage = :storedLanguage")
-    suspend fun getSearchByKeywordAndType(
-        keyword: String, searchType: SearchType, storedLanguage: String
-    ): LocalSearchDto?
-
-    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType")
+    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword")
     suspend fun deleteSearchByKeyword(
-        keyword: String, searchType: SearchType
-    )
-
-    @Query("DELETE FROM ${DatabaseConstants.SEARCH_MOVIE_CROSS_REF_TABLE} WHERE searchKeyword = :keyword and searchType = :searchType")
-    suspend fun deleteSearchMovieCrossRefByKeyword(
-        keyword: String, searchType: SearchType
+        keyword: String
     )
 }

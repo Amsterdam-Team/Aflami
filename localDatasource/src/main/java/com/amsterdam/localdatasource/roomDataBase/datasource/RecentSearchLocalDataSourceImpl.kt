@@ -3,8 +3,6 @@ package com.amsterdam.localdatasource.roomDataBase.datasource
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.dto.local.LocalSearchDto
-import com.amsterdam.repository.dto.local.utils.SearchType
-import kotlinx.datetime.Instant
 import javax.inject.Inject
 
 class RecentSearchLocalDataSourceImpl @Inject constructor(
@@ -15,16 +13,8 @@ class RecentSearchLocalDataSourceImpl @Inject constructor(
         dao.upsertRecentSearch(recentSearch)
     }
 
-    override suspend fun getRecentSearches(searchType: SearchType): List<LocalSearchDto> {
-        return dao.getRecentSearches(searchType)
-    }
-
-    override suspend fun getSearchByKeywordAndType(
-        keyword: String,
-        searchType: SearchType,
-        storedLanguage: String,
-    ): LocalSearchDto? {
-        return dao.getSearchByKeywordAndType(keyword, searchType, storedLanguage)
+    override suspend fun getRecentSearches(): List<LocalSearchDto> {
+        return dao.getRecentSearches()
     }
 
     override suspend fun deleteRecentSearches() {
@@ -33,13 +23,7 @@ class RecentSearchLocalDataSourceImpl @Inject constructor(
 
     override suspend fun deleteRecentSearchByKeywordAndType(
         keyword: String,
-        searchType: SearchType
     ) {
-        dao.deleteSearchByKeyword(keyword, searchType)
-        dao.deleteSearchMovieCrossRefByKeyword(keyword, searchType)
-    }
-
-    override suspend fun deleteExpiredRecentSearches(date: Instant) {
-        dao.deleteAllExpiredSearches(date)
+        dao.deleteSearchByKeyword(keyword)
     }
 }

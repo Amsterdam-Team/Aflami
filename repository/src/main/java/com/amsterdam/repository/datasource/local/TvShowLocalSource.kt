@@ -5,19 +5,6 @@ import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import kotlinx.datetime.Instant
 
 interface TvShowLocalSource {
-    suspend fun getTvShowsBySearchKeywordSortedByInterest(
-        searchKeyword: String,
-        storedLanguage: String,
-        limit: Int,
-        offset: Int
-    ): List<TvShowWithCategory>
-
-    suspend fun addTvShows(
-        tvShows: List<LocalTvShowDto>,
-        searchKeyword: String,
-        storedLanguage: String
-    )
-
     suspend fun addTvShowWithCategories(
         tvShow: LocalTvShowDto,
         categoryIds: List<Long>,

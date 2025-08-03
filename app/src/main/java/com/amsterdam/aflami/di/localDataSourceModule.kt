@@ -48,11 +48,11 @@ object LocalDataSourceProviderModule {
 
     @Provides
     @Singleton
-    fun provideCategoryDao(db: AflamiDatabase) = db.categoryDao()
+    fun provideCountryDao(db: AflamiDatabase) = db.countryDao()
 
     @Provides
     @Singleton
-    fun provideCountryDao(db: AflamiDatabase) = db.countryDao()
+    fun provideCategoryDao(db: AflamiDatabase) = db.categoryDao()
 
     @Provides
     @Singleton
@@ -88,7 +88,6 @@ abstract class LocalDataSourceBindsModule {
         impl: AuthenticationLocalDataSourceImpl
     ): AuthenticationLocalSource
 
-
     @Binds
     @Singleton
     abstract fun bindAppPreferences(
@@ -97,15 +96,15 @@ abstract class LocalDataSourceBindsModule {
 
     @Binds
     @Singleton
-    abstract fun bindCategoryLocalDataSource(
-        impl: CategoryLocalDataSourceImpl
-    ): CategoryLocalSource
-
-    @Binds
-    @Singleton
     abstract fun bindCountryLocalDataSource(
         impl: CountryLocalDataSourceImpl
     ): CountryLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryLocalSource(
+        impl: CategoryLocalDataSourceImpl
+    ): CategoryLocalSource
 
     @Binds
     @Singleton

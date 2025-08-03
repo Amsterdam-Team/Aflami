@@ -28,8 +28,6 @@ import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
 import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.PopularTvShowDto
-import com.amsterdam.repository.dto.local.SearchMovieCrossRefDto
-import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
 import com.amsterdam.repository.dto.local.TopRatedMovieDto
 import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -39,18 +37,16 @@ import com.amsterdam.repository.dto.local.UpcomingMovieDto
 @Database(
     entities = [LocalSearchDto::class,
         LocalCountryDto::class,
-        LocalMovieCategoryDto::class,
-        LocalTvShowCategoryDto::class,
         LocalMovieDto::class,
         LocalTvShowDto::class,
         MovieWatchHistoryDto::class,
         TvShowWatchHistoryDto::class,
-        SearchTvShowCrossRefDto::class,
-        MovieCategoryCrossRefDto::class,
-        TvShowCategoryCrossRefDto::class,
-        SearchMovieCrossRefDto::class,
         LocalMovieCategoryInterestDto::class,
         LocalTvShowCategoryInterestDto::class,
+        LocalMovieCategoryDto::class,
+        LocalTvShowCategoryDto::class,
+        MovieCategoryCrossRefDto::class,
+        TvShowCategoryCrossRefDto::class,
         PopularMovieDto::class,
         PopularTvShowDto::class,
         TopRatedMovieDto::class,

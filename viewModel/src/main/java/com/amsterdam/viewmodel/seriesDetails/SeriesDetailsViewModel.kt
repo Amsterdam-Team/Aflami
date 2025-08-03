@@ -43,8 +43,6 @@ class SeriesDetailsViewModel @Inject constructor(
             .onEach {
                 loadTvShowDetails()
             }.launchIn(viewModelScope)
-
-        loadTvShowDetails()
     }
 
     private fun loadTvShowDetails() {

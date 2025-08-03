@@ -4,8 +4,6 @@ import com.amsterdam.domain.repository.*
 import com.amsterdam.repository.repository.*
 import com.amsterdam.repository.security.CryptoData
 import com.amsterdam.repository.security.CryptoDataImpl
-import com.amsterdam.repository.utils.RecentSearchHandler
-import com.amsterdam.repository.utils.RecentSearchHandlerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,12 +19,6 @@ abstract class RepositoryModule {
     abstract fun bindCryptoData(
         impl: CryptoDataImpl
     ): CryptoData
-
-    @Binds
-    @Singleton
-    abstract fun bindRecentSearchHandler(
-        impl: RecentSearchHandlerImpl
-    ): RecentSearchHandler
 
     @Binds
     @Singleton

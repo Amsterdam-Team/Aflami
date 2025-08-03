@@ -5,7 +5,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
 import com.amsterdam.localdatasource.utils.createMovie
-import com.amsterdam.repository.dto.local.SearchMovieCrossRefDto
 import com.amsterdam.repository.dto.local.utils.SearchType
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
