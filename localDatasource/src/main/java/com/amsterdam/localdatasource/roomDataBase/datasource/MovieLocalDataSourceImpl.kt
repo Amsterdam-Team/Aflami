@@ -4,7 +4,6 @@ import androidx.room.Transaction
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
 import com.amsterdam.repository.datasource.local.MovieLocalSource
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.SearchMovieCrossRefDto
@@ -52,16 +51,17 @@ class MovieLocalDataSourceImpl @Inject constructor(
         movieDao.insertSearchEntries(entries)
     }
 
+    @Transaction
     override suspend fun addMovieWithCategories(
         movie: LocalMovieDto,
-        categories: List<LocalMovieCategoryDto>,
+        categoryIds: List<Long>,
         storedLanguage: String
     ) {
         movieDao.insertMovie(movie)
-        val movieCrossRefs = categories.map { category ->
+        val movieCrossRefs = categoryIds.map { categoryId ->
             MovieCategoryCrossRefDto(
                 movieId = movie.movieId,
-                categoryId = category.categoryId,
+                categoryId = categoryId,
                 storedLanguage = storedLanguage
             )
         }
@@ -82,6 +82,10 @@ class MovieLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories> {
         return movieDao.getPopularMovies(storedLanguage)
+    }
+
+    override suspend fun getUpcomingMovies(storedLanguage: String): List<MovieWithCategories> {
+        return movieDao.getUpcomingMovies(storedLanguage)
     }
 
     override suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto> {

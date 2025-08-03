@@ -2,35 +2,35 @@ package com.amsterdam.localdatasource.roomDataBase.datasource
 
 import androidx.room.Transaction
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
-import com.amsterdam.localdatasource.roomDataBase.daos.PopularMovieDao
-import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
+import com.amsterdam.localdatasource.roomDataBase.daos.UpcomingMovieDao
+import com.amsterdam.repository.datasource.local.UpcomingMovieLocalSource
 import com.amsterdam.repository.dto.local.LocalMovieDto
-import com.amsterdam.repository.dto.local.PopularMovieDto
+import com.amsterdam.repository.dto.local.UpcomingMovieDto
 import kotlinx.datetime.Instant
 import javax.inject.Inject
 
-
-class PopularMovieLocalDataSourceImpl @Inject constructor(
+class UpcomingMovieLocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
-    private val popularMovieDao: PopularMovieDao
-) : PopularMovieLocalSource {
+    private val upcomingMovieDao: UpcomingMovieDao
+) : UpcomingMovieLocalSource {
+
     @Transaction
-    override suspend fun addPopularMovies(movies: List<LocalMovieDto>) {
+    override suspend fun addUpcomingMovies(movies: List<LocalMovieDto>) {
         movieDao.insertMovies(movies)
         val entries = movies.map { movie ->
-            PopularMovieDto(
+            UpcomingMovieDto(
                 movieId = movie.movieId,
                 storedLanguage = movie.storedLanguage,
                 dateAdded = movie.insertedDate
             )
         }
-        popularMovieDao.insertPopularMovies(entries)
+        upcomingMovieDao.insertUpcomingMovies(entries)
     }
 
-    override suspend fun deleteExpiredPopularMovies(
+    override suspend fun deleteExpiredUpcomingMovies(
         expirationTime: Instant,
         storedLanguage: String
     ) {
-        popularMovieDao.deleteExpiredPopularMovies(expirationTime, storedLanguage)
+        upcomingMovieDao.deleteExpiredUpcomingMovies(expirationTime, storedLanguage)
     }
 }

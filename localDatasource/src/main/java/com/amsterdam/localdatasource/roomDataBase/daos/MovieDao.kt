@@ -104,4 +104,18 @@ interface MovieDao {
     """
     )
     suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto>
+
+
+    @Query(
+        """
+        SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
+        INNER JOIN ${DatabaseConstants.UPCOMING_MOVIE_TABLE} AS upcomingMovies
+        ON movie.movieId = upcomingMovies.movieId
+        LEFT JOIN ${DatabaseConstants.MOVIE_CATEGORY_CROSS_REF_TABLE} AS categoryCrossRef
+        ON movie.movieId = categoryCrossRef.movieId
+        WHERE movie.storedLanguage = upcomingMovies.storedLanguage
+        AND movie.storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun getUpcomingMovies(storedLanguage: String): List<MovieWithCategories>
 }

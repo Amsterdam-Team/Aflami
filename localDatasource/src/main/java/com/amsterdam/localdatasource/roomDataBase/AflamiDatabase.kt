@@ -19,6 +19,7 @@ import com.amsterdam.localdatasource.roomDataBase.daos.TopRatedMovieDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TopRatedTvShowDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
+import com.amsterdam.localdatasource.roomDataBase.daos.UpcomingMovieDao
 import com.amsterdam.localdatasource.roomDataBase.daos.WatchHistoryDao
 import com.amsterdam.repository.dto.local.LocalCountryDto
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
@@ -38,6 +39,7 @@ import com.amsterdam.repository.dto.local.TopRatedMovieDto
 import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
+import com.amsterdam.repository.dto.local.UpcomingMovieDto
 
 @Database(
     entities = [LocalSearchDto::class,
@@ -57,7 +59,8 @@ import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
         PopularMovieDto::class,
         PopularTvShowDto::class,
         TopRatedMovieDto::class,
-        TopRatedTvShowDto::class
+        TopRatedTvShowDto::class,
+        UpcomingMovieDto::class
     ],
     version = 1,
     exportSchema = false
@@ -73,6 +76,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun movieCategoryInterestDao(): MovieCategoryInterestDao
     abstract fun tvShowCategoryInterestDao(): TvShowCategoryInterestDao
     abstract fun popularMovieDao(): PopularMovieDao
+    abstract fun upcomingMovieDao(): UpcomingMovieDao
     abstract fun popularTvShowsDao(): PopularTvShowsDao
     abstract fun topRatedMovieDao(): TopRatedMovieDao
     abstract fun topRatedTvShowDao(): TopRatedTvShowDao

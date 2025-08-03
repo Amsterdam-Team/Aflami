@@ -1,6 +1,5 @@
 package com.amsterdam.repository.datasource.local
 
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.amsterdam.repository.dto.local.utils.SearchType
@@ -22,7 +21,7 @@ interface MovieLocalSource {
 
     suspend fun addMovieWithCategories(
         movie: LocalMovieDto,
-        categories: List<LocalMovieCategoryDto>,
+        categoryIds: List<Long>,
         storedLanguage: String
     )
 
@@ -35,4 +34,6 @@ interface MovieLocalSource {
     suspend fun insertMovie(movie : LocalMovieDto)
 
     suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories>
+
+    suspend fun getUpcomingMovies(storedLanguage: String): List<MovieWithCategories>
 }
