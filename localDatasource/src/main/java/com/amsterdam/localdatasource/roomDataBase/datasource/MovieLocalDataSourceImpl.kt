@@ -68,8 +68,8 @@ class MovieLocalDataSourceImpl @Inject constructor(
         movieDao.insertMovieCategoryCrossRefs(movieCrossRefs)
     }
 
-    override suspend fun getMovieById(movieId: Long,storedLanguage: String): LocalMovieDto? {
-        return movieDao.getMovieById(movieId,storedLanguage)
+    override suspend fun getMovieById(movieId: Long, storedLanguage: String): LocalMovieDto? {
+        return movieDao.getMovieById(movieId, storedLanguage)
     }
 
     override suspend fun incrementGenreInterest(categoryId: Long) {
@@ -80,8 +80,12 @@ class MovieLocalDataSourceImpl @Inject constructor(
         movieDao.insertMovie(movie)
     }
 
-    override
-    suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories> {
+    override suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories> {
         return movieDao.getPopularMovies(storedLanguage)
+    }
+
+    override suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto> {
+        return movieDao.getTopRatedMovies(storedLanguage)
+
     }
 }

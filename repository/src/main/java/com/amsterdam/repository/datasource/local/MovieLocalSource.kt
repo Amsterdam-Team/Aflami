@@ -26,6 +26,8 @@ interface MovieLocalSource {
         storedLanguage: String
     )
 
+    suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto>
+
     suspend fun getMovieById(movieId: Long, storedLanguage: String): LocalMovieDto?
 
     suspend fun incrementGenreInterest(categoryId: Long)

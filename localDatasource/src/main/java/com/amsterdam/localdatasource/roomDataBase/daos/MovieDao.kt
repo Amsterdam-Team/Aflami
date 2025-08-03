@@ -79,7 +79,7 @@ interface MovieDao {
     suspend fun insertMovieCategoryCrossRefs(crossRefs: List<MovieCategoryCrossRefDto>)
 
     @Query(" SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} WHERE movieId = :movieId and storedLanguage = :storedLanguage")
-    suspend fun getMovieById(movieId: Long,storedLanguage : String): LocalMovieDto?
+    suspend fun getMovieById(movieId: Long, storedLanguage: String): LocalMovieDto?
 
     @Query(
         """
@@ -93,4 +93,15 @@ interface MovieDao {
     """
     )
     suspend fun getPopularMovies(storedLanguage: String): List<MovieWithCategories>
+
+    @Query(
+        """
+        SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
+        INNER JOIN ${DatabaseConstants.TOP_RATED_MOVIE_TABLE} As topRatedMovie
+        ON movie.movieId = topRatedMovie.movieId 
+        WHERE movie.storedLanguage = topRatedMovie.storedLanguage
+        AND movie.storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto>
 }

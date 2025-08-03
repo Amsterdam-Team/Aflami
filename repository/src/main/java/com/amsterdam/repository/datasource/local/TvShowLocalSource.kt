@@ -31,4 +31,5 @@ interface TvShowLocalSource {
     suspend fun getTvShowById(tvShowId: Long, storedLanguage: String): LocalTvShowDto?
 
     suspend fun getPopularTvShows(storedLanguage: String): List<TvShowWithCategory>
+    suspend fun getTopRatedTvShows(storedLanguage: String): List<LocalTvShowDto>
 }

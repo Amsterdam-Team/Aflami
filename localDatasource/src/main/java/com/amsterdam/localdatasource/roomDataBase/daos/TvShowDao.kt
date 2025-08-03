@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -91,4 +92,16 @@ interface TvShowDao {
     """
     )
     suspend fun getPopularTvShows(storedLanguage: String): List<TvShowWithCategory>
+
+
+    @Query(
+        """
+        SELECT * FROM ${DatabaseConstants.TV_SHOW_TABLE} AS tv
+        INNER JOIN ${DatabaseConstants.TOP_RATED_TV_SHOW_TABLE} As topRatedTvShow
+        ON tv.tvShowId = topRatedTvShow.tvShowId 
+        WHERE tv.storedLanguage = topRatedTvShow.storedLanguage
+        AND tv.storedLanguage = :storedLanguage
+    """
+    )
+    suspend fun getTopRatedTvShows(storedLanguage: String): List<LocalTvShowDto>
 }

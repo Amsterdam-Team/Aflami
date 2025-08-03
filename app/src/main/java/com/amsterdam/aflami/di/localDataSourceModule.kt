@@ -14,6 +14,8 @@ import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataSourc
 import com.amsterdam.localdatasource.roomDataBase.datasource.PopularMovieLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.PopularTvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.TopRatedMovieLocalSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.TopRatedTvShowLocalSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
 import com.amsterdam.repository.datasource.local.AppPreferences
@@ -24,6 +26,8 @@ import com.amsterdam.repository.datasource.local.MovieLocalSource
 import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
 import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
+import com.amsterdam.repository.datasource.local.TopRatedMovieLocalSource
+import com.amsterdam.repository.datasource.local.TopRatedTvShowLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
 import dagger.Binds
@@ -89,6 +93,14 @@ object LocalDataSourceProviderModule {
     @Provides
     @Singleton
     fun providePopularTvShowsDao(db: AflamiDatabase) = db.popularTvShowsDao()
+
+    @Provides
+    @Singleton
+    fun provideTopRatedMovieDao(db: AflamiDatabase) = db.topRatedMovieDao()
+
+    @Provides
+    @Singleton
+    fun provideTopRatedTvShowDao(db: AflamiDatabase) = db.topRatedTvShowDao()
 }
 
 @Module
@@ -154,4 +166,16 @@ abstract class LocalDataSourceBindsModule {
     abstract fun bindPopularTvShowLocalDataSource(
         impl: PopularTvShowLocalDataSourceImpl
     ): PopularTvShowLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindTopRatedMovieLocalDataSource(
+        impl: TopRatedMovieLocalSourceImpl
+    ): TopRatedMovieLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindTopRatedTvShowLocalDataSource(
+        impl: TopRatedTvShowLocalSourceImpl
+    ): TopRatedTvShowLocalSource
 }

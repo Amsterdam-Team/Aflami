@@ -9,6 +9,7 @@ import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.PopularTvShowLocalSource
+import com.amsterdam.repository.datasource.local.TopRatedTvShowLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.remote.TvShowsRemoteSource
 import com.amsterdam.repository.dto.local.utils.SearchType
@@ -16,6 +17,7 @@ import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowItemDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
+import com.amsterdam.repository.mapper.local.TvShowLocalMapper
 import com.amsterdam.repository.mapper.local.TvShowWithCategoryLocalMapper
 import com.amsterdam.repository.mapper.remote.CastRemoteMapper
 import com.amsterdam.repository.mapper.remote.EpisodeRemoteMapper
@@ -36,6 +38,8 @@ class TvShowRepositoryImpl @Inject constructor(
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
     private val popularTvLocalSource: PopularTvShowLocalSource,
+    private val topRatedTvShowLocalSource: TopRatedTvShowLocalSource,
+    private val tvShowLocalMapper: TvShowLocalMapper,
     private val preferences: AppPreferences,
     private val tvShowGenreIdsRemoteLocalMapper: TvShowGenreIdsRemoteLocalMapper,
     private val tvRemoteMapper: TvShowRemoteMapper,
@@ -146,7 +150,24 @@ class TvShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {
-        return tvRemoteMapper.toEntityList(remoteTvDataSource.getTopRatedTvShows(page).results)
+        return topRatedTvShowLocalSource.deleteAllExpiredTopRatedTvShows(
+            expirationTime = Clock.System.now().minus(1.days),
+            storedLanguage = preferences.getDeviceLanguage().first()
+        ).let {
+            localTvDataSource.getTopRatedTvShows(preferences.getDeviceLanguage().first())
+                .map { tvShowLocalMapper.toEntity(it) }
+                .takeIf { it.isNotEmpty() }
+                ?: remoteTvDataSource.getTopRatedTvShows(page)
+                    .let { remoteTvShows ->
+                        topRatedTvShowLocalSource.addTopRatedTvShows(
+                            tvShowRemoteLocalMapper.toLocalList(
+                                remoteTvShows.results,
+                                listOf(preferences.getDeviceLanguage().first())
+                            )
+                        )
+                        tvRemoteMapper.toEntityList(remoteTvShows.results)
+                    }
+        }
     }
 
     private suspend fun getTvShowFromLocal(

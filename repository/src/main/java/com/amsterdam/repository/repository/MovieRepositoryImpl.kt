@@ -10,12 +10,14 @@ import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalSource
 import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
+import com.amsterdam.repository.datasource.local.TopRatedMovieLocalSource
 import com.amsterdam.repository.datasource.remote.MovieRemoteSource
 import com.amsterdam.repository.dto.local.utils.SearchType
 import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
 import com.amsterdam.repository.mapper.local.MovieGenreLocalMapper
+import com.amsterdam.repository.mapper.local.MovieLocalMapper
 import com.amsterdam.repository.mapper.local.MovieWithCategoriesLocalMapper
 import com.amsterdam.repository.mapper.remote.CastRemoteMapper
 import com.amsterdam.repository.mapper.remote.MovieDetailRemoteMapper
@@ -31,11 +33,13 @@ import kotlin.time.Duration.Companion.days
 class MovieRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val movieLocalSource: MovieLocalSource,
+    private val topRatedMovieLocalSource: TopRatedMovieLocalSource,
     private val movieRemoteDataSource: MovieRemoteSource,
     private val popularMovieLocalSource: PopularMovieLocalSource,
     private val preferences: AppPreferences,
     private val movieGenreIdsRemoteLocalMapper: MovieGenreIdsRemoteLocalMapper,
     private val movieRemoteMapper: MovieRemoteMapper,
+    private val movieLocalMapper: MovieLocalMapper,
     private val recentSearchHandler: RecentSearchHandler,
     private val castRemoteMapper: CastRemoteMapper,
     private val movieDetailRemoteMapper: MovieDetailRemoteMapper,
@@ -129,7 +133,10 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUpcomingMovies(): List<Movie> {
-        return movieRemoteMapper.toEntityList(movieRemoteDataSource.getUpcomingMovies().results,isPoster = false)
+        return movieRemoteMapper.toEntityList(
+            movieRemoteDataSource.getUpcomingMovies().results,
+            isPoster = false
+        )
     }
 
     override suspend fun getPopularMovies(): List<Movie> {
@@ -155,10 +162,27 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getTopRatedMovies(
         page: Int,
-    ): List<Movie> =
-        movieRemoteMapper.toEntityList(movieRemoteDataSource.getTopRatedMovies(
-            page = page,
-        ).results)
+    ): List<Movie> {
+        return topRatedMovieLocalSource.deleteAllExpiredTopRatedMovies(
+            expirationTime = Clock.System.now().minus(1.days),
+            storedLanguage = preferences.getDeviceLanguage().first()
+        ).let {
+            movieLocalSource.getTopRatedMovies(preferences.getDeviceLanguage().first())
+                .map { movieLocalMapper.toEntity(it) }
+                .takeIf { it.isNotEmpty() }
+                ?: movieRemoteDataSource.getTopRatedMovies(page)
+                    .let { remoteMovies ->
+                        topRatedMovieLocalSource.addTopRatedMovies(
+                            movieRemoteLocalMapper.toLocalList(
+                                remoteMovies.results,
+                                listOf(preferences.getDeviceLanguage().first())
+                            )
+                        )
+                        movieRemoteMapper.toEntityList(remoteMovies.results)
+                    }
+
+        }
+    }
 
     private suspend fun getCachedMovies(
         keyword: String,
@@ -297,6 +321,4 @@ class MovieRepositoryImpl @Inject constructor(
         remoteCategories.map(RemoteCategoryDto::id)
             .map { movieLocalSource.incrementGenreInterest(it.toLong()) }
     }
-
-
 }
