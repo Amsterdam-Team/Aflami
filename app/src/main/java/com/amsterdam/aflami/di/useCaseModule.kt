@@ -6,6 +6,7 @@ import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.repository.RecentSearchRepository
 import com.amsterdam.domain.repository.TvShowRepository
+import com.amsterdam.domain.repository.UserListRepository
 import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
@@ -28,6 +29,8 @@ import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
+import com.amsterdam.domain.useCase.list.AddTvShowToListUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
@@ -189,4 +192,11 @@ object UseCaseModule {
         getTopRatedTvShowsUseCase
     )
 
+    @Provides
+    fun provideAddMovieToListUseCase(userListRepository: UserListRepository): AddMovieToListUseCase =
+        AddMovieToListUseCase(userListRepository)
+
+    @Provides
+    fun provideAddTvShowToListUseCase(userListRepository: UserListRepository): AddTvShowToListUseCase =
+        AddTvShowToListUseCase(userListRepository)
 }
