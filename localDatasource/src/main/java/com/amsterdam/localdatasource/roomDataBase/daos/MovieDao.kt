@@ -108,7 +108,7 @@ interface MovieDao {
 
     @Query(
         """
-        SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
+        SELECT DISTINCT movie.* FROM ${DatabaseConstants.MOVIE_TABLE} AS movie
         INNER JOIN ${DatabaseConstants.UPCOMING_MOVIE_TABLE} AS upcomingMovies
         ON movie.movieId = upcomingMovies.movieId
         LEFT JOIN ${DatabaseConstants.MOVIE_CATEGORY_CROSS_REF_TABLE} AS categoryCrossRef
