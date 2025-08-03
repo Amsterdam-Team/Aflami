@@ -19,5 +19,5 @@ interface TopRatedTvShowDao {
             WHERE dateAdded < :expirationTime AND storedLanguage = :storedLanguage
     """
     )
-    suspend fun deleteAllExpiredTopRatedTvShows(expirationTime: Instant, storedLanguage: String)
+    suspend fun deleteExpiredTopRatedTvShows(expirationTime: Instant, storedLanguage: String)
 }

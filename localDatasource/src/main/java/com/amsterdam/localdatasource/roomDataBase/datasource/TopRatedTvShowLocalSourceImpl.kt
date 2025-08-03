@@ -23,11 +23,11 @@ class TopRatedTvShowLocalSourceImpl @Inject constructor(
         topRatedTvShowDao.insertTopRatedTvShows(entries)
     }
 
-    override suspend fun deleteAllExpiredTopRatedTvShows(
+    override suspend fun deleteExpiredTopRatedTvShows(
         expirationTime: Instant,
         storedLanguage: String
     ) {
-        topRatedTvShowDao.deleteAllExpiredTopRatedTvShows(expirationTime, storedLanguage)
+        topRatedTvShowDao.deleteExpiredTopRatedTvShows(expirationTime, storedLanguage)
     }
 
 }

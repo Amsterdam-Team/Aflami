@@ -5,5 +5,5 @@ import kotlinx.datetime.Instant
 
 interface TopRatedTvShowLocalSource {
     suspend fun addTopRatedTvShows(tvShows: List<LocalTvShowDto>)
-    suspend fun deleteAllExpiredTopRatedTvShows(expirationTime: Instant, storedLanguage: String)
+    suspend fun deleteExpiredTopRatedTvShows(expirationTime: Instant, storedLanguage: String)
 }

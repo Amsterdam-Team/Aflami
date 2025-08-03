@@ -13,6 +13,8 @@ import com.amsterdam.repository.datasource.local.PopularMovieLocalSource
 import com.amsterdam.repository.datasource.local.TopRatedMovieLocalSource
 import com.amsterdam.repository.datasource.local.UpcomingMovieLocalSource
 import com.amsterdam.repository.datasource.remote.MovieRemoteSource
+import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.amsterdam.repository.dto.local.utils.SearchType
 import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
@@ -25,6 +27,7 @@ import com.amsterdam.repository.mapper.remote.MovieDetailRemoteMapper
 import com.amsterdam.repository.mapper.remote.MovieRemoteMapper
 import com.amsterdam.repository.mapper.remoteToLocal.MovieRemoteLocalMapper
 import com.amsterdam.repository.utils.RecentSearchHandler
+import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import javax.inject.Inject
@@ -133,72 +136,124 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUpcomingMovies(): List<Movie> {
-        return upcomingMovieLocalSource.deleteExpiredUpcomingMovies(
-            expirationTime = Clock.System.now().minus(1.days),
-            storedLanguage = preferences.getDeviceLanguage().first()
-        ).let {
-            movieLocalSource.getUpcomingMovies(preferences.getDeviceLanguage().first())
-                .map { movieWithCategoriesLocalMapper.toEntity(it) }
-                .takeIf { it.isNotEmpty() }
-                ?: movieRemoteDataSource.getUpcomingMovies()
-                    .let { remoteMovies ->
-                        saveMovieWithCategories(remoteMovies)
-                        upcomingMovieLocalSource.addUpcomingMovies(
-                            movieRemoteLocalMapper.toLocalList(
-                                remoteMovies.results,
-                                listOf(preferences.getDeviceLanguage().first())
-                            )
-                        )
-                        movieRemoteMapper.toEntityList(remoteMovies.results, isPoster = false)
-                    }
-        }
+        return getCachedOrRemoteData(
+            deleteExpired = ::deleteExpiredUpcomingMovies,
+            getFromLocal = ::getUpcomingMoviesFromLocal,
+            getFromRemote = ::getUpcomingMoviesFromRemote,
+            saveRemoteToDatabase = ::saveUpcomingMovies,
+            mapFromLocalToEntity = movieWithCategoriesLocalMapper::toEntity,
+            mapFromRemoteToEntity = { movieRemoteMapper.toEntity(it, isPoster = false) }
+        )
     }
 
     override suspend fun getPopularMovies(): List<Movie> {
-        return popularMovieLocalSource.deleteExpiredPopularMovies(
-            expirationTime = Clock.System.now().minus(1.days),
-            storedLanguage = preferences.getDeviceLanguage().first()
-        ).let {
-            movieLocalSource.getPopularMovies(preferences.getDeviceLanguage().first())
-                .map { movieWithCategoriesLocalMapper.toEntity(it) }
-                .takeIf { it.isNotEmpty() }
-                ?: movieRemoteDataSource.getPopularMovies()
-                    .let { remoteMovies ->
-                        saveMovieWithCategories(remoteMovies)
-                        popularMovieLocalSource.addPopularMovies(
-                            movieRemoteLocalMapper.toLocalList(
-                                remoteMovies.results,
-                                listOf(preferences.getDeviceLanguage().first())
-                            )
-                        )
-                        movieRemoteMapper.toEntityList(remoteMovies.results)
-                    }
-        }
+        return getCachedOrRemoteData(
+            deleteExpired = ::deleteExpiredPopularMovies,
+            getFromLocal = ::getPopularMoviesFromLocal,
+            getFromRemote = ::getPopularMoviesFromRemote,
+            saveRemoteToDatabase = ::savePopularMovies,
+            mapFromLocalToEntity = movieWithCategoriesLocalMapper::toEntity,
+            mapFromRemoteToEntity = movieRemoteMapper::toEntity
+        )
     }
 
     override suspend fun getTopRatedMovies(
         page: Int,
     ): List<Movie> {
-        return topRatedMovieLocalSource.deleteAllExpiredTopRatedMovies(
+        return getCachedOrRemoteData(
+            deleteExpired = ::deleteExpiredTopRatedMovies,
+            getFromLocal = ::getTopRatedMoviesFromLocal,
+            getFromRemote = { getTopRatedMoviesFromRemote(page) },
+            saveRemoteToDatabase = ::saveTopRatedMovies,
+            mapFromLocalToEntity = movieLocalMapper::toEntity,
+            mapFromRemoteToEntity = movieRemoteMapper::toEntity
+        )
+    }
+
+    private suspend fun deleteExpiredUpcomingMovies() {
+        upcomingMovieLocalSource.deleteExpiredUpcomingMovies(
             expirationTime = Clock.System.now().minus(1.days),
             storedLanguage = preferences.getDeviceLanguage().first()
-        ).let {
-            movieLocalSource.getTopRatedMovies(preferences.getDeviceLanguage().first())
-                .map { movieLocalMapper.toEntity(it) }
-                .takeIf { it.isNotEmpty() }
-                ?: movieRemoteDataSource.getTopRatedMovies(page)
-                    .let { remoteMovies ->
-                        topRatedMovieLocalSource.addTopRatedMovies(
-                            movieRemoteLocalMapper.toLocalList(
-                                remoteMovies.results,
-                                listOf(preferences.getDeviceLanguage().first())
-                            )
-                        )
-                        movieRemoteMapper.toEntityList(remoteMovies.results)
-                    }
+        )
+    }
 
+    private suspend fun getUpcomingMoviesFromLocal(): List<MovieWithCategories> {
+        return movieLocalSource.getUpcomingMovies(
+            preferences.getDeviceLanguage().first()
+        )
+    }
+
+    private suspend fun getUpcomingMoviesFromRemote(): List<RemoteMovieItemDto> {
+        return movieRemoteDataSource.getUpcomingMovies().results
+    }
+
+    private suspend fun saveUpcomingMovies(remoteMovies: List<RemoteMovieItemDto>) {
+        saveMovieWithCategories(remoteMovies).also {
+            upcomingMovieLocalSource.addUpcomingMovies(
+                movieRemoteLocalMapper.toLocalList(
+                    remoteMovies,
+                    listOf(preferences.getDeviceLanguage().first())
+                )
+            )
         }
     }
+
+    private suspend fun deleteExpiredPopularMovies() {
+        popularMovieLocalSource.deleteExpiredPopularMovies(
+            expirationTime = Clock.System.now().minus(1.days),
+            storedLanguage = preferences.getDeviceLanguage().first()
+        )
+    }
+
+    private suspend fun getPopularMoviesFromLocal(): List<MovieWithCategories> {
+        return movieLocalSource.getPopularMovies(
+            preferences.getDeviceLanguage().first()
+        )
+    }
+
+    private suspend fun getPopularMoviesFromRemote(): List<RemoteMovieItemDto> {
+        return movieRemoteDataSource.getPopularMovies().results
+    }
+
+    private suspend fun savePopularMovies(remoteMovies: List<RemoteMovieItemDto>) {
+        saveMovieWithCategories(remoteMovies).also {
+            popularMovieLocalSource.addPopularMovies(
+                movieRemoteLocalMapper.toLocalList(
+                    remoteMovies,
+                    listOf(preferences.getDeviceLanguage().first())
+                )
+            )
+        }
+    }
+
+    private suspend fun deleteExpiredTopRatedMovies() {
+        topRatedMovieLocalSource.deleteAllExpiredTopRatedMovies(
+            expirationTime = Clock.System.now().minus(1.days),
+            storedLanguage = preferences.getDeviceLanguage().first()
+        )
+    }
+
+    private suspend fun getTopRatedMoviesFromLocal(): List<LocalMovieDto> {
+        return movieLocalSource.getTopRatedMovies(
+            preferences.getDeviceLanguage().first()
+        )
+    }
+
+    private suspend fun getTopRatedMoviesFromRemote(page: Int): List<RemoteMovieItemDto> {
+        return movieRemoteDataSource.getTopRatedMovies(page).results
+    }
+
+    private suspend fun saveTopRatedMovies(remoteMovies: List<RemoteMovieItemDto>) {
+        saveMovieWithCategories(remoteMovies).also {
+            topRatedMovieLocalSource.addTopRatedMovies(
+                movieRemoteLocalMapper.toLocalList(
+                    remoteMovies,
+                    listOf(preferences.getDeviceLanguage().first())
+                )
+            )
+        }
+    }
+
 
     private suspend fun getCachedMovies(
         keyword: String,
@@ -263,7 +318,7 @@ class MovieRepositoryImpl @Inject constructor(
         page: Int,
         moviesPerPage: Int
     ): List<Movie> {
-        return saveMovieWithCategories(remoteMovies).let {
+        return saveMovieWithCategories(remoteMovies.results).let {
             saveMoviesWithSearch(remoteMovies, keyword, searchType)
                 .let { getMoviesFromLocal(keyword, searchType, page, moviesPerPage) }
                 .takeIf { movies -> movies.isNotEmpty() }
@@ -305,8 +360,8 @@ class MovieRepositoryImpl @Inject constructor(
         )
     }
 
-    private suspend fun saveMovieWithCategories(remoteMovies: RemoteMovieResponse) {
-        remoteMovies.results.forEach { onSaveMovieWithCategories(it) }
+    private suspend fun saveMovieWithCategories(remoteMovies: List<RemoteMovieItemDto>) {
+        remoteMovies.forEach { onSaveMovieWithCategories(it) }
     }
 
     private suspend fun onSaveMovieWithCategories(remoteMovie: RemoteMovieItemDto) {
