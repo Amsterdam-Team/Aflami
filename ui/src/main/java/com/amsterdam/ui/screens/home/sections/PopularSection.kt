@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -188,11 +189,11 @@ private fun PopularMoviesPager(
     modifier: Modifier = Modifier,
     onClickMediaItem: (Long, MediaType) -> Unit
 ){
-    val itemWidth = 207.dp
-    val horizontalPadding = (screenWidth - itemWidth) / 2
+    val itemWidth = remember { 244.dp }
+    val horizontalPadding = remember { (screenWidth - itemWidth) / 2 }
     HorizontalPager(
         state = pagerState,
-        pageSpacing = 16.dp,
+        pageSize = PageSize.Fixed(itemWidth),
         contentPadding = PaddingValues(horizontal = horizontalPadding),
         modifier = modifier
     ) { page ->
