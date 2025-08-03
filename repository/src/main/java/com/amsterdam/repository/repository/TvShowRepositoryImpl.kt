@@ -60,6 +60,7 @@ class TvShowRepositoryImpl @Inject constructor(
                 .takeIf { it.isNotEmpty() }
                 ?: remoteTvDataSource.getPopularTvShows()
                     .let { remoteTvShows ->
+                        saveTvShowWithCategories(remoteTvShows)
                         popularTvLocalSource.addPopularTvShows(
                             tvShowRemoteLocalMapper.toLocalList(
                                 remoteTvShows.results,
