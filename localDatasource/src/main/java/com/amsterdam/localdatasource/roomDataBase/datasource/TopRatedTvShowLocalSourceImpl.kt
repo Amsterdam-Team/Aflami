@@ -3,9 +3,7 @@ package com.amsterdam.localdatasource.roomDataBase.datasource
 import com.amsterdam.localdatasource.roomDataBase.daos.TopRatedTvShowDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.repository.datasource.local.TopRatedTvShowLocalSource
-import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.LocalTvShowDto
-import com.amsterdam.repository.dto.local.TopRatedMovieDto
 import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import kotlinx.datetime.Instant
 import javax.inject.Inject

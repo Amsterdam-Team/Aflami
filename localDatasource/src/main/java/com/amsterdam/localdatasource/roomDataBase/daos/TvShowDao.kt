@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
