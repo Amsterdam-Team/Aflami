@@ -52,7 +52,8 @@ interface MovieApiService {
 
     @GET(DISCOVER_MOVIE)
     suspend fun getMoviesByGenreIds(
-        @Query(GENRES) genresIds: List<Long>
+        @Query(GENRES) genresIds: List<Long>,
+        @Query(PAGE_KEY) page: Int
     ): RemoteMovieResponse
 
     @GET(TOP_RATED_MOVIES)

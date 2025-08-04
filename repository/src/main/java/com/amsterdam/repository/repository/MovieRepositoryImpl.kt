@@ -123,11 +123,12 @@ class MovieRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getMoviesByGenres(movieGenres: List<MovieGenre>): List<Movie> {
+    override suspend fun getMoviesByGenres(movieGenres: List<MovieGenre>, page: Int): List<Movie> {
         return movieGenreLocalMapper.toDtoList(movieGenres).let { genresIds ->
             movieRemoteMapper.toEntityList(
                 movieRemoteDataSource.getMoviesByGenreIds(
-                    genresIds
+                    genresIds,
+                    page
                 ).results
             )
         }

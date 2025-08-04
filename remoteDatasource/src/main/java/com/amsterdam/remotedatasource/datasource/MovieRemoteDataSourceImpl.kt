@@ -3,7 +3,6 @@ package com.amsterdam.remotedatasource.datasource
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.utils.apiHandler.responseCall
 import com.amsterdam.repository.datasource.remote.MovieRemoteSource
-import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
@@ -55,7 +54,7 @@ class MovieRemoteDataSourceImpl @Inject constructor(
     ): RemoteMovieResponse {
         return responseCall { movieApiService.getTopRatedMovies(page) }
     }
-    override suspend fun getMoviesByGenreIds(genresIds: List<Long>): RemoteMovieResponse {
-        return responseCall { movieApiService.getMoviesByGenreIds(genresIds) }
+    override suspend fun getMoviesByGenreIds(genresIds: List<Long>, page: Int): RemoteMovieResponse {
+        return responseCall { movieApiService.getMoviesByGenreIds(genresIds, page) }
     }
 }
