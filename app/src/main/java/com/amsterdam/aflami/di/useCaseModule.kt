@@ -51,12 +51,12 @@ object UseCaseModule {
         GetsSessionType(authenticationRepository)
 
     @Provides
-    fun provideGetOnboardingStatusUseCase(repo: AppPreferencesRepository): GetOnboardingStatusUseCase =
-        GetOnboardingStatusUseCase(repo)
+    fun provideGetOnboardingStatusUseCase(appPreferencesRepository: AppPreferencesRepository): GetOnboardingStatusUseCase =
+        GetOnboardingStatusUseCase(appPreferencesRepository)
 
     @Provides
-    fun provideSetOnboardingCompletedUseCase(repo: AppPreferencesRepository): SetOnboardingCompletedUseCase =
-        SetOnboardingCompletedUseCase(repo)
+    fun provideSetOnboardingCompletedUseCase(appPreferencesRepository: AppPreferencesRepository): SetOnboardingCompletedUseCase =
+        SetOnboardingCompletedUseCase(appPreferencesRepository)
 
 
     @Provides
