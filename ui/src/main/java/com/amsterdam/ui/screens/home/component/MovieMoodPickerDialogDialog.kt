@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import com.amsterdam.designsystem.components.Dialog
 import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
+import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
@@ -94,24 +96,28 @@ fun DialogContent(
 
         )
 
-        MediaCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-            movieImage = {
-                SafeImageView(
-                    model = movie.posterImageUrl,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    onLoading = { ImageLoadingIndicator() },
-                    onError = { ImageErrorIndicator() },
-                )
-            },
-            movieType = stringResource(R.string.movie),
-            movieYear = movie.yearOfRelease,
-            movieTitle = movie.name,
-            movieRating = movie.rate
-        )
+        if (movie.id != 0L) {
+            MediaCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                movieImage = {
+                    SafeImageView(
+                        model = movie.posterImageUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        onLoading = { ImageLoadingIndicator() },
+                        onError = { ImageErrorIndicator() },
+                    )
+                },
+                movieType = stringResource(R.string.movie),
+                movieYear = movie.yearOfRelease,
+                movieTitle = movie.name,
+                movieRating = movie.rate
+            )
+        } else {
+            LoadingContainer(Modifier.padding(top = 12.dp).height(222.dp).fillMaxWidth())
+        }
 
         ConfirmButton(
             title = stringResource(R.string.view_details),
