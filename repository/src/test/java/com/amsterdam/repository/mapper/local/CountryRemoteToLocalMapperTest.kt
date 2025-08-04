@@ -14,7 +14,7 @@ class CountryRemoteToLocalMapperTest {
     fun `should return Country with same name and isoCode when mapping from LocalCountryDto`() {
         val dto = LocalCountryDto(name = "Egypt", isoCode = "EG")
 
-        val result = mapper.toEntity(dto)
+        val result = mapper.toTvShowEntity(dto)
 
         assertThat(result.countryName).isEqualTo("Egypt")
         assertThat(result.countryIsoCode).isEqualTo("EG")
@@ -34,7 +34,7 @@ class CountryRemoteToLocalMapperTest {
     fun `should return Country with empty values when mapping from empty LocalCountryDto`() {
         val dto = LocalCountryDto(name = "", isoCode = "")
 
-        val result = mapper.toEntity(dto)
+        val result = mapper.toTvShowEntity(dto)
 
         assertThat(result.countryName).isEmpty()
         assertThat(result.countryIsoCode).isEmpty()

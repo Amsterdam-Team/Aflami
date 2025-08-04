@@ -24,7 +24,7 @@
 //        )
 //
 //        // Act
-//        val result: Category = mapper.toEntity(dto)
+//        val result: Category = mapper.toTvShowEntity(dto)
 //
 //        // Assert
 //        assertThat(result.id).isEqualTo(10)

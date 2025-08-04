@@ -20,7 +20,7 @@ class RecentSearchLocalMapperTest {
 
     @Test
     @DisplayName("should return searchKeyword from LocalSearchDto")
-    fun `toEntity should return searchKeyword`() {
+    fun `toTvShowEntity should return searchKeyword`() {
         // Arrange
         val dto = LocalSearchDto(
             searchKeyword = "Inception",
@@ -29,7 +29,7 @@ class RecentSearchLocalMapperTest {
         )
 
         // Act
-        val result = mapper.toEntity(dto)
+        val result = mapper.toTvShowEntity(dto)
 
         // Assert
         assertThat(result).isEqualTo("Inception")

@@ -19,7 +19,7 @@ class MovieCategoryLocalMapperTest {
     }
 
     @Test
-    fun `toEntity should return Category when given LocalMovieCategoryDto`() {
+    fun `toTvShowEntity should return Category when given LocalMovieCategoryDto`() {
         // Arrange
         val dto = createLocalMovieCategoryDto(
             categoryId = 1,
@@ -32,7 +32,7 @@ class MovieCategoryLocalMapperTest {
         )
 
         // Act
-        val result = mapper.toEntity(dto)
+        val result = mapper.toTvShowEntity(dto)
 
         // Assert
         assertThat(result).isEqualTo(expected)

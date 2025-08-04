@@ -19,7 +19,7 @@ class MovieLocalMapperTest {
 
     @Test
     @DisplayName("should return Movie entity when converting from LocalMovieDto")
-    fun `toEntity should return Movie when given LocalMovieDto`() {
+    fun `toTvShowEntity should return Movie when given LocalMovieDto`() {
         // Arrange
         val dto = createLocalMovieDtotest()
         val expected = createMovie(
@@ -37,7 +37,7 @@ class MovieLocalMapperTest {
         )
 
         // Act
-        val result = mapper.toEntity(dto)
+        val result = mapper.toTvShowEntity(dto)
 
         // Assert
         assertThat(result).isEqualTo(expected)

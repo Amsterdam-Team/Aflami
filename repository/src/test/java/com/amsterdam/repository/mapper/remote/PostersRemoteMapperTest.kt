@@ -11,7 +11,7 @@
 //    private val mapper = PostersRemoteMapper()
 //
 //    @Test
-//    fun `toEntity should map poster file paths to full image URLs`() {
+//    fun `toTvShowEntity should map poster file paths to full image URLs`() {
 //        val posters = listOf(
 //            GalleryImageDto(
 //                aspectRatio = 1.0,
@@ -35,7 +35,7 @@
 //
 //        val dto = createRemoteMovieGalleryResponse(posters = posters)
 //
-//        val result = mapper.toEntity(dto)
+//        val result = mapper.toTvShowEntity(dto)
 //
 //        assertThat(result).containsExactly(
 //            BuildConfig.BASE_IMAGE_URL + "/poster1.jpg",
@@ -44,10 +44,10 @@
 //    }
 //
 //    @Test
-//    fun `toEntity should return empty list when posters is empty`() {
+//    fun `toTvShowEntity should return empty list when posters is empty`() {
 //        val dto = createRemoteMovieGalleryResponse(posters = emptyList())
 //
-//        val result = mapper.toEntity(dto)
+//        val result = mapper.toTvShowEntity(dto)
 //
 //        assertThat(result).isEmpty()
 //    }

@@ -11,7 +11,7 @@ class TvShowGenreLocalMapperTest {
     private val mapper = TvShowGenreLocalMapper()
 
     @Test
-    fun `toEntity should map known categoryIds to correct TvShowGenre`() {
+    fun `toTvShowEntity should map known categoryIds to correct TvShowGenre`() {
         val testCases = mapOf(
             1L to TvShowGenre.SCIENCE_FICTION_FANTASY,
             2L to TvShowGenre.ACTION_ADVENTURE,
@@ -33,16 +33,16 @@ class TvShowGenreLocalMapperTest {
 
         testCases.forEach { (id, expectedGenre) ->
             val dto = createLocalTvShowCategoryDto(id = id)
-            val actual = mapper.toEntity(dto)
+            val actual = mapper.toTvShowEntity(dto)
             assertThat(actual).isEqualTo(expectedGenre)
         }
     }
 
     @Test
-    fun `toEntity should return TvShowGenre_ALL for unknown categoryIds`() {
+    fun `toTvShowEntity should return TvShowGenre_ALL for unknown categoryIds`() {
         listOf(0L, -1L, 99L).forEach { id ->
             val dto = createLocalTvShowCategoryDto(id = id, name = "Unknown")
-            val actual = mapper.toEntity(dto)
+            val actual = mapper.toTvShowEntity(dto)
             assertThat(actual).isEqualTo(TvShowGenre.ALL)
         }
     }

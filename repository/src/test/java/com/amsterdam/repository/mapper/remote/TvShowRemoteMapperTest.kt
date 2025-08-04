@@ -25,46 +25,46 @@ class TvShowRemoteMapperTest {
     private val fakeDto = createRemoteTvShowItemDto()
 
     @Test
-    fun `toEntity returns correct id`() {
+    fun `toTvShowEntity returns correct id`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.id).isEqualTo(101)
     }
 
     @Test
-    fun `toEntity returns correct name`() {
+    fun `toTvShowEntity returns correct name`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.name).isEqualTo("Test Show")
     }
 
     @Test
-    fun `toEntity returns correct description`() {
+    fun `toTvShowEntity returns correct description`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.description).isEqualTo("A test TV show")
     }
 
     @Test
-    fun `toEntity returns correct production year`() {
+    fun `toTvShowEntity returns correct production year`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.productionYear).isEqualTo(2022u)
     }
 
     @Test
-    fun `toEntity returns correct category ids`() {
+    fun `toTvShowEntity returns correct category ids`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.categories).containsExactly(
             10765L.toTvShowCategory(),
@@ -73,19 +73,19 @@ class TvShowRemoteMapperTest {
     }
 
     @Test
-    fun `toEntity returns correct rating`() {
+    fun `toTvShowEntity returns correct rating`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.rating).isEqualTo(8.3f)
     }
 
     @Test
-    fun `toEntity returns correct popularity`() {
+    fun `toTvShowEntity returns correct popularity`() {
         every { dateParser.parseYear(fakeDto.releaseDate) } returns 2022
 
-        val result: TvShow = mapper.toEntity(fakeDto)
+        val result: TvShow = mapper.toTvShowEntity(fakeDto)
 
         assertThat(result.popularity).isEqualTo(99.9)
     }

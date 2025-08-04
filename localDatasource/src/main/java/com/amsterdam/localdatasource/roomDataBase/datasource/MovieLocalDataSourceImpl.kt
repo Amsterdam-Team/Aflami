@@ -68,8 +68,7 @@ class MovieLocalDataSourceImpl @Inject constructor(
         val entries = movies.map { movie ->
             PopularMovieDto(
                 movieId = movie.movieId,
-                storedLanguage = movie.storedLanguage,
-                dateAdded = movie.insertedDate
+                storedLanguage = movie.storedLanguage
             )
         }
         movieDao.insertPopularMovies(entries)
@@ -107,8 +106,7 @@ class MovieLocalDataSourceImpl @Inject constructor(
         val entries = movies.map { movie ->
             UpcomingMovieDto(
                 movieId = movie.movieId,
-                storedLanguage = movie.storedLanguage,
-                dateAdded = movie.insertedDate
+                storedLanguage = movie.storedLanguage
             )
         }
         movieDao.insertUpcomingMovies(entries)
