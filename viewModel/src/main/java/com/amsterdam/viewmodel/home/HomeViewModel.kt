@@ -254,7 +254,12 @@ class HomeViewModel @Inject constructor(
 
     private fun onError(exception: AflamiException) {
         when (exception) {
-            is NetworkException -> updateState { it.copy(error = HomeError.NetworkError) }
+            is NetworkException -> updateState {
+                it.copy(
+                    error = HomeError.NetworkError,
+                    moodPickerUiState = it.moodPickerUiState.copy(isLoadingMovies = false)
+                )
+            }
             else -> {}
         }
     }

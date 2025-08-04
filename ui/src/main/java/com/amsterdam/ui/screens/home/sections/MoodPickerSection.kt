@@ -22,6 +22,8 @@ fun MoodPickerSection(
                 it.name
             )
         },
+        isButtonEnabled = state.moodPickerUiState.selectedMood != null,
+        isLoading = state.moodPickerUiState.isLoadingMovies,
         modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 26.dp),
         onSelectMood = {
             val mood =
