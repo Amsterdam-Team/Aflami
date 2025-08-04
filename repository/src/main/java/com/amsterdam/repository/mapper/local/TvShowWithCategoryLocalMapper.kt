@@ -17,6 +17,5 @@ fun TvShowWithCategory.toEntity(): TvShow =
             .map { toTvShowGenre(it.categoryId) },
         popularity = tvShow.popularity,
         seasonCount = tvShow.seasonCount,
-        originCountry = tvShow.originCountry,
-        productionCompanies = emptyList()
+        originCountry = tvShow.originCountry
     )

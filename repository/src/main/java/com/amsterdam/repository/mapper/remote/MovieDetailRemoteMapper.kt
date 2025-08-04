@@ -27,7 +27,7 @@ fun RemoteMovieDetailsResponse.toMovieDetailsEntity(): MovieDetails {
     )
 
     return MovieDetails(
-        movie = movieItemDto.toEntity(),
+        movie = movieItemDto.toEntity(videoUrl = videos.results.firstOrNull()?.fullVideoUrl?:""),
         reviews = reviews.results.toEntityList(),
         actors = credits.cast.toEntityList(),
         similarMovies = similar.results.toMovieEntityList(isPoster = false),

@@ -19,8 +19,7 @@ fun RemoteTvShowItemDto.toEntity(
         rating = voteAverage.toFloat(),
         popularity = popularity,
         seasonCount = seasonCount,
-        originCountry = originCountry.firstOrNull() ?: "",
-        productionCompanies = productionCompanies.toEntityList()
+        originCountry = originCountry.firstOrNull() ?: ""
     )
 }
 

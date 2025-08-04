@@ -6,7 +6,8 @@ import com.amsterdam.repository.mapper.shared.toMovieGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
 
 fun RemoteMovieItemDto.toEntity(
-    isPoster: Boolean = true
+    isPoster: Boolean = true,
+    videoUrl : String = ""
 ): Movie {
     val genreIds = genreIds.ifEmpty { genres.map { it.id } }
     val imageUrl = if (isPoster) fullPosterUrl else fullBackdropUrl
@@ -21,9 +22,11 @@ fun RemoteMovieItemDto.toEntity(
         rating = voteAverage.toFloat(),
         popularity = popularity,
         originCountry = originCountry.firstOrNull() ?: "",
-        runTimeInMinutes = runtime
+        runTimeInMinutes = runtime,
+        videoUrl = videoUrl
     )
 }
+
 
 fun List<RemoteMovieItemDto>.toMovieEntityList(isPoster: Boolean = true): List<Movie> =
     map { it.toEntity(isPoster) }

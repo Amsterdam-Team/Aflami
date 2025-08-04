@@ -14,6 +14,5 @@ fun LocalTvShowDto.toEntity(): TvShow =
         categories = emptyList(),
         popularity = popularity,
         seasonCount = seasonCount,
-        originCountry = originCountry,
-        productionCompanies = emptyList()
+        originCountry = originCountry
     )
