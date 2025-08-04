@@ -17,7 +17,7 @@ class CountryLocalMapperTest {
     }
 
     @Test
-    fun `toTvShowEntity should return Country entity when given LocalCountryDto`() {
+    fun `toEntity should return Country entity when given LocalCountryDto`() {
         // Arrange
         val dto = LocalCountryDto(
             name = "Egypt",
@@ -25,7 +25,7 @@ class CountryLocalMapperTest {
         )
 
         // Act
-        val result = mapper.toTvShowEntity(dto)
+        val result = mapper.toEntity(dto)
 
         // Assert
         assertThat(result.countryName).isEqualTo("Egypt")

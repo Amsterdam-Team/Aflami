@@ -4,7 +4,7 @@ import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun TvShowDetailsRemoteResponse.toLocalTvShowDto(storedLanguage: String): LocalTvShowDto {
+fun TvShowDetailsRemoteResponse.toLocalDto(storedLanguage: String): LocalTvShowDto {
     return LocalTvShowDto(
         tvShowId = id,
         storedLanguage = storedLanguage,

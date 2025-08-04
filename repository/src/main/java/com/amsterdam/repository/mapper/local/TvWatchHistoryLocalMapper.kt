@@ -6,6 +6,6 @@ import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
 
 fun TvShowWatchHistoryDto.toWatchHistoryEntity(dto: LocalTvShowDto): TvShowWatchHistory =
     TvShowWatchHistory(
-        tvShow = dto.toTvShowEntity(),
+        tvShow = dto.toEntity(),
         lastWatchedTime = watchedDate
     )

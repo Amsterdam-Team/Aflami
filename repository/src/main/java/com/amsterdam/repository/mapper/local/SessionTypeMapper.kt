@@ -9,9 +9,10 @@ fun SessionType.toLocalDto(): String =
         SessionType.GUEST -> "GUEST"
     }
 
-fun String.toSessionTypeEntity(): SessionType =
-    when (this) {
+fun stringToSessionTypeEntity(value: String): SessionType {
+    return when (value) {
         "LOGGED_IN" -> SessionType.LOGGED_IN
         "GUEST" -> SessionType.GUEST
         else -> SessionType.NOT_LOGGED_IN
     }
+}

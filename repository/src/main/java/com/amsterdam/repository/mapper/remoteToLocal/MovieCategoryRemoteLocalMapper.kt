@@ -10,5 +10,5 @@ fun RemoteCategoryDto.toLocalMovieCategoryDto(storedLanguage: String): LocalMovi
         name = name
     )
 
-fun List<RemoteCategoryDto>.toLocalMovieCategoryDtoList(storedLanguage: String): List<LocalMovieCategoryDto> =
+fun List<RemoteCategoryDto>.toLocalDtoList(storedLanguage: String): List<LocalMovieCategoryDto> =
     map { it.toLocalMovieCategoryDto(storedLanguage) }

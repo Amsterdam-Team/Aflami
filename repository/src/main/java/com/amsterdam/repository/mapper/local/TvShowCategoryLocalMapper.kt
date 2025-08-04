@@ -3,12 +3,12 @@ package com.amsterdam.repository.mapper.local
 import com.amsterdam.entity.Category
 import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
 
-fun LocalTvShowCategoryDto.toCategoryEntity(): Category =
+fun LocalTvShowCategoryDto.toEntity(): Category =
     Category(
         id = categoryId,
         name = name,
         imageUrl = ""
     )
 
-fun List<LocalTvShowCategoryDto>.toCategoryEntityList(): List<Category> =
-    map { it.toCategoryEntity() }
+fun List<LocalTvShowCategoryDto>.toEntityList(): List<Category> =
+    map { it.toEntity() }

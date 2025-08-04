@@ -3,7 +3,7 @@ package com.amsterdam.repository.mapper.remote
 import com.amsterdam.entity.Season
 import com.amsterdam.repository.dto.remote.SeasonDto
 
-fun SeasonDto.toSeasonEntity(): Season {
+fun SeasonDto.toEntity(): Season {
     return Season(
         id = id,
         seasonNumber = seasonNumber,
@@ -12,4 +12,4 @@ fun SeasonDto.toSeasonEntity(): Season {
     )
 }
 
-fun List<SeasonDto>.toSeasonEntityList(): List<Season>  = map { it.toSeasonEntity() }
+fun List<SeasonDto>.toEntityList(): List<Season>  = map { it.toEntity() }

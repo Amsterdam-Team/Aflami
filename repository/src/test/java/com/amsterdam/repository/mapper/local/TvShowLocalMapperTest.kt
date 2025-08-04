@@ -17,7 +17,7 @@ class TvShowLocalMapperTest {
     }
 
     @Test
-    fun `toTvShowEntity should map LocalTvShowDto to TvShow correctly`() {
+    fun `toEntity should map LocalTvShowDto to TvShow correctly`() {
         val dto = createLocalTvShowDto()
 
         val expected = createTvShow(
@@ -31,7 +31,7 @@ class TvShowLocalMapperTest {
             categories = emptyList()
         )
 
-        val result = mapper.toTvShowEntity(dto)
+        val result = mapper.toEntity(dto)
 
         assertThat(result).isEqualTo(expected)
     }

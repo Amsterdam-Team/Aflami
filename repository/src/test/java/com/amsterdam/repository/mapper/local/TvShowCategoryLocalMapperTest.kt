@@ -19,7 +19,7 @@ class TvShowCategoryLocalMapperTest {
 
     @Test
     @DisplayName("should map LocalTvShowCategoryDto to Category correctly")
-    fun `toTvShowEntity should map correctly`() {
+    fun `toEntity should map correctly`() {
         // Arrange
         val dto = LocalTvShowCategoryDto(
             categoryId = 1,
@@ -27,7 +27,7 @@ class TvShowCategoryLocalMapperTest {
         )
 
         // Act
-        val result = mapper.toTvShowEntity(dto)
+        val result = mapper.toEntity(dto)
 
         // Assert
         assertThat(result.id).isEqualTo(1)

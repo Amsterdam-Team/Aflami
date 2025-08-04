@@ -23,7 +23,7 @@ class TvShowWithCategoryLocalMapperTest {
     }
 
     @Test
-    fun `toTvShowEntity maps TvShowWithCategory to TvShow correctly`() {
+    fun `toEntity maps TvShowWithCategory to TvShow correctly`() {
         // Arrange
         val tvShowDto = createLocalTvShowDto()
         val categories = createLocalTvShowCategoryDtoList()
@@ -33,7 +33,7 @@ class TvShowWithCategoryLocalMapperTest {
         every { genreMapper.toEntityList(categories) } returns expectedGenres
 
         // Act
-        val result = mapper.toTvShowEntity(tvShowWithCategory)
+        val result = mapper.toEntity(tvShowWithCategory)
 
         // Assert
         val expected = createTvShow(

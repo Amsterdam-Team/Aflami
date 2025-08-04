@@ -5,7 +5,7 @@ import com.amsterdam.repository.dto.remote.review.ReviewDto
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-fun ReviewDto.toReviewEntity(): Review {
+fun ReviewDto.toEntity(): Review {
     return Review(
         id = id.hashCode().toLong(),
         reviewerName = author,
@@ -17,4 +17,4 @@ fun ReviewDto.toReviewEntity(): Review {
     )
 }
 
-fun List<ReviewDto>.toReviewEntityList(): List<Review> = map { it.toReviewEntity() }
+fun List<ReviewDto>.toEntityList(): List<Review> = map { it.toEntity() }

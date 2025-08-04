@@ -7,10 +7,9 @@ import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
-import com.amsterdam.repository.mapper.local.toCategoryEntityList
-import com.amsterdam.repository.mapper.local.toEntityCategoryList
-import com.amsterdam.repository.mapper.remote.toCategoryEntityList
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieCategoryDtoList
+import com.amsterdam.repository.mapper.local.toEntityList
+import com.amsterdam.repository.mapper.remote.toEntityList
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalTvShowCategoryDtoList
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -43,21 +42,21 @@ class CategoryRepositoryImpl @Inject constructor(
     private fun onSuccessGetMovieCategoriesFromLocal(
         localCategories: List<LocalMovieCategoryDto>
     ): List<Category> {
-        return localCategories.toEntityCategoryList()
+        return localCategories.toEntityList()
     }
 
     private suspend fun onSuccessLoadMovieCategories(
         movieCategories: RemoteCategoryResponse
     ): List<Category> {
         return saveMovieCategoriesToDatabase(movieCategories)
-            .let { movieCategories.genres.toCategoryEntityList() }
+            .let { movieCategories.genres.toEntityList() }
     }
 
     private suspend fun saveMovieCategoriesToDatabase(
         movieCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertMovieCategories(
-            movieCategories.genres.toLocalMovieCategoryDtoList(
+            movieCategories.genres.toLocalDtoList(
                 preferences.getDeviceLanguage().first()
             )
         )
@@ -66,14 +65,14 @@ class CategoryRepositoryImpl @Inject constructor(
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
           return categoryLocalSource.getTvShowCategories(
                 preferences.getDeviceLanguage().first()
-            ).toCategoryEntityList()
+            ).toEntityList()
     }
 
     private suspend fun onSuccessLoadTvShowCategories(
         tvShowCategories: RemoteCategoryResponse
     ): List<Category> {
         return saveTvShowCategoriesToDatabase(tvShowCategories).let {
-            tvShowCategories.genres.toCategoryEntityList()
+            tvShowCategories.genres.toEntityList()
         }
     }
 

@@ -21,7 +21,7 @@
 //        val response = createRemoteMovieGalleryResponse()
 //
 //        // Act
-//        val result = mapper.toTvShowEntity(response)
+//        val result = mapper.toEntity(response)
 //
 //        // Assert
 //        val expectedUrls = listOf(
@@ -37,7 +37,7 @@
 //        val response = createRemoteMovieGalleryResponse(backdrops = emptyList())
 //
 //        // Act
-//        val result = mapper.toTvShowEntity(response)
+//        val result = mapper.toEntity(response)
 //
 //        // Assert
 //        assertThat(result).isEmpty()

@@ -4,7 +4,7 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.repository.dto.remote.EpisodeDto
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun EpisodeDto.toEpisode(): Episode {
+fun EpisodeDto.toEntity(): Episode {
     return Episode(
         id = id,
         title = title,
@@ -18,4 +18,4 @@ fun EpisodeDto.toEpisode(): Episode {
     )
 }
 
-fun List<EpisodeDto>.toEpisodeEntityList(): List<Episode> = map { it.toEpisode() }
+fun List<EpisodeDto>.toEntityList(): List<Episode> = map { it.toEntity() }

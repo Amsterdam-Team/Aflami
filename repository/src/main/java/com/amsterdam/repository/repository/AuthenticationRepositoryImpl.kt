@@ -5,8 +5,8 @@ import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
+import com.amsterdam.repository.mapper.local.stringToSessionTypeEntity
 import com.amsterdam.repository.mapper.local.toLocalDto
-import com.amsterdam.repository.mapper.local.toSessionTypeEntity
 import com.amsterdam.repository.security.CryptoData
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSessionType(): SessionType =
-        authenticationLocalSource.getSessionType().toSessionTypeEntity()
+        stringToSessionTypeEntity(authenticationLocalSource.getSessionType())
 
     override suspend fun logout() {
         authenticationLocalSource.clearCachedSessionId()

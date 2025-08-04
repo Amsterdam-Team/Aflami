@@ -17,7 +17,7 @@ class MovieGenreLocalMapperTest {
     }
 
     @Test
-    fun `toTvShowEntity should return ALL genre when categoryId is invalid`() {
+    fun `toEntity should return ALL genre when categoryId is invalid`() {
         // Arrange
         val dto = LocalMovieCategoryDto(
             categoryId = 100,
@@ -25,20 +25,20 @@ class MovieGenreLocalMapperTest {
         )
 
         // Act
-        val result = mapper.toTvShowEntity(dto)
+        val result = mapper.toEntity(dto)
 
         // Assert
         assertThat(result).isEqualTo(MovieGenre.ALL)
     }
 
     @Test
-    fun `toTvShowEntity should return ALL genre when categoryId is 0`() {
+    fun `toEntity should return ALL genre when categoryId is 0`() {
         val dto = LocalMovieCategoryDto(
             categoryId = 0,
             name = "All"
         )
 
-        val result = mapper.toTvShowEntity(dto)
+        val result = mapper.toEntity(dto)
 
         assertThat(result).isEqualTo(MovieGenre.ALL)
     }

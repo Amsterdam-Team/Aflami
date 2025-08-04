@@ -16,8 +16,7 @@ import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.local.toWatchHistoryEntity
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDto
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalTvShowDto
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -61,12 +60,12 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private suspend fun fetchAndCacheRemoteMovie(movieId: Long, language: String): LocalMovieDto {
         return movieRemoteDataSource.getMovieDetailsById(movieId)
             .also { cacheWatchedMovie(it) }
-            .toLocalMovieDto(language)
+            .toLocalDto(language)
     }
 
     private suspend fun cacheWatchedMovie(remoteMovieDetailsResponse: RemoteMovieDetailsResponse) {
         movieLocalSource.insertMovie(
-            remoteMovieDetailsResponse.toLocalMovieDto(preferences.getDeviceLanguage().first())
+            remoteMovieDetailsResponse.toLocalDto(preferences.getDeviceLanguage().first())
         )
     }
 
@@ -99,12 +98,12 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private suspend fun fetchAndCacheRemoteTvShow(movieId: Long, language: String): LocalTvShowDto {
         return tvShowRemoteSource.getTvShowDetailsById(movieId)
             .also { cacheWatchedTvShow(it) }
-            .toLocalTvShowDto(language)
+            .toLocalDto(language)
     }
 
     private suspend fun cacheWatchedTvShow(remoteTvShowItemDto: TvShowDetailsRemoteResponse) {
         localTvDataSource.insertTvShow(
-            tvShow = remoteTvShowItemDto.toLocalTvShowDto(
+            tvShow = remoteTvShowItemDto.toLocalDto(
                 preferences.getDeviceLanguage().first()
             )
         )

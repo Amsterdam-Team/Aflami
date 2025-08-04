@@ -3,11 +3,11 @@ package com.amsterdam.repository.mapper.remote
 import com.amsterdam.entity.Country
 import com.amsterdam.repository.dto.remote.RemoteCountryDto
 
-fun RemoteCountryDto.toCountryEntity(): Country =
+fun RemoteCountryDto.toEntity(): Country =
     Country(
         countryName = nativeName,
         countryIsoCode = isoCode
     )
 
 
-fun List<RemoteCountryDto>.toCountryEntityList(): List<Country> = map { it.toCountryEntity() }
+fun List<RemoteCountryDto>.toEntityList(): List<Country> = map { it.toEntity() }

@@ -4,7 +4,7 @@ import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun RemoteMovieItemDto.toLocalMovieDto(isPoster : Boolean = true,storedLanguage: String): LocalMovieDto {
+fun RemoteMovieItemDto.toLocalDto(isPoster : Boolean = true, storedLanguage: String): LocalMovieDto {
     val imageUrl = if (isPoster) fullPosterUrl else fullBackdropUrl
 
     return LocalMovieDto(
@@ -23,4 +23,4 @@ fun RemoteMovieItemDto.toLocalMovieDto(isPoster : Boolean = true,storedLanguage:
 }
 
 fun List<RemoteMovieItemDto>.toLocalMovieDtoList(isPoster : Boolean = true,storedLanguage: String) =
-    map { it.toLocalMovieDto(isPoster,storedLanguage) }
+    map { it.toLocalDto(isPoster,storedLanguage) }

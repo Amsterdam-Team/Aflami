@@ -16,13 +16,13 @@ import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
 import com.amsterdam.repository.mapper.local.toDtoList
-import com.amsterdam.repository.mapper.local.toMovieEntity
-import com.amsterdam.repository.mapper.remote.toActorEntityList
+import com.amsterdam.repository.mapper.local.toEntity
+import com.amsterdam.repository.mapper.remote.toEntityList
 import com.amsterdam.repository.mapper.remote.toMovieDetailsEntity
-import com.amsterdam.repository.mapper.remote.toMovieEntity
+import com.amsterdam.repository.mapper.remote.toEntity
 import com.amsterdam.repository.mapper.remote.toMovieEntityList
 import com.amsterdam.repository.mapper.remote.toMovieItemDto
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDto
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDtoList
 import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
@@ -70,7 +70,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getActorsByMovieId(movieId: Long): List<Actor> {
-        return movieRemoteDataSource.getCastByMovieId(movieId).cast.toActorEntityList()
+        return movieRemoteDataSource.getCastByMovieId(movieId).cast.toEntityList()
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): GetMovieDetailsUseCase.MovieDetails {
@@ -87,8 +87,8 @@ class MovieRepositoryImpl @Inject constructor(
             getFromLocal = ::getUpcomingMoviesFromLocal,
             getFromRemote = ::getUpcomingMoviesFromRemote,
             saveRemoteToDatabase = ::saveUpcomingMovies,
-            mapFromLocalToEntity = { it.toMovieEntity() },
-            mapFromRemoteToEntity = { it.toMovieEntity(isPoster = false) }
+            mapFromLocalToEntity = { it.toEntity() },
+            mapFromRemoteToEntity = { it.toEntity(isPoster = false) }
         )
     }
 
@@ -98,8 +98,8 @@ class MovieRepositoryImpl @Inject constructor(
             getFromLocal = ::getPopularMoviesFromLocal,
             getFromRemote = ::getPopularMoviesFromRemote,
             saveRemoteToDatabase = ::savePopularMovies,
-            mapFromLocalToEntity = { it.toMovieEntity() },
-            mapFromRemoteToEntity = { it.toMovieEntity(isPoster = true) }
+            mapFromLocalToEntity = { it.toEntity() },
+            mapFromRemoteToEntity = { it.toEntity(isPoster = true) }
         )
     }
 
@@ -111,8 +111,8 @@ class MovieRepositoryImpl @Inject constructor(
             getFromLocal = ::getTopRatedMoviesFromLocal,
             getFromRemote = { getTopRatedMoviesFromRemote(page) },
             saveRemoteToDatabase = ::saveTopRatedMovies,
-            mapFromLocalToEntity = LocalMovieDto::toMovieEntity,
-            mapFromRemoteToEntity = { it.toMovieEntity(isPoster = true) }
+            mapFromLocalToEntity = LocalMovieDto::toEntity,
+            mapFromRemoteToEntity = { it.toEntity(isPoster = true) }
         )
     }
 
@@ -124,7 +124,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     private suspend fun cacheWatchedMovie(remoteMovieItemDto: RemoteMovieItemDto) {
         movieLocalSource.insertMovie(
-            remoteMovieItemDto.toLocalMovieDto(storedLanguage = preferences.getDeviceLanguage().first())
+            remoteMovieItemDto.toLocalDto(storedLanguage = preferences.getDeviceLanguage().first())
         )
     }
 
@@ -245,7 +245,7 @@ class MovieRepositoryImpl @Inject constructor(
         categoryRepository.getMovieCategories().also {
             movieLocalSource.addMovieWithCategories(
                 movie =
-                    remoteMovie.toLocalMovieDto(storedLanguage = preferences.getDeviceLanguage().first()),
+                    remoteMovie.toLocalDto(storedLanguage = preferences.getDeviceLanguage().first()),
                 categoryIds = remoteMovie.genreIds.map(Int::toLong),
                 storedLanguage = preferences.getDeviceLanguage().first()
             )

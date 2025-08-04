@@ -3,7 +3,7 @@ package com.amsterdam.repository.mapper.local
 import com.amsterdam.entity.Movie
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 
-fun MovieWithCategories.toMovieEntity(): Movie =
+fun MovieWithCategories.toEntity(): Movie =
     Movie(
         id = movie.movieId,
         name = movie.name,

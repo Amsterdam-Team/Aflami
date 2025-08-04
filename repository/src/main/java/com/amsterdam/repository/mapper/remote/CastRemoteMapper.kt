@@ -4,7 +4,7 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.amsterdam.repository.dto.remote.RemoteCastDto
 
-fun RemoteCastDto.toActorEntity(): Actor =
+fun RemoteCastDto.toEntity(): Actor =
     Actor(
         id = id,
         name = name,
@@ -14,4 +14,4 @@ fun RemoteCastDto.toActorEntity(): Actor =
     )
 
 
-fun List<RemoteCastDto>.toActorEntityList(): List<Actor> = map { it.toActorEntity() }
+fun List<RemoteCastDto>.toEntityList(): List<Actor> = map { it.toEntity() }

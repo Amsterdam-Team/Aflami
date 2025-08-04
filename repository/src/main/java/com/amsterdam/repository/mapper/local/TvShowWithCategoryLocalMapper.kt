@@ -4,7 +4,7 @@ import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import com.amsterdam.repository.mapper.shared.toTvShowGenre
 
-fun TvShowWithCategory.toTvShowEntity(): TvShow =
+fun TvShowWithCategory.toEntity(): TvShow =
     TvShow(
         id = tvShow.tvShowId,
         name = tvShow.name,
@@ -14,7 +14,7 @@ fun TvShowWithCategory.toTvShowEntity(): TvShow =
         rating = tvShow.rating,
         categories = categories
             .distinctBy { it.categoryId }
-            .map { it.categoryId.toTvShowGenre() },
+            .map { toTvShowGenre(it.categoryId) },
         popularity = tvShow.popularity,
         seasonCount = tvShow.seasonCount,
         originCountry = tvShow.originCountry,

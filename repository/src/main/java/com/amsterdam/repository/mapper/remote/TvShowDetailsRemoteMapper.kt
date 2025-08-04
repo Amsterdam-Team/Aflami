@@ -6,29 +6,29 @@ import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.shared.toTvShowGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun TvShowDetailsRemoteResponse.toTvShowDetailsEntity(): TvShowDetails {
+fun TvShowDetailsRemoteResponse.toEntity(): TvShowDetails {
     val tvShow = TvShow(
         id = id,
         name = title,
         description = overview,
         posterUrl = fullPosterPath.orEmpty(),
         airDate = releaseDate.toSafeLocalDate(),
-        categories = genres.map { it.id.toLong().toTvShowGenre() },
+        categories = genres.map { toTvShowGenre(it.id.toLong()) },
         rating = voteAverage.toFloat(),
         popularity = popularity,
         seasonCount = seasonCount,
         originCountry = originCountry.firstOrNull() ?: "",
-        productionCompanies = productionCompanies.toProductionCompanyEntityList()
+        productionCompanies = productionCompanies.toEntityList()
     )
 
     return TvShowDetails(
         tvShow = tvShow,
-        actors = credits.cast.toActorEntityList(),
-        seasons = seasons.toSeasonEntityList(),
-        reviews = reviews.results.toReviewEntityList(),
-        similarTvShows = similar.results.toTvShowEntityList(),
-        gallery = images.toImageUrlsEntityList(),
-        posters = images.toImageUrlsEntityList(),
-        productionsCompanies =productionCompanies.toProductionCompanyEntityList(),
+        actors = credits.cast.toEntityList(),
+        seasons = seasons.toEntityList(),
+        reviews = reviews.results.toEntityList(),
+        similarTvShows = similar.results.toEntityList(),
+        gallery = images.toEntityList(),
+        posters = images.toEntityList(),
+        productionsCompanies =productionCompanies.toEntityList(),
     )
 }

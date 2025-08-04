@@ -6,6 +6,6 @@ import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
 
 fun MovieWatchHistoryDto.toWatchHistoryEntity(localMovieDto: LocalMovieDto): MovieWatchHistory =
     MovieWatchHistory(
-        movie = localMovieDto.toMovieEntity(),
+        movie = localMovieDto.toEntity(),
         lastWatchedTime = watchedDate
     )

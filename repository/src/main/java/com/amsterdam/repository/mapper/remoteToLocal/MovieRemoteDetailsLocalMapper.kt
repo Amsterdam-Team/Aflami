@@ -4,7 +4,7 @@ import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun RemoteMovieDetailsResponse.toLocalMovieDto(storedLanguage: String): LocalMovieDto {
+fun RemoteMovieDetailsResponse.toLocalDto(storedLanguage: String): LocalMovieDto {
     return LocalMovieDto(
         movieId = id,
         storedLanguage = storedLanguage,
