@@ -39,7 +39,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
         val sessionId = getSessionId()
         if (authenticationRemoteSource.deleteSession(sessionId)){
             authenticationLocalSource.clearCachedSessionId()
-            authenticationLocalSource.setSessionType(sessionTypeMapper.toLocalSessionType(SessionType.NOT_LOGGED_IN))
+            authenticationLocalSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto())
         }
     }
 }

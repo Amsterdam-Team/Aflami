@@ -6,6 +6,7 @@ import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
+import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
 import dagger.Module
 import dagger.Provides
@@ -56,4 +57,8 @@ object ServiceProvidesModule {
     @Singleton
     fun provideTvShowsApiService(retrofitClient: RetrofitClient): TvShowsApiService =
         retrofitClient.tvApiService()
+    @Provides
+    @Singleton
+    fun provideUserListApiService(retrofitClient: RetrofitClient): UserListApiService =
+        retrofitClient.userListApiService()
 }

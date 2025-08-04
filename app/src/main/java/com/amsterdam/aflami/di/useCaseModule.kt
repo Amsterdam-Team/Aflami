@@ -6,6 +6,7 @@ import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.repository.RecentSearchRepository
 import com.amsterdam.domain.repository.TvShowRepository
+import com.amsterdam.domain.repository.UserListRepository
 import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
@@ -29,7 +30,10 @@ import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.list.DeleteListUseCase
 import com.amsterdam.domain.useCase.preferences.GetOnboardingStatusUseCase
+import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
+import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.preferences.SetOnboardingCompletedUseCase
@@ -43,10 +47,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+
 @Module
 @InstallIn(ViewModelComponent::class)
 object UseCaseModule {
-
 
     @Provides
     fun provideManageRestrictionLevelUseCase(appPreferencesRepository: AppPreferencesRepository): ManageRestrictionLevelUseCase =
@@ -158,12 +162,27 @@ object UseCaseModule {
         GetContinueWatchingTvShowsUseCase(watchHistoryRepository)
 
     @Provides
+    fun provideGetMoviesFromListUseCase(
+        userListRepository: UserListRepository
+    ): GetMoviesFromListUseCase = GetMoviesFromListUseCase(userListRepository)
+
+    @Provides
+    fun provideDeleteListUseCase(
+        userListRepository: UserListRepository
+    ): DeleteListUseCase = DeleteListUseCase(userListRepository)
+
+    @Provides
     fun provideGetTopRatedTvShowsUseCase(tvShowRepository: TvShowRepository): GetTopRatedTvShowsUseCase =
         GetTopRatedTvShowsUseCase(tvShowRepository)
 
     @Provides
     fun provideGetPopularTvShowsUseCase(tvShowRepository: TvShowRepository): GetPopularTvShowsUseCase =
         GetPopularTvShowsUseCase(tvShowRepository)
+
+    @Provides
+    fun provideRemoveMovieFromListUseCase(
+        userListRepository: UserListRepository
+    ): RemoveMovieFromListUseCase = RemoveMovieFromListUseCase(userListRepository)
 
     @Provides
     fun provideGetHomeScreenDataUseCase(

@@ -45,35 +45,35 @@ class RecentSearchesUseCaseTest {
 
     @Test
     fun `addRecentSearchForCountry should call repository with valid country`() = runTest {
-        recentSearchesUseCase.addRecentSearchForCountry(country)
-        coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForCountry(country.countryIsoCode) }
+        recentSearchesUseCase.addRecentSearch(country.countryName)
+        coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(country.countryName) }
     }
 
     @Test
     fun `addRecentSearchForCountry should not call repository when countryIsoCode is blank`() =
         runTest {
-            val invalidCountry = Country("Blank", "  ")
-            recentSearchesUseCase.addRecentSearchForCountry(invalidCountry)
-            coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForCountry(any()) }
+            val invalidCountry = Country(" ", "  ")
+            recentSearchesUseCase.addRecentSearch(invalidCountry.countryName)
+            coVerify(exactly = 0) { recentSearchRepository.addRecentSearch(any()) }
         }
 
     @Test
     fun `addRecentSearchForActor should call repository with valid actor name`() = runTest {
         val actorName = "keyword"
-        recentSearchesUseCase.addRecentSearchForActor(actorName)
-        coVerify(exactly = 1) { recentSearchRepository.addRecentSearchForActor(actorName) }
+        recentSearchesUseCase.addRecentSearch(actorName)
+        coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(actorName) }
     }
 
     @Test
     fun `addRecentSearchForActor should not call repository when actor name is empty`() = runTest {
-        recentSearchesUseCase.addRecentSearchForActor("")
-        coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForActor(any()) }
+        recentSearchesUseCase.addRecentSearch("")
+        coVerify(exactly = 0) { recentSearchRepository.addRecentSearch(any()) }
     }
 
     @Test
     fun `addRecentSearchForActor should not call repository when actor name is blank`() = runTest {
-        recentSearchesUseCase.addRecentSearchForActor("   ")
-        coVerify(exactly = 0) { recentSearchRepository.addRecentSearchForActor(any()) }
+        recentSearchesUseCase.addRecentSearch("   ")
+        coVerify(exactly = 0) { recentSearchRepository.addRecentSearch(any()) }
     }
 
 
@@ -121,15 +121,15 @@ class RecentSearchesUseCaseTest {
 
     @Test
     fun `addRecentSearchForCountry should throw AflamiException when repository fails`() = runTest {
-        coEvery { recentSearchRepository.addRecentSearchForCountry(country.countryIsoCode) } throws AflamiException()
-        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearchForCountry(country) }
+        coEvery { recentSearchRepository.addRecentSearch(any()) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearch(country.countryName) }
     }
 
     @Test
     fun `addRecentSearchForActor should throw AflamiException when repository fails`() = runTest {
         val actorName = "actorName"
-        coEvery { recentSearchRepository.addRecentSearchForActor(actorName) } throws AflamiException()
-        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearchForActor(actorName) }
+        coEvery { recentSearchRepository.addRecentSearch(actorName) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearch(actorName) }
     }
 
     @Test

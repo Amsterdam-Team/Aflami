@@ -22,6 +22,8 @@ fun DefaultAppBar(
     modifier: Modifier = Modifier,
     showNavigateBackButton: Boolean = true,
     firstOption: Painter? = null,
+    firstOptionIconTint: Color = AppTheme.color.body,
+    lastOptionIconTint: Color = AppTheme.color.body,
     firstOptionContentDescription: String? = null,
     lastOption: Painter? = null,
     lastOptionContentDescription: String? = null,
@@ -62,7 +64,7 @@ fun DefaultAppBar(
                     IconButton(
                         painter = painter,
                         contentDescription = firstOptionContentDescription,
-                        tint = AppTheme.color.body,
+                        tint = firstOptionIconTint,
                         paddingValues = PaddingValues(8.dp),
                         onClick = onFirstOptionClicked,
                     )
@@ -74,7 +76,7 @@ fun DefaultAppBar(
                     IconButton(
                         painter = painter,
                         contentDescription = lastOptionContentDescription,
-                        tint = AppTheme.color.body,
+                        tint = lastOptionIconTint,
                         paddingValues = PaddingValues(8.dp),
                         onClick = onLastOptionClicked,
                     )

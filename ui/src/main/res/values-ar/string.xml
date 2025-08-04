@@ -230,4 +230,11 @@
     <string name="there_is_no_company_production">لا توجد شركات إنتاج</string>
     <string name="video_launch_error">خطأ في تشغيل الفيديو</string>
 
+    <!-- List -->
+    <string name="remove_from_list">حذف عنصر</string>
+    <string name="no_saved_items_here">لا توجد عناصر محفوظة</string>
+    <string name="confirm_delete">هل أنت متأكد من مواصلة الحذف؟</string>
+    <string name="list_deleted_successfully">تم حذف القائمة بنجاح</string>
+    <string name="movie_deleted_successfully">تم حذف الفيلم بنجاح</string>
+
 </resources>

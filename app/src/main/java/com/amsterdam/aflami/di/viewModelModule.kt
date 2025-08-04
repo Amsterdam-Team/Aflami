@@ -2,6 +2,7 @@ package com.amsterdam.aflami.di
 
 import androidx.lifecycle.SavedStateHandle
 import com.amsterdam.viewmodel.cast.CastScreenArgs
+import com.amsterdam.viewmodel.listDetails.ListDetailsArgs
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsArgs
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsArgs
 import com.amsterdam.viewmodel.utils.dispatcher.DefaultDispatcherProvider
@@ -26,6 +27,10 @@ object ViewModelViewModelScope {
     @Provides
     fun provideCastScreenArgs(savedStateHandle: SavedStateHandle): CastScreenArgs = CastScreenArgs(savedStateHandle)
 
+    @Provides
+    fun provideListDetailsArgs(
+        savedStateHandle: SavedStateHandle
+    ): ListDetailsArgs = ListDetailsArgs(savedStateHandle)
 }
 
 @Module

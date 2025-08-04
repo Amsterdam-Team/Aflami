@@ -49,5 +49,3 @@ fun toTvShowGenre(id: Long): TvShowGenre {
         else -> TvShowGenre.ALL
     }
 }
-
-

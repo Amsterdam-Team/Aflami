@@ -68,4 +68,10 @@ abstract class RepositoryModule {
     abstract fun bindWatchHistoryRepository(
         watchHistoryRepositoryImpl: WatchHistoryRepositoryImpl
     ): WatchHistoryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserListRepository(
+        impl: UserListRepositoryImpl
+    ): UserListRepository
 }
