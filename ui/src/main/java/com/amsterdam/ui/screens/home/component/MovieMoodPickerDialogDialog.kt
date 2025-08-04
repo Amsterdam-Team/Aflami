@@ -26,7 +26,10 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
+import com.amsterdam.ui.application.LocalRestrictionLevel
+import com.amsterdam.ui.components.DialogTitleRow
 import com.amsterdam.ui.components.MediaCard
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 
 @SuppressLint("ContextCastToActivity")
@@ -54,36 +57,22 @@ fun MovieMoodPickerDialogDialog(
 }
 
 @Composable
-fun DialogContent(
+private fun DialogContent(
     movie: MovieItemUiState,
     onDismiss: () -> Unit,
     onClickGetAnotherMovie: () -> Unit,
     onClickViewDetails: () -> Unit
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Column(
         modifier = Modifier
             .padding(12.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(R.string.mood_picker),
-                style = AppTheme.textStyle.title.large,
-                color = AppTheme.color.title
-            )
-            IconButton(
-                painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_cancel),
-                contentDescription = stringResource(R.string.cancel),
-                onClick = {
-                    onDismiss()
-                },
-                tint = AppTheme.color.title,
-            )
-        }
+
+        DialogTitleRow(
+            title = stringResource(R.string.mood_picker),
+            onDismiss = onDismiss
+        )
 
         Text(
             modifier = Modifier.padding(top = 24.dp),
@@ -103,6 +92,7 @@ fun DialogContent(
                     model = movie.posterImageUrl,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
+                    safetyLevel = safetyLevel,
                     onLoading = { ImageLoadingIndicator() },
                     onError = { ImageErrorIndicator() },
                 )

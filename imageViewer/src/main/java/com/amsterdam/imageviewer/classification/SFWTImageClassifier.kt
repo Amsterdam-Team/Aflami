@@ -1,6 +1,7 @@
 package com.amsterdam.imageviewer.classification
 
 import android.graphics.Bitmap
+import com.amsterdam.imageviewer.classification.model.NsfwDetectorRule
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
@@ -8,15 +9,13 @@ internal class NsfwDetectorClassifier(
     private val imageClassifier: ImageClassifier
 ) : CustomImageClassifier {
 
-    private val detectionRule = NsfwDetectorConfig.NSFW_DETECTION_RULE
-
-    override fun isImageSafe(bitmap: Bitmap): Boolean? {
-        return runInference(bitmap)?.let { scores ->
-            isInappropriate(scores).not()
+    override fun isImageSafe(bitmap: Bitmap, detectorRule: NsfwDetectorRule): Boolean? {
+        return runInference(bitmap, detectorRule)?.let { scores ->
+            isInappropriate(scores, detectorRule).not()
         }
     }
 
-    private fun runInference(bitmap: Bitmap): FloatArray? {
+    private fun runInference(bitmap: Bitmap, detectorRule: NsfwDetectorRule): FloatArray? {
         return synchronized(this) {
             runCatching {
                 val tensorImage = TensorImage.fromBitmap(bitmap)
@@ -26,8 +25,8 @@ internal class NsfwDetectorClassifier(
                 val scores = FloatArray(2)
                 results.firstOrNull()?.categories?.forEach { category ->
                     when (category.label) {
-                        "0" -> scores[detectionRule.nonNudeIndex] = category.score
-                        "1" -> scores[detectionRule.nudeIndex] = category.score
+                        "0" -> scores[detectorRule.nonNudeIndex] = category.score
+                        "1" -> scores[detectorRule.nudeIndex] = category.score
                     }
                 }
                 scores
@@ -35,9 +34,9 @@ internal class NsfwDetectorClassifier(
         }
     }
 
-    private fun isInappropriate(scores: FloatArray): Boolean {
-        val nonNudeScore = scores.getOrElse(detectionRule.nonNudeIndex) { 0f }
-        val nudeScore = scores.getOrElse(detectionRule.nudeIndex) { 0f }
-        return nonNudeScore < detectionRule.sfwThreshold || nudeScore >= detectionRule.nsfwThreshold
+    private fun isInappropriate(scores: FloatArray, detectorRule: NsfwDetectorRule): Boolean {
+        val nonNudeScore = scores.getOrElse(detectorRule.nonNudeIndex) { 0f }
+        val nudeScore = scores.getOrElse(detectorRule.nudeIndex) { 0f }
+        return nonNudeScore < detectorRule.sfwThreshold || nudeScore >= detectorRule.nsfwThreshold
     }
 }

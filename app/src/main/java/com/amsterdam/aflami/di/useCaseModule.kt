@@ -10,6 +10,7 @@ import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
 import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
+import com.amsterdam.domain.useCase.authentication.LogoutUseCase
 import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
 import com.amsterdam.domain.useCase.common.AddTvShowWatchHistoryUseCase
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
@@ -30,6 +31,7 @@ import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.domain.useCase.preferences.GetOnboardingStatusUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.preferences.SetOnboardingCompletedUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
@@ -44,6 +46,11 @@ import dagger.hilt.android.components.ViewModelComponent
 @Module
 @InstallIn(ViewModelComponent::class)
 object UseCaseModule {
+
+
+    @Provides
+    fun provideManageRestrictionLevelUseCase(appPreferencesRepository: AppPreferencesRepository): ManageRestrictionLevelUseCase =
+        ManageRestrictionLevelUseCase(appPreferencesRepository)
 
 
     @Provides
@@ -70,6 +77,10 @@ object UseCaseModule {
     @Provides
     fun provideLoginWithPasswordUseCase(authenticationRepository: AuthenticationRepository): LoginWithPasswordUseCase =
         LoginWithPasswordUseCase(authenticationRepository)
+
+    @Provides
+    fun provideLogoutUseCase(authenticationRepository: AuthenticationRepository): LogoutUseCase =
+        LogoutUseCase(authenticationRepository)
 
     @Provides
     fun provideAddMovieWatchHistoryUseCase(watchHistoryRepository: WatchHistoryRepository): AddMovieWatchHistoryUseCase =

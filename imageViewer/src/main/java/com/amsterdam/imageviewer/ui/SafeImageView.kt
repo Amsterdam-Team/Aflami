@@ -7,6 +7,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.firebase.FirebaseNsfwModelManager
 import com.amsterdam.imageviewer.firebase.ModelDownloadState
 
@@ -18,7 +19,7 @@ fun SafeImageView(
     contentScale: ContentScale = ContentScale.Crop,
     onLoading: (@Composable () -> Unit),
     onError: (@Composable () -> Unit),
-    isSafeEnabled: Boolean = true
+    safetyLevel: SafetyLevel = SafetyLevel.STRICT,
 ) {
     val state = FirebaseNsfwModelManager.downloadState
     val context = LocalContext.current.applicationContext
@@ -29,13 +30,13 @@ fun SafeImageView(
             .data(model)
             .build()
 
-    if (isSafeEnabled) {
-        when (state) {
+    when (safetyLevel) {
+        SafetyLevel.STRICT -> when (state) {
             is ModelDownloadState.Success -> {
                 SubcomposeAsyncImage(
                     model = imageRequest,
                     contentDescription = contentDescription,
-                    imageLoader = state.imageLoader, // Use the successful loader
+                    imageLoader = state.imageLoaderStrict, // Use the successful loader
                     modifier = modifier,
                     contentScale = contentScale,
                     loading = { onLoading() },
@@ -58,14 +59,47 @@ fun SafeImageView(
                 onLoading()
             }
         }
-    } else {
-        SubcomposeAsyncImage(
-            model = imageRequest,
-            contentDescription = contentDescription,
-            modifier = modifier,
-            contentScale = contentScale,
-            loading = { onLoading() },
-            error = { onError() },
-        )
+
+        SafetyLevel.MODERATE -> {
+            when (state) {
+                is ModelDownloadState.Success -> {
+                    SubcomposeAsyncImage(
+                        model = imageRequest,
+                        contentDescription = contentDescription,
+                        imageLoader = state.imageLoaderModerate, // Use the successful loader
+                        modifier = modifier,
+                        contentScale = contentScale,
+                        loading = { onLoading() },
+                        error = { onError() },
+                    )
+                }
+
+                is ModelDownloadState.Error -> {
+                    LaunchedEffect(Unit) {
+                        FirebaseNsfwModelManager.initialize(context)
+                    }
+                    onError()
+                }
+
+                is ModelDownloadState.Downloading,
+                is ModelDownloadState.Idle -> {
+                    LaunchedEffect(Unit) {
+                        FirebaseNsfwModelManager.initialize(context)
+                    }
+                    onLoading()
+                }
+            }
+        }
+
+        SafetyLevel.OFF -> {
+            SubcomposeAsyncImage(
+                model = imageRequest,
+                contentDescription = contentDescription,
+                modifier = modifier,
+                contentScale = contentScale,
+                loading = { onLoading() },
+                error = { onError() },
+            )
+        }
     }
 }

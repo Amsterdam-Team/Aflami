@@ -18,11 +18,14 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 
 
 @Composable
 fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Column(modifier = modifier.width(78.dp)) {
         SafeImageView(
             modifier = Modifier
@@ -30,6 +33,7 @@ fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
                 .clip(RoundedCornerShape(16.dp)),
             model = actor.photo,
             contentDescription = actor.name,
+            safetyLevel = safetyLevel,
             onLoading = { ImageLoadingIndicator() },
             onError = { ImageErrorIndicator() },
         )
