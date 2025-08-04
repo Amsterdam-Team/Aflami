@@ -12,7 +12,6 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
-import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
 import com.amsterdam.entity.Country
 import com.amsterdam.paging.PagingSource
 import com.amsterdam.viewmodel.search.mapper.toCountry
@@ -38,7 +37,6 @@ import javax.inject.Inject
 class CountrySearchViewModel @Inject constructor(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
-    private val recentSearchesUseCase: RecentSearchesUseCase,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<CountrySearchUiState, CountrySearchEffect>(
@@ -112,7 +110,6 @@ class CountrySearchViewModel @Inject constructor(
             )
         }
         fetchMoviesByCountry(getSelectedCountry())
-        saveSearchHistory()
     }
 
     override fun onClickRetry() {
@@ -123,14 +120,6 @@ class CountrySearchViewModel @Inject constructor(
             !hasSelectedCountry && hasKeyword -> fetchCountriesByKeyword(state.value.keyword)
             hasSelectedCountry -> fetchMoviesByCountry(getSelectedCountry())
         }
-    }
-
-    private fun saveSearchHistory() {
-        tryToExecute(
-            action = { recentSearchesUseCase.addRecentSearchForCountry(getSelectedCountry()) },
-            onSuccess = {},
-            onError = {}
-        )
     }
 
     private fun fetchMoviesByCountry(selectedCountry: Country) {

@@ -3,7 +3,6 @@ package com.amsterdam.localdatasource.daos
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
-import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.utils.createLocalMovieCategoryDto
 import com.amsterdam.localdatasource.utils.createLocalTvShowCategoryDto
 import com.google.common.truth.Truth.assertThat

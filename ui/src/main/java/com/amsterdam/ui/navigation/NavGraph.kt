@@ -11,6 +11,7 @@ import com.amsterdam.ui.screens.letsPlay.letsPlayScreenRoute
 import com.amsterdam.ui.screens.lists.listsScreenRoute
 import com.amsterdam.ui.screens.login.loginScreenRoute
 import com.amsterdam.ui.screens.movieDetails.movieDetailsScreenRoute
+import com.amsterdam.ui.screens.onBoarding.onboardingScreenRoute
 import com.amsterdam.ui.screens.profile.profileScreenRoute
 import com.amsterdam.ui.screens.register.registerScreenRoute
 import com.amsterdam.ui.screens.resetPassword.resetPasswordScreenRoute
@@ -42,5 +43,6 @@ fun NavGraph(
         registerScreenRoute()
         continueWatchingScreenRoute()
         resetPasswordScreenRoute()
+        onboardingScreenRoute()
     }
 }

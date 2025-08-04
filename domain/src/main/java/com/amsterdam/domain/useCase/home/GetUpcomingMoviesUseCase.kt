@@ -4,7 +4,7 @@ import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 
-class GetUpcomingMoviesUseCase (private val movieRepository: MovieRepository) {
+class GetUpcomingMoviesUseCase(private val movieRepository: MovieRepository) {
     suspend operator fun invoke(genre: MovieGenre): List<Movie> {
         val upcomingMovies = movieRepository.getUpcomingMovies()
         val filteredMovies = filterByGenre(upcomingMovies, genre)

@@ -32,7 +32,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDataSourceProviderModule {
-
     @Provides
     @Singleton
     fun provideDataStore(app: Application): DataStore<Preferences> {
@@ -49,11 +48,11 @@ object LocalDataSourceProviderModule {
 
     @Provides
     @Singleton
-    fun provideCategoryDao(db: AflamiDatabase) = db.categoryDao()
+    fun provideCountryDao(db: AflamiDatabase) = db.countryDao()
 
     @Provides
     @Singleton
-    fun provideCountryDao(db: AflamiDatabase) = db.countryDao()
+    fun provideCategoryDao(db: AflamiDatabase) = db.categoryDao()
 
     @Provides
     @Singleton
@@ -83,13 +82,11 @@ object LocalDataSourceProviderModule {
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class LocalDataSourceBindsModule {
-
     @Binds
     @Singleton
     abstract fun bindAuthenticationLocalDataSource(
         impl: AuthenticationLocalDataSourceImpl
     ): AuthenticationLocalSource
-
 
     @Binds
     @Singleton
@@ -99,15 +96,15 @@ abstract class LocalDataSourceBindsModule {
 
     @Binds
     @Singleton
-    abstract fun bindCategoryLocalDataSource(
-        impl: CategoryLocalDataSourceImpl
-    ): CategoryLocalSource
-
-    @Binds
-    @Singleton
     abstract fun bindCountryLocalDataSource(
         impl: CountryLocalDataSourceImpl
     ): CountryLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryLocalSource(
+        impl: CategoryLocalDataSourceImpl
+    ): CategoryLocalSource
 
     @Binds
     @Singleton
@@ -132,5 +129,4 @@ abstract class LocalDataSourceBindsModule {
     abstract fun bindWatchHistoryLocalDataSource(
         impl: WatchHistoryLocalDataSourceImpl
     ): WatchHistoryLocalDataSource
-
 }

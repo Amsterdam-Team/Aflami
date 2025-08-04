@@ -1,17 +1,12 @@
 package com.amsterdam.repository.dto.local
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
-import com.amsterdam.repository.dto.local.utils.SearchType
-import kotlinx.datetime.Instant
 
 @Entity(
     tableName = DatabaseConstants.RECENT_SEARCH_TABLE,
-    primaryKeys = ["searchKeyword", "searchType", "storedLanguage"]
 )
 data class LocalSearchDto(
-    val searchKeyword: String,
-    val searchType: SearchType,
-    val storedLanguage: String,
-    val expireDate: Instant
+    @PrimaryKey val searchKeyword: String
 )
