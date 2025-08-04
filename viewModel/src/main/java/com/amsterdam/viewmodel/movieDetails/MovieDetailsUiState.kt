@@ -35,6 +35,9 @@ data class MovieDetailsUiState(
     val isLoginDialogVisible: Boolean = false,
     val dialogType: MovieAndSeriesDetailsDialogType? = null,
     val isDescriptionExpanded: Boolean = false,
+    val isAddToListDialogVisible: Boolean = false,
+    val isCreateNewListDialogVisible: Boolean = false,
+    val userLists: List<UserListUiState> = emptyList(),
 ) {
 
     enum class MovieExtras {

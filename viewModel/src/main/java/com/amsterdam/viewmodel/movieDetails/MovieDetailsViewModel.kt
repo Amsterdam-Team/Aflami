@@ -3,8 +3,8 @@ package com.amsterdam.viewmodel.movieDetails
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.exceptions.NetworkException
+import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
@@ -15,9 +15,9 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,7 +103,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onCancelClicked() {
-        updateState { it.copy(isLoginDialogVisible = false) }
+        updateState { it.copy(isLoginDialogVisible = false, isAddToListDialogVisible = false) }
     }
 
     override fun onClickSimilarMovie(movieId: Long) {
@@ -128,10 +128,13 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onAddToListClicked() {
+        if (state.value.isLoading) return
         viewModelScope.launch {
             runIfLoggedIn(
-                onLoggedIn = {},
-                onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.AddToList) }
+                onLoggedIn = {
+                    updateState { it.copy(isAddToListDialogVisible = true) }
+                },
+                onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.AddToList) },
             )
         }
     }

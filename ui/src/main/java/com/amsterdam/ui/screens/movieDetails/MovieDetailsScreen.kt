@@ -58,6 +58,7 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.components.AddToListDialog
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
@@ -208,6 +209,16 @@ fun MovieContent(
                 title = state.dialogType.getMovieAndSeriesDetailsDialogTitle(),
                 onDismiss = interactionListener::onCancelClicked,
                 onClickLogin = interactionListener::onNavigateToLoginClicked,
+            )
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier,
+            visible = state.isAddToListDialogVisible,
+        ) {
+            AddToListDialog(
+                state.userLists,
+                onDismiss = interactionListener::onCancelClicked,
             )
         }
         AnimatedVisibility(
