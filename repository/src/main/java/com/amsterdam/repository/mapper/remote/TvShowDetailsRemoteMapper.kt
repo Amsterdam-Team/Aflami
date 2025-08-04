@@ -18,7 +18,7 @@ fun TvShowDetailsRemoteResponse.toEntity(): TvShowDetails {
         popularity = popularity,
         seasonCount = seasonCount,
         originCountry = originCountry.firstOrNull() ?: "",
-        productionCompanies = productionCompanies.toEntityList()
+        videoUrl = videos.results.firstOrNull()?.fullVideoUrl ?: ""
     )
 
     return TvShowDetails(

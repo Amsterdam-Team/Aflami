@@ -16,7 +16,5 @@ fun MovieWithCategories.toEntity(): Movie =
             .map { it.toMovieGenreEntity() },
         popularity = movie.popularity,
         runTimeInMinutes = movie.movieLength,
-        originCountry = movie.originCountry,
-        hasVideo = movie.hasVideo,
-        productionCompanies = emptyList()
+        originCountry = movie.originCountry
     )

@@ -223,4 +223,6 @@
     <string name="there_is_no_company_production">There Is No Company Production</string>
     <string name="there_is_no_seasons">It Seem Like There Is No Seasons Yet</string>
 
+    <string name="video_launch_error">Failed to play the video</string>
+
 </resources>

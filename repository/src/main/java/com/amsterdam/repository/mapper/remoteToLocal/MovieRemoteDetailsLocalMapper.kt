@@ -15,7 +15,6 @@ fun RemoteMovieDetailsResponse.toLocalDto(storedLanguage: String): LocalMovieDto
         rating = voteAverage.toFloat(),
         popularity = popularity,
         movieLength = runtime,
-        hasVideo = video,
         originCountry = originCountry.firstOrNull() ?: "",
     )
 }

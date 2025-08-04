@@ -221,4 +221,6 @@
     <!-- Details Screen -->
     <string name="there_is_no_gallery">لا توجد صور</string>
     <string name="there_is_no_company_production">لا توجد شركات إنتاج</string>
+    <string name="video_launch_error">خطأ في تشغيل الفيديو</string>
+
 </resources>

@@ -22,6 +22,5 @@ data class LocalMovieDto(
     val popularity: Double,
     val rating: Float,
     val originCountry: String,
-    val movieLength: Int,
-    val hasVideo : Boolean
+    val movieLength: Int
 )

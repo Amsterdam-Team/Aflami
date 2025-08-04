@@ -17,8 +17,7 @@ fun RemoteMovieItemDto.toLocalDto(isPoster : Boolean = true, storedLanguage: Str
         rating = voteAverage.toFloat(),
         popularity = popularity,
         movieLength = runtime,
-        originCountry = originCountry.firstOrNull() ?: "",
-        hasVideo = video
+        originCountry = originCountry.firstOrNull() ?: ""
     )
 }
 

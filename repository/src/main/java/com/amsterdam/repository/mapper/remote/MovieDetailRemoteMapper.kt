@@ -32,7 +32,8 @@ fun RemoteMovieDetailsResponse.toMovieDetailsEntity(): MovieDetails {
         actors = credits.cast.toEntityList(),
         similarMovies = similar.results.toMovieEntityList(isPoster = false),
         movieGallery = images.toEntityList(),
-        moviePosters = images.toEntityList()
+        moviePosters = images.toEntityList(),
+        productionCompanies = productionCompanies.toEntityList()
     )
 }
 

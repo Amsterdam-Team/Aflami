@@ -14,8 +14,6 @@ fun LocalMovieDto.toEntity(): Movie =
         categories = emptyList(),
         popularity = popularity,
         runTimeInMinutes = movieLength,
-        originCountry = originCountry,
-        hasVideo = hasVideo,
-        productionCompanies = emptyList()
+        originCountry = originCountry
     )
 

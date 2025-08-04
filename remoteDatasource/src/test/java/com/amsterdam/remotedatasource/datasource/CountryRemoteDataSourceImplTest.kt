@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.datasource
 
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.repository.dto.remote.RemoteCountryDto
 import com.google.common.truth.Truth.assertThat
@@ -9,6 +10,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class CountryRemoteDataSourceImplTest {
 
@@ -37,8 +39,12 @@ class CountryRemoteDataSourceImplTest {
     fun `getCountries should return the correct data from CountryApiService`() = runTest {
         // Given
         val expectedResponse = listOf(
-            RemoteCountryDto("Country1", "Capital1", "Region1"),
-            RemoteCountryDto("Country2", "Capital2", "Region2")
+            RemoteCountryDto(
+                englishName = "United States of America",
+                isoCode = "US",
+                nativeName = "United States"
+            ),
+            RemoteCountryDto(englishName = "Canada", isoCode = "CA", nativeName = "Canada")
         )
         coEvery { countryApiService.getCountries() } returns expectedResponse
 
@@ -49,4 +55,30 @@ class CountryRemoteDataSourceImplTest {
         assertThat(actualResponse).isEqualTo(expectedResponse)
     }
 
+    @Test
+    fun `getCountries should throw NetworkException when API service throws an exception`() =
+        runTest {
+            // Given
+            coEvery { countryApiService.getCountries() } throws NetworkException()
+
+            // When & Then
+            assertThrows<NetworkException> {
+                countryRemoteDataSourceImpl.getCountries()
+            }
+        }
+
+    @Test
+    fun `getCountries should return an empty list when API service returns an empty list`() =
+        runTest {
+            // Given
+            val expectedResponse = emptyList<RemoteCountryDto>()
+            coEvery { countryApiService.getCountries() } returns expectedResponse
+
+            // When
+            val actualResponse = countryRemoteDataSourceImpl.getCountries()
+
+            // Then
+            assertThat(actualResponse).isEmpty()
+            coVerify(exactly = 1) { countryApiService.getCountries() }
+        }
 }

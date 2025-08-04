@@ -18,6 +18,7 @@ data class SeriesDetailsUiState(
     val seasonCount: String = "",
     val originCountry: String = "",
     val description: String = "",
+    val videoUrl: String = "",
     val cast: List<ActorUiState> = emptyList(),
     val isRateDialogVisible: Boolean = false,
     val isAddToListDialogVisible: Boolean = false,

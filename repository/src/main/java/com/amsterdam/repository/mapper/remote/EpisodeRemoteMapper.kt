@@ -4,6 +4,7 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.repository.dto.remote.EpisodeDto
 import com.amsterdam.repository.utils.toSafeLocalDate
 
+
 fun EpisodeDto.toEntity(): Episode {
     return Episode(
         id = id,

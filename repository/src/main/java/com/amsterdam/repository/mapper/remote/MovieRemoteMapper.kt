@@ -21,9 +21,7 @@ fun RemoteMovieItemDto.toEntity(
         rating = voteAverage.toFloat(),
         popularity = popularity,
         originCountry = originCountry.firstOrNull() ?: "",
-        runTimeInMinutes = runtime,
-        hasVideo = video,
-        productionCompanies = productionCompanies.toEntityList()
+        runTimeInMinutes = runtime
     )
 }
 

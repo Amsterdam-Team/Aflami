@@ -4,6 +4,7 @@ import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Movie
+import com.amsterdam.entity.ProductionCompany
 import com.amsterdam.entity.Review
 
 class GetMovieDetailsUseCase (
@@ -21,5 +22,6 @@ class GetMovieDetailsUseCase (
         val similarMovies: List<Movie>,
         val movieGallery: List<String>,
         val moviePosters: List<String>,
+        val productionCompanies: List<ProductionCompany>
     )
 }
