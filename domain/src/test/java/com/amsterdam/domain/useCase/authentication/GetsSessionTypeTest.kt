@@ -10,12 +10,11 @@ import org.junit.jupiter.api.Test
 class GetsSessionTypeTest {
 
     private lateinit var getsSessionType: GetsSessionType
-    private lateinit var authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository = mockk(relaxed = true)
 
 
     @BeforeEach
     fun setUp() {
-        authenticationRepository = mockk(relaxed = true)
         getsSessionType = GetsSessionType(authenticationRepository)
     }
 

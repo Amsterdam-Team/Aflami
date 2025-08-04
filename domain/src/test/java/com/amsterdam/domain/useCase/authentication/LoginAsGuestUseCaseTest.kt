@@ -11,11 +11,10 @@ import org.junit.jupiter.api.Test
 class LoginAsGuestUseCaseTest {
 
     private lateinit var loginAsGuestUseCase: LoginAsGuestUseCase
-    private lateinit var authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository = mockk(relaxed = true)
 
     @BeforeEach
     fun setUp() {
-        authenticationRepository = mockk(relaxed = true)
         loginAsGuestUseCase = LoginAsGuestUseCase(authenticationRepository)
     }
 
