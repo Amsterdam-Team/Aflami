@@ -17,7 +17,9 @@ import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.screens.movieDetails.components.PageIndicator
+import com.amsterdam.ui.utils.toSafetyLevel
 
 
 @Composable
@@ -25,6 +27,7 @@ fun DetailsPostersPager(
     pagerState: PagerState,
     postersUrl: List<String>,
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Box {
         HorizontalPager(
             state = pagerState,
@@ -38,6 +41,7 @@ fun DetailsPostersPager(
                         .fillMaxSize()
                         .animateContentSize(),
                 onLoading = { ImageLoadingIndicator() },
+                safetyLevel = safetyLevel,
                 onError = { ImageErrorIndicator() },
             )
         }

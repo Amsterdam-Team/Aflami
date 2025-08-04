@@ -14,4 +14,5 @@ interface MovieDetailsInteractionListener {
     fun onClickSimilarMovie(movieId: Long)
     fun onDescriptionExpansionToggled()
     fun onReviewExpansionToggled(reviewId: String)
+    fun onPlayVideoClicked()
 }

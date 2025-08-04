@@ -7,4 +7,7 @@ interface AppPreferences {
     suspend fun setDeviceLanguage(language: String)
     suspend fun setOnboardingCompleted(isCompleted: Boolean)
     suspend fun isOnboardingCompleted(): Boolean
+
+    fun getRestrictionLevel(): Flow<String>
+    suspend fun setRestrictionLevel(restrictionLevel: String)
 }

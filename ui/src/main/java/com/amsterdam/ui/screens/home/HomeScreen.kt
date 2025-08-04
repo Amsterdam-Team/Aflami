@@ -1,6 +1,7 @@
 package com.amsterdam.ui.screens.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -173,10 +174,13 @@ private fun HomeScreenContent(
                 )
 
                 item {
-                    MoodPickerSection(
-                        state,
-                        interactionListener,
-                    )
+                    AnimatedVisibility(visible = !state.isLoading) {
+                        MoodPickerSection(
+                            state,
+                            interactionListener,
+                        )
+                    }
+
                 }
 
                 upcomingMoviesSection(

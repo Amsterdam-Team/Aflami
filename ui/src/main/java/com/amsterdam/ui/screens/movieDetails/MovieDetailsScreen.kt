@@ -42,6 +42,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -54,6 +55,7 @@ import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.divider.HorizontalDivider
+import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -64,6 +66,7 @@ import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
+import com.amsterdam.ui.navigation.Route.*
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
@@ -74,6 +77,7 @@ import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.reviewSection
+import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
@@ -88,7 +92,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-
+    val context = LocalContext.current
     MovieContent(
         state = state.value,
         interactionListener = viewModel,
@@ -99,7 +103,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                 MovieDetailsEffect.NavigateBackEffect -> navController.navigateUp()
                 MovieDetailsEffect.NavigateToCastsScreenEffect -> {
                     navController.navigate(
-                        Route.Cast(
+                        Cast(
                             mediaType = MediaType.MOVIE.name,
                             mediaId = state.value.movieId
                         )
@@ -112,9 +116,15 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
 
                 is MovieDetailsEffect.NavigateToMovieDetails -> {
                     navController.navigate(
-                        Route.MovieDetails(effect.movieId)
+                        MovieDetails(effect.movieId)
                     )
                 }
+
+                is MovieDetailsEffect.LaunchMovieVideoEffect ->
+                    openYouTubeVideo(context, effect.url) {
+                        SnackBarManager.showError(context.getString(com.amsterdam.ui.R.string.video_launch_error))
+                    }
+
             }
         }
     }
@@ -262,7 +272,8 @@ fun MovieContent(
                                     Modifier
                                         .align(Alignment.CenterHorizontally)
                                         .offset(y = (-32).dp),
-                                isActive = state.hasVideo,
+                                isActive = state.videoUrl.isNotBlank(),
+                                onClick = interactionListener::onPlayVideoClicked
                             )
                             Column(
                                 modifier =
@@ -426,6 +437,7 @@ private fun SearchByActorContentPreview() {
                     override fun onClickSimilarMovie(movieId: Long) {}
                     override fun onDescriptionExpansionToggled() {}
                     override fun onReviewExpansionToggled(reviewId: String) {}
+                    override fun onPlayVideoClicked() {}
                 },
         )
     }

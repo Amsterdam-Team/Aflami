@@ -9,7 +9,6 @@ import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 import com.amsterdam.viewmodel.utils.dateToString
 import com.amsterdam.viewmodel.utils.movieLengthToHourMinuteString
-import com.amsterdam.viewmodel.utils.ratingToRatingString
 import javax.inject.Inject
 
 class MovieDetailsUiStateMapper @Inject constructor() {
@@ -25,7 +24,7 @@ class MovieDetailsUiStateMapper @Inject constructor() {
             movieLength = movieLengthToHourMinuteString(movie.runTimeInMinutes),
             originCountry = movie.originCountry,
             description = movie.description,
-            hasVideo = movie.hasVideo,
+            videoUrl = movie.videoUrl,
             actors = actors.map {
                 ActorUiState(
                     photo = it.imageUrl,
@@ -47,7 +46,7 @@ class MovieDetailsUiStateMapper @Inject constructor() {
                     posterUrl = it.posterUrl
                 )
             },
-            productionCompany = movie.productionCompanies.map { company ->
+            productionCompany = productionCompanies.map { company ->
                 ProductionCompanyUiState(
                     image = company.imageUrl,
                     name = company.name,

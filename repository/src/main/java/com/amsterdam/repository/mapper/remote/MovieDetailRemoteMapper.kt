@@ -12,6 +12,7 @@ class MovieDetailRemoteMapper @Inject constructor(
     private val castRemoteMapper: CastRemoteMapper,
     private val galleryRemoteMapper: GalleryRemoteMapper,
     private val posterRemoteMapper: PostersRemoteMapper,
+    private val productionCompanyRemoteMapper: ProductionCompanyRemoteMapper
 ): EntityMapper<RemoteMovieDetailsResponse, MovieDetails> {
     override fun toEntity(response: RemoteMovieDetailsResponse): MovieDetails {
         val remoteMovieItemDto = with(response){
@@ -43,6 +44,7 @@ class MovieDetailRemoteMapper @Inject constructor(
             similarMovies = movieRemoteMapper.toEntityList(response.similar.results,isPoster = false),
             movieGallery = galleryRemoteMapper.toEntity(response.images),
             moviePosters = posterRemoteMapper.toEntity(response.images),
+            productionCompanies = productionCompanyRemoteMapper.toEntityList(response.productionCompanies)
         )
     }
 

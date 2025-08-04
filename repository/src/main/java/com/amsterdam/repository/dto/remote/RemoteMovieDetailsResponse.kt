@@ -29,4 +29,5 @@ data class RemoteMovieDetailsResponse(
     @SerialName("credits") val credits: RemoteCastAndCrewResponse,
     @SerialName("similar") val similar: RemoteMovieResponse,
     @SerialName("images") val images: RemoteGalleryResponse,
+    @SerialName("videos") val videos: VideoResponse
 )

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.ui.SafeImageView
 import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
 import io.sifr.shaded.modifiers.blur
@@ -28,7 +29,7 @@ fun BoxScope.BlurredMoviePoster(
             model = posterUrl,
             contentDescription = null,
             onLoading = { },
-            isSafeEnabled = false,
+            safetyLevel = SafetyLevel.OFF,
             onError = { },
             modifier = Modifier
                 .matchParentSize()

@@ -29,7 +29,7 @@ class TvShowDetailsRemoteMapper @Inject constructor(
             popularity = dto.popularity,
             seasonCount = dto.seasonCount,
             originCountry = dto.originCountry.firstOrNull() ?: "",
-            productionCompanies = productionCompanyMapper.toEntityList(dto.productionCompanies)
+            videoUrl = dto.videos.results.firstOrNull()?.fullVideoUrl ?: ""
         )
 
         return with(dto) {

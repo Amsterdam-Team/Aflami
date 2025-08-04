@@ -1,5 +1,6 @@
 package com.amsterdam.designsystem.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -38,11 +40,19 @@ fun RadioButton(
             RadioState.Unselected -> AppTheme.color.disable to 6.dp
         }
 
+    val color =
+        when (state) {
+            RadioState.Default -> AppTheme.color.surfaceHigh
+            RadioState.Selected -> Color.Unspecified
+            RadioState.Unselected -> Color.Unspecified
+        }
+
     Box(
         modifier =
             modifier
                 .size(18.dp)
                 .clip(CircleShape)
+                .background(color)
                 .border(
                     width = borderWidth,
                     color = borderColor,

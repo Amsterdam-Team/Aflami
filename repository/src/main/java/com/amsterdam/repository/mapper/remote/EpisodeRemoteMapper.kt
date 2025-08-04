@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class EpisodeRemoteMapper @Inject constructor(): EntityMapper<EpisodeDto, Episode> {
     override fun toEntity(dto: EpisodeDto): Episode {
-        return Episode(
+      return  Episode(
             id = dto.id,
             title = dto.title,
             episodeNumber = dto.episodeNumber,
@@ -17,7 +17,8 @@ class EpisodeRemoteMapper @Inject constructor(): EntityMapper<EpisodeDto, Episod
             rating = dto.voteAverage.toFloat(),
             airDate = dto.airDate?.toSafeLocalDate(),
             seasonNumber = dto.seasonNumber,
-            runTimeInMinutes = dto.runtime?.toInt() ?: 0,
+            runTimeInMinutes = dto.runtime?.toInt() ?: 0
         )
     }
+
 }

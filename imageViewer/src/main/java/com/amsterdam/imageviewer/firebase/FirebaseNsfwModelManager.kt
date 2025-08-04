@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.amsterdam.imageviewer.classification.NsfwDetectorClassifier
+import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.classification.createImageClassifier
 import com.amsterdam.imageviewer.coil.createImageLoader
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
@@ -46,10 +47,11 @@ internal object FirebaseNsfwModelManager {
     private fun onDownloadSuccess(context: Context, modelFile: File) {
         val tfliteClassifier = createImageClassifier(modelFile)
         val nsfwDetector = tfliteClassifier?.let { NsfwDetectorClassifier(it) }
-        val imageLoader = createImageLoader(context, nsfwDetector)
+        val imageLoaderStrict = createImageLoader(context, nsfwDetector, safetyLevel = SafetyLevel.STRICT)
+        val imageLoaderModerate = createImageLoader(context, nsfwDetector, safetyLevel = SafetyLevel.MODERATE)
 
-        downloadState = if (imageLoader != null) {
-            ModelDownloadState.Success(imageLoader)
+        downloadState = if (imageLoaderStrict != null && imageLoaderModerate != null) {
+            ModelDownloadState.Success(imageLoaderStrict = imageLoaderStrict, imageLoaderModerate = imageLoaderModerate)
         } else {
             ModelDownloadState.Error("Failed to create ImageLoader from model file.")
         }

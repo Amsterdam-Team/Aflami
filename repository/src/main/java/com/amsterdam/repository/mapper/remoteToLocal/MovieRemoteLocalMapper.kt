@@ -18,8 +18,7 @@ class MovieRemoteLocalMapper @Inject constructor(): RemoteToLocalMapper<RemoteMo
             rating = remote.voteAverage.toFloat(),
             popularity = remote.popularity,
             movieLength = remote.runtime,
-            originCountry = remote.originCountry.firstOrNull() ?: "",
-            hasVideo = remote.video
+            originCountry = remote.originCountry.firstOrNull() ?: ""
         )
     }
 }

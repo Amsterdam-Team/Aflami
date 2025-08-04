@@ -25,6 +25,5 @@ data class LocalMovieDto(
     val rating: Float,
     val originCountry: String,
     val movieLength: Int,
-    val hasVideo : Boolean,
     val insertedDate : Instant = Clock.System.now()
 )

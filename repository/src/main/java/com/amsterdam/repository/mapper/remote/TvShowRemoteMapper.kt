@@ -8,9 +8,7 @@ import com.amsterdam.repository.mapper.shared.mapCategoryIdToTvShowGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
 import javax.inject.Inject
 
-class TvShowRemoteMapper @Inject constructor(
-    private val productionCompanyMapper: ProductionCompanyRemoteMapper
-) : EntityMapper<RemoteTvShowItemDto, TvShow> {
+class TvShowRemoteMapper @Inject constructor() : EntityMapper<RemoteTvShowItemDto, TvShow> {
     override fun toEntity(dto: RemoteTvShowItemDto): TvShow {
        return toEntity(dto, true)
     }
@@ -27,8 +25,7 @@ class TvShowRemoteMapper @Inject constructor(
             rating = dto.voteAverage.toFloat(),
             popularity = dto.popularity,
             seasonCount = dto.seasonCount,
-            originCountry = dto.originCountry.firstOrNull() ?: "",
-            productionCompanies = productionCompanyMapper.toEntityList(dto.productionCompanies)
+            originCountry = dto.originCountry.firstOrNull() ?: ""
         )
     }
 

@@ -15,13 +15,13 @@ import com.amsterdam.viewmodel.utils.dateToString
 import com.amsterdam.viewmodel.utils.formatDuration
 import com.amsterdam.viewmodel.utils.ratingToRatingString
 import javax.inject.Inject
-import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiStateMapper
 
 class SeriesDetailsStateMapper @Inject constructor(
 ) {
 
     fun toUiState(seriesDetails: TvShowDetails): SeriesDetailsUiState = with(seriesDetails) {
         SeriesDetailsUiState(
+            videoUrl =seriesDetails.tvShow.videoUrl,
             tvShowId = tvShow.id,
             rating = ratingToRatingString(tvShow.rating),
             posterUrl = tvShow.posterUrl,
@@ -75,6 +75,7 @@ class SeriesDetailsStateMapper @Inject constructor(
                     country = company.country
                 )
             },
+
         )
     }
 
