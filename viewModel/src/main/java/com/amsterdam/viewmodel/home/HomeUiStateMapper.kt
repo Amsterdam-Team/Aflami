@@ -74,7 +74,7 @@ class HomeUiStateMapper @Inject constructor(){
             rating = if (movie.rating % 1 == 0.0f) "${movie.rating.toInt()}" else "%.1f".format(movie.rating),
             posterUrl = movie.posterUrl,
             type = MediaType.MOVIE,
-            category = movie.categories.map { it.name }
+            categories = movie.categories.map { it.name }
         )
     }
 
@@ -86,7 +86,7 @@ class HomeUiStateMapper @Inject constructor(){
             rating = if (tvShow.rating % 1 == 0.0f) "${tvShow.rating.toInt()}" else "%.1f".format(tvShow.rating),
             posterUrl = tvShow.posterUrl,
             type = MediaType.TV_SHOW,
-            category = tvShow.categories.map { it.name }
+            categories = tvShow.categories.map { it.name }
         )
     }
 

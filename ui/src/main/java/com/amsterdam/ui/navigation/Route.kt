@@ -3,7 +3,7 @@ package com.amsterdam.ui.navigation
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
-    sealed interface Tab: Route {
+    sealed interface Tab : Route {
         @Serializable
         data object Home : Tab
 
@@ -54,5 +54,8 @@ sealed interface Route {
     data object ResetPassword : Route
 
     @Serializable
-    data object ContinueWatching: Route
+    data object ContinueWatching : Route
+
+    @Serializable
+    data object Onboarding : Route
 }

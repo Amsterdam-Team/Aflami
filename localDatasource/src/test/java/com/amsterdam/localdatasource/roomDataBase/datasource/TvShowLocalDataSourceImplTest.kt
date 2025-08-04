@@ -4,9 +4,6 @@ import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.localdatasource.utils.createLocalTvShowCategoryDto
 import com.amsterdam.localdatasource.utils.createTvShow
-import com.amsterdam.repository.dto.local.SearchTvShowCrossRefDto
-import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
-import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify

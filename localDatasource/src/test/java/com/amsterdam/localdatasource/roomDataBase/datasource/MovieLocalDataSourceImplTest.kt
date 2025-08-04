@@ -4,8 +4,6 @@ import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
 import com.amsterdam.localdatasource.utils.createLocalMovieCategoryDto
 import com.amsterdam.localdatasource.utils.createMovie
-import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
-import com.amsterdam.repository.dto.local.SearchMovieCrossRefDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.amsterdam.repository.dto.local.utils.SearchType
 import com.google.common.truth.Truth.assertThat

@@ -135,7 +135,7 @@ private fun DisplayGenresForMovie(
         horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        items(mediaItem.category) { category ->
+        items(mediaItem.categories) { category ->
             if (mediaItem.type == MediaType.MOVIE) {
                 MovieGenre.entries.find { it.name.equals(category, ignoreCase = true) }
                     ?.let { genre ->
@@ -240,7 +240,7 @@ private fun PopularSectionPreview() {
             name = "Movie $it",
             posterUrl = "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
             rating = (8.5f + it).toString(),
-            category = listOf(
+            categories = listOf(
                 MovieGenre.entries.random().name,
                 MovieGenre.entries.random().name,
                 MovieGenre.entries.random().name

@@ -50,7 +50,8 @@ data class AflamiColorScheme(
     val loginGradient: List<Color>,
     val topRatedGradientBackground: List<Color>,
     val droppedShadowColor: Color,
-    val shimmerEffectGradient: List<Color>
+    val shimmerEffectGradient: List<Color>,
+    val onBoardingGradient: List<Color>
 )
 
 internal val LocalAflamiAppColors = staticCompositionLocalOf { lightThemeColors }

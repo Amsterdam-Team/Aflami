@@ -7,6 +7,5 @@ interface ActorSearchInteractionListener {
     fun onClickNavigateBack()
     fun onClickRetrySearch()
     fun onClickMovie(movieId: Long)
-    fun onSaveSearchHistory()
     fun onPagingLoadStateChanged(loadStates: CombinedLoadStates)
 }

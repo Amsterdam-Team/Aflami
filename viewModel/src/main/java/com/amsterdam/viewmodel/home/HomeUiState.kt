@@ -52,8 +52,8 @@ data class HomeUiState(
         val rating: String = "",
         val posterUrl: String = "",
         val type: MediaType = MediaType.MOVIE,
-        val category: List<String> = emptyList(),
-        )
+        val categories: List<String> = emptyList(),
+    )
 
     data class MoodPickerUiState(
         val moods: List<Mood> = listOf(

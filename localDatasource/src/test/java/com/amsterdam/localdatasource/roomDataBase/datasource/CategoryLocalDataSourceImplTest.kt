@@ -1,8 +1,6 @@
 package com.amsterdam.localdatasource.roomDataBase.datasource
 
-import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
