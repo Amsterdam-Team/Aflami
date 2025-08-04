@@ -62,8 +62,7 @@ class TvShowLocalDataSourceImpl @Inject constructor(
         val entries = tvShows.map { tvShow ->
             PopularTvShowDto(
                 tvShowId = tvShow.tvShowId,
-                storedLanguage = tvShow.storedLanguage,
-                dateAdded = tvShow.insertedDate
+                storedLanguage = tvShow.storedLanguage
             )
         }
         tvShowDao.insertPopularTvShows(entries)

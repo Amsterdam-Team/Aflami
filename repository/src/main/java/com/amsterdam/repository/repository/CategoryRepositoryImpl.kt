@@ -7,23 +7,17 @@ import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
-import com.amsterdam.repository.mapper.local.MovieCategoryLocalMapper
-import com.amsterdam.repository.mapper.local.TvShowCategoryLocalMapper
-import com.amsterdam.repository.mapper.remote.CategoryRemoteMapper
-import com.amsterdam.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
-import com.amsterdam.repository.mapper.remoteToLocal.TvShowCategoryRemoteLocalMapper
+import com.amsterdam.repository.mapper.local.toEntityList
+import com.amsterdam.repository.mapper.remote.toEntityList
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalTvShowCategoryDtoList
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryRemoteSource: CategoryRemoteSource,
     private val categoryLocalSource: CategoryLocalSource,
-    private val preferences: AppPreferences,
-    private val movieCategoryLocalMapper: MovieCategoryLocalMapper,
-    private val categoryRemoteMapper: CategoryRemoteMapper,
-    private val movieCategoryRemoteLocalMapper: MovieCategoryRemoteLocalMapper,
-    private val tvShowCategoryRemoteLocalMapper: TvShowCategoryRemoteLocalMapper,
-    private val tvShowCategoryLocalMapper: TvShowCategoryLocalMapper
+    private val preferences: AppPreferences
 ) : CategoryRepository {
     override suspend fun getMovieCategories(): List<Category> {
         return getMovieCategoriesFromLocal()
@@ -48,40 +42,37 @@ class CategoryRepositoryImpl @Inject constructor(
     private fun onSuccessGetMovieCategoriesFromLocal(
         localCategories: List<LocalMovieCategoryDto>
     ): List<Category> {
-        return movieCategoryLocalMapper.toEntityList(localCategories)
+        return localCategories.toEntityList()
     }
 
     private suspend fun onSuccessLoadMovieCategories(
         movieCategories: RemoteCategoryResponse
     ): List<Category> {
         return saveMovieCategoriesToDatabase(movieCategories)
-            .let { categoryRemoteMapper.toEntityList(movieCategories.genres) }
+            .let { movieCategories.genres.toEntityList() }
     }
 
     private suspend fun saveMovieCategoriesToDatabase(
         movieCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertMovieCategories(
-            movieCategoryRemoteLocalMapper.toLocalList(
-                movieCategories.genres,
-                listOf(preferences.getDeviceLanguage().first())
+            movieCategories.genres.toLocalDtoList(
+                preferences.getDeviceLanguage().first()
             )
         )
     }
 
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
-        return tvShowCategoryLocalMapper.toEntityList(
-            categoryLocalSource.getTvShowCategories(
+          return categoryLocalSource.getTvShowCategories(
                 preferences.getDeviceLanguage().first()
-            )
-        )
+            ).toEntityList()
     }
 
     private suspend fun onSuccessLoadTvShowCategories(
         tvShowCategories: RemoteCategoryResponse
     ): List<Category> {
         return saveTvShowCategoriesToDatabase(tvShowCategories).let {
-            categoryRemoteMapper.toEntityList(tvShowCategories.genres)
+            tvShowCategories.genres.toEntityList()
         }
     }
 
@@ -89,10 +80,7 @@ class CategoryRepositoryImpl @Inject constructor(
         tvShowCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertTvShowCategories(
-            tvShowCategoryRemoteLocalMapper.toLocalList(
-                tvShowCategories.genres,
-                listOf(preferences.getDeviceLanguage().first())
-            )
+                tvShowCategories.genres.toLocalTvShowCategoryDtoList(preferences.getDeviceLanguage().first())
         )
     }
 }

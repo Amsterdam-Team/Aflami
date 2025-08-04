@@ -3,8 +3,8 @@ package com.amsterdam.repository.mapper.shared
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.entity.category.TvShowGenre
 
-fun mapCategoryIdToMovieGenre(genreId: Long): MovieGenre {
-    return when (genreId) {
+fun toMovieGenre(id: Long): MovieGenre {
+    return when (id) {
         28L -> MovieGenre.ACTION
         12L -> MovieGenre.ADVENTURE
         16L -> MovieGenre.ANIMATION
@@ -28,8 +28,8 @@ fun mapCategoryIdToMovieGenre(genreId: Long): MovieGenre {
     }
 }
 
-fun mapCategoryIdToTvShowGenre(genreId: Long): TvShowGenre {
-    return when (genreId) {
+fun toTvShowGenre(id: Long): TvShowGenre {
+    return when (id) {
         10759L -> TvShowGenre.ACTION_ADVENTURE
         16L -> TvShowGenre.ANIMATION
         35L -> TvShowGenre.COMEDY
@@ -49,3 +49,5 @@ fun mapCategoryIdToTvShowGenre(genreId: Long): TvShowGenre {
         else -> TvShowGenre.ALL
     }
 }
+
+

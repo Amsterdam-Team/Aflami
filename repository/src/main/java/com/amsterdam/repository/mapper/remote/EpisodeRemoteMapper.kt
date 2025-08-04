@@ -2,23 +2,21 @@ package com.amsterdam.repository.mapper.remote
 
 import com.amsterdam.entity.Episode
 import com.amsterdam.repository.dto.remote.EpisodeDto
-import com.amsterdam.repository.mapper.shared.EntityMapper
 import com.amsterdam.repository.utils.toSafeLocalDate
-import javax.inject.Inject
 
-class EpisodeRemoteMapper @Inject constructor(): EntityMapper<EpisodeDto, Episode> {
-    override fun toEntity(dto: EpisodeDto): Episode {
-      return  Episode(
-            id = dto.id,
-            title = dto.title,
-            episodeNumber = dto.episodeNumber,
-            description = dto.overview,
-            episodeImageUrl = dto.fullStillPath.orEmpty(),
-            rating = dto.voteAverage.toFloat(),
-            airDate = dto.airDate?.toSafeLocalDate(),
-            seasonNumber = dto.seasonNumber,
-            runTimeInMinutes = dto.runtime?.toInt() ?: 0
-        )
-    }
 
+fun EpisodeDto.toEntity(): Episode {
+    return Episode(
+        id = id,
+        title = title,
+        episodeNumber = episodeNumber,
+        description = overview,
+        episodeImageUrl = fullStillPath.orEmpty(),
+        rating = voteAverage.toFloat(),
+        airDate = airDate?.toSafeLocalDate(),
+        seasonNumber = seasonNumber,
+        runTimeInMinutes = runtime?.toInt() ?: 0,
+    )
 }
+
+fun List<EpisodeDto>.toEntityList(): List<Episode> = map { it.toEntity() }

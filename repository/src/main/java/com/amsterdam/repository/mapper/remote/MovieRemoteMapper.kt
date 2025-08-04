@@ -1,43 +1,32 @@
 package com.amsterdam.repository.mapper.remote
 
 import com.amsterdam.entity.Movie
-import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
-import com.amsterdam.repository.mapper.shared.EntityMapper
-import com.amsterdam.repository.mapper.shared.mapCategoryIdToMovieGenre
+import com.amsterdam.repository.mapper.shared.toMovieGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
-import javax.inject.Inject
 
-class MovieRemoteMapper @Inject constructor() : EntityMapper<RemoteMovieItemDto, Movie> {
+fun RemoteMovieItemDto.toEntity(
+    isPoster: Boolean = true,
+    videoUrl : String = ""
+): Movie {
+    val genreIds = genreIds.ifEmpty { genres.map { it.id } }
+    val imageUrl = if (isPoster) fullPosterUrl else fullBackdropUrl
 
-    override fun toEntity(dto: RemoteMovieItemDto): Movie {
-        return toEntity(dto, isPoster = true)
-    }
-
-    fun toEntity(dto: RemoteMovieItemDto, isPoster: Boolean,videoUrl: String=""): Movie {
-        val genresIds = dto.genreIds.ifEmpty { dto.genres.map { it.id } }
-        val imageUrl = if (isPoster) dto.fullPosterUrl else dto.fullBackdropUrl
-        return Movie(
-            id = dto.id,
-            name = dto.title,
-            description = dto.overview,
-            posterUrl = imageUrl.orEmpty(),
-            releaseDate = dto.releaseDate.toSafeLocalDate(),
-            categories = mapGenreIdsToCategories(genresIds),
-            rating = dto.voteAverage.toFloat(),
-            popularity = dto.popularity,
-            originCountry = dto.originCountry.firstOrNull() ?: "",
-            runTimeInMinutes = dto.runtime,
-            videoUrl = videoUrl
-        )
-    }
-
-    fun toEntityList(dtoList: List<RemoteMovieItemDto>, isPoster: Boolean): List<Movie> {
-        return dtoList.map { toEntity(it, isPoster) }
-    }
-
-    private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieGenre> {
-        return genreIds.map { mapCategoryIdToMovieGenre(it.toLong()) }
-    }
-
+    return Movie(
+        id = id,
+        name = title,
+        description = overview,
+        posterUrl = imageUrl.orEmpty(),
+        releaseDate = releaseDate.toSafeLocalDate(),
+        categories = genreIds.map { toMovieGenre(it.toLong()) },
+        rating = voteAverage.toFloat(),
+        popularity = popularity,
+        originCountry = originCountry.firstOrNull() ?: "",
+        runTimeInMinutes = runtime,
+        videoUrl = videoUrl
+    )
 }
+
+
+fun List<RemoteMovieItemDto>.toMovieEntityList(isPoster: Boolean = true): List<Movie> =
+    map { it.toEntity(isPoster) }

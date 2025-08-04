@@ -2,25 +2,19 @@ package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.Movie
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
-import com.amsterdam.repository.mapper.shared.EntityMapper
-import javax.inject.Inject
 
-class MovieWithCategoriesLocalMapper @Inject constructor(
-    private val movieGenreLocalMapper: MovieGenreLocalMapper
-) : EntityMapper<MovieWithCategories, Movie> {
-    override fun toEntity(dto: MovieWithCategories): Movie {
-        return Movie(
-            id = dto.movie.movieId,
-            name = dto.movie.name,
-            description = dto.movie.description,
-            posterUrl = dto.movie.poster,
-            releaseDate = dto.movie.releaseDate,
-            rating = dto.movie.rating,
-            categories = movieGenreLocalMapper.toEntityList(dto.categories.distinctBy { it.categoryId }),
-            popularity = dto.movie.popularity,
-            originCountry = dto.movie.originCountry,
-            runTimeInMinutes = dto.movie.movieLength
-        )
-    }
-
-}
+fun MovieWithCategories.toEntity(): Movie =
+    Movie(
+        id = movie.movieId,
+        name = movie.name,
+        description = movie.description,
+        posterUrl = movie.poster,
+        releaseDate = movie.releaseDate,
+        rating = movie.rating,
+        categories = categories
+            .distinctBy { it.categoryId }
+            .map { it.toMovieGenreEntity() },
+        popularity = movie.popularity,
+        runTimeInMinutes = movie.movieLength,
+        originCountry = movie.originCountry
+    )

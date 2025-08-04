@@ -2,39 +2,17 @@ package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.LocalTvShowDto
-import com.amsterdam.repository.mapper.shared.DtoMapper
-import com.amsterdam.repository.mapper.shared.EntityMapper
-import javax.inject.Inject
 
-class TvShowLocalMapper @Inject constructor() : EntityMapper<LocalTvShowDto, TvShow>,
-    DtoMapper<TvShow, LocalTvShowDto> {
-    override fun toEntity(dto: LocalTvShowDto): TvShow {
-        return TvShow(
-            id = dto.tvShowId,
-            name = dto.name,
-            description = dto.description,
-            posterUrl = dto.poster,
-            airDate = dto.airDate,
-            rating = dto.rating,
-            categories = emptyList(),
-            popularity = dto.popularity,
-            seasonCount = dto.seasonCount,
-            originCountry = dto.originCountry
-        )
-    }
-
-    override fun toDto(entity: TvShow, args: List<Any>): LocalTvShowDto {
-        return LocalTvShowDto(
-            tvShowId = entity.id,
-            storedLanguage = args.first().toString(),
-            name = entity.name,
-            description = entity.description,
-            poster = entity.posterUrl,
-            airDate = entity.airDate,
-            rating = entity.rating,
-            popularity = entity.popularity,
-            seasonCount = entity.seasonCount,
-            originCountry = entity.originCountry,
-        )
-    }
-}
+fun LocalTvShowDto.toEntity(): TvShow =
+    TvShow(
+        id = tvShowId,
+        name = name,
+        description = description,
+        posterUrl = poster,
+        airDate = airDate,
+        rating = rating,
+        categories = emptyList(),
+        popularity = popularity,
+        seasonCount = seasonCount,
+        originCountry = originCountry
+    )
