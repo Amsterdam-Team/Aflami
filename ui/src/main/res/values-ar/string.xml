@@ -221,4 +221,14 @@
     <!-- Details Screen -->
     <string name="there_is_no_gallery">لا توجد صور</string>
     <string name="there_is_no_company_production">لا توجد شركات إنتاج</string>
+
+
+    <plurals name="item_count">
+        <item quantity="zero">لا عناصر</item>
+        <item quantity="one">عنصر واحد</item>
+        <item quantity="two">عنصران</item>
+        <item quantity="few">%d عناصر</item>
+        <item quantity="many">%d عنصراً</item>
+        <item quantity="other">%d عنصر</item>
+    </plurals>
 </resources>

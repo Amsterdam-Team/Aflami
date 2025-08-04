@@ -223,4 +223,10 @@
     <string name="there_is_no_company_production">There Is No Company Production</string>
     <string name="there_is_no_seasons">It Seem Like There Is No Seasons Yet</string>
 
+
+    <plurals name="item_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+
 </resources>
