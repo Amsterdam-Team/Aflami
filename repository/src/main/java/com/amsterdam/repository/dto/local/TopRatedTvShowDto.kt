@@ -1,23 +1,26 @@
+
 package com.amsterdam.repository.dto.local
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 @Entity(
-    tableName = DatabaseConstants.TV_SHOW_SEARCH_TABLE,
-    primaryKeys = ["tvShowId", "searchKeyword", "storedLanguage"],
+    tableName = DatabaseConstants.TOP_RATED_TV_SHOW_TABLE,
+    primaryKeys = ["tvShowId", "storedLanguage"],
     foreignKeys = [
         ForeignKey(
             entity = LocalTvShowDto::class,
             parentColumns = ["tvShowId", "storedLanguage"],
             childColumns = ["tvShowId", "storedLanguage"],
             onDelete = ForeignKey.CASCADE
-        )
-    ]
+        ),
+    ],
 )
-data class SearchTvShowCrossRefDto(
-    val searchKeyword: String,
-    val storedLanguage: String,
+data class TopRatedTvShowDto(
     val tvShowId: Long,
+    val storedLanguage: String,
+    val dateAdded : Instant = Clock.System.now()
 )

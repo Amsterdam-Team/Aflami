@@ -73,7 +73,6 @@ fun SearchByActorScreen(
             when (effect) {
                 ActorSearchEffect.NavigateBack -> navController.navigateUp()
                 is ActorSearchEffect.NavigateToDetailsScreen -> {
-                    viewModel.onSaveSearchHistory()
                     navController.navigate(Route.MovieDetails(effect.movieId))
                 }
             }
@@ -117,7 +116,6 @@ private fun SearchByActorContent(
                     onSearch = {
                         keyboardController?.hide()
                         interactionListener.onUserSearchChange(state.keyword)
-                        interactionListener.onSaveSearchHistory()
                     },
                 ),
                 imeAction = ImeAction.Search,
@@ -225,7 +223,6 @@ private fun SearchByActorContentPreview() {
                 override fun onClickNavigateBack() {}
                 override fun onClickRetrySearch() {}
                 override fun onClickMovie(movieId: Long) {}
-                override fun onSaveSearchHistory() {}
                 override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {}
             },
         )

@@ -3,23 +3,23 @@ package com.amsterdam.repository.dto.local
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
-import com.amsterdam.repository.dto.local.utils.SearchType
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 @Entity(
-    tableName = DatabaseConstants.SEARCH_MOVIE_CROSS_REF_TABLE,
-    primaryKeys = ["searchKeyword", "searchType", "movieId", "storedLanguage"],
+    tableName = DatabaseConstants.POPULAR_MOVIE_TABLE,
+    primaryKeys = ["movieId", "storedLanguage"],
     foreignKeys = [
         ForeignKey(
             entity = LocalMovieDto::class,
             parentColumns = ["movieId", "storedLanguage"],
             childColumns = ["movieId", "storedLanguage"],
             onDelete = ForeignKey.CASCADE
-        )
-    ]
+        ),
+    ],
 )
-data class SearchMovieCrossRefDto(
-    val searchKeyword: String,
-    val searchType: SearchType,
+data class PopularMovieDto(
     val movieId: Long,
     val storedLanguage: String,
+    val dateAdded: Instant = Clock.System.now()
 )

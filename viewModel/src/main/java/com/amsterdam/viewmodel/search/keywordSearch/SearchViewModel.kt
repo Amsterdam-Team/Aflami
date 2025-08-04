@@ -96,7 +96,7 @@ class SearchViewModel @Inject constructor(
                     config = PagingConfig(pageSize = 20),
                     pagingSourceFactory = {
                         PagingSource { page ->
-                            getAndFilterMoviesByKeywordUseCase(
+                          getAndFilterMoviesByKeywordUseCase(
                                 keyword = keyword,
                                 page = page,
                                 rating = state.value.movieFilterItemUiState.selectedStarIndex,
