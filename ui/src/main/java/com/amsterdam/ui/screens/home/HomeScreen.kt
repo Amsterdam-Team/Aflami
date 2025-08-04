@@ -46,7 +46,7 @@ import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.HomeAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.MovieDetails
-import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialogDialog
+import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
 import com.amsterdam.ui.screens.home.sections.continueWatchingSection
@@ -217,7 +217,7 @@ private fun HomeScreenContent(
                 }
             }
             AnimatedSectionVisibility(visible = state.moodPickerUiState.openMovieDialog) {
-                MovieMoodPickerDialogDialog(
+                MovieMoodPickerDialog(
                     movie = state.moodPickerUiState.selectedMovie,
                     onClickViewDetails = interactionListener::onClickViewDetails,
                     onClickGetAnotherMovie = interactionListener::onClickGetAnotherMovie,
