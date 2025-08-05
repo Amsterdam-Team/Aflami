@@ -1,6 +1,6 @@
 package com.amsterdam.viewmodel.watchHistory
 
-import com.amsterdam.viewmodel.search.keywordSearch.TabOption
+import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 
 interface WatchHistoryInteractionListener {

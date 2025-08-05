@@ -13,6 +13,7 @@ import com.amsterdam.ui.screens.lists.listsScreenRoute
 import com.amsterdam.ui.screens.login.loginScreenRoute
 import com.amsterdam.ui.screens.movieDetails.movieDetailsScreenRoute
 import com.amsterdam.ui.screens.onBoarding.onboardingScreenRoute
+import com.amsterdam.ui.screens.myRating.myRatingScreenRoute
 import com.amsterdam.ui.screens.profile.profileScreenRoute
 import com.amsterdam.ui.screens.profile.watchHistory.watchHistoryScreenRoute
 import com.amsterdam.ui.screens.register.registerScreenRoute
@@ -48,5 +49,6 @@ fun NavGraph(
         onboardingScreenRoute()
         listDetailsScreenRoute()
         watchHistoryScreenRoute()
+        myRatingScreenRoute()
     }
 }

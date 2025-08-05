@@ -1,15 +1,12 @@
 package com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -29,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.amsterdam.designsystem.R
-import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
@@ -40,6 +36,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.entity.category.TvShowGenre
+import com.amsterdam.ui.components.RatingBar
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.ScrollToGenreItem
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
@@ -47,8 +44,8 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.FilterItemUiState
-import com.amsterdam.viewmodel.search.keywordSearch.TabOption
 import com.amsterdam.viewmodel.search.mapper.getSelectedGenreType
+import com.amsterdam.viewmodel.shared.TabOption
 
 @Composable
 internal fun FilterDialog(
@@ -192,43 +189,6 @@ internal fun FilterDialog(
                 isLoading = false,
                 isNegative = false,
                 modifier = Modifier.padding(horizontal = 12.dp),
-            )
-        }
-    }
-}
-
-@Composable
-private fun RatingBar(
-    selectedStarIndex: Int,
-    onRatingStarChanged: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.padding(horizontal = 12.dp),
-    ) {
-        repeat(10) { index ->
-            val starIndex = index + 1
-            Icon(
-                painter =
-                    painterResource(
-                        id =
-                            if (selectedStarIndex >= starIndex) {
-                                R.drawable.ic_filled_star
-                            } else {
-                                R.drawable.ic_outlined_star
-                            },
-                    ),
-                contentDescription = "",
-                tint = AppTheme.color.yellowAccent,
-                modifier =
-                    Modifier
-                        .size(24.dp)
-                        .weight(1f)
-                        .clickable(
-                            onClick = { onRatingStarChanged(starIndex) },
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                        ),
             )
         }
     }

@@ -47,7 +47,7 @@ import com.amsterdam.viewmodel.search.keywordSearch.SearchInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.SearchUiEffect
 import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState
 import com.amsterdam.viewmodel.search.keywordSearch.SearchViewModel
-import com.amsterdam.viewmodel.search.keywordSearch.TabOption
+import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
 import kotlinx.coroutines.flow.collectLatest

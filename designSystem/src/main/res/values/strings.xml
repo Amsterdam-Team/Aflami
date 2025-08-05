@@ -207,4 +207,17 @@
     <string name="cast_not_available">"Cast Not Available"</string>
     <string name="we_could_not_find_cast_information">"We couldn't find cast information for this title right now. Please try again later."</string>
     <string name="there_is_no_seasons">It Seem Like There Is No Seasons Yet</string>
+
+    <!-- - My Rating  -->
+    <string name="no_rated_movies">No rated movies yet!</string>
+    <string name="no_rated_movies_description">Open a movie, rate it, your ratings will be displayed here.</string>
+    <string name="no_rated_tv_shows">No rated Tv Shows yet!</string>
+    <string name="no_rated_tv_shows_description">Open a tv show, rate it, your ratings will be displayed here.</string>
+    <string name="error_rated_media_title">Oops! Couldn\'t Load Your Ratings</string>
+    <string name="error_rated_media_description">Something went wrong while fetching your rated.</string>
+    <string name="select_how_much_you_like_it">Select how much you like it</string>
+    <string name="your_rating_has_been_saved">Your rating has been saved!</string>
+    <string name="failed_to_save_your_rating">Oops! We couldn\'t save your rating.</string>
+    <string name="failed_to_delete_your_rating">Oops! We couldn\'t delete your rating.</string>
+    <string name="your_rate_deletion_has_been_saved">Your rating has been Deleted!</string>
 </resources>

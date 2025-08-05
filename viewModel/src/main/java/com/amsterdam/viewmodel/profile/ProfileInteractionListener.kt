@@ -23,4 +23,6 @@ interface ProfileInteractionListener {
     fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel)
     fun onSaveRestrictionLevel()
     //endregion
+
+    fun onClickRating()
 }

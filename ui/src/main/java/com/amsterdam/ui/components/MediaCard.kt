@@ -19,6 +19,7 @@ fun MediaCard(
     modifier: Modifier = Modifier,
     movieRating: String? = null,
     topIcon: Painter? = null,
+    onTopIconClick: () -> Unit = {},
     onClick: () -> Unit = {},
 ) {
     BaseCard(
@@ -30,6 +31,7 @@ fun MediaCard(
         movieRating = movieRating,
         onClick = onClick,
         topIcon = topIcon,
+        onTopIconClick = onTopIconClick,
     )
 }
 

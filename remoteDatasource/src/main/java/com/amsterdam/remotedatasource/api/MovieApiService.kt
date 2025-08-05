@@ -1,10 +1,15 @@
 package com.amsterdam.remotedatasource.api
 
+import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -62,6 +67,26 @@ interface MovieApiService {
         @Query(PAGE_KEY) page: Int
     ) : RemoteMovieResponse
 
+    @FormUrlEncoded
+    @POST(MOVIE_RETE_ENDPOINT)
+    suspend fun postMovieRating(
+        @Path("movie_id") movieId: Long,
+        @Field("value") rate: Float,
+        @Query("session_id") sessionId: String
+    ): RatingResponse
+
+    @GET(RATED_MOVIES_ENDPOINT)
+    suspend fun getRatedMovies(
+        @Path("account_id") accountId: Int = 0,
+        @Query("session_id") sessionId: String
+    ): RemoteMovieResponse
+
+    @DELETE(MOVIE_RETE_ENDPOINT)
+    suspend fun deleteMovieRate(
+        @Path("movie_id") movieId: Long,
+        @Query("session_id") sessionId: String,
+    )
+
     companion object {
         private const val MOVIE_POPULAR = "movie/popular"
 
@@ -76,6 +101,8 @@ interface MovieApiService {
         const val MOVIE_DETAILS_APPEND_PARAMETERS = "reviews,credits,actors,similar,images,videos"
         private const val MOVIE_CREDITS_ENDPOINT = "movie/{movieId}/credits"
         private const val MOVIE_DETAILS_ENDPOINT = "movie/{movieId}"
+        private const val MOVIE_RETE_ENDPOINT = "movie/{movie_id}/rating"
+        private const val RATED_MOVIES_ENDPOINT = "account/{account_id}/rated/movies"
 
         private const val QUERY_KEY = "query"
         private const val PAGE_KEY = "page"

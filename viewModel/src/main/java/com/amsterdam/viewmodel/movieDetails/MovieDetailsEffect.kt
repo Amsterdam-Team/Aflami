@@ -14,4 +14,7 @@ sealed interface MovieDetailsEffect {
     object ListCreatedSuccessfully : MovieDetailsEffect
 
     object FailedToCreateList : MovieDetailsEffect
+
+    object ShowRatingSuccessSnackBar: MovieDetailsEffect
+    object ShowRatingErrorSnackBar: MovieDetailsEffect
 }

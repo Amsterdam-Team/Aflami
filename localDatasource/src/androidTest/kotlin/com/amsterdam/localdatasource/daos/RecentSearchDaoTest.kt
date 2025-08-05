@@ -6,10 +6,8 @@ import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.amsterdam.localdatasource.utils.createLocalSearchDto
 import com.amsterdam.repository.dto.local.LocalSearchDto
-import com.amsterdam.repository.dto.local.utils.SearchType
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -35,120 +33,71 @@ class RecentSearchDaoTest {
     @Test
     fun upsertRecentSearch_shouldInsertNewEntry() = runTest {
         // Given
-        val search = createLocalSearchDto("barbie", SearchType.BY_KEYWORD)
+        val search = createLocalSearchDto("barbie")
 
-        // Act
+        // When
         dao.upsertRecentSearch(search)
 
         // Then
-        val result = dao.getSearchByKeywordAndType("barbie", SearchType.BY_KEYWORD, "en")
-        assertThat(result!!.toComparable()).isEqualTo(search.toComparable())
+        val result = dao.getRecentSearches()
+        assertThat(result.map { it.toComparable() }).contains(search.toComparable())
     }
 
     @Test
     fun upsertRecentSearch_shouldUpdateExistingEntry() = runTest {
         // Given
-        val original = createLocalSearchDto("oppenheimer", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = 1000)
-        val updated = createLocalSearchDto("oppenheimer", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = 999_999)
+        val original = createLocalSearchDto("oppenheimer")
+        val updated = createLocalSearchDto("oppenheimer")
 
-        // Act
+        // When
         dao.upsertRecentSearch(original)
         dao.upsertRecentSearch(updated)
 
         // Then
-        val result = dao.getSearchByKeywordAndType("oppenheimer", SearchType.BY_KEYWORD, "en")
-        assertThat(result!!.toComparable()).isEqualTo(updated.toComparable())
+        val result = dao.getRecentSearches()
+        assertThat(result.map { it.toComparable() }).containsExactly(updated.toComparable())
     }
 
 
-    @Test
-    fun getRecentSearches_shouldReturnOrderedByExpireDesc_andGroupedByKeyword() = runTest {
-        // Given
-        val search1 = createLocalSearchDto("a", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = 500)
-        val search2 = createLocalSearchDto("b", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = 800)
-        val search3 = createLocalSearchDto("a", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = 1000)
-
-        dao.upsertRecentSearch(search1)
-        dao.upsertRecentSearch(search2)
-        dao.upsertRecentSearch(search3)
-
-        // Act
-        val result = dao.getRecentSearches(SearchType.BY_KEYWORD)
-
-        // Then
-        val expected = listOf(search3, search2).map { it.toComparable() }
-        assertThat(result.map { it.toComparable() }).containsExactlyElementsIn(expected)
-    }
 
 
     @Test
     fun deleteAllSearches_shouldRemoveAll() = runTest {
         // Given
-        dao.upsertRecentSearch(createLocalSearchDto("foo", SearchType.BY_KEYWORD))
-        dao.upsertRecentSearch(createLocalSearchDto("bar", SearchType.BY_KEYWORD))
-        //Act
+        dao.upsertRecentSearch(createLocalSearchDto("foo"))
+        dao.upsertRecentSearch(createLocalSearchDto("bar"))
+        //When
         dao.deleteAllSearches()
         //Then
-        val result = dao.getRecentSearches(SearchType.BY_KEYWORD)
+        val result = dao.getRecentSearches()
         assertThat(result).isEmpty()
-    }
-
-    @Test
-    fun deleteAllExpiredSearches_shouldRemoveOnlyExpiredItems() = runTest {
-        // Given
-        val expired = createLocalSearchDto("old", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = -10_000)
-        val fresh = createLocalSearchDto("new", SearchType.BY_KEYWORD, expireOffsetInMilliseconds = 10_000)
-
-        dao.upsertRecentSearch(expired)
-        dao.upsertRecentSearch(fresh)
-        //Act
-        dao.deleteAllExpiredSearches(Clock.System.now())
-        //Then
-        val result = dao.getRecentSearches(SearchType.BY_KEYWORD)
-
-        assertThat(result.map { it.toComparable() }).containsExactly(fresh.toComparable())
     }
 
     @Test
     fun deleteSearchByKeyword_shouldRemoveCorrectSearch() = runTest {
         // Given
-        val search1 = createLocalSearchDto("target", SearchType.BY_KEYWORD)
-        val search2 = createLocalSearchDto("keep", SearchType.BY_KEYWORD)
+        val deletedSearch = createLocalSearchDto("this search will be delete")
+        val otherSearch = createLocalSearchDto("other search")
 
-        dao.upsertRecentSearch(search1)
-        dao.upsertRecentSearch(search2)
-        //Act
-        dao.deleteSearchByKeyword("target", SearchType.BY_KEYWORD, "en")
+        dao.upsertRecentSearch(deletedSearch)
+        dao.upsertRecentSearch(otherSearch)
+        //When
+        dao.deleteSearchByKeyword(deletedSearch.searchKeyword)
         //Then
-        val result = dao.getRecentSearches(SearchType.BY_KEYWORD)
-        assertThat(result.map { it.toComparable() }).containsExactly(search2.toComparable())
+        val result = dao.getRecentSearches()
+
+        assertThat(result.map { it.toComparable() }).containsExactly(otherSearch.toComparable())
     }
 
-    @Test
-    fun getSearchByKeywordAndType_shouldReturnCorrectSearch() = runTest {
-        // Given
-        val search = createLocalSearchDto("unique", SearchType.BY_KEYWORD)
-        dao.upsertRecentSearch(search)
-        //Act
-        val result = dao.getSearchByKeywordAndType("unique", SearchType.BY_KEYWORD, "en")
-        //Then
-        assertThat(result!!.toComparable()).isEqualTo(search.toComparable())
-    }
-
-    data class ComparableSearchDto(
+        data class ComparableSearchDto(
         val searchKeyword: String,
-        val searchType: SearchType,
-        val storedLanguage: String,
-        val expireDateMillis: Long
+        val dateAdded: Long
     )
 
     fun LocalSearchDto.toComparable(): ComparableSearchDto {
         return ComparableSearchDto(
             searchKeyword = this.searchKeyword,
-            searchType = this.searchType,
-            storedLanguage = this.storedLanguage,
-            expireDateMillis = this.expireDate.toEpochMilliseconds()
+            dateAdded = this.dateAdded.toEpochMilliseconds()
         )
     }
-
 }

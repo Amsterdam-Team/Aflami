@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.viewmodel.shared.Selectable
+import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.shared.defaultMovieGenres
 import com.amsterdam.viewmodel.shared.uiStates.MovieGenreItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
@@ -24,13 +25,6 @@ data class SearchUiState(
     val isLoading: Boolean = false,
     val errorUiState: SearchErrorState? = null,
 )
-
-enum class TabOption(
-    val index: Int,
-) {
-    MOVIES(index = 0),
-    TV_SHOWS(index = 1),
-}
 
 data class FilterItemUiState(
     val selectedStarIndex: Int = 0,

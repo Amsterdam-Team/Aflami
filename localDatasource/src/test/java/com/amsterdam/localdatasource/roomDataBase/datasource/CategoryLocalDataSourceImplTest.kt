@@ -1,6 +1,8 @@
 package com.amsterdam.localdatasource.roomDataBase.datasource
 
+import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
+import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -41,9 +43,10 @@ class CategoryLocalDataSourceImplTest {
     @Test
     fun `getMovieCategories should return data from dao`() = runTest {
         val expected = listOf(LocalMovieCategoryDto(1, "Comedy","en"))
-        coEvery { dao.getAllMovieCategories() } returns expected
+        val storedLanguage = "en"
+        coEvery { dao.getAllMovieCategories(storedLanguage) } returns expected
 
-        val result = categoryLocalDataSourceImpl.getMovieCategories()
+        val result = categoryLocalDataSourceImpl.getMovieCategories(storedLanguage)
 
         assertThat(result).isEqualTo(expected)
     }
@@ -51,9 +54,10 @@ class CategoryLocalDataSourceImplTest {
     fun `getMovieCategories should return emptyList from dao`() = runTest {
         //Given
         val expected = emptyList<LocalMovieCategoryDto>()
+        val storedLanguage = "en"
         //When
-        coEvery { dao.getAllMovieCategories() } returns expected
-        val result = categoryLocalDataSourceImpl.getMovieCategories()
+        coEvery { dao.getAllMovieCategories(storedLanguage) } returns expected
+        val result = categoryLocalDataSourceImpl.getMovieCategories(storedLanguage)
         //Then
         assertThat(result).isEmpty()
     }
@@ -62,9 +66,10 @@ class CategoryLocalDataSourceImplTest {
     fun `getTvShowCategories should return data from dao`() = runTest {
         //Given
         val expected = listOf(LocalTvShowCategoryDto(1, "All","en"))
+        val storedLanguage = "en"
         //When
-        coEvery { dao.getAllTvShowCategories() } returns expected
-        val result = categoryLocalDataSourceImpl.getTvShowCategories()
+        coEvery { dao.getAllTvShowCategories(storedLanguage) } returns expected
+        val result = categoryLocalDataSourceImpl.getTvShowCategories(storedLanguage)
         //Then
         assertThat(result).isEqualTo(expected)
     }

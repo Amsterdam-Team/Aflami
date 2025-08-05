@@ -3,11 +3,13 @@ package com.amsterdam.repository.repository
 import com.amsterdam.domain.repository.CategoryRepository
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
+import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase.UserRatedMovie
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Country
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.local.MovieLocalSource
 import com.amsterdam.repository.datasource.remote.MovieRemoteSource
 import com.amsterdam.repository.dto.local.LocalMovieDto
@@ -22,8 +24,10 @@ import com.amsterdam.repository.mapper.remote.toMovieDetailsEntity
 import com.amsterdam.repository.mapper.remote.toEntity
 import com.amsterdam.repository.mapper.remote.toMovieEntityList
 import com.amsterdam.repository.mapper.remote.toMovieItemDto
+import com.amsterdam.repository.mapper.remote.toMovieUserRateEntityList
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDtoList
+import com.amsterdam.repository.security.CryptoData
 import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
@@ -34,8 +38,10 @@ class MovieRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val movieLocalSource: MovieLocalSource,
     private val movieRemoteDataSource: MovieRemoteSource,
-    private val preferences: AppPreferences
-) : MovieRepository {
+    private val authenticationLocalSource: AuthenticationLocalSource,
+    private val preferences: AppPreferences,
+    val cryptoData: CryptoData,
+    ) : MovieRepository {
     override suspend fun getMoviesByKeyword(
         keyword: String,
         page: Int,
@@ -256,9 +262,23 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setMovieRate(rate: Int, movieId: Long) {
+        val sessionId = cryptoData.decryptString(authenticationLocalSource.getCachedSessionId()) ?: ""
+         movieRemoteDataSource.setMovieRate(rate = rate.toFloat(), movieId = movieId, sessionId = sessionId)
+    }
+
+    override suspend fun getUserRatedMovies(): List<UserRatedMovie> {
+        val sessionId = cryptoData.decryptString(authenticationLocalSource.getCachedSessionId()) ?: ""
+        return movieRemoteDataSource.getRatedMovies(sessionId).results.toMovieUserRateEntityList()
+    }
+
+    override suspend fun deleteMovieRate(movieId: Long) {
+        val sessionId = cryptoData.decryptString(authenticationLocalSource.getCachedSessionId()) ?: ""
+        movieRemoteDataSource.deleteMovieRate(movieId = movieId, sessionId = sessionId)
+    }
+
     private suspend fun incrementUserInterestByMovie(remoteCategories: List<RemoteCategoryDto>) {
         remoteCategories.map(RemoteCategoryDto::id)
             .map { movieLocalSource.incrementGenreInterest(it.toLong()) }
     }
-
 }

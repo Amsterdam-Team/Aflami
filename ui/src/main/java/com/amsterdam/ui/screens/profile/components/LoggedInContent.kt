@@ -88,7 +88,7 @@ fun LoggedInContent(
         ) {
             item { ProfileImageSection() }
             item { ProfileInfoSection() }
-            item { HistoryAndRatingSection(onClickHistory = onClickHistory) }
+            item { HistoryAndRatingSection(onClickHistory = onClickHistory, onClickRating = interactionListener::onClickRating) }
             item { HorizontalDivider() }
             item { SettingsSection(
                 onSettingsClicked = interactionListener::onClickSettings
@@ -140,6 +140,7 @@ private fun LoggedInContentPreview() {
                 override fun onClickConfirmLogout() {}
                 override fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel) {}
                 override fun onSaveRestrictionLevel() {}
+                override fun onClickRating() {}
             },
             onClickHistory = {}
         )

@@ -19,7 +19,7 @@ class RecentSearchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteRecentSearch(searchKeyword: String) {
-        recentSearchLocalSource.deleteRecentSearchByKeywordAndType(searchKeyword)
+        recentSearchLocalSource.deleteRecentSearchByKeyword(searchKeyword)
     }
 
     override suspend fun addRecentSearch(searchKeyword: String) {

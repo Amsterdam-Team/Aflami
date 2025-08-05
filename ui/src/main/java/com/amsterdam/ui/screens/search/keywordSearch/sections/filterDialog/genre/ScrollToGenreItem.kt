@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.entity.category.TvShowGenre
-import com.amsterdam.viewmodel.search.keywordSearch.TabOption
+import com.amsterdam.viewmodel.shared.TabOption
 
 @Composable
 internal fun ScrollToGenreItem(

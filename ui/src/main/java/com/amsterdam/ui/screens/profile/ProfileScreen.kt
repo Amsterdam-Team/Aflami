@@ -63,6 +63,8 @@ fun ProfileScreen(
                         message = getProfileErrorMessage(state.profileErrorState, context)
                     )
                 }
+
+                ProfileEffect.NavigateToMyRating -> navController.navigate(Route.MyRating)
             }
         }
     }
@@ -141,6 +143,7 @@ private fun ProfileScreenPreview() {
             override fun onClickConfirmLogout() {}
             override fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel) {}
             override fun onSaveRestrictionLevel() {}
+            override fun onClickRating() {}
         }
     )
 }

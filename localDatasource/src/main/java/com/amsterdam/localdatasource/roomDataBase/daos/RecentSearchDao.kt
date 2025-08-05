@@ -11,16 +11,19 @@ interface RecentSearchDao {
     @Upsert
     suspend fun upsertRecentSearch(search: LocalSearchDto)
 
-    @Query("""
-        SELECT searchKeyword
+    @Query(
+    """
+        SELECT *
         FROM ${DatabaseConstants.RECENT_SEARCH_TABLE}
-    """)
+        ORDER BY dateAdded DESC
+    """
+    )
     suspend fun getRecentSearches(): List<LocalSearchDto>
 
     @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE}")
     suspend fun deleteAllSearches()
 
-    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword")
+    @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE} WHERE searchKeyword = :keyword ")
     suspend fun deleteSearchByKeyword(
         keyword: String
     )

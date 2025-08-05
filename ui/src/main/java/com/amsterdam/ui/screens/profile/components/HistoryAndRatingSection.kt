@@ -29,7 +29,8 @@ import com.amsterdam.ui.R
 
 @Composable
 fun HistoryAndRatingSection(
-    onClickHistory: () -> Unit
+    onClickHistory: () -> Unit,
+    onClickRating: () -> Unit
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
@@ -43,7 +44,7 @@ fun HistoryAndRatingSection(
         CustomCard(
             imageResourceId = com.amsterdam.designsystem.R.drawable.img_user_rating,
             text = stringResource(R.string.my_rating),
-            onClick = {}
+            onClick = onClickRating
         )
     }
 }
@@ -98,6 +99,6 @@ private fun RowScope.CustomCard(
 @Composable
 private fun HistoryAndRatingSectionPreview() {
     AflamiTheme {
-        HistoryAndRatingSection(onClickHistory = {})
+        HistoryAndRatingSection(onClickHistory = {}, onClickRating = {})
     }
 }

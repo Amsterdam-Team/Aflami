@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.movieDetails
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
@@ -11,9 +10,13 @@ import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
 import com.amsterdam.domain.useCase.list.GetUserListsUseCase
+import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase
+import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase.UserRatedMovie
+import com.amsterdam.domain.useCase.myRating.movie.SetUserMovieRatingUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
+import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -33,12 +36,14 @@ class MovieDetailsViewModel @Inject constructor(
     private val getUserListsUseCase: GetUserListsUseCase,
     private val createListUseCase: CreateNewListUseCase,
     private val getsSessionType: GetsSessionType,
+    private val getUserRatedMoviesUseCase: GetUserRatedMoviesUseCase,
+    private val setUserRatingUseCase: SetUserMovieRatingUseCase,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsEffect>(
     MovieDetailsUiState(),
     dispatcherProvider
-), MovieDetailsInteractionListener {
+), MovieDetailsInteractionListener, RateDialogInteractionListener {
 
     init {
         val movieId = args.movieId!!
@@ -94,10 +99,36 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onRateClicked() {
         viewModelScope.launch {
             runIfLoggedIn(
-                onLoggedIn = {},
+                onLoggedIn = {
+                    updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = true, isLoading = true)) }
+                    tryToExecute(
+                        action = { getUserRatedMoviesUseCase.getRatedMovie(state.value.movieId) },
+                        onSuccess = ::onGetRatedMovieSuccess,
+                        onError = ::onGetRatedMovieError
+                    )
+                },
                 onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.Rate) }
             )
         }
+    }
+
+    private fun onGetRatedMovieSuccess(movie: UserRatedMovie?) {
+        movie?.let { ratedMovie ->
+            updateState {
+                it.copy(
+                    rateDialogUiState = it.rateDialogUiState.copy(
+                        selectedStarIndex = ratedMovie.userRate.toInt(),
+                        previousStarIndex = ratedMovie.userRate.toInt(),
+                        isLoading = false,
+                        isSubmittingEnabled = false
+                    )
+                )
+            }
+        }
+    }
+
+    private fun onGetRatedMovieError(exception: AflamiException) {
+        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(selectedStarIndex = null, isLoading = false, isSubmittingEnabled = true))}
     }
 
     override fun onNavigateToLoginClicked() {
@@ -235,7 +266,6 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun onError(exception: AflamiException) {
-        Log.e("bk", "onError: $exception")
         when (exception) {
             is NoInternetException -> updateState { it.copy(networkError = true) }
             is NetworkException -> updateState { it.copy(networkError = true) }
@@ -245,4 +275,60 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }
 
+    override fun onClickCancel() {
+        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false)) }
+    }
+
+    override fun onClickSubmit() {
+        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isLoading = true)) }
+        tryToExecute(
+            action = {
+                setUserRatingUseCase.setUserMovieRate(
+                    rate = state.value.rateDialogUiState.selectedStarIndex ?: 1,
+                    movieId = state.value.movieId
+                )
+            },
+            onSuccess = ::onSubmitRateSuccess,
+            onError = ::onSubmitRateError
+        )
+    }
+
+    private fun onSubmitRateSuccess(unit: Unit) {
+        resetRateDialogUiState()
+        sendNewNavigationEffect(MovieDetailsEffect.ShowRatingSuccessSnackBar)
+    }
+
+    private fun onSubmitRateError(exception: AflamiException) {
+        resetRateDialogUiState()
+        sendNewNavigationEffect(MovieDetailsEffect.ShowRatingErrorSnackBar)
+    }
+
+    private fun resetRateDialogUiState(){
+        updateState {
+            it.copy(
+                rateDialogUiState = it.rateDialogUiState.copy(
+                    isLoading = false,
+                    isVisible = false,
+                    previousStarIndex = null,
+                    selectedStarIndex = null,
+                    isSubmittingEnabled = false
+                )
+            )
+        }
+    }
+
+    override fun onChangeRating(newRate: Int) {
+        val previousRate = state.value.rateDialogUiState.previousStarIndex
+        val isChanged = newRate != previousRate
+
+        updateState {
+            it.copy(
+                rateDialogUiState = it.rateDialogUiState.copy(
+                    selectedStarIndex = newRate,
+                    isSubmittingEnabled = isChanged,
+                    isLoading = false
+                )
+            )
+        }
+    }
 }

@@ -10,6 +10,6 @@ interface RecentSearchLocalSource {
 
     suspend fun deleteRecentSearches()
 
-    suspend fun deleteRecentSearchByKeywordAndType(
+    suspend fun deleteRecentSearchByKeyword(
         keyword: String)
 }

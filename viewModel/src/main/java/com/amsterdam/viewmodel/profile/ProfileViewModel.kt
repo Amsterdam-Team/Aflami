@@ -211,6 +211,10 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    override fun onClickRating() {
+        sendNewNavigationEffect(ProfileEffect.NavigateToMyRating)
+    }
+
     private suspend fun saveRestrictionLevel(){
         manageRestrictionLevelUseCase.setRestrictionLevel(
             state.value.settingsState.contentRestrictionLevel

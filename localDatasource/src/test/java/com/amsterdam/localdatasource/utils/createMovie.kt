@@ -19,6 +19,5 @@ fun createMovie(
             rating = 4.3f,
             originCountry = "US",
             movieLength = 120,
-            hasVideo = true
         )
     }

@@ -68,4 +68,6 @@ sealed interface Route {
     @Serializable
     data object WatchHistory: Route
 
+    @Serializable
+    data object MyRating: Route
 }

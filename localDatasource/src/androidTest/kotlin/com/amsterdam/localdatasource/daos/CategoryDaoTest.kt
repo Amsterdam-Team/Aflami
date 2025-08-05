@@ -3,6 +3,7 @@ package com.amsterdam.localdatasource.daos
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
+import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.utils.createLocalMovieCategoryDto
 import com.amsterdam.localdatasource.utils.createLocalTvShowCategoryDto
 import com.google.common.truth.Truth.assertThat
@@ -15,6 +16,7 @@ class CategoryDaoTest {
 
     private lateinit var aflamiDatabase: AflamiDatabase
     private lateinit var categoryDao: CategoryDao
+    val storedLanguage = "en"
 
     @BeforeEach
     fun setup() {
@@ -40,7 +42,7 @@ class CategoryDaoTest {
         categoryDao.upsertAllMovieCategories(categories)
 
         // Then
-        val stored = categoryDao.getAllMovieCategories()
+        val stored = categoryDao.getAllMovieCategories(storedLanguage)
         assertThat(stored).isEqualTo(categories)
     }
 
@@ -62,14 +64,14 @@ class CategoryDaoTest {
         categoryDao.upsertAllMovieCategories(updated)
 
         // Then
-        val stored = categoryDao.getAllMovieCategories()
+        val stored = categoryDao.getAllMovieCategories(storedLanguage)
         assertThat(stored).isEqualTo(updated)
     }
 
     @Test
     fun getAllMovieCategories_shouldReturnEmptyList_whenNoDataInserted() = runTest {
         // When
-        val result = categoryDao.getAllMovieCategories()
+        val result = categoryDao.getAllMovieCategories(storedLanguage)
 
         // Then
         assertThat(result).isEmpty()
@@ -91,7 +93,7 @@ class CategoryDaoTest {
         categoryDao.upsertAllMovieCategories(updated)
 
         // Then
-        val stored = categoryDao.getAllMovieCategories()
+        val stored = categoryDao.getAllMovieCategories(storedLanguage)
         assertThat(stored).containsExactly(updated.first())
     }
 
@@ -107,7 +109,7 @@ class CategoryDaoTest {
         categoryDao.upsertAllMovieCategories(categories)
 
         // Then
-        val stored = categoryDao.getAllMovieCategories()
+        val stored = categoryDao.getAllMovieCategories(storedLanguage)
         assertThat(stored).containsExactly(categories.first())
     }
 
@@ -115,15 +117,15 @@ class CategoryDaoTest {
     fun upsertAllTvShowCategories_shouldInsertTvShowCategories_whenCalled() = runTest {
         // Given
         val categories = listOf(
-            createLocalTvShowCategoryDto(categoryId = 1, name = "Popular"),
-            createLocalTvShowCategoryDto(categoryId = 2, name = "Trending")
+            createLocalTvShowCategoryDto(categoryId = 1L, name = "Popular"),
+            createLocalTvShowCategoryDto(categoryId = 2L, name = "Trending")
         )
 
         // When
         categoryDao.upsertAllTvShowCategories(categories)
 
         // Then
-        val stored = categoryDao.getAllTvShowCategories()
+        val stored = categoryDao.getAllTvShowCategories(storedLanguage)
         assertThat(stored).isEqualTo(categories)
     }
 
@@ -139,14 +141,14 @@ class CategoryDaoTest {
         categoryDao.upsertAllTvShowCategories(categories)
 
         // Then
-        val stored = categoryDao.getAllTvShowCategories()
+        val stored = categoryDao.getAllTvShowCategories(storedLanguage)
         assertThat(stored).containsExactly(categories.first())
     }
 
     @Test
     fun getAllTvShowCategories_shouldReturnEmptyList_whenNoDataInserted() = runTest {
         // When
-        val result = categoryDao.getAllTvShowCategories()
+        val result = categoryDao.getAllTvShowCategories(storedLanguage)
 
         // Assert
         assertThat(result).isEmpty()
@@ -168,7 +170,7 @@ class CategoryDaoTest {
         categoryDao.upsertAllTvShowCategories(updated)
 
         // Then
-        val stored = categoryDao.getAllTvShowCategories()
+        val stored = categoryDao.getAllTvShowCategories(storedLanguage)
         assertThat(stored).containsExactly(updated.first())
     }
 }

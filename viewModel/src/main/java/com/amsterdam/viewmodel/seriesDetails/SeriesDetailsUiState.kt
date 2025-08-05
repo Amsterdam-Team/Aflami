@@ -1,6 +1,7 @@
 package com.amsterdam.viewmodel.seriesDetails
 
 import com.amsterdam.entity.category.TvShowGenre
+import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
@@ -40,6 +41,7 @@ data class SeriesDetailsUiState(
     val hasVideo: Boolean = false,
     val isLoginDialogVisible: Boolean = false,
     val dialogType: MovieAndSeriesDetailsDialogType? = null,
+    val rateDialogUiState: RateDialogUiState = RateDialogUiState(),
     val isDescriptionExpanded: Boolean = false
 ) {
     enum class SeriesExtras {

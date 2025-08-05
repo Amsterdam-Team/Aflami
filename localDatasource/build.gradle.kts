@@ -44,6 +44,8 @@ private fun DependencyHandlerScope.androidTestDependencies() {
     androidTestImplementation(libs.android.test.core)
     androidTestRuntimeOnly(libs.android.test.runner)
     androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
 }
 
 private fun DependencyHandlerScope.coroutineDependencies() {

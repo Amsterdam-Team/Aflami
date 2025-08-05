@@ -1,7 +1,7 @@
 package com.amsterdam.viewmodel.watchHistory
 
 import androidx.paging.PagingData
-import com.amsterdam.viewmodel.search.keywordSearch.TabOption
+import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
 import kotlinx.coroutines.flow.Flow

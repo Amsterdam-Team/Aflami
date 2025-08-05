@@ -24,7 +24,8 @@ data class RemoteMovieItemDto(
     @SerialName("vote_count") val voteCount: Int,
     @SerialName("origin_country") val originCountry: List<String> = emptyList(),
     @SerialName("runtime") val runtime: Int = 0,
-    @SerialName("genres") val genres: List<RemoteCategoryDto> = emptyList()
+    @SerialName("genres") val genres: List<RemoteCategoryDto> = emptyList(),
+    @SerialName("rating") val rating: Float = 0f,
 ){
     val fullPosterUrl: String?
         get() = posterPath?.let { BASE_IMAGE_URL_W500 + it }

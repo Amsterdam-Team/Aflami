@@ -208,4 +208,17 @@
     <string name="we_could_not_find_cast_information">"لم نتمكن من العثور على معلومات الممثلين لهذا العنوان حالياً. يرجى المحاولة مرة أخرى لاحقاً."</string>
     <string name="there_is_no_seasons">يبدو أنه لم تصدر مواسم بعد</string>
 
+    <!-- - My Rating  -->
+    <string name="no_rated_movies">لا توجد أفلام مقيمة بعد!</string>
+    <string name="no_rated_movies_description">افتح فيلمًا، قيّمه، وستظهر تقييماتك هنا.</string>
+    <string name="no_rated_tv_shows">لا توجد مسلسلات مقيمة بعد!</string>
+    <string name="no_rated_tv_shows_description">افتح مسلسلًا، قيّمه، وستظهر تقييماتك هنا.</string>
+    <string name="error_rated_media_title">عذرًا! لم نتمكن من تحميل تقييماتك</string>
+    <string name="error_rated_media_description">حدث خطأ أثناء جلب التقييمات الخاصة بك.</string>
+    <string name="select_how_much_you_like_it">حدد مقدار إعجابك!</string>
+    <string name="your_rating_has_been_saved">تم حفظ تقييمك!</string>
+    <string name="failed_to_save_your_rating">عذرًا! لم نتمكن من حفظ تقييمك</string>
+    <string name="failed_to_delete_your_rating">عذرًا! لم نتمكن من حذف تقييمك</string>
+    <string name="your_rate_deletion_has_been_saved">تم حذف تقييمك بنجاح</string>
+
 </resources>

@@ -21,7 +21,7 @@ class RecentSearchLocalDataSourceImpl @Inject constructor(
         dao.deleteAllSearches()
     }
 
-    override suspend fun deleteRecentSearchByKeywordAndType(
+    override suspend fun deleteRecentSearchByKeyword(
         keyword: String,
     ) {
         dao.deleteSearchByKeyword(keyword)

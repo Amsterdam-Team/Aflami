@@ -1,6 +1,7 @@
 package com.amsterdam.repository.datasource.remote
 
 import com.amsterdam.repository.dto.remote.EpisodeResponse
+import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
@@ -21,4 +22,11 @@ interface TvShowsRemoteSource {
     suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse
 
     suspend fun getEpisodesBySeasonNumber(tvShowId: Long, seasonNumber: Int): EpisodeResponse
+
+    suspend fun getRatedTvShows(sessionId: String): RemoteTvShowResponse
+
+    suspend fun setTvShowRate(rate: Int, tvShowId: Long, sessionId: String): RatingResponse?
+
+    suspend fun deleteTvShowRate(tvShowId: Long, sessionId: String)
+
 }

@@ -19,7 +19,7 @@ import com.amsterdam.designsystem.components.TabsLayout
 import com.amsterdam.designsystem.components.TextField
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.viewmodel.search.keywordSearch.TabOption
+import com.amsterdam.viewmodel.shared.TabOption
 
 @Composable
 fun SearchScreenHeaderSection(

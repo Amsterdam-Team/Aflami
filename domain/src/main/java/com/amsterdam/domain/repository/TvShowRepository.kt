@@ -1,6 +1,7 @@
 package com.amsterdam.domain.repository
 
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetails
+import com.amsterdam.domain.useCase.myRating.tvShow.GetUserRatedTvShowsUseCase.UserRatedTvShow
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
@@ -14,4 +15,8 @@ interface TvShowRepository {
     suspend fun getTvShowDetails(tvShowId: Long): TvShowDetails
     suspend fun getTvShowSeasons(tvShowId: Long): List<Season>
     suspend fun getEpisodesBySeasonNumber(tvShowId: Long, seasonNumber: Int): List<Episode>
+
+    suspend fun setTvShowRate(rate: Int, tvShowId: Long)
+    suspend fun getUserRatedTvShows(): List<UserRatedTvShow>
+    suspend fun deleteTvShowRate(tvShowId: Long)
 }
