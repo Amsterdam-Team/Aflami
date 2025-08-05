@@ -19,7 +19,12 @@ class UserListRepositoryImpl
             listId: Long,
             movieId: Int,
         ) {
-            userListDataSource.addMovieToList(listId, movieId)
+            val sessionId = authenticationRepository.getSessionId()
+            userListDataSource.addMovieToList(
+                listId,
+                sessionId,
+                movieId,
+            )
         }
 
     override suspend fun getMoviesFromList(

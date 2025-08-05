@@ -1,7 +1,7 @@
 package com.amsterdam.repository.datasource.remote
 
-import com.amsterdam.repository.dto.remote.UserListDetailsResponse
 import com.amsterdam.repository.dto.remote.RemoteUserListResponse
+import com.amsterdam.repository.dto.remote.UserListDetailsResponse
 
 interface UserListRemoteSource {
     suspend fun getUserLists(
@@ -11,6 +11,7 @@ interface UserListRemoteSource {
     ): RemoteUserListResponse
     suspend fun addMovieToList(
         listId: Long,
+        sessionId: String,
         movieId: Int,
     )
 
