@@ -1,12 +1,11 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.search
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.CountryRepository
-import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.domain.useCase.utils.countriesWithDifferentCases
 import com.amsterdam.domain.useCase.utils.fakeCountryList
 import com.amsterdam.entity.Country
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -38,22 +37,22 @@ class GetSuggestedCountriesUseCaseTest {
     fun `should return all countries when keyword is empty`() = runTest {
         coEvery { countryRepository.getCountries() } returns fakeCountryList
         val result = getSuggestedCountriesUseCase("")
-        assertThat(result).isEqualTo(fakeCountryList)
+        Truth.assertThat(result).isEqualTo(fakeCountryList)
     }
 
     @Test
     fun `should return filtered countries when a matching keyword is provided`() = runTest {
         coEvery { countryRepository.getCountries() } returns fakeCountryList
         val result = getSuggestedCountriesUseCase("EG")
-        assertThat(result).hasSize(1)
-        assertThat(result.first().countryName).isEqualTo("EGYPT")
+        Truth.assertThat(result).hasSize(1)
+        Truth.assertThat(result.first().countryName).isEqualTo("EGYPT")
     }
 
     @Test
     fun `should return empty list when no countries match the given keyword`() = runTest {
         coEvery { countryRepository.getCountries() } returns fakeCountryList
         val result = getSuggestedCountriesUseCase("usa")
-        assertThat(result).isEmpty()
+        Truth.assertThat(result).isEmpty()
     }
 
     @Test
@@ -61,7 +60,7 @@ class GetSuggestedCountriesUseCaseTest {
         coEvery { countryRepository.getCountries() } returns countriesWithDifferentCases
 
         val result = getSuggestedCountriesUseCase("united")
-        assertThat(result).containsExactly(countriesWithDifferentCases[0])
+        Truth.assertThat(result).containsExactly(countriesWithDifferentCases[0])
     }
 
     @Test
@@ -73,7 +72,7 @@ class GetSuggestedCountriesUseCaseTest {
         val result = getSuggestedCountriesUseCase("a")
 
         // Then
-        assertThat(result).containsExactly(
+        Truth.assertThat(result).containsExactly(
             countriesWithDifferentCases[0],
             countriesWithDifferentCases[1],
             countriesWithDifferentCases[2],

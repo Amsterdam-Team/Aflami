@@ -16,8 +16,7 @@ val specificMovieList = listOf(
         popularity = 5.0,
         originCountry = "",
         runTimeInMinutes = 1,
-        hasVideo = true,
-        productionCompanies = emptyList()
+
     ),
     Movie(
         id = 2,
@@ -30,8 +29,7 @@ val specificMovieList = listOf(
         popularity = 5.0,
         originCountry = "",
         runTimeInMinutes = 1,
-        hasVideo = true,
-        productionCompanies = emptyList()
+
     )
 )
 
@@ -48,8 +46,7 @@ val fakeMovieListWithCategories =
             popularity = 10.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 2,
@@ -62,8 +59,7 @@ val fakeMovieListWithCategories =
             popularity = 9.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 3,
@@ -79,8 +75,7 @@ val fakeMovieListWithCategories =
             popularity = 11.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 4,
@@ -93,8 +88,7 @@ val fakeMovieListWithCategories =
             popularity = 8.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         )
     )
 
@@ -111,8 +105,7 @@ val fakeMovieList =
             popularity = 10.2,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 2,
@@ -125,8 +118,7 @@ val fakeMovieList =
             popularity = 11.2,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 3,
@@ -139,8 +131,7 @@ val fakeMovieList =
             popularity = 0.2,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
     )
 val fakeMovieListWithRatings =
@@ -156,8 +147,7 @@ val fakeMovieListWithRatings =
             popularity = 10.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 2,
@@ -170,8 +160,7 @@ val fakeMovieListWithRatings =
             popularity = 9.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
         Movie(
             id = 3,
@@ -184,7 +173,6 @@ val fakeMovieListWithRatings =
             popularity = 8.0,
             originCountry = "",
             runTimeInMinutes = 1,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         ),
     )

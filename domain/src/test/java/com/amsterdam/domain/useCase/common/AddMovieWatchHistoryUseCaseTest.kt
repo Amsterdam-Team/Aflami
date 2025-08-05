@@ -1,8 +1,7 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.common
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.WatchHistoryRepository
-import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify

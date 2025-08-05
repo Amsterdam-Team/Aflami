@@ -1,9 +1,6 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.MovieWatchHistory
 import com.amsterdam.entity.TvShow
@@ -111,8 +108,7 @@ class GetContinueWatchingScreenDataUseCaseTest {
             movie = Movie(
                 id = 1L, name = "Movie", description = "", posterUrl = "",
                 releaseDate = LocalDate(2023, 1, 1), categories = emptyList(), rating = 1.0f,
-                popularity = 1.0, originCountry = "", runTimeInMinutes = 1, hasVideo = false,
-                productionCompanies = emptyList()
+                popularity = 1.0, originCountry = "", runTimeInMinutes = 1,
             ),
             lastWatchedTime = Instant.DISTANT_PAST
         )
@@ -128,7 +124,7 @@ class GetContinueWatchingScreenDataUseCaseTest {
                 popularity = 1.0,
                 seasonCount = 1,
                 originCountry = "",
-                productionCompanies = emptyList()
+
             ),
             lastWatchedTime = Instant.DISTANT_PAST
         )

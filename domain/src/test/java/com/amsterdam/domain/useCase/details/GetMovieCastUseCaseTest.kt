@@ -1,8 +1,7 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.details
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.useCase.details.GetMovieCastUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.google.common.truth.Truth.assertThat

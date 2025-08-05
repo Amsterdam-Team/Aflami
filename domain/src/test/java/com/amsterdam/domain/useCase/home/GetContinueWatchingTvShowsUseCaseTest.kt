@@ -1,10 +1,9 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.WatchHistoryRepository
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
-import com.amsterdam.entity.Movie
-import com.amsterdam.entity.MovieWatchHistory
+import com.amsterdam.entity.TvShow
+import com.amsterdam.entity.TvShowWatchHistory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,29 +17,27 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class GetContinueWatchingMoviesUseCaseTest {
+class GetContinueWatchingTvShowsUseCaseTest {
 
     private lateinit var watchHistoryRepository: WatchHistoryRepository
-    private lateinit var getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase
+    private lateinit var getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase
 
-    private val fakeMovie = Movie(
+    private val fakeTvShow = TvShow(
         id = 1L,
-        name = "Test Movie",
+        name = "Test TvShow",
         description = "",
         posterUrl = "",
-        releaseDate = LocalDate(2023, 1, 1),
+        airDate = LocalDate(2023, 1, 1),
         categories = emptyList(),
         rating = 8.0f,
         popularity = 100.0,
+        seasonCount = 1,
         originCountry = "US",
-        runTimeInMinutes = 120,
-        hasVideo = true,
-        productionCompanies = emptyList()
     )
 
-    private val fakeMovieWatchHistory = listOf(
-        MovieWatchHistory(
-            movie = fakeMovie,
+    private val fakeTvShowWatchHistory = listOf(
+        TvShowWatchHistory(
+            tvShow = fakeTvShow,
             lastWatchedTime = Instant.DISTANT_PAST
         )
     )
@@ -48,57 +45,58 @@ class GetContinueWatchingMoviesUseCaseTest {
     @BeforeEach
     fun setUp() {
         watchHistoryRepository = mockk(relaxed = true)
-        getContinueWatchingMoviesUseCase = GetContinueWatchingMoviesUseCase(watchHistoryRepository)
+        getContinueWatchingTvShowsUseCase =
+            GetContinueWatchingTvShowsUseCase(watchHistoryRepository)
     }
 
     @Test
-    fun `should call getContinueWatchingMovies with correct pagination parameters`() = runTest {
+    fun `should call getContinueWatchingTvShows with correct pagination parameters`() = runTest {
         // Given
         val page = 2
         val pageSize = 10
         coEvery {
-            watchHistoryRepository.getContinueWatchingMovies(
+            watchHistoryRepository.getContinueWatchingTvShows(
                 page,
                 pageSize
             )
         } returns flow { emit(emptyList()) }
 
         // When
-        getContinueWatchingMoviesUseCase(page, pageSize)
+        getContinueWatchingTvShowsUseCase(page, pageSize)
 
         // Then
-        coVerify(exactly = 1) { watchHistoryRepository.getContinueWatchingMovies(page, pageSize) }
+        coVerify(exactly = 1) { watchHistoryRepository.getContinueWatchingTvShows(page, pageSize) }
     }
 
     @Test
-    fun `should return flow of movie watch history when repository returns data`() = runTest {
+    fun `should return flow of tv show watch history when repository returns data`() = runTest {
         // Given
         coEvery {
-            watchHistoryRepository.getContinueWatchingMovies(
+            watchHistoryRepository.getContinueWatchingTvShows(
                 any(),
                 any()
             )
-        } returns flow { emit(fakeMovieWatchHistory) }
+        } returns flow { emit(fakeTvShowWatchHistory) }
 
         // When
-        val result = getContinueWatchingMoviesUseCase(1, 20)
+        val result = getContinueWatchingTvShowsUseCase(1, 20)
 
         // Then
-        assertThat(result.first()).isEqualTo(fakeMovieWatchHistory)
+        assertThat(result.first()).isEqualTo(fakeTvShowWatchHistory)
     }
 
     @Test
     fun `should return an empty flow when repository returns no data`() = runTest {
         // Given
         coEvery {
-            watchHistoryRepository.getContinueWatchingMovies(
+            watchHistoryRepository.getContinueWatchingTvShows(
                 any(),
                 any()
             )
         } returns flow { emit(emptyList()) }
 
         // When
-        val result = getContinueWatchingMoviesUseCase(1, 20)
+        val result = getContinueWatchingTvShowsUseCase(1, 20)
 
         // Then
         assertThat(result.first()).isEmpty()
@@ -108,7 +106,7 @@ class GetContinueWatchingMoviesUseCaseTest {
     fun `should throw AflamiException when repository throws an exception`() = runTest {
         // Given
         coEvery {
-            watchHistoryRepository.getContinueWatchingMovies(
+            watchHistoryRepository.getContinueWatchingTvShows(
                 any(),
                 any()
             )
@@ -116,7 +114,7 @@ class GetContinueWatchingMoviesUseCaseTest {
 
         // When & Then
         assertThrows<AflamiException> {
-            getContinueWatchingMoviesUseCase(1, 20).first()
+            getContinueWatchingTvShowsUseCase(1, 20).first()
         }
     }
 }

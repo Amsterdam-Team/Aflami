@@ -1,8 +1,7 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
 import com.amsterdam.domain.useCase.utils.fakeMovieList
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
