@@ -67,6 +67,7 @@ class HomeViewModel @Inject constructor(
             action = { getHomeScreenDataUseCase() },
             onSuccess = ::onGetHomeScreenDataSuccess,
             onError = ::onError,
+            onCompletion = ::onCompletion
         )
     }
 
@@ -288,5 +289,5 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onCompletion() = updateState { it.copy() }
+    private fun onCompletion() = updateState { it.copy(isLoading = false) }
 }

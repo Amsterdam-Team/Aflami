@@ -44,7 +44,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -103,6 +105,9 @@ import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsViewModel
 import com.amsterdam.viewmodel.shared.Selectable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 @Composable
 fun SeriesDetailsScreen(
@@ -183,10 +188,20 @@ fun SeriesDetailsContent(
     val pagerState = rememberPagerState { state.postersUrls.size }
     val deviceWidth = configuration.screenWidthDp
 
-    LaunchedEffect(true) {
-        while (true) {
-            delay(4000)
-            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10))
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState.currentPage, state.postersUrls.size) {
+        if (state.postersUrls.size > 1) {
+            coroutineScope.launch {
+                snapshotFlow { pagerState.isScrollInProgress }
+                    .distinctUntilChanged()
+                    .filter { !it }
+                    .collect {
+                        delay(4000)
+                        val nextPage = (pagerState.currentPage + 1) % 10
+                        pagerState.animateScrollToPage(nextPage)
+                    }
+            }
         }
     }
 

@@ -34,7 +34,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -90,6 +92,9 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
@@ -196,10 +201,20 @@ fun MovieContent(
         }
     }
 
-    LaunchedEffect(true) {
-        while (true) {
-            delay(4000)
-            pagerState.animateScrollToPage(((pagerState.currentPage + 1) % 10))
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState.currentPage, state.moviePostersUrl.size) {
+        if (state.moviePostersUrl.size > 1) {
+            coroutineScope.launch {
+                snapshotFlow { pagerState.isScrollInProgress }
+                    .distinctUntilChanged()
+                    .filter { !it }
+                    .collect {
+                        delay(4000)
+                        val nextPage = (pagerState.currentPage + 1) % 10
+                        pagerState.animateScrollToPage(nextPage)
+                    }
+            }
         }
     }
 
@@ -451,27 +466,27 @@ fun MovieContent(
 
             }
         }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .statusBarsPadding()
-                            .zIndex(10f)
-                            .onSizeChanged { headerHeight = it.height },
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = interactionListener::onClickBack,
-                    onFirstOptionClicked = interactionListener::onRateClicked,
-                    onLastOptionClicked = interactionListener::onAddToListClicked,
-                )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarColor)
+        ) {
+            DefaultAppBar(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .statusBarsPadding()
+                        .zIndex(10f)
+                        .onSizeChanged { headerHeight = it.height },
+                firstOption = painterResource(R.drawable.ic_outlined_star),
+                lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+                onNavigateBackClicked = interactionListener::onClickBack,
+                onFirstOptionClicked = interactionListener::onRateClicked,
+                onLastOptionClicked = interactionListener::onAddToListClicked,
+            )
 
-                HorizontalDivider(color = dividerColor)
-            }
+            HorizontalDivider(color = dividerColor)
+        }
 
     }
 }

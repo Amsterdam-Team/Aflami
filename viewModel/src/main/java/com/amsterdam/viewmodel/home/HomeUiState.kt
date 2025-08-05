@@ -16,7 +16,7 @@ data class HomeUiState(
     val topRatedMediaSectionUiState: TopRatedMediaSectionUiState = TopRatedMediaSectionUiState(),
     val continueWatchingMediaSectionUiState: ContinueWatchingMediaSectionUiState = ContinueWatchingMediaSectionUiState(),
     val moodPickerUiState: MoodPickerUiState = MoodPickerUiState(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: HomeError? = null
 ) {
     data class PopularMediaSectionUiState(

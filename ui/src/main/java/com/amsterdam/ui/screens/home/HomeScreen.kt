@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -174,20 +175,19 @@ private fun HomeScreenContent(
                 )
 
                 item {
-                    AnimatedVisibility(visible = !state.isLoading) {
+                    AnimatedSectionVisibility(visible = !state.isLoading && state.error == null) {
                         MoodPickerSection(
-                            state,
-                            interactionListener,
+                            state = state,
+                            interactionListener = interactionListener
                         )
                     }
-
                 }
 
                 upcomingMoviesSection(
                     state = state.upcomingMoviesSectionUiState,
                     onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
                     onMovieClicked = interactionListener::onClickUpcomingMovieCard,
-                    isVisible = state.error == null,
+                    isVisible = !state.isLoading&&state.error == null,
                     onVerticalOffsetChange = {
                         upcomingMoviesSectionYOffsetDp = it
                     },
@@ -222,7 +222,7 @@ private fun HomeScreenContent(
                     onClickViewDetails = interactionListener::onClickViewDetails,
                     onClickGetAnotherMovie = interactionListener::onClickGetAnotherMovie,
                     onDismiss = interactionListener::onDismissMoodPickerDialog,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.wrapContentSize()
                 )
             }
             HomeAppBar(
