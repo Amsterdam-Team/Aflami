@@ -27,7 +27,7 @@ class CastViewModel @Inject constructor(
     CastInteractionListener {
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 fetchCast()
             }.launchIn(viewModelScope)

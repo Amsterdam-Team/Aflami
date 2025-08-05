@@ -1,10 +1,11 @@
 package com.amsterdam.viewmodel.profile
 
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+
 import com.amsterdam.domain.utils.RestrictionLevel
 
 interface ProfileInteractionListener {
     fun onClickLogin()
-
 
     //region Settings
     fun onClickSettings()
@@ -23,6 +24,16 @@ interface ProfileInteractionListener {
     fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel)
     fun onSaveRestrictionLevel()
     //endregion
+
+    fun onClickLanguageSetting()
+    fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language)
+    fun onApplyLanguage()
+    fun onDismissLanguageDialog()
+
+    fun onClickThemeSetting()
+    fun onChangeTheme(isDarkTheme: Boolean)
+    fun onApplyTheme()
+    fun onDismissThemeDialog()
 
     fun onClickRating()
 }

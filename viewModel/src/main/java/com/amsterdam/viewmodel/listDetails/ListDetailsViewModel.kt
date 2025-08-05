@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.listDetails
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -42,7 +41,7 @@ class ListDetailsViewModel @Inject constructor(
             listId = args.listId,
             listName = args.listName
         ) }
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach { loadListDetails() }
             .launchIn(viewModelScope)
 

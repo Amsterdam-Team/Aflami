@@ -34,7 +34,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private suspend fun getMovieCategoriesFromLocal(): List<Category> {
         return onSuccessGetMovieCategoriesFromLocal(
             categoryLocalSource.getMovieCategories(
-                preferences.getDeviceLanguage().first()
+                preferences.getAppLanguage().first()
             )
         )
     }
@@ -57,14 +57,14 @@ class CategoryRepositoryImpl @Inject constructor(
     ) {
         categoryLocalSource.upsertMovieCategories(
             movieCategories.genres.toLocalDtoList(
-                preferences.getDeviceLanguage().first()
+                preferences.getAppLanguage().first()
             )
         )
     }
 
     private suspend fun getTvShowCategoriesFromLocal(): List<Category> {
           return categoryLocalSource.getTvShowCategories(
-                preferences.getDeviceLanguage().first()
+                preferences.getAppLanguage().first()
             ).toEntityList()
     }
 
@@ -80,7 +80,7 @@ class CategoryRepositoryImpl @Inject constructor(
         tvShowCategories: RemoteCategoryResponse
     ) {
         categoryLocalSource.upsertTvShowCategories(
-                tvShowCategories.genres.toLocalTvShowCategoryDtoList(preferences.getDeviceLanguage().first())
+                tvShowCategories.genres.toLocalTvShowCategoryDtoList(preferences.getAppLanguage().first())
         )
     }
 }

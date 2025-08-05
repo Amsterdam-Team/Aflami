@@ -119,6 +119,8 @@
     <string name="dark">داكن</string>
     <string name="english">الإنجليزية</string>
     <string name="arabic">العربية</string>
+    <string name="language_sample_english">Aa</string>
+    <string name="language_sample_arabic">ع عـ</string>
     <string name="world_tour_title">جولة حول العالم</string>
     <string name="world_tour_description">استكشف السينما العالمية</string>
     <string name="country_tour_title">جولة البلدان</string>
@@ -239,6 +241,14 @@
     <string name="list_deleted_successfully">تم حذف القائمة بنجاح</string>
     <string name="movie_deleted_successfully">تم حذف الفيلم بنجاح</string>
 
+
+    <string name="language_changed">تم تغيير اللغة إلى %1$s</string>
+    <string name="language_not_changed">لم يتم تغيير اللغة، يرجى المحاولة مرة أخرى</string>
+
+    <string name="theme_changed">تم تغيير النمط إلى %1$s</string>
+    <string name="theme_not_changed">لم يتم تغيير النمط، يرجى المحاولة مرة أخرى</string>
+
+    <string name="failed_to_load_user_data">حدث خطأ أثناء تحميل بيانات المستخدم، يرجى المحاولة مرة أخرى</string>
 
 
     <plurals name="item_count">

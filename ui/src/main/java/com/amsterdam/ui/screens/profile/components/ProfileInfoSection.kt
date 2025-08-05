@@ -23,13 +23,13 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
 
 @Composable
-fun ProfileInfoSection() {
+fun ProfileInfoSection(username: String, userPoints: Int) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "@Hamsa_Ali_4",
+            text = "@$username",
             style = AppTheme.textStyle.label.medium,
             color = AppTheme.color.body,
             modifier = Modifier
@@ -48,7 +48,7 @@ fun ProfileInfoSection() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "325 Pts.",
+                text = "$userPoints Pts.",
                 style = AppTheme.textStyle.label.small,
                 color = AppTheme.color.onPrimary,
                 modifier = Modifier.padding(end = 4.dp)
@@ -67,6 +67,6 @@ fun ProfileInfoSection() {
 @Composable
 private fun ProfileInfoSectionPreview() {
     AflamiTheme {
-        ProfileInfoSection()
+        ProfileInfoSection("@Thoraya", 230)
     }
 }

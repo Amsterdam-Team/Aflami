@@ -39,7 +39,7 @@ class ActorSearchViewModel @Inject constructor(
     private val keywordFlow = MutableStateFlow("")
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 observeActorSearchQuery()
             }.launchIn(viewModelScope)

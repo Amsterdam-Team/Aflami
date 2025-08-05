@@ -47,7 +47,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     }
 
     private suspend fun getMovieWatchHistory(movieWatchHistoryDto: MovieWatchHistoryDto): MovieWatchHistory {
-        val language = preferences.getDeviceLanguage().first()
+        val language = preferences.getAppLanguage().first()
         return movieWatchHistoryDto.toWatchHistoryEntity(
             getMovieByIdFromLocal(movieWatchHistoryDto.movieId, language)
                 ?: fetchAndCacheRemoteMovie(movieWatchHistoryDto.movieId, language)
@@ -65,7 +65,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
 
     private suspend fun cacheWatchedMovie(remoteMovieDetailsResponse: RemoteMovieDetailsResponse) {
         movieLocalSource.insertMovie(
-            remoteMovieDetailsResponse.toLocalDto(preferences.getDeviceLanguage().first())
+            remoteMovieDetailsResponse.toLocalDto(preferences.getAppLanguage().first())
         )
     }
 
@@ -84,7 +84,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     }
 
     private suspend fun getTvShowWatchHistory(tvShowWatchHistoryDto: TvShowWatchHistoryDto): TvShowWatchHistory {
-        val language = preferences.getDeviceLanguage().first()
+        val language = preferences.getAppLanguage().first()
 
         return tvShowWatchHistoryDto.toWatchHistoryEntity(
             getTvShowByIdFromLocal(tvShowWatchHistoryDto.tvShowId, language)
@@ -104,7 +104,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private suspend fun cacheWatchedTvShow(remoteTvShowItemDto: TvShowDetailsRemoteResponse) {
         localTvDataSource.insertTvShow(
             tvShow = remoteTvShowItemDto.toLocalDto(
-                preferences.getDeviceLanguage().first()
+                preferences.getAppLanguage().first()
             )
         )
     }

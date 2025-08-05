@@ -1,8 +1,10 @@
 package com.amsterdam.viewmodel.application
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.preferences.GetOnboardingStatusUseCase
+import com.amsterdam.domain.useCase.preferences.ManageAppThemeUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.utils.SessionType
@@ -16,14 +18,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ApplicationViewModel @Inject constructor(
-    dispatcherProvider: DispatcherProvider,
+    private val dispatcherProvider: DispatcherProvider,
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val getOnboardingStatusUseCase: GetOnboardingStatusUseCase,
+    private val manageAppThemeUseCase: ManageAppThemeUseCase,
     private val getsSessionType: GetsSessionType,
     private val manageRestrictionLevelUseCase: ManageRestrictionLevelUseCase
 ) : BaseViewModel<ApplicationUiState, Unit>(ApplicationUiState(), dispatcherProvider) {
 
     init {
+        listenToAppSettings()
         viewModelScope.launch {
             getRestrictionLevel()
         }
@@ -44,8 +48,32 @@ class ApplicationViewModel @Inject constructor(
         }
     }
 
-    suspend fun onConfigurationChanged(locale: Locale) {
-        manageLocaleLanguageUseCase.setDeviceLanguage(locale.language.lowercase())
+    fun initAppSettings(locale: Locale) {
+        viewModelScope.launch(dispatcherProvider.IO) {
+            manageLocaleLanguageUseCase.initAppLanguage(locale.language)
+        }
+    }
+
+    private fun listenToAppSettings() {
+        viewModelScope.launch(dispatcherProvider.IO) {
+            manageAppThemeUseCase.getAppTheme().collect { isDarkTheme ->
+                updateState { state ->
+                    state.copy(
+                        isDarkTheme = isDarkTheme
+                    )
+                }
+            }
+        }
+
+        viewModelScope.launch(dispatcherProvider.IO) {
+            manageLocaleLanguageUseCase.getAppLanguage().collect { language ->
+                updateState { state ->
+                    state.copy(
+                        language = language
+                    )
+                }
+            }
+        }
     }
 
     private suspend fun getRestrictionLevel(){

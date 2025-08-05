@@ -35,7 +35,7 @@ class ContinueWatchingViewModel @Inject constructor(
     ContinueWatchingInteractionListener {
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getContinueWatchingData()
             }.launchIn(viewModelScope)

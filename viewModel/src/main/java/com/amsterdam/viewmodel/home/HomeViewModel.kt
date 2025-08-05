@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
     HomeInteractionListener {
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getHomeScreenData()
                 getContinueWatchingData()

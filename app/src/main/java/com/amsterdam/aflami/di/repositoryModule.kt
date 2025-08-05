@@ -88,6 +88,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserListRepository(
-        impl: UserListRepositoryImpl
+        userListRepositoryImpl: UserListRepositoryImpl
     ): UserListRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProfileRepository(
+        profileRepositoryImpl: ProfileRepositoryImpl
+    ): ProfileRepository
 }

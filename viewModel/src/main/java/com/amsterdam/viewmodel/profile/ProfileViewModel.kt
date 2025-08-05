@@ -2,11 +2,16 @@ package com.amsterdam.viewmodel.profile
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.authentication.LogoutUseCase
+import com.amsterdam.domain.useCase.preferences.ManageAppThemeUseCase
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
+import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.domain.utils.SessionType
+import com.amsterdam.entity.AccountDetails
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getSessionTypeUseCase: GetsSessionType,
+    private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
+    private val manageAppThemeUseCase: ManageAppThemeUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val manageRestrictionLevelUseCase: ManageRestrictionLevelUseCase,
     dispatcherProvider: DispatcherProvider
@@ -25,12 +33,13 @@ class ProfileViewModel @Inject constructor(
 ), ProfileInteractionListener {
     init {
         loadProfileData()
+        loadSettings()
         loadRestrictionLevel()
     }
 
     private fun loadRestrictionLevel() {
         viewModelScope.launch {
-            manageRestrictionLevelUseCase.getRestrictionLevel().collect{ restrictionLevel ->
+            manageRestrictionLevelUseCase.getRestrictionLevel().collect { restrictionLevel ->
                 updateState {
                     it.copy(
                         settingsState = it.settingsState.copy(
@@ -47,8 +56,39 @@ class ProfileViewModel @Inject constructor(
         tryToExecute(
             action = { getSessionTypeUseCase() },
             onSuccess = ::onGetSessionTypeSuccess,
-            onError = ::onError
+            onError = ::onUserDataNotLoaded
         )
+    }
+
+    private fun loadSettings() {
+        viewModelScope.launch {
+            manageLocaleLanguageUseCase.getAppLanguage().collect { language ->
+                onGetAppLanguage(language)
+            }
+        }
+        viewModelScope.launch {
+            manageAppThemeUseCase.getAppTheme().collect { isDarkTheme ->
+                onGetAppTheme(isDarkTheme)
+            }
+        }
+    }
+
+    private fun onGetAppTheme(isDarkTheme: Boolean) {
+        updateState { state ->
+            state.copy(
+                isDarkTheme = isDarkTheme,
+                updatedIsDarkTheme = isDarkTheme
+            )
+        }
+    }
+
+    private fun onGetAppLanguage(language: ManageLocaleLanguageUseCase.Language) {
+        updateState { state ->
+            state.copy(
+                language = language,
+                updatedLanguage = language
+            )
+        }
     }
 
     private fun onGetSessionTypeSuccess(sessionType: SessionType) {
@@ -61,6 +101,11 @@ class ProfileViewModel @Inject constructor(
 
     private fun getUserProfileInfo() {
         updateState { state -> state.copy(isUserLoggedIn = true, isLoading = false) }
+        tryToExecute(
+            action = { getAccountDetailsUseCase() },
+            onSuccess = ::onGetUserProfileInfoSuccess,
+            onError = ::onUserDataNotLoaded
+        )
     }
 
     private fun onError(aflamiException: AflamiException) {
@@ -72,10 +117,90 @@ class ProfileViewModel @Inject constructor(
         sendNewEffect(ProfileEffect.ShowError)
     }
 
+    private fun onGetUserProfileInfoSuccess(accountDetails: AccountDetails) {
+        updateState { state ->
+            state.copy(
+                userInfo = state.userInfo.copy(
+                    username = accountDetails.username,
+                    userAvatarUrl = accountDetails.avatarUrl
+                )
+            )
+        }
+    }
+
     override fun onClickLogin() {
         sendNewNavigationEffect(ProfileEffect.NavigateToLogin)
     }
 
+    override fun onClickLanguageSetting() {
+        updateState { state -> state.copy(showLanguageDialog = true) }
+    }
+
+    override fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language) {
+        updateState { state -> state.copy(language = language) }
+    }
+
+    override fun onApplyLanguage() {
+        tryToExecute(
+            action = { manageLocaleLanguageUseCase.setAppLanguage(state.value.language) },
+            onSuccess = ::onApplyLanguageSuccess,
+            onError = ::onApplyLanguageFailure
+        )
+    }
+
+    private fun onApplyLanguageFailure(aflamiException: AflamiException) {
+        updateState { state -> state.copy(language = state.updatedLanguage) }
+        sendNewEffect(ProfileEffect.LanguageNotChanged)
+    }
+
+    private fun onApplyLanguageSuccess(unit: Unit) {
+        updateState { state -> state.copy(updatedLanguage = state.language) }
+        onDismissLanguageDialog()
+        sendNewEffect(ProfileEffect.LanguageChanged)
+    }
+
+    override fun onDismissLanguageDialog() {
+        updateState { state -> state.copy(showLanguageDialog = false) }
+    }
+
+    override fun onClickThemeSetting() {
+        updateState { state -> state.copy(showThemeDialog = true) }
+    }
+
+    override fun onChangeTheme(isDarkTheme: Boolean) {
+        updateState { state -> state.copy(isDarkTheme = isDarkTheme) }
+    }
+
+    override fun onApplyTheme() {
+        tryToExecute(
+            action = { manageAppThemeUseCase.setAppTheme(state.value.isDarkTheme) },
+            onSuccess = ::onApplyThemeSuccess,
+            onError = ::onApplyThemeFailure
+        )
+        onApplyThemeSuccess(Unit)
+    }
+
+    private fun onApplyThemeFailure(aflamiException: AflamiException) {
+        updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }
+        sendNewEffect(ProfileEffect.ThemeNotChanged)
+    }
+
+    private fun onApplyThemeSuccess(unit: Unit) {
+        updateState { state -> state.copy(updatedIsDarkTheme = state.isDarkTheme) }
+        onDismissThemeDialog()
+        sendNewEffect(ProfileEffect.ThemeChanged)
+    }
+
+    override fun onDismissThemeDialog() {
+        updateState { state -> state.copy(showThemeDialog = false) }
+    }
+
+    private fun onUserDataNotLoaded(aflamiException: AflamiException) {
+        when (aflamiException) {
+            is NetworkException -> sendNewEffect(ProfileEffect.UserDataNotLoaded)
+            else -> {}
+        }
+    }
 
     //region Settings
     override fun onClickSettings() {
@@ -148,15 +273,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private suspend fun onConfirmLogout(){
+    private suspend fun onConfirmLogout() {
         logoutUseCase()
     }
 
-    private fun onConfirmLogoutSuccess(){
+    private fun onConfirmLogoutSuccess() {
         sendNewNavigationEffect(ProfileEffect.NavigateToLogin)
     }
 
-    private fun onConfirmLogoutCompletion(){
+    private fun onConfirmLogoutCompletion() {
         viewModelScope.launch {
             updateState {
                 it.copy(
@@ -215,13 +340,13 @@ class ProfileViewModel @Inject constructor(
         sendNewNavigationEffect(ProfileEffect.NavigateToMyRating)
     }
 
-    private suspend fun saveRestrictionLevel(){
+    private suspend fun saveRestrictionLevel() {
         manageRestrictionLevelUseCase.setRestrictionLevel(
             state.value.settingsState.contentRestrictionLevel
         )
     }
 
-    private fun onSaveRestrictionLevelCompletion(){
+    private fun onSaveRestrictionLevelCompletion() {
         updateState {
             it.copy(
                 settingsState = it.settingsState.copy(

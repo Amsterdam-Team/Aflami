@@ -134,20 +134,20 @@ class MovieRepositoryImpl @Inject constructor(
 
     private suspend fun cacheWatchedMovie(remoteMovieItemDto: RemoteMovieItemDto) {
         movieLocalSource.insertMovie(
-            remoteMovieItemDto.toLocalDto(storedLanguage = preferences.getDeviceLanguage().first())
+            remoteMovieItemDto.toLocalDto(storedLanguage = preferences.getAppLanguage().first())
         )
     }
 
     private suspend fun deleteExpiredUpcomingMovies() {
         movieLocalSource.deleteExpiredUpcomingMovies(
             expirationTime = Clock.System.now().minus(1.days),
-            storedLanguage = preferences.getDeviceLanguage().first()
+            storedLanguage = preferences.getAppLanguage().first()
         )
     }
 
     private suspend fun getUpcomingMoviesFromLocal(): List<MovieWithCategories> {
         return movieLocalSource.getUpcomingMovies(
-            preferences.getDeviceLanguage().first()
+            preferences.getAppLanguage().first()
         )
     }
 
@@ -158,7 +158,7 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun saveUpcomingMovies(remoteMovies: List<RemoteMovieItemDto>) {
         saveMovieWithCategories(remoteMovies).also {
             movieLocalSource.addUpcomingMovies(
-                remoteMovies.toLocalMovieDtoList(isPoster = false,preferences.getDeviceLanguage().first())
+                remoteMovies.toLocalMovieDtoList(isPoster = false,preferences.getAppLanguage().first())
             )
         }
     }
@@ -166,13 +166,13 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun deleteExpiredPopularMovies() {
         movieLocalSource.deleteExpiredPopularMovies(
             expirationTime = Clock.System.now().minus(1.days),
-            storedLanguage = preferences.getDeviceLanguage().first()
+            storedLanguage = preferences.getAppLanguage().first()
         )
     }
 
     private suspend fun getPopularMoviesFromLocal(): List<MovieWithCategories> {
         return movieLocalSource.getPopularMovies(
-            preferences.getDeviceLanguage().first()
+            preferences.getAppLanguage().first()
         )
     }
 
@@ -183,7 +183,7 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun savePopularMovies(remoteMovies: List<RemoteMovieItemDto>) {
         saveMovieWithCategories(remoteMovies).also {
             movieLocalSource.addPopularMovies(
-                remoteMovies.toLocalMovieDtoList(storedLanguage =preferences.getDeviceLanguage().first()),
+                remoteMovies.toLocalMovieDtoList(storedLanguage =preferences.getAppLanguage().first()),
             )
         }
     }
@@ -191,13 +191,13 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun deleteExpiredTopRatedMovies() {
         movieLocalSource.deleteAllExpiredTopRatedMovies(
             expirationTime = Clock.System.now().minus(1.days),
-            storedLanguage = preferences.getDeviceLanguage().first()
+            storedLanguage = preferences.getAppLanguage().first()
         )
     }
 
     private suspend fun getTopRatedMoviesFromLocal(): List<LocalMovieDto> {
         return movieLocalSource.getTopRatedMovies(
-            preferences.getDeviceLanguage().first()
+            preferences.getAppLanguage().first()
         )
     }
 
@@ -208,7 +208,7 @@ class MovieRepositoryImpl @Inject constructor(
     private suspend fun saveTopRatedMovies(remoteMovies: List<RemoteMovieItemDto>) {
         saveMovieWithCategories(remoteMovies).also {
             movieLocalSource.addTopRatedMovies(
-                remoteMovies.toLocalMovieDtoList(storedLanguage = preferences.getDeviceLanguage().first()),
+                remoteMovies.toLocalMovieDtoList(storedLanguage = preferences.getAppLanguage().first()),
             )
         }
     }
@@ -255,9 +255,9 @@ class MovieRepositoryImpl @Inject constructor(
         categoryRepository.getMovieCategories().also {
             movieLocalSource.addMovieWithCategories(
                 movie =
-                    remoteMovie.toLocalDto(storedLanguage = preferences.getDeviceLanguage().first()),
+                    remoteMovie.toLocalDto(storedLanguage = preferences.getAppLanguage().first()),
                 categoryIds = remoteMovie.genreIds.map(Int::toLong),
-                storedLanguage = preferences.getDeviceLanguage().first()
+                storedLanguage = preferences.getAppLanguage().first()
             )
         }
     }

@@ -18,14 +18,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.designsystem.utils.modifierExtensions.dropShadow
+import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 
 @Composable
-fun ProfileImageSection() {
+fun ProfileImageSection(userAvatarUrl: String) {
     Box {
         Image(
             painter = painterResource(R.drawable.profile_background_image),
@@ -49,8 +51,8 @@ fun ProfileImageSection() {
                 ),
             contentScale = ContentScale.Crop
         )
-        Image(
-            painter = painterResource(R.drawable.img_empty_user_pic),
+        SafeImageView(
+            model = userAvatarUrl,
             contentDescription = stringResource(R.string.profile),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -65,15 +67,25 @@ fun ProfileImageSection() {
                 .border(
                     width = 1.dp, AppTheme.color.stroke,
                     shape = RoundedCornerShape(24.dp)
-                )
+                ),
+            onLoading = { ImageLoadingIndicator() },
+            onError = { ProfileImagePlaceholder() }
         )
     }
+}
+
+@Composable
+private fun ProfileImagePlaceholder() {
+    Image(
+        painter = painterResource(R.drawable.img_empty_user_pic),
+        contentDescription = stringResource(R.string.profile),
+    )
 }
 
 @ThemeAndLocalePreviews
 @Composable
 private fun ProfileImageSectionPreview() {
     AflamiTheme {
-        ProfileImageSection()
+        ProfileImageSection("")
     }
 }

@@ -5,6 +5,7 @@ import com.amsterdam.remotedatasource.api.AuthenticationApiService
 import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
+import com.amsterdam.remotedatasource.api.ProfileApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
@@ -62,4 +63,9 @@ object ServiceProvidesModule {
     @Singleton
     fun provideUserListApiService(retrofitClient: RetrofitClient): UserListApiService =
         retrofitClient.userListApiService()
+
+    @Provides
+    @Singleton
+    fun provideProfileApiService(client: RetrofitClient): ProfileApiService =
+        client.profileApiService()
 }

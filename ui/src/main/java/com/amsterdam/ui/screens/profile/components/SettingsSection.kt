@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,20 +22,27 @@ import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.designsystem.utils.ripple
 import com.amsterdam.ui.R
+import com.amsterdam.ui.screens.profile.model.Language
+import com.amsterdam.viewmodel.profile.ProfileUiState
 
 @Composable
 fun SettingsSection(
-    onSettingsClicked: () -> Unit
+    state: ProfileUiState,
+    onSettingsClicked: () -> Unit,
+    onClickLanguage: () -> Unit,
+    onClickTheme: () -> Unit
 ) {
+
+    val language = Language.fromUiState(state.updatedLanguage)
+
     CustomSettingCard(
         modifier = Modifier.padding(top = 24.dp),
         startIconResourceId = com.amsterdam.designsystem.R.drawable.ic_language,
         endIconResourceId = com.amsterdam.designsystem.R.drawable.ic_arrow_right,
         startText = stringResource(R.string.language),
-        endText = "ENG",
-        onClick = {}
+        endText = stringResource(language.nameResourceId),
+        onClick = { onClickLanguage() }
     )
 
     CustomSettingCard(
@@ -46,8 +50,8 @@ fun SettingsSection(
         startIconResourceId = com.amsterdam.designsystem.R.drawable.ic_moon,
         endIconResourceId = com.amsterdam.designsystem.R.drawable.ic_arrow_right,
         startText = stringResource(R.string.app_theme),
-        endText = "Dark",
-        onClick = {}
+        endText = if (state.updatedIsDarkTheme) stringResource(R.string.dark) else stringResource(R.string.light),
+        onClick = { onClickTheme() }
     )
 
     CustomSettingCard(
@@ -67,7 +71,7 @@ private fun CustomSettingCard(
     startText: String,
     modifier: Modifier = Modifier,
     endText: String = "",
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -76,8 +80,9 @@ private fun CustomSettingCard(
                 onClick = onClick,
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
-
-        ,
+            .clickable {
+                onClick()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -138,7 +143,10 @@ private fun CustomSettingCard(
 private fun SettingsSectionPreview() {
     AflamiTheme {
         SettingsSection(
-            onSettingsClicked = {}
+            ProfileUiState(),
+            onSettingsClicked = {},
+            onClickLanguage = {},
+            onClickTheme = {}
         )
     }
 }

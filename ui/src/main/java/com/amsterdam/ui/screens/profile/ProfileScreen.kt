@@ -25,6 +25,8 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.domain.utils.RestrictionLevel
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.navigation.Route
@@ -44,7 +46,6 @@ fun ProfileScreen(
     val navController = LocalNavController.current
     val context = LocalContext.current
 
-
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -61,6 +62,62 @@ fun ProfileScreen(
                 ProfileEffect.ShowError -> {
                     SnackBarManager.showError(
                         message = getProfileErrorMessage(state.profileErrorState, context)
+                    )
+                }
+                is ProfileEffect.LanguageChanged -> {
+                    SnackBarManager.showSuccess(
+                        when (state.language) {
+                            ManageLocaleLanguageUseCase.Language.ENGLISH -> {
+                                context.getString(
+                                    R.string.language_changed,
+                                    context.getString(R.string.english)
+                                )
+                            }
+
+                            ManageLocaleLanguageUseCase.Language.ARABIC -> {
+                                context.getString(
+                                    R.string.language_changed,
+                                    context.getString(R.string.arabic)
+                                )
+                            }
+                        },
+                    )
+                }
+
+                is ProfileEffect.ThemeChanged -> {
+                    SnackBarManager.showSuccess(
+                        when (state.isDarkTheme) {
+                            false -> {
+                                context.getString(
+                                    R.string.theme_changed,
+                                    context.getString(R.string.light)
+                                )
+                            }
+                            true -> {
+                                context.getString(
+                                    R.string.theme_changed,
+                                    context.getString(R.string.dark)
+                                )
+                            }
+                        },
+                    )
+                }
+
+                ProfileEffect.LanguageNotChanged -> {
+                    SnackBarManager.showError(
+                        context.getString(R.string.language_not_changed)
+                    )
+                }
+
+                ProfileEffect.ThemeNotChanged -> {
+                    SnackBarManager.showError(
+                        context.getString(R.string.theme_not_changed)
+                    )
+                }
+
+                ProfileEffect.UserDataNotLoaded -> {
+                    SnackBarManager.showError(
+                        context.getString(R.string.failed_to_load_user_data)
                     )
                 }
 
@@ -143,6 +200,20 @@ private fun ProfileScreenPreview() {
             override fun onClickConfirmLogout() {}
             override fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel) {}
             override fun onSaveRestrictionLevel() {}
+            override fun onClickLanguageSetting() {}
+
+            override fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language) {}
+            override fun onApplyLanguage() {}
+
+            override fun onDismissLanguageDialog() {}
+
+            override fun onClickThemeSetting() {}
+
+            override fun onChangeTheme(isDarkTheme: Boolean) {}
+
+            override fun onApplyTheme() {}
+
+            override fun onDismissThemeDialog() {}
             override fun onClickRating() {}
         }
     )

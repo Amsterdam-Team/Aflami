@@ -49,7 +49,7 @@ class MovieDetailsViewModel @Inject constructor(
         val movieId = args.movieId!!
         updateState { it.copy(movieId = movieId) }
 
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 loadMovieDetails()
             }.launchIn(viewModelScope)

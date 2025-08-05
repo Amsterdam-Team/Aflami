@@ -119,6 +119,8 @@
     <string name="dark">Dark</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
+    <string name="language_sample_english">Aa</string>
+    <string name="language_sample_arabic">ع عـ</string>
     <string name="world_tour_title">World Tour</string>
     <string name="world_tour_description">Explore World Cinema</string>
     <string name="country_tour_title">Country Tour</string>
@@ -238,6 +240,14 @@
     <string name="movie_deleted_successfully">Movie deleted Successfully</string>
 
     <string name="video_launch_error">Failed to play the video</string>
+
+    <string name="language_changed">Language changed to %1$s</string>
+    <string name="language_not_changed">Language not changed, please try again</string>
+
+    <string name="theme_changed">Theme changed to %1$s</string>
+    <string name="theme_not_changed">Theme not changed, please try again</string>
+
+    <string name="failed_to_load_user_data">Failure while loading user data, please try again</string>
 
 
     <plurals name="item_count">

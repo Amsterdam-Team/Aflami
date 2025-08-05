@@ -46,7 +46,7 @@ class CountrySearchViewModel @Inject constructor(
     private val _keyword = MutableStateFlow("")
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 observeKeywordFlow()
             }.launchIn(viewModelScope)

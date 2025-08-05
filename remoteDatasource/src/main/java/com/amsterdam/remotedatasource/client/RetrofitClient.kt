@@ -6,6 +6,7 @@ import com.amsterdam.remotedatasource.api.AuthenticationApiService
 import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
+import com.amsterdam.remotedatasource.api.ProfileApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.api.UserListApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -47,7 +48,7 @@ class RetrofitClient(
             val originalRequest = chain.request()
             val originalHttpUrlBuilder = originalRequest.url.newBuilder()
 
-            val language = runBlocking { preferences.getDeviceLanguage().first() }
+            val language = runBlocking { preferences.getAppLanguage().first() }
             originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, language)
 
             if (!sessionId.isNullOrBlank()) {
@@ -80,4 +81,5 @@ class RetrofitClient(
     fun countryApiService(): CountryApiService = retrofit.create(CountryApiService::class.java)
     fun tvApiService(): TvShowsApiService = retrofit.create(TvShowsApiService::class.java)
     fun userListApiService(): UserListApiService = retrofit.create(UserListApiService::class.java)
+    fun profileApiService(): ProfileApiService = retrofit.create(ProfileApiService::class.java)
 }

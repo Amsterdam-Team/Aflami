@@ -11,11 +11,18 @@ import javax.inject.Inject
 class AppPreferencesRepositoryImpl @Inject constructor(
     private val preferences: AppPreferences,
 ) : AppPreferencesRepository {
-    override fun getDeviceLanguage(): Flow<String> = preferences.getDeviceLanguage()
+    override fun getAppLanguage(): Flow<String> = preferences.getAppLanguage()
 
-    override suspend fun setDeviceLanguage(language: String) =
-        preferences.setDeviceLanguage(language)
+    override suspend fun setAppLanguage(language: String) =
+        preferences.setAppLanguage(language)
 
+    override fun getAppTheme(): Flow<Boolean> {
+        return preferences.getAppTheme()
+    }
+
+    override suspend fun setAppTheme(isDarkTheme: Boolean) {
+        preferences.setAppTheme(isDarkTheme)
+    }
     override suspend fun setOnboardingCompleted(isCompleted: Boolean) {
         preferences.setOnboardingCompleted(isCompleted)
     }

@@ -98,7 +98,7 @@ class TvShowRepositoryImpl @Inject constructor(
 
     private suspend fun cacheWatchedTvShow(remoteTvShowItemDto: TvShowDetailsRemoteResponse) {
         localTvDataSource.insertTvShow(
-            remoteTvShowItemDto.toLocalDto(preferences.getDeviceLanguage().first())
+            remoteTvShowItemDto.toLocalDto(preferences.getAppLanguage().first())
         )
     }
         override suspend fun getUserRatedTvShows(): List<UserRatedTvShow> {
@@ -126,13 +126,13 @@ class TvShowRepositoryImpl @Inject constructor(
         private suspend fun deleteExpiredPopularTvShows() {
             localTvDataSource.deleteExpiredPopularTvShows(
                 expirationTime = Clock.System.now().minus(1.days),
-                storedLanguage = preferences.getDeviceLanguage().first()
+                storedLanguage = preferences.getAppLanguage().first()
             )
         }
 
         private suspend fun getPopularTvShowsFromLocal(): List<TvShowWithCategory> {
             return localTvDataSource.getPopularTvShows(
-                preferences.getDeviceLanguage().first()
+                preferences.getAppLanguage().first()
             )
         }
 
@@ -143,7 +143,7 @@ class TvShowRepositoryImpl @Inject constructor(
         private suspend fun savePopularTvShows(remoteTvShows: List<RemoteTvShowItemDto>) {
             saveTvShowWithCategories(remoteTvShows).also {
                 localTvDataSource.addPopularTvShows(
-                    remoteTvShows.toLocalDtoList(preferences.getDeviceLanguage().first()),
+                    remoteTvShows.toLocalDtoList(preferences.getAppLanguage().first()),
                 )
             }
         }
@@ -151,13 +151,13 @@ class TvShowRepositoryImpl @Inject constructor(
         private suspend fun deleteExpiredTopRatedTvShows() {
             localTvDataSource.deleteExpiredTopRatedTvShows(
                 expirationTime = Clock.System.now().minus(1.days),
-                storedLanguage = preferences.getDeviceLanguage().first()
+                storedLanguage = preferences.getAppLanguage().first()
             )
         }
 
         private suspend fun getTopRatedTvShowsFromLocal(): List<LocalTvShowDto> {
             return localTvDataSource.getTopRatedTvShows(
-                preferences.getDeviceLanguage().first()
+                preferences.getAppLanguage().first()
             )
         }
 
@@ -168,7 +168,7 @@ class TvShowRepositoryImpl @Inject constructor(
         private suspend fun saveTopRatedTvShows(remoteTvShows: List<RemoteTvShowItemDto>) {
             saveTvShowWithCategories(remoteTvShows).also {
                 localTvDataSource.addTopRatedTvShows(
-                    remoteTvShows.toLocalDtoList(preferences.getDeviceLanguage().first()),
+                    remoteTvShows.toLocalDtoList(preferences.getAppLanguage().first()),
                 )
             }
         }
@@ -184,9 +184,9 @@ class TvShowRepositoryImpl @Inject constructor(
         private suspend fun onSaveTvShowWithCategories(remoteTvShow: RemoteTvShowItemDto) {
             categoryRepository.getTvShowCategories().also {
                 localTvDataSource.addTvShowWithCategories(
-                    tvShow = remoteTvShow.toLocalDto(preferences.getDeviceLanguage().first()),
+                    tvShow = remoteTvShow.toLocalDto(preferences.getAppLanguage().first()),
                     categoryIds = remoteTvShow.genreIds.map(Int::toLong),
-                    storedLanguage = preferences.getDeviceLanguage().first()
+                    storedLanguage = preferences.getAppLanguage().first()
                 )
             }
         }

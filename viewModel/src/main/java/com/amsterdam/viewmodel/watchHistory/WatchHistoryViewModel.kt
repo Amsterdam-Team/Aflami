@@ -40,7 +40,7 @@ class WatchHistoryViewModel @Inject constructor(
     WatchHistoryInteractionListener {
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getMoviesWatchHistoryData()
             }.launchIn(viewModelScope)

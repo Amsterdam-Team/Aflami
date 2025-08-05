@@ -33,7 +33,7 @@ class TopRatedViewModel @Inject constructor(
     TopRatedInteractionListener {
 
     init {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
+        manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getTopRatedScreenData()
             }.launchIn(viewModelScope)

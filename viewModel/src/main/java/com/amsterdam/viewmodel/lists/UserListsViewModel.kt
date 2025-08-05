@@ -33,7 +33,7 @@ class UserListsViewModel @Inject constructor(
                 onLoggedIn = {
                     updateState { it.copy(isUserLoggedIn = true) }
                     manageLocaleLanguageUseCase
-                        .getDeviceLanguage()
+                        .getAppLanguage()
                         .onEach {
                             loadCustomLists()
                         }.launchIn(viewModelScope)
