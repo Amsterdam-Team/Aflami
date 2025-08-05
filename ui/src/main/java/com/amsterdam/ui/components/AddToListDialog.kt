@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,18 +58,27 @@ fun AddToListDialog(
             DialogHeaderSection(
                 onDismiss = onDismiss,
             )
-            userLists.forEach { userList ->
-                SelectionListItem(
-                    listName = userList.name,
-                    itemCount = userList.itemCount,
-                    isSelected = selectedList == userList,
-                    onSelectItem = { selectedList = userList },
-                )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(320.dp),
+            ) {
+                items(userLists) { userList ->
+                    SelectionListItem(
+                        listName = userList.name,
+                        itemCount = userList.itemCount,
+                        isSelected = selectedList == userList,
+                        onSelectItem = { selectedList = userList },
+                    )
+                }
             }
             ActionButtonsSection(
                 selectedList = selectedList,
                 onAddToSelectedList = onAddToSelectedList,
                 onCreateNewList = onCreateNewList,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
         }
     }
@@ -90,8 +102,7 @@ private fun SelectionListItem(
                     width = 1.dp,
                     color = if (isSelected) Color.Transparent else AppTheme.color.stroke,
                     shape = RoundedCornerShape(16.dp),
-                )
-                .clip(RoundedCornerShape(16.dp))
+                ).clip(RoundedCornerShape(16.dp))
                 .background(if (isSelected) AppTheme.color.primaryVariant else AppTheme.color.surface)
                 .clickable(onClick = onSelectItem)
                 .padding(horizontal = 12.dp),
@@ -137,9 +148,11 @@ private fun ActionButtonsSection(
     selectedList: UserListUiState?,
     onAddToSelectedList: (Long) -> Unit,
     onCreateNewList: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier,
     ) {
         ConfirmButton(
             title = stringResource(R.string.add),
