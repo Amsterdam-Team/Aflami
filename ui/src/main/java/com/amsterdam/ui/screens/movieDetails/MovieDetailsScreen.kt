@@ -274,7 +274,7 @@ fun MovieContent(
                         listId = listId,
                     )
                 },
-                onCreateNewList = interactionListener::onClickAddList,
+                onCreateNewList = interactionListener::onClickCreateList,
                 onDismiss = interactionListener::onCancelClicked,
             )
         }
@@ -494,7 +494,7 @@ private fun SearchByActorContentPreview() {
                         movieId: Int,
                         listId: Long) {}
 
-                    override fun onClickAddList() {}
+                    override fun onClickCreateList() {}
 
                     override fun onListNameChange(listName: String) {}
 

@@ -14,7 +14,7 @@ interface MovieDetailsInteractionListener {
         listId: Long,
     )
 
-    fun onClickAddList()
+    fun onClickCreateList()
 
     fun onListNameChange(listName: String)
 

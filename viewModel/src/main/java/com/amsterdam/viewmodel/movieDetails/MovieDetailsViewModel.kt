@@ -177,7 +177,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onClickAddList() {
+    override fun onClickCreateList() {
         updateState { it.copy(isCreateNewListDialogVisible = true, isAddToListDialogVisible = false) }
     }
 
