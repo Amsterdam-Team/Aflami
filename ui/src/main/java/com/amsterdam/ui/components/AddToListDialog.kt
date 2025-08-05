@@ -29,6 +29,7 @@ import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ButtonDefaults
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
+import com.amsterdam.designsystem.components.buttons.OutlinedButton
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.R
@@ -38,7 +39,7 @@ import com.amsterdam.viewmodel.movieDetails.UserListUiState
 fun AddToListDialog(
     userLists: List<UserListUiState>,
     modifier: Modifier = Modifier,
-    onAddToSelectedList: (String) -> Unit = {},
+    onAddToSelectedList: (Long) -> Unit = {},
     onCreateNewList: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
@@ -134,7 +135,7 @@ private fun SelectionListItem(
 @Composable
 private fun ActionButtonsSection(
     selectedList: UserListUiState?,
-    onAddToSelectedList: (String) -> Unit,
+    onAddToSelectedList: (Long) -> Unit,
     onCreateNewList: () -> Unit,
 ) {
     Column(
@@ -149,18 +150,13 @@ private fun ActionButtonsSection(
             modifier = Modifier,
         )
 
-        ConfirmButton(
+        OutlinedButton(
             title = stringResource(R.string.create_list),
             onClick = onCreateNewList,
             isEnabled = true,
             isLoading = false,
             isNegative = false,
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = AppTheme.color.primary,
-                    secondaryContainerColor = AppTheme.color.primaryVariant,
-                ),
-            modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(containerColor = AppTheme.color.primaryVariant),
         )
     }
 }
@@ -192,7 +188,6 @@ private fun PreviewAddToListDialog() {
     AflamiTheme {
         AddToListDialog(
             userLists = emptyList(),
-            onDismiss = {},
         )
     }
 }
