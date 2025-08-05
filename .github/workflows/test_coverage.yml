@@ -55,7 +55,7 @@ jobs:
         if: always()
         with:
           name: kover-xml-report
-          path: '**/build/reports/kover/**/*.xml'
+          path: '**/localDatasource/build/reports/kover/**/*.xml'
 
 
       - name: Post Kover Code Coverage Comment
@@ -63,7 +63,7 @@ jobs:
         uses: mi-kas/kover-report@v1.9
         if: github.event_name == 'pull_request'
         with:
-          path: build/reports/kover/report.xml
+          path: localDatasource/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "🛡️ Kover Code Coverage Report"
           update-comment: true
