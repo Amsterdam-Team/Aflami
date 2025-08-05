@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,8 +62,9 @@ fun Dialog(
                     .padding(contentPadding)
                     .background(
                         color = contentColor,
-                        shape = dialogCornerShape
-                    ).align(Alignment.Center),
+                        shape = dialogCornerShape,
+                    ).align(Alignment.Center)
+                    .verticalScroll(rememberScrollState()),
             ) {
                 content()
             }
