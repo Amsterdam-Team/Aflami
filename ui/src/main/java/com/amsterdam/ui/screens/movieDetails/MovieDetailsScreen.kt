@@ -467,9 +467,10 @@ fun MovieContent(
             }
         }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(appBarColor)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor),
         ) {
             DefaultAppBar(
                 modifier =
