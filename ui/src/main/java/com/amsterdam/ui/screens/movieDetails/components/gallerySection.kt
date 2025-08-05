@@ -13,7 +13,9 @@ import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.adaptiveGrid
+import com.amsterdam.ui.utils.toSafetyLevel
 
 fun LazyListScope.gallerySection(
     deviceWidth: Int,
@@ -31,6 +33,7 @@ fun LazyListScope.gallerySection(
             160,
             modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
         ) { item ->
+            val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
             SafeImageView(
                 modifier = modifier
                     .weight(1f)
@@ -38,6 +41,7 @@ fun LazyListScope.gallerySection(
                     .clip(RoundedCornerShape(12.dp)),
                 contentDescription = null,
                 model = item,
+                safetyLevel = safetyLevel,
                 contentScale = ContentScale.Crop,
                 onLoading = { ImageLoadingIndicator() },
                 onError = { ImageErrorIndicator() },

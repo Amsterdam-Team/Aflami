@@ -5,18 +5,20 @@ import android.util.Log
 import coil.size.Size
 import coil.transform.Transformation
 import com.amsterdam.imageviewer.classification.CustomImageClassifier
+import com.amsterdam.imageviewer.classification.model.NsfwDetectorRule
 import com.amsterdam.imageviewer.util.OpenGLBlurProcessor
 
 internal class SafetyBlurTransformation(
     private val classifier: CustomImageClassifier,
     private val blurRadius: Float = 25f,
+    private val detectorRule: NsfwDetectorRule
 ) : Transformation {
 
     override val cacheKey: String = "SafetyBlurTransformation(radius=${blurRadius})"
 
     override suspend fun transform(input: Bitmap, size: Size): Bitmap {
 
-            val isSafe = checkBitmapSafety(input)
+            val isSafe = checkBitmapSafety(input, detectorRule)
 
             return if (isSafe) {
                 val safeConfig = input.config ?: Bitmap.Config.ARGB_8888
@@ -28,14 +30,14 @@ internal class SafetyBlurTransformation(
 
     }
 
-    private fun checkBitmapSafety(bitmap: Bitmap): Boolean {
+    private fun checkBitmapSafety(bitmap: Bitmap, detectorRule: NsfwDetectorRule): Boolean {
         val modelInputBitmap = if (bitmap.config == Bitmap.Config.ARGB_8888) {
             bitmap
         } else {
             bitmap.copy(Bitmap.Config.ARGB_8888, false)
         }
 
-        return classifier.isImageSafe(modelInputBitmap) ?: true
+        return classifier.isImageSafe(modelInputBitmap, detectorRule) ?: true
     }
 
     private fun applyBlur(source: Bitmap, radius: Float): Bitmap? {

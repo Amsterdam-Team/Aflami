@@ -37,6 +37,8 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
+import com.amsterdam.ui.utils.toSafetyLevel
 
 @Composable
 fun EpisodeCard(
@@ -91,6 +93,7 @@ private fun EpisodeBanner(
     episodeBanner: String,
     episodeRate: String,
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Box(
         contentAlignment = Alignment.Center,
         modifier =
@@ -106,6 +109,7 @@ private fun EpisodeBanner(
         SafeImageView(
             model = episodeBanner,
             contentDescription = null,
+            safetyLevel = safetyLevel,
             contentScale = ContentScale.Crop,
             onLoading = { ImageLoadingIndicator() },
             onError = { ImageErrorIndicator() },

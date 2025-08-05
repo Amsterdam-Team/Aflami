@@ -34,49 +34,49 @@ import javax.inject.Singleton
 object LocalDataSourceProviderModule {
     @Provides
     @Singleton
-    fun provideDataStore(app: Application): DataStore<Preferences> {
+    fun provideDataStore(application: Application): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create {
-            app.dataStoreFile("app.preferences_pb")
+            application.dataStoreFile("application.preferences_pb")
         }
     }
 
     @Provides
     @Singleton
-    fun provideDatabase(app: Application): AflamiDatabase {
-        return AflamiDatabase.getInstance(app)
+    fun provideDatabase(application: Application): AflamiDatabase {
+        return AflamiDatabase.getInstance(application)
     }
 
     @Provides
     @Singleton
-    fun provideCountryDao(db: AflamiDatabase) = db.countryDao()
+    fun provideCountryDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.countryDao()
 
     @Provides
     @Singleton
-    fun provideCategoryDao(db: AflamiDatabase) = db.categoryDao()
+    fun provideCategoryDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.categoryDao()
 
     @Provides
     @Singleton
-    fun provideMovieDao(db: AflamiDatabase) = db.movieDao()
+    fun provideMovieDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.movieDao()
 
     @Provides
     @Singleton
-    fun provideTvShowDao(db: AflamiDatabase) = db.tvShowDao()
+    fun provideTvShowDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.tvShowDao()
 
     @Provides
     @Singleton
-    fun provideWatchHistoryDao(db: AflamiDatabase) = db.watchHistoryDao()
+    fun provideWatchHistoryDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.watchHistoryDao()
 
     @Provides
     @Singleton
-    fun provideRecentSearchDao(db: AflamiDatabase) = db.recentSearchDao()
+    fun provideRecentSearchDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.recentSearchDao()
 
     @Provides
     @Singleton
-    fun provideMovieCategoryInterestDao(db: AflamiDatabase) = db.movieCategoryInterestDao()
+    fun provideMovieCategoryInterestDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.movieCategoryInterestDao()
 
     @Provides
     @Singleton
-    fun provideTvShowCategoryInterestDao(db: AflamiDatabase) = db.tvShowCategoryInterestDao()
+    fun provideTvShowCategoryInterestDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.tvShowCategoryInterestDao()
 }
 
 @Module
@@ -85,19 +85,19 @@ abstract class LocalDataSourceBindsModule {
     @Binds
     @Singleton
     abstract fun bindAuthenticationLocalDataSource(
-        impl: AuthenticationLocalDataSourceImpl
+        authenticationLocalDataSourceImpl: AuthenticationLocalDataSourceImpl
     ): AuthenticationLocalSource
 
     @Binds
     @Singleton
     abstract fun bindAppPreferences(
-        impl: AppPreferencesImpl
+        appPreferencesImpl: AppPreferencesImpl
     ): AppPreferences
 
     @Binds
     @Singleton
     abstract fun bindCountryLocalDataSource(
-        impl: CountryLocalDataSourceImpl
+        countryLocalDataSourceImpl: CountryLocalDataSourceImpl
     ): CountryLocalSource
 
     @Binds
@@ -109,24 +109,24 @@ abstract class LocalDataSourceBindsModule {
     @Binds
     @Singleton
     abstract fun bindMovieLocalDataSource(
-        impl: MovieLocalDataSourceImpl
+        movieLocalDataSourceImpl: MovieLocalDataSourceImpl
     ): MovieLocalSource
 
     @Binds
     @Singleton
     abstract fun bindTvShowLocalDataSource(
-        impl: TvShowLocalDataSourceImpl
+        tvShowLocalDataSourceImpl: TvShowLocalDataSourceImpl
     ): TvShowLocalSource
 
     @Binds
     @Singleton
     abstract fun bindRecentSearchLocalDataSource(
-        impl: RecentSearchLocalDataSourceImpl
+        recentSearchLocalDataSourceImpl: RecentSearchLocalDataSourceImpl
     ): RecentSearchLocalSource
 
     @Binds
     @Singleton
     abstract fun bindWatchHistoryLocalDataSource(
-        impl: WatchHistoryLocalDataSourceImpl
+        watchHistoryLocalDataSourceImpl: WatchHistoryLocalDataSourceImpl
     ): WatchHistoryLocalDataSource
 }

@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
@@ -20,7 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -88,9 +86,9 @@ class ContinueWatchingViewModel @Inject constructor(
 
     override fun onClickMediaItem(mediaId: Long, mediaType: MediaType) {
         if (mediaType == MediaType.MOVIE)
-            sendNewEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
+            sendNewNavigationEffect(ContinueWatchingEffect.NavigateToMovieDetailsScreen(mediaId))
         else
-            sendNewEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
+            sendNewNavigationEffect(ContinueWatchingEffect.NavigateToTvShowDetailsEffect(mediaId))
     }
 
     override fun onClickRetryLoading() {
@@ -98,7 +96,7 @@ class ContinueWatchingViewModel @Inject constructor(
     }
 
     override fun onClickBack() {
-        sendNewEffect(ContinueWatchingEffect.NavigateBack)
+        sendNewNavigationEffect(ContinueWatchingEffect.NavigateBack)
     }
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }

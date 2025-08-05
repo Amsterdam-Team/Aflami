@@ -5,14 +5,14 @@ import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
-import com.amsterdam.repository.mapper.local.SessionTypeMapper
+import com.amsterdam.repository.mapper.local.stringToSessionTypeEntity
+import com.amsterdam.repository.mapper.local.toLocalDto
 import com.amsterdam.repository.security.CryptoData
 import javax.inject.Inject
 
 class AuthenticationRepositoryImpl @Inject constructor(
     private val authenticationRemoteSource: AuthenticationRemoteSource,
     private val authenticationLocalSource: AuthenticationLocalSource,
-    private val sessionTypeMapper: SessionTypeMapper,
     val cryptoData: CryptoData,
 ) : AuthenticationRepository {
     override suspend fun loginWithPassword(
@@ -22,21 +22,24 @@ class AuthenticationRepositoryImpl @Inject constructor(
         authenticationRemoteSource.loginWithPassword(username, password).let { sessionId ->
             authenticationLocalSource.cacheSessionId(cryptoData.encryptString(sessionId))
         }
-        authenticationLocalSource.setSessionType(sessionTypeMapper.toLocalSessionType(SessionType.LOGGED_IN))
+        authenticationLocalSource.setSessionType(SessionType.LOGGED_IN.toLocalDto())
     }
 
     override suspend fun getSessionId(): String =
         cryptoData.decryptString(authenticationLocalSource.getCachedSessionId()) ?: throw UnknownException()
 
     override suspend fun setSessionType(sessionType: SessionType) {
-        authenticationLocalSource.setSessionType(sessionTypeMapper.toLocalSessionType(sessionType))
+        authenticationLocalSource.setSessionType(sessionType.toLocalDto())
     }
 
     override suspend fun getSessionType(): SessionType =
-        sessionTypeMapper.fromLocalSessionType(authenticationLocalSource.getSessionType())
+        stringToSessionTypeEntity(authenticationLocalSource.getSessionType())
 
     override suspend fun logout() {
-        authenticationLocalSource.clearCachedSessionId()
-        authenticationLocalSource.setSessionType(sessionTypeMapper.toLocalSessionType(SessionType.NOT_LOGGED_IN))
+        val sessionId = getSessionId()
+        if (authenticationRemoteSource.deleteSession(sessionId)){
+            authenticationLocalSource.clearCachedSessionId()
+            authenticationLocalSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto())
+        }
     }
 }

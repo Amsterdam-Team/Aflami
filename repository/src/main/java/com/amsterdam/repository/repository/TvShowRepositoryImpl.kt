@@ -16,15 +16,11 @@ import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowItemDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
-import com.amsterdam.repository.mapper.local.TvShowLocalMapper
-import com.amsterdam.repository.mapper.local.TvShowWithCategoryLocalMapper
-import com.amsterdam.repository.mapper.remote.CastRemoteMapper
-import com.amsterdam.repository.mapper.remote.EpisodeRemoteMapper
-import com.amsterdam.repository.mapper.remote.SeasonRemoteMapper
-import com.amsterdam.repository.mapper.remote.TvShowDetailsRemoteMapper
-import com.amsterdam.repository.mapper.remote.TvShowRemoteMapper
-import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteDetailsLocalMapper
-import com.amsterdam.repository.mapper.remoteToLocal.TvShowRemoteLocalMapper
+import com.amsterdam.repository.mapper.local.toEntity
+import com.amsterdam.repository.mapper.remote.toEntityList
+import com.amsterdam.repository.mapper.remote.toEntity
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
 import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
@@ -35,82 +31,68 @@ class TvShowRepositoryImpl @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val localTvDataSource: TvShowLocalSource,
     private val remoteTvDataSource: TvShowsRemoteSource,
-    private val tvShowLocalMapper: TvShowLocalMapper,
-    private val preferences: AppPreferences,
-    private val tvRemoteMapper: TvShowRemoteMapper,
-    private val seasonRemoteMapper: SeasonRemoteMapper,
-    private val episodeRemoteMapper: EpisodeRemoteMapper,
-    private val tvShowRemoteDetailsLocalMapper: TvShowRemoteDetailsLocalMapper,
-    private val tvShowDetailsRemoteMapper: TvShowDetailsRemoteMapper,
-    private val tvShowWithCategoryLocalMapper: TvShowWithCategoryLocalMapper,
-    private val tvShowRemoteLocalMapper: TvShowRemoteLocalMapper,
-    private val castRemoteMapper: CastRemoteMapper,
+    private val preferences: AppPreferences
 ) : TvShowRepository {
     override suspend fun getTvShowByKeyword(
         keyword: String,
         page: Int,
         tvShowsPerPage: Int
     ): List<TvShow> {
-        return tvRemoteMapper.toEntityList(getTvShows(keyword, page).results)
+        return getTvShows(keyword, page).results.toEntityList()
     }
 
     override suspend fun getPopularTvShows(): List<TvShow> {
-        return getCachedOrRemoteData(
+        return getCachedOrRemoteData<TvShowWithCategory, RemoteTvShowItemDto, TvShow>(
             deleteExpired = ::deleteExpiredPopularTvShows,
             getFromLocal = ::getPopularTvShowsFromLocal,
             getFromRemote = ::getPopularTvShowsFromRemote,
             saveRemoteToDatabase = ::savePopularTvShows,
-            mapFromLocalToEntity = tvShowWithCategoryLocalMapper::toEntity,
-            mapFromRemoteToEntity = tvRemoteMapper::toEntity
+            mapFromLocalToEntity = { it.toEntity() },
+            mapFromRemoteToEntity = { it.toEntity() }
         )
     }
 
     override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {
-        return getCachedOrRemoteData(
+        return getCachedOrRemoteData<LocalTvShowDto, RemoteTvShowItemDto, TvShow>(
             deleteExpired = ::deleteExpiredTopRatedTvShows,
             getFromLocal = ::getTopRatedTvShowsFromLocal,
             getFromRemote = { getTopRatedTvShowsFromRemote(page) },
             saveRemoteToDatabase = ::saveTopRatedTvShows,
-            mapFromLocalToEntity = tvShowLocalMapper::toEntity,
-            mapFromRemoteToEntity = tvRemoteMapper::toEntity
+            mapFromLocalToEntity = { it.toEntity() },
+            mapFromRemoteToEntity = { it.toEntity() }
         )
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
-        return castRemoteMapper.toEntityList(remoteTvDataSource.getTvShowCast(tvShowId).cast)
+        return remoteTvDataSource.getTvShowCast(tvShowId).cast.toEntityList()
     }
 
     override suspend fun getTvShowDetails(tvShowId: Long): GetTvShowDetailsUseCase.TvShowDetails {
-        return tvShowDetailsRemoteMapper.toEntity(
-            remoteTvDataSource.getTvShowDetailsById(tvShowId)
+        return remoteTvDataSource.getTvShowDetailsById(tvShowId)
                 .also {
                     incrementUserInterestByTvShow(it.genres)
                     cacheWatchedTvShow(it)
-                }
-        )
+                }.toEntity()
+
     }
 
     override suspend fun getTvShowSeasons(tvShowId: Long): List<Season> {
-        return seasonRemoteMapper.toEntityList(remoteTvDataSource.getTvShowDetailsById(tvShowId).seasons)
+        return remoteTvDataSource.getTvShowDetailsById(tvShowId).seasons.toEntityList()
     }
 
     override suspend fun getEpisodesBySeasonNumber(
         tvShowId: Long,
         seasonNumber: Int
     ): List<Episode> {
-        return episodeRemoteMapper.toEntityList(
-            remoteTvDataSource.getEpisodesBySeasonNumber(
-                tvShowId,
-                seasonNumber
-            ).episodes
-        )
+        return remoteTvDataSource.getEpisodesBySeasonNumber(
+            tvShowId,
+            seasonNumber
+        ).episodes.toEntityList()
     }
 
     private suspend fun cacheWatchedTvShow(remoteTvShowItemDto: TvShowDetailsRemoteResponse) {
         localTvDataSource.insertTvShow(
-            tvShowRemoteDetailsLocalMapper.toLocal(
-                remote = remoteTvShowItemDto, args = listOf(preferences.getDeviceLanguage().first())
-            )
+            remoteTvShowItemDto.toLocalDto(preferences.getDeviceLanguage().first())
         )
     }
 
@@ -134,10 +116,7 @@ class TvShowRepositoryImpl @Inject constructor(
     private suspend fun savePopularTvShows(remoteTvShows: List<RemoteTvShowItemDto>) {
         saveTvShowWithCategories(remoteTvShows).also {
             localTvDataSource.addPopularTvShows(
-                tvShowRemoteLocalMapper.toLocalList(
-                    remoteTvShows,
-                    listOf(preferences.getDeviceLanguage().first())
-                )
+                remoteTvShows.toLocalDtoList(preferences.getDeviceLanguage().first()),
             )
         }
     }
@@ -162,10 +141,7 @@ class TvShowRepositoryImpl @Inject constructor(
     private suspend fun saveTopRatedTvShows(remoteTvShows: List<RemoteTvShowItemDto>) {
         saveTvShowWithCategories(remoteTvShows).also {
             localTvDataSource.addTopRatedTvShows(
-                tvShowRemoteLocalMapper.toLocalList(
-                    remoteTvShows,
-                    listOf(preferences.getDeviceLanguage().first())
-                )
+                remoteTvShows.toLocalDtoList(preferences.getDeviceLanguage().first()),
             )
         }
     }
@@ -181,10 +157,7 @@ class TvShowRepositoryImpl @Inject constructor(
     private suspend fun onSaveTvShowWithCategories(remoteTvShow: RemoteTvShowItemDto) {
         categoryRepository.getTvShowCategories().also {
             localTvDataSource.addTvShowWithCategories(
-                tvShow = tvShowRemoteLocalMapper.toLocal(
-                    remoteTvShow,
-                    listOf(preferences.getDeviceLanguage().first())
-                ),
+                tvShow = remoteTvShow.toLocalDto(preferences.getDeviceLanguage().first()),
                 categoryIds = remoteTvShow.genreIds.map(Int::toLong),
                 storedLanguage = preferences.getDeviceLanguage().first()
             )

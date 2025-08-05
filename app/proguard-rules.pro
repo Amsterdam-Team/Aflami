@@ -23,6 +23,3 @@
 # Kotlinx Serializatione.
 -keep @kotlinx.serialization.Serializable class *
 -keepnames class * { @kotlinx.serialization.SerialName *; }
-
-# Room DB
--keep class * extends androidx.room.RoomDatabase { *; }

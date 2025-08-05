@@ -17,5 +17,5 @@ interface MovieRepository {
     suspend fun getPopularMovies(): List<Movie>
     suspend fun getTopRatedMovies(page: Int): List<Movie>
     suspend fun getUpcomingMovies(): List<Movie>
-    suspend fun getMoviesByGenres(movieGenres: List<MovieGenre>): List<Movie>
+    suspend fun getMoviesByGenres(movieGenres: List<MovieGenre>, page: Int): List<Movie>
 }

@@ -20,7 +20,9 @@ import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -31,6 +33,7 @@ internal fun MoviesVerticalGrid(
     modifier: Modifier = Modifier,
     onMovieClicked: (movieId: Long) -> Unit,
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     AnimatedVisibility(isVisible) {
         LazyVerticalGrid(
             modifier = modifier.fillMaxSize(),
@@ -51,6 +54,7 @@ internal fun MoviesVerticalGrid(
                                     .fillMaxSize(),
                             contentDescription = movie.name,
                             model = movie.posterImageUrl,
+                            safetyLevel = safetyLevel,
                             contentScale = ContentScale.Crop,
                             onLoading = { ImageLoadingIndicator() },
                             onError = { ImageErrorIndicator() },

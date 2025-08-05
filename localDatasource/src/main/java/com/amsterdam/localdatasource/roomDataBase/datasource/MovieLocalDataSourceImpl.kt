@@ -13,7 +13,6 @@ import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import kotlinx.datetime.Instant
 import javax.inject.Inject
 
-
 class MovieLocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
     private val interestDao: MovieCategoryInterestDao
@@ -68,8 +67,7 @@ class MovieLocalDataSourceImpl @Inject constructor(
         val entries = movies.map { movie ->
             PopularMovieDto(
                 movieId = movie.movieId,
-                storedLanguage = movie.storedLanguage,
-                dateAdded = movie.insertedDate
+                storedLanguage = movie.storedLanguage
             )
         }
         movieDao.insertPopularMovies(entries)
@@ -107,8 +105,7 @@ class MovieLocalDataSourceImpl @Inject constructor(
         val entries = movies.map { movie ->
             UpcomingMovieDto(
                 movieId = movie.movieId,
-                storedLanguage = movie.storedLanguage,
-                dateAdded = movie.insertedDate
+                storedLanguage = movie.storedLanguage
             )
         }
         movieDao.insertUpcomingMovies(entries)

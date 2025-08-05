@@ -44,11 +44,13 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchEffect
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchErrorState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchInteractionListener
@@ -201,11 +203,13 @@ private fun SearchByActorContent(
 
 @Composable
 internal fun MovieImage(imageUrl: String) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     SafeImageView(
         model = imageUrl,
         contentScale = ContentScale.FillBounds,
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
+        safetyLevel = safetyLevel,
         onLoading = { ImageLoadingIndicator() },
         onError = { ImageErrorIndicator() },
     )

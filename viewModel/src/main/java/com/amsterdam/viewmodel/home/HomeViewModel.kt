@@ -82,7 +82,7 @@ class HomeViewModel @Inject constructor(
     private fun getContinueWatchingData() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
-            action = { getContinueWatchingScreenDataUseCase(pageSize = 8) },
+            action = { getContinueWatchingScreenDataUseCase(pageSize = 10) },
             onSuccess = ::onGetContinueWatchingScreenDataSuccess,
             onError = ::onError,
             onCompletion = ::onCompletion
@@ -198,7 +198,14 @@ class HomeViewModel @Inject constructor(
     }
 
     override fun onClickGetNow() {
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoadingMovies = true)) }
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    isLoadingMovies = true,
+                    selectedMovie = MovieItemUiState()
+                )
+            )
+        }
         val selectedMood = state.value.moodPickerUiState.selectedMood ?: return
         tryToExecute(
             action = { getMoviesByMoodUseCase(selectedMood) },
@@ -217,16 +224,28 @@ class HomeViewModel @Inject constructor(
     }
 
     override fun onClickGetAnotherMovie() {
+        if (state.value.moodPickerUiState.isLoadingMovies) return
         val currentMovieIndex = state.value.moodPickerUiState.movies.indexOf(
             state.value.moodPickerUiState.selectedMovie
         )
-        val nextMovie: MovieItemUiState
-        if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
-            nextMovie = state.value.moodPickerUiState.movies[0]
-            return
+        val newMoviesList = state.value.moodPickerUiState.movies.toMutableList()
+        if (currentMovieIndex != -1) {
+            newMoviesList.removeAt(currentMovieIndex)
         }
-        nextMovie = state.value.moodPickerUiState.movies[currentMovieIndex + 1]
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(selectedMovie = nextMovie)) }
+        val nextMovie: MovieItemUiState
+        if (newMoviesList.isNotEmpty()) {
+            nextMovie = newMoviesList[(0..newMoviesList.size - 1).random()]
+            updateState {
+                it.copy(
+                    moodPickerUiState = it.moodPickerUiState.copy(
+                        movies = newMoviesList,
+                        selectedMovie = nextMovie
+                    )
+                )
+            }
+        } else {
+            onClickGetNow()
+        }
     }
 
     private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
@@ -235,13 +254,18 @@ class HomeViewModel @Inject constructor(
             return
         }
         val moviesUiStates = homeUiStateMapper.moviesToMoviesItemsUiState(movies)
+        val selectedMovie = if (moviesUiStates.isNotEmpty()) {
+            moviesUiStates[(0..moviesUiStates.size - 1).random()]
+        } else {
+            MovieItemUiState()
+        }
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState
                     .copy(
                         isLoadingMovies = false,
                         movies = moviesUiStates,
-                        selectedMovie = moviesUiStates.getOrNull(0) ?: MovieItemUiState(),
+                        selectedMovie = selectedMovie,
                         openMovieDialog = true
                     )
             )
@@ -254,7 +278,12 @@ class HomeViewModel @Inject constructor(
 
     private fun onError(exception: AflamiException) {
         when (exception) {
-            is NetworkException -> updateState { it.copy(error = HomeError.NetworkError) }
+            is NetworkException -> updateState {
+                it.copy(
+                    error = HomeError.NetworkError,
+                    moodPickerUiState = it.moodPickerUiState.copy(isLoadingMovies = false)
+                )
+            }
             else -> {}
         }
     }

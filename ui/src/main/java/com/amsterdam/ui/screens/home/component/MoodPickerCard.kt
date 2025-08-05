@@ -19,7 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.components.buttons.PlainTextButton
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -42,6 +43,8 @@ import io.sifr.shaded.modifiers.blur
 @Composable
 fun MoodPickerCard(
     cardMoods: List<CardMood>,
+    isButtonEnabled: Boolean,
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
     onSelectMood: (CardMood) -> Unit = {},
     onClickGetNow: () -> Unit = {},
@@ -87,6 +90,8 @@ fun MoodPickerCard(
 
         MoodOptionsSection(
             cardMoods,
+            isButtonEnabled,
+            isLoading,
             modifier =
                 Modifier
                     .padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
@@ -100,15 +105,13 @@ fun MoodPickerCard(
 @Composable
 private fun MoodOptionsSection(
     cardMoods: List<CardMood>,
+    isButtonEnabled: Boolean,
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
     onSelectMood: (CardMood) -> Unit = {},
     onClickGetNow: () -> Unit = {},
 ) {
-    var selectedIndex by remember { mutableStateOf(-1) }
-
-    val buttonColor by animateColorAsState(
-        if (selectedIndex != -1) AppTheme.color.primary else AppTheme.color.disable,
-    )
+    var selectedIndex by remember { mutableIntStateOf(-1) }
 
     Column(
         modifier =
@@ -142,17 +145,14 @@ private fun MoodOptionsSection(
             }
         }
 
-        Text(
-            text = stringResource(R.string.get_now),
+        PlainTextButton(
+            title = stringResource(R.string.get_now),
             style = AppTheme.textStyle.label.medium,
-            color = buttonColor,
-            modifier = Modifier
-                .padding(vertical = 12.dp)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                    onClick = onClickGetNow,
-                ),
+            onClick = onClickGetNow,
+            isEnabled = isButtonEnabled,
+            isLoading = isLoading,
+            isNegative = false,
+            modifier = Modifier.padding(vertical = 12.dp)
         )
     }
 }
@@ -220,6 +220,8 @@ private fun CustomMoodPickerCardPreview() {
     AflamiTheme {
         MoodPickerCard(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 100.dp),
+            isButtonEnabled = false,
+            isLoading = false,
             cardMoods = listOf(
                 CardMood.SAD,
                 CardMood.ANGRY,

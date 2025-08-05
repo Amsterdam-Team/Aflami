@@ -80,3 +80,7 @@ private fun DependencyHandlerScope.hiltDependencies() {
 private fun DependencyHandlerScope.kotlinxDateTime() {
     implementation(libs.kotlinx.datetime)
 }
+
+private fun DependencyHandlerScope.coilDependencies() {
+    implementation(libs.coil.compose)
+}

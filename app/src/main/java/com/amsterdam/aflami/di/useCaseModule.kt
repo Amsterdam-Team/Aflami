@@ -11,6 +11,7 @@ import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
 import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
+import com.amsterdam.domain.useCase.authentication.LogoutUseCase
 import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
 import com.amsterdam.domain.useCase.common.AddTvShowWatchHistoryUseCase
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
@@ -29,10 +30,15 @@ import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.list.DeleteListUseCase
+import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
+import com.amsterdam.domain.useCase.list.GetUserListsUseCase
+import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
 import com.amsterdam.domain.useCase.list.AddTvShowToListUseCase
 import com.amsterdam.domain.useCase.preferences.GetOnboardingStatusUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.preferences.SetOnboardingCompletedUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
@@ -50,29 +56,38 @@ import dagger.hilt.android.components.ViewModelComponent
 object UseCaseModule {
 
     @Provides
-    fun provideGetsSessionType(repo: AuthenticationRepository): GetsSessionType =
-        GetsSessionType(repo)
-
-    @Provides
-    fun provideGetOnboardingStatusUseCase(repo: AppPreferencesRepository): GetOnboardingStatusUseCase =
-        GetOnboardingStatusUseCase(repo)
-
-    @Provides
-    fun provideSetOnboardingCompletedUseCase(repo: AppPreferencesRepository): SetOnboardingCompletedUseCase =
-        SetOnboardingCompletedUseCase(repo)
+    fun provideManageRestrictionLevelUseCase(appPreferencesRepository: AppPreferencesRepository): ManageRestrictionLevelUseCase =
+        ManageRestrictionLevelUseCase(appPreferencesRepository)
 
 
     @Provides
-    fun provideSetCurrentLanguage(repo: AppPreferencesRepository): ManageLocaleLanguageUseCase =
-        ManageLocaleLanguageUseCase(repo)
+    fun provideGetsSessionType(authenticationRepository: AuthenticationRepository): GetsSessionType =
+        GetsSessionType(authenticationRepository)
 
     @Provides
-    fun provideLoginAsGuestUseCase(repo: AuthenticationRepository): LoginAsGuestUseCase =
-        LoginAsGuestUseCase(repo)
+    fun provideGetOnboardingStatusUseCase(appPreferencesRepository: AppPreferencesRepository): GetOnboardingStatusUseCase =
+        GetOnboardingStatusUseCase(appPreferencesRepository)
 
     @Provides
-    fun provideLoginWithPasswordUseCase(repo: AuthenticationRepository): LoginWithPasswordUseCase =
-        LoginWithPasswordUseCase(repo)
+    fun provideSetOnboardingCompletedUseCase(appPreferencesRepository: AppPreferencesRepository): SetOnboardingCompletedUseCase =
+        SetOnboardingCompletedUseCase(appPreferencesRepository)
+
+
+    @Provides
+    fun provideSetCurrentLanguage(appPreferencesRepository: AppPreferencesRepository): ManageLocaleLanguageUseCase =
+        ManageLocaleLanguageUseCase(appPreferencesRepository)
+
+    @Provides
+    fun provideLoginAsGuestUseCase(authenticationRepository: AuthenticationRepository): LoginAsGuestUseCase =
+        LoginAsGuestUseCase(authenticationRepository)
+
+    @Provides
+    fun provideLoginWithPasswordUseCase(authenticationRepository: AuthenticationRepository): LoginWithPasswordUseCase =
+        LoginWithPasswordUseCase(authenticationRepository)
+
+    @Provides
+    fun provideLogoutUseCase(authenticationRepository: AuthenticationRepository): LogoutUseCase =
+        LogoutUseCase(authenticationRepository)
 
     @Provides
     fun provideAddMovieWatchHistoryUseCase(watchHistoryRepository: WatchHistoryRepository): AddMovieWatchHistoryUseCase =
@@ -83,81 +98,94 @@ object UseCaseModule {
         AddTvShowWatchHistoryUseCase(watchHistoryRepository)
 
     @Provides
-    fun provideGetAndFilterMoviesByKeywordUseCase(repo: MovieRepository): GetAndFilterMoviesByKeywordUseCase =
-        GetAndFilterMoviesByKeywordUseCase(repo)
+    fun provideGetAndFilterMoviesByKeywordUseCase(movieRepository: MovieRepository): GetAndFilterMoviesByKeywordUseCase =
+        GetAndFilterMoviesByKeywordUseCase(movieRepository)
 
     @Provides
-    fun provideGetMoviesByCountryUseCase(repo: MovieRepository): GetMoviesByCountryUseCase =
-        GetMoviesByCountryUseCase(repo)
+    fun provideGetMoviesByCountryUseCase(movieRepository: MovieRepository): GetMoviesByCountryUseCase =
+        GetMoviesByCountryUseCase(movieRepository)
 
     @Provides
-    fun provideGetMovieCastUseCase(repo: MovieRepository): GetMovieCastUseCase =
-        GetMovieCastUseCase(repo)
+    fun provideGetMovieCastUseCase(movieRepository: MovieRepository): GetMovieCastUseCase =
+        GetMovieCastUseCase(movieRepository)
 
     @Provides
-    fun provideGetMoviesByActorUseCase(repo: MovieRepository): GetMoviesByActorUseCase =
-        GetMoviesByActorUseCase(repo)
+    fun provideGetMoviesByActorUseCase(movieRepository: MovieRepository): GetMoviesByActorUseCase =
+        GetMoviesByActorUseCase(movieRepository)
 
     @Provides
-    fun provideGetSuggestedCountriesUseCase(repo: CountryRepository): GetSuggestedCountriesUseCase =
-        GetSuggestedCountriesUseCase(repo)
+    fun provideGetSuggestedCountriesUseCase(countryRepository: CountryRepository): GetSuggestedCountriesUseCase =
+        GetSuggestedCountriesUseCase(countryRepository)
 
     @Provides
-    fun provideRecentSearchesUseCase(repo: RecentSearchRepository): RecentSearchesUseCase =
-        RecentSearchesUseCase(repo)
+    fun provideRecentSearchesUseCase(recentSearchRepository: RecentSearchRepository): RecentSearchesUseCase =
+        RecentSearchesUseCase(recentSearchRepository)
 
     @Provides
-    fun provideGetAndFilterTvShowsByKeywordUseCase(repo: TvShowRepository): GetAndFilterTvShowsByKeywordUseCase =
-        GetAndFilterTvShowsByKeywordUseCase(repo)
+    fun provideGetAndFilterTvShowsByKeywordUseCase(tvShowRepository: TvShowRepository): GetAndFilterTvShowsByKeywordUseCase =
+        GetAndFilterTvShowsByKeywordUseCase(tvShowRepository)
 
     @Provides
-    fun provideGetPopularMoviesUseCase(repo: MovieRepository): GetPopularMoviesUseCase =
-        GetPopularMoviesUseCase(repo)
+    fun provideGetPopularMoviesUseCase(movieRepository: MovieRepository): GetPopularMoviesUseCase =
+        GetPopularMoviesUseCase(movieRepository)
 
     @Provides
-    fun provideGetEpisodesBySeasonNumberUseCase(repo: TvShowRepository): GetEpisodesBySeasonNumberUseCase =
-        GetEpisodesBySeasonNumberUseCase(repo)
+    fun provideGetEpisodesBySeasonNumberUseCase(tvShowRepository: TvShowRepository): GetEpisodesBySeasonNumberUseCase =
+        GetEpisodesBySeasonNumberUseCase(tvShowRepository)
 
     @Provides
     fun provideGetTvShowDetailsUseCase(
-        repo: TvShowRepository,
+        tvShowRepository: TvShowRepository,
         addTvShowWatchHistoryUseCase: AddTvShowWatchHistoryUseCase
     ): GetTvShowDetailsUseCase =
-        GetTvShowDetailsUseCase(repo, addTvShowWatchHistoryUseCase)
+        GetTvShowDetailsUseCase(tvShowRepository, addTvShowWatchHistoryUseCase)
 
     @Provides
-    fun provideGetUpcomingMoviesUseCase(repo: MovieRepository): GetUpcomingMoviesUseCase =
-        GetUpcomingMoviesUseCase(repo)
+    fun provideGetUpcomingMoviesUseCase(movieRepository: MovieRepository): GetUpcomingMoviesUseCase =
+        GetUpcomingMoviesUseCase(movieRepository)
 
     @Provides
-    fun provideGetTopRatedMoviesUseCase(repo: MovieRepository): GetTopRatedMoviesUseCase =
-        GetTopRatedMoviesUseCase(repo)
+    fun provideGetTopRatedMoviesUseCase(movieRepository: MovieRepository): GetTopRatedMoviesUseCase =
+        GetTopRatedMoviesUseCase(movieRepository)
 
     @Provides
-    fun provideGetContinueWatchingMoviesUseCase(repo: WatchHistoryRepository): GetContinueWatchingMoviesUseCase =
-        GetContinueWatchingMoviesUseCase(repo)
+    fun provideGetContinueWatchingMoviesUseCase(watchHistoryRepository: WatchHistoryRepository): GetContinueWatchingMoviesUseCase =
+        GetContinueWatchingMoviesUseCase(watchHistoryRepository)
 
     @Provides
     fun provideGetTvShowCastUseCase(tvShowRepository: TvShowRepository): GetTvShowCastUseCase =
         GetTvShowCastUseCase(tvShowRepository)
 
     @Provides
-    fun provideGetMoviesByMoodUseCase(repo: MovieRepository): GetMoviesByMoodUseCase =
-        GetMoviesByMoodUseCase(repo)
+    fun provideGetMoviesByMoodUseCase(movieRepository: MovieRepository): GetMoviesByMoodUseCase =
+        GetMoviesByMoodUseCase(movieRepository)
 
     @Provides
     fun provideGetContinueWatchingTvShowsUseCase(watchHistoryRepository: WatchHistoryRepository): GetContinueWatchingTvShowsUseCase =
         GetContinueWatchingTvShowsUseCase(watchHistoryRepository)
 
     @Provides
-    fun provideGetTopRatedTvShowsUseCase(
-        tvShowRepository: TvShowRepository
-    ): GetTopRatedTvShowsUseCase = GetTopRatedTvShowsUseCase(tvShowRepository)
+    fun provideGetMoviesFromListUseCase(
+        userListRepository: UserListRepository
+    ): GetMoviesFromListUseCase = GetMoviesFromListUseCase(userListRepository)
 
     @Provides
-    fun provideGetPopularTvShowsUseCase(
-        tvShowRepository: TvShowRepository
-    ): GetPopularTvShowsUseCase = GetPopularTvShowsUseCase(tvShowRepository)
+    fun provideDeleteListUseCase(
+        userListRepository: UserListRepository
+    ): DeleteListUseCase = DeleteListUseCase(userListRepository)
+
+    @Provides
+    fun provideGetTopRatedTvShowsUseCase(tvShowRepository: TvShowRepository): GetTopRatedTvShowsUseCase =
+        GetTopRatedTvShowsUseCase(tvShowRepository)
+
+    @Provides
+    fun provideGetPopularTvShowsUseCase(tvShowRepository: TvShowRepository): GetPopularTvShowsUseCase =
+        GetPopularTvShowsUseCase(tvShowRepository)
+
+    @Provides
+    fun provideRemoveMovieFromListUseCase(
+        userListRepository: UserListRepository
+    ): RemoveMovieFromListUseCase = RemoveMovieFromListUseCase(userListRepository)
 
     @Provides
     fun provideGetHomeScreenDataUseCase(
@@ -179,34 +207,32 @@ object UseCaseModule {
     fun provideGetContinueWatchingScreenDataUseCase(
         getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
         getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase,
-    ) = GetContinueWatchingScreenDataUseCase(
-        getContinueWatchingMoviesUseCase,
-        getContinueWatchingTvShowsUseCase
-    )
+    ): GetContinueWatchingScreenDataUseCase =
+        GetContinueWatchingScreenDataUseCase(
+            getContinueWatchingMoviesUseCase,
+            getContinueWatchingTvShowsUseCase
+        )
 
     @Provides
     fun provideGetMovieDetailsUseCase(
         movieRepository: MovieRepository,
-        addWatchHistoryUseCase: AddMovieWatchHistoryUseCase
-    ) = GetMovieDetailsUseCase(
-        movieRepository,
-        addWatchHistoryUseCase
-    )
+        addMovieWatchHistoryUseCase: AddMovieWatchHistoryUseCase
+    ): GetMovieDetailsUseCase =
+        GetMovieDetailsUseCase(movieRepository, addMovieWatchHistoryUseCase)
 
     @Provides
     fun provideGetTopRatedScreenDataUseCase(
         getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
         getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase
-    ) = GetTopRatedScreenDataUseCase(
-        getTopRatedMoviesUseCase,
-        getTopRatedTvShowsUseCase
-    )
+    ): GetTopRatedScreenDataUseCase =
+        GetTopRatedScreenDataUseCase(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase)
 
+    @Provides
+    fun provideGetUserListsUseCase(
+        userListRepository: UserListRepository,
+    ): GetUserListsUseCase =
+        GetUserListsUseCase(userListRepository)
     @Provides
     fun provideAddMovieToListUseCase(userListRepository: UserListRepository): AddMovieToListUseCase =
         AddMovieToListUseCase(userListRepository)
-
-    @Provides
-    fun provideAddTvShowToListUseCase(userListRepository: UserListRepository): AddTvShowToListUseCase =
-        AddTvShowToListUseCase(userListRepository)
-}
+    }

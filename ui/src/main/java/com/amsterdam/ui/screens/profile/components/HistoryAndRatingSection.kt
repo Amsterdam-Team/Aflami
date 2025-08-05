@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -27,18 +28,22 @@ import com.amsterdam.ui.R
 
 
 @Composable
-fun HistoryAndRatingSection() {
+fun HistoryAndRatingSection(
+    onClickHistory: () -> Unit
+) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         CustomCard(
             imageResourceId = R.drawable.img_user_history,
-            text = stringResource(R.string.watch_history)
+            text = stringResource(R.string.watch_history),
+            onClick = onClickHistory
         )
         CustomCard(
             imageResourceId = com.amsterdam.designsystem.R.drawable.img_user_rating,
-            text = stringResource(R.string.my_rating)
+            text = stringResource(R.string.my_rating),
+            onClick = {}
         )
     }
 }
@@ -47,10 +52,13 @@ fun HistoryAndRatingSection() {
 @Composable
 private fun RowScope.CustomCard(
     @DrawableRes imageResourceId: Int,
-    text: String
+    text: String,
+    onClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier.weight(1f)
+        modifier = Modifier
+            .weight(1f)
+            .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier
@@ -90,6 +98,6 @@ private fun RowScope.CustomCard(
 @Composable
 private fun HistoryAndRatingSectionPreview() {
     AflamiTheme {
-        HistoryAndRatingSection()
+        HistoryAndRatingSection(onClickHistory = {})
     }
 }

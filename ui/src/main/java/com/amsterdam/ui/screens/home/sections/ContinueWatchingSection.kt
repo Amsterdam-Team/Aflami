@@ -32,7 +32,7 @@ fun LazyListScope.continueWatchingSection(
         } else {
             item {
                 SectionTitle(
-                    title = stringResource(R.string.continue_watching),
+                    title = stringResource(R.string.recently_watched),
                     tintColor = AppTheme.color.secondary,
                     modifier = Modifier
                         .zIndex(1f)

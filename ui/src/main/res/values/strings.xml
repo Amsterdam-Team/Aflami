@@ -48,7 +48,7 @@
     <string name="talk">Talk</string>
     <!-- -   -->
     <!-- -   -->
-    <string name="continue_watching">Continue watching</string>
+    <string name="recently_watched">Recently Watched</string>
     <string name="top_rating">Top rating</string>
     <string name="popular">Popular</string>
     <string name="movies_birthday">Movies birthday</string>
@@ -168,11 +168,18 @@
     <string name="app_theme">App theme</string>
     <string name="settings">Settings</string>
     <string name="change_password">Change password</string>
-    <string name="tired_to_watching">Tired to watching?</string>
+    <string name="tired_of_watching">Tired of watching?</string>
     <string name="logout">Logout</string>
     <string name="logout_message">If you’re tired of us, just know we’re not, we will be here.</string>
     <string name="login_message">Please login to access your account details and other features!</string>
     <string name="confirm_message">Are you sure to continue?</string>
+    <string name="content_restriction">Content Restriction</string>
+    <string name="restriction_strict">Strict</string>
+    <string name="restriction_strict_description">Blurs all sensitive content.</string>
+    <string name="restriction_moderate">Moderate</string>
+    <string name="restriction_moderate_description">Blurs explicit scenes only.</string>
+    <string name="restriction_off">Off</string>
+    <string name="restriction_off_description">No content is blurred.</string>
     <string name="version">v</string>
     <string name="profile_title">My account</string>
     <string name="more_like_this">More like this</string>
@@ -222,6 +229,13 @@
     <string name="there_is_no_gallery">There Is No Gallery</string>
     <string name="there_is_no_company_production">There Is No Company Production</string>
     <string name="there_is_no_seasons">It Seem Like There Is No Seasons Yet</string>
+    <string name="remove_from_list">Remove from list</string>
+    <string name="no_saved_items_here">No saved Items here!</string>
+    <string name="confirm_delete">Are you sure to continue deleting?</string>
+    <string name="list_deleted_successfully">List deleted successfully</string>
+    <string name="movie_deleted_successfully">Movie deleted Successfully</string>
+
+    <string name="video_launch_error">Failed to play the video</string>
 
 
     <plurals name="item_count">

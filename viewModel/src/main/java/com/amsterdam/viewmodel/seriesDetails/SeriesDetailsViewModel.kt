@@ -141,6 +141,10 @@ class SeriesDetailsViewModel @Inject constructor(
         }
     }
 
+    override fun onPlayVideoClicked() {
+        sendNewNavigationEffect(SeriesDetailsEffect.LaunchSeriesVideoEffect(state.value.videoUrl))
+    }
+
     private suspend fun getEpisodesForSeason(seasonNumber: Int): List<Episode> {
         val updatedSeasons = state.value.seasons.map {
             if (it.seasonNumber == seasonNumber && it.episodes.isNotEmpty()) {

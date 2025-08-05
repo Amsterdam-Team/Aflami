@@ -55,7 +55,7 @@ fun OnboardingScreen(
         onboardingViewModel.effect.collectLatest { effect ->
             when (effect) {
                 is OnboardingEffect.NavigateToLoginScreen -> {
-                    navController.navigate(Route.Tab.Home) {
+                    navController.navigate(Route.Login) {
                         popUpTo(Route.Onboarding) { inclusive = true }
                     }
                 }

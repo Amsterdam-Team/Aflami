@@ -24,5 +24,5 @@ interface MovieRemoteSource {
 
     suspend fun getTopRatedMovies(page: Int): RemoteMovieResponse
 
-    suspend fun getMoviesByGenreIds(genresIds: List<Long>): RemoteMovieResponse
+    suspend fun getMoviesByGenreIds(genresIds: List<Long>, page: Int): RemoteMovieResponse
 }

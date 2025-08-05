@@ -6,6 +6,7 @@ import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
+import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
 import dagger.Module
 import dagger.Provides
@@ -29,31 +30,36 @@ object ServiceProvidesModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitClient(json: Json, preferences: AppPreferencesRepository): RetrofitClient =
-        RetrofitClient(json, preferences)
+    fun provideRetrofitClient(json: Json, appPreferencesRepository: AppPreferencesRepository): RetrofitClient =
+        RetrofitClient(json, appPreferencesRepository)
 
     @Provides
     @Singleton
-    fun provideAuthenticationApiService(client: RetrofitClient): AuthenticationApiService =
-        client.authenticationApiService()
+    fun provideAuthenticationApiService(retrofitClient:  RetrofitClient): AuthenticationApiService =
+        retrofitClient.authenticationApiService()
 
     @Provides
     @Singleton
-    fun provideMovieApiService(client: RetrofitClient): MovieApiService =
-        client.movieApiService()
+    fun provideMovieApiService(retrofitClient: RetrofitClient): MovieApiService =
+        retrofitClient.movieApiService()
 
     @Provides
     @Singleton
-    fun provideCategoryApiService(client: RetrofitClient): CategoryApiService =
-        client.categoryApiService()
+    fun provideCategoryApiService(retrofitClient: RetrofitClient): CategoryApiService =
+        retrofitClient.categoryApiService()
 
     @Provides
     @Singleton
-    fun provideCountryApiService(client: RetrofitClient): CountryApiService =
-        client.countryApiService()
+    fun provideCountryApiService(retrofitClient: RetrofitClient): CountryApiService =
+        retrofitClient.countryApiService()
 
     @Provides
     @Singleton
-    fun provideTvShowsApiService(client: RetrofitClient): TvShowsApiService =
-        client.tvApiService()
+    fun provideTvShowsApiService(retrofitClient: RetrofitClient): TvShowsApiService =
+        retrofitClient.tvApiService()
+
+    @Provides
+    @Singleton
+    fun provideUserListApiService(retrofitClient: RetrofitClient): UserListApiService =
+        retrofitClient.userListApiService()
 }

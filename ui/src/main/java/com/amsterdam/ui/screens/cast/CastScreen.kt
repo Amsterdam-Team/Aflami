@@ -41,9 +41,11 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.cast.CastInteractionListener
 import com.amsterdam.viewmodel.cast.CastUiEffect
 import com.amsterdam.viewmodel.cast.CastUiState
@@ -140,6 +142,7 @@ private fun ActorCard(
     actorName: String,
     modifier: Modifier = Modifier,
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -158,6 +161,7 @@ private fun ActorCard(
                     .clip(RoundedCornerShape(16.dp)),
             contentDescription = actorName,
             model = actorImage,
+            safetyLevel = safetyLevel,
             contentScale = ContentScale.Crop,
             onLoading = { ImageLoadingIndicator() },
             onError = { ImageErrorIndicator() },

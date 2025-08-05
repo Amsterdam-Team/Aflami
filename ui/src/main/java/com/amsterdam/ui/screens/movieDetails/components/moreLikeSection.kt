@@ -11,8 +11,10 @@ import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.UpcomingCard
 import com.amsterdam.ui.components.adaptiveGrid
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
 fun LazyListScope.moreLikeSection(
@@ -29,12 +31,14 @@ fun LazyListScope.moreLikeSection(
             items = similarMovies, itemMinWidth = 328,
             itemsHorizontalPadding = 8.dp, itemsVerticalPadding = 8.dp
         ) { similarMovie ->
+            val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
             UpcomingCard(
                 movieImage = {
                     SafeImageView(
                         modifier =
                             Modifier
                                 .fillMaxSize(),
+                        safetyLevel = safetyLevel,
                         contentDescription = similarMovie.name,
                         model = similarMovie.posterUrl,
                         contentScale = ContentScale.Crop,

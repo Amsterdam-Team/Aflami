@@ -8,6 +8,11 @@ class GetMoviesByMoodUseCase(
     private val movieRepository: MovieRepository
 ) {
     suspend operator fun invoke(mood: Mood): List<Movie> {
-        return movieRepository.getMoviesByGenres(mood.movieGenres)
+        val randomPage = (1..MAX_PAGES).random()
+        return movieRepository.getMoviesByGenres(mood.movieGenres, randomPage)
+    }
+
+    companion object {
+        const val MAX_PAGES = 100
     }
 }

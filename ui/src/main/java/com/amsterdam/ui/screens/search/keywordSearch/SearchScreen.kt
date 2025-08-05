@@ -38,7 +38,7 @@ import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SearchScreenHeaderSection
-import com.amsterdam.ui.screens.search.keywordSearch.sections.SuccessMediaItemsSection
+import com.amsterdam.ui.components.SuccessMediaItemsSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
@@ -158,14 +158,17 @@ private fun SearchContent(
                 }
             }
 
-            AnimatedVisibility(state.keyword.isNotBlank()) {
+            val selectedItems = if (state.selectedTabOption == TabOption.MOVIES) {
+                movies
+            } else {
+                tvShows
+            }
+
+            AnimatedVisibility(state.keyword.isNotBlank()&& !state.isLoading && state.errorUiState == null && selectedItems.itemCount > 0) {
                 SuccessMediaItemsSection(
-                    selectedTabOption = state.selectedTabOption,
-                    moviesFlow = movies,
-                    tvShowsFlow = tvShows,
                     onMovieClicked = interaction::onClickMovieCard,
                     onTvShowClicked = interaction::onClickTvShowCard,
-                    state = state
+                    selectedItems = selectedItems
                 )
                 val isSelectedTabHasNoData = if (state.selectedTabOption == TabOption.MOVIES) {
                     movies.itemSnapshotList.isEmpty()

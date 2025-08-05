@@ -26,11 +26,13 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.adaptiveGrid
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesSectionUiState
 
 fun LazyListScope.upcomingMoviesSection(
@@ -99,6 +101,7 @@ fun LazyListScope.upcomingMoviesSection(
                     itemsVerticalPadding = 8.dp,
                     deviceWidth = deviceWidth,
                 ) { movie ->
+                    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
                     MediaCard(
                         modifier = modifier
                             .weight(1f)
@@ -108,6 +111,7 @@ fun LazyListScope.upcomingMoviesSection(
                                 modifier = Modifier.fillMaxSize(),
                                 contentDescription = movie.name,
                                 model = movie.posterImageUrl,
+                                safetyLevel = safetyLevel,
                                 onLoading = { ImageLoadingIndicator() },
                                 onError = { ImageErrorIndicator() },
                             )

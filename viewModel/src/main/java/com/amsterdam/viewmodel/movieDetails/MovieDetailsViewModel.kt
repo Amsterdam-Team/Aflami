@@ -127,6 +127,10 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
+    override fun onPlayVideoClicked() {
+        sendNewNavigationEffect(MovieDetailsEffect.LaunchMovieVideoEffect(state.value.videoUrl))
+    }
+
     override fun onAddToListClicked() {
         if (state.value.isLoading) return
         viewModelScope.launch {
