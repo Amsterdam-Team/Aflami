@@ -4,6 +4,8 @@ import com.amsterdam.entity.Movie
 import com.amsterdam.entity.UserList
 
 interface UserListRepository {
+    suspend fun createNewList(listName: String): Int
+
     suspend fun getUserLists(
         accountId: Int = 0,
         page: Int = 1,

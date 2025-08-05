@@ -158,6 +158,8 @@
     <string name="edit_list">تعديل القائمة</string>
     <string name="no_saved_items">لا توجد عناصر محفوظة هنا!</string>
     <string name="create_list">إنشاء قائمة جديدة</string>
+    <string name="create">إنشاء</string>
+    <string name="my_favorite">المفضلة</string>
     <string name="list_title_hint">عنوان القائمة</string>
     <string name="no_list_yet">لا توجد قوائم بعد!</string>
     <string name="no_list_description">عقلنا لا يزال فارغًا، اضغط على + وابدأ بحفظ عناصرك وعروضك المفضلة التي تحبها!</string>
