@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +65,8 @@ fun AddToListDialog(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(320.dp),
+                        .height(320.dp)
+                        .nestedScroll(rememberNestedScrollInteropConnection()),
             ) {
                 items(userLists) { userList ->
                     SelectionListItem(
@@ -102,7 +105,8 @@ private fun SelectionListItem(
                     width = 1.dp,
                     color = if (isSelected) Color.Transparent else AppTheme.color.stroke,
                     shape = RoundedCornerShape(16.dp),
-                ).clip(RoundedCornerShape(16.dp))
+                )
+                .clip(RoundedCornerShape(16.dp))
                 .background(if (isSelected) AppTheme.color.primaryVariant else AppTheme.color.surface)
                 .clickable(onClick = onSelectItem)
                 .padding(horizontal = 12.dp),
