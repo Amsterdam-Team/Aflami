@@ -8,6 +8,8 @@ import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
+import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
+import com.amsterdam.domain.useCase.list.GetUserListsUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
@@ -25,7 +27,9 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(
     args: MovieDetailsArgs,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+    private val addMovieToListUseCase: AddMovieToListUseCase,
     private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
+    private val getUserListsUseCase: GetUserListsUseCase,
     private val getsSessionType: GetsSessionType,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
@@ -136,16 +140,38 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             runIfLoggedIn(
                 onLoggedIn = {
-                    updateState { it.copy(isAddToListDialogVisible = true) }
+                    val userList = getUserListsUseCase()
+                    updateState { it.copy(isAddToListDialogVisible = true, userLists = userList.toUiState()) }
                 },
                 onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.AddToList) },
             )
         }
     }
 
+    override fun onSaveMovieToList(
+        movieId: Int,
+        listId: Long,
+    ) {
+        viewModelScope.launch {
+            tryToExecute(
+                action = { addMovieToListUseCase(movieId = movieId, listId = listId) },
+                onSuccess = {
+                    sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListSuccessfully)
+                },
+                onError = {
+                    it.printStackTrace()
+                    sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListError)
+                },
+                onCompletion = {
+                    updateState { it.copy(isAddToListDialogVisible = false) }
+                },
+            )
+        }
+    }
+
     private suspend fun runIfLoggedIn(
-        onLoggedIn: () -> Unit,
-        onGuest: () -> Unit
+        onLoggedIn: suspend () -> Unit,
+        onGuest: () -> Unit,
     ) {
         if (getsSessionType() != SessionType.GUEST) {
             onLoggedIn()

@@ -67,7 +67,8 @@ import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.*
+import com.amsterdam.ui.navigation.Route.Cast
+import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
@@ -125,7 +126,17 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                     openYouTubeVideo(context, effect.url) {
                         SnackBarManager.showError(context.getString(com.amsterdam.ui.R.string.video_launch_error))
                     }
+                MovieDetailsEffect.MovieAddedToListError -> {
+                    SnackBarManager.showError(
+                        context.getString(com.amsterdam.ui.R.string.failed_to_add_to_list),
+                    )
+                }
 
+                MovieDetailsEffect.MovieAddedToListSuccessfully -> {
+                    SnackBarManager.showSuccess(
+                        context.getString(com.amsterdam.ui.R.string.added_to_list_successfully),
+                    )
+                }
             }
         }
     }
@@ -228,6 +239,12 @@ fun MovieContent(
         ) {
             AddToListDialog(
                 state.userLists,
+                onAddToSelectedList = { listId ->
+                    interactionListener.onSaveMovieToList(
+                        movieId = state.movieId.toInt(),
+                        listId = listId,
+                    )
+                },
                 onDismiss = interactionListener::onCancelClicked,
             )
         }
@@ -442,6 +459,11 @@ private fun SearchByActorContentPreview() {
                     override fun onClickBack() {}
                     override fun onClickRetryRequest() {}
                     override fun onAddToListClicked() {}
+
+                    override fun onSaveMovieToList(
+                        movieId: Int,
+                        listId: Long) {}
+
                     override fun onRateClicked() {}
                     override fun onNavigateToLoginClicked() {}
                     override fun onCancelClicked() {}

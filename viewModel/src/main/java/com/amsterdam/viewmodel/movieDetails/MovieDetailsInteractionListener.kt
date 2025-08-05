@@ -8,6 +8,11 @@ interface MovieDetailsInteractionListener {
     fun onClickBack()
     fun onClickRetryRequest()
     fun onAddToListClicked()
+
+    fun onSaveMovieToList(
+        movieId: Int,
+        listId: Long)
+
     fun onRateClicked()
     fun onNavigateToLoginClicked()
     fun onCancelClicked()
