@@ -18,6 +18,14 @@ class UserListRemoteDataSourceImpl @Inject constructor(
         return responseCall {  userListApiService.getUserLists(accountId, page, sessionId) }
     }
 
+    override suspend fun addMovieToList(
+        listId: Long,
+        sessionId: String,
+        movieId: Int,
+    ) {
+        userListApiService.addMediaItemToList(listId, sessionId, movieId)
+    }
+
     override suspend fun getMoviesFromList(
         listId: Long,
         page: Int,
