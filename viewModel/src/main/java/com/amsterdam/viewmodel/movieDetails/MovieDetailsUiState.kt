@@ -39,6 +39,8 @@ data class MovieDetailsUiState(
     val isAddToListDialogVisible: Boolean = false,
     val isCreateNewListDialogVisible: Boolean = false,
     val userLists: List<UserListUiState> = emptyList(),
+    val listName: String = "",
+    val isCreateListLoading: Boolean = false,
 ) {
 
     enum class MovieExtras {

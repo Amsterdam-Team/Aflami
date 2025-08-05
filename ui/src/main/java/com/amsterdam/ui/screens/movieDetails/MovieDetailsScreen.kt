@@ -61,6 +61,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.AddToListDialog
+import com.amsterdam.ui.components.CreateNewListDialog
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
@@ -136,6 +137,20 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                     SnackBarManager.showSuccess(
                         context.getString(com.amsterdam.ui.R.string.added_to_list_successfully),
                     )
+                }
+
+                MovieDetailsEffect.FailedToCreateList -> {
+                    SnackBarManager
+                        .showError(
+                            message = context.resources.getString(R.string.general_error_message),
+                        )
+                }
+
+                MovieDetailsEffect.ListCreatedSuccessfully -> {
+                    SnackBarManager
+                        .showSuccess(
+                            message = context.resources.getString(R.string.list_added_success_message),
+                        )
                 }
             }
         }
@@ -222,6 +237,20 @@ fun MovieContent(
                 }
             }
         }
+
+        AnimatedVisibility(
+            modifier = Modifier,
+            visible = state.isCreateNewListDialogVisible,
+        ) {
+            CreateNewListDialog(
+                isCreateListLoading = state.isCreateListLoading,
+                listName = state.listName,
+                onListNameChange = interactionListener::onListNameChange,
+                onCreateListClick = interactionListener::onCreateNewListClick,
+                onDismiss = interactionListener::onCancelClicked,
+            )
+        }
+
         AnimatedVisibility(
             modifier = Modifier,
             visible = state.isLoginDialogVisible
@@ -245,6 +274,7 @@ fun MovieContent(
                         listId = listId,
                     )
                 },
+                onCreateNewList = interactionListener::onClickAddList,
                 onDismiss = interactionListener::onCancelClicked,
             )
         }
@@ -463,6 +493,12 @@ private fun SearchByActorContentPreview() {
                     override fun onSaveMovieToList(
                         movieId: Int,
                         listId: Long) {}
+
+                    override fun onClickAddList() {}
+
+                    override fun onListNameChange(listName: String) {}
+
+                    override fun onCreateNewListClick() {}
 
                     override fun onRateClicked() {}
                     override fun onNavigateToLoginClicked() {}

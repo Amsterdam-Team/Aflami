@@ -9,6 +9,7 @@ import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
+import com.amsterdam.domain.useCase.list.CreateNewListUseCase
 import com.amsterdam.domain.useCase.list.GetUserListsUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
@@ -30,6 +31,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val addMovieToListUseCase: AddMovieToListUseCase,
     private val movieDetailsUiStateMapper: MovieDetailsUiStateMapper,
     private val getUserListsUseCase: GetUserListsUseCase,
+    private val createListUseCase: CreateNewListUseCase,
     private val getsSessionType: GetsSessionType,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
@@ -107,7 +109,13 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onCancelClicked() {
-        updateState { it.copy(isLoginDialogVisible = false, isAddToListDialogVisible = false) }
+        updateState {
+            it.copy(
+                isLoginDialogVisible = false,
+                isAddToListDialogVisible = false,
+                isCreateNewListDialogVisible = false,
+            )
+        }
     }
 
     override fun onClickSimilarMovie(movieId: Long) {
@@ -163,10 +171,43 @@ class MovieDetailsViewModel @Inject constructor(
                     sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListError)
                 },
                 onCompletion = {
-                    updateState { it.copy(isAddToListDialogVisible = false) }
+                    updateState { it.copy(isAddToListDialogVisible = false, isCreateNewListDialogVisible = false) }
                 },
             )
         }
+    }
+
+    override fun onClickAddList() {
+        updateState { it.copy(isCreateNewListDialogVisible = true, isAddToListDialogVisible = false) }
+    }
+
+    override fun onListNameChange(listName: String) {
+        updateState { it.copy(listName = listName) }
+    }
+
+    override fun onCreateNewListClick() {
+        updateState { it.copy(isCreateListLoading = true) }
+        tryToExecute(
+            action = {
+                createListUseCase(state.value.listName)
+            },
+            onSuccess = { listId ->
+                sendNewEffect(MovieDetailsEffect.ListCreatedSuccessfully)
+                onSaveMovieToList(state.value.movieId.toInt(), listId.toLong())
+            },
+            onError = {
+                sendNewEffect(MovieDetailsEffect.FailedToCreateList)
+            },
+            onCompletion = {
+                updateState {
+                    it.copy(
+                        isCreateNewListDialogVisible = false,
+                        listName = "",
+                        isCreateListLoading = false,
+                    )
+                }
+            },
+        )
     }
 
     private suspend fun runIfLoggedIn(

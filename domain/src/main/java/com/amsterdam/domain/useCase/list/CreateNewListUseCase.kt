@@ -5,7 +5,5 @@ import com.amsterdam.domain.repository.UserListRepository
 class CreateNewListUseCase(
     private val userListRepository: UserListRepository,
 ) {
-    suspend operator fun invoke(listName: String) {
-        userListRepository.createNewList(listName)
-    }
+    suspend operator fun invoke(listName: String): Int = userListRepository.createNewList(listName)
 }

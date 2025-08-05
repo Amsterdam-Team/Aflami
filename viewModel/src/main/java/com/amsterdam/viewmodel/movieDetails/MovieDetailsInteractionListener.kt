@@ -11,7 +11,14 @@ interface MovieDetailsInteractionListener {
 
     fun onSaveMovieToList(
         movieId: Int,
-        listId: Long)
+        listId: Long,
+    )
+
+    fun onClickAddList()
+
+    fun onListNameChange(listName: String)
+
+    fun onCreateNewListClick()
 
     fun onRateClicked()
     fun onNavigateToLoginClicked()

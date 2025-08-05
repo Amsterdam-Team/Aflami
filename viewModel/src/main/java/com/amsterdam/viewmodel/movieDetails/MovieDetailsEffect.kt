@@ -10,4 +10,8 @@ sealed interface MovieDetailsEffect {
     object MovieAddedToListSuccessfully : MovieDetailsEffect
 
     object MovieAddedToListError : MovieDetailsEffect
+
+    object ListCreatedSuccessfully : MovieDetailsEffect
+
+    object FailedToCreateList : MovieDetailsEffect
 }
