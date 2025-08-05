@@ -16,7 +16,7 @@ interface MovieDetailsInteractionListener {
 
     fun onClickCreateList()
 
-    fun onListNameChange(listName: String)
+    fun onChangeListName(listName: String)
 
     fun onCreateNewListClick()
 
