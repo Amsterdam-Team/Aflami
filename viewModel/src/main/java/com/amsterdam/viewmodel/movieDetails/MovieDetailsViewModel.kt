@@ -160,21 +160,19 @@ class MovieDetailsViewModel @Inject constructor(
         movieId: Int,
         listId: Long,
     ) {
-        viewModelScope.launch {
-            tryToExecute(
-                action = { addMovieToListUseCase(movieId = movieId, listId = listId) },
-                onSuccess = {
-                    sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListSuccessfully)
-                },
-                onError = {
-                    it.printStackTrace()
-                    sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListError)
-                },
-                onCompletion = {
-                    updateState { it.copy(isAddToListDialogVisible = false, isCreateNewListDialogVisible = false) }
-                },
-            )
-        }
+        tryToExecute(
+            action = { addMovieToListUseCase(movieId = movieId, listId = listId) },
+            onSuccess = {
+                sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListSuccessfully)
+            },
+            onError = {
+                it.printStackTrace()
+                sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListError)
+            },
+            onCompletion = {
+                updateState { it.copy(isAddToListDialogVisible = false, isCreateNewListDialogVisible = false) }
+            },
+        )
     }
 
     override fun onClickCreateList() {
