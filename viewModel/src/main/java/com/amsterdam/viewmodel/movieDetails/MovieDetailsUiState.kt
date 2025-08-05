@@ -41,6 +41,7 @@ data class MovieDetailsUiState(
     val userLists: List<UserListUiState> = emptyList(),
     val listName: String = "",
     val isCreateListLoading: Boolean = false,
+    val selectedList: UserListUiState? = null,
 ) {
 
     enum class MovieExtras {

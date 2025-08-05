@@ -90,6 +90,7 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
+import com.amsterdam.viewmodel.movieDetails.UserListUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -260,7 +261,7 @@ fun MovieContent(
             CreateNewListDialog(
                 isCreateListLoading = state.isCreateListLoading,
                 listName = state.listName,
-                onListNameChange = interactionListener::onListNameChange,
+                onListNameChange = interactionListener::onChangeListName,
                 onCreateListClick = interactionListener::onCreateNewListClick,
                 onDismiss = interactionListener::onCancelClicked,
             )
@@ -282,7 +283,9 @@ fun MovieContent(
             visible = state.isAddToListDialogVisible,
         ) {
             AddToListDialog(
-                state.userLists,
+                userLists = state.userLists,
+                selectedList = state.selectedList,
+                onSelectedListChange = interactionListener::onSelectedListChange,
                 onAddToSelectedList = { listId ->
                     interactionListener.onSaveMovieToList(
                         movieId = state.movieId.toInt(),
@@ -512,9 +515,11 @@ private fun SearchByActorContentPreview() {
 
                     override fun onClickCreateList() {}
 
-                    override fun onListNameChange(listName: String) {}
+                    override fun onChangeListName(listName: String) {}
 
                     override fun onCreateNewListClick() {}
+
+                    override fun onSelectedListChange(selectedList: UserListUiState) {}
 
                     override fun onRateClicked() {}
                     override fun onNavigateToLoginClicked() {}

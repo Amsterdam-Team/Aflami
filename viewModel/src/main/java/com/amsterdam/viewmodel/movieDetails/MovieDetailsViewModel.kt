@@ -114,6 +114,7 @@ class MovieDetailsViewModel @Inject constructor(
                 isLoginDialogVisible = false,
                 isAddToListDialogVisible = false,
                 isCreateNewListDialogVisible = false,
+                selectedList = null,
             )
         }
     }
@@ -170,7 +171,13 @@ class MovieDetailsViewModel @Inject constructor(
                 sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListError)
             },
             onCompletion = {
-                updateState { it.copy(isAddToListDialogVisible = false, isCreateNewListDialogVisible = false) }
+                updateState {
+                    it.copy(
+                        isAddToListDialogVisible = false,
+                        isCreateNewListDialogVisible = false,
+                        selectedList = null,
+                    )
+                }
             },
         )
     }
@@ -179,7 +186,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(isCreateNewListDialogVisible = true, isAddToListDialogVisible = false) }
     }
 
-    override fun onListNameChange(listName: String) {
+    override fun onChangeListName(listName: String) {
         updateState { it.copy(listName = listName) }
     }
 
@@ -206,6 +213,10 @@ class MovieDetailsViewModel @Inject constructor(
                 }
             },
         )
+    }
+
+    override fun onSelectedListChange(selectedList: UserListUiState) {
+        updateState { it.copy(selectedList = selectedList) }
     }
 
     private suspend fun runIfLoggedIn(

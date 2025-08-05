@@ -13,10 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,11 +40,12 @@ import com.amsterdam.viewmodel.movieDetails.UserListUiState
 fun AddToListDialog(
     userLists: List<UserListUiState>,
     modifier: Modifier = Modifier,
+    selectedList: UserListUiState? = null,
+    onSelectedListChange: (UserListUiState) -> Unit = {},
     onAddToSelectedList: (Long) -> Unit = {},
     onCreateNewList: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
-    var selectedList by remember { mutableStateOf<UserListUiState?>(null) }
     Dialog(
         onDismiss = onDismiss,
         modifier = modifier,
@@ -73,7 +70,7 @@ fun AddToListDialog(
                         listName = userList.name,
                         itemCount = userList.itemCount,
                         isSelected = selectedList == userList,
-                        onSelectItem = { selectedList = userList },
+                        onSelectItem = { onSelectedListChange(userList) },
                     )
                 }
             }

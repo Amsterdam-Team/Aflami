@@ -20,6 +20,8 @@ interface MovieDetailsInteractionListener {
 
     fun onCreateNewListClick()
 
+    fun onSelectedListChange(selectedList: UserListUiState)
+
     fun onRateClicked()
     fun onNavigateToLoginClicked()
     fun onCancelClicked()
