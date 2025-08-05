@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.api
 
+import com.amsterdam.repository.dto.remote.AddItemToListResponse
 import com.amsterdam.repository.dto.remote.CreateUserListResponse
 import com.amsterdam.repository.dto.remote.RemoteUserListResponse
 import com.amsterdam.repository.dto.remote.UserListDetailsResponse
@@ -45,7 +46,7 @@ interface UserListApiService {
         @Path(LIST_ID) listId: Long,
         @Query(SESSION_ID) sessionId: String,
         @Field(MEDIA_ID) movieId: Int,
-    )
+    ): AddItemToListResponse
 
     @POST(DELETE_MOVIE_FROM_LIST)
     suspend fun removeMovieFromList(

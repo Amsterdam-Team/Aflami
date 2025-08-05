@@ -3,6 +3,7 @@ package com.amsterdam.remotedatasource.datasource
 import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.utils.apiHandler.responseCall
 import com.amsterdam.repository.datasource.remote.UserListRemoteSource
+import com.amsterdam.repository.dto.remote.AddItemToListResponse
 import com.amsterdam.repository.dto.remote.CreateUserListResponse
 import com.amsterdam.repository.dto.remote.RemoteUserListResponse
 import com.amsterdam.repository.dto.remote.UserListDetailsResponse
@@ -39,9 +40,7 @@ class UserListRemoteDataSourceImpl @Inject constructor(
         listId: Long,
         sessionId: String,
         movieId: Int,
-    ) {
-        userListApiService.addMediaItemToList(listId, sessionId, movieId)
-    }
+    ): AddItemToListResponse = userListApiService.addMediaItemToList(listId, sessionId, movieId)
 
     override suspend fun getMoviesFromList(
         listId: Long,
