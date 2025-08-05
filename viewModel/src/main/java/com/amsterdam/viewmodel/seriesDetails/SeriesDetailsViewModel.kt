@@ -245,7 +245,7 @@ class SeriesDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onClickCancel() {
+    override fun onClickCancelRateDialog() {
         updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false)) }
     }
 

@@ -7,7 +7,8 @@ interface MovieDetailsInteractionListener {
     fun onClickShowAllCast()
     fun onClickBack()
     fun onClickRetryRequest()
-    fun onAddToListClicked()
+
+    fun onClickAddToList()
 
     fun onSaveMovieToList(
         movieId: Int,
@@ -18,15 +19,18 @@ interface MovieDetailsInteractionListener {
 
     fun onChangeListName(listName: String)
 
-    fun onCreateNewListClick()
+    fun onClickCreateNewList()
 
     fun onSelectedListChange(selectedList: UserListUiState)
 
-    fun onRateClicked()
-    fun onNavigateToLoginClicked()
-    fun onCancelClicked()
+    fun onClickRate()
+
+    fun onClickNavigateToLogin()
+
+    fun onClickCancel()
     fun onClickSimilarMovie(movieId: Long)
     fun onDescriptionExpansionToggled()
     fun onReviewExpansionToggled(reviewId: String)
-    fun onPlayVideoClicked()
+
+    fun onClickPlayVideo()
 }

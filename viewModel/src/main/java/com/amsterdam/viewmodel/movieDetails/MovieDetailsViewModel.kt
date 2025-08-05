@@ -96,7 +96,7 @@ class MovieDetailsViewModel @Inject constructor(
         loadMovieDetails()
     }
 
-    override fun onRateClicked() {
+    override fun onClickRate() {
         viewModelScope.launch {
             runIfLoggedIn(
                 onLoggedIn = {
@@ -131,7 +131,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(selectedStarIndex = null, isLoading = false, isSubmittingEnabled = true))}
     }
 
-    override fun onNavigateToLoginClicked() {
+    override fun onClickNavigateToLogin() {
         viewModelScope.launch {
             updateState { it.copy(isLoginDialogVisible = false) }
             delay(300)
@@ -139,7 +139,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onCancelClicked() {
+    override fun onClickCancel() {
         updateState {
             it.copy(
                 isLoginDialogVisible = false,
@@ -171,11 +171,11 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onPlayVideoClicked() {
+    override fun onClickPlayVideo() {
         sendNewNavigationEffect(MovieDetailsEffect.LaunchMovieVideoEffect(state.value.videoUrl))
     }
 
-    override fun onAddToListClicked() {
+    override fun onClickAddToList() {
         if (state.value.isLoading) return
         viewModelScope.launch {
             runIfLoggedIn(
@@ -221,7 +221,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(listName = listName) }
     }
 
-    override fun onCreateNewListClick() {
+    override fun onClickCreateNewList() {
         updateState { it.copy(isCreateListLoading = true) }
         tryToExecute(
             action = {
@@ -275,7 +275,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun onCompletion() = updateState { it.copy(isLoading = false) }
 
-    override fun onClickCancel() {
+    override fun onClickCancelRateDialog() {
         updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false)) }
     }
 

@@ -280,8 +280,8 @@ fun MovieContent(
                 isCreateListLoading = state.isCreateListLoading,
                 listName = state.listName,
                 onListNameChange = movieDetailsInteractionListener::onChangeListName,
-                onCreateListClick = movieDetailsInteractionListener::onCreateNewListClick,
-                onDismiss = movieDetailsInteractionListener::onCancelClicked,
+                onCreateListClick = movieDetailsInteractionListener::onClickCreateNewList,
+                onDismiss = movieDetailsInteractionListener::onClickCancel,
             )
         }
 
@@ -291,8 +291,8 @@ fun MovieContent(
         ) {
             MustLoginDialog(
                 title = state.dialogType.getMovieAndSeriesDetailsDialogTitle(),
-                onDismiss = movieDetailsInteractionListener::onCancelClicked,
-                onClickLogin = movieDetailsInteractionListener::onNavigateToLoginClicked,
+                onDismiss = movieDetailsInteractionListener::onClickCancel,
+                onClickLogin = movieDetailsInteractionListener::onClickNavigateToLogin,
             )
         }
 
@@ -311,7 +311,7 @@ fun MovieContent(
                     )
                 },
                 onCreateNewList = movieDetailsInteractionListener::onClickCreateList,
-                onDismiss = movieDetailsInteractionListener::onCancelClicked,
+                onDismiss = movieDetailsInteractionListener::onClickCancel,
             )
         }
 
@@ -383,7 +383,7 @@ fun MovieContent(
                                         .align(Alignment.CenterHorizontally)
                                         .offset(y = (-32).dp),
                                 isActive = state.videoUrl.isNotBlank(),
-                                onClick = movieDetailsInteractionListener::onPlayVideoClicked
+                                onClick = movieDetailsInteractionListener::onClickPlayVideo,
                             )
                             Column(
                                 modifier =
@@ -521,8 +521,8 @@ fun MovieContent(
                 firstOption = painterResource(R.drawable.ic_outlined_star),
                 lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
                 onNavigateBackClicked = movieDetailsInteractionListener::onClickBack,
-                onFirstOptionClicked = movieDetailsInteractionListener::onRateClicked,
-                onLastOptionClicked = movieDetailsInteractionListener::onAddToListClicked,
+                onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
+                onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
             )
             Column(
                 modifier = Modifier
@@ -539,8 +539,8 @@ fun MovieContent(
                     firstOption = painterResource(R.drawable.ic_outlined_star),
                     lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
                     onNavigateBackClicked = movieDetailsInteractionListener::onClickBack,
-                    onFirstOptionClicked = movieDetailsInteractionListener::onRateClicked,
-                    onLastOptionClicked = movieDetailsInteractionListener::onAddToListClicked,
+                    onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
+                    onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
                 )
 
                 HorizontalDivider(color = dividerColor)
@@ -561,7 +561,8 @@ private fun SearchByActorContentPreview() {
                     override fun onClickShowAllCast() {}
                     override fun onClickBack() {}
                     override fun onClickRetryRequest() {}
-                    override fun onAddToListClicked() {}
+
+                    override fun onClickAddToList() {}
 
                     override fun onSaveMovieToList(
                         movieId: Int,
@@ -571,20 +572,23 @@ private fun SearchByActorContentPreview() {
 
                     override fun onChangeListName(listName: String) {}
 
-                    override fun onCreateNewListClick() {}
+                    override fun onClickCreateNewList() {}
 
                     override fun onSelectedListChange(selectedList: UserListUiState) {}
 
-                    override fun onRateClicked() {}
-                    override fun onNavigateToLoginClicked() {}
-                    override fun onCancelClicked() {}
+                    override fun onClickRate() {}
+
+                    override fun onClickNavigateToLogin() {}
+
+                    override fun onClickCancel() {}
                     override fun onClickSimilarMovie(movieId: Long) {}
                     override fun onDescriptionExpansionToggled() {}
                     override fun onReviewExpansionToggled(reviewId: String) {}
-                    override fun onPlayVideoClicked() {}
+
+                    override fun onClickPlayVideo() {}
                 },
             rateDialogInteractionListener = object : RateDialogInteractionListener {
-                override fun onClickCancel() {}
+                override fun onClickCancelRateDialog() {}
                 override fun onClickSubmit() {}
                 override fun onChangeRating(newRate: Int) {}
 

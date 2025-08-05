@@ -82,7 +82,8 @@ import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.*
+import com.amsterdam.ui.navigation.Route.Cast
+import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
@@ -661,7 +662,8 @@ private fun SeriesDetailsContentPreview() {
 
                                                                                          },
             rateDialogInteractionListener = object : RateDialogInteractionListener{
-                override fun onClickCancel() {}
+                override fun onClickCancelRateDialog() {}
+
                 override fun onClickSubmit() {}
                 override fun onChangeRating(newRate: Int) {}
 

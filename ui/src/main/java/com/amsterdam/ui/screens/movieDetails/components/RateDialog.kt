@@ -34,7 +34,7 @@ fun RateDialog(
     selectedStarIndex: Int? = null
 ) {
     Dialog(
-        onDismissRequest = interaction::onClickCancel,
+        onDismissRequest = interaction::onClickCancelRateDialog,
         properties = DialogProperties(usePlatformDefaultWidth = false,),
     ) {
         Column(
@@ -61,7 +61,7 @@ fun RateDialog(
                 IconButton(
                     painter = painterResource(R.drawable.ic_cancel),
                     contentDescription = "",
-                    onClick = interaction::onClickCancel,
+                    onClick = interaction::onClickCancelRateDialog,
                     tint = AppTheme.color.title,
                 )
             }
@@ -99,7 +99,8 @@ private fun RateDialogPreview() {
     AflamiTheme {
         RateDialog(
             interaction = object : RateDialogInteractionListener {
-                override fun onClickCancel() {}
+                override fun onClickCancelRateDialog() {}
+
                 override fun onClickSubmit() {}
                 override fun onChangeRating(newRate: Int) {}
             },

@@ -202,7 +202,7 @@ class MovieDetailsViewModelTest {
     fun `onAddToListClicked should call the use case to get the movie details data`() = runTest {
         //When
         advanceUntilIdle()
-        viewModel.onAddToListClicked()
+        viewModel.onClickAddToList()
         advanceUntilIdle()
         //Then
         coVerify(exactly = 1) {
@@ -218,7 +218,7 @@ class MovieDetailsViewModelTest {
             val collectJob = launch {
                 viewModel.effect.collect { effects.add(it!!) }
             }
-            viewModel.onNavigateToLoginClicked()
+            viewModel.onClickNavigateToLogin()
             advanceUntilIdle()
             collectJob.cancel()
             assertThat(effects.first()).isEqualTo(MovieDetailsEffect.NavigateToLoginScreenEffect)
@@ -228,7 +228,7 @@ class MovieDetailsViewModelTest {
     fun `onCancelClicked should hide the login dialog when its call`() = runTest {
         //When
         advanceUntilIdle()
-        viewModel.onCancelClicked()
+        viewModel.onClickCancel()
         advanceUntilIdle()
         //Then
         assertThat(viewModel.state.value.isLoginDialogVisible).isFalse()
