@@ -13,9 +13,9 @@ import retrofit2.http.Query
 interface UserListApiService {
     @GET(USER_LISTS_ENDPOINT)
     suspend fun getUserLists(
-        @Path("account_id") accountId: Int = 0,
-        @Query("page") page: Int = 1,
-        @Query("session_id") sessionId: String,
+        @Path(ACCOUNT_ID) accountId: Int = 0,
+        @Query(PAGE) page: Int = 1,
+        @Query(SESSION_ID) sessionId: String,
     ): RemoteUserListResponse
 
     @GET(GET_USER_LIST_DETAILS)
@@ -33,9 +33,9 @@ interface UserListApiService {
     @FormUrlEncoded
     @POST(ADD_MOVIE_TO_LIST)
     suspend fun addMediaItemToList(
-        @Path("listId") listId: Long,
-        @Field("media_type") mediaType: String,
-        @Field("media_id") movieId: Int,
+        @Path(LIST_ID) listId: Long,
+        @Query(SESSION_ID) sessionId: String,
+        @Field(MEDIA_ID) movieId: Int,
     )
 
     @POST(DELETE_MOVIE_FROM_LIST)
@@ -46,8 +46,9 @@ interface UserListApiService {
     )
 
     companion object {
-        const val ADD_MOVIE_TO_LIST = "list/{listId}/items"
+        const val ADD_MOVIE_TO_LIST = "list/{list_id}/add_item"
         const val USER_LISTS_ENDPOINT = "account/{account_id}/lists"
+        private const val ACCOUNT_ID = "account_id"
         private const val PAGE = "page"
         private const val LIST_ID = "list_id"
         private const val SESSION_ID = "session_id"
