@@ -5,7 +5,7 @@ import com.amsterdam.repository.dto.remote.EpisodeDto
 import com.amsterdam.repository.utils.toSafeLocalDate
 
 
-fun EpisodeDto.toEntity(): Episode {
+fun EpisodeDto.toEntity(videoUrl:String): Episode {
     return Episode(
         id = id,
         title = title,
@@ -16,7 +16,8 @@ fun EpisodeDto.toEntity(): Episode {
         airDate = airDate?.toSafeLocalDate(),
         seasonNumber = seasonNumber,
         runTimeInMinutes = runtime?.toInt() ?: 0,
+        videoUrl = videoUrl
     )
 }
 
-fun List<EpisodeDto>.toEntityList(): List<Episode> = map { it.toEntity() }
+fun List<EpisodeDto>.toEntityList(videoUrl:String): List<Episode> = map { it.toEntity(videoUrl =videoUrl) }

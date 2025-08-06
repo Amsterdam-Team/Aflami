@@ -28,7 +28,7 @@ class AppPreferencesImpl @Inject constructor(
 
     override fun getAppLanguage(): Flow<String> {
         return dataStore.data.map { preferences ->
-            preferences[CURRENT_LANGUAGE] ?: emptyFlow<String>().first()
+            preferences[CURRENT_LANGUAGE] ?: ""
         }
     }
 
