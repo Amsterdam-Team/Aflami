@@ -17,8 +17,8 @@ import com.amsterdam.repository.dto.local.utils.DatabaseConstants
         ),
         ForeignKey(
             entity = LocalTvShowCategoryDto::class,
-            parentColumns = ["categoryId", "storedLanguage"],
-            childColumns = ["categoryId", "storedLanguage"],
+            parentColumns = ["categoryId", ],
+            childColumns = ["categoryId"],
             onDelete = ForeignKey.CASCADE
         ),
     ],

@@ -3,12 +3,10 @@ package com.amsterdam.repository.mapper.remoteToLocal
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 
-fun RemoteCategoryDto.toLocalMovieCategoryDto(storedLanguage: String): LocalMovieCategoryDto =
+fun RemoteCategoryDto.toLocalMovieCategoryDto(): LocalMovieCategoryDto =
     LocalMovieCategoryDto(
-        categoryId = id.toLong(),
-        storedLanguage = storedLanguage,
-        name = name
+        categoryId = id.toLong()
     )
 
-fun List<RemoteCategoryDto>.toLocalDtoList(storedLanguage: String): List<LocalMovieCategoryDto> =
-    map { it.toLocalMovieCategoryDto(storedLanguage) }
+fun List<RemoteCategoryDto>.toLocalDtoList(): List<LocalMovieCategoryDto> =
+    map { it.toLocalMovieCategoryDto() }

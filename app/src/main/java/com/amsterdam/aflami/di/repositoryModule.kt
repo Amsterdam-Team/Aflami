@@ -2,7 +2,6 @@ package com.amsterdam.aflami.di
 
 import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.repository.AuthenticationRepository
-import com.amsterdam.domain.repository.CategoryRepository
 import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.repository.ProfileRepository
@@ -12,7 +11,6 @@ import com.amsterdam.domain.repository.UserListRepository
 import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.repository.repository.AppPreferencesRepositoryImpl
 import com.amsterdam.repository.repository.AuthenticationRepositoryImpl
-import com.amsterdam.repository.repository.CategoryRepositoryImpl
 import com.amsterdam.repository.repository.CountryRepositoryImpl
 import com.amsterdam.repository.repository.MovieRepositoryImpl
 import com.amsterdam.repository.repository.ProfileRepositoryImpl
@@ -56,12 +54,6 @@ abstract class RepositoryModule {
     abstract fun bindCountryRepository(
         impl: CountryRepositoryImpl
     ): CountryRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindCategoryRepository(
-        impl: CategoryRepositoryImpl
-    ): CategoryRepository
 
     @Binds
     @Singleton

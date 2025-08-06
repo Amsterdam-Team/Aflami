@@ -1,7 +1,5 @@
 package com.amsterdam.repository.repository
 
-import com.amsterdam.domain.repository.CategoryRepository
-import com.amsterdam.entity.Category
 import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryDto

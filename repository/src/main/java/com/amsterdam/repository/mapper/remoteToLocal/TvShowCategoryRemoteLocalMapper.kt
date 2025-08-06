@@ -5,9 +5,7 @@ import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 
 fun RemoteCategoryDto.toLocalTvShowCategoryDto(storedLanguage: String): LocalTvShowCategoryDto =
     LocalTvShowCategoryDto(
-        categoryId = this.id.toLong(),
-        storedLanguage = storedLanguage,
-        name = this.name
+        categoryId = this.id.toLong()
     )
 
 fun List<RemoteCategoryDto>.toLocalTvShowCategoryDtoList(storedLanguage: String): List<LocalTvShowCategoryDto> =

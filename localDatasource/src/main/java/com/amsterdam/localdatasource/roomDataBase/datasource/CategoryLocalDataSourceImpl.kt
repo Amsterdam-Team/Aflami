@@ -18,11 +18,11 @@ class CategoryLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getMovieCategories(storedLanguage: String): List<LocalMovieCategoryDto> {
-        return dao.getAllMovieCategories(storedLanguage)
+        return dao.getAllMovieCategories()
     }
 
     override suspend fun getTvShowCategories(storedLanguage: String): List<LocalTvShowCategoryDto> {
-        return dao.getAllTvShowCategories(storedLanguage)
+        return dao.getAllTvShowCategories()
     }
 
 }
