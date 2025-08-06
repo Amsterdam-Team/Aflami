@@ -84,10 +84,12 @@ class HomeViewModelTest {
     @Test
     fun `init should subscribe to app language changes and trigger data loading`() =
         testScope.runTest {
+            // Given
             coEvery { manageLocaleLanguageUseCase.getAppLanguage() } returns flowOf(
                 ManageLocaleLanguageUseCase.Language.ENGLISH
             )
 
+            // When
             viewModel = HomeViewModel(
                 getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
                 homeUiStateMapper = homeUiStateMapper,
@@ -100,6 +102,7 @@ class HomeViewModelTest {
             )
             advanceUntilIdle()
 
+            // Then
             coVerify(exactly = 1) { getHomeScreenDataUseCase() }
             coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(pageSize = 10) }
         }
