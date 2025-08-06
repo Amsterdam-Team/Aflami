@@ -13,6 +13,7 @@ import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.dto.remote.VideoDto
 import com.amsterdam.repository.dto.remote.VideoResponse
+import com.amsterdam.repository.dto.remote.authentication.AuthenticationResponseDto
 import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 
@@ -179,6 +180,14 @@ val videoDto= VideoDto(
     size = 1080,
     type = "Trailer"
 
+)
+val authenticationResponseDto= AuthenticationResponseDto(
+    isSuccess =  true,
+    expiresAt = "2023-01-01",
+    requestToken = "token",
+    statusCode = 200,
+    statusMessage = "Success",
+    error = ""
 )
 
 
