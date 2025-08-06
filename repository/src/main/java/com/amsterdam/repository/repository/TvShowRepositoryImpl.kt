@@ -27,6 +27,7 @@ import com.amsterdam.repository.mapper.remote.toEntityList
 import com.amsterdam.repository.mapper.remote.toTvShowUserRateEntityList
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalTvShowCategoryDtoList
 import com.amsterdam.repository.security.CryptoData
 import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
@@ -43,6 +44,7 @@ class TvShowRepositoryImpl @Inject constructor(
     private val categoryLocalSource: CategoryLocalSource,
     private val categoryRemoteSource: CategoryRemoteSource
     ) : TvShowRepository {
+
     override suspend fun getTvShowByKeyword(
         keyword: String,
         page: Int,
@@ -206,7 +208,7 @@ class TvShowRepositoryImpl @Inject constructor(
         }
 
         private suspend fun onSaveTvShowWithCategories(remoteTvShow: RemoteTvShowItemDto) {
-            cacheTvShowCategories()
+            cacheTvShowCategoriesIfNotCached()
                 localTvDataSource.addTvShowWithCategories(
                     tvShow = remoteTvShow.toLocalDto(preferences.getAppLanguage().first()),
                     categoryIds = remoteTvShow.genreIds.map(Int::toLong),
@@ -221,22 +223,22 @@ class TvShowRepositoryImpl @Inject constructor(
                     localTvDataSource.incrementGenreInterest(it.toLong())
                 }
         }
-    suspend fun cacheTvShowCategories(){
+    suspend fun cacheTvShowCategoriesIfNotCached(){
         getTvShowCategoriesFromLocal().takeIf { it.isNotEmpty() }
-            ?: saveTvShowCategoriesToDatabase(categoryRemoteSource.getMovieCategories())
+            ?: saveTvShowCategoriesToDatabase(categoryRemoteSource.getTvShowCategories())
     }
 
     private suspend fun getTvShowCategoriesFromLocal(): List<LocalTvShowCategoryDto> {
-        return categoryLocalSource.getTvShowCategories(
-            preferences.getAppLanguage().first()
+        return categoryLocalSource.getTvShowCategories()
+    }
+
+
+    private suspend fun saveTvShowCategoriesToDatabase(
+        tvShowCategories: RemoteCategoryResponse
+    ) {
+        categoryLocalSource.upsertTvShowCategories(
+            tvShowCategories.genres.toLocalTvShowCategoryDtoList(preferences.getAppLanguage().first())
         )
     }
 
-    private suspend fun saveTvShowCategoriesToDatabase(
-        movieCategories: RemoteCategoryResponse
-    ) {
-        categoryLocalSource.upsertMovieCategories(
-            movieCategories.genres.toLocalDtoList()
-        )
-    }
 }

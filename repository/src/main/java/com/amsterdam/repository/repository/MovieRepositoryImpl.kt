@@ -1,6 +1,5 @@
 package com.amsterdam.repository.repository
 
-import android.util.Log
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase.UserRatedMovie
@@ -34,9 +33,7 @@ import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDtoList
 import com.amsterdam.repository.security.CryptoData
 import com.amsterdam.repository.utils.getCachedOrRemoteData
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
@@ -50,6 +47,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val preferences: AppPreferences,
     val cryptoData: CryptoData,
     ) : MovieRepository {
+
     override suspend fun getMoviesByKeyword(
         keyword: String,
         page: Int,
@@ -258,7 +256,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     private suspend fun saveMovieWithCategories(remoteMovies: List<RemoteMovieItemDto>) {
-        cacheMovieCategories()
+        cacheMovieCategoriesIfNotCached()
         remoteMovies.forEach { onSaveMovieWithCategories(it) }
     }
 
@@ -291,15 +289,13 @@ class MovieRepositoryImpl @Inject constructor(
             .map { movieLocalSource.incrementGenreInterest(it.toLong()) }
     }
 
-    suspend fun cacheMovieCategories(){
+    suspend fun cacheMovieCategoriesIfNotCached(){
          getMovieCategoriesFromLocal().takeIf { it.isNotEmpty() }
             ?: saveMovieCategoriesToDatabase(categoryRemoteSource.getMovieCategories())
     }
 
     private suspend fun getMovieCategoriesFromLocal(): List<LocalMovieCategoryDto> {
-        return categoryLocalSource.getMovieCategories(
-                preferences.getAppLanguage().first()
-            )
+        return categoryLocalSource.getMovieCategories()
     }
 
     private suspend fun saveMovieCategoriesToDatabase(
