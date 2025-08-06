@@ -1,26 +1,28 @@
 package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.CategoryRepository
-import com.amsterdam.entity.Category
+import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalSource
+import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
 import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
+import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
-import com.amsterdam.repository.mapper.remote.CategoryRemoteMapper
-import com.amsterdam.repository.mapper.remoteToLocal.MovieCategoryRemoteLocalMapper
+import com.amsterdam.repository.mapper.local.toEntityList
+import com.amsterdam.repository.mapper.remote.toEntityList
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
+import com.amsterdam.repository.mapper.remoteToLocal.toLocalTvShowCategoryDtoList
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-
 
 class CategoryRepositoryImplTest {
 
@@ -28,203 +30,150 @@ class CategoryRepositoryImplTest {
 
     private val remoteDataSource: CategoryRemoteSource = mockk()
     private val localDataSource: CategoryLocalSource = mockk()
-    private val movieCategoryLocalMapper: MovieCategoryLocalMapper = mockk()
-    private val categoryRemoteMapper: CategoryRemoteMapper = mockk()
-    private val movieCategoryRemoteLocalMapper: MovieCategoryRemoteLocalMapper = mockk()
-    private val tvShowCategoryRemoteLocalMapper: TvShowCategoryRemoteLocalMapper = mockk()
-    private val tvShowCategoryLocalMapper: TvShowCategoryLocalMapper = mockk()
+    private val preferences: AppPreferences = mockk()
 
     private val testLanguage = "en"
+    private val testMovieCategoryDto =
+        LocalMovieCategoryDto(categoryId = 1, storedLanguage = testLanguage, name = "Action")
+    private val testTvShowCategoryDto =
+        LocalTvShowCategoryDto(categoryId = 3, storedLanguage = testLanguage, name = "Drama")
+    private val testRemoteCategoryDto = RemoteCategoryDto(id = 1, name = "Action")
 
     @BeforeEach
     fun setup() {
         clearAllMocks()
-
         repository = CategoryRepositoryImpl(
             categoryRemoteSource = remoteDataSource,
             categoryLocalSource = localDataSource,
-            movieCategoryLocalMapper = movieCategoryLocalMapper,
-            categoryRemoteMapper = categoryRemoteMapper,
-            movieCategoryRemoteLocalMapper = movieCategoryRemoteLocalMapper,
-            tvShowCategoryRemoteLocalMapper = tvShowCategoryRemoteLocalMapper,
-            tvShowCategoryLocalMapper = tvShowCategoryLocalMapper
+            preferences = preferences
         )
-        every { movieCategoryLocalMapper.toEntityList(emptyList()) } returns emptyList()
-        every { tvShowCategoryLocalMapper.toEntityList(emptyList()) } returns emptyList()
+
+        coEvery { preferences.getAppLanguage() } returns flowOf(testLanguage)
     }
 
     @Test
-    fun `getMovieCategories should return mapped local movie categories when local is not empty`() =
-        runTest {
-            val localCategoryDto = LocalMovieCategoryDto(
-                categoryId = 1,
-                storedLanguage = testLanguage,
-                name = "Action"
-            )
-            val localCategories = listOf(localCategoryDto)
-            val mappedCategory = Category(id = 1, name = "Action", imageUrl = "")
-            val mappedCategories = listOf(mappedCategory)
+    fun `getMovieCategories should return local data when available`() = runTest {
+        // Arrange
+        val localCategories = listOf(testMovieCategoryDto)
+        val expectedCategories =
+            localCategories.toEntityList()
 
-            coEvery { localDataSource.getMovieCategories() } returns localCategories
-            every { movieCategoryLocalMapper.toEntityList(localCategories) } returns mappedCategories
+        coEvery { localDataSource.getMovieCategories(testLanguage) } returns localCategories
 
-            val result = repository.getMovieCategories()
+        // Act
+        val result = repository.getMovieCategories()
 
-            assertThat(result).isEqualTo(mappedCategories)
-            coVerify(exactly = 0) { remoteDataSource.getMovieCategories() }
-            coVerify(exactly = 1) { localDataSource.getMovieCategories() }
-            verify(exactly = 1) { movieCategoryLocalMapper.toEntityList(localCategories) }
-        }
+        // Assert
+        assertThat(result).isEqualTo(expectedCategories)
+        coVerify(exactly = 1) { localDataSource.getMovieCategories(testLanguage) }
+        coVerify(exactly = 0) { remoteDataSource.getMovieCategories() }
+        coVerify(exactly = 0) { localDataSource.upsertMovieCategories(any()) }
+    }
 
     @Test
-    fun `getTvShowCategories should return mapped local tv show categories when local is not empty`() =
-        runTest {
-            val localTvShowCategoryDto = LocalTvShowCategoryDto(
-                categoryId = 3,
-                storedLanguage = testLanguage,
-                name = "Drama"
-            )
-            val localTvShowCategories = listOf(localTvShowCategoryDto)
-            val mappedTvShowCategory = Category(id = 3, name = "Drama", imageUrl = "")
-            val mappedTvShowCategories = listOf(mappedTvShowCategory)
+    fun `getTvShowCategories should return local data when available`() = runTest {
+        // Arrange
+        val localTvShowCategories = listOf(testTvShowCategoryDto)
+        val expectedTvShowCategories = localTvShowCategories.toEntityList()
 
-            coEvery { localDataSource.getTvShowCategories() } returns localTvShowCategories
-            every { tvShowCategoryLocalMapper.toEntityList(localTvShowCategories) } returns mappedTvShowCategories
+        coEvery { localDataSource.getTvShowCategories(testLanguage) } returns localTvShowCategories
 
-            val result = repository.getTvShowCategories()
+        // Act
+        val result = repository.getTvShowCategories()
 
-            assertThat(result).isEqualTo(mappedTvShowCategories)
-            coVerify(exactly = 0) { remoteDataSource.getTvShowCategories() }
-            coVerify(exactly = 1) { localDataSource.getTvShowCategories() }
-            verify(exactly = 1) { tvShowCategoryLocalMapper.toEntityList(localTvShowCategories) }
-        }
+        // Assert
+        assertThat(result).isEqualTo(expectedTvShowCategories)
+        coVerify(exactly = 1) { localDataSource.getTvShowCategories(testLanguage) }
+        coVerify(exactly = 0) { remoteDataSource.getTvShowCategories() }
+        coVerify(exactly = 0) { localDataSource.upsertTvShowCategories(any()) }
+    }
 
     @Test
-    fun `getMovieCategories should fetch from remote, save locally, and return mapped categories if local is empty`() =
-        runTest {
-            val remoteCategoryDto = RemoteCategoryDto(id = 1, name = "Action")
-            val remoteResponse = RemoteCategoryResponse(genres = listOf(remoteCategoryDto))
-            val localSavedDto = LocalMovieCategoryDto(
-                categoryId = 1,
-                storedLanguage = testLanguage,
-                name = "Action"
-            )
-            val mappedDomainCategory = Category(id = 1, name = "Action", imageUrl = "")
+    fun `getMovieCategories should fetch from remote and cache if local is empty`() = runTest {
+        // Arrange
+        val remoteResponse = RemoteCategoryResponse(genres = listOf(testRemoteCategoryDto))
+        val expectedEntityList = remoteResponse.genres.toEntityList()
 
-            coEvery { localDataSource.getMovieCategories() } returns emptyList()
+        coEvery { localDataSource.getMovieCategories(testLanguage) } returns emptyList()
+        coEvery { remoteDataSource.getMovieCategories() } returns remoteResponse
+        coJustRun { localDataSource.upsertMovieCategories(any()) }
 
-            coEvery { remoteDataSource.getMovieCategories() } returns remoteResponse
+        // Act
+        val result = repository.getMovieCategories()
 
-            every {
-                movieCategoryRemoteLocalMapper.toLocalList(
-                    remoteResponse.genres,
-                    listOf(testLanguage)
+        // Assert
+        assertThat(result).isEqualTo(expectedEntityList)
+        coVerify(exactly = 1) { localDataSource.getMovieCategories(testLanguage) }
+        coVerify(exactly = 1) { remoteDataSource.getMovieCategories() }
+        coVerify(exactly = 1) {
+            localDataSource.upsertMovieCategories(
+                remoteResponse.genres.toLocalDtoList(
+                    testLanguage
                 )
-            } returns listOf(localSavedDto)
-
-            coJustRun { localDataSource.upsertMovieCategories(listOf(localSavedDto)) }
-
-            every { categoryRemoteMapper.toEntityList(remoteResponse.genres) } returns listOf(
-                mappedDomainCategory
             )
-
-            val result = repository.getMovieCategories()
-
-            assertThat(result).isEqualTo(listOf(mappedDomainCategory))
-
-            coVerify(exactly = 1) { localDataSource.getMovieCategories() }
-            coVerify(exactly = 1) { remoteDataSource.getMovieCategories() }
-            verify(exactly = 1) {
-                movieCategoryRemoteLocalMapper.toLocalList(
-                    remoteResponse.genres,
-                    listOf(testLanguage)
-                )
-            }
-            coVerify(exactly = 1) { localDataSource.upsertMovieCategories(listOf(localSavedDto)) }
-            verify(exactly = 1) { categoryRemoteMapper.toEntityList(remoteResponse.genres) }
         }
+    }
 
     @Test
-    fun `getTvShowCategories should fetch from remote, save locally, and return mapped categories if local is empty`() =
-        runTest {
-            val remoteCategoryDto = RemoteCategoryDto(id = 3, name = "Drama")
-            val remoteResponse = RemoteCategoryResponse(genres = listOf(remoteCategoryDto))
-            val localSavedDto = LocalTvShowCategoryDto(
-                categoryId = 3,
-                storedLanguage = testLanguage,
-                name = "Drama"
-            )
-            val mappedDomainCategory = Category(id = 3, name = "Drama", imageUrl = "")
+    fun `getTvShowCategories should fetch from remote and cache if local is empty`() = runTest {
+        // Arrange
+        val remoteResponse =
+            RemoteCategoryResponse(genres = listOf(RemoteCategoryDto(id = 3, name = "Drama")))
+        val expectedEntityList = remoteResponse.genres.toEntityList()
 
-            coEvery { localDataSource.getTvShowCategories() } returns emptyList()
+        coEvery { localDataSource.getTvShowCategories(testLanguage) } returns emptyList()
+        coEvery { remoteDataSource.getTvShowCategories() } returns remoteResponse
+        coJustRun { localDataSource.upsertTvShowCategories(any()) }
 
-            coEvery { remoteDataSource.getTvShowCategories() } returns remoteResponse
+        // Act
+        val result = repository.getTvShowCategories()
 
-            every {
-                tvShowCategoryRemoteLocalMapper.toLocalList(
-                    remoteResponse.genres,
-                    listOf(testLanguage)
+        // Assert
+        assertThat(result).isEqualTo(expectedEntityList)
+        coVerify(exactly = 1) { localDataSource.getTvShowCategories(testLanguage) }
+        coVerify(exactly = 1) { remoteDataSource.getTvShowCategories() }
+        coVerify(exactly = 1) {
+            localDataSource.upsertTvShowCategories(
+                remoteResponse.genres.toLocalTvShowCategoryDtoList(
+                    testLanguage
                 )
-            } returns listOf(localSavedDto)
-
-            coJustRun { localDataSource.upsertTvShowCategories(listOf(localSavedDto)) }
-
-            every { categoryRemoteMapper.toEntityList(remoteResponse.genres) } returns listOf(
-                mappedDomainCategory
             )
-
-            val result = repository.getTvShowCategories()
-
-            assertThat(result).isEqualTo(listOf(mappedDomainCategory))
-
-
-            coVerify(exactly = 1) { localDataSource.getTvShowCategories() }
-            coVerify(exactly = 1) { remoteDataSource.getTvShowCategories() }
-            verify(exactly = 1) {
-                tvShowCategoryRemoteLocalMapper.toLocalList(
-                    remoteResponse.genres,
-                    listOf(testLanguage)
-                )
-            }
-            coVerify(exactly = 1) { localDataSource.upsertTvShowCategories(listOf(localSavedDto)) }
-            verify(exactly = 1) { categoryRemoteMapper.toEntityList(remoteResponse.genres) }
         }
+    }
 
     @Test
-    fun `getMovieCategories should throw exception if local source fails`() = runTest {
-        val expectedException = RuntimeException("Database corruption!")
+    fun `getMovieCategories should throw exception if remote fetch fails`() = runTest {
+        // Arrange
+        val expectedException = RuntimeException("Remote server down!")
+        coEvery { localDataSource.getMovieCategories(testLanguage) } returns emptyList()
+        coEvery { remoteDataSource.getMovieCategories() } throws expectedException
 
-        coEvery { localDataSource.getMovieCategories() } throws expectedException
-
+        // Act & Assert
         val thrownException = assertThrows<RuntimeException> {
             repository.getMovieCategories()
         }
 
         assertThat(thrownException).isEqualTo(expectedException)
-
-        coVerify(exactly = 1) { localDataSource.getMovieCategories() }
-        coVerify(exactly = 0) { remoteDataSource.getMovieCategories() }
-        verify(exactly = 0) { movieCategoryRemoteLocalMapper.toLocalList(any(), any()) }
+        coVerify(exactly = 1) { localDataSource.getMovieCategories(testLanguage) }
+        coVerify(exactly = 1) { remoteDataSource.getMovieCategories() }
         coVerify(exactly = 0) { localDataSource.upsertMovieCategories(any()) }
-        verify(exactly = 0) { categoryRemoteMapper.toEntityList(any()) }
     }
 
     @Test
-    fun `getTvShowCategories should throw exception if local source fails`() = runTest {
-        val expectedException = RuntimeException("Database read error!")
+    fun `getTvShowCategories should throw exception if remote fetch fails`() = runTest {
+        // Arrange
+        val expectedException = RuntimeException("Remote server down!")
+        coEvery { localDataSource.getTvShowCategories(testLanguage) } returns emptyList()
+        coEvery { remoteDataSource.getTvShowCategories() } throws expectedException
 
-        coEvery { localDataSource.getTvShowCategories() } throws expectedException
-
+        // Act & Assert
         val thrownException = assertThrows<RuntimeException> {
             repository.getTvShowCategories()
         }
 
         assertThat(thrownException).isEqualTo(expectedException)
-
-        coVerify(exactly = 1) { localDataSource.getTvShowCategories() }
-        coVerify(exactly = 0) { remoteDataSource.getTvShowCategories() }
-        verify(exactly = 0) { tvShowCategoryRemoteLocalMapper.toLocalList(any(), any()) }
+        coVerify(exactly = 1) { localDataSource.getTvShowCategories(testLanguage) }
+        coVerify(exactly = 1) { remoteDataSource.getTvShowCategories() }
         coVerify(exactly = 0) { localDataSource.upsertTvShowCategories(any()) }
-        verify(exactly = 0) { categoryRemoteMapper.toEntityList(any()) }
     }
 }

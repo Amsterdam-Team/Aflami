@@ -524,27 +524,8 @@ fun MovieContent(
                 onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
                 onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .statusBarsPadding()
-                            .zIndex(10f)
-                            .onSizeChanged { headerHeight = it.height },
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = movieDetailsInteractionListener::onClickBack,
-                    onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
-                    onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
-                )
 
-                HorizontalDivider(color = dividerColor)
-            }
+            HorizontalDivider(color = dividerColor)
         }
     }
 }

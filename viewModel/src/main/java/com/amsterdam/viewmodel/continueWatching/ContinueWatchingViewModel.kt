@@ -49,9 +49,13 @@ class ContinueWatchingViewModel @Inject constructor(
                     config = PagingConfig(pageSize = 20),
                     pagingSourceFactory = {
                         PagingSource { page ->
-                            val continueWatchingScreenData = getContinueWatchingScreenDataUseCase(page = page, pageSize = 20)
-                            getLinearItemsList(continueWatchingScreenData.continueWatchingMovies.first(),
-                                continueWatchingScreenData.continueWatchingTvShows.first(),
+                            val continueWatchingScreenData = getContinueWatchingScreenDataUseCase(
+                                page = page,
+                                pageSize = 20
+                            ).first()
+                            getLinearItemsList(
+                                continueWatchingScreenData.continueWatchingMovies,
+                                continueWatchingScreenData.continueWatchingTvShows,
                                 continueWatchingUiStateMapper::continueWatchingMediaItemUiState,
                                 continueWatchingUiStateMapper::continueWatchingMediaItemUiState
                             ).sortedByDescending { it.dateAdded }
@@ -80,7 +84,8 @@ class ContinueWatchingViewModel @Inject constructor(
                     error = ContinueWatchingUiState.ContinueWatchingError.NetworkError
                 )
             }
-            else ->{}
+
+            else -> {}
         }
     }
 
