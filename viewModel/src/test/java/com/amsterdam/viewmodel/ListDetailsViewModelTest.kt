@@ -190,7 +190,6 @@ class ListDetailsViewModelTest {
         pagingFlow.test {
             val item = awaitItem()
             assertThat(item).isInstanceOf(PagingData::class.java)
-            cancelAndIgnoreRemainingEvents()
         }
         assertThat(viewModel.state.value.isLoading).isFalse()
     }
