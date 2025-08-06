@@ -11,6 +11,7 @@ import com.amsterdam.repository.dto.remote.RemoteMovieResponse
 import com.amsterdam.repository.dto.remote.RemoteTvShowItemDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
+import com.amsterdam.repository.dto.remote.VideoDto
 import com.amsterdam.repository.dto.remote.VideoResponse
 import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.amsterdam.repository.dto.remote.review.ReviewsResponse
@@ -165,6 +166,19 @@ val episodeResponse=EpisodeResponse(
     posterPath = null,
     seasonNumber = 1L,
     voteAverage = 8.4
+)
+val videoDto= VideoDto(
+    id = "123",
+   languageCode = "en",
+    countryCode = "US",
+    key = "video_key",
+    name = "Video Name",
+    official = true,
+    publishedAt = "2023-01-01",
+    site = "YouTube",
+    size = 1080,
+    type = "Trailer"
+
 )
 
 
