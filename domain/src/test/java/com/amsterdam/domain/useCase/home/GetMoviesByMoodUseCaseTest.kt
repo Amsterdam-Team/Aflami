@@ -1,9 +1,8 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.models.Mood
 import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.google.common.truth.Truth.assertThat
@@ -31,29 +30,29 @@ class GetMoviesByMoodUseCaseTest {
     fun `should call movieRepository with correct genres for a given mood`() = runTest {
         // Given
         val mood = Mood.SAD
-        val expectedGenres = mood.movieGenres
-        coEvery { movieRepository.getMoviesByGenres(expectedGenres) } returns emptyList()
+        val expectedGenres = listOf(MovieGenre.HORROR, MovieGenre.THRILLER)
+        coEvery { movieRepository.getMoviesByGenres(expectedGenres, 1) } returns emptyList()
 
         // When
         getMoviesByMoodUseCase(mood)
 
         // Then
-        coVerify(exactly = 1) { movieRepository.getMoviesByGenres(expectedGenres) }
+        coVerify(exactly = 1) { movieRepository.getMoviesByGenres(expectedGenres, 1) }
     }
 
     @Test
     fun `should return movies for the specified mood`() = runTest {
         // Given
         val mood = Mood.ANGRY
+        val expectedGenres = listOf(MovieGenre.HORROR, MovieGenre.THRILLER)
         val moviesForAngryMood = listOf(
             Movie(
                 id = 1, name = "Angry Movie", description = "", posterUrl = "",
                 releaseDate = LocalDate(2023, 1, 1), categories = listOf(MovieGenre.COMEDY),
                 rating = 1.0f, popularity = 1.0, originCountry = "", runTimeInMinutes = 1,
-                hasVideo = false, productionCompanies = emptyList()
             )
         )
-        coEvery { movieRepository.getMoviesByGenres(mood.movieGenres) } returns moviesForAngryMood
+        coEvery { movieRepository.getMoviesByGenres(expectedGenres, 1) } returns moviesForAngryMood
 
         // When
         val result = getMoviesByMoodUseCase(mood)
@@ -66,7 +65,8 @@ class GetMoviesByMoodUseCaseTest {
     fun `should return empty list when no movies match the mood`() = runTest {
         // Given
         val mood = Mood.ANGRY
-        coEvery { movieRepository.getMoviesByGenres(mood.movieGenres) } returns emptyList()
+        val expectedGenres = listOf(MovieGenre.HORROR, MovieGenre.THRILLER)
+        coEvery { movieRepository.getMoviesByGenres(expectedGenres, 1) } returns emptyList()
 
         // When
         val result = getMoviesByMoodUseCase(mood)
@@ -79,7 +79,8 @@ class GetMoviesByMoodUseCaseTest {
     fun `should propagate AflamiException when repository call fails`() = runTest {
         // Given
         val mood = Mood.ANGRY
-        coEvery { movieRepository.getMoviesByGenres(mood.movieGenres) } throws AflamiException()
+        val expectedGenres = listOf(MovieGenre.HORROR, MovieGenre.THRILLER)
+        coEvery { movieRepository.getMoviesByGenres(expectedGenres, 1) } throws AflamiException()
 
         // When & Then
         assertThrows<AflamiException> {

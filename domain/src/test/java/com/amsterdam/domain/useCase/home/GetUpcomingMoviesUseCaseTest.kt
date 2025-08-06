@@ -1,8 +1,7 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.google.common.truth.Truth.assertThat
@@ -118,8 +117,7 @@ class GetUpcomingMoviesUseCaseTest {
             popularity = 100.0,
             originCountry = "US",
             runTimeInMinutes = 120,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         )
 
         val actionMovie = baseMovie.copy(
@@ -165,8 +163,7 @@ class GetUpcomingMoviesUseCaseTest {
             popularity = 150.0,
             originCountry = "US",
             runTimeInMinutes = 120,
-            hasVideo = true,
-            productionCompanies = emptyList()
+
         )
 
         val equallyPopularButLowerRatedMovie = Movie(
@@ -180,8 +177,7 @@ class GetUpcomingMoviesUseCaseTest {
             popularity = 150.0,
             originCountry = "US",
             runTimeInMinutes = 110,
-            hasVideo = false,
-            productionCompanies = emptyList()
+
         )
 
         val highRatedButLessPopularMovie = Movie(
@@ -195,8 +191,7 @@ class GetUpcomingMoviesUseCaseTest {
             popularity = 100.0,
             originCountry = "UK",
             runTimeInMinutes = 105,
-            hasVideo = false,
-            productionCompanies = emptyList()
+
         )
     }
 }

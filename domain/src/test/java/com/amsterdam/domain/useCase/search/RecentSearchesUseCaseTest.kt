@@ -1,10 +1,9 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.search
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.RecentSearchRepository
-import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
 import com.amsterdam.entity.Country
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -82,14 +81,14 @@ class RecentSearchesUseCaseTest {
         coEvery { recentSearchRepository.getAllRecentSearches() } returns listOf("Spider")
         val result = recentSearchesUseCase.getRecentSearches()
         coVerify(exactly = 1) { recentSearchRepository.getAllRecentSearches() }
-        assertThat(result).containsExactly("Spider")
+        Truth.assertThat(result).containsExactly("Spider")
     }
 
     @Test
     fun `getRecentSearches should return an empty list when no data is returned`() = runTest {
         coEvery { recentSearchRepository.getAllRecentSearches() } returns emptyList()
         val result = recentSearchesUseCase.getRecentSearches()
-        assertThat(result).isEmpty()
+        Truth.assertThat(result).isEmpty()
     }
 
     @Test

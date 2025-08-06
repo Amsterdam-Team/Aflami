@@ -1,9 +1,6 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.utils.fakeMovieList
 import com.amsterdam.domain.useCase.utils.fakeTvShowList
 import com.google.common.truth.Truth.assertThat

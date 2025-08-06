@@ -1,9 +1,8 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.details
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.TvShowRepository
 import com.amsterdam.domain.useCase.common.AddTvShowWatchHistoryUseCase
-import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.amsterdam.entity.ProductionCompany
@@ -31,7 +30,6 @@ class GetTvShowDetailsUseCaseTest {
         id = 1L, name = "Test TV Show", description = "Desc", posterUrl = "poster.jpg",
         airDate = LocalDate(2020, 1, 1), categories = listOf(TvShowGenre.DRAMA, TvShowGenre.COMEDY),
         rating = 8.0f, popularity = 100.0, seasonCount = 5, originCountry = "USA",
-        productionCompanies = emptyList()
     )
     private val fakeActors = listOf(
         Actor(1, "Actor A", "a.jpg", 90.0, Gender.Male)
@@ -45,7 +43,7 @@ class GetTvShowDetailsUseCaseTest {
     private val fakeSimilarTvShows = listOf(
         TvShow(
             2L, "Similar TV Show", "Desc", "poster2.jpg", LocalDate(2021, 1, 1),
-            listOf(TvShowGenre.DRAMA), 7.0f, 90.0, 3, "USA", emptyList()
+            listOf(TvShowGenre.DRAMA), 7.0f, 90.0, 3, "USA",
         )
     )
     private val fakeGallery = listOf("gallery1.jpg", "gallery2.jpg")

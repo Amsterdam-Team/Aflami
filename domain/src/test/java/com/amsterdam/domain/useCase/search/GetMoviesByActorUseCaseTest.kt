@@ -1,10 +1,9 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.search
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.domain.useCase.utils.fakeMovieList
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -77,7 +76,7 @@ class GetMoviesByActorUseCaseTest {
         val result = getMoviesByActorUseCase(actorName)
 
         // Then
-        assertThat(result).isEqualTo(fakeMovieList)
+        Truth.assertThat(result).isEqualTo(fakeMovieList)
     }
 
     @Test
@@ -96,7 +95,7 @@ class GetMoviesByActorUseCaseTest {
         val result = getMoviesByActorUseCase(actorName)
 
         // Then
-        assertThat(result).isEmpty()
+        Truth.assertThat(result).isEmpty()
     }
 
     @Test

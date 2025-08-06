@@ -1,11 +1,5 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.home
 
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetPopularTvShowsUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
-import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.domain.useCase.utils.fakeMovieList
 import com.amsterdam.domain.useCase.utils.fakeTvShowList
 import com.amsterdam.entity.category.MovieGenre

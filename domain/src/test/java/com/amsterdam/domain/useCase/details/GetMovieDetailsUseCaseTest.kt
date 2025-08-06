@@ -1,9 +1,8 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.details
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
-import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.amsterdam.entity.Movie
@@ -36,8 +35,7 @@ class GetMovieDetailsUseCaseTest {
         popularity = 100.0,
         originCountry = "USA",
         runTimeInMinutes = 120,
-        hasVideo = true,
-        productionCompanies = emptyList()
+
     )
     private val fakeReviews = listOf(
         Review(1, "Reviewer1", "user1", 4.5f, "Great", LocalDate(2023, 1, 1), "url1"),
@@ -58,8 +56,7 @@ class GetMovieDetailsUseCaseTest {
             90.0,
             "USA",
             100,
-            true,
-            productionCompanies = emptyList()
+
         ),
     )
     private val fakeGallery = listOf("gallery1.jpg", "gallery2.jpg")
@@ -80,7 +77,9 @@ class GetMovieDetailsUseCaseTest {
             similarMovies = fakeSimilarMovies,
             movieGallery = fakeGallery,
             moviePosters = fakePosters,
+            productionCompanies = emptyList(),
         )
+
         coJustRun { addWatchHistoryUseCase.invoke(any()) }
     }
 
@@ -128,6 +127,7 @@ class GetMovieDetailsUseCaseTest {
                 similarMovies = emptyList(),
                 movieGallery = emptyList(),
                 moviePosters = emptyList(),
+                productionCompanies = emptyList(),
             )
 
             val result = getMovieDetailsUseCase(1L)
@@ -148,6 +148,7 @@ class GetMovieDetailsUseCaseTest {
             similarMovies = emptyList(),
             movieGallery = emptyList(),
             moviePosters = emptyList(),
+            productionCompanies = emptyList(),
         )
         val result = getMovieDetailsUseCase(1L)
 

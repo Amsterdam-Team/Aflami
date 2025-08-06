@@ -1,14 +1,13 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.search
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.TvShowRepository
-import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
 import com.amsterdam.domain.useCase.utils.fakeTvShowList
 import com.amsterdam.domain.useCase.utils.fakeTvShowListWithCategories
 import com.amsterdam.domain.useCase.utils.fakeTvShowListWithRatings
 import com.amsterdam.domain.useCase.utils.specificTvShowList
 import com.amsterdam.entity.category.TvShowGenre
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -57,7 +56,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
                 )
             } returns fakeTvShowList
             val tvShows = getAndFilterTvShowsByKeywordUseCase("keyword")
-            assertThat(tvShows).isEqualTo(fakeTvShowList)
+            Truth.assertThat(tvShows).isEqualTo(fakeTvShowList)
         }
 
     @Test
@@ -70,7 +69,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
                     tvShowsPerPage = 20
                 )
             } returns emptyList()
-            assertThat(getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")).isEmpty()
+            Truth.assertThat(getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")).isEmpty()
         }
 
     @Test
@@ -89,7 +88,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
                 rating = 10,
                 tvGenre = TvShowGenre.COMEDY
             )
-            assertThat(result).isEmpty()
+            Truth.assertThat(result).isEmpty()
         }
 
     @Test
@@ -105,8 +104,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
 
             val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 6)
 
-            assertThat(result).hasSize(1)
-            assertThat(result[0].id).isEqualTo(1)
+            Truth.assertThat(result).hasSize(1)
+            Truth.assertThat(result[0].id).isEqualTo(1)
         }
 
     @Test
@@ -122,7 +121,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
 
             val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 0)
 
-            assertThat(result).isEqualTo(fakeTvShowListWithRatings)
+            Truth.assertThat(result).isEqualTo(fakeTvShowListWithRatings)
         }
 
     @Test
@@ -139,8 +138,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
             val result =
                 getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.COMEDY)
 
-            assertThat(result).hasSize(1)
-            assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
+            Truth.assertThat(result).hasSize(1)
+            Truth.assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
         }
 
     @Test
@@ -156,7 +155,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
 
             val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.ALL)
 
-            assertThat(result).isEqualTo(fakeTvShowListWithCategories)
+            Truth.assertThat(result).isEqualTo(fakeTvShowListWithCategories)
         }
 
     @Test
@@ -185,8 +184,8 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
         val result =
             getAndFilterTvShowsByKeywordUseCase("keyword", rating = 7, tvGenre = TvShowGenre.COMEDY)
 
-        assertThat(result).hasSize(1)
-        assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
+        Truth.assertThat(result).hasSize(1)
+        Truth.assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
     }
 
     @Test

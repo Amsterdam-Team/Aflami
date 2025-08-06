@@ -1,8 +1,7 @@
-package com.amsterdam.domain.useCase
+package com.amsterdam.domain.useCase.details
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.TvShowRepository
-import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
 import com.amsterdam.entity.Episode
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
