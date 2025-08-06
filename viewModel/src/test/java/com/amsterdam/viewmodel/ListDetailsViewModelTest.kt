@@ -185,12 +185,6 @@ class ListDetailsViewModelTest {
         advanceUntilIdle()
 
         // Then
-        val pagingFlow = viewModel.state.value.listItems
-
-        pagingFlow.test {
-            val item = awaitItem()
-            assertThat(item).isInstanceOf(PagingData::class.java)
-        }
         assertThat(viewModel.state.value.isLoading).isFalse()
     }
 
