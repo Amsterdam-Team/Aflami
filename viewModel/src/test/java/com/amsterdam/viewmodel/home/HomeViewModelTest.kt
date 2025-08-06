@@ -2,153 +2,160 @@ package com.amsterdam.viewmodel.home
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.models.Mood
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
+import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
-import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
-import com.amsterdam.entity.Movie
+import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.entity.category.MovieGenre
+import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiStateMapper
 import com.amsterdam.viewmodel.home.HomeEffect.NavigateToMovieDetailsEffect
 import com.amsterdam.viewmodel.home.HomeUiState.HomeError
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.comedyGenre
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.continueWatchingData
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.expectedComedyUiState
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.expectedMovies
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.expectedUiState
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.upcomingComedyMovies
+import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.upcomingMovies
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType.MOVIE
+import com.amsterdam.viewmodel.shared.uiStates.media.MediaType.TV_SHOW
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth.assertThat
-import io.mockk.clearMocks
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.LocalDate
+import kotlinx.coroutines.test.setMain
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
-    private val getPopularMoviesUseCase: GetPopularMoviesUseCase = mockk()
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase = mockk()
-    private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase = mockk()
-    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase = mockk()
-    private val homeUiStateMapper: HomeUiStateMapper = mockk()
-    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase = mockk()
+    private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase = mockk(relaxed = true)
+
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk(relaxed = true)
+    private val homeUiStateMapper: HomeUiStateMapper = mockk(relaxed = true)
+    private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper = mockk(relaxed = true)
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase = mockk(relaxed = true)
     private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var viewModel: HomeViewModel
     private lateinit var testScope: TestScope
+    private lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
+    private lateinit var getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase
 
     @BeforeEach
     fun setUp() {
-
         dispatcherProvider = TestDispatcherProvider()
         testScope = TestScope(dispatcherProvider.testDispatcher)
+        getUpcomingMoviesUseCase = mockk(relaxed = true)
+        getContinueWatchingScreenDataUseCase = mockk(relaxed = true)
         viewModel = HomeViewModel(
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
             homeUiStateMapper = homeUiStateMapper,
             dispatcherProvider = dispatcherProvider,
-            getPopularMoviesUseCase = getPopularMoviesUseCase,
-            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
-            getContinueWatchingMoviesUseCase = getContinueWatchingMoviesUseCase,
-            getMoviesByMoodUseCase = getMoviesByMoodUseCase
+            getMoviesByMoodUseCase = getMoviesByMoodUseCase,
+            getHomeScreenDataUseCase = getHomeScreenDataUseCase,
+            getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
+            continueWatchingUiStateMapper = continueWatchingUiStateMapper,
+            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
         )
+        Dispatchers.setMain(dispatcherProvider.testDispatcher)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        clearAllMocks()
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `init should load and expose upcoming movies mapped to UI state`() = testScope.runTest {
-        coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
+    fun `init should subscribe to app language changes and trigger data loading`() =
+        testScope.runTest {
+            // Given
+            coEvery { manageLocaleLanguageUseCase.getAppLanguage() } returns flowOf(
+                ManageLocaleLanguageUseCase.Language.ENGLISH
+            )
 
-        viewModel = HomeViewModel(
-            getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
-            homeUiStateMapper = homeUiStateMapper,
-            dispatcherProvider = dispatcherProvider,
-            getPopularMoviesUseCase = getPopularMoviesUseCase,
-            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
-            getContinueWatchingMoviesUseCase = getContinueWatchingMoviesUseCase,
-            getMoviesByMoodUseCase = getMoviesByMoodUseCase
-        )
-        advanceUntilIdle()
+            // When
+            viewModel = HomeViewModel(
+                getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
+                homeUiStateMapper = homeUiStateMapper,
+                dispatcherProvider = dispatcherProvider,
+                getMoviesByMoodUseCase = getMoviesByMoodUseCase,
+                getHomeScreenDataUseCase = getHomeScreenDataUseCase,
+                getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
+                continueWatchingUiStateMapper = continueWatchingUiStateMapper,
+                manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
+            )
+            advanceUntilIdle()
 
-        assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(expectedUiState)
+            // Then
+            coVerify(exactly = 1) { getHomeScreenDataUseCase() }
+            coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(pageSize = 10) }
+        }
 
-    }
-
-    @Test
-    fun `onClickRetryLoading should clear error state`() = testScope.runTest {
-        coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
-
-        viewModel.onClickRetryLoading()
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
-
-        clearMocks(getUpcomingMoviesUseCase)
-        coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
-
-        viewModel.onClickRetryLoading()
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.error).isNull()
-    }
 
     @Test
-    fun `onClickRetryLoading should clear error and reload movies`() = testScope.runTest {
-        coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
+    fun `when user selects upcoming genre, load and expose upcoming movies mapped to UI state`() =
+        testScope.runTest {
+            // Given
+            coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
-        viewModel.onClickRetryLoading()
-        advanceUntilIdle()
+            // When
+            viewModel.onChangeUpcomingMovieGenre(comedyGenre)
+            advanceUntilIdle()
 
-        assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+            // Then
+            assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(
+                expectedUiState
+            )
 
-        clearMocks(getUpcomingMoviesUseCase)
-        coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-        every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
-
-        viewModel.onClickRetryLoading()
-        advanceUntilIdle()
-        assertThat(viewModel.state.value.error).isNull()
-
-    }
+        }
 
     @Test
     fun `onClickUpcomingMovieCard should send NavigateToMovieDetailsEffect`() = testScope.runTest {
+        // Given
         val movieId = 101L
         val effects = mutableListOf<HomeEffect>()
-        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+        val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
 
+        // When
         viewModel.onClickUpcomingMovieCard(movieId)
         advanceUntilIdle()
         job.cancel()
 
+        // Then
         assertThat(effects).contains(NavigateToMovieDetailsEffect(movieId))
     }
 
-    @Test
-    fun `onClickRetryLoading should show error when getUpcomingMoviesUseCase throws NetworkException`() =
-        testScope.runTest {
-            coEvery { getUpcomingMoviesUseCase(MovieGenre.ALL) } throws NetworkException()
-
-            viewModel.onClickRetryLoading()
-            advanceUntilIdle()
-
-            assertThat(viewModel.state.value.error).isEqualTo(HomeError.NetworkError)
-        }
 
     @Test
     fun `onChangeUpcomingMovieGenre should updates selected genre in UI state`() =
         testScope.runTest {
+            // Given
             val newGenre = MovieGenre.ACTION
-
             coEvery { getUpcomingMoviesUseCase(newGenre) } returns upcomingMovies
             every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
+            // When
             viewModel.onChangeUpcomingMovieGenre(newGenre)
             advanceUntilIdle()
 
+            // Then
             assertThat(viewModel.state.value.upcomingMoviesSectionUiState.getSelectedUpcomingMovieGenre()).isEqualTo(
                 newGenre
             )
@@ -157,184 +164,304 @@ class HomeViewModelTest {
     @Test
     fun `onChangeUpcomingMovieGenre triggers upcoming movies fetch with new genre`() =
         testScope.runTest {
-
+            // Given
             coEvery { getUpcomingMoviesUseCase(comedyGenre) } returns upcomingComedyMovies
             every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingComedyMovies) } returns expectedComedyUiState
 
+            // When
             viewModel.onChangeUpcomingMovieGenre(comedyGenre)
             advanceUntilIdle()
 
-            assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(expectedComedyUiState)
+            // Then
+            assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(
+                expectedComedyUiState
+            )
         }
 
     @Test
     fun `onChangeUpcomingMovieGenre should NOT trigger fetch if same genre is selected`() =
         testScope.runTest {
+            // Given
             val genre = MovieGenre.ACTION
-
             coEvery { getUpcomingMoviesUseCase(genre) } returns upcomingMovies
             every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
-            viewModel = HomeViewModel(
-                getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
-                homeUiStateMapper = homeUiStateMapper,
-                dispatcherProvider = dispatcherProvider,
-                getPopularMoviesUseCase = getPopularMoviesUseCase,
-                getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
-                getContinueWatchingMoviesUseCase = getContinueWatchingMoviesUseCase,
-                getMoviesByMoodUseCase = getMoviesByMoodUseCase
-            )
+            // When
+            viewModel.onChangeUpcomingMovieGenre(genre)
+            advanceUntilIdle()
 
             viewModel.onChangeUpcomingMovieGenre(genre)
             advanceUntilIdle()
 
-            val previousState = viewModel.state.value
-
-            clearMocks(getUpcomingMoviesUseCase)
-
-            //changing to the same genre again
-            viewModel.onChangeUpcomingMovieGenre(genre)
-            advanceUntilIdle()
-
-            assertThat(viewModel.state.value).isEqualTo(previousState)
+            // Then
+            coVerify(exactly = 1) { getUpcomingMoviesUseCase(genre) }
         }
+
+    @Test
+    fun `onClickRetryLoading should update error state, when NetworkError thrown`() =
+        testScope.runTest {
+            // Given
+            coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
+
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+        }
+
+    @Test
+    fun `onClickRetryLoading should update continue watching items, when called`() =
+        testScope.runTest {
+            // Given
+            coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
+
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+        }
+
+    @Test
+    fun `onClickRetryLoading should do nothing when section lists is not empty`() =
+        testScope.runTest {
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            clearAllMocks()
+            // Then
+            coVerify(exactly = 0) { getUpcomingMoviesUseCase(MovieGenre.ACTION) }
+            coVerify(exactly = 0) { getContinueWatchingScreenDataUseCase() }
+            coVerify(exactly = 0) { getHomeScreenDataUseCase() }
+        }
+
+
+    @Test
+    fun `onClickRetryLoading should call getContinueWatching successfully, when called`() =
+        testScope.runTest {
+            // Given
+            coEvery {
+                getContinueWatchingScreenDataUseCase(
+                    1,
+                    10
+                )
+            } returns flowOf(continueWatchingData)
+
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(1, 10) }
+        }
+
 
     @Test
     fun `onClickSearch should send NavigateToSearchScreenEffect`() = testScope.runTest {
+        // Given
         val effects = mutableListOf<HomeEffect>()
-        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+        val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
+
+        // When
         viewModel.onClickSearch()
         advanceUntilIdle()
         job.cancel()
-        assertThat(effects).contains(HomeEffect.NavigateToSearchScreenEffect)
 
+        // Then
+        assertThat(effects).contains(HomeEffect.NavigateToSearchScreenEffect)
     }
+
     @Test
-    fun `onClickMovie should send NavigateToMovieDetailsEffect`() = testScope.runTest {
-        val movieId = 101L
-        val effects = mutableListOf<HomeEffect>()
-        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
-        viewModel.onClickMovie(movieId)
-        advanceUntilIdle()
-        job.cancel()
-        assertThat(effects).contains(NavigateToMovieDetailsEffect(movieId))
-    }
-    @Test
-    fun `onClickShowAllContinueWatchingMovies should send NavigateToContinueWatchingMoviesScreen`() = testScope.runTest {
+    fun `onClickMovie should send NavigateToMovieDetailsEffect, when media type is movie`() =
+        testScope.runTest {
+            // Given
+            val movieId = 101L
             val effects = mutableListOf<HomeEffect>()
-            val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
+            val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
+
+            // When
+            viewModel.onClickMediaItem(movieId, MOVIE)
+            advanceUntilIdle()
+            job.cancel()
+
+            // Then
+            assertThat(effects).contains(NavigateToMovieDetailsEffect(movieId))
+        }
+
+    @Test
+    fun `onClickMovie should send NavigateToTvShowDetailsEffect, when media type is tv show`() =
+        testScope.runTest {
+            // Given
+            val tvId = 101L
+            val effects = mutableListOf<HomeEffect>()
+            val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
+
+            // When
+            viewModel.onClickMediaItem(tvId, TV_SHOW)
+            advanceUntilIdle()
+            job.cancel()
+
+            // Then
+            assertThat(effects).contains(HomeEffect.NavigateToTvShowDetailsEffect(tvId))
+        }
+
+    @Test
+    fun `onClickShowAllContinueWatchingMovies should send NavigateToContinueWatchingMoviesScreen`() =
+        testScope.runTest {
+            // Given
+            val effects = mutableListOf<HomeEffect>()
+            val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
+
+            // When
             viewModel.onClickShowAllContinueWatchingMovies()
             advanceUntilIdle()
             job.cancel()
+
+            // Then
             assertThat(effects).contains(HomeEffect.NavigateToContinueWatchingMoviesScreen)
         }
+
     @Test
-    fun `onClickShowAllToRatedMovies should send NavigateToContinueWatchingMoviesScreen`() = testScope.runTest {
-        val effects = mutableListOf<HomeEffect>()
-        val job = launch { viewModel.effect.collect { it?.let { effects.add(it) } } }
-        viewModel.onClickShowAllToRatedMovies()
+    fun `onClickShowAllToRatedMovies should send NavigateToContinueWatchingMoviesScreen`() =
+        testScope.runTest {
+            // Given
+            val effects = mutableListOf<HomeEffect>()
+            val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
+
+            // When
+            viewModel.onClickShowAllToRatedMovies()
+            advanceUntilIdle()
+            job.cancel()
+
+            // Then
+            assertThat(effects).contains(HomeEffect.NavigateToTopRatedMoviesEffect)
+        }
+
+    @Test
+    fun `onClickMood should update selected mood in UI state`() = testScope.runTest {
+        // Given
+        val selectedMood = Mood.ROMANTIC
+
+        // When
+        viewModel.onClickMood(selectedMood)
         advanceUntilIdle()
-        job.cancel()
-        assertThat(effects).contains(HomeEffect.NavigateToTopRatedMoviesEffect)
+
+        // Then
+        assertThat(viewModel.state.value.moodPickerUiState.selectedMood).isEqualTo(selectedMood)
     }
-  @Test
-  fun `onClickMood should update selected mood in UI state`() = testScope.runTest {
-      val selectedMood = Mood.IN_LOVE
-      viewModel.onClickMood(selectedMood)
-      advanceUntilIdle()
-      assertThat(viewModel.state.value.moodPickerUiState.selectedMood).isEqualTo(selectedMood)
-  }
+
     @Test
     fun `onClickGetNow should update isLoadingMovies in UI state`() = testScope.runTest {
+        // When
         viewModel.onClickGetNow()
         advanceUntilIdle()
+
+        // Then
         assertThat(viewModel.state.value.moodPickerUiState.isLoadingMovies).isTrue()
     }
+
     @Test
-    fun `onClickViewDetails should update openMovieDialog in UI state`() = testScope.runTest {
-        viewModel.onClickViewDetails()
+    fun `onClickGetNow should do nothing, when selected mood is null`() = testScope.runTest {
+        // When
+        viewModel.onClickGetNow()
         advanceUntilIdle()
-        assertThat(viewModel.state.value.moodPickerUiState.openMovieDialog).isFalse()
+
+        // Then
+        assertThat(viewModel.state.value.moodPickerUiState.selectedMood).isNull()
+        assertThat(viewModel.state.value.moodPickerUiState.movies).isEmpty()
     }
 
 
+    @Test
+    fun `onClickGetNow return movies, when selected mood is not null`() = testScope.runTest {
+        // Given
+        val selectedMood = Mood.ROMANTIC
+        coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
+
+        // When
+        viewModel.onClickMood(selectedMood)
+        advanceUntilIdle()
+
+        viewModel.onClickGetNow()
+        advanceUntilIdle()
+
+        // Then
+        assertThat(viewModel.state.value.moodPickerUiState.movies).isEqualTo(expectedUiState)
+    }
+
+    @Test
+    fun `onClickGetAnotherMovie return movies, when movie list is still not null`() =
+        testScope.runTest {
+            // Given
+            val selectedMood = Mood.ROMANTIC
+            coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
+
+            // When and Then
+            viewModel.onClickMood(selectedMood)
+            advanceUntilIdle()
+
+            viewModel.onClickGetNow()
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(2)
+
+            viewModel.onClickGetAnotherMovie()
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(1)
+        }
 
 
+    @Test
+    fun `onClickGetAnotherMovie should do nothing and close dialogue, when no available movies`() =
+        testScope.runTest {
+            // Given
+            val selectedMood = Mood.ROMANTIC
+            coEvery { getMoviesByMoodUseCase(selectedMood) } returns emptyList()
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns emptyList()
+
+            // When
+            viewModel.onClickMood(selectedMood)
+            advanceUntilIdle()
+
+            viewModel.onClickGetNow()
+            advanceUntilIdle()
+
+            viewModel.onClickGetAnotherMovie()
+            advanceUntilIdle()
 
 
+            // Then
+            assertThat(viewModel.state.value.moodPickerUiState.openMovieDialog).isFalse()
+        }
 
 
-    companion object {
-        private val upcomingMovies = listOf(
-            Movie(
-                id = 101,
-                name = "Galactic Odyssey",
-                posterUrl = "galactic_odyssey.jpg",
-                rating = 9.1f,
-                description = "A space epic.",
-                categories = listOf(MovieGenre.SCIENCE_FICTION),
-                popularity = 98.6,
-                originCountry = "US",
-                runTimeInMinutes = 145,
-                hasVideo = true,
-                releaseDate = LocalDate(2024, 1, 1)
-            ),
-            Movie(
-                id = 102,
-                name = "Laugh Out Loud",
-                posterUrl = "laugh_out_loud.jpg",
-                rating = 7.8f,
-                description = "British comedy.",
-                categories = listOf(MovieGenre.COMEDY),
-                popularity = 87.3,
-                originCountry = "UK",
-                runTimeInMinutes = 100,
-                hasVideo = false,
-                releaseDate = LocalDate(2024, 1, 1)
+    @Test
+    fun `onClickGetAnotherMovie should do nothing, when state  is loading`() =
+        testScope.runTest {
+            // When
+            viewModel.onClickGetNow()
+            viewModel.onClickGetAnotherMovie()
+            advanceUntilIdle()
 
-            )
-        )
+            // Then
+            assertThat(viewModel.state.value.moodPickerUiState.isLoadingMovies).isTrue()
+            assertThat(viewModel.state.value.moodPickerUiState.movies).isEmpty()
+        }
 
-        private val expectedUiState = listOf(
-            MovieItemUiState(
-                id = 101,
-                name = "Galactic Odyssey",
-                posterImageUrl = "galactic_odyssey.jpg",
-                rate = "9.1"
-            ),
-            MovieItemUiState(
-                id = 102,
-                name = "Laugh Out Loud",
-                posterImageUrl = "laugh_out_loud.jpg",
-                rate = "7.8"
-            )
-        )
+    @Test
+    fun `onClickViewDetails should update openMovieDialog in UI state`() = testScope.runTest {
+        // When
+        viewModel.onClickViewDetails()
+        advanceUntilIdle()
 
-        private val expectedComedyUiState = listOf(
-            MovieItemUiState(
-                id = 102L,
-                name = "Laugh Out Loud",
-                posterImageUrl = "laugh_out_loud.jpg",
-                yearOfRelease = "2025",
-                rate = "7.8"
-            )
-        )
-
-        val comedyGenre = MovieGenre.COMEDY
-        val upcomingComedyMovies = listOf(
-            Movie(
-                id = 102,
-                name = "Laugh Out Loud",
-                posterUrl = "laugh_out_loud.jpg",
-                rating = 7.8f,
-                description = "British comedy.",
-                categories = listOf(MovieGenre.COMEDY),
-                popularity = 87.3,
-                originCountry = "UK",
-                runTimeInMinutes = 100,
-                hasVideo = false,
-                releaseDate = LocalDate(2025, 1, 1)
-            )
-        )
+        // Then
+        assertThat(viewModel.state.value.moodPickerUiState.openMovieDialog).isFalse()
     }
 }

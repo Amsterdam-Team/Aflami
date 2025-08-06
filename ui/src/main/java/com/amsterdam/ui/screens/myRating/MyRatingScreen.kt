@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
@@ -49,6 +50,7 @@ import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.myRating.placeholders.emptyRatingListPlaceholder
 import com.amsterdam.ui.screens.myRating.placeholders.mediaCardsPlaceholder
+import com.amsterdam.ui.utils.SavedStateKeys
 import com.amsterdam.viewmodel.myRating.MyRatingErrorState
 import com.amsterdam.viewmodel.myRating.MyRatingInteractionListener
 import com.amsterdam.viewmodel.myRating.MyRatingUiEffect
@@ -64,7 +66,19 @@ fun MyRatingScreen(
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(Unit) { viewModel.refreshRatedContent(withLoading = false) }
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+    val savedStateHandle = currentBackStackEntry?.savedStateHandle
+
+    val refreshAfterRating = savedStateHandle
+        ?.getStateFlow(SavedStateKeys.REFRESH_AFTER_RATING, false)
+        ?.collectAsState()
+
+    LaunchedEffect(refreshAfterRating?.value) {
+        if (refreshAfterRating?.value == true) {
+            viewModel.refreshRatedContent()
+            savedStateHandle[SavedStateKeys.REFRESH_AFTER_RATING] = false
+        }
+    }
 
     val successRateDeletionMessage = stringResource(R.string.your_rate_deletion_has_been_saved)
     val errorRateDeletionMessage = stringResource(R.string.failed_to_delete_your_rating)

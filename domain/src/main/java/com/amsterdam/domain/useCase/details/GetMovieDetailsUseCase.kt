@@ -22,6 +22,7 @@ class GetMovieDetailsUseCase (
         val similarMovies: List<Movie>,
         val movieGallery: List<String>,
         val moviePosters: List<String>,
-        val productionCompanies: List<ProductionCompany>
+        val productionCompanies: List<ProductionCompany>,
+        val userRate: Int?
     )
 }

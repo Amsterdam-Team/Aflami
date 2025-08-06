@@ -1,6 +1,5 @@
 package com.amsterdam.repository.dto.remote
 
-import com.amsterdam.repository.BuildConfig
 import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
 import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 import com.amsterdam.repository.utils.ImageBaseUrlsConstant.BASE_IMAGE_URL_W300
@@ -30,7 +29,8 @@ data class TvShowDetailsRemoteResponse(
     @SerialName("credits") val credits: RemoteCastAndCrewResponse,
     @SerialName("similar") val similar: RemoteTvShowResponse,
     @SerialName("images") val images: RemoteGalleryResponse,
-    @SerialName("videos") val videos: VideoResponse
+    @SerialName("videos") val videos: VideoResponse,
+    @SerialName("account_states") val accountStates: RemoteAccountStatesDto? = null
 ) {
     val fullPosterPath: String?
         get() = posterPath?.let { BASE_IMAGE_URL_W500 + it }

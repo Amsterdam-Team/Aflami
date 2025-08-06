@@ -80,7 +80,9 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): GetMovieDetailsUseCase.MovieDetails {
-        return movieRemoteDataSource.getMovieDetailsById(movieId)
+        val sessionId = cryptoData.decryptString(authenticationLocalSource.getCachedSessionId()) ?: ""
+
+        return movieRemoteDataSource.getMovieDetailsById(movieId, sessionId)
             .also {
                 incrementUserInterestByMovie(it.genres)
                 cacheWatchedMovie(it.toMovieItemDto())

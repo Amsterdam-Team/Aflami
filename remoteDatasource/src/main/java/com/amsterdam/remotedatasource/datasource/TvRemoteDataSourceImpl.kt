@@ -30,8 +30,8 @@ class TvRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse {
-        return responseCall { tvShowsApiService.getTvShowDetailsById(tvShowId) }
+    override suspend fun getTvShowDetailsById(tvShowId: Long, sessionId: String): TvShowDetailsRemoteResponse {
+        return responseCall { tvShowsApiService.getTvShowDetailsById(tvShowId, sessionId) }
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse {

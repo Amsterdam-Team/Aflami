@@ -1,6 +1,7 @@
 package com.amsterdam.repository.mapper.remote
 
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
+import com.amsterdam.repository.dto.remote.Rated
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 
@@ -33,7 +34,8 @@ fun RemoteMovieDetailsResponse.toMovieDetailsEntity(): MovieDetails {
         similarMovies = similar.results.toMovieEntityList(isPoster = false),
         movieGallery = images.toEntityList(),
         moviePosters = images.toEntityList(),
-        productionCompanies = productionCompanies.toEntityList()
+        productionCompanies = productionCompanies.toEntityList(),
+        userRate = if(accountStates?.rated is Rated.RatedValue) accountStates.rated.value.toInt() else null
     )
 }
 

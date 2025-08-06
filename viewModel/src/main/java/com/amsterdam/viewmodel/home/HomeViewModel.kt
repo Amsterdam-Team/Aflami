@@ -2,7 +2,6 @@ package com.amsterdam.viewmodel.home
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.models.Mood
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
@@ -21,11 +20,10 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -90,27 +88,22 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
-        val movies = continueWatchingData.continueWatchingMovies
-        val tvShows = continueWatchingData.continueWatchingTvShows
-        viewModelScope.launch {
-            combine(movies, tvShows) { moviesWitchHistory, tvShowsWitchHistory ->
-                getLinearItemsList(
-                    moviesWitchHistory,
-                    tvShowsWitchHistory,
-                    continueWatchingUiStateMapper::continueWatchingMediaItemUiState,
-                    continueWatchingUiStateMapper::continueWatchingMediaItemUiState
-                )
-            }.collect {
-                updateState { currentState ->
-                    currentState.copy(
-                        continueWatchingMediaSectionUiState = currentState.continueWatchingMediaSectionUiState.copy(
-                            mediaItems = it.sortedByDescending { it.dateAdded }
-                        )
+    private fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: Flow<ContinueWatchingScreenData>) {
+        continueWatchingData.onEach {
+            updateState { currentState ->
+                currentState.copy(
+                    continueWatchingMediaSectionUiState = currentState.continueWatchingMediaSectionUiState.copy(
+                        mediaItems = getLinearItemsList(
+                            it.continueWatchingMovies,
+                            it.continueWatchingTvShows,
+                            continueWatchingUiStateMapper::continueWatchingMediaItemUiState,
+                            continueWatchingUiStateMapper::continueWatchingMediaItemUiState
+                        ).sortedByDescending { it.dateAdded }
                     )
-                }
+                )
             }
-        }
+
+        }.launchIn(viewModelScope)
     }
 
 
@@ -164,6 +157,7 @@ class HomeViewModel @Inject constructor(
             if (popularMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
             if (topRatedMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
             if (upcomingMoviesSectionUiState.movies.isEmpty()) getUpcomingMoviesBySelectedGenre()
+            if (continueWatchingMediaSectionUiState.mediaItems.isEmpty()) getContinueWatchingData()
         }
     }
 
@@ -225,7 +219,6 @@ class HomeViewModel @Inject constructor(
     }
 
     override fun onClickGetAnotherMovie() {
-        if (state.value.moodPickerUiState.isLoadingMovies) return
         val currentMovieIndex = state.value.moodPickerUiState.movies.indexOf(
             state.value.moodPickerUiState.selectedMovie
         )
@@ -255,11 +248,7 @@ class HomeViewModel @Inject constructor(
             return
         }
         val moviesUiStates = homeUiStateMapper.moviesToMoviesItemsUiState(movies)
-        val selectedMovie = if (moviesUiStates.isNotEmpty()) {
-            moviesUiStates[(0..moviesUiStates.size - 1).random()]
-        } else {
-            MovieItemUiState()
-        }
+        val selectedMovie = moviesUiStates[(0..moviesUiStates.size - 1).random()]
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState
@@ -278,14 +267,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onError(exception: AflamiException) {
-        when (exception) {
-            is NetworkException -> updateState {
-                it.copy(
-                    error = HomeError.NetworkError,
-                    moodPickerUiState = it.moodPickerUiState.copy(isLoadingMovies = false)
-                )
-            }
-            else -> {}
+        updateState {
+            it.copy(
+                error = HomeError.NetworkError,
+                moodPickerUiState = it.moodPickerUiState.copy(isLoadingMovies = false)
+            )
         }
     }
 
