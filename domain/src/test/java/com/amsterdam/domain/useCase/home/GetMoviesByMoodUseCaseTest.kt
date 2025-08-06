@@ -1,11 +1,11 @@
-package com.amsterdam.domain.useCase.details
+package com.amsterdam.domain.useCase.home
 
+import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.models.Mood
 import com.amsterdam.domain.repository.MovieRepository
-import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetMoviesByMoodUseCaseTest {
 
@@ -43,7 +44,7 @@ class GetMoviesByMoodUseCaseTest {
         val result = getMoviesByMoodUseCase(mood)
 
         // Then
-        Truth.assertThat(result).isEqualTo(expectedMovies)
+        assertThat(result).isEqualTo(expectedMovies)
         coVerify(exactly = 1) { movieRepository.getMoviesByGenres(expectedGenres, any()) }
     }
 
