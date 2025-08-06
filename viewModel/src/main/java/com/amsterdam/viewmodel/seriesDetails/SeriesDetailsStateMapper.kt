@@ -106,7 +106,8 @@ class SeriesDetailsStateMapper @Inject constructor(
                 imageNumber = episode.episodeNumber,
                 description = episode.description,
                 duration = formatDuration(episode.runTimeInMinutes),
-                airDate = dateToString(episode.airDate)
+                airDate = dateToString(episode.airDate),
+                videoUrl = episode.videoUrl
             )
         }
     }

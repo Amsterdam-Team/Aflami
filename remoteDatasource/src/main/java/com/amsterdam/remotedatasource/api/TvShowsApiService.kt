@@ -8,6 +8,7 @@ import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import com.amsterdam.repository.dto.remote.VideoResponse
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -46,6 +47,14 @@ interface TvShowsApiService {
         @Path("tvShowId") tvShowId: Long,
         @Path("seasonNumber") seasonNumber: Int
     ): EpisodeResponse
+    @GET(TV_SHOW_EPISODES_Videos)
+    suspend fun getEpisodeVideos(
+        @Path("series_id") tvShowId: Long,
+        @Path("season_number") seasonNumber: Int,
+        @Path("episode_number") episodeNumber: Int,
+        @Query("include_video_language") videoLang: String = INCLUDED_VIDEO_LANGUAGE
+    ): VideoResponse
+
 
     @FormUrlEncoded
     @POST(TV_RATE_ENDPOINT)
@@ -78,8 +87,9 @@ interface TvShowsApiService {
         private const val PAGE_KEY = "page"
         private const val TV_SHOW_CREDITS_ENDPOINT = "tv/{tvShowId}/credits"
         private const val TV_SHOW_DETAILS_ENDPOINT = "tv/{tvShowId}"
+        private const val TV_SHOW_EPISODES_ENDPOINT = "tv/{tvShowId}/season/{seasonNumber},"
+        private const val TV_SHOW_EPISODES_Videos = "tv/{series_id}/season/{season_number}/episode/{episode_number}/videos"
         private const val TV_SHOW_DETAILS_APPEND_PARAMETERS = "credits,similar,reviews,images,videos"
-        private const val TV_SHOW_EPISODES_ENDPOINT = "tv/{tvShowId}/season/{seasonNumber}"
         private const val TV_RATE_ENDPOINT = "tv/{tv_id}/rating"
         private const val RATED_TV_SHOWS_ENDPOINT = "account/{account_id}/rated/tv"
         private const val INCLUDED_VIDEO_LANGUAGE = "en"

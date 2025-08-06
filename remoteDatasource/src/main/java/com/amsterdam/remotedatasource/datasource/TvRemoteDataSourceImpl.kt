@@ -8,6 +8,7 @@ import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
+import com.amsterdam.repository.dto.remote.VideoResponse
 import javax.inject.Inject
 
 class TvRemoteDataSourceImpl @Inject constructor(
@@ -69,5 +70,20 @@ class TvRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun deleteTvShowRate(tvShowId: Long, sessionId: String) {
         responseCall { tvShowsApiService.deleteTvRating(tvId = tvShowId, sessionId = sessionId) }
+    }
+
+    override suspend fun getEpisodeVideos(
+        tvShowId: Long,
+        seasonNumber: Int,
+        episodeNumber: Int
+    ): VideoResponse {
+        val actualSeasonNumber = if (seasonNumber<=0) 1 else seasonNumber
+        return  responseCall {
+            tvShowsApiService.getEpisodeVideos(
+                tvShowId,
+                actualSeasonNumber,
+                episodeNumber
+            )
+        }
     }
 }

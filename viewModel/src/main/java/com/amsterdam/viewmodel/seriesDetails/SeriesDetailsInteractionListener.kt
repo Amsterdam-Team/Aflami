@@ -16,5 +16,6 @@ interface SeriesDetailsInteractionListener {
     fun onDescriptionExpansionToggled()
     fun onReviewExpansionToggled(reviewId: String)
     fun onPlayVideoClicked()
+    fun onPlayEpisodeClicked(episodeId: Int)
 
 }
