@@ -90,7 +90,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
+    private fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: ContinueWatchingScreenData) {
         val movies = continueWatchingData.continueWatchingMovies
         val tvShows = continueWatchingData.continueWatchingTvShows
         viewModelScope.launch {
@@ -164,6 +164,7 @@ class HomeViewModel @Inject constructor(
             if (popularMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
             if (topRatedMediaSectionUiState.mediaItems.isEmpty()) getHomeScreenData()
             if (upcomingMoviesSectionUiState.movies.isEmpty()) getUpcomingMoviesBySelectedGenre()
+            if (continueWatchingMediaSectionUiState.mediaItems.isEmpty()) getContinueWatchingData()
         }
     }
 

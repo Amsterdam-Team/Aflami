@@ -15,7 +15,6 @@ fun createMovie(
     originCountry: String = "USA",
     popularity : Double = 0.0,
     runTime: Int = 120,
-    hasVideo: Boolean = true
 ): Movie {
     return Movie(
         id = id,
@@ -27,8 +26,6 @@ fun createMovie(
         popularity = popularity,
         originCountry = originCountry,
         runTimeInMinutes = runTime,
-        hasVideo = hasVideo,
         releaseDate = LocalDate(productionYear, 1, 1)
-
     )
 }
