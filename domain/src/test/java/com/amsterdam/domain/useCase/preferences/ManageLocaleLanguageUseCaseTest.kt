@@ -21,13 +21,12 @@ class ManageLocaleLanguageUseCaseTest {
     @Test
     fun `setDeviceLanguage should call preferencesRepository setDeviceLanguage `() = runTest {
         val language = "en"
-        manageLocaleLanguageUseCase.setDeviceLanguage(language)
-        coVerify(exactly = 1) { preferencesRepository.setDeviceLanguage(language) }
+        coVerify(exactly = 1) { preferencesRepository.setAppLanguage(language) }
     }
 
     @Test
     fun `getDeviceLanguage should call preferencesRepository getDeviceLanguage `() = runTest {
-        manageLocaleLanguageUseCase.getDeviceLanguage()
-        coVerify(exactly = 1) { preferencesRepository.getDeviceLanguage() }
+        manageLocaleLanguageUseCase.getAppLanguage()
+        coVerify(exactly = 1) { preferencesRepository.getAppLanguage() }
     }
 }
