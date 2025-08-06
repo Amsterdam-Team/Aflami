@@ -2,6 +2,7 @@ package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.AuthenticationApiService
+import com.amsterdam.remotedatasource.util.authenticationResponseDto
 import com.amsterdam.repository.dto.remote.authentication.AuthenticationResponseDto
 import com.amsterdam.repository.dto.remote.authentication.CreateSessionDto
 import com.amsterdam.repository.dto.remote.authentication.CreateSessionResponseDto
@@ -14,6 +15,7 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFailsWith
 
 class AuthenticationRemoteDataSourceImplTest {
 
@@ -24,7 +26,7 @@ class AuthenticationRemoteDataSourceImplTest {
     @BeforeEach
     fun setUp() {
         authenticationApiService = mockk()
-        json = Json
+        json = Json { ignoreUnknownKeys = true }
         authenticationRemoteDataSourceImpl =
             AuthenticationRemoteDataSourceImpl(json, authenticationApiService)
     }
@@ -155,4 +157,80 @@ class AuthenticationRemoteDataSourceImplTest {
         coVerify(exactly = 1) { authenticationApiService.createSessionWithLogin(any()) }
         coVerify(exactly = 1) { authenticationApiService.createSession(any()) }
     }
+
+    @Test
+    fun `createSessionWithLogin should return sessionId when api call is successful`() = runTest {
+        // Given
+        val username = "testUser"
+        val password = "testPassword"
+        val authenticationResponseDto = authenticationResponseDto
+        val createSessionResponse = CreateSessionResponseDto(
+            success = true,
+            sessionId = " expectedSessionId"
+        )
+        coEvery { authenticationApiService.createRequestToken() } returns authenticationResponseDto
+        coEvery { authenticationApiService.createSessionWithLogin(any()) } returns authenticationResponseDto
+        coEvery { authenticationApiService.createSession(any()) } returns createSessionResponse
+        // When
+        val result = authenticationRemoteDataSourceImpl.loginWithPassword(username, password)
+        // Then
+        assertThat(result).isEqualTo(createSessionResponse.sessionId)
+
+        coVerify(exactly = 1) { authenticationApiService.createRequestToken() }
+        coVerify(exactly = 1) { authenticationApiService.createSessionWithLogin(any()) }
+        coVerify(exactly = 1) { authenticationApiService.createSession(any()) }
+    }
+    @Test
+    fun`createSessionWithLogin should decode authentication response with statusCod`()=runTest {
+        //Given
+        val jsonString = """
+            {
+              "status_code": 200,
+              "status_message": "Success"
+            }
+        """.trimIndent()
+        coEvery { authenticationApiService.createRequestToken() } returns authenticationResponseDto
+
+        // When
+        val response = json.decodeFromString<AuthenticationResponseDto>(jsonString)
+
+        // Then
+        assertThat(response.statusCode).isNotNull()
+        assertThat(response.statusCode).isEqualTo(200)
+        assertThat(response.statusMessage).isEqualTo("Success")
+
+    }
+    @Test
+    fun `decodeFromString should throw exception when status code is null`() {
+        // Given
+        val jsonString = """
+        {
+            "status_message": "Success",
+            "success": true
+        }
+    """.trimIndent()
+        coEvery { authenticationApiService.createRequestToken() } returns authenticationResponseDto
+
+        // Then
+        assertThrows<NullPointerException> {
+            val response = json.decodeFromString<AuthenticationResponseDto>(jsonString)
+            response.statusCode!!
+        }
+    }
+
+
+
+    @Test
+    fun `deleteSession should call deleteSession with correct sessionId`() = runTest {
+        // Given
+        val sessionId = "testSessionId"
+        coEvery { authenticationApiService.deleteSession(any()) } returns authenticationResponseDto
+        // When
+        authenticationRemoteDataSourceImpl.deleteSession(sessionId)
+        // Then
+        coVerify(exactly = 1) { authenticationApiService.deleteSession(any()) }
+    }
+
+
+
 }
