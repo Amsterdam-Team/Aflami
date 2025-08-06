@@ -52,6 +52,7 @@ interface MovieApiService {
     @GET(MOVIE_DETAILS_ENDPOINT)
     suspend fun getMovieDetailsById(
         @Path("movieId") movieId: Long,
+        @Query("session_id") sessionId: String = "",
         @Query("append_to_response") append: String = MOVIE_DETAILS_APPEND_PARAMETERS,
         @Query("include_video_language") videoLang: String = INCLUDED_VIDEO_LANGUAGE
         ): RemoteMovieDetailsResponse
@@ -98,7 +99,7 @@ interface MovieApiService {
 
         const val GENRES = "with_genres"
 
-        const val MOVIE_DETAILS_APPEND_PARAMETERS = "reviews,credits,actors,similar,images,videos"
+        private const val MOVIE_DETAILS_APPEND_PARAMETERS = "reviews,credits,actors,similar,images,videos,account_states"
         private const val MOVIE_CREDITS_ENDPOINT = "movie/{movieId}/credits"
         private const val MOVIE_DETAILS_ENDPOINT = "movie/{movieId}"
         private const val MOVIE_RETE_ENDPOINT = "movie/{movie_id}/rating"

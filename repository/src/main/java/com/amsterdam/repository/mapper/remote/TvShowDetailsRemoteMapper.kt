@@ -2,6 +2,7 @@ package com.amsterdam.repository.mapper.remote
 
 import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetails
 import com.amsterdam.entity.TvShow
+import com.amsterdam.repository.dto.remote.Rated
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.shared.toTvShowGenre
 import com.amsterdam.repository.utils.toSafeLocalDate
@@ -30,5 +31,6 @@ fun TvShowDetailsRemoteResponse.toEntity(): TvShowDetails {
         gallery = images.toEntityList(),
         posters = images.toEntityList(),
         productionsCompanies =productionCompanies.toEntityList(),
+        userRate = if(accountStates?.rated is Rated.RatedValue) accountStates.rated.value.toInt() else null
     )
 }

@@ -11,6 +11,7 @@ import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
 import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.paging.PagingSource
+import com.amsterdam.viewmodel.search.mapper.toMediaItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -27,7 +28,6 @@ class ListDetailsViewModel @Inject constructor(
     private val getMoviesFromListUseCase: GetMoviesFromListUseCase,
     private val removeMovieFromListUseCase: RemoveMovieFromListUseCase,
     private val deleteListUseCase: DeleteListUseCase,
-    private val listDetailsUiStateMapper: ListDetailsUiStateMapper,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     args: ListDetailsArgs,
     dispatcherProvider: DispatcherProvider
@@ -59,7 +59,7 @@ class ListDetailsViewModel @Inject constructor(
                     pagingSourceFactory = {
                         currentPagingSource = PagingSource { page ->
                             getMoviesFromListUseCase(state.value.listId, page)
-                                .map { listDetailsUiStateMapper.movieToMovieItemUiState(it) }
+                                .map { it.toMediaItemUiState () }
                         }
                         currentPagingSource!!
                     }

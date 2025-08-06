@@ -6,6 +6,7 @@ import com.amsterdam.entity.Season
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.EpisodeUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
+import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
@@ -75,7 +76,10 @@ class SeriesDetailsStateMapper @Inject constructor(
                     country = company.country
                 )
             },
-
+            rateDialogUiState = RateDialogUiState(
+                selectedStarIndex = userRate,
+                previousStarIndex = userRate,
+            )
         )
     }
 

@@ -2,6 +2,7 @@ package com.amsterdam.viewmodel.movieDetails
 
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
+import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
@@ -63,7 +64,11 @@ class MovieDetailsUiStateMapper @Inject constructor() {
                     date = dateToString(it.date),
                     imageUrl = it.imageUrl.takeIf { it.isNotBlank() }
                 )
-            }
+            },
+            rateDialogUiState = RateDialogUiState(
+                selectedStarIndex = userRate,
+                previousStarIndex = userRate,
+            )
         )
     }
     fun ratingToRatingString(rating: Float): String {

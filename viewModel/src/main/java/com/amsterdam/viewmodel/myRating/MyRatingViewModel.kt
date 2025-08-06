@@ -28,8 +28,8 @@ class MyRatingViewModel @Inject constructor(
         getRatedMovies()
     }
 
-    private fun getRatedMovies(withLoading: Boolean = true) {
-        updateState { it.copy(isLoading = withLoading) }
+    private fun getRatedMovies() {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = { getUserRatedMoviesUseCase.getRatedMovies() },
             onSuccess = ::onGetRatedMoviesSuccess,
@@ -42,8 +42,8 @@ class MyRatingViewModel @Inject constructor(
         updateState { it.copy(movies = movies.toRatedMovieUiStates(), error = null) }
     }
 
-    private fun getRatedTvShows(withLoading: Boolean = true) {
-        updateState { it.copy(isLoading = withLoading) }
+    private fun getRatedTvShows() {
+        updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = { getUserRatedTvShowsUseCase.getRatedTvShows() },
             onSuccess = ::onGetRatedTvShowsSuccess,
@@ -121,7 +121,7 @@ class MyRatingViewModel @Inject constructor(
         refreshRatedContent()
     }
 
-    fun refreshRatedContent(withLoading: Boolean = true) {
-        if (state.value.selectedTabOption == TabOption.MOVIES) getRatedMovies(withLoading) else getRatedTvShows(withLoading)
+    fun refreshRatedContent() {
+        if (state.value.selectedTabOption == TabOption.MOVIES) getRatedMovies() else getRatedTvShows()
     }
 }

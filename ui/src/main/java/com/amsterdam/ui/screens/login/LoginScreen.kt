@@ -1,7 +1,6 @@
 package com.amsterdam.ui.screens.login
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,7 +65,7 @@ fun LoginScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 LoginEffect.NavigateToHome -> {
-                    navController.navigate(Route.Tab.Home){
+                    navController.navigate(Route.Tab.Home) {
                         popUpTo(0)
                     }
                 }
@@ -74,13 +73,20 @@ fun LoginScreen(
                 LoginEffect.NavigateToRegister -> navController.navigate(Route.Register)
                 LoginEffect.NavigateToResetPassword -> navController.navigate(Route.ResetPassword)
                 LoginEffect.ShowCredentialsError -> {
-                    SnackBarManager.showError(
-                        getLoginErrorMessage(state.loginError, context)
-                    )
                 }
             }
         }
     }
+
+    LaunchedEffect(state.loginError) {
+        if (state.loginError != null) {
+            SnackBarManager.showError(
+                getLoginErrorMessage(state.loginError, context)
+            )
+            viewModel.onLoginErrorHandled()
+        }
+    }
+
     LoginScreenContent(
         state = state,
         interactionListener = viewModel
@@ -185,7 +191,7 @@ private fun LoginScreenContent(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
                     .then(
-                        if (isLandscape){
+                        if (isLandscape) {
                             Modifier.padding(top = 32.dp)
                         } else Modifier
                     ),
@@ -223,33 +229,13 @@ private fun LoginScreenContentPreview() {
                 loginError = LoginErrorState.InvalidCredentials,
             ),
             interactionListener = object : LoginInteractionListener {
-                override fun onUserNameUpdated(username: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onPasswordUpdate(password: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onShowPasswordClicked() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onLoginClicked() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onContinueAsGuestClicked() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onForgotPasswordClicked() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onCreateAccountClicked() {
-                    TODO("Not yet implemented")
-                }
+                override fun onUserNameUpdated(username: String) {}
+                override fun onPasswordUpdate(password: String) {}
+                override fun onShowPasswordClicked() {}
+                override fun onLoginClicked() {}
+                override fun onContinueAsGuestClicked() {}
+                override fun onForgotPasswordClicked() {}
+                override fun onCreateAccountClicked() {}
             }
         )
     }

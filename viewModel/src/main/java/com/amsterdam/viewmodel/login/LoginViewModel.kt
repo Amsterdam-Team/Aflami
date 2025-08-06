@@ -18,16 +18,22 @@ class LoginViewModel @Inject constructor(
 
     override fun onUserNameUpdated(username: String) {
         updateState {
-            it.copy(username = username, loginError = null)
+            it.copy(
+                username = username,
+                loginError = null,
+                isLoginButtonEnabled = username.isNotBlank() && state.value.password.isNotBlank()
+            )
         }
-        shouldEnableLoginButton()
     }
 
     override fun onPasswordUpdate(password: String) {
         updateState {
-            it.copy(password = password, loginError = null)
+            it.copy(
+                password = password,
+                loginError = null,
+                isLoginButtonEnabled = password.isNotBlank() && state.value.username.isNotBlank()
+            )
         }
-        shouldEnableLoginButton()
     }
 
 
@@ -41,7 +47,7 @@ class LoginViewModel @Inject constructor(
         tryToExecute(
             action = ::onLoginStart,
             onSuccess = { onLoginSuccess() },
-            onError = ::onLoginWithPasswordError,
+            onError = ::onError,
             onCompletion = ::onLoginComplete
 
         )
@@ -51,7 +57,7 @@ class LoginViewModel @Inject constructor(
         tryToExecute(
             action = { onLoginAsGuestStart() },
             onSuccess = { onLoginSuccess() },
-            onError = {},
+            onError = ::onError,
             onCompletion = ::onLoginComplete
         )
     }
@@ -64,21 +70,7 @@ class LoginViewModel @Inject constructor(
         sendNewNavigationEffect(LoginEffect.NavigateToRegister)
     }
 
-    private fun shouldEnableLoginButton() {
-        if (state.value.username.isNotBlank() && state.value.password.isNotBlank()) {
-            updateState {
-                it.copy(
-                    isLoginButtonEnabled = true
-                )
-            }
-        } else {
-            updateState {
-                it.copy(isLoginButtonEnabled = false)
-            }
-        }
-    }
-
-    private suspend fun onLoginAsGuestStart(){
+    private suspend fun onLoginAsGuestStart() {
         updateState { it.copy(isLoginButtonLoading = true) }
         loginAsGuestUseCase()
     }
@@ -92,14 +84,19 @@ class LoginViewModel @Inject constructor(
         sendNewNavigationEffect(LoginEffect.NavigateToHome)
     }
 
-    private fun onLoginWithPasswordError(exception: AflamiException) {
+    private fun onError(exception: AflamiException) {
         updateState {
             it.copy(
                 loginError = LoginErrorState.toLoginErrorState(exception),
             )
         }
-        sendNewEffect(LoginEffect.ShowCredentialsError)
     }
+    fun onLoginErrorHandled() {
+        updateState {
+            it.copy(loginError = null)
+        }
+    }
+
 
     private fun onLoginComplete() {
         updateState { it.copy(isLoginButtonLoading = false) }

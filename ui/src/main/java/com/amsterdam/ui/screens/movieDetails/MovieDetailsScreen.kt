@@ -1,6 +1,7 @@
 package com.amsterdam.ui.screens.movieDetails
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -88,6 +89,8 @@ import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.reviewSection
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
+import com.amsterdam.ui.utils.navigateUpWithFlag
 import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
@@ -112,10 +115,14 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
 
+    BackHandler { navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
+
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                MovieDetailsEffect.NavigateBackEffect -> navController.navigateUp()
+                MovieDetailsEffect.NavigateBackEffect -> {
+                    navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
+                }
                 MovieDetailsEffect.NavigateToCastsScreenEffect -> {
                     navController.navigate(
                         Cast(
@@ -143,6 +150,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                     openYouTubeVideo(context, effect.url) {
                         SnackBarManager.showError(context.getString(com.amsterdam.ui.R.string.video_launch_error))
                     }
+
                 MovieDetailsEffect.MovieAddedToListError -> {
                     SnackBarManager.showError(
                         context.getString(com.amsterdam.ui.R.string.failed_to_add_to_list),
@@ -506,10 +514,9 @@ fun MovieContent(
             }
         }
         Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarColor),
         ) {
             DefaultAppBar(
                 modifier =
@@ -524,29 +531,11 @@ fun MovieContent(
                 onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
                 onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarColor)
-            ) {
-                DefaultAppBar(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .statusBarsPadding()
-                            .zIndex(10f)
-                            .onSizeChanged { headerHeight = it.height },
-                    firstOption = painterResource(R.drawable.ic_outlined_star),
-                    lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
-                    onNavigateBackClicked = movieDetailsInteractionListener::onClickBack,
-                    onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
-                    onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
-                )
 
-                HorizontalDivider(color = dividerColor)
-            }
+            HorizontalDivider(color = dividerColor)
         }
     }
+
 }
 
 @Composable
@@ -566,7 +555,9 @@ private fun SearchByActorContentPreview() {
 
                     override fun onSaveMovieToList(
                         movieId: Int,
-                        listId: Long) {}
+                        listId: Long
+                    ) {
+                    }
 
                     override fun onClickCreateList() {}
 

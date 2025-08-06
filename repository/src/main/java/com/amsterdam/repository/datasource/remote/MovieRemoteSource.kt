@@ -17,7 +17,7 @@ interface MovieRemoteSource {
 
     suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse
 
-    suspend fun getMovieDetailsById(movieId: Long): RemoteMovieDetailsResponse
+    suspend fun getMovieDetailsById(movieId: Long, sessionId: String = ""): RemoteMovieDetailsResponse
 
     suspend fun getPopularMovies(): RemoteMovieResponse
 

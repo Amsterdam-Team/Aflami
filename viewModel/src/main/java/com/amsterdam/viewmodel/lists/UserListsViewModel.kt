@@ -52,7 +52,7 @@ class UserListsViewModel @Inject constructor(
         tryToExecute(
             action = { getUserListsUseCase() },
             onSuccess = { customLists ->
-               updateState {
+                updateState {
                     it.copy(
                         userLists = customLists.map { it.toUserListItemUiState() },
                         isLoading = false,
@@ -71,11 +71,30 @@ class UserListsViewModel @Inject constructor(
         )
     }
 
+    private fun startLoading(start: Boolean = true) = updateState { it.copy(isLoading = start) }
+
+    private suspend fun runIfLoggedIn(
+        onLoggedIn: () -> Unit,
+        onGuest: () -> Unit,
+    ) {
+        if (getsSessionType() != SessionType.GUEST) {
+            onLoggedIn()
+        } else {
+            onGuest()
+        }
+    }
+
+
     override fun onClickAddList() {
         viewModelScope.launch {
             runIfLoggedIn(
                 onLoggedIn = {
-                    updateState { it.copy(isCreateNewListDialogVisible = true, isUserLoggedIn = true) }
+                    updateState {
+                        it.copy(
+                            isCreateNewListDialogVisible = true,
+                            isUserLoggedIn = true
+                        )
+                    }
                 },
                 onGuest = {
                     updateState { it.copy(isUserLoggedIn = false) }
@@ -113,16 +132,6 @@ class UserListsViewModel @Inject constructor(
         )
     }
 
-    private suspend fun runIfLoggedIn(
-        onLoggedIn: () -> Unit,
-        onGuest: () -> Unit,
-    ) {
-        if (getsSessionType() != SessionType.GUEST) {
-            onLoggedIn()
-        } else {
-            onGuest()
-        }
-    }
 
     override fun onListClick(
         listId: Long,
@@ -142,8 +151,6 @@ class UserListsViewModel @Inject constructor(
     override fun onNavigateToLoginClicked() {
         sendNewEffect(ListsEffect.NavigateToLogin)
     }
-
-    private fun startLoading(start: Boolean = true) = updateState { it.copy(isLoading = start) }
 
 
 }

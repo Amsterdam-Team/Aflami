@@ -10,14 +10,13 @@ import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
 import com.amsterdam.domain.useCase.list.GetUserListsUseCase
-import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase
-import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase.UserRatedMovie
 import com.amsterdam.domain.useCase.myRating.movie.SetUserMovieRatingUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.shared.BaseViewModel
+import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +35,6 @@ class MovieDetailsViewModel @Inject constructor(
     private val getUserListsUseCase: GetUserListsUseCase,
     private val createListUseCase: CreateNewListUseCase,
     private val getsSessionType: GetsSessionType,
-    private val getUserRatedMoviesUseCase: GetUserRatedMoviesUseCase,
     private val setUserRatingUseCase: SetUserMovieRatingUseCase,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
@@ -70,9 +68,9 @@ class MovieDetailsViewModel @Inject constructor(
     private suspend fun getMovieDetails() =
         getMovieDetailsUseCase(state.value.movieId)
 
-    private fun onGetMovieDetailsSuccess(movieDetails: MovieDetails) =
+    private fun onGetMovieDetailsSuccess(movieDetails: MovieDetails) {
         updateState { movieDetailsUiStateMapper.toUiState(movieDetails) }
-
+    }
 
     override fun onClickMovieExtras(movieExtras: MovieExtras) {
         updateState { state ->
@@ -100,35 +98,21 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             runIfLoggedIn(
                 onLoggedIn = {
-                    updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = true, isLoading = true)) }
-                    tryToExecute(
-                        action = { getUserRatedMoviesUseCase.getRatedMovie(state.value.movieId) },
-                        onSuccess = ::onGetRatedMovieSuccess,
-                        onError = ::onGetRatedMovieError
-                    )
+                    val userRate = state.value.rateDialogUiState.selectedStarIndex
+                    updateState {
+                        it.copy(
+                            rateDialogUiState = RateDialogUiState(
+                                isVisible = true,
+                                isSubmittingEnabled = false,
+                                selectedStarIndex = userRate,
+                                previousStarIndex = userRate
+                            )
+                        )
+                    }
                 },
                 onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.Rate) }
             )
         }
-    }
-
-    private fun onGetRatedMovieSuccess(movie: UserRatedMovie?) {
-        movie?.let { ratedMovie ->
-            updateState {
-                it.copy(
-                    rateDialogUiState = it.rateDialogUiState.copy(
-                        selectedStarIndex = ratedMovie.userRate.toInt(),
-                        previousStarIndex = ratedMovie.userRate.toInt(),
-                        isLoading = false,
-                        isSubmittingEnabled = false
-                    )
-                )
-            }
-        }
-    }
-
-    private fun onGetRatedMovieError(exception: AflamiException) {
-        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(selectedStarIndex = null, isLoading = false, isSubmittingEnabled = true))}
     }
 
     override fun onClickNavigateToLogin() {
@@ -276,7 +260,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun onCompletion() = updateState { it.copy(isLoading = false) }
 
     override fun onClickCancelRateDialog() {
-        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false)) }
+        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false, selectedStarIndex = state.value.rateDialogUiState.previousStarIndex)) }
     }
 
     override fun onClickSubmit() {
@@ -284,7 +268,7 @@ class MovieDetailsViewModel @Inject constructor(
         tryToExecute(
             action = {
                 setUserRatingUseCase.setUserMovieRate(
-                    rate = state.value.rateDialogUiState.selectedStarIndex ?: 1,
+                    rate = state.value.rateDialogUiState.selectedStarIndex ?: 0,
                     movieId = state.value.movieId
                 )
             },
@@ -294,28 +278,15 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun onSubmitRateSuccess(unit: Unit) {
-        resetRateDialogUiState()
-        sendNewNavigationEffect(MovieDetailsEffect.ShowRatingSuccessSnackBar)
+        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false, isLoading = false)) }
+        sendNewEffect(MovieDetailsEffect.ShowRatingSuccessSnackBar)
     }
 
     private fun onSubmitRateError(exception: AflamiException) {
-        resetRateDialogUiState()
-        sendNewNavigationEffect(MovieDetailsEffect.ShowRatingErrorSnackBar)
+        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false, isLoading = false, selectedStarIndex = it.rateDialogUiState.previousStarIndex)) }
+        sendNewEffect(MovieDetailsEffect.ShowRatingErrorSnackBar)
     }
 
-    private fun resetRateDialogUiState(){
-        updateState {
-            it.copy(
-                rateDialogUiState = it.rateDialogUiState.copy(
-                    isLoading = false,
-                    isVisible = false,
-                    previousStarIndex = null,
-                    selectedStarIndex = null,
-                    isSubmittingEnabled = false
-                )
-            )
-        }
-    }
 
     override fun onChangeRating(newRate: Int) {
         val previousRate = state.value.rateDialogUiState.previousStarIndex
