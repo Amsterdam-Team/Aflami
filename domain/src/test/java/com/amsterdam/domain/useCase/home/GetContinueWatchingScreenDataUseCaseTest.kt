@@ -58,22 +58,26 @@ class GetContinueWatchingScreenDataUseCaseTest {
         coVerify(exactly = 1) { getContinueWatchingMoviesUseCase(page, 10) }
         coVerify(exactly = 1) { getContinueWatchingTvShowsUseCase(page, 10) }
     }
-
     @Test
     fun `should return ContinueWatchingScreenData object with correct flows`() = runTest {
         // Given
-        val movieFlow = flow { emit(listOf(fakeMovieWatchHistory)) }
-        val tvShowFlow = flow { emit(listOf(fakeTvShowWatchHistory)) }
+        val expectedMovieList = listOf(fakeMovieWatchHistory)
+        val expectedTvShowList = listOf(fakeTvShowWatchHistory)
+
+        val movieFlow = flow { emit(expectedMovieList) }
+        val tvShowFlow = flow { emit(expectedTvShowList) }
+
         coEvery { getContinueWatchingMoviesUseCase(any(), any()) } returns movieFlow
         coEvery { getContinueWatchingTvShowsUseCase(any(), any()) } returns tvShowFlow
 
         // When
-        val result = getContinueWatchingScreenDataUseCase()
+        val result = getContinueWatchingScreenDataUseCase().first()
 
         // Then
-        assertThat(result.continueWatchingMovies.first()).isEqualTo(listOf(fakeMovieWatchHistory))
-        assertThat(result.continueWatchingTvShows.first()).isEqualTo(listOf(fakeTvShowWatchHistory))
+        assertThat(result.continueWatchingMovies).isEqualTo(expectedMovieList)
+        assertThat(result.continueWatchingTvShows).isEqualTo(expectedTvShowList)
     }
+
 
     @Test
     fun `should propagate exception from getContinueWatchingMoviesUseCase`() = runTest {
@@ -82,7 +86,7 @@ class GetContinueWatchingScreenDataUseCaseTest {
 
         // When & Then
         assertThrows<AflamiException> {
-            getContinueWatchingScreenDataUseCase().continueWatchingMovies.single()
+            getContinueWatchingScreenDataUseCase().single()
         }
     }
 
@@ -99,7 +103,7 @@ class GetContinueWatchingScreenDataUseCaseTest {
 
         // When & Then
         assertThrows<AflamiException> {
-            getContinueWatchingScreenDataUseCase().continueWatchingTvShows.single()
+            getContinueWatchingScreenDataUseCase().single()
         }
     }
 
