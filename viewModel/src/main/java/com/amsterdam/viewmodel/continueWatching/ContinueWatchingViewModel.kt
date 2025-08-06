@@ -53,12 +53,16 @@ class ContinueWatchingViewModel @Inject constructor(
                                 page = page,
                                 pageSize = 20
                             ).first()
-                            getLinearItemsList(
+
+                            val mergedItems = getLinearItemsList(
                                 continueWatchingScreenData.continueWatchingMovies,
                                 continueWatchingScreenData.continueWatchingTvShows,
                                 continueWatchingUiStateMapper::continueWatchingMediaItemUiState,
                                 continueWatchingUiStateMapper::continueWatchingMediaItemUiState
-                            ).sortedByDescending { it.dateAdded }
+                            )
+                                .sortedByDescending { it.dateAdded }
+                                .take(10)
+                            mergedItems
                         }
                     }
                 ).flow.cachedIn(viewModelScope)
