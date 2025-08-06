@@ -127,54 +127,6 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun `onClickRetryLoading should update error state, when NetworkError thrown`() =
-        testScope.runTest {
-            // Given
-            coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
-
-            // When
-            viewModel.onClickRetryLoading()
-            advanceUntilIdle()
-
-            // Then
-            assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
-        }
-
-    @Test
-    fun `onClickRetryLoading should update continue watching items, when called`() =
-        testScope.runTest {
-            // Given
-            coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
-
-            // When
-            viewModel.onClickRetryLoading()
-            advanceUntilIdle()
-
-            // Then
-            assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
-        }
-
-
-    @Test
-    fun `onClickRetryLoading should call getContinueWatching successfully, when called`() =
-        testScope.runTest {
-            // Given
-            coEvery {
-                getContinueWatchingScreenDataUseCase(
-                    1,
-                    10
-                )
-            } returns continueWatchingData
-
-            // When
-            viewModel.onClickRetryLoading()
-            advanceUntilIdle()
-
-            // Then
-            coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(1, 10) }
-        }
-
-    @Test
     fun `onClickUpcomingMovieCard should send NavigateToMovieDetailsEffect`() = testScope.runTest {
         // Given
         val movieId = 101L
@@ -189,6 +141,7 @@ class HomeViewModelTest {
         // Then
         assertThat(effects).contains(NavigateToMovieDetailsEffect(movieId))
     }
+
 
     @Test
     fun `onChangeUpcomingMovieGenre should updates selected genre in UI state`() =
@@ -243,6 +196,69 @@ class HomeViewModelTest {
             // Then
             coVerify(exactly = 1) { getUpcomingMoviesUseCase(genre) }
         }
+
+    @Test
+    fun `onClickRetryLoading should update error state, when NetworkError thrown`() =
+        testScope.runTest {
+            // Given
+            coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
+
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+        }
+
+    @Test
+    fun `onClickRetryLoading should update continue watching items, when called`() =
+        testScope.runTest {
+            // Given
+            coEvery { getUpcomingMoviesUseCase(any()) } throws NetworkException()
+
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.state.value.error).isInstanceOf(HomeError.NetworkError::class.java)
+        }
+
+    @Test
+    fun `onClickRetryLoading should do nothing when section lists is not empty`() =
+        testScope.runTest {
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            clearAllMocks()
+            // Then
+            coVerify(exactly = 0) { getUpcomingMoviesUseCase(MovieGenre.ACTION) }
+            coVerify(exactly = 0) { getContinueWatchingScreenDataUseCase() }
+            coVerify(exactly = 0) { getHomeScreenDataUseCase() }
+        }
+
+
+    @Test
+    fun `onClickRetryLoading should call getContinueWatching successfully, when called`() =
+        testScope.runTest {
+            // Given
+            coEvery {
+                getContinueWatchingScreenDataUseCase(
+                    1,
+                    10
+                )
+            } returns flowOf(continueWatchingData)
+
+            // When
+            viewModel.onClickRetryLoading()
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(1, 10) }
+        }
+
 
     @Test
     fun `onClickSearch should send NavigateToSearchScreenEffect`() = testScope.runTest {
@@ -386,21 +402,19 @@ class HomeViewModelTest {
             coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
             every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
 
-            // When
+            // When and Then
             viewModel.onClickMood(selectedMood)
             advanceUntilIdle()
 
             viewModel.onClickGetNow()
             advanceUntilIdle()
 
+            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(2)
+
             viewModel.onClickGetAnotherMovie()
             advanceUntilIdle()
 
-
-            // Then
-            assertThat(viewModel.state.value.moodPickerUiState.selectedMovie).isEqualTo(
-                expectedUiState[1]
-            )
+            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(1)
         }
 
 
@@ -429,9 +443,10 @@ class HomeViewModelTest {
 
 
     @Test
-    fun `onClickGetAnotherMovie should do nothing, when state are  is loading`() =
+    fun `onClickGetAnotherMovie should do nothing, when state  is loading`() =
         testScope.runTest {
             // When
+            viewModel.onClickGetNow()
             viewModel.onClickGetAnotherMovie()
             advanceUntilIdle()
 

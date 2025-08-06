@@ -1,14 +1,10 @@
 package com.amsterdam.viewmodel.home.fake
 
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.entity.MovieWatchHistory
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.utils.entityHelper.createMovie
-import com.amsterdam.viewmodel.utils.entityHelper.createTvShow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Clock
 
 object FakeHomeScreenData {
@@ -45,33 +41,16 @@ object FakeHomeScreenData {
         ),
     )
 
-    val expectedTvShows = listOf(
-        createTvShow(
-            id = 103
-        ),
-        createTvShow(
-            id = 104
-        ),
-    )
-
     val continueMovieWatchHistory = MovieWatchHistory(
         createMovie(id = 103L, name = "continue movie"),
         Clock.System.now()
     )
 
-    val homeScreenData = GetHomeScreenDataUseCase.HomeScreenData(
-        topRatedMovies = emptyList(),
-        topRatedTvShows = emptyList(),
-        popularMovies = emptyList(),
-        popularTvShows = emptyList(),
-        upComingMovies = emptyList(),
-    )
     val continueWatchingData = ContinueWatchingScreenData(
-        continueWatchingMovies = flowOf(
-            listOf(continueMovieWatchHistory)
-        ),
-        continueWatchingTvShows = emptyFlow()
+        continueWatchingMovies = listOf(continueMovieWatchHistory),
+        continueWatchingTvShows = emptyList()
     )
+
     val expectedComedyUiState = listOf(
         MovieItemUiState(
             id = 102L,
