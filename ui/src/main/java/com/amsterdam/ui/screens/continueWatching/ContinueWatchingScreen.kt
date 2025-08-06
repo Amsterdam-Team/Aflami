@@ -20,7 +20,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.application.LocalNavController
@@ -74,7 +74,7 @@ fun ContinueWatchingContent(
             .navigationBarsPadding()
     ) {
         DefaultAppBar(
-            title = stringResource(R.string.continue_watching),
+            title = stringResource(R.string.recently_watched),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
