@@ -23,13 +23,13 @@ import com.amsterdam.viewmodel.shared.uiStates.media.MediaType.TV_SHOW
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
-import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -80,6 +80,30 @@ class HomeViewModelTest {
         clearAllMocks()
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun `init should subscribe to app language changes and trigger data loading`() =
+        testScope.runTest {
+            coEvery { manageLocaleLanguageUseCase.getAppLanguage() } returns flowOf(
+                ManageLocaleLanguageUseCase.Language.ENGLISH
+            )
+
+            viewModel = HomeViewModel(
+                getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
+                homeUiStateMapper = homeUiStateMapper,
+                dispatcherProvider = dispatcherProvider,
+                getMoviesByMoodUseCase = getMoviesByMoodUseCase,
+                getHomeScreenDataUseCase = getHomeScreenDataUseCase,
+                getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
+                continueWatchingUiStateMapper = continueWatchingUiStateMapper,
+                manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
+            )
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) { getHomeScreenDataUseCase() }
+            coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(pageSize = 10) }
+        }
+
 
     @Test
     fun `when user selects upcoming genre, load and expose upcoming movies mapped to UI state`() =
@@ -331,6 +355,74 @@ class HomeViewModelTest {
         assertThat(viewModel.state.value.moodPickerUiState.selectedMood).isNull()
         assertThat(viewModel.state.value.moodPickerUiState.movies).isEmpty()
     }
+
+
+    @Test
+    fun `onClickGetNow return movies, when selected mood is not null`() = testScope.runTest {
+        // Given
+        val selectedMood = Mood.ROMANTIC
+        coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
+        every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
+
+        // When
+        viewModel.onClickMood(selectedMood)
+        advanceUntilIdle()
+
+        viewModel.onClickGetNow()
+        advanceUntilIdle()
+
+        // Then
+        assertThat(viewModel.state.value.moodPickerUiState.movies).isEqualTo(expectedUiState)
+    }
+
+    @Test
+    fun `onClickGetAnotherMovie return movies, when movie list is still not null`() =
+        testScope.runTest {
+            // Given
+            val selectedMood = Mood.ROMANTIC
+            coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
+
+            // When
+            viewModel.onClickMood(selectedMood)
+            advanceUntilIdle()
+
+            viewModel.onClickGetNow()
+            advanceUntilIdle()
+
+            viewModel.onClickGetAnotherMovie()
+            advanceUntilIdle()
+
+
+            // Then
+            assertThat(viewModel.state.value.moodPickerUiState.selectedMovie).isEqualTo(
+                expectedUiState[1]
+            )
+        }
+
+
+    @Test
+    fun `onClickGetAnotherMovie should do nothing and close dialogue, when no available movies`() =
+        testScope.runTest {
+            // Given
+            val selectedMood = Mood.ROMANTIC
+            coEvery { getMoviesByMoodUseCase(selectedMood) } returns emptyList()
+            every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns emptyList()
+
+            // When
+            viewModel.onClickMood(selectedMood)
+            advanceUntilIdle()
+
+            viewModel.onClickGetNow()
+            advanceUntilIdle()
+
+            viewModel.onClickGetAnotherMovie()
+            advanceUntilIdle()
+
+
+            // Then
+            assertThat(viewModel.state.value.moodPickerUiState.openMovieDialog).isFalse()
+        }
 
 
     @Test
