@@ -1,4 +1,4 @@
-package com.amsterdam.domain.useCase.details
+package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.repository.TvShowRepository
 
