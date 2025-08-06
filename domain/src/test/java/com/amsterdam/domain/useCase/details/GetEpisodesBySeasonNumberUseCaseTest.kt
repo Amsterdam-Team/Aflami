@@ -26,7 +26,8 @@ class GetEpisodesBySeasonNumberUseCaseTest {
         rating = 8.5f,
         airDate = LocalDate(2023, 1, 1),
         seasonNumber = 1,
-        runTimeInMinutes = 45
+        runTimeInMinutes = 45,
+        videoUrl = ""
     )
     private val fakeEpisodesList = listOf(fakeEpisode, fakeEpisode.copy(id = 2L, episodeNumber = 2))
 
