@@ -449,8 +449,26 @@ class MovieRemoteDataSourceImplTest {
         }
     }
 
+    @Test
+    fun `deleteMovieRate should call deleteMovieRate in API with correct parameters`() = runTest {
+        // Given
+        val movieId = 1399L
+        val sessionId = "session_id"
+        coEvery {
+            movieApiService.deleteMovieRate(movieId, sessionId)
+        } returns Unit
 
+        // When
+        movieRemoteDataSourceImpl.deleteMovieRate(movieId, sessionId)
 
-
-
+        // Then
+        coVerify(exactly = 1) {
+            movieApiService.deleteMovieRate(movieId, sessionId)
+        }
+    }
 }
+
+
+
+
+
