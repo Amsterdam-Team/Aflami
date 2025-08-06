@@ -6,9 +6,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.amsterdam.ui.screens.onBoarding.component.PageIndicator
+import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
 
@@ -27,8 +28,6 @@ fun OnboardingPage(
     @DrawableRes imageResId: Int,
     @StringRes titleResId: Int,
     @StringRes descriptionResId: Int,
-    pageCount: Int,
-    currentPage: Int,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -41,40 +40,51 @@ fun OnboardingPage(
             modifier = Modifier.fillMaxSize()
         )
 
-        Column(
+        Box(
             modifier = Modifier
+                .matchParentSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        0f to AppTheme.color.onBoardingGradient.first(),
-                        1f to AppTheme.color.onBoardingGradient.last()
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            AppTheme.color.onBoardingGradient.first().copy(alpha = 0.5f),
+                            AppTheme.color.onBoardingGradient.last()
+                        )
                     )
                 )
+        )
+
+        Box(
+            modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 120.dp)
+                .fillMaxWidth()
+                .padding(bottom = 130.dp)
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            PageIndicator(
-                pageCount = pageCount,
-                currentPage = currentPage,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-            Text(
-                text = stringResource(id = titleResId),
-                style = AppTheme.textStyle.headline.small,
-                color = AppTheme.color.onPrimary,
-                maxLines = 2,
-                minLines = 1
-            )
-            Text(
-                text = stringResource(id = descriptionResId),
-                style = AppTheme.textStyle.body.medium,
-                color = AppTheme.color.onPrimaryBody,
-                modifier = Modifier.padding(top = 12.dp),
-                textAlign = TextAlign.Start,
-                maxLines = 3,
-                minLines = 2
-            )
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 24.dp)
+                    .width(345.dp)
+            ) {
+                Text(
+                    text = stringResource(id = titleResId),
+                    style = AppTheme.textStyle.headline.small,
+                    color = AppTheme.color.onPrimary,
+                    fontSize = 20.sp,
+                    maxLines = 2,
+                    minLines = 1
+                )
+                Text(
+                    text = stringResource(id = descriptionResId),
+                    style = AppTheme.textStyle.body.medium,
+                    color = AppTheme.color.onPrimaryBody,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(top = 12.dp),
+                    textAlign = TextAlign.Start,
+                    maxLines = 3,
+                    minLines = 2
+                )
+            }
         }
     }
 }

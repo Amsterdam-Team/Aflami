@@ -30,10 +30,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.amsterdam.designsystem.R
-import com.amsterdam.ui.screens.onBoarding.component.AnimatedSkipText
-import com.amsterdam.ui.screens.onBoarding.component.NavigationButton
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.navigation.Route
+import com.amsterdam.ui.screens.onBoarding.component.AnimatedSkipText
+import com.amsterdam.ui.screens.onBoarding.component.NavigationButton
+import com.amsterdam.ui.screens.onBoarding.component.PageIndicator
 import com.amsterdam.viewmodel.onboarding.OnboardingEffect
 import com.amsterdam.viewmodel.onboarding.OnboardingViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -126,8 +127,6 @@ private fun OnboardingScreenContent(
                             fraction = 1f - pageOffset.coerceIn(0f, 1f)
                         )
                     },
-                pageCount = totalPages,
-                currentPage = currentPageIndex
             )
         }
 
@@ -136,7 +135,7 @@ private fun OnboardingScreenContent(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .padding(bottom = 24.dp),
+                .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
@@ -181,6 +180,14 @@ private fun OnboardingScreenContent(
         AnimatedSkipText(
             isVisible = currentPageIndex < totalPages - 1,
             onClick = onboardingViewModel::onSkipClicked
+        )
+
+        PageIndicator(
+            pageCount = totalPages,
+            currentPage = currentPageIndex,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 300.dp, start = 12.dp)
         )
     }
 }

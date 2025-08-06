@@ -6,6 +6,8 @@ import com.amsterdam.remotedatasource.util.remoteListResponse
 import com.amsterdam.repository.dto.remote.AddItemToListResponse
 import com.amsterdam.repository.dto.remote.CreateUserListResponse
 import com.amsterdam.repository.dto.remote.RemoteUserListResponse
+import com.amsterdam.repository.dto.remote.AddItemToListResponse
+import com.amsterdam.repository.dto.remote.CreateUserListResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,6 +27,114 @@ class UserListRemoteDataSourceImplTest {
         userListApiService = mockk()
         userListRemoteDataSourceImpl = UserListRemoteDataSourceImpl(userListApiService)
     }
+
+    @Test
+    fun `createNewList should call api service createNewList`() =
+        runTest {
+            val listName = "My list"
+            val sessionId = "abc"
+            coEvery {
+                userListApiService
+                    .createNewList(
+                        sessionId,
+                        listName,
+                        any(),
+                        any(),
+                    )
+            } returns
+                CreateUserListResponse(
+                    listId = 1,
+                    statusCode = 1,
+                    statusMessage = "",
+                    success = true,
+                )
+
+            val result = userListRemoteDataSourceImpl.createNewList(listName, "", "", sessionId)
+
+            assertThat(result).isEqualTo(
+                CreateUserListResponse(
+                    listId = 1,
+                    statusCode = 1,
+                    statusMessage = "",
+                    success = true,
+                ),
+            )
+            coVerify {
+                userListApiService
+                    .createNewList(
+                        sessionId,
+                        listName,
+                        any(),
+                        any(),
+                    )
+            }
+        }
+
+    @Test
+    fun `create list should throw NetworkException when api call fails`() =
+        runTest {
+            val listName = "My list"
+            val sessionId = "abc"
+            coEvery {
+                userListApiService
+                    .createNewList(
+                        sessionId,
+                        listName,
+                        any(),
+                        any(),
+                    )
+            } throws NetworkException()
+
+            assertThrows<NetworkException> {
+                userListRemoteDataSourceImpl
+                    .createNewList(
+                        sessionId,
+                        "",
+                        "",
+                        listName,
+                    )
+            }
+        }
+
+    @Test
+    fun `addMovieToList should call api service addMediaItemToList`() =
+        runTest {
+            val listId = 1L
+            val movieId = 1
+            val sessionId = "abc"
+            coEvery {
+                userListApiService
+                    .addMediaItemToList(
+                        listId,
+                        sessionId,
+                        movieId,
+                    )
+            } returns AddItemToListResponse(1, "", true)
+
+            val result = userListRemoteDataSourceImpl.addMovieToList(listId, sessionId, movieId)
+
+            assertThat(result).isEqualTo(AddItemToListResponse(1, "", true))
+            coVerify { userListApiService.addMediaItemToList(listId, sessionId, movieId) }
+        }
+
+    @Test
+    fun `addMovieToList should throw NetworkException when api call fails`() =
+        runTest {
+            val listId = 1L
+            val movieId = 1
+            val sessionId = "abc"
+            coEvery {
+                userListApiService
+                    .addMediaItemToList(
+                        listId,
+                        sessionId,
+                        movieId,
+                    )
+            } throws NetworkException()
+            assertThrows<NetworkException> {
+                userListRemoteDataSourceImpl.addMovieToList(listId, sessionId, movieId)
+            }
+        }
 
     @Test
     fun `getMoviesFromList should call api service getMoviesFromList`() = runTest {
