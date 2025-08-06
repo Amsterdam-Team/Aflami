@@ -67,7 +67,8 @@ class GetTvShowDetailsUseCaseTest {
             similarTvShows = fakeSimilarTvShows,
             gallery = fakeGallery,
             posters = fakePosters,
-            productionsCompanies = fakeProductionCompanies
+            productionsCompanies = fakeProductionCompanies,
+            userRate = 1
         )
         coJustRun { addTvShowWatchHistoryUseCase(any()) }
     }
@@ -117,7 +118,8 @@ class GetTvShowDetailsUseCaseTest {
             similarTvShows = emptyList(),
             gallery = emptyList(),
             posters = emptyList(),
-            productionsCompanies = emptyList()
+            productionsCompanies = emptyList(),
+            userRate = 1
         )
 
         // When
@@ -145,7 +147,8 @@ class GetTvShowDetailsUseCaseTest {
             similarTvShows = emptyList(),
             gallery = emptyList(),
             posters = emptyList(),
-            productionsCompanies = emptyList()
+            productionsCompanies = emptyList(),
+            userRate = 1
         )
 
         // When

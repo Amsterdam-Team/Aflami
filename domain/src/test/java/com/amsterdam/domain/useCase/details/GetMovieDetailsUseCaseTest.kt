@@ -78,6 +78,8 @@ class GetMovieDetailsUseCaseTest {
             movieGallery = fakeGallery,
             moviePosters = fakePosters,
             productionCompanies = emptyList(),
+            userRate = 1
+
         )
 
         coJustRun { addWatchHistoryUseCase.invoke(any()) }
@@ -128,6 +130,7 @@ class GetMovieDetailsUseCaseTest {
                 movieGallery = emptyList(),
                 moviePosters = emptyList(),
                 productionCompanies = emptyList(),
+                userRate = 1
             )
 
             val result = getMovieDetailsUseCase(1L)
@@ -149,6 +152,7 @@ class GetMovieDetailsUseCaseTest {
             movieGallery = emptyList(),
             moviePosters = emptyList(),
             productionCompanies = emptyList(),
+            userRate = 1
         )
         val result = getMovieDetailsUseCase(1L)
 
