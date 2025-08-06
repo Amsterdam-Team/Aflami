@@ -93,8 +93,26 @@ class TvShowRepositoryImpl @Inject constructor(
         return remoteTvDataSource.getEpisodesBySeasonNumber(
             tvShowId,
             seasonNumber
-        ).episodes.toEntityList()
+        ).episodes.map { episodeDto ->
+            val videoUrl = getEpisodeVideoUrl(tvShowId, seasonNumber, episodeDto.episodeNumber)
+            episodeDto.toEntity(videoUrl)
+        }
     }
+
+    override suspend fun getEpisodeVideoUrl(
+        tvShowId: Long,
+        seasonNumber: Int,
+        episodeNumber: Int
+    ): String {
+        return remoteTvDataSource.getEpisodeVideos(
+            tvShowId,
+            seasonNumber,
+            episodeNumber
+        ).results.firstOrNull()?.fullVideoUrl?:""
+
+
+    }
+
 
     private suspend fun cacheWatchedTvShow(remoteTvShowItemDto: TvShowDetailsRemoteResponse) {
         localTvDataSource.insertTvShow(

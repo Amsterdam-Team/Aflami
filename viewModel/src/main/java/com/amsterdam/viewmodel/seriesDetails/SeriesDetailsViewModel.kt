@@ -11,6 +11,7 @@ import com.amsterdam.domain.useCase.details.GetTvShowDetailsUseCase.TvShowDetail
 import com.amsterdam.domain.useCase.myRating.tvShow.GetUserRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.myRating.tvShow.GetUserRatedTvShowsUseCase.UserRatedTvShow
 import com.amsterdam.domain.useCase.myRating.tvShow.SetUserTvShowRatingUseCase
+import com.amsterdam.domain.useCase.home.GetEpisodeVideosUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.entity.Episode
@@ -34,6 +35,7 @@ class SeriesDetailsViewModel @Inject constructor(
     private val getsSessionType: GetsSessionType,
     private val getUserRatedTvShowsUseCase: GetUserRatedTvShowsUseCase,
     private val setUserTvShowRatingUseCase: SetUserTvShowRatingUseCase,
+    private val getEpisodeVideosByEpisodeId: GetEpisodeVideosUseCase,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<SeriesDetailsUiState, SeriesDetailsEffect>(
@@ -176,6 +178,26 @@ class SeriesDetailsViewModel @Inject constructor(
     override fun onPlayVideoClicked() {
         sendNewNavigationEffect(SeriesDetailsEffect.LaunchSeriesVideoEffect(state.value.videoUrl))
     }
+
+    override fun onPlayEpisodeClicked(episodeId:Int) {
+
+        val tvShowId = state.value.tvShowId
+        val seasonNumber = state.value.seasons.firstOrNull()?.seasonNumber ?: return
+
+        viewModelScope.launch {
+            tryToExecute(
+                action = {
+                    getEpisodeVideosByEpisodeId(tvShowId, seasonNumber, episodeId)
+
+                },
+                onSuccess = { videoUrl ->
+                    sendNewNavigationEffect(SeriesDetailsEffect.LaunchSeriesVideoEffect(videoUrl))
+                },
+                onError = ::onError
+            )
+        }
+    }
+
 
     private suspend fun getEpisodesForSeason(seasonNumber: Int): List<Episode> {
         val updatedSeasons = state.value.seasons.map {

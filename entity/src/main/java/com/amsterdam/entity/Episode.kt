@@ -11,5 +11,6 @@ data class Episode(
     val rating: Float,
     val airDate: LocalDate?,
     val seasonNumber: Int,
-    val runTimeInMinutes: Int
+    val runTimeInMinutes: Int,
+    val videoUrl: String
 )
