@@ -48,6 +48,7 @@ interface UserListApiService {
         @Field(MEDIA_ID) movieId: Int,
     ): AddItemToListResponse
 
+    @FormUrlEncoded
     @POST(DELETE_MOVIE_FROM_LIST)
     suspend fun removeMovieFromList(
         @Path(LIST_ID) listId: Long,
