@@ -5,8 +5,11 @@ import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.util.episodeResponse
 import com.amsterdam.remotedatasource.util.remoteTvShowDetailsResponse
 import com.amsterdam.remotedatasource.util.remoteTvShowItemDto
+import com.amsterdam.remotedatasource.util.videoDto
+import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
+import com.amsterdam.repository.dto.remote.VideoResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -260,4 +263,114 @@ class TvRemoteDataSourceImplTest {
                 tvRemoteDataSourceImpl.getEpisodesBySeasonNumber(tvShowId, seasonNumber)
             }
         }
+
+    @Test
+    fun `getEpisodeVideos should return a VideoResponse object when successful`() = runTest {
+        // Given
+        val tvShowId = 1399L
+        val seasonNumber = 1
+        val episodeNumber = 1
+        val expectedResponse = VideoResponse(
+            results = listOf(
+                videoDto
+            )
+        )
+        coEvery {
+            tvShowsApiService.getEpisodeVideos(
+                tvShowId,
+                seasonNumber,
+                episodeNumber
+            )
+        } returns expectedResponse
+
+        // When
+        val videoResponse = tvRemoteDataSourceImpl.getEpisodeVideos(
+            tvShowId,
+            seasonNumber,
+            episodeNumber
+        )
+
+        // Then
+        assertThat(videoResponse).isEqualTo(expectedResponse)
+        coVerify(exactly = 1) {
+            tvShowsApiService.getEpisodeVideos(
+                tvShowId,
+                seasonNumber,
+                episodeNumber
+            )
+        }
+
+    }
+
+    @Test
+    fun `setTvShowRate should return RatingResponse when API call is successful`() = runTest {
+        // Given
+        val tvShowId = 123L
+        val sessionId = "mock_session"
+        val rate = 8
+        val expectedResponse = RatingResponse(statusCode = 1, statusMessage = "Success")
+
+        coEvery {
+            tvShowsApiService.postTvRating(tvShowId, rate.toFloat(), sessionId)
+        } returns expectedResponse
+
+        // When
+        val result = tvRemoteDataSourceImpl.setTvShowRate(
+            rate = rate,
+            tvShowId = tvShowId,
+            sessionId = sessionId
+        )
+
+        // Then
+        assertThat(result).isEqualTo(expectedResponse)
+        coVerify(exactly = 1) {
+            tvShowsApiService.postTvRating(tvShowId, rate.toFloat(), sessionId)
+        }
+    }
+
+
+    @Test
+    fun `getTvShowRated should return rating for a TV show`() = runTest {
+        //Given
+        val sessionId = "session_id"
+
+        val expectedResponse = RemoteTvShowResponse(
+            page = 1,
+            results = listOf(
+                remoteTvShowItemDto
+            ),
+            totalPages = 1,
+            totalResults = 1
+        )
+        coEvery { tvShowsApiService.getRatedTvShows(0, sessionId) } returns expectedResponse
+        //When
+        val ratingResponse = tvRemoteDataSourceImpl.getRatedTvShows(sessionId)
+        //Then
+        assertThat(ratingResponse).isEqualTo(expectedResponse)
+        coVerify(exactly = 1) { tvShowsApiService.getRatedTvShows(0, sessionId) }
+
+    }
+
+    @Test
+    fun `deleteTvShowRate should call deleteTvRating API with correct parameters`() = runTest {
+        // Given
+        val tvShowId = 1399L
+        val sessionId = "session_id"
+        val expectedResponse = RatingResponse(
+            statusCode = 200,
+            statusMessage = "Success"
+        )
+        coEvery {
+            tvShowsApiService.deleteTvRating(tvId = tvShowId, sessionId = sessionId)
+        } returns expectedResponse
+
+        // When
+        tvRemoteDataSourceImpl.deleteTvShowRate(tvShowId, sessionId)
+
+        // Then
+        coVerify(exactly = 1) {
+            tvShowsApiService.deleteTvRating(tvId = tvShowId, sessionId = sessionId)
+        }
+    }
+
 }
