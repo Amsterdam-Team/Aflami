@@ -1,10 +1,10 @@
 import com.amsterdam.domain.repository.TvShowRepository
 import com.amsterdam.domain.useCase.myRating.tvShow.GetUserRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.utils.tvShow1
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class GetUserRatedTvShowsUseCaseTest {
@@ -31,10 +31,6 @@ class GetUserRatedTvShowsUseCaseTest {
         val result = useCase.getRatedTvShows()
 
         // Then
-        assertEquals(listOf(
-            ratedShows[1],
-            ratedShows[2],
-            ratedShows[0],
-        ), result)
+        assertThat(result).isEqualTo(ratedShows.sortedByDescending { it.userRate })
     }
 }
