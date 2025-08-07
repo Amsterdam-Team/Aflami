@@ -1,7 +1,6 @@
 package com.amsterdam.ui.screens.home
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -128,7 +127,7 @@ private fun HomeScreenContent(
             .windowInsetsPadding(WindowInsets(bottom = LocalScaffoldBottomPadding.current))
     ) {
         if (state.error == HomeUiState.HomeError.NetworkError) {
-            Column (Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize()) {
                 HomeAppBar(
                     onSearchClicked = interactionListener::onClickSearch,
                     modifier = Modifier
@@ -136,7 +135,7 @@ private fun HomeScreenContent(
                         .statusBarsPadding()
                         .padding(horizontal = 16.dp),
                 )
-                Box (
+                Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
@@ -144,7 +143,9 @@ private fun HomeScreenContent(
                 ) {
                     NoNetworkContainer(
                         onClickRetry = interactionListener::onClickRetryLoading,
-                        modifier = Modifier.fillMaxSize().padding(vertical = 8.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 8.dp)
                     )
                 }
             }
@@ -187,7 +188,7 @@ private fun HomeScreenContent(
                     state = state.upcomingMoviesSectionUiState,
                     onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
                     onMovieClicked = interactionListener::onClickUpcomingMovieCard,
-                    isVisible = !state.isLoading&&state.error == null,
+                    isVisible = !state.isLoading && state.error == null,
                     onVerticalOffsetChange = {
                         upcomingMoviesSectionYOffsetDp = it
                     },

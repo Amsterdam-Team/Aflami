@@ -40,6 +40,7 @@ class HomeViewModel @Inject constructor(
     HomeInteractionListener {
 
     init {
+        showHomeScreenDataLoading()
         manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getHomeScreenData()
@@ -48,6 +49,15 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getHomeScreenData() {
+        tryToExecute(
+            action = { getHomeScreenDataUseCase() },
+            onSuccess = ::onGetHomeScreenDataSuccess,
+            onError = ::onError,
+            onCompletion = ::onCompletion
+        )
+    }
+
+    private fun showHomeScreenDataLoading() {
         updateState {
             it.copy(
                 isLoading = true,
@@ -61,12 +71,6 @@ class HomeViewModel @Inject constructor(
                 ),
             )
         }
-        tryToExecute(
-            action = { getHomeScreenDataUseCase() },
-            onSuccess = ::onGetHomeScreenDataSuccess,
-            onError = ::onError,
-            onCompletion = ::onCompletion
-        )
     }
 
     private fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
