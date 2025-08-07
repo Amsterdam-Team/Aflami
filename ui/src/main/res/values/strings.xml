@@ -258,4 +258,6 @@
     <string name="added_to_list_successfully">Added to list successfully.</string>
     <string name="failed_to_add_to_list">Failed to add to list.</string>
 
+    <string name="brightness_message">You will be attacked by a group of bright colors!</string>
+
 </resources>

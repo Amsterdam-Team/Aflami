@@ -262,4 +262,6 @@
 
     <string name="added_to_list_successfully">تمت الإضافة إلى القائمة بنجاح.</string>
     <string name="failed_to_add_to_list">فشل في الإضافة إلى القائمة.</string>
+
+    <string name="brightness_message">سوف تتعرض لهجوم من قبل مجموعة من الألوان الزاهية!</string>
 </resources>
