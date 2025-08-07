@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.TopAppBar
+import com.amsterdam.designsystem.components.TopAppBar
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.OutlinedButton

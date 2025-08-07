@@ -9,7 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
-import com.amsterdam.designsystem.TopAppBar
+import com.amsterdam.designsystem.components.TopAppBar
 import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme

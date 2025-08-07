@@ -1,4 +1,4 @@
-package com.amsterdam.designsystem
+package com.amsterdam.designsystem.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,8 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.components.Icon
-import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 

@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.TopAppBar
+import com.amsterdam.designsystem.components.TopAppBar
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.divider.HorizontalDivider
 import com.amsterdam.designsystem.theme.AflamiTheme
