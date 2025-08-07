@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.jupiter.junit.jupiter)
     modulesDependencies()
     coroutinesDependencies()
     kotlinExtensionsDependencies()

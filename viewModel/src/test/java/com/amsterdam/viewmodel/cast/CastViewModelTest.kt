@@ -1,4 +1,4 @@
-package com.amsterdam.viewmodel
+package com.amsterdam.viewmodel.cast
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
@@ -8,10 +8,6 @@ import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase.Language
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
-import com.amsterdam.viewmodel.cast.CastScreenArgs
-import com.amsterdam.viewmodel.cast.CastUiEffect
-import com.amsterdam.viewmodel.cast.CastUiState
-import com.amsterdam.viewmodel.cast.CastViewModel
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
