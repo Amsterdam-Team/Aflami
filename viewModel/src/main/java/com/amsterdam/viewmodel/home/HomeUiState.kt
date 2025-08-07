@@ -21,23 +21,23 @@ data class HomeUiState(
 ) {
     data class PopularMediaSectionUiState(
         val mediaItems: List<PopularMediaItemUiState> = emptyList(),
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
     )
 
     data class TopRatedMediaSectionUiState(
         val mediaItems: List<MediaItemUiState> = emptyList(),
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
     )
 
     data class ContinueWatchingMediaSectionUiState(
         val mediaItems: List<ContinueWatchingMediaItemUiState> = emptyList(),
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
     )
 
     data class UpcomingMoviesSectionUiState(
         val movies: List<MovieItemUiState> = emptyList(),
         val movieGenres: List<MovieGenreItemUiState> = defaultMovieGenres,
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
     ) {
         fun getSelectedUpcomingMovieGenre(): MovieGenre {
             return movieGenres

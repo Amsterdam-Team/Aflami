@@ -1,5 +1,6 @@
 package com.amsterdam.viewmodel.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.models.Mood
@@ -83,13 +84,13 @@ class HomeViewModel @Inject constructor(
         tryToExecute(
             action = { getContinueWatchingScreenDataUseCase(pageSize = 10) },
             onSuccess = ::onGetContinueWatchingScreenDataSuccess,
-            onError = ::onError,
-            onCompletion = ::onCompletion
+            onError = ::onError
         )
     }
 
     private fun onGetContinueWatchingScreenDataSuccess(continueWatchingData: Flow<ContinueWatchingScreenData>) {
         continueWatchingData.onEach {
+            Log.e("onGetContinueWatchingScreenDataSuccess1","sucess")
             updateState { currentState ->
                 currentState.copy(
                     continueWatchingMediaSectionUiState = currentState.continueWatchingMediaSectionUiState.copy(
@@ -275,5 +276,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onCompletion() = updateState { it.copy(isLoading = false) }
+    private fun onCompletion() = updateState { it.copy(isLoading = false,
+        popularMediaSectionUiState = it.popularMediaSectionUiState.copy(isLoading = false),
+        topRatedMediaSectionUiState = it.topRatedMediaSectionUiState.copy(isLoading = false),
+        upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(isLoading = false),
+        continueWatchingMediaSectionUiState = it.continueWatchingMediaSectionUiState.copy(isLoading = false)
+        ) }
 }
