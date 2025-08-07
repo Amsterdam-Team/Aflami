@@ -77,7 +77,7 @@ fun ThemeSelectionItem(
                 .padding(start = 8.dp)
         )
         RadioButton(
-            state = if (isSelected) RadioState.Selected else RadioState.Unselected,
+            state = if (isSelected) RadioState.Selected else RadioState.Default,
             onClick = onClick,
             modifier = Modifier,
         )
