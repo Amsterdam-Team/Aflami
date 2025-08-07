@@ -82,7 +82,7 @@ fun ContentRestrictionDialog(
             }
 
             ConfirmButton(
-                title = stringResource(R.string.save),
+                title = stringResource(R.string.sav),
                 onClick = onSaveClick,
                 isEnabled = true,
                 isLoading = isSaveButtonLoading,
