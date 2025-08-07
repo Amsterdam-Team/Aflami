@@ -125,6 +125,7 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onClickCancel() {
         updateState {
             it.copy(
+                isAddMovieToListLoading = false,
                 isLoginDialogVisible = false,
                 isAddToListDialogVisible = false,
                 isCreateNewListDialogVisible = false,
@@ -175,6 +176,7 @@ class MovieDetailsViewModel @Inject constructor(
         movieId: Int,
         listId: Long,
     ) {
+        updateState { it.copy(isAddMovieToListLoading = true) }
         tryToExecute(
             action = { addMovieToListUseCase(movieId = movieId, listId = listId) },
             onSuccess = {

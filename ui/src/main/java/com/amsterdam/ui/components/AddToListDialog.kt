@@ -41,6 +41,7 @@ fun AddToListDialog(
     userLists: List<UserListUiState>,
     modifier: Modifier = Modifier,
     selectedList: UserListUiState? = null,
+    isAddMovieToListLoading: Boolean = false,
     onSelectedListChange: (UserListUiState) -> Unit = {},
     onAddToSelectedList: (Long) -> Unit = {},
     onCreateNewList: () -> Unit = {},
@@ -76,9 +77,10 @@ fun AddToListDialog(
             }
             ActionButtonsSection(
                 selectedList = selectedList,
+                isAddMovieToListLoading = isAddMovieToListLoading,
                 onAddToSelectedList = onAddToSelectedList,
                 onCreateNewList = onCreateNewList,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp),
             )
         }
     }
@@ -147,6 +149,7 @@ private fun SelectionListItem(
 @Composable
 private fun ActionButtonsSection(
     selectedList: UserListUiState?,
+    isAddMovieToListLoading: Boolean,
     onAddToSelectedList: (Long) -> Unit,
     onCreateNewList: () -> Unit,
     modifier: Modifier = Modifier,
@@ -159,7 +162,7 @@ private fun ActionButtonsSection(
             title = stringResource(R.string.add),
             onClick = { onAddToSelectedList(selectedList?.id!!) },
             isEnabled = selectedList != null,
-            isLoading = false,
+            isLoading = isAddMovieToListLoading,
             isNegative = false,
             modifier = Modifier,
         )
