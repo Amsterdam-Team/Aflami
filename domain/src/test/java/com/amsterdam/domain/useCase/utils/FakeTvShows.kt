@@ -167,3 +167,15 @@ val fakeTvShowListWithCategories =
             originCountry = "US",
         )
     )
+val tvShow1=TvShow(
+    id = 1,
+    name = "hij",
+    description = "",
+    posterUrl = "",
+    airDate = LocalDate(2023, 1, 1),
+    categories = emptyList(),
+    rating = 2.5f,
+    popularity = 0.2,
+    seasonCount = 4,
+    originCountry = "US",
+)
