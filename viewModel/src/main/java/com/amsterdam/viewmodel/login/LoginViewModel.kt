@@ -3,6 +3,7 @@ package com.amsterdam.viewmodel.login
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
 import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
+import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +13,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider,
     private val loginWithPasswordUseCase: LoginWithPasswordUseCase,
-    private val loginAsGuestUseCase: LoginAsGuestUseCase
+    private val loginAsGuestUseCase: LoginAsGuestUseCase,
+    private val getAccountDetailsUseCase: GetAccountDetailsUseCase
 ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState(), dispatcherProvider),
     LoginInteractionListener {
 
@@ -56,7 +58,7 @@ class LoginViewModel @Inject constructor(
     override fun onContinueAsGuestClicked() {
         tryToExecute(
             action = { onLoginAsGuestStart() },
-            onSuccess = { onLoginSuccess() },
+            onSuccess = { navigateToHome() },
             onError = ::onError,
             onCompletion = ::onLoginComplete
         )
@@ -81,6 +83,14 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun onLoginSuccess() {
+        tryToExecute(
+            action = { getAccountDetailsUseCase() },
+            onSuccess = { navigateToHome() },
+            onError = { navigateToHome() },
+        )
+    }
+
+    private fun navigateToHome() {
         sendNewNavigationEffect(LoginEffect.NavigateToHome)
     }
 

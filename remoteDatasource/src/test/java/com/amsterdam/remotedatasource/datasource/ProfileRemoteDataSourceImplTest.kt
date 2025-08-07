@@ -1,7 +1,7 @@
 package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.remotedatasource.api.ProfileApiService
-import com.amsterdam.repository.dto.remote.profile.AccountDetailsDto
+import com.amsterdam.repository.dto.remote.profile.AccountDetailsRemoteDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -11,21 +11,21 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 
-class ProfileDataSourceImplTest {
+class ProfileRemoteDataSourceImplTest {
     private lateinit var profileApiService: ProfileApiService
-    private lateinit var profileDataSourceImpl: ProfileDataSourceImpl
+    private lateinit var profileDataSourceImpl: ProfileRemoteDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         profileApiService = mockk()
-        profileDataSourceImpl = ProfileDataSourceImpl(profileApiService)
+        profileDataSourceImpl = ProfileRemoteDataSourceImpl(profileApiService)
     }
 
     @Test
     fun `getAccountDetails should return account details when api call is successful`() = runTest {
         //Given
         val sessionId = "session_id"
-        val expectedAccountDetails = mockk<AccountDetailsDto>()
+        val expectedAccountDetails = mockk<AccountDetailsRemoteDto>()
         coEvery { profileApiService.getAccountDetails(any()) } returns expectedAccountDetails
 
         //when

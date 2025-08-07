@@ -12,6 +12,7 @@ import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.CountryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
+import com.amsterdam.localdatasource.roomDataBase.daos.AccountDetailsDao
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
@@ -33,6 +34,7 @@ import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
 import com.amsterdam.repository.dto.local.UpcomingMovieDto
+import com.amsterdam.repository.dto.local.profile.AccountDetailsLocalDto
 
 @Database(
     entities = [LocalSearchDto::class,
@@ -51,7 +53,8 @@ import com.amsterdam.repository.dto.local.UpcomingMovieDto
         PopularTvShowDto::class,
         TopRatedMovieDto::class,
         TopRatedTvShowDto::class,
-        UpcomingMovieDto::class
+        UpcomingMovieDto::class,
+        AccountDetailsLocalDto::class
     ],
     version = 1,
     exportSchema = false
@@ -66,6 +69,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun watchHistoryDao(): WatchHistoryDao
     abstract fun movieCategoryInterestDao(): MovieCategoryInterestDao
     abstract fun tvShowCategoryInterestDao(): TvShowCategoryInterestDao
+    abstract fun accountDetailsDao(): AccountDetailsDao
 
     companion object {
         private const val DATABASE_NAME = "AflamiDatabase.db"

@@ -311,6 +311,7 @@ fun MovieContent(
             AddToListDialog(
                 userLists = state.userLists,
                 selectedList = state.selectedList,
+                isAddMovieToListLoading = state.isAddMovieToListLoading,
                 onSelectedListChange = movieDetailsInteractionListener::onSelectedListChange,
                 onAddToSelectedList = { listId ->
                     movieDetailsInteractionListener.onSaveMovieToList(

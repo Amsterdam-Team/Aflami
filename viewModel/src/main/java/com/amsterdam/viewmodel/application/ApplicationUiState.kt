@@ -7,6 +7,7 @@ data class ApplicationUiState(
     val startDestination: StartDestinations = StartDestinations.LOGIN,
     val restrictionLevel: RestrictionLevel = RestrictionLevel.STRICT,
     val isDarkTheme: Boolean = true,
+    val isThemeLoaded: Boolean = false,
     val language: ManageLocaleLanguageUseCase.Language = ManageLocaleLanguageUseCase.Language.ENGLISH
 ){
     enum class StartDestinations{

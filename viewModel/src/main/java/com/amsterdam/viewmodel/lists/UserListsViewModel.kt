@@ -47,7 +47,7 @@ class UserListsViewModel @Inject constructor(
         }
     }
 
-    private fun loadCustomLists(startLoading: Boolean = true) {
+    fun loadCustomLists(startLoading: Boolean = true) {
         startLoading(startLoading)
         tryToExecute(
             action = { getUserListsUseCase() },
@@ -145,7 +145,7 @@ class UserListsViewModel @Inject constructor(
     }
 
     override fun onDismiss() {
-        updateState { it.copy(isCreateNewListDialogVisible = false) }
+        updateState { it.copy(isCreateNewListDialogVisible = false, listName = "") }
     }
 
     override fun onNavigateToLoginClicked() {

@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AccountDetailsDto(
+data class AccountDetailsRemoteDto(
     @SerialName("avatar") val accountAvatar: AccountAvatar,
     @SerialName("id") val id: Int,
     @SerialName("include_adult") val includeAdult: Boolean,

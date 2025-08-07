@@ -23,6 +23,7 @@ dependencies {
     uiGraphicsDependencies()
     hiltDependencies()
     kotlinxDateTime()
+    splashScreenDependency()
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
@@ -83,4 +84,8 @@ private fun DependencyHandlerScope.kotlinxDateTime() {
 
 private fun DependencyHandlerScope.coilDependencies() {
     implementation(libs.coil.compose)
+}
+
+private fun DependencyHandlerScope.splashScreenDependency() {
+    implementation(libs.androidx.core.splashscreen)
 }

@@ -1,7 +1,6 @@
 package com.amsterdam.ui.screens.listDetails.component
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,16 +19,16 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.amsterdam.designsystem.components.IconButton
+import com.amsterdam.designsystem.components.ImageErrorIndicator
+import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.LoadingIndicator
 import com.amsterdam.designsystem.components.buttons.ButtonDefaults
 import com.amsterdam.designsystem.components.buttons.PlainTextButton
 import com.amsterdam.designsystem.theme.AflamiTheme
-import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MediaCard
-import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -55,30 +54,25 @@ internal fun MoviesItemsGrid(
         ) { index ->
             val movie = movies[index] ?: return@items
 
-            Box(
-                modifier = Modifier.animateItem()
-            ) {
-                MediaCard(
-                    movieImage = { MovieImage(movie.posterImageUrl) },
-                    movieType = stringResource(R.string.movie),
-                    movieYear = movie.yearOfRelease,
-                    movieTitle = movie.name,
-                    movieRating = movie.rate,
-                    onClick = { onClickMovie(movie.id) }
-                )
-
-                IconButton(
-                    modifier = Modifier
-                        .padding(start = 4.dp, top = 4.dp)
-                        .size(32.dp),
-                    paddingValues = PaddingValues(6.dp),
-                    painter = painterResource(R.drawable.ic_remove_item),
-                    contentDescription = stringResource(R.string.remove_from_list),
-                    containerColor = AppTheme.color.iconBackGround,
-                    tint = AppTheme.color.redAccent,
-                    onClick = { onClickRemoveItem(movie.id) }
-                )
-            }
+            MediaCard(
+                modifier = Modifier.animateItem(),
+                movieImage = {
+                    SafeImageView(
+                        modifier = Modifier.fillMaxSize(),
+                        contentDescription = movie.name,
+                        model = movie.posterImageUrl,
+                        onLoading = { ImageLoadingIndicator() },
+                        onError = { ImageErrorIndicator() },
+                    )
+                },
+                movieType = stringResource(com.amsterdam.designsystem.R.string.movies),
+                movieYear = movie.yearOfRelease,
+                movieTitle = movie.name,
+                movieRating = movie.rate,
+                topIcon = painterResource(com.amsterdam.designsystem.R.drawable.ic_heart_remove),
+                onTopIconClick = { onClickRemoveItem(movie.id) },
+                onClick = { onClickMovie(movie.id) }
+            )
         }
 
         if (movies.loadState.append is LoadState.Loading) {

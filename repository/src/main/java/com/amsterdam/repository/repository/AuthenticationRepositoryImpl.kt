@@ -4,6 +4,7 @@ import com.amsterdam.domain.exceptions.UnknownException
 import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
+import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
 import com.amsterdam.repository.mapper.local.stringToSessionTypeEntity
 import com.amsterdam.repository.mapper.local.toLocalDto
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class AuthenticationRepositoryImpl @Inject constructor(
     private val authenticationRemoteSource: AuthenticationRemoteSource,
     private val authenticationLocalSource: AuthenticationLocalSource,
+    private val profileLocalDataSource: ProfileLocalDataSource,
     val cryptoData: CryptoData,
 ) : AuthenticationRepository {
     override suspend fun loginWithPassword(
@@ -26,7 +28,8 @@ class AuthenticationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSessionId(): String =
-        cryptoData.decryptString(authenticationLocalSource.getCachedSessionId()) ?: throw UnknownException()
+        cryptoData.decryptString(authenticationLocalSource.getCachedSessionId())
+            ?: throw UnknownException()
 
     override suspend fun setSessionType(sessionType: SessionType) {
         authenticationLocalSource.setSessionType(sessionType.toLocalDto())
@@ -38,5 +41,6 @@ class AuthenticationRepositoryImpl @Inject constructor(
     override suspend fun logout() {
         authenticationLocalSource.clearCachedSessionId()
         authenticationLocalSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto())
+        profileLocalDataSource.deleteAccountDetails()
     }
 }

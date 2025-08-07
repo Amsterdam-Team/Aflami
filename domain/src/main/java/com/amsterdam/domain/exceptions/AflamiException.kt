@@ -11,8 +11,6 @@ class ServerErrorException : NetworkException()
 
 open class AuthenticationException : NetworkException()
 
-class UnauthorizedException : AuthenticationException()
-
 class AccountDisabledException : AuthenticationException()
 
 class InvalidCredentialsException : AuthenticationException()

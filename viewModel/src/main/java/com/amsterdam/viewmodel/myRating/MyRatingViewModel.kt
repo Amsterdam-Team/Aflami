@@ -57,10 +57,10 @@ class MyRatingViewModel @Inject constructor(
     }
 
     private fun onGetRatedMediaError(exception: AflamiException) {
-        updateState { it.copy(error = MyRatingErrorState.mapToUiState(exception)) }
+        updateState { it.copy(error = MyRatingErrorState.mapToUiState(exception), isRetryLoading = false) }
     }
 
-    private fun onCompletion() = updateState { it.copy(isLoading = false) }
+    private fun onCompletion() = updateState { it.copy(isLoading = false, isRetryLoading = false) }
 
     override fun onClickNavigateBack() = sendNewNavigationEffect(MyRatingUiEffect.NavigateBack)
 
@@ -117,7 +117,7 @@ class MyRatingViewModel @Inject constructor(
 
 
     override fun onClickRetryRequest() {
-        updateState { it.copy(error = null) }
+        updateState { it.copy(isRetryLoading = true) }
         refreshRatedContent()
     }
 

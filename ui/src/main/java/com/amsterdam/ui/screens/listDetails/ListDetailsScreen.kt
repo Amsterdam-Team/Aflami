@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
+import androidx.paging.CombinedLoadStates
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.LoadingContainer
@@ -32,7 +32,6 @@ import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.listDetails.component.DeleteListDialog
 import com.amsterdam.ui.screens.listDetails.component.MoviesItemsGrid
 import com.amsterdam.ui.screens.listDetails.component.getListDetailsErrorMessage
@@ -48,6 +47,10 @@ fun ListsDetailsScreen(viewModel: ListDetailsViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val movies = state.listItems.collectAsLazyPagingItems()
+    LaunchedEffect(movies.loadState) {
+        viewModel.onPagingLoadStateChanged(movies.loadState)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -109,65 +112,58 @@ private fun ListDetailsContent(
             onNavigateBackClicked = listener::onClickBack,
         )
 
-        AnimatedSectionVisibility(
-            visible = state.isLoading
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                LoadingContainer()
+        with(state) {
+            when {
+                isLoading && movies.itemCount == 0 -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingContainer()
+                    }
+                }
+
+                !isLoading && error != null && movies.itemCount == 0-> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        NoNetworkContainer(
+                            onClickRetry = listener::onClickRetryLoading
+                        )
+                    }
+                }
+
+                !isLoading && movies.itemCount == 0 -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        NoDataContainer(
+                            imageRes = painterResource(R.drawable.no_saved_items),
+                            title = stringResource(R.string.no_saved_items_here)
+                        )
+                    }
+                }
+
+                else -> {
+                    MoviesItemsGrid(
+                        movies = movies,
+                        modifier = Modifier.weight(1f),
+                        onClickMovie = listener::onClickMovie,
+                        onClickRemoveItem = listener::onClickRemoveMovie
+                    )
+                }
             }
         }
 
-        AnimatedSectionVisibility(
-            visible = movies.itemCount == 0
-                    && movies.loadState.refresh is LoadState.NotLoading
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                NoDataContainer(
-                    imageRes = painterResource(R.drawable.no_saved_items),
-                    title = stringResource(R.string.no_saved_items_here)
-                )
-            }
-        }
-
-        AnimatedSectionVisibility(
-            visible = movies.loadState.refresh is LoadState.Error
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                NoNetworkContainer(
-                    onClickRetry = listener::onClickRetryLoading
-                )
-            }
-        }
-
-        AnimatedSectionVisibility(
-            visible = movies.itemCount > 0
-        ) {
-            MoviesItemsGrid(
-                movies = movies,
-                modifier = Modifier.weight(1f),
-                onClickMovie = listener::onClickMovie,
-                onClickRemoveItem = listener::onClickRemoveMovie
+        if(state.showDeleteListDialog){
+            DeleteListDialog(
+                isLoading = state.isDeleteLoading,
+                onDismiss = listener::onDeleteListDialogDismiss,
+                onConfirm = listener::onDeleteListConfirmed
             )
         }
-    }
-
-    AnimatedSectionVisibility(
-        visible = state.showDeleteListDialog
-    ) {
-        DeleteListDialog(
-            isLoading = state.isDeleteLoading,
-            onDismiss = listener::onDeleteListDialogDismiss,
-            onConfirm = listener::onDeleteListConfirmed
-        )
     }
 }
 
@@ -185,6 +181,7 @@ private fun ListDetailsScreenPreview() {
                 override fun onDeleteListConfirmed() {}
                 override fun onDeleteListDialogDismiss() {}
                 override fun onClickRemoveMovie(movieId: Long) {}
+                override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {}
             }
         )
     }

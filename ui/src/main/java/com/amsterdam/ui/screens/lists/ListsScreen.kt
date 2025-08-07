@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,6 +67,10 @@ fun ListsScreen(
     val navController = LocalNavController.current
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCustomLists(startLoading = false)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -107,9 +113,12 @@ private fun ListsScreenContent(
     state: ListsUiState,
     interaction: ListsInteractionListener,
 ) {
+    val animationDuration by remember { mutableIntStateOf(1000) }
     Box(
         modifier =
             modifier
+                .fillMaxSize()
+                .background(AppTheme.color.surface)
                 .navigationBarsPadding()
                 .windowInsetsPadding(WindowInsets(bottom = LocalScaffoldBottomPadding.current)),
     ) {
@@ -128,6 +137,8 @@ private fun ListsScreenContent(
 
         AnimatedVisibility(
             visible = !state.isUserLoggedIn && !state.isLoading,
+            enter = fadeIn(tween(animationDuration)),
+            exit = fadeOut(tween(animationDuration)),
         ) {
             NotLoggedInContent(
                 stringResource(com.amsterdam.ui.R.string.lists),
@@ -202,16 +213,14 @@ private fun ListsScreenContent(
                             ) {
                                 items(lists) { userList ->
                                     ListItem(
-                                        title = userList.name,
-                                        count = userList.itemCount,
-                                        modifier =
-                                            Modifier
-                                                .size(156.dp, 147.dp)
-                                                .clickable(
-                                                    onClick = {
-                                                        interaction.onListClick(userList.id.toLong(), userList.name)
-                                                    },
-                                                ),
+                                        modifier = Modifier.size(156.dp, 147.dp),
+                                        list = userList,
+                                        onClick = {
+                                            interaction.onListClick(
+                                                listId = userList.id.toLong(),
+                                                listName = userList.name,
+                                            )
+                                        }
                                     )
                                 }
                             }

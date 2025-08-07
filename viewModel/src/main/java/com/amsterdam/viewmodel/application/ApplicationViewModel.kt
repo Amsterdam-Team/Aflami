@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.application
 
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.preferences.GetOnboardingStatusUseCase
@@ -57,9 +56,11 @@ class ApplicationViewModel @Inject constructor(
     private fun listenToAppSettings() {
         viewModelScope.launch(dispatcherProvider.IO) {
             manageAppThemeUseCase.getAppTheme().collect { isDarkTheme ->
+
                 updateState { state ->
                     state.copy(
-                        isDarkTheme = isDarkTheme
+                        isDarkTheme = isDarkTheme,
+                        isThemeLoaded = true
                     )
                 }
             }

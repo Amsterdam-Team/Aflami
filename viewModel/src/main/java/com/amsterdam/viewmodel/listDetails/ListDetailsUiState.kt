@@ -2,7 +2,7 @@ package com.amsterdam.viewmodel.listDetails
 
 import androidx.paging.PagingData
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.exceptions.NoInternetException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -22,9 +22,9 @@ sealed interface ListDetailsError {
     data object UnknownError : ListDetailsError
 
     companion object {
-        fun toListDetailsError(exception: AflamiException): ListDetailsError {
+        fun toListDetailsError(exception: Throwable): ListDetailsError {
             return when (exception) {
-                is NoInternetException -> NoNetwork
+                is NetworkException -> NoNetwork
                 else -> UnknownError
             }
         }

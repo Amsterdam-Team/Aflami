@@ -1,7 +1,7 @@
 package com.amsterdam.entity
 
 data class AccountDetails(
-    val id: Int,
+    val accountId: Int,
     val username: String,
-    val avatarUrl: String
+    val avatarUrl: String = ""
 )

@@ -4,12 +4,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.amsterdam.domain.exceptions.UnauthorizedException
 import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl.PreferenceKeys.SESSION_ID
 import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl.PreferenceKeys.SESSION_TYPE
 import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -42,9 +40,9 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
     override suspend fun getCachedSessionId(): String {
         return datastore.data
             .map { setting ->
-                setting[SESSION_ID] ?: throw UnauthorizedException()
-            }.firstOrNull()
-            ?: throw UnauthorizedException()
+                setting[SESSION_ID] ?:""
+            }.first()
+
     }
 
     override suspend fun clearCachedSessionId() {

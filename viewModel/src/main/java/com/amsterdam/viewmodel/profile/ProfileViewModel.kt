@@ -276,23 +276,19 @@ class ProfileViewModel @Inject constructor(
     }
 
     override fun onClickConfirmLogout() {
-        viewModelScope.launch {
-            updateState {
-                it.copy(
-                    settingsState = it.settingsState.copy(
-                        isLogoutButtonLoading = true
-                    )
+        updateState {
+            it.copy(
+                settingsState = it.settingsState.copy(
+                    isLogoutButtonLoading = true
                 )
-            }
-        }
-        viewModelScope.launch {
-            tryToExecute(
-                action = ::onConfirmLogout,
-                onSuccess = { onConfirmLogoutSuccess() },
-                onError = ::onError,
-                onCompletion = ::onConfirmLogoutCompletion
             )
         }
+        tryToExecute(
+            action = ::onConfirmLogout,
+            onSuccess = { onConfirmLogoutSuccess() },
+            onError = ::onError,
+            onCompletion = ::onConfirmLogoutCompletion
+        )
     }
 
     private suspend fun onConfirmLogout() {

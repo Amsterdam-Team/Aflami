@@ -18,4 +18,5 @@ object DatabaseConstants {
     const val POPULAR_MOVIE_TABLE = "popular_movies"
     const val UPCOMING_MOVIE_TABLE = "upcoming_movies"
     const val POPULAR_TV_SHOW_TABLE = "popular_tv_shows"
+    const val ACCOUNT_DETAILS_TABLE = "account_details"
 }

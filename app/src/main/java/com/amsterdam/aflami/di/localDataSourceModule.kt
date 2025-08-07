@@ -11,6 +11,7 @@ import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.ProfileLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
@@ -19,6 +20,7 @@ import com.amsterdam.repository.datasource.local.AuthenticationLocalSource
 import com.amsterdam.repository.datasource.local.CategoryLocalSource
 import com.amsterdam.repository.datasource.local.CountryLocalSource
 import com.amsterdam.repository.datasource.local.MovieLocalSource
+import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalSource
 import com.amsterdam.repository.datasource.local.TvShowLocalSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
@@ -77,6 +79,10 @@ object LocalDataSourceProviderModule {
     @Provides
     @Singleton
     fun provideTvShowCategoryInterestDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.tvShowCategoryInterestDao()
+
+    @Provides
+    @Singleton
+    fun provideAccountDetailsDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.accountDetailsDao()
 }
 
 @Module
@@ -129,4 +135,10 @@ abstract class LocalDataSourceBindsModule {
     abstract fun bindWatchHistoryLocalDataSource(
         watchHistoryLocalDataSourceImpl: WatchHistoryLocalDataSourceImpl
     ): WatchHistoryLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindProfileLocalDataSource(
+        profileLocalDataSourceImpl: ProfileLocalDataSourceImpl
+    ): ProfileLocalDataSource
 }
