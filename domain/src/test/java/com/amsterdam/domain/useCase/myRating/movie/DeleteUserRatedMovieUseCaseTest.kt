@@ -2,8 +2,10 @@ package com.amsterdam.domain.useCase.myRating.movie
 
 import com.amsterdam.domain.repository.MovieRepository
 import com.google.common.truth.Truth.assertThat
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -24,7 +26,7 @@ class DeleteUserRatedMovieUseCaseTest {
     fun `deleteMovieRate should call deleteMovieRate on repository with correct movieId`() = runTest {
         // Given
         val movieId = 42L
-        coEvery { movieRepository.deleteMovieRate(movieId) } returns Unit
+        coEvery { movieRepository.deleteMovieRate(movieId) } just Runs
         // When
        val result = useCase.deleteMovieRate(movieId)
 

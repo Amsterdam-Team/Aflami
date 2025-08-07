@@ -1,8 +1,10 @@
 import com.amsterdam.domain.repository.TvShowRepository
 import com.amsterdam.domain.useCase.myRating.tvShow.DeleteUserRatedTvShowUseCase
 import com.google.common.truth.Truth.assertThat
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -23,7 +25,7 @@ class DeleteUserRatedTvShowUseCaseTest {
     fun `deleteTvShowRate should call repository with correct ID`() = runTest {
         // Given
         val tvShowId = 123L
-        coEvery { tvShowRepository.deleteTvShowRate(tvShowId) } returns Unit
+        coEvery { tvShowRepository.deleteTvShowRate(tvShowId) } just Runs
 
         // When
         val result = deleteUserRatedTvShowUseCase.deleteTvShowRate(tvShowId)
