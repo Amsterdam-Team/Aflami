@@ -9,12 +9,14 @@ import com.amsterdam.domain.useCase.preferences.ManageAppThemeUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
+import com.amsterdam.domain.utils.AppVersionProvider
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.entity.AccountDetails
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +28,7 @@ class ProfileViewModel @Inject constructor(
     private val manageAppThemeUseCase: ManageAppThemeUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val manageRestrictionLevelUseCase: ManageRestrictionLevelUseCase,
+    private val appVersionProvider: AppVersionProvider,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<ProfileUiState, ProfileEffect>(
     initialState = ProfileUiState(),
@@ -71,6 +74,12 @@ class ProfileViewModel @Inject constructor(
                 onGetAppTheme(isDarkTheme)
             }
         }
+        getAppVersion()
+    }
+
+    private fun getAppVersion() {
+        val appVersion = appVersionProvider.getAppVersion()
+        updateState { state -> state.copy(appVersion = appVersion) }
     }
 
     private fun onGetAppTheme(isDarkTheme: Boolean) {
@@ -141,6 +150,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     override fun onApplyLanguage() {
+        onDismissLanguageDialog()
         tryToExecute(
             action = { manageLocaleLanguageUseCase.setAppLanguage(state.value.language) },
             onSuccess = ::onApplyLanguageSuccess,
@@ -155,12 +165,20 @@ class ProfileViewModel @Inject constructor(
 
     private fun onApplyLanguageSuccess(unit: Unit) {
         updateState { state -> state.copy(updatedLanguage = state.language) }
-        onDismissLanguageDialog()
-        sendNewEffect(ProfileEffect.LanguageChanged)
+        tryToExecute(
+            action = { delay(200)},
+            onSuccess = {sendNewEffect(ProfileEffect.LanguageChanged)},
+            onError = {sendNewEffect(ProfileEffect.LanguageChanged)}
+        )
     }
 
     override fun onDismissLanguageDialog() {
         updateState { state -> state.copy(showLanguageDialog = false) }
+        tryToExecute(
+            action = { delay(200)},
+            onSuccess = {updateState { state -> state.copy(language = state.updatedLanguage) }},
+            onError = {updateState { state -> state.copy(language = state.updatedLanguage) }}
+        )
     }
 
     override fun onClickThemeSetting() {
@@ -172,12 +190,12 @@ class ProfileViewModel @Inject constructor(
     }
 
     override fun onApplyTheme() {
+        onDismissThemeDialog()
         tryToExecute(
             action = { manageAppThemeUseCase.setAppTheme(state.value.isDarkTheme) },
             onSuccess = ::onApplyThemeSuccess,
             onError = ::onApplyThemeFailure
         )
-        onApplyThemeSuccess(Unit)
     }
 
     private fun onApplyThemeFailure(aflamiException: AflamiException) {
@@ -187,12 +205,16 @@ class ProfileViewModel @Inject constructor(
 
     private fun onApplyThemeSuccess(unit: Unit) {
         updateState { state -> state.copy(updatedIsDarkTheme = state.isDarkTheme) }
-        onDismissThemeDialog()
         sendNewEffect(ProfileEffect.ThemeChanged)
     }
 
     override fun onDismissThemeDialog() {
         updateState { state -> state.copy(showThemeDialog = false) }
+        tryToExecute(
+            action = { delay(200)},
+            onSuccess = {updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }},
+            onError = {updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }}
+        )
     }
 
     private fun onUserDataNotLoaded(aflamiException: AflamiException) {

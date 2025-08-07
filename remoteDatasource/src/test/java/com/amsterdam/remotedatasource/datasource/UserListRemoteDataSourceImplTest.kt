@@ -5,6 +5,9 @@ import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.util.remoteListResponse
 import com.amsterdam.repository.dto.remote.AddItemToListResponse
 import com.amsterdam.repository.dto.remote.CreateUserListResponse
+import com.amsterdam.repository.dto.remote.RemoteUserListResponse
+import com.amsterdam.repository.dto.remote.AddItemToListResponse
+import com.amsterdam.repository.dto.remote.CreateUserListResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -190,7 +193,12 @@ class UserListRemoteDataSourceImplTest {
         val sessionId = "abc"
         coEvery { userListApiService.deleteList(listId, sessionId) } throws NetworkException()
 
-        assertThrows<NetworkException> { userListRemoteDataSourceImpl.deleteList(listId, sessionId) }
+        assertThrows<NetworkException> {
+            userListRemoteDataSourceImpl.deleteList(
+                listId,
+                sessionId
+            )
+        }
     }
 
     @Test
@@ -213,10 +221,124 @@ class UserListRemoteDataSourceImplTest {
         val listId = 1L
         val movieId = 1L
         val sessionId = "abc"
-        coEvery { userListApiService.removeMovieFromList(listId, sessionId, movieId) } throws NetworkException()
+        coEvery {
+            userListApiService.removeMovieFromList(
+                listId,
+                sessionId,
+                movieId
+            )
+        } throws NetworkException()
 
         assertThrows<NetworkException> {
             userListRemoteDataSourceImpl.removeMovieFromList(listId, sessionId, movieId)
         }
     }
+
+    @Test
+    fun `addMovieToList should call api service addMovieToList`() = runTest {
+        // Given
+        val listId = 1L
+        val movieId = 1
+        val sessionId = "abc"
+        val expectedResponse = AddItemToListResponse(
+            success = true,
+            statusCode = 1,
+            statusMessage = "success",
+        )
+        coEvery {
+            userListApiService.addMediaItemToList(
+                listId,
+                sessionId,
+                movieId
+            )
+        } returns expectedResponse
+        // When
+        val result = userListRemoteDataSourceImpl.addMovieToList(listId, sessionId, movieId)
+        // Then
+        assertThat(result).isEqualTo(expectedResponse)
+        coVerify { userListApiService.addMediaItemToList(listId, sessionId, movieId) }
+
+
+    }
+
+    @Test
+    fun `addMovieToList should throw NetworkException when api call fails`() = runTest {
+        val listId = 1L
+        val movieId = 1
+        val sessionId = "abc"
+        coEvery {
+            userListApiService.addMediaItemToList(
+                listId,
+                sessionId,
+                movieId
+            )
+        } throws NetworkException()
+        assertThrows<NetworkException> {
+            userListRemoteDataSourceImpl.addMovieToList(listId, sessionId, movieId)
+        }
+    }
+
+    @Test
+    fun `getUserLists should call api service getMovieDetails`() = runTest {
+        // Given
+        val accountId = 1
+        val sessionId = "abc"
+        val expectedResponse = RemoteUserListResponse(
+            results = listOf(),
+            page = 1,
+            totalPages = 1,
+            totalResults = 1,
+        )
+        coEvery {
+            userListApiService.getUserLists(
+                accountId,
+                1,
+                sessionId
+            )
+        } returns expectedResponse
+        // When
+        val result = userListRemoteDataSourceImpl.getUserLists(accountId, 1, sessionId)
+        // Then
+        assertThat(result).isEqualTo(expectedResponse)
+        coVerify { userListApiService.getUserLists(accountId, 1, sessionId) }
+
+    }
+
+    @Test
+    fun `createNewList should call api service createNewList`() = runTest {
+        // Given
+        val listName = "listName"
+        val description = "description"
+        val language = "language"
+        val sessionId = "abc"
+        val expectedResponse = CreateUserListResponse(
+            success = true,
+            statusMessage = "success",
+            statusCode = 1,
+            listId = 1,
+        )
+        coEvery {
+            userListApiService.createNewList(
+                sessionId = sessionId,
+                listName = listName,
+                description = description,
+                language = language,
+            )
+        } returns expectedResponse
+        // When
+        val result =
+            userListRemoteDataSourceImpl.createNewList(listName, description, language, sessionId)
+        // Then
+        assertThat(result).isEqualTo(expectedResponse)
+        coVerify {
+            userListApiService.createNewList(
+                sessionId = sessionId,
+                listName = listName,
+                description = description,
+                language = language,
+            )
+        }
+
+    }
+
 }

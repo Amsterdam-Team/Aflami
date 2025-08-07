@@ -16,6 +16,7 @@ data class ProfileUiState(
     val updatedIsDarkTheme: Boolean = false,
     val showLanguageDialog: Boolean = false,
     val showThemeDialog: Boolean = false,
+    val appVersion: String = ""
 ) {
     data class UserInfoUiState(
         val username: String = "",

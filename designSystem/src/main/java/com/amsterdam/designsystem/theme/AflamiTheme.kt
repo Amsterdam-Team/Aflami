@@ -37,7 +37,7 @@ fun AflamiTheme(
     }
 }
 
-internal val LocalIsDarkTheme =
+val LocalIsDarkTheme =
     compositionLocalOf<Boolean> {
         error("LocalIsDarkTheme not provided")
     }

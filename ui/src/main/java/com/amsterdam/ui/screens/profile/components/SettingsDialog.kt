@@ -32,11 +32,11 @@ fun SettingsDialog(
         onDismiss = onDismissClick
     ) {
         Column(
-            modifier = modifier.padding(12.dp).background(AppTheme.color.surface)
+            modifier = modifier.padding(vertical = 12.dp).background(AppTheme.color.surface)
         ) {
             DialogTitleRow(
                 title = stringResource(R.string.settings),
-                modifier = Modifier.padding(bottom = 24.dp),
+                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 24.dp),
                 onDismiss = onDismissClick
             )
             OptionRow(

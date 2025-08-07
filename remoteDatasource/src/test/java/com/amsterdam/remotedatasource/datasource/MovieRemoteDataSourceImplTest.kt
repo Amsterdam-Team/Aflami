@@ -2,14 +2,13 @@ package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.MovieApiService
-import com.amsterdam.repository.dto.remote.ActorSearchItemDto
+import com.amsterdam.remotedatasource.util.actorSearchItemDto
+import com.amsterdam.remotedatasource.util.remoteMovieDetailsResponse
+import com.amsterdam.remotedatasource.util.remoteMovieItemDto
+import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
-import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
-import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
-import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -38,21 +37,7 @@ class MovieRemoteDataSourceImplTest {
         val expectedResponse = RemoteMovieResponse(
             page = 1,
             results = listOf(
-                RemoteMovieItemDto(
-                    id = 27205,
-                    title = "Inception",
-                    adult = false,
-                    backdropPath = "/path/to/backdrop.jpg",
-                    originalLanguage = "en",
-                    originalTitle = "Inception",
-                    overview = "A thief...",
-                    popularity = 120.0,
-                    posterPath = "/path/to/poster.jpg",
-                    releaseDate = "2010-07-15",
-                    video = false,
-                    voteAverage = 8.3,
-                    voteCount = 30000
-                )
+                remoteMovieItemDto
             ),
             totalPages = 1,
             totalResults = 1
@@ -87,21 +72,7 @@ class MovieRemoteDataSourceImplTest {
         val expectedResponse = RemoteMovieResponse(
             page = 1,
             results = listOf(
-                RemoteMovieItemDto(
-                    id = 12345,
-                    title = "The Revenant",
-                    adult = false,
-                    backdropPath = "/path/to/backdrop.jpg",
-                    originalLanguage = "en",
-                    originalTitle = "The Revenant",
-                    overview = "A frontiersman...",
-                    popularity = 80.0,
-                    posterPath = "/path/to/poster.jpg",
-                    releaseDate = "2015-12-25",
-                    video = false,
-                    voteAverage = 7.8,
-                    voteCount = 15000
-                )
+                remoteMovieItemDto
             ),
             totalPages = 1,
             totalResults = 1
@@ -139,16 +110,7 @@ class MovieRemoteDataSourceImplTest {
             totalPages = 1,
             totalResults = 1,
             actors = listOf(
-                ActorSearchItemDto(
-                    id = 6193,
-                    name = name,
-                    adult = false,
-                    gender = 2,
-                    knownFor = emptyList(),
-                    originalName = name,
-                    popularity = 70.0,
-                    profilePath = null
-                )
+                actorSearchItemDto
             )
         )
         coEvery { movieApiService.getActorIdByName(name, page) } returns expectedResponse
@@ -203,21 +165,8 @@ class MovieRemoteDataSourceImplTest {
             val expectedResponse = RemoteMovieResponse(
                 page = 1,
                 results = listOf(
-                    RemoteMovieItemDto(
-                        id = 67890,
-                        title = "American Beauty",
-                        adult = false,
-                        backdropPath = "/path/to/backdrop.jpg",
-                        originalLanguage = "en",
-                        originalTitle = "American Beauty",
-                        overview = "A film about...",
-                        popularity = 90.0,
-                        posterPath = "/path/to/poster.jpg",
-                        releaseDate = "1999-09-17",
-                        video = false,
-                        voteAverage = 8.0,
-                        voteCount = 10000
-                    )
+                    remoteMovieItemDto
+
                 ),
                 totalPages = 1,
                 totalResults = 1
@@ -296,50 +245,7 @@ class MovieRemoteDataSourceImplTest {
         runTest {
             // Given
             val movieId = 550L
-            val expectedResponse = RemoteMovieDetailsResponse(
-                id = movieId,
-                adult = false,
-                backdropPath = null,
-                originalLanguage = "en",
-                originalTitle = "Test Movie",
-                overview = "Overview",
-                popularity = 1.0,
-                posterPath = null,
-                releaseDate = "2023-01-01",
-                title = "Test Movie",
-                video = false,
-                voteAverage = 5.0,
-                voteCount = 1,
-                reviews = ReviewsResponse(
-                    id = movieId,
-                    page = 1,
-                    results = emptyList(),
-                    totalPages = 1,
-                    totalResults = 0
-                ),
-                credits = RemoteCastAndCrewResponse(
-                    id = movieId,
-                    cast = emptyList(),
-                    crew = emptyList()
-                ),
-                similar = RemoteMovieResponse(
-                    page = 1,
-                    results = emptyList(),
-                    totalPages = 1,
-                    totalResults = 0
-                ),
-                images = RemoteGalleryResponse(
-                    id = movieId,
-                    backdrops = emptyList(),
-                    logos = emptyList(),
-                    posters = emptyList()
-                ),
-                genreIds = emptyList(),
-                productionCompanies = emptyList(),
-                originCountry = emptyList(),
-                runtime = 0,
-                genres = emptyList()
-            )
+            val expectedResponse = remoteMovieDetailsResponse
             coEvery { movieApiService.getMovieDetailsById(movieId) } returns expectedResponse
 
             // When
@@ -367,23 +273,7 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val expectedResponse = RemoteMovieResponse(
             page = 1,
-            results = listOf(
-                RemoteMovieItemDto(
-                    id = 112233,
-                    title = "Popular Movie",
-                    adult = false,
-                    backdropPath = null,
-                    originalLanguage = "en",
-                    originalTitle = "Popular Movie",
-                    overview = "An overview...",
-                    popularity = 500.0,
-                    posterPath = null,
-                    releaseDate = "2024-01-01",
-                    video = false,
-                    voteAverage = 8.5,
-                    voteCount = 50000
-                )
-            ),
+            results = listOf(remoteMovieItemDto),
             totalPages = 1,
             totalResults = 1
         )
@@ -413,23 +303,7 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val expectedResponse = RemoteMovieResponse(
             page = 1,
-            results = listOf(
-                RemoteMovieItemDto(
-                    id = 445566,
-                    title = "Upcoming Movie",
-                    adult = false,
-                    backdropPath = null,
-                    originalLanguage = "en",
-                    originalTitle = "Upcoming Movie",
-                    overview = "An overview...",
-                    popularity = 50.0,
-                    posterPath = null,
-                    releaseDate = "2025-01-01",
-                    video = false,
-                    voteAverage = 7.0,
-                    voteCount = 1000
-                )
-            ),
+            results = listOf(remoteMovieItemDto),
             totalPages = 1,
             totalResults = 1
         )
@@ -460,23 +334,7 @@ class MovieRemoteDataSourceImplTest {
         val page = 1
         val expectedResponse = RemoteMovieResponse(
             page = page,
-            results = listOf(
-                RemoteMovieItemDto(
-                    id = 778899,
-                    title = "Top Rated Movie",
-                    adult = false,
-                    backdropPath = null,
-                    originalLanguage = "en",
-                    originalTitle = "Top Rated Movie",
-                    overview = "An overview...",
-                    popularity = 600.0,
-                    posterPath = null,
-                    releaseDate = "2023-01-01",
-                    video = false,
-                    voteAverage = 9.0,
-                    voteCount = 500000
-                )
-            ),
+            results = listOf(remoteMovieItemDto),
             totalPages = 1,
             totalResults = 1
         )
@@ -509,44 +367,108 @@ class MovieRemoteDataSourceImplTest {
         val expectedResponse = RemoteMovieResponse(
             page = 1,
             results = listOf(
-                RemoteMovieItemDto(
-                    id = 112233,
-                    title = "Action Thriller",
-                    adult = false,
-                    backdropPath = null,
-                    originalLanguage = "en",
-                    originalTitle = "Action Thriller",
-                    overview = "An overview...",
-                    popularity = 500.0,
-                    posterPath = null,
-                    releaseDate = "2022-01-01",
-                    video = false,
-                    voteAverage = 8.0,
-                    voteCount = 20000
-                )
+                remoteMovieItemDto
             ),
             totalPages = 1,
             totalResults = 1
         )
-        coEvery { movieApiService.getMoviesByGenreIds(genreIds) } returns expectedResponse
+        coEvery { movieApiService.getMoviesByGenreIds(genreIds, 1) } returns expectedResponse
 
         // When
-        val movies = movieRemoteDataSourceImpl.getMoviesByGenreIds(genreIds)
+        val movies = movieRemoteDataSourceImpl.getMoviesByGenreIds(genreIds, 1)
 
         // Then
         assertThat(movies).isEqualTo(expectedResponse)
-        coVerify(exactly = 1) { movieApiService.getMoviesByGenreIds(genreIds) }
+        coVerify(exactly = 1) { movieApiService.getMoviesByGenreIds(genreIds, 1) }
     }
 
     @Test
     fun `getMoviesByGenreIds should throw NetworkException when api call fails`() = runTest {
         // Given
         val genreIds = listOf(28L)
-        coEvery { movieApiService.getMoviesByGenreIds(genreIds) } throws NetworkException()
+        coEvery { movieApiService.getMoviesByGenreIds(genreIds, 1) } throws NetworkException()
 
         // When & Then
         assertThrows<NetworkException> {
-            movieRemoteDataSourceImpl.getMoviesByGenreIds(genreIds)
+            movieRemoteDataSourceImpl.getMoviesByGenreIds(genreIds, 1)
+        }
+    }
+
+    @Test
+    fun `setMovieRate should return RatingResponse when successful`() = runTest {
+        // Given
+        val movieId = 550L
+        val rating = 5.0f
+        val sessionId = "session_id"
+        val expectedResponse = RatingResponse(statusCode = 12, statusMessage = "success")
+
+        coEvery {
+            movieApiService.postMovieRating(
+                movieId,
+                rating,
+                sessionId
+            )
+        } returns expectedResponse
+
+        // When
+        val result = movieRemoteDataSourceImpl.setMovieRate(rating, movieId, sessionId)
+
+        // Then
+        assertThat(result).isEqualTo(expectedResponse)
+        coVerify(exactly = 1) { movieApiService.postMovieRating(movieId, rating, sessionId) }
+
+
+    }
+
+    @Test
+    fun `getRatedMovie should return Unit when successful`() = runTest {
+        //Given
+        val sessionId = "session_id"
+        val expectedResponse = RemoteMovieResponse(
+            page = 1,
+            results = listOf(remoteMovieItemDto),
+            totalPages = 1,
+            totalResults = 1
+        )
+        coEvery { movieApiService.getRatedMovies(0, sessionId) } returns expectedResponse
+        //When
+        val result = movieRemoteDataSourceImpl.getRatedMovies(sessionId)
+        //Then
+        assertThat(result).isEqualTo(expectedResponse)
+        coVerify(exactly = 1) { movieApiService.getRatedMovies(0, sessionId) }
+    }
+
+    @Test
+    fun `getRatedMovie should throw NetworkException when api call fails`() = runTest {
+        //Given
+        val sessionId = "session_id"
+        coEvery { movieApiService.getRatedMovies(0, sessionId) } throws NetworkException()
+        //When & Then
+        assertThrows<NetworkException> {
+            movieRemoteDataSourceImpl.getRatedMovies(sessionId)
+        }
+    }
+
+    @Test
+    fun `deleteMovieRate should call deleteMovieRate in API with correct parameters`() = runTest {
+        // Given
+        val movieId = 1399L
+        val sessionId = "session_id"
+        coEvery {
+            movieApiService.deleteMovieRate(movieId, sessionId)
+        } returns Unit
+
+        // When
+        movieRemoteDataSourceImpl.deleteMovieRate(movieId, sessionId)
+
+        // Then
+        coVerify(exactly = 1) {
+            movieApiService.deleteMovieRate(movieId, sessionId)
         }
     }
 }
+
+
+
+
+

@@ -3,8 +3,9 @@ package com.amsterdam.aflami
 import android.util.Log
 import com.amsterdam.domain.logger.Logger
 import com.google.firebase.BuildConfig
+import javax.inject.Inject
 
-class AppLogger : Logger {
+class AppLogger @Inject constructor() : Logger {
 
     companion object {
         const val TAG_PREFIX = "AflamiApp"

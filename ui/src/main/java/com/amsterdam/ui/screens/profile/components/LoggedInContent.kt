@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,8 +30,8 @@ import com.amsterdam.designsystem.components.divider.HorizontalDivider
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.ui.R
 import com.amsterdam.viewmodel.profile.ProfileInteractionListener
 import com.amsterdam.viewmodel.profile.ProfileUiState
@@ -52,6 +53,83 @@ fun LoggedInContent(
         label = "AppBarScrollColor"
     )
 
+    val showVersion by remember {
+        derivedStateOf {
+            !lazyListState.canScrollForward
+        }
+    }
+
+    ScreenDialogs(state, interactionListener)
+
+    Box {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                state = lazyListState,
+                contentPadding = PaddingValues(bottom = 12.dp)
+            ) {
+                item { ProfileImageSection(state.userInfo.userAvatarUrl) }
+                item { ProfileInfoSection(state.userInfo.username, state.userInfo.userPoints) }
+                item {
+                    HistoryAndRatingSection(
+                        onClickHistory = onClickHistory,
+                        onClickRating = interactionListener::onClickRating
+                    )
+                }
+                item { HorizontalDivider() }
+                item {
+                    SettingsSection(
+                        state,
+                        onSettingsClicked = interactionListener::onClickSettings,
+                        onClickLanguage = interactionListener::onClickLanguageSetting,
+                        onClickTheme = interactionListener::onClickThemeSetting
+                    )
+                }
+            }
+            AnimatedVisibility(
+                visible = showVersion,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 12.dp),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Text(
+                    text = "v ${state.appVersion}",
+                    style = AppTheme.textStyle.label.small,
+                    color = AppTheme.color.hint,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.profile),
+                    style = AppTheme.textStyle.title.large,
+                    color = AppTheme.color.title,
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 13.dp)
+                )
+            },
+            modifier = Modifier
+                .background(appBarColor)
+        )
+    }
+}
+
+@Composable
+private fun ScreenDialogs(
+    state: ProfileUiState,
+    interactionListener: ProfileInteractionListener
+) {
     AnimatedVisibility(
         state.settingsState.isSettingsDialogVisible
     ) {
@@ -85,77 +163,35 @@ fun LoggedInContent(
         )
     }
 
-    Box {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = lazyListState
-        ) {
-            item { ProfileImageSection(state.userInfo.userAvatarUrl) }
-            item { ProfileInfoSection(state.userInfo.username, state.userInfo.userPoints) }
-            item { HistoryAndRatingSection(onClickHistory = onClickHistory, onClickRating = interactionListener::onClickRating) }
-            item { HorizontalDivider() }
-            item { SettingsSection(
-                state,
-                onSettingsClicked = interactionListener::onClickSettings,
-                onClickLanguage = interactionListener::onClickLanguageSetting,
-                onClickTheme = interactionListener::onClickThemeSetting
-            ) }
-            item {
-                Text(
-                    text = "v 1.1",
-                    style = AppTheme.textStyle.label.small,
-                    color = AppTheme.color.hint,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
+    AnimatedVisibility(
+        state.showLanguageDialog,
+        enter = fadeIn(tween(2000)),
+        exit = fadeOut(tween(2000)),
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            LanguageDialog(
+                language = state.language,
+                onConfirm = { interactionListener.onApplyLanguage() },
+                onDismiss = { interactionListener.onDismissLanguageDialog() },
+                onChangeLanguage = { language -> interactionListener.onChangeLanguage(language) }
+            )
         }
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.profile),
-                    style = AppTheme.textStyle.title.large,
-                    color = AppTheme.color.title,
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 13.dp)
-                )
-            },
-            modifier = Modifier
-                .background(appBarColor)
-        )
-        AnimatedVisibility(
-            state.showLanguageDialog,
-            enter = fadeIn(tween(2000)),
-            exit = fadeOut(tween(2000)),
-        ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                LanguageDialog(
-                    language = state.language,
-                    onConfirm = { interactionListener.onApplyLanguage() },
-                    onDismiss = { interactionListener.onDismissLanguageDialog() },
-                    onChangeLanguage = { language -> interactionListener.onChangeLanguage(language) }
-                )
-            }
-        }
+    }
 
-        AnimatedVisibility(
-            state.showThemeDialog,
-            enter = fadeIn(tween(2000)),
-            exit = fadeOut(tween(2000)),
-        ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                ThemeDialog(
-                    isDarkTheme = state.isDarkTheme,
-                    onConfirm = { interactionListener.onApplyTheme() },
-                    onDismiss = { interactionListener.onDismissThemeDialog() },
-                    onChangeTheme = { isDarkTheme ->
-                        interactionListener.onChangeTheme(isDarkTheme)
-                    }
-                )
-            }
+    AnimatedVisibility(
+        state.showThemeDialog,
+        enter = fadeIn(tween(2000)),
+        exit = fadeOut(tween(2000)),
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            ThemeDialog(
+                isDarkTheme = state.isDarkTheme,
+                onConfirm = { interactionListener.onApplyTheme() },
+                onDismiss = { interactionListener.onDismissThemeDialog() },
+                onChangeTheme = { isDarkTheme ->
+                    interactionListener.onChangeTheme(isDarkTheme)
+                }
+            )
         }
     }
 }
@@ -164,35 +200,37 @@ fun LoggedInContent(
 @Composable
 private fun LoggedInContentPreview() {
     AflamiTheme {
-        LoggedInContent(ProfileUiState(), object : ProfileInteractionListener {
-            override fun onClickLogin() {}
+        LoggedInContent(
+            ProfileUiState(), object : ProfileInteractionListener {
+                override fun onClickLogin() {}
 
-            override fun onClickLanguageSetting() {}
+                override fun onClickLanguageSetting() {}
 
-            override fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language) {}
+                override fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language) {}
 
-            override fun onApplyLanguage() {}
+                override fun onApplyLanguage() {}
 
-            override fun onDismissLanguageDialog() {}
+                override fun onDismissLanguageDialog() {}
 
-            override fun onClickThemeSetting() {}
+                override fun onClickThemeSetting() {}
 
-            override fun onChangeTheme(isDarkTheme: Boolean) {}
+                override fun onChangeTheme(isDarkTheme: Boolean) {}
 
-            override fun onApplyTheme() {}
+                override fun onApplyTheme() {}
 
-            override fun onDismissThemeDialog() {}
-            override fun onClickSettings() {}
-            override fun onDismissSettingsDialog() {}
-            override fun onClickLogout() {}
-            override fun onDismissLogoutDialog() {}
-            override fun onClickForgotPassword() {}
-            override fun onClickContentRestriction() {}
-            override fun onDismissContentRestrictionDialog() {}
-            override fun onClickConfirmLogout() {}
-            override fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel) {}
-            override fun onSaveRestrictionLevel() {}
-        override fun onClickRating() {}},
+                override fun onDismissThemeDialog() {}
+                override fun onClickSettings() {}
+                override fun onDismissSettingsDialog() {}
+                override fun onClickLogout() {}
+                override fun onDismissLogoutDialog() {}
+                override fun onClickForgotPassword() {}
+                override fun onClickContentRestriction() {}
+                override fun onDismissContentRestrictionDialog() {}
+                override fun onClickConfirmLogout() {}
+                override fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel) {}
+                override fun onSaveRestrictionLevel() {}
+                override fun onClickRating() {}
+            },
             onClickHistory = {})
     }
 }
