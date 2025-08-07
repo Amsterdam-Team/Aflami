@@ -1,5 +1,8 @@
 package com.amsterdam.ui.application
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +26,49 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AflamiApp()
+        }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing && !isChangingConfigurations){
+            if (viewModel.state.value.isDarkTheme){
+                switchIcon(LauncherIcon.DARK, this)
+            }else {
+                switchIcon(LauncherIcon.LIGHT, this)
+            }
+        }
+    }
+
+    enum class LauncherIcon(
+        val aliasName: String,
+    ) {
+        LIGHT("com.amsterdam.ui.application.MainActivity"),
+        DARK("com.amsterdam.aflami.DarkLauncher"),
+    }
+
+    private fun switchIcon(
+        newIcon: LauncherIcon,
+        context: Context,
+    ) {
+        val packageManager = context.packageManager
+        val packageName = context.packageName
+        LauncherIcon.entries.forEach {
+            val componentName = ComponentName(packageName, it.aliasName)
+            if (newIcon == it) {
+                packageManager.setComponentEnabledSetting(
+                    componentName,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP,
+                )
+            } else {
+                packageManager.setComponentEnabledSetting(
+                    componentName,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP,
+                )
+            }
         }
     }
 }
