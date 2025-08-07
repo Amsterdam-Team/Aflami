@@ -24,7 +24,7 @@ class CategoryLocalDataSourceImplTest {
 
     @Test
     fun `upsertMovieCategories should call dao with correct data`() = runTest {
-        val categories = listOf(LocalMovieCategoryDto(1, "Action", "en"))
+        val categories = listOf(LocalMovieCategoryDto(1))
 
         categoryLocalDataSourceImpl.upsertMovieCategories(categories)
 
@@ -33,7 +33,7 @@ class CategoryLocalDataSourceImplTest {
 
     @Test
     fun `upsertTvShowCategories should call dao with correct data`() = runTest {
-        val categories = listOf(LocalTvShowCategoryDto( 1, "Drama","en"))
+        val categories = listOf(LocalTvShowCategoryDto(1))
 
         categoryLocalDataSourceImpl.upsertTvShowCategories(categories)
 
@@ -42,11 +42,10 @@ class CategoryLocalDataSourceImplTest {
 
     @Test
     fun `getMovieCategories should return data from dao`() = runTest {
-        val expected = listOf(LocalMovieCategoryDto(1, "Comedy","en"))
-        val storedLanguage = "en"
-        coEvery { dao.getAllMovieCategories(storedLanguage) } returns expected
+        val expected = listOf(LocalMovieCategoryDto(1))
+        coEvery { dao.getAllMovieCategories() } returns expected
 
-        val result = categoryLocalDataSourceImpl.getMovieCategories(storedLanguage)
+        val result = categoryLocalDataSourceImpl.getMovieCategories()
 
         assertThat(result).isEqualTo(expected)
     }
@@ -54,10 +53,9 @@ class CategoryLocalDataSourceImplTest {
     fun `getMovieCategories should return emptyList from dao`() = runTest {
         //Given
         val expected = emptyList<LocalMovieCategoryDto>()
-        val storedLanguage = "en"
         //When
-        coEvery { dao.getAllMovieCategories(storedLanguage) } returns expected
-        val result = categoryLocalDataSourceImpl.getMovieCategories(storedLanguage)
+        coEvery { dao.getAllMovieCategories() } returns expected
+        val result = categoryLocalDataSourceImpl.getMovieCategories()
         //Then
         assertThat(result).isEmpty()
     }
@@ -65,11 +63,10 @@ class CategoryLocalDataSourceImplTest {
     @Test
     fun `getTvShowCategories should return data from dao`() = runTest {
         //Given
-        val expected = listOf(LocalTvShowCategoryDto(1, "All","en"))
-        val storedLanguage = "en"
+        val expected = listOf(LocalTvShowCategoryDto(1))
         //When
-        coEvery { dao.getAllTvShowCategories(storedLanguage) } returns expected
-        val result = categoryLocalDataSourceImpl.getTvShowCategories(storedLanguage)
+        coEvery { dao.getAllTvShowCategories() } returns expected
+        val result = categoryLocalDataSourceImpl.getTvShowCategories()
         //Then
         assertThat(result).isEqualTo(expected)
     }
