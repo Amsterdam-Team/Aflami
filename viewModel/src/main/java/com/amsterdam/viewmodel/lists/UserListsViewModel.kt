@@ -145,7 +145,7 @@ class UserListsViewModel @Inject constructor(
     }
 
     override fun onDismiss() {
-        updateState { it.copy(isCreateNewListDialogVisible = false) }
+        updateState { it.copy(isCreateNewListDialogVisible = false, listName = "") }
     }
 
     override fun onNavigateToLoginClicked() {
