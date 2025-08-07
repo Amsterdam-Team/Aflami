@@ -27,6 +27,7 @@ fun NoNetworkContainer(
     imageRes: Painter = painterResource(R.drawable.placeholder_no_connection),
     title: String = stringResource(R.string.offline_message),
     description: String = stringResource(R.string.offline_description),
+    showRetryLoading: Boolean = false
 ) {
     Column(
         modifier = modifier.fillMaxWidth().padding(horizontal = 24.dp),
@@ -56,7 +57,7 @@ fun NoNetworkContainer(
             title = stringResource(R.string.retry),
             onClick = onClickRetry,
             isEnabled = true,
-            isLoading = false,
+            isLoading = showRetryLoading,
             isNegative = false,
             modifier = Modifier.padding(top = 16.dp),
         )

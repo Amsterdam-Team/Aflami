@@ -89,8 +89,13 @@ fun MyRatingScreen(
                     is MyRatingUiEffect.NavigateBack -> navigateUp()
                     is MyRatingUiEffect.NavigateToMovieDetails -> navigate(MovieDetails(movieId = effect.movieId))
                     is MyRatingUiEffect.NavigateToSeriesDetails -> navigate(SeriesDetails(tvShowId = effect.tvShowId))
-                    MyRatingUiEffect.ShowDeleteRateSuccessSnackBar -> SnackBarManager.showSuccess(message = successRateDeletionMessage)
-                    MyRatingUiEffect.ShowDeleteRateErrorSnackBar -> SnackBarManager.showError(message = errorRateDeletionMessage)
+                    MyRatingUiEffect.ShowDeleteRateSuccessSnackBar -> SnackBarManager.showSuccess(
+                        message = successRateDeletionMessage
+                    )
+
+                    MyRatingUiEffect.ShowDeleteRateErrorSnackBar -> SnackBarManager.showError(
+                        message = errorRateDeletionMessage
+                    )
                 }
             }
         }
@@ -109,7 +114,8 @@ private fun MyRatingContent(
     var appBarHeight by remember { mutableIntStateOf(0) }
     var tabsHeight by remember { mutableIntStateOf(0) }
 
-    val availableHeight = calculateAvailableHeight(appBarHeightPx = appBarHeight, tabsHeightPx = tabsHeight)
+    val availableHeight =
+        calculateAvailableHeight(appBarHeightPx = appBarHeight, tabsHeightPx = tabsHeight)
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -134,7 +140,9 @@ private fun MyRatingContent(
 
         stickyHeader {
             TabsLayout(
-                modifier = Modifier.fillMaxWidth().onSizeChanged { tabsHeight = it.height },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onSizeChanged { tabsHeight = it.height },
                 tabs = listOf(stringResource(R.string.movies), stringResource(R.string.tv_shows)),
                 selectedIndex = state.selectedTabOption.index,
                 onSelectTab = { index -> interaction.onChangeTabOption(TabOption.entries[index]) },
@@ -145,7 +153,7 @@ private fun MyRatingContent(
         val isTvShowTabSelected = state.selectedTabOption.index == TabOption.TV_SHOWS.index
 
         when {
-            state.isLoading -> mediaCardsPlaceholder()
+            state.isLoading && !state.isRetryLoading -> mediaCardsPlaceholder()
 
             state.movies.isNotEmpty() && isMovieTabSelected -> {
                 items(state.movies, key = { it.id }) { movie ->
@@ -204,6 +212,8 @@ private fun MyRatingContent(
                     modifier = Modifier.height(availableHeight),
                     errorState = state.error ?: MyRatingErrorState.UnknownError,
                     interaction = interaction,
+                    showRetryLoading = state.isRetryLoading
+
                 )
             }
 
@@ -247,15 +257,18 @@ private fun calculateAvailableHeight(
 private fun LazyGridScope.getErrorContentByErrorUiState(
     errorState: MyRatingErrorState,
     interaction: MyRatingInteractionListener,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showRetryLoading: Boolean
 ) {
     return when (errorState) {
         MyRatingErrorState.NoInternetError -> item(span = { GridItemSpan(maxLineSpan) }) {
             NoNetworkContainer(
                 modifier = modifier,
-                onClickRetry = interaction::onClickRetryRequest
+                onClickRetry = interaction::onClickRetryRequest,
+                showRetryLoading = showRetryLoading
             )
         }
+
         else -> emptyRatingListPlaceholder(
             modifier = modifier,
             titleRes = R.string.error_rated_media_title,
