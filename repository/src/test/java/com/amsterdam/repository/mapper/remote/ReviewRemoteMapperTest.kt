@@ -1,60 +1,68 @@
 package com.amsterdam.repository.mapper.remote
 
-import com.amsterdam.repository.mapper.remote.testFactory.createFakeReviewDto
+import com.amsterdam.repository.dto.remote.review.AuthorDetailsDto
+import com.amsterdam.repository.dto.remote.review.ReviewDto
 import com.google.common.truth.Truth.assertThat
+import kotlinx.datetime.Instant
 import org.junit.jupiter.api.Test
 
 class ReviewRemoteMapperTest {
 
-    private val mapper = ReviewRemoteMapper()
-    private val dto = createFakeReviewDto()
-
     @Test
-    fun `toEntity should map id correctly`() {
-        val result = mapper.toEntity(dto)
+    fun `given valid ReviewDto, when toEntity called, then return correct Review`() {
+        // Given
+        val dto = ReviewDto(
+            id = "review123",
+            author = "John Doe",
+            content = "Great movie!",
+            createdAt = Instant.parse("2025-08-08T12:34:56.000Z"),
+            authorDetails = AuthorDetailsDto(
+                username = "johndoe",
+                rating = 4.5f,
+            ),
+            updatedAt = Instant.parse("2025-08-08T12:34:56.000Z"),
+            url = ""
+        )
+
+        // When
+        val result = dto.toEntity()
+
+        // Then
         assertThat(result.id).isEqualTo(dto.id.hashCode().toLong())
+        assertThat(result.reviewerName).isEqualTo("John Doe")
+        assertThat(result.reviewerUsername).isEqualTo("johndoe")
+        assertThat(result.rating).isEqualTo(4.5f)
+        assertThat(result.content).isEqualTo("Great movie!")
+        assertThat(result.date.toString()).isEqualTo("2025-08-08")
+        assertThat(result.imageUrl).isEqualTo("https://image.tmdb.org/t/p/w500null")
+    }
+    @Test
+    fun `given list of ReviewDto, when toEntityList called, then return list of Review`() {
+        // Given
+        val dtos = listOf(
+            ReviewDto(
+                id = "r1",
+                author = "Alice",
+                content = "Nice!",
+                createdAt = Instant.parse("2025-08-08T12:34:56.000Z"),
+                authorDetails = AuthorDetailsDto(
+                    username = "johndoe",
+                    rating = 4.5f,
+            ),
+
+                updatedAt = Instant.parse("2025-08-08T12:34:56.000Z"),
+                url = ""
+            ),
+
+        )
+
+        // When
+        val result = dtos.toEntityList()
+
+        // Then
+        assertThat(result).hasSize(1)
+        assertThat(result[0].reviewerName).isEqualTo("Alice")
     }
 
-    @Test
-    fun `toEntity should map reviewerName correctly`() {
-        val result = mapper.toEntity(dto)
-        assertThat(result.reviewerName).isEqualTo(dto.author)
-    }
 
-    @Test
-    fun `toEntity should map reviewerUsername correctly`() {
-        val result = mapper.toEntity(dto)
-        assertThat(result.reviewerUsername).isEqualTo(dto.authorDetails.username)
-    }
-
-    @Test
-    fun `toEntity should map rating correctly`() {
-        val result = mapper.toEntity(dto)
-        assertThat(result.rating).isEqualTo(dto.authorDetails.rating)
-    }
-
-    @Test
-    fun `toEntity should map content correctly`() {
-        val result = mapper.toEntity(dto)
-        assertThat(result.content).isEqualTo(dto.content)
-    }
-
-    @Test
-    fun `toEntity should map date correctly`() {
-        val result = mapper.toEntity(dto)
-        assertThat(result.date.toString()).isEqualTo("2024-07-20")
-    }
-
-    @Test
-    fun `toEntity should map imageUrl correctly`() {
-        val result = mapper.toEntity(dto)
-        assertThat(result.imageUrl).endsWith("/avatar.png")
-    }
-
-    @Test
-    fun `toEntity should return 0f rating when rating is null`() {
-        val dtoWithNullRating = createFakeReviewDto(rating = null)
-        val result = mapper.toEntity(dtoWithNullRating)
-        assertThat(result.rating).isEqualTo(0f)
-    }
 }

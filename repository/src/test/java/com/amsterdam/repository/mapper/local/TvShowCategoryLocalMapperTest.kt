@@ -1,56 +1,47 @@
-/*
 package com.amsterdam.repository.mapper.local
 
-import com.amsterdam.entity.Category
 import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
+import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class TvShowCategoryLocalMapperTest {
 
-    private lateinit var mapper: TvShowCategoryLocalMapper
-
-    @BeforeEach
-    fun setUp() {
-        mapper = TvShowCategoryLocalMapper()
-    }
 
     @Test
     @DisplayName("should map LocalTvShowCategoryDto to Category correctly")
     fun `toEntity should map correctly`() {
         // Arrange
-        val dto = LocalTvShowCategoryDto(
-            categoryId = 1,
-            name = "Drama"
+        val dto = TvShowWithCategory(
+            tvShow = LocalTvShowDto(
+                tvShowId = 1,
+                name = "Drama",
+                description = "A drama movie",
+                poster = "",
+                storedLanguage ="en",
+                airDate = LocalDate.parse("2020-01-01"),
+                rating = 3.6f,
+                popularity = 4.0,
+                seasonCount = 3,
+                originCountry ="",
+            ),
+            categories = listOf(
+                LocalTvShowCategoryDto(
+                    categoryId = 1,
+                )
+            )
         )
 
         // Act
-        val result = mapper.toEntity(dto)
+        val result = dto.toEntity()
 
         // Assert
         assertThat(result.id).isEqualTo(1)
         assertThat(result.name).isEqualTo("Drama")
-        assertThat(result.imageUrl).isEqualTo("")
     }
 
-    @Test
-    @DisplayName("should map Category to LocalTvShowCategoryDto correctly")
-    fun `toDto should map correctly`() {
-        // Arrange
-        val category = Category(
-            id = 2,
-            name = "Comedy",
-            imageUrl = "https://example.com/image.jpg"
-        )
 
-        // Act
-        val result = mapper.toDto(category)
-
-        // Assert
-        assertThat(result.categoryId).isEqualTo(2)
-        assertThat(result.name).isEqualTo("Comedy")
-    }
 }
-*/
