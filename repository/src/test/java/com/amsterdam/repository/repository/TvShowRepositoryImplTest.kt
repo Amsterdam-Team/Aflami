@@ -167,7 +167,7 @@ class TvShowRepositoryImplTest {
         } returns VideoResponse(results = listOf(videoDto))
 
         val expected = listOf(
-            episodeDtos[0].toEntity("https://www.youtube.com/watch?v=someKey"),
+            episodeDtos[0].toEntity(),
         )
 
         // When

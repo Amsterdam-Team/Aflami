@@ -4,22 +4,14 @@ import com.amsterdam.entity.Gender
 import com.amsterdam.repository.mapper.remote.testFactory.createRemoteCastDto
 import com.amsterdam.repository.utils.ImageBaseUrlsConstant.BASE_IMAGE_URL_W500
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CastRemoteMapperTest {
 
-    private lateinit var mapper: CastRemoteMapper
-
-    @BeforeEach
-    fun setUp() {
-        mapper = CastRemoteMapper()
-    }
-
     @Test
     fun `should return Male when gender is 2`() {
         val dto = createRemoteCastDto(gender = 2, profilePath = "/john.jpg")
-        val result = mapper.toEntity(dto)
+        val result = dto.toEntity()
 
         assertThat(result.gender).isEqualTo(Gender.Male)
     }
@@ -27,7 +19,7 @@ class CastRemoteMapperTest {
     @Test
     fun `should return Female when gender is not 2`() {
         val dto = createRemoteCastDto(gender = 1, profilePath = "/jane.jpg")
-        val result = mapper.toEntity(dto)
+        val result = dto.toEntity()
 
         assertThat(result.gender).isEqualTo(Gender.Female)
     }
@@ -35,7 +27,7 @@ class CastRemoteMapperTest {
     @Test
     fun `should return correct imageUrl when profilePath is not null`() {
         val dto = createRemoteCastDto(profilePath = "/actor.jpg")
-        val result = mapper.toEntity(dto)
+        val result = dto.toEntity()
 
         assertThat(result.imageUrl).isEqualTo("$BASE_IMAGE_URL_W500/actor.jpg")
     }
@@ -43,7 +35,7 @@ class CastRemoteMapperTest {
     @Test
     fun `should return empty imageUrl when profilePath is empty`() {
         val dto = createRemoteCastDto(profilePath = "")
-        val result = mapper.toEntity(dto)
+        val result = dto.toEntity()
 
         assertThat(result.imageUrl).isEqualTo(BASE_IMAGE_URL_W500)
     }
@@ -58,7 +50,7 @@ class CastRemoteMapperTest {
             popularity = 123.45
         )
 
-        val result = mapper.toEntity(dto)
+        val result = dto.toEntity()
 
         assertThat(result.id).isEqualTo(999)
         assertThat(result.name).isEqualTo("Test Actor")

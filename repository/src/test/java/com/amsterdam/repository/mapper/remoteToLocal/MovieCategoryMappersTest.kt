@@ -14,15 +14,12 @@ class MovieCategoryMappersTest {
             id = 12,
             name = "Adventure"
         )
-        val storedLanguage = "en"
 
         // Act
-        val localDto = remoteDto.toLocalMovieCategoryDto(storedLanguage)
+        val localDto = remoteDto.toLocalMovieCategoryDto()
 
         // Assert
         assertThat(localDto.categoryId).isEqualTo(12L)
-        assertThat(localDto.name).isEqualTo("Adventure")
-        assertThat(localDto.storedLanguage).isEqualTo("en")
     }
 
     @Test
@@ -38,22 +35,17 @@ class MovieCategoryMappersTest {
                 name = "Comedy"
             )
         )
-        val storedLanguage = "es"
 
         // Act
-        val localDtoList = remoteDtoList.toLocalDtoList(storedLanguage)
+        val localDtoList = remoteDtoList.toLocalDtoList()
 
         // Assert
         assertThat(localDtoList).hasSize(2)
 
         val firstCategory = localDtoList[0]
         assertThat(firstCategory.categoryId).isEqualTo(10759L)
-        assertThat(firstCategory.name).isEqualTo("Action & Adventure")
-        assertThat(firstCategory.storedLanguage).isEqualTo("es")
 
         val secondCategory = localDtoList[1]
         assertThat(secondCategory.categoryId).isEqualTo(35L)
-        assertThat(secondCategory.name).isEqualTo("Comedy")
-        assertThat(secondCategory.storedLanguage).isEqualTo("es")
     }
 }

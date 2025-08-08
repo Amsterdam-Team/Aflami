@@ -1,10 +1,12 @@
+package com.amsterdam.repository.repository
+
 import com.amsterdam.domain.exceptions.UnknownException
 import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
+import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
 import com.amsterdam.repository.mapper.local.toLocalDto
-import com.amsterdam.repository.repository.AuthenticationRepositoryImpl
 import com.amsterdam.repository.security.CryptoData
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
@@ -25,6 +27,7 @@ class AuthenticationRepositoryImplTest {
 
     private val authenticationRemoteSource: AuthenticationRemoteSource = mockk()
     private val authenticationLocalDataSource: AuthenticationLocalDataSource = mockk()
+    private val profileLocalDataSource: ProfileLocalDataSource = mockk()
     private val cryptoData: CryptoData = mockk()
 
     private val testUsername = "testUser"
@@ -38,6 +41,7 @@ class AuthenticationRepositoryImplTest {
         repository = AuthenticationRepositoryImpl(
             authenticationRemoteSource = authenticationRemoteSource,
             authenticationLocalDataSource = authenticationLocalDataSource,
+            profileLocalDataSource = profileLocalDataSource,
             cryptoData = cryptoData
         )
     }
