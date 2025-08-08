@@ -109,8 +109,7 @@ class SearchViewModel @Inject constructor(
                 ).flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
-            onSuccess = ::onFetchMoviesSuccess,
-            onError = {},
+            onSuccess = ::onFetchMoviesSuccess
         )
     }
 
@@ -137,8 +136,7 @@ class SearchViewModel @Inject constructor(
                 ).flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
-            onSuccess = ::onFetchTvShowsSuccess,
-            onError = {},
+            onSuccess = ::onFetchTvShowsSuccess
         )
     }
 
@@ -166,7 +164,6 @@ class SearchViewModel @Inject constructor(
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onMoviesFilteredSuccess,
-            onError = {},
             onCompletion = ::onClickCancel,
         )
     }

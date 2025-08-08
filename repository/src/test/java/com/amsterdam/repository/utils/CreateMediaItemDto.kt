@@ -16,7 +16,6 @@ import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.dto.remote.VideoDto
 import com.amsterdam.repository.dto.remote.VideoResponse
 import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
-import com.amsterdam.repository.dto.remote.profile.AccountDetailsDto
 import com.amsterdam.repository.dto.remote.review.ReviewsResponse
 import kotlinx.datetime.LocalDate
 
@@ -193,7 +192,7 @@ val remoteUserRatedMovie = GetUserRatedMoviesUseCase.UserRatedMovie(
     ),
     userRate = 0
 
-)
+)/*
 val accountDetails = AccountDetailsDto(
     accountAvatar = AccountDetailsDto.AccountAvatar(
         gravatar = AccountDetailsDto.Gravatar(
@@ -209,4 +208,4 @@ val accountDetails = AccountDetailsDto(
     languageCode = "en",
     name = "Mona Ayman",
     username = "Mona",
-)
+)*/

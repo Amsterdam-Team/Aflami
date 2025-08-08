@@ -69,8 +69,7 @@ class ActorSearchViewModel @Inject constructor(
                     .flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
-            onSuccess = ::handleSearchResults,
-            onError = {},
+            onSuccess = ::handleSearchResults
         )
     }
 

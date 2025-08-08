@@ -36,7 +36,7 @@ class GetMovieDetailsUseCaseTest {
         originCountry = "USA",
         runTimeInMinutes = 120,
 
-    )
+        )
     private val fakeReviews = listOf(
         Review(1, "Reviewer1", "user1", 4.5f, "Great", LocalDate(2023, 1, 1), "url1"),
     )
@@ -56,7 +56,6 @@ class GetMovieDetailsUseCaseTest {
             90.0,
             "USA",
             100,
-
         ),
     )
     private val fakeGallery = listOf("gallery1.jpg", "gallery2.jpg")
@@ -78,6 +77,7 @@ class GetMovieDetailsUseCaseTest {
             movieGallery = fakeGallery,
             moviePosters = fakePosters,
             productionCompanies = emptyList(),
+            userRate = null,
         )
 
         coJustRun { addWatchHistoryUseCase.invoke(any()) }
@@ -110,11 +110,9 @@ class GetMovieDetailsUseCaseTest {
     fun `should not add to watch history if getMovieDetailsById fails`() = runTest {
         coEvery { movieRepository.getMovieDetailsById(any()) } throws AflamiException()
 
-        try {
-            getMovieDetailsUseCase(1L)
-        } catch (e: AflamiException) {
-            coVerify(exactly = 0) { addWatchHistoryUseCase(any()) }
-        }
+        assertThrows<AflamiException> { getMovieDetailsUseCase(1L) }
+
+        coVerify(exactly = 0) { addWatchHistoryUseCase(any()) }
     }
 
     @Test
@@ -128,6 +126,7 @@ class GetMovieDetailsUseCaseTest {
                 movieGallery = emptyList(),
                 moviePosters = emptyList(),
                 productionCompanies = emptyList(),
+                userRate = null,
             )
 
             val result = getMovieDetailsUseCase(1L)
@@ -149,6 +148,7 @@ class GetMovieDetailsUseCaseTest {
             movieGallery = emptyList(),
             moviePosters = emptyList(),
             productionCompanies = emptyList(),
+            userRate = null,
         )
         val result = getMovieDetailsUseCase(1L)
 

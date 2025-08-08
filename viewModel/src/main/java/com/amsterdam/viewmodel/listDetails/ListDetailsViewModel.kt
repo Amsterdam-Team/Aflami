@@ -66,8 +66,7 @@ class ListDetailsViewModel @Inject constructor(
                     }
                 ).flow.cachedIn(viewModelScope)
             },
-            onSuccess = ::onGetListDetailsSuccess,
-            onError = {}
+            onSuccess = ::onGetListDetailsSuccess
         )
     }
 

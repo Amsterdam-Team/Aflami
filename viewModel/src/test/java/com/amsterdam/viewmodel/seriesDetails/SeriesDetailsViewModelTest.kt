@@ -46,13 +46,23 @@ class SeriesDetailsViewModelTest {
     private val getEpisodesBySeasonNumberUseCase: GetEpisodesBySeasonNumberUseCase =
         mockk(relaxed = true)
     private val setUserTvShowRatingUseCase: SetUserTvShowRatingUseCase = mockk(relaxed = true)
-    private val getEpisodeVideosByEpisodeId: GetEpisodeVideosUseCase = mockk(relaxed = true)
+    private val getEpisodeVideosUseCase: GetEpisodeVideosUseCase = mockk(relaxed = true)
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk(relaxed = true)
     private var testArgs: SeriesDetailsArgs = mockk(relaxed = true)
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcherProvider.testDispatcher)
+        viewModel = SeriesDetailsViewModel(
+            args = testArgs,
+            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
+            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
+            getsSessionType = getsSessionType,
+            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
+            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
+            getEpisodeVideosUseCase = getEpisodeVideosUseCase,
+            dispatcherProvider = testDispatcherProvider
+        )
         every { testArgs.tvShowId } returns 100L
         every { manageLocaleLanguageUseCase.getAppLanguage() } returns flowOf(Language.ENGLISH)
     }
@@ -101,16 +111,7 @@ class SeriesDetailsViewModelTest {
     fun `onCancelClicked should hide the login dialog`() = runTest {
         coEvery { getsSessionType.invoke() } returns SessionType.GUEST
 
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
+
         advanceUntilIdle()
 
         viewModel.onAddToListClicked()
@@ -131,16 +132,6 @@ class SeriesDetailsViewModelTest {
         coEvery { getTvShowDetailsUseCase.invoke(any()) } throws NoInternetException()
 
         // When
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // Then
@@ -154,16 +145,6 @@ class SeriesDetailsViewModelTest {
         coEvery { getTvShowDetailsUseCase.invoke(any()) } throws NoInternetException()
 
         // When
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // Then
@@ -177,16 +158,6 @@ class SeriesDetailsViewModelTest {
         coEvery { getTvShowDetailsUseCase.invoke(any()) } throws NetworkException()
 
         // When
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // Then
@@ -199,16 +170,6 @@ class SeriesDetailsViewModelTest {
         runTest {
             // Given
             val selectedExtras = SeriesExtras.REVIEWS
-            viewModel = SeriesDetailsViewModel(
-                args = testArgs,
-                getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-                getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-                getsSessionType = getsSessionType,
-                setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-                getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-                manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-                dispatcherProvider = testDispatcherProvider
-            )
             advanceUntilIdle()
 
             // When
@@ -224,16 +185,6 @@ class SeriesDetailsViewModelTest {
     @Test
     fun `onNavigateBack should send NavigateBack effect`() = runTest {
         // Given
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         val effects = mutableListOf<SeriesDetailsEffect>()
         val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
 
@@ -252,16 +203,6 @@ class SeriesDetailsViewModelTest {
         val tvShowId = 100L
         every { testArgs.tvShowId } returns tvShowId
         coEvery { getTvShowDetailsUseCase.invoke(any()) } throws NoInternetException()
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
         assertThat(viewModel.state.value.networkError).isTrue()
 
@@ -279,16 +220,6 @@ class SeriesDetailsViewModelTest {
     @Test
     fun `onClickShowAllCast should send NavigateToCastScreen effect`() = runTest {
         // Given
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         val effects = mutableListOf<SeriesDetailsEffect>()
         val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
 
@@ -305,16 +236,6 @@ class SeriesDetailsViewModelTest {
     fun `onAddToListClicked should show login dialog when user is a guest`() = runTest {
         // Given
         coEvery { getsSessionType.invoke() } returns SessionType.GUEST
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // When
@@ -329,16 +250,6 @@ class SeriesDetailsViewModelTest {
     fun `onAddToListClicked should not show login dialog when user is logged in`() = runTest {
         // Given
         coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // When
@@ -354,16 +265,6 @@ class SeriesDetailsViewModelTest {
         // Given
         coEvery { getsSessionType.invoke() } returns SessionType.GUEST
         mockSuccessfulTvShowDetails()
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // When
@@ -406,16 +307,6 @@ class SeriesDetailsViewModelTest {
         )
         mockSuccessfulTvShowDetails()
         coEvery { getEpisodesBySeasonNumberUseCase.invoke(any(), seasonNumber) } returns episodes
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // When
@@ -449,16 +340,6 @@ class SeriesDetailsViewModelTest {
         )
         mockSuccessfulTvShowDetails()
         coEvery { getEpisodesBySeasonNumberUseCase.invoke(any(), seasonNumber) } returns episodes
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // First click to load episodes
@@ -480,16 +361,6 @@ class SeriesDetailsViewModelTest {
     @Test
     fun `onNavigateToLoginClicked should send NavigateToLoginScreenEffect`() = runTest {
         // Given
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         val effects = mutableListOf<SeriesDetailsEffect>()
         val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
 
@@ -506,16 +377,6 @@ class SeriesDetailsViewModelTest {
     fun `onClickSimilarMovie should send NavigateToSeriesDetails effect`() = runTest {
         // Given
         val similarTvShowId = 200L
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         val effects = mutableListOf<SeriesDetailsEffect>()
         val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
 
@@ -535,16 +396,6 @@ class SeriesDetailsViewModelTest {
     @Test
     fun `onDescriptionExpansionToggled should toggle isDescriptionExpanded state`() = runTest {
         // Given
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
         assertThat(viewModel.state.value.isDescriptionExpanded).isFalse()
 
@@ -597,16 +448,6 @@ class SeriesDetailsViewModelTest {
             gallery = emptyList(), posters = emptyList(),
             productionsCompanies = emptyList(), seasons = emptyList(), userRate = null
         )
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         advanceUntilIdle()
 
         // When
@@ -627,16 +468,6 @@ class SeriesDetailsViewModelTest {
             coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
             mockSuccessfulTvShowDetails(userRate = previousRating)
 
-            viewModel = SeriesDetailsViewModel(
-                args = testArgs,
-                getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-                getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-                getsSessionType = getsSessionType,
-                setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-                getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-                manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-                dispatcherProvider = testDispatcherProvider
-            )
             advanceUntilIdle()
 
             // When
@@ -658,16 +489,6 @@ class SeriesDetailsViewModelTest {
         coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
         coEvery { setUserTvShowRatingUseCase.setUserMovieRate(rating, tvShowId) } returns Unit
 
-        viewModel = SeriesDetailsViewModel(
-            args = testArgs,
-            getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-            getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-            getsSessionType = getsSessionType,
-            setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-            getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-            manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-            dispatcherProvider = testDispatcherProvider
-        )
         val effects = mutableListOf<SeriesDetailsEffect>()
         val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
 
@@ -683,48 +504,4 @@ class SeriesDetailsViewModelTest {
         assertThat(viewModel.state.value.rateDialogUiState.isVisible).isFalse()
         collectJob.cancel()
     }
-
-
-    @Test
-    fun `onPlayEpisodeClicked should send LaunchSeriesVideoEffect with episode video url on success`() =
-        runTest {
-            val tvShowId = 100L
-            val seasonNumber = 1
-            val episodeId = 5
-            val videoUrl = "test_episode_video_url"
-
-            mockSuccessfulTvShowDetails()
-
-            coEvery {
-                getEpisodeVideosByEpisodeId.invoke(
-                    tvShowId,
-                    seasonNumber,
-                    episodeId
-                )
-            } returns videoUrl
-
-            viewModel = SeriesDetailsViewModel(
-                args = testArgs,
-                getTvShowDetailsUseCase = getTvShowDetailsUseCase,
-                getEpisodesBySeasonNumberUseCase = getEpisodesBySeasonNumberUseCase,
-                getsSessionType = getsSessionType,
-                setUserTvShowRatingUseCase = setUserTvShowRatingUseCase,
-                getEpisodeVideosByEpisodeId = getEpisodeVideosByEpisodeId,
-                manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
-                dispatcherProvider = testDispatcherProvider
-            )
-
-            val effects = mutableListOf<SeriesDetailsEffect>()
-            val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
-
-            advanceUntilIdle()
-            viewModel.onPlayEpisodeClicked(episodeId)
-            advanceUntilIdle()
-
-            coVerify { getEpisodeVideosByEpisodeId.invoke(tvShowId, seasonNumber, episodeId) }
-
-            assertThat(effects).containsExactly(SeriesDetailsEffect.LaunchSeriesVideoEffect(videoUrl))
-
-            collectJob.cancel()
-        }
 }
