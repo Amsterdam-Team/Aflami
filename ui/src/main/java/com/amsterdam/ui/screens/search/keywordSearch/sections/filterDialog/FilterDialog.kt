@@ -79,7 +79,7 @@ internal fun FilterDialog(
                     .fillMaxWidth(0.9f)
                     .background(
                         color = AppTheme.color.surface,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 12.dp),
@@ -134,8 +134,8 @@ internal fun FilterDialog(
                         .fillMaxWidth()
                         .padding(bottom = 12.dp),
                 state = lazyState,
-                contentPadding = PaddingValues(horizontal = 18.dp),
-                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top,
             ) {
                 when (selectedTabOption) {

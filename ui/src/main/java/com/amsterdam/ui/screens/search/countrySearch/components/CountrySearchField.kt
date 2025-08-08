@@ -23,7 +23,7 @@ internal fun CountrySearchField(
     TextField(
         text = keyword,
         hintText = stringResource(R.string.country_name_hint),
-        onValueChange = onKeywordValueChanged,
+        onValueChange = { onKeywordValueChanged(it.trim()) },
         keyboardActions = KeyboardActions(
             onSearch = {
                 keyboardController?.hide()

@@ -218,7 +218,7 @@ private fun ListsScreenContent(
                                         onClick = {
                                             interaction.onListClick(
                                                 listId = userList.id.toLong(),
-                                                listName = userList.name,
+                                                listName = userList.name.trim(),
                                             )
                                         }
                                     )

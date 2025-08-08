@@ -79,7 +79,10 @@ internal fun MoviesItemsGrid(
             )
         }
 
-        if (movies.loadState.append is LoadState.Loading) {
+        if (
+            movies.loadState.append is LoadState.Loading
+                && movies.itemCount > 1
+        ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 LoadingIndicator(
                     Modifier

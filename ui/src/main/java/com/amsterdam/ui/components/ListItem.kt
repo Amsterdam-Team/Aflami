@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.Text
@@ -55,9 +56,11 @@ fun ListItem(
                     .padding(horizontal = 8.dp),
         ) {
             Text(
-                text = list.name,
+                text = list.name.trim(),
                 style = AppTheme.textStyle.title.medium,
                 color = AppTheme.color.title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = stringResource(R.string.list_items, list.itemCount),

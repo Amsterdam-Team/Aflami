@@ -101,8 +101,14 @@ private fun ListDetailsContent(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        val maxTitleLength = 25
+        val shortenedTitle = if (state.listName.length > maxTitleLength) {
+            state.listName.take(maxTitleLength) + "…"
+        } else {
+            state.listName
+        }
         DefaultAppBar(
-            title = state.listName,
+            title = shortenedTitle,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),

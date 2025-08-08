@@ -46,14 +46,14 @@ fun SearchScreenHeaderSection(
                     .background(color = AppTheme.color.surface)
                     .padding(top = 8.dp),
             text = keyword,
-            onValueChange = onKeywordValuedChanged,
+            onValueChange = { onKeywordValuedChanged(it) },
             hintText = stringResource(R.string.search_hint),
             trailingIcon = com.amsterdam.ui.R.drawable.ic_filter_vertical,
             onTrailingClick = onFilterButtonClicked,
             isTrailingClickEnabled = keyword.isNotBlank(),
             isError = keyword.length > 100,
             errorMessage = stringResource(R.string.search_error_query_too_long),
-            maxCharacters = 100,
+            maxCharacters = 80,
             keyboardActions =
                 KeyboardActions(
                     onSearch = {

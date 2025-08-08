@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.Icon
@@ -41,12 +42,20 @@ fun RecentSearchItem(
             tint = AppTheme.color.hint,
             contentDescription = title,
         )
+        val maxTitleLength = 50
+        val shortenedTitle = if (title.length > maxTitleLength) {
+            title.take(maxTitleLength) + "…"
+        } else {
+            title
+        }
 
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = title,
+            text = shortenedTitle,
             style = AppTheme.textStyle.body.medium,
             color = AppTheme.color.title,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
 
         Spacer(modifier = Modifier.weight(1f))
