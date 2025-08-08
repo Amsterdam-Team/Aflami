@@ -1,6 +1,7 @@
 package com.amsterdam.ui.screens.profile.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -74,10 +75,12 @@ fun SettingsDialog(
                     Text(
                         text = stringResource(R.string.logout),
                         style = AppTheme.textStyle.label.medium,
-                        color = AppTheme.color.primary
+                        color = AppTheme.color.primary,
+                        modifier = Modifier.clickable(
+                            onClick = onLogoutClick
+                        )
                     )
                 },
-                onClick = onLogoutClick
             )
         }
     }

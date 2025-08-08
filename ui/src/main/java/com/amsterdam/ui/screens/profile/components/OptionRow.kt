@@ -32,7 +32,7 @@ fun OptionRow(
     modifier: Modifier = Modifier,
     leadingIcon: Painter,
     trailingContent: @Composable () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit={}
 ){
     Row(
         modifier = modifier
