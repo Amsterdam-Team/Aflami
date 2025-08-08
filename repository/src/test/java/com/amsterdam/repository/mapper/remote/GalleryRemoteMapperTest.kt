@@ -1,45 +1,30 @@
-//package com.amsterdam.repository.mapper.remote
-//
-//import com.amsterdam.repository.BuildConfig
-//import com.amsterdam.repository.mapper.remote.testFactory.createRemoteMovieGalleryResponse
-//import com.google.common.truth.Truth.assertThat
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//
-//class GalleryRemoteMapperTest {
-//
-//    private lateinit var mapper: GalleryRemoteMapper
-//
-//    @BeforeEach
-//    fun setUp() {
-//        mapper = GalleryRemoteMapper()
-//    }
-//
-//    @Test
-//    fun `should map backdrops to list of full image URLs`() {
-//        // Arrange
-//        val response = createRemoteMovieGalleryResponse()
-//
-//        // Act
-//        val result = mapper.toEntity(response)
-//
-//        // Assert
-//        val expectedUrls = listOf(
-//            BuildConfig.BASE_IMAGE_URL + "/img1.jpg",
-//            BuildConfig.BASE_IMAGE_URL + "/img2.jpg"
-//        )
-//        assertThat(result).isEqualTo(expectedUrls)
-//    }
-//
-//    @Test
-//    fun `should return empty list when backdrops are empty`() {
-//        // Arrange
-//        val response = createRemoteMovieGalleryResponse(backdrops = emptyList())
-//
-//        // Act
-//        val result = mapper.toEntity(response)
-//
-//        // Assert
-//        assertThat(result).isEmpty()
-//    }
-//}
+package com.amsterdam.repository.mapper.remote
+
+import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
+import com.google.common.truth.Truth.assertThat
+import org.junit.jupiter.api.Test
+
+class GalleryRemoteMapperTest {
+
+
+    @Test
+    fun `given remote gallery response when mapped to entity list then return list of file paths`() {
+        // Given
+        val backdrops =
+            RemoteGalleryResponse(
+                id = null,
+                backdrops = emptyList(),
+                logos = emptyList(),
+                posters = emptyList(),
+
+                )
+
+
+        // When
+        val result = backdrops.toEntityList()
+
+        // Then
+        assertThat(result).isEmpty()
+    }
+
+}

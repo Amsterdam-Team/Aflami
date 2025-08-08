@@ -1,71 +1,53 @@
-/*
+
 package com.amsterdam.repository.mapper.local
 
-import com.amsterdam.repository.mapper.local.testFactory.createLocalMovieDtotest
-import com.amsterdam.repository.mapper.local.testFactory.createMovie
+
+import com.amsterdam.entity.Movie
+import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class MovieLocalMapperTest {
 
-    private lateinit var mapper: MovieLocalMapper
-
-    @BeforeEach
-    fun setUp() {
-        mapper = MovieLocalMapper()
-    }
 
     @Test
     @DisplayName("should return Movie entity when converting from LocalMovieDto")
     fun `toEntity should return Movie when given LocalMovieDto`() {
-        // Arrange
-        val dto = createLocalMovieDtotest()
-        val expected = createMovie(
+        // Given
+        val dto = LocalMovieDto(
+            movieId = 101,
+            name = "Inception",
+            description = "A mind-bending thriller",
+            poster = "poster_url.jpg",
+            releaseDate = LocalDate.parse("2020-01-01"),
+            rating = 8.8f,
+            popularity = 99.5,
+            movieLength = 148,
+            originCountry = "USA",
+            storedLanguage = "en",
+        )
+        val expected = Movie(
             id = 101,
             name = "Inception",
             description = "A mind-bending thriller",
             posterUrl = "poster_url.jpg",
-            productionYear = 2010u,
             rating = 8.8f,
             popularity = 99.5,
             runTimeInMinutes = 148,
             originCountry = "USA",
-            hasVideo = true,
-            categories = emptyList()
+            releaseDate = LocalDate.parse("2020-01-01"),
+            categories = emptyList(),
+            videoUrl = "",
         )
 
-        // Act
-        val result = mapper.toEntity(dto)
+        // When
+        val result = dto.toEntity()
 
-        // Assert
+        // Then
         assertThat(result).isEqualTo(expected)
     }
 
-    @Test
-    @DisplayName("should return LocalMovieDto when converting from Movie entity")
-    fun `toDto should return LocalMovieDto when given Movie`() {
-        // Arrange
-        val entity = createMovie()
-        val expected = createLocalMovieDtotest(
-            movieId = 202,
-            name = "Interstellar",
-            description = "Exploration beyond stars",
-            poster = "interstellar.jpg",
-            productionYear = 2014,
-            rating = 9.0f,
-            popularity = 95.2,
-            movieLength = 169,
-            originCountry = "USA",
-            hasVideo = false
-        )
-
-        // Act
-        val result = mapper.toDto(entity)
-
-        // Assert
-        assertThat(result).isEqualTo(expected)
-    }
 }
-*/
+
