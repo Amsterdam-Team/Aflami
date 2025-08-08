@@ -72,9 +72,9 @@ fun AflamiApp(
                                     popUpTo(Route.Tab.Home) {
                                         saveState = true
                                     }
-
+                                    if (it !is  Route.Tab.Lists) {
                                     launchSingleTop = true
-                                    restoreState = true
+                                    restoreState = true}
                                 }
                             },
                         )
