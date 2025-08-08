@@ -17,7 +17,7 @@ import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.home.sections.placeholder.movieSectionPlaceholder
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
 import com.amsterdam.viewmodel.home.HomeUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 
 
 fun LazyListScope.continueWatchingSection(

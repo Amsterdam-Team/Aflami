@@ -6,10 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.ui.components.adaptiveGrid
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
+import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ProductionMovieCompanyUiState
 
 fun LazyListScope.companyProductionSection(
-    companies: List<ProductionCompanyUiState>,
+    companies: List<ProductionMovieCompanyUiState>,
     deviceWidth: Int
 ) {
     if (companies.isEmpty()) {

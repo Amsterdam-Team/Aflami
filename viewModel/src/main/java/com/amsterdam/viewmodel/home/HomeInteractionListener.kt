@@ -2,7 +2,7 @@ package com.amsterdam.viewmodel.home
 
 import com.amsterdam.domain.models.Mood
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 
 interface HomeInteractionListener {
     fun onClickRetryLoading()

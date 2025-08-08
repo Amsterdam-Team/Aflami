@@ -11,9 +11,9 @@ import androidx.paging.map
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.paging.PagingSource
-import com.amsterdam.viewmodel.search.mapper.toMediaItemUiState
+import com.amsterdam.viewmodel.search.mapper.toSearchMediaItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,7 +66,7 @@ class ActorSearchViewModel @Inject constructor(
                         }
                     },
                 )
-                    .flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::handleSearchResults,
@@ -81,7 +81,7 @@ class ActorSearchViewModel @Inject constructor(
         updateState { it.copy(keyword = keyword) }
     }
 
-    private fun handleSearchResults(movies: Flow<PagingData<MovieItemUiState>>) {
+    private fun handleSearchResults(movies: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState { it.copy(movies = movies) }
     }
 

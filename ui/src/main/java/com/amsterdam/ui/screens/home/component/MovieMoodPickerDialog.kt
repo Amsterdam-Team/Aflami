@@ -27,12 +27,12 @@ import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.DialogTitleRow
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.home.HomeUiState.MoodPickerItemUiState
 
 @SuppressLint("ContextCastToActivity")
 @Composable
 fun MovieMoodPickerDialog(
-    movie: MovieItemUiState,
+    movie: MoodPickerItemUiState,
     onClickViewDetails: () -> Unit,
     onClickGetAnotherMovie: () -> Unit,
     onDismiss: () -> Unit,
@@ -55,7 +55,7 @@ fun MovieMoodPickerDialog(
 
 @Composable
 private fun DialogContent(
-    movie: MovieItemUiState,
+    movie: MoodPickerItemUiState,
     onDismiss: () -> Unit,
     onClickGetAnotherMovie: () -> Unit,
     onClickViewDetails: () -> Unit
@@ -129,7 +129,7 @@ private fun DialogContent(
 private fun MovieDialogPreview() {
     AflamiTheme {
         MovieMoodPickerDialog(
-            movie = MovieItemUiState(),
+            movie = MoodPickerItemUiState(),
             onDismiss = { },
             onClickViewDetails = {},
             onClickGetAnotherMovie = {}

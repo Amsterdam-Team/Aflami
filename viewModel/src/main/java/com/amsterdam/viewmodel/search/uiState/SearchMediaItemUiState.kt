@@ -1,6 +1,8 @@
-package com.amsterdam.viewmodel.shared.uiStates.media
+package com.amsterdam.viewmodel.search.uiState
 
-data class MediaItemUiState(
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
+
+data class SearchMediaItemUiState(
     val id: Long = 0,
     val name: String = "",
     val posterImageUrl: String = "",

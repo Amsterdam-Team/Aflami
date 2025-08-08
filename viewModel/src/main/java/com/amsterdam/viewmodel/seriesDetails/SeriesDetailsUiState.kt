@@ -3,11 +3,7 @@ package com.amsterdam.viewmodel.seriesDetails
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
 data class SeriesDetailsUiState(
     val tvShowId: Long = 0,
@@ -20,16 +16,16 @@ data class SeriesDetailsUiState(
     val originCountry: String = "",
     val description: String = "",
     val videoUrl: String = "",
-    val cast: List<ActorUiState> = emptyList(),
+    val cast: List<ActorTvShowUiState> = emptyList(),
     val isRateDialogVisible: Boolean = false,
     val isAddToListDialogVisible: Boolean = false,
     val extraItem: List<Selectable<SeriesExtras>> = defaultSeriesExtrasItems,
     val seasons: List<SeasonUiState> = emptyList(),
-    val similarSeries: List<SimilarMovieUiState> = emptyList(),
-    val reviews: List<ReviewUiState> = emptyList(),
+    val similarSeries: List<SimilarTvShowUiState> = emptyList(),
+    val reviews: List<ReviewTvShowUiState> = emptyList(),
     val gallery: List<String> = emptyList(),
     val postersUrls: List<String> = emptyList(),
-    val productionCompanies: List<ProductionCompanyUiState> = emptyList(),
+    val productionCompanies: List<ProductionTvShowCompanyUiState> = emptyList(),
     val isLoading: Boolean = false,
     val networkError: Boolean = false,
     val hasVideo: Boolean = false,
@@ -45,7 +41,13 @@ data class SeriesDetailsUiState(
         GALLERY,
         COMPANY_PRODUCTION
     }
-
+    data class SimilarTvShowUiState(
+        val movieId: Long,
+        val rate: String = "",
+        val name: String = "",
+        val productionYear: String = "",
+        val posterUrl: String = ""
+    )
     data class SeasonUiState(
         val id: Long = 0,
         val title: String = "",
@@ -68,6 +70,26 @@ data class SeriesDetailsUiState(
             val videoUrl: String = ""
         )
     }
+    data class ActorTvShowUiState(
+        val photo: String = "",
+        val name: String = ""
+    )
+
+    data class ReviewTvShowUiState(
+        val author: String = "",
+        val username: String = "",
+        val rating: String = "",
+        val content: String = "",
+        val date: String = "",
+        val imageUrl: String? = "",
+        val isExpanded: Boolean = false,
+    )
+
+    data class ProductionTvShowCompanyUiState(
+        val image: String = "",
+        val name: String = "",
+        val country: String = ""
+    )
 
     companion object {
         val defaultSeriesExtrasItems = listOf(

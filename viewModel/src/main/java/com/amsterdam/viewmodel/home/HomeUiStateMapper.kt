@@ -1,129 +1,144 @@
 package com.amsterdam.viewmodel.home
 
-import android.annotation.SuppressLint
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase.HomeScreenData
 import com.amsterdam.entity.Movie
+import com.amsterdam.entity.MovieWatchHistory
 import com.amsterdam.entity.TvShow
-import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingMediaItemUiState
+import com.amsterdam.entity.TvShowWatchHistory
+import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingHomeItemUiState
+import com.amsterdam.viewmodel.home.HomeUiState.MoodPickerItemUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaSectionUiState
 import com.amsterdam.viewmodel.home.HomeUiState.TopRatedMediaSectionUiState
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.home.HomeUiState.TopRatedMoviesUiState
+import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesUiState
+import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.utils.getMixedItemsList
-import javax.inject.Inject
+import com.amsterdam.viewmodel.utils.toYearString
 
-class HomeUiStateMapper @Inject constructor(){
-    @SuppressLint("DefaultLocale")
-    fun toUiState(
-        homeScreenData: HomeScreenData,
-        continueWatchingItems: List<ContinueWatchingMediaItemUiState>
-    ): HomeUiState {
-        return HomeUiState(
-            popularMediaSectionUiState = getPopularMediaItems(
-                homeScreenData.popularMovies,
-                homeScreenData.popularTvShows
-            ),
-            topRatedMediaSectionUiState = getTopRatedMediaItems(
-                homeScreenData.topRatedMovies,
-                homeScreenData.topRatedTvShows
-            ),
-            upcomingMoviesSectionUiState = HomeUiState.UpcomingMoviesSectionUiState(
-                movies = moviesToMoviesItemsUiState(homeScreenData.upComingMovies)
-            ),
-            continueWatchingMediaSectionUiState = HomeUiState.ContinueWatchingMediaSectionUiState(
-                mediaItems = continueWatchingItems
-            )
-        )
-    }
+fun Movie.toMediaItemUiState(): TopRatedMoviesUiState {
+    return TopRatedMoviesUiState(
+        id = id,
+        name = name,
+        posterImageUrl = posterUrl,
+        yearOfRelease = releaseDate.toYearString(),
+        rate = rating.toFormattedRating(),
+        mediaType = MediaType.MOVIE
+    )
+}
 
-    private fun getPopularMediaItems(
-        popularMovies: List<Movie>,
-        popularTvShows: List<TvShow>
-    ): PopularMediaSectionUiState {
-        return PopularMediaSectionUiState(
-            getMixedItemsList(
-                popularMovies,
-                popularTvShows,
-                ::movieToPopularMediaItemUiState,
-                ::tvShowToPopularMediaItemUiState
-            )
-        )
-    }
+fun TvShow.toMediaItemUiState(): TopRatedMoviesUiState {
+    return TopRatedMoviesUiState(
+        id = id,
+        name = name,
+        posterImageUrl = posterUrl,
+        yearOfRelease = airDate.toYearString(),
+        rate = rating.toFormattedRating(),
+        mediaType = MediaType.TV_SHOW
+    )
+}
 
-    private fun getTopRatedMediaItems(
-        topRatedMovies: List<Movie>,
-        topRatedTvShows: List<TvShow>
-    ): TopRatedMediaSectionUiState {
-        return TopRatedMediaSectionUiState(
-            getMixedItemsList(
-                topRatedMovies,
-                topRatedTvShows,
-                ::movieToMediaItemUiState,
-                ::tvShowToMediaItemUiState
-            )
-        )
-    }
+fun Movie.toUpcomingMediaItemUiState(): UpcomingMoviesUiState {
+    return UpcomingMoviesUiState(
+        id = id,
+        name = name,
+        posterImageUrl = posterUrl,
+        yearOfRelease = releaseDate.toYearString(),
+        rate = rating.toFormattedRating(),
+        mediaType = MediaType.MOVIE
+    )
+}
 
-    @SuppressLint("DefaultLocale")
-    private fun movieToPopularMediaItemUiState(movie: Movie): PopularMediaItemUiState {
-        return PopularMediaItemUiState(
-            id = movie.id,
-            name = movie.name,
-            rating = if (movie.rating % 1 == 0.0f) "${movie.rating.toInt()}" else "%.1f".format(movie.rating),
-            posterUrl = movie.posterUrl,
-            type = MediaType.MOVIE,
-            categories = movie.categories.map { it.name }
-        )
-    }
+fun Movie.toMoodPickerItemUiState(): MoodPickerItemUiState {
+    return MoodPickerItemUiState(
+        id = id,
+        name = name,
+        posterImageUrl = posterUrl,
+        yearOfRelease = releaseDate.toYearString(),
+        rate = rating.toFormattedRating(),
+        mediaType = MediaType.MOVIE
+    )
+}
 
-    @SuppressLint("DefaultLocale")
-    private fun tvShowToPopularMediaItemUiState(tvShow: TvShow): PopularMediaItemUiState {
-        return PopularMediaItemUiState(
-            id = tvShow.id,
-            name = tvShow.name,
-            rating = if (tvShow.rating % 1 == 0.0f) "${tvShow.rating.toInt()}" else "%.1f".format(tvShow.rating),
-            posterUrl = tvShow.posterUrl,
-            type = MediaType.TV_SHOW,
-            categories = tvShow.categories.map { it.name }
-        )
-    }
+fun List<Movie>.toMoodPickerItemsUiState(): List<MoodPickerItemUiState> = map { it.toMoodPickerItemUiState() }
 
-    @SuppressLint("DefaultLocale")
-    fun movieToMediaItemUiState(movie: Movie): MediaItemUiState {
-        return MediaItemUiState(
-            id = movie.id,
-            name = movie.name,
-            rate = String.format("%.1f", movie.rating),
-            posterImageUrl = movie.posterUrl,
-            yearOfRelease = movie.releaseDate.year.toString(),
+fun Movie.toPopularMediaItemUiState(): PopularMediaItemUiState {
+    return PopularMediaItemUiState(
+        id = id,
+        name = name,
+        rating = rating.toFormattedRating(),
+        posterUrl = posterUrl,
+        type = MediaType.MOVIE,
+        categories = categories.map { it.name }
+    )
+}
+
+fun TvShow.toPopularMediaItemUiState(): PopularMediaItemUiState {
+    return PopularMediaItemUiState(
+        id = id,
+        name = name,
+        rating = rating.toFormattedRating(),
+        posterUrl = posterUrl,
+        type = MediaType.TV_SHOW,
+        categories = categories.map { it.name }
+    )
+}
+
+fun MovieWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHomeItemUiState{
+    with(movie) {
+        return ContinueWatchingHomeItemUiState(
+            id = id,
+            name = name,
+            rate =  rating.toFormattedRating(),
+            posterImageUrl = posterUrl,
+            yearOfRelease = releaseDate.year.toString(),
+            dateAdded = lastWatchedTime,
             mediaType = MediaType.MOVIE
         )
     }
+}
 
-    @SuppressLint("DefaultLocale")
-    fun tvShowToMediaItemUiState(tvShow: TvShow): MediaItemUiState {
-        return MediaItemUiState(
-            id = tvShow.id,
-            name = tvShow.name,
-            rate = String.format("%.1f", tvShow.rating),
-            posterImageUrl = tvShow.posterUrl,
-            yearOfRelease = tvShow.airDate.year.toString(),
+
+fun TvShowWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHomeItemUiState {
+    with(tvShow) {
+        return ContinueWatchingHomeItemUiState(
+            id = id,
+            name = name,
+            rate =  rating.toFormattedRating(),
+            posterImageUrl = posterUrl,
+            yearOfRelease = airDate.year.toString(),
+            dateAdded = lastWatchedTime,
             mediaType = MediaType.TV_SHOW
         )
     }
+}
 
-    @SuppressLint("DefaultLocale")
-    fun movieToMovieItemUiState(movie: Movie): MovieItemUiState {
-        return MovieItemUiState(
-            id = movie.id,
-            name = movie.name,
-            rate = String.format("%.1f", movie.rating),
-            posterImageUrl = movie.posterUrl,
-            yearOfRelease = movie.releaseDate.year.toString()
+fun HomeScreenData.toHomeUiState(
+    continueWatchingItems: List<ContinueWatchingHomeItemUiState>
+): HomeUiState {
+    return HomeUiState(
+        popularMediaSectionUiState = PopularMediaSectionUiState(
+            getMixedItemsList(
+                popularMovies,
+                popularTvShows,
+                Movie::toPopularMediaItemUiState,
+                TvShow::toPopularMediaItemUiState
+            )
+        ),
+        topRatedMediaSectionUiState = TopRatedMediaSectionUiState(
+            getMixedItemsList(
+                topRatedMovies,
+                topRatedTvShows,
+                Movie::toMediaItemUiState,
+                TvShow::toMediaItemUiState
+            )
+        ),
+        upcomingMoviesSectionUiState = HomeUiState.UpcomingMoviesSectionUiState(
+            movies = upComingMovies.map { it.toUpcomingMediaItemUiState() }
+        ),
+        continueWatchingMediaSectionUiState = HomeUiState.ContinueWatchingMediaSectionUiState(
+            mediaItems = continueWatchingItems
         )
-    }
-
-    fun moviesToMoviesItemsUiState(movies: List<Movie>) = movies.map(::movieToMovieItemUiState)
+    )
 }

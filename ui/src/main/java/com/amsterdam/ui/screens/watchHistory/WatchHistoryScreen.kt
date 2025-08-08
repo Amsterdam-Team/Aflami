@@ -1,4 +1,4 @@
-package com.amsterdam.ui.screens.profile.watchHistory
+package com.amsterdam.ui.screens.watchHistory
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

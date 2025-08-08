@@ -21,11 +21,11 @@ import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
+import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiState
 
 
 @Composable
-fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
+fun ActorCard(modifier: Modifier = Modifier, actor: ActorMovieUiState) {
     val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Column(modifier = modifier.width(78.dp)) {
         SafeImageView(
@@ -54,7 +54,7 @@ fun ActorCard(modifier: Modifier = Modifier, actor: ActorUiState) {
 private fun ActorCardPreview() {
     AflamiTheme {
         ActorCard(
-            actor = ActorUiState(
+            actor = ActorMovieUiState(
                 name = "Emma Watson",
                 photo = "https://example.com/emma_watson.jpg"
             )

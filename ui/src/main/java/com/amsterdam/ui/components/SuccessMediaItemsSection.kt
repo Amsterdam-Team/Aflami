@@ -17,14 +17,14 @@ import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
+import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState
 
 @Composable
 fun SuccessMediaItemsSection(
     onMovieClicked: (movieId: Long) -> Unit,
     onTvShowClicked: (tvShowId: Long) -> Unit,
-    selectedItems: LazyPagingItems<out Any>
+    selectedItems: LazyPagingItems<WatchHistoryUiState.WatchHistoryItemUiState>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
@@ -35,46 +35,47 @@ fun SuccessMediaItemsSection(
         items(
             count = selectedItems.itemCount,
         ) { index ->
-            val mediaItem = selectedItems[index]
+            val selectedItem = selectedItems[index] ?: return@items
             val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
-            when (mediaItem) {
-                is MovieItemUiState -> {
+
+            when (selectedItem.mediaType) {
+                 MediaType.MOVIE -> {
                     MediaCard(
                         movieImage = {
                             SafeImageView(
                                 modifier = Modifier.fillMaxSize(),
-                                contentDescription = mediaItem.name,
-                                model = mediaItem.posterImageUrl,
+                                contentDescription = selectedItem.name,
+                                model = selectedItem.posterImageUrl,
                                 contentScale = ContentScale.Crop, safetyLevel = safetyLevel,
                                 onLoading = { ImageLoadingIndicator() },
                                 onError = { ImageErrorIndicator() },
                             )
                         },
                         movieType = stringResource(R.string.movies),
-                        movieYear = mediaItem.yearOfRelease,
-                        movieTitle = mediaItem.name,
-                        movieRating = mediaItem.rate,
-                        onClick = { onMovieClicked(mediaItem.id) }
+                        movieYear = selectedItem.yearOfRelease,
+                        movieTitle = selectedItem.name,
+                        movieRating = selectedItem.rate,
+                        onClick = { onMovieClicked(selectedItem.id) }
                     )
                 }
 
-                is TvShowItemUiState -> {
+                MediaType.TV_SHOW  -> {
                     MediaCard(
                         movieImage = {
                             SafeImageView(
                                 modifier = Modifier.fillMaxSize(),
-                                contentDescription = mediaItem.name,
-                                model = mediaItem.posterImageUrl,
+                                contentDescription = selectedItem.name,
+                                model = selectedItem.posterImageUrl,
                                 contentScale = ContentScale.Crop,
                                 safetyLevel = safetyLevel, onLoading = { ImageLoadingIndicator() },
                                 onError = { ImageErrorIndicator() },
                             )
                         },
                         movieType = stringResource(R.string.tv_shows),
-                        movieYear = mediaItem.yearOfRelease,
-                        movieTitle = mediaItem.name,
-                        movieRating = mediaItem.rate,
-                        onClick = { onTvShowClicked(mediaItem.id) }
+                        movieYear = selectedItem.yearOfRelease,
+                        movieTitle = selectedItem.name,
+                        movieRating = selectedItem.rate,
+                        onClick = { onTvShowClicked(selectedItem.id) }
                     )
                 }
             }

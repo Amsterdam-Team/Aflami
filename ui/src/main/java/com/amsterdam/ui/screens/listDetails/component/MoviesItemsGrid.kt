@@ -31,12 +31,12 @@ import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.listDetails.ListDetailsUiState.ListDetailsItemsUiState
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 internal fun MoviesItemsGrid(
-    movies: LazyPagingItems<MovieItemUiState>,
+    movies: LazyPagingItems<ListDetailsItemsUiState>,
     modifier: Modifier = Modifier,
     onClickMovie: (Long) -> Unit,
     onClickRemoveItem: (Long) -> Unit = {}
@@ -115,7 +115,7 @@ internal fun MoviesItemsGrid(
 private fun MediaItemsGridPreview() {
     AflamiTheme {
         MoviesItemsGrid(
-            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
+            movies = emptyFlow<PagingData<ListDetailsItemsUiState>>().collectAsLazyPagingItems(),
             onClickMovie = { },
             onClickRemoveItem = {}
         )

@@ -15,7 +15,7 @@ import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.UpcomingCard
 import com.amsterdam.ui.components.adaptiveGrid
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
+import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 
 fun LazyListScope.moreLikeSection(
     similarMovies: List<SimilarMovieUiState>,

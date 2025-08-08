@@ -23,12 +23,12 @@ import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 internal fun MoviesVerticalGrid(
-    movies: LazyPagingItems<MovieItemUiState>,
+    movies: LazyPagingItems<SearchMediaItemUiState>,
     isVisible: Boolean,
     modifier: Modifier = Modifier,
     onMovieClicked: (movieId: Long) -> Unit,
@@ -76,7 +76,7 @@ internal fun MoviesVerticalGrid(
 private fun MoviesVerticalGridPreview() {
     AflamiTheme {
         MoviesVerticalGrid(
-            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
+            movies = emptyFlow<PagingData< SearchMediaItemUiState>>().collectAsLazyPagingItems(),
             isVisible = true,
             onMovieClicked = {}
         )

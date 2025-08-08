@@ -52,7 +52,7 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 

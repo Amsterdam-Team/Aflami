@@ -5,16 +5,16 @@ import com.amsterdam.entity.category.MovieGenre
 import kotlinx.datetime.LocalDate
 
 fun createMovie(
-    id: Long = 1L,
-    name: String = "Default Movie",
-    description: String = "A sample movie description.",
-    poster: String = "https://example.com/poster.jpg",
-    productionYear: Int = 2024,
-    genres: List<MovieGenre> = listOf(),
-    rating: Float = 4.5f,
-    originCountry: String = "USA",
-    popularity : Double = 0.0,
-    runTime: Int = 120,
+    id: Long = 0L,
+    name: String = "",
+    description: String = "",
+    poster: String = "",
+    productionYear: Int = 0,
+    genres: List<MovieGenre> = emptyList(),
+    rating: Float = 0f,
+    originCountry: String = "",
+    popularity: Double = 0.0,
+    runTime: Int = 0,
 ): Movie {
     return Movie(
         id = id,

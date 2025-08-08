@@ -34,7 +34,7 @@ import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.home.HomeUiState.PopularMediaItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 
 @Composable
 fun PopularMediaItemCard(

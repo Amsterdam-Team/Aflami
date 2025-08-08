@@ -16,77 +16,65 @@ import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.components.MediaCard
-import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState
-import com.amsterdam.viewmodel.shared.TabOption
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
+
 
 @Composable
 fun SuccessMediaItemsSection(
-    selectedTabOption: TabOption,
-    moviesFlow: LazyPagingItems<MovieItemUiState>,
-    tvShowsFlow: LazyPagingItems<TvShowItemUiState>,
     onMovieClicked: (movieId: Long) -> Unit,
     onTvShowClicked: (tvShowId: Long) -> Unit,
-    state: SearchUiState,
+    selectedItems: LazyPagingItems<SearchMediaItemUiState>
 ) {
-    val selectedItems = if (selectedTabOption == TabOption.MOVIES) {
-        moviesFlow
-    } else {
-        tvShowsFlow
-    }
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(160.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 12.dp),
+    ) {
+        items(
+            count = selectedItems.itemCount,
+        ) { index ->
+            val mediaItem = selectedItems[index] ?: return@items
+            when (mediaItem.mediaType) {
+                MediaType.MOVIE -> {
+                    MediaCard(
+                        movieImage = {
+                            SafeImageView(
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = mediaItem.name,
+                                model = mediaItem.posterImageUrl,
+                                contentScale = ContentScale.Crop,
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
+                            )
+                        },
+                        movieType = stringResource(R.string.movies),
+                        movieYear = mediaItem.yearOfRelease,
+                        movieTitle = mediaItem.name,
+                        movieRating = mediaItem.rate,
+                        onClick = { onMovieClicked(mediaItem.id) }
+                    )
+                }
 
-    if (!state.isLoading && state.errorUiState == null && selectedItems.itemCount > 0) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(160.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 12.dp),
-        ) {
-            items(
-                count = selectedItems.itemCount,
-            ) { index ->
-                val mediaItem = selectedItems[index]
-                when (mediaItem) {
-                    is MovieItemUiState -> {
-                        MediaCard(
-                            movieImage = {
-                                SafeImageView(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentDescription = mediaItem.name,
-                                    model = mediaItem.posterImageUrl,
-                                    contentScale = ContentScale.Crop,
-                                    onLoading = { ImageLoadingIndicator() },
-                                    onError = { ImageErrorIndicator() },
-                                )
-                            },
-                            movieType = stringResource(R.string.movies),
-                            movieYear = mediaItem.yearOfRelease,
-                            movieTitle = mediaItem.name,
-                            movieRating = mediaItem.rate,
-                            onClick = { onMovieClicked(mediaItem.id) }
-                        )
-                    }
-
-                    is TvShowItemUiState -> {
-                        MediaCard(
-                            movieImage = {
-                                SafeImageView(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentDescription = mediaItem.name,
-                                    model = mediaItem.posterImageUrl,
-                                    contentScale = ContentScale.Crop,
-                                    onLoading = { ImageLoadingIndicator() },
-                                    onError = { ImageErrorIndicator() },
-                                )
-                            },
-                            movieType = stringResource(R.string.tv_shows),
-                            movieYear = mediaItem.yearOfRelease,
-                            movieTitle = mediaItem.name,
-                            movieRating = mediaItem.rate,
-                            onClick = { onTvShowClicked(mediaItem.id) }
-                        )
-                    }
+                MediaType.TV_SHOW -> {
+                    MediaCard(
+                        movieImage = {
+                            SafeImageView(
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = mediaItem.name,
+                                model = mediaItem.posterImageUrl,
+                                contentScale = ContentScale.Crop,
+                                onLoading = { ImageLoadingIndicator() },
+                                onError = { ImageErrorIndicator() },
+                            )
+                        },
+                        movieType = stringResource(R.string.tv_shows),
+                        movieYear = mediaItem.yearOfRelease,
+                        movieTitle = mediaItem.name,
+                        movieRating = mediaItem.rate,
+                        onClick = { onTvShowClicked(mediaItem.id) }
+                    )
                 }
             }
         }

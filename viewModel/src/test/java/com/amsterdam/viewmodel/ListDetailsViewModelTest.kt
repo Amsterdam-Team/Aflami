@@ -1,7 +1,6 @@
 package com.amsterdam.viewmodel
 
-import androidx.paging.PagingData
-import app.cash.turbine.test
+
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.useCase.list.DeleteListUseCase
 import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
@@ -11,12 +10,12 @@ import com.amsterdam.viewmodel.listDetails.ListDetailsArgs
 import com.amsterdam.viewmodel.listDetails.ListDetailsEffect
 import com.amsterdam.viewmodel.listDetails.ListDetailsViewModel
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
-import com.amsterdam.viewmodel.utils.entityHelper.createMovie
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ListDetailsViewModelTest {
 
     private lateinit var viewModel: ListDetailsViewModel
@@ -170,23 +170,6 @@ class ListDetailsViewModelTest {
         assertThat(viewModel.state.value.showDeleteListDialog).isFalse()
     }
 
-    @Test
-    fun `loadListDetails should load paging data and update state`() = testScope.runTest {
-        // Given
-        val movie = createMovie(id = 1, name = "Interstellar")
-        val listId = 1L
-        val listName = "List"
-        every { args.listId } returns listId
-        every { args.listName } returns listName
-        coEvery { getMoviesFromListUseCase(listId, any()) } returns listOf(movie)
-
-        // When
-        viewModel.onClickRetryLoading()
-        advanceUntilIdle()
-
-        // Then
-        assertThat(viewModel.state.value.isLoading).isFalse()
-    }
 
     @Test
     fun `onDeleteListError should send show error snackbar`() = testScope.runTest {

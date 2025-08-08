@@ -1,7 +1,7 @@
 package com.amsterdam.viewmodel.watchHistory
 
 import com.amsterdam.viewmodel.shared.TabOption
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 
 interface WatchHistoryInteractionListener {
     fun onClickMediaItem(mediaId : Long, mediaType: MediaType)

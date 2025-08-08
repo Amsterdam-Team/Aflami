@@ -1,5 +1,7 @@
 package com.amsterdam.viewmodel.listDetails
 
+import com.amsterdam.viewmodel.listDetails.ListDetailsUiState.ListDetailsError
+
 interface ListDetailsEffect {
     object NavigateBack : ListDetailsEffect
     data class NavigateToMovieDetailsScreen(val movieId: Long) : ListDetailsEffect

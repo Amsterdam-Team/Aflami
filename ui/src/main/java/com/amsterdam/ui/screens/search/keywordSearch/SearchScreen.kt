@@ -38,18 +38,17 @@ import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SearchScreenHeaderSection
-import com.amsterdam.ui.components.SuccessMediaItemsSection
+import com.amsterdam.ui.screens.search.keywordSearch.sections.SuccessMediaItemsSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuggestionsHubSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.FilterDialog
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
-import com.amsterdam.viewmodel.search.keywordSearch.SearchErrorState
 import com.amsterdam.viewmodel.search.keywordSearch.SearchInteractionListener
 import com.amsterdam.viewmodel.search.keywordSearch.SearchUiEffect
 import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState
+import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState.SearchErrorState
 import com.amsterdam.viewmodel.search.keywordSearch.SearchViewModel
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import com.amsterdam.viewmodel.shared.TabOption
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -110,8 +109,8 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
 @Composable
 private fun SearchContent(
     state: SearchUiState,
-    movies: LazyPagingItems<MovieItemUiState>,
-    tvShows: LazyPagingItems<TvShowItemUiState>,
+    movies: LazyPagingItems<SearchMediaItemUiState>,
+    tvShows: LazyPagingItems<SearchMediaItemUiState>,
     interaction: SearchInteractionListener,
     filterInteraction: FilterInteractionListener,
 ) {

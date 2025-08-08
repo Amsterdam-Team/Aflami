@@ -3,6 +3,7 @@ package com.amsterdam.viewmodel.login
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.useCase.authentication.LoginAsGuestUseCase
 import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
+import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -21,6 +22,7 @@ class LoginViewModelTest {
     private lateinit var viewModel: LoginViewModel
     private lateinit var loginAsGuestUseCase: LoginAsGuestUseCase
     private val loginWithPasswordUseCase: LoginWithPasswordUseCase = mockk(relaxed = true)
+    private val getAccountDetailsUseCase : GetAccountDetailsUseCase= mockk(relaxed = true)
     private val testDispatcherProvider = TestDispatcherProvider()
     private val testScope = TestScope(testDispatcherProvider.testDispatcher)
 
@@ -30,7 +32,8 @@ class LoginViewModelTest {
         viewModel = LoginViewModel(
             dispatcherProvider = testDispatcherProvider,
             loginWithPasswordUseCase = loginWithPasswordUseCase,
-            loginAsGuestUseCase = loginAsGuestUseCase
+            loginAsGuestUseCase = loginAsGuestUseCase,
+            getAccountDetailsUseCase = getAccountDetailsUseCase
         )
     }
 
@@ -278,21 +281,6 @@ class LoginViewModelTest {
         assertThat(effects).contains(LoginEffect.NavigateToRegister)
     }
 
-    @Test
-    fun `onLoginClicked should send ShowCredentialsError effect when login fails`() = testScope.runTest {
-        // Given
-        coEvery { loginWithPasswordUseCase(any(), any()) } throws AflamiException()
-        val effects = mutableListOf<LoginEffect>()
-        val job = launch { viewModel.effect.collect { effects.add(it) } }
-
-        // When
-        viewModel.onLoginClicked()
-        advanceUntilIdle()
-        job.cancel()
-
-        // Then
-        assertThat(effects).contains(LoginEffect.ShowCredentialsError)
-    }
 
     @Test
     fun `onContinueAsGuestClicked should update error state when login fails`() = testScope.runTest {

@@ -14,11 +14,9 @@ import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.entity.Country
 import com.amsterdam.paging.PagingSource
-import com.amsterdam.viewmodel.search.mapper.toCountry
-import com.amsterdam.viewmodel.search.mapper.toMediaItemUiState
-import com.amsterdam.viewmodel.search.mapper.toUiState
+import com.amsterdam.viewmodel.search.mapper.toSearchMediaItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
 import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -137,7 +135,7 @@ class CountrySearchViewModel @Inject constructor(
                         }
                     },
                 )
-                    .flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                    .flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
@@ -181,7 +179,7 @@ class CountrySearchViewModel @Inject constructor(
         }.toCountry()
     }
 
-    private fun onFetchMoviesSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
+    private fun onFetchMoviesSuccess(movies: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState {
             it.copy(
                 movies = movies,

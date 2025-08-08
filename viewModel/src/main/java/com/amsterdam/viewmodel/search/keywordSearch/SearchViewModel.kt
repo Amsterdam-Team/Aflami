@@ -16,14 +16,15 @@ import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.paging.PagingSource
+import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState.FilterItemUiState
+import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState.SearchErrorState
 import com.amsterdam.viewmodel.search.mapper.getSelectedGenreType
 import com.amsterdam.viewmodel.search.mapper.selectByMovieGenre
 import com.amsterdam.viewmodel.search.mapper.selectByTvGenre
-import com.amsterdam.viewmodel.search.mapper.toMediaItemUiState
+import com.amsterdam.viewmodel.search.mapper.toSearchMediaItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.TabOption
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
 import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -105,7 +106,7 @@ class SearchViewModel @Inject constructor(
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                ).flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
@@ -113,7 +114,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun onFetchMoviesSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
+    private fun onFetchMoviesSuccess(movies: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState { it.copy(movies = movies) }
     }
 
@@ -133,7 +134,7 @@ class SearchViewModel @Inject constructor(
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                ).flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
@@ -141,7 +142,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun onFetchTvShowsSuccess(tvShows: Flow<PagingData<TvShowItemUiState>>) {
+    private fun onFetchTvShowsSuccess(tvShows: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState { it.copy(tvShows = tvShows) }
     }
 
@@ -161,7 +162,7 @@ class SearchViewModel @Inject constructor(
                             )
                         }
                     },
-                ).flow.map { pagingData -> pagingData.map { it.toMediaItemUiState() } }
+                ).flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onMoviesFilteredSuccess,
@@ -170,7 +171,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun onMoviesFilteredSuccess(movies: Flow<PagingData<MovieItemUiState>>) {
+    private fun onMoviesFilteredSuccess(movies: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState {
             it.copy(
                 movies = movies,
@@ -197,7 +198,7 @@ class SearchViewModel @Inject constructor(
                     },
                 ).flow
                     .map { pagingData ->
-                        pagingData.map { it.toMediaItemUiState() }
+                        pagingData.map { it.toSearchMediaItemUiState() }
                     }.cachedIn(viewModelScope)
             },
             onSuccess = ::onTvShowsFilteredSuccess,
@@ -206,7 +207,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun onTvShowsFilteredSuccess(tvShows: Flow<PagingData<TvShowItemUiState>>) {
+    private fun onTvShowsFilteredSuccess(tvShows: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState {
             it.copy(
                 tvShows = tvShows,

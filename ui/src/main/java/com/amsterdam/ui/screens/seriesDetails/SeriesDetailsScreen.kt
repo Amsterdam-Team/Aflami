@@ -85,23 +85,22 @@ import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.Cast
 import com.amsterdam.ui.navigation.Route.SeriesDetails
-import com.amsterdam.ui.screens.movieDetails.components.CastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
 import com.amsterdam.ui.screens.movieDetails.components.PlayButton
 import com.amsterdam.ui.screens.movieDetails.components.RateDialog
-import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.gallerySection
-import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
-import com.amsterdam.ui.screens.seriesDetails.component.reviewSection
+import com.amsterdam.ui.screens.seriesDetails.component.TvShowCastSection
+import com.amsterdam.ui.screens.seriesDetails.component.companyProductionTvShowSection
+import com.amsterdam.ui.screens.seriesDetails.component.moreTvShowLikeSection
+import com.amsterdam.ui.screens.seriesDetails.component.reviewTvShowSection
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
 import com.amsterdam.ui.utils.navigateUpWithFlag
-import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsInteractionListener
@@ -111,6 +110,7 @@ import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeriesExtras
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsViewModel
 import com.amsterdam.viewmodel.shared.Selectable
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -407,7 +407,7 @@ fun SeriesDetailsContent(
                                     isExpanded = state.isDescriptionExpanded,
                                     onToggleExpansion = seriesDetailsInteractionListener::onDescriptionExpansionToggled
                                 )
-                                CastSection(
+                                TvShowCastSection(
                                     modifier = Modifier.padding(top = 24.dp),
                                     actors = state.cast,
                                     onClickAllCast = seriesDetailsInteractionListener::onClickShowAllCast
@@ -445,7 +445,7 @@ fun SeriesDetailsContent(
                                     )
                                 }
 
-                                SeriesExtras.MORE_LIKE_THIS -> moreLikeSection(
+                                SeriesExtras.MORE_LIKE_THIS -> moreTvShowLikeSection(
                                     similarMovies = state.similarSeries,
                                     deviceWidth = deviceWidth,
                                     onClick = { movieId ->
@@ -453,17 +453,13 @@ fun SeriesDetailsContent(
                                     }
                                 )
 
-                                SeriesExtras.REVIEWS -> reviewSection(
-                                    state.reviews,
-                                    seriesDetailsInteractionListener
-                                )
-
+                                SeriesExtras.REVIEWS -> reviewTvShowSection(state.reviews, seriesDetailsInteractionListener)
                                 SeriesExtras.GALLERY -> gallerySection(
                                     gallery = state.gallery,
                                     deviceWidth = deviceWidth
                                 )
 
-                                SeriesExtras.COMPANY_PRODUCTION -> companyProductionSection(
+                                SeriesExtras.COMPANY_PRODUCTION -> companyProductionTvShowSection(
                                     state.productionCompanies, deviceWidth
                                 )
                             }

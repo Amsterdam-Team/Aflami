@@ -13,9 +13,9 @@ import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.paging.PagingSource
 import com.amsterdam.viewmodel.shared.BaseViewModel
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedError
+import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedMediaItemUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TopRatedViewModel @Inject constructor(
     private val getTopRatedScreenDataUseCase: GetTopRatedScreenDataUseCase,
-    private val topRatedUiStateMapper: TopRatedUiStateMapper,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<TopRatedUiState, TopRatedEffect>(TopRatedUiState(), dispatcherProvider),
@@ -51,11 +50,10 @@ class TopRatedViewModel @Inject constructor(
                     pagingSourceFactory = {
                         PagingSource { page ->
                             val result = getTopRatedScreenDataUseCase(page)
-                            topRatedUiStateMapper.getTopRatedMediaItems(
+                            getTopRatedMediaItems(
                                 result.topRatedMovies,
                                 result.topRatedTvShows
                             )
-
                         }
                     }
                 ).flow
@@ -67,8 +65,8 @@ class TopRatedViewModel @Inject constructor(
     }
 
 
-    private fun onGetTopRatedMoviesSuccess(mediaPagingFlow: Flow<PagingData<MediaItemUiState>>) {
-        updateState { topRatedUiStateMapper.toUiState(mediaPagingFlow) }
+    private fun onGetTopRatedMoviesSuccess(mediaPagingFlow: Flow<PagingData<TopRatedMediaItemUiState>>) {
+        updateState { mediaPagingFlow.toTopRatedUiState() }
     }
 
     private fun onError(exception: AflamiException) {

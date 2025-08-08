@@ -1,6 +1,6 @@
 package com.amsterdam.viewmodel.continueWatching
 
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 
 interface ContinueWatchingInteractionListener {
     fun onClickMediaItem(mediaId : Long, mediaType: MediaType)

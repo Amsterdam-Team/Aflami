@@ -25,13 +25,11 @@ import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.application.LocalRestrictionLevel
-import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
+import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ProductionMovieCompanyUiState
 
 
 @Composable
-fun CompanyCard(productionCompany: ProductionCompanyUiState, modifier: Modifier = Modifier) {
+fun CompanyCard(productionCompany: ProductionMovieCompanyUiState, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .height(145.dp)

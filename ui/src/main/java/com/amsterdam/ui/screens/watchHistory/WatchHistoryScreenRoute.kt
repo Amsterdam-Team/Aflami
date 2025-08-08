@@ -1,4 +1,4 @@
-package com.amsterdam.ui.screens.profile.watchHistory
+package com.amsterdam.ui.screens.watchHistory
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

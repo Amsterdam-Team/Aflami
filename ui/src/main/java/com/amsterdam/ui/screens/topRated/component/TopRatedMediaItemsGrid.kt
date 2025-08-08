@@ -14,20 +14,19 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.screens.search.actorSearch.MovieImage
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
+import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedMediaItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun TopRatedMediaItemsGrid(
     onClickMediaItem: (Long, MediaType) -> Unit,
-    mediaItems: LazyPagingItems<MediaItemUiState>,
+    mediaItems: LazyPagingItems<TopRatedMediaItemUiState>,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState()
 ) {
@@ -68,7 +67,7 @@ private fun TopRatedMoviesGridPreview() {
     AflamiTheme {
         TopRatedMediaItemsGrid(
             onClickMediaItem = { _, _ -> },
-            mediaItems = emptyFlow<PagingData<MediaItemUiState>>().collectAsLazyPagingItems(),
+            mediaItems = emptyFlow<PagingData<TopRatedMediaItemUiState>>().collectAsLazyPagingItems(),
         )
     }
 }

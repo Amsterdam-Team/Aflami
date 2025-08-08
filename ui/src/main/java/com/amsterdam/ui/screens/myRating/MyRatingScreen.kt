@@ -53,10 +53,10 @@ import com.amsterdam.ui.screens.myRating.placeholders.emptyRatingListPlaceholder
 import com.amsterdam.ui.screens.myRating.placeholders.mediaCardsPlaceholder
 import com.amsterdam.ui.utils.SavedStateKeys
 import com.amsterdam.ui.utils.toSafetyLevel
-import com.amsterdam.viewmodel.myRating.MyRatingErrorState
 import com.amsterdam.viewmodel.myRating.MyRatingInteractionListener
 import com.amsterdam.viewmodel.myRating.MyRatingUiEffect
 import com.amsterdam.viewmodel.myRating.MyRatingUiState
+import com.amsterdam.viewmodel.myRating.MyRatingUiState.MyRatingErrorState
 import com.amsterdam.viewmodel.myRating.MyRatingViewModel
 import com.amsterdam.viewmodel.shared.TabOption
 import kotlinx.coroutines.flow.collectLatest

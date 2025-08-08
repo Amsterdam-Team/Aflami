@@ -41,10 +41,10 @@ import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.topRated.component.TopRatedBackgroundComponent
 import com.amsterdam.ui.screens.topRated.component.TopRatedMediaItemsGrid
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaItemUiState
 import com.amsterdam.viewmodel.topRated.TopRatedEffect
 import com.amsterdam.viewmodel.topRated.TopRatedInteractionListener
 import com.amsterdam.viewmodel.topRated.TopRatedUiState
+import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedMediaItemUiState
 import com.amsterdam.viewmodel.topRated.TopRatedViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -80,7 +80,7 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
 private fun TopRatedContent(
     state: TopRatedUiState,
     interactionListener: TopRatedInteractionListener,
-    mediaItems: LazyPagingItems<MediaItemUiState>,
+    mediaItems: LazyPagingItems<TopRatedMediaItemUiState>,
 ) {
     Box(
         modifier = Modifier

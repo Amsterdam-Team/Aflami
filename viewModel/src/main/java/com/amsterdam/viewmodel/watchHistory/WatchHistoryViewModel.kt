@@ -12,13 +12,11 @@ import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.paging.PagingSource
-import com.amsterdam.viewmodel.search.mapper.toMediaItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.TabOption
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.TvShowItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryItemUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -58,7 +56,7 @@ class WatchHistoryViewModel @Inject constructor(
                             getContinueWatchingMoviesUseCase(page = page, pageSize = 20).first()
                         }
                     }
-                ).flow.map { it.map { it.movie.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { it.map { it.movie.toWatchHistoryItemUiState() } }.cachedIn(viewModelScope)
             },
             onSuccess = ::onGetMoviesContinueWatchingDataSuccess,
             onError = ::onError,
@@ -77,7 +75,7 @@ class WatchHistoryViewModel @Inject constructor(
                             getContinueWatchingTvShowsUseCase(page = page, pageSize = 20).first()
                         }
                     }
-                ).flow.map { it.map { it.tvShow.toMediaItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { it.map { it.tvShow.toWatchHistoryItemUiState() } }.cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTvShowContinueWatchingDataSuccess,
             onError = ::onError,
@@ -87,7 +85,7 @@ class WatchHistoryViewModel @Inject constructor(
 
     fun onGetMoviesContinueWatchingDataSuccess(
         mediaItems:
-        Flow<PagingData<MovieItemUiState>>
+        Flow<PagingData<WatchHistoryItemUiState>>
     ) {
         updateState { currentState ->
             currentState.copy(
@@ -98,7 +96,7 @@ class WatchHistoryViewModel @Inject constructor(
 
     fun onGetTvShowContinueWatchingDataSuccess(
         mediaItems:
-        Flow<PagingData<TvShowItemUiState>>
+        Flow<PagingData<WatchHistoryItemUiState>>
     ) {
         updateState { currentState ->
             currentState.copy(

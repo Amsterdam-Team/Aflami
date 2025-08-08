@@ -56,7 +56,7 @@ import com.amsterdam.viewmodel.search.actorSearch.ActorSearchErrorState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchInteractionListener
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchUiState
 import com.amsterdam.viewmodel.search.actorSearch.ActorSearchViewModel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
@@ -92,7 +92,7 @@ fun SearchByActorScreen(
 private fun SearchByActorContent(
     state: ActorSearchUiState,
     interactionListener: ActorSearchInteractionListener,
-    movies: LazyPagingItems<MovieItemUiState>,
+    movies: LazyPagingItems<SearchMediaItemUiState>,
     modifier: Modifier = Modifier,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -221,7 +221,7 @@ private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
             state = ActorSearchUiState(),
-            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
+            movies = emptyFlow<PagingData< SearchMediaItemUiState>>().collectAsLazyPagingItems(),
             interactionListener = object : ActorSearchInteractionListener {
                 override fun onUserSearchChange(keyword: String) {}
                 override fun onClickNavigateBack() {}

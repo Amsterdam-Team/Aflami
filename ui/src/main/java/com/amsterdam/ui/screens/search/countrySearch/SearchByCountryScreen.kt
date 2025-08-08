@@ -48,7 +48,7 @@ import com.amsterdam.viewmodel.search.countrySearch.CountrySearchErrorState
 import com.amsterdam.viewmodel.search.countrySearch.CountrySearchInteractionListener
 import com.amsterdam.viewmodel.search.countrySearch.CountrySearchUiState
 import com.amsterdam.viewmodel.search.countrySearch.CountrySearchViewModel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
@@ -85,7 +85,7 @@ internal fun SearchByCountryScreen(
 @Composable
 private fun SearchByCountryContent(
     state: CountrySearchUiState,
-    movies: LazyPagingItems<MovieItemUiState>,
+    movies: LazyPagingItems<SearchMediaItemUiState>,
     interactionListener: CountrySearchInteractionListener,
 ) {
     Column(
@@ -169,7 +169,7 @@ private fun SearchByCriteriaPreview() {
     AflamiTheme {
         SearchByCountryContent(
             state = CountrySearchUiState(),
-            movies = emptyFlow<PagingData<MovieItemUiState>>().collectAsLazyPagingItems(),
+            movies = emptyFlow<PagingData< SearchMediaItemUiState>>().collectAsLazyPagingItems(),
             interactionListener = object : CountrySearchInteractionListener {
                 override fun onChangeSearchKeyword(keyword: String) {}
                 override fun onSelectCountry(country: CountryItemUiState) {}

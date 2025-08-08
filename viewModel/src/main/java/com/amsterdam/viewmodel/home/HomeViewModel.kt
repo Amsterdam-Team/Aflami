@@ -11,13 +11,15 @@ import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.entity.Movie
+import com.amsterdam.entity.MovieWatchHistory
+import com.amsterdam.entity.TvShowWatchHistory
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiStateMapper
 import com.amsterdam.viewmodel.home.HomeUiState.HomeError
+import com.amsterdam.viewmodel.home.HomeUiState.MoodPickerItemUiState
 import com.amsterdam.viewmodel.search.mapper.selectByMovieGenre
 import com.amsterdam.viewmodel.shared.BaseViewModel
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
+
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,18 +27,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
-import kotlin.Boolean
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
-    private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
-    private val homeUiStateMapper: HomeUiStateMapper,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
-    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
-    dispatcherProvider: DispatcherProvider,
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
+    private val dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState(), dispatcherProvider),
     HomeInteractionListener {
 
@@ -76,10 +75,7 @@ class HomeViewModel @Inject constructor(
 
     private fun onGetHomeScreenDataSuccess(homeScreenData: HomeScreenData) {
         updateState {
-            homeUiStateMapper.toUiState(
-                homeScreenData,
-                state.value.continueWatchingMediaSectionUiState.mediaItems
-            )
+                homeScreenData.toHomeUiState(state.value.continueWatchingMediaSectionUiState.mediaItems)
         }
     }
 
@@ -101,8 +97,8 @@ class HomeViewModel @Inject constructor(
                         mediaItems = getLinearItemsList(
                             it.continueWatchingMovies,
                             it.continueWatchingTvShows,
-                            continueWatchingUiStateMapper::continueWatchingMediaItemUiState,
-                            continueWatchingUiStateMapper::continueWatchingMediaItemUiState
+                            MovieWatchHistory::toContinueWatchingMediaItemUiState,
+                            TvShowWatchHistory::toContinueWatchingMediaItemUiState
                         ).sortedByDescending { it.dateAdded }
                     )
                 )
@@ -134,7 +130,7 @@ class HomeViewModel @Inject constructor(
         updateState {
             it.copy(
                 upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
-                    movies = homeUiStateMapper.moviesToMoviesItemsUiState(movies),
+                    movies = movies.map { it.toUpcomingMediaItemUiState() },
                     isLoading = false
                 )
             )
@@ -175,7 +171,6 @@ class HomeViewModel @Inject constructor(
             sendNewNavigationEffect(HomeEffect.NavigateToMovieDetailsEffect(mediaId))
         else
             sendNewNavigationEffect(HomeEffect.NavigateToTvShowDetailsEffect(mediaId))
-
     }
 
     override fun onClickShowAllContinueWatchingMovies() {
@@ -214,7 +209,7 @@ class HomeViewModel @Inject constructor(
             updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoadingMovies = false)) }
             return
         }
-        val moviesUiStates = homeUiStateMapper.moviesToMoviesItemsUiState(movies)
+        val moviesUiStates = movies.toMoodPickerItemsUiState()
         val selectedMovie = moviesUiStates[(0..moviesUiStates.size - 1).random()]
         updateState {
             it.copy(
@@ -262,7 +257,7 @@ class HomeViewModel @Inject constructor(
         if (currentMovieIndex != -1) {
             newMoviesList.removeAt(currentMovieIndex)
         }
-        val nextMovie: MovieItemUiState
+        val nextMovie: MoodPickerItemUiState
         if (newMoviesList.isNotEmpty()) {
             nextMovie = newMoviesList[(0..newMoviesList.size - 1).random()]
             updateState {

@@ -7,7 +7,7 @@ import com.amsterdam.domain.useCase.myRating.movie.GetUserRatedMoviesUseCase.Use
 import com.amsterdam.domain.useCase.myRating.tvShow.DeleteUserRatedTvShowUseCase
 import com.amsterdam.domain.useCase.myRating.tvShow.GetUserRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.myRating.tvShow.GetUserRatedTvShowsUseCase.UserRatedTvShow
-import com.amsterdam.viewmodel.search.mapper.toRatedMovieUiStates
+import com.amsterdam.viewmodel.myRating.MyRatingUiState.MyRatingErrorState
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -39,7 +39,7 @@ class MyRatingViewModel @Inject constructor(
     }
 
     private fun onGetRatedMoviesSuccess(movies: List<UserRatedMovie>) {
-        updateState { it.copy(movies = movies.toRatedMovieUiStates(), error = null) }
+        updateState { it.copy(movies = movies.toRatingMovieUiStates(), error = null) }
     }
 
     private fun getRatedTvShows() {
@@ -53,7 +53,7 @@ class MyRatingViewModel @Inject constructor(
     }
 
     private fun onGetRatedTvShowsSuccess(tvShows: List<UserRatedTvShow>) {
-        updateState { it.copy(tvShows = tvShows.toRatedMovieUiStates(), error = null) }
+        updateState { it.copy(tvShows = tvShows.toRatingTvShowUiStates(), error = null) }
     }
 
     private fun onGetRatedMediaError(exception: AflamiException) {

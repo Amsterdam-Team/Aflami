@@ -43,7 +43,7 @@ import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.amsterdam.viewmodel.search.keywordSearch.FilterInteractionListener
-import com.amsterdam.viewmodel.search.keywordSearch.FilterItemUiState
+import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState.FilterItemUiState
 import com.amsterdam.viewmodel.search.mapper.getSelectedGenreType
 import com.amsterdam.viewmodel.shared.TabOption
 

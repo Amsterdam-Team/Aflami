@@ -63,7 +63,7 @@ import com.amsterdam.viewmodel.home.HomeEffect.NavigateToSearchScreenEffect
 import com.amsterdam.viewmodel.home.HomeInteractionListener
 import com.amsterdam.viewmodel.home.HomeUiState
 import com.amsterdam.viewmodel.home.HomeViewModel
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

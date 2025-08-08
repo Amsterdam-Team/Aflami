@@ -12,8 +12,3 @@ class CastScreenArgs(savedStateHandle: SavedStateHandle) {
         const val MEDIA_TYPE_ARGS = "mediaType"
     }
 }
-
-enum class MediaType() {
-    MOVIE,
-    TV_SHOW
-}

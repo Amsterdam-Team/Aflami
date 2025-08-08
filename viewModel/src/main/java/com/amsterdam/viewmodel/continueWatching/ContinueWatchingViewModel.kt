@@ -9,10 +9,13 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.entity.MovieWatchHistory
+import com.amsterdam.entity.TvShowWatchHistory
 import com.amsterdam.paging.PagingSource
-import com.amsterdam.viewmodel.home.HomeUiState.ContinueWatchingMediaItemUiState
+import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiState.ContinueWatchingError
+import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiState.ContinueWatchingItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import com.amsterdam.viewmodel.utils.getLinearItemsList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +28,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ContinueWatchingViewModel @Inject constructor(
     private val getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase,
-    private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<ContinueWatchingUiState, ContinueWatchingEffect>(
@@ -57,8 +59,8 @@ class ContinueWatchingViewModel @Inject constructor(
                             val mergedItems = getLinearItemsList(
                                 continueWatchingScreenData.continueWatchingMovies,
                                 continueWatchingScreenData.continueWatchingTvShows,
-                                continueWatchingUiStateMapper::continueWatchingMediaItemUiState,
-                                continueWatchingUiStateMapper::continueWatchingMediaItemUiState
+                                MovieWatchHistory::toContinueWatchingItemUiState,
+                                TvShowWatchHistory::toContinueWatchingItemUiState
                             )
                                 .sortedByDescending { it.dateAdded }
                                 .take(10)
@@ -73,7 +75,7 @@ class ContinueWatchingViewModel @Inject constructor(
         )
     }
 
-    fun onGetContinueWatchingScreenDataSuccess(mediaItems: Flow<PagingData<ContinueWatchingMediaItemUiState>>) {
+    fun onGetContinueWatchingScreenDataSuccess(mediaItems: Flow<PagingData<ContinueWatchingItemUiState>>) {
         updateState { currentState ->
             currentState.copy(
                 continueMediaItemUiStates = mediaItems
@@ -85,7 +87,7 @@ class ContinueWatchingViewModel @Inject constructor(
         when (exception) {
             is NoInternetException -> updateState {
                 it.copy(
-                    error = ContinueWatchingUiState.ContinueWatchingError.NetworkError
+                    error = ContinueWatchingError.NetworkError
                 )
             }
 

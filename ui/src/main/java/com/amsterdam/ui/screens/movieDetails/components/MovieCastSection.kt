@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,12 +17,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.SectionTitle
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
+import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiState
 
 @Composable
-fun CastSection(
+fun MovieCastSection(
     modifier: Modifier = Modifier,
-    actors: List<ActorUiState>,
+    actors: List<ActorMovieUiState>,
     onClickAllCast: () -> Unit
 ) {
     AnimatedVisibility(

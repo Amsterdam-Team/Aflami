@@ -1,7 +1,6 @@
-package com.amsterdam.viewmodel.search.mapper
+package com.amsterdam.viewmodel.search.countrySearch
 
 import com.amsterdam.entity.Country
-import com.amsterdam.viewmodel.search.countrySearch.CountryItemUiState
 
 fun Country.toUiState(): CountryItemUiState {
     return CountryItemUiState(

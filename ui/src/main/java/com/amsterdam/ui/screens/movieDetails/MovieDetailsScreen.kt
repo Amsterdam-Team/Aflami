@@ -76,7 +76,7 @@ import com.amsterdam.ui.components.details.DetailsPostersPager
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.navigation.Route.Cast
 import com.amsterdam.ui.navigation.Route.MovieDetails
-import com.amsterdam.ui.screens.movieDetails.components.CastSection
+import com.amsterdam.ui.screens.movieDetails.components.MovieCastSection
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieExtrasSection
@@ -86,12 +86,11 @@ import com.amsterdam.ui.screens.movieDetails.components.RateDialog
 import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
-import com.amsterdam.ui.screens.movieDetails.components.reviewSection
+import com.amsterdam.ui.screens.movieDetails.components.reviewMovieSection
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
 import com.amsterdam.ui.utils.navigateUpWithFlag
-import com.amsterdam.viewmodel.cast.MediaType
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState
@@ -99,6 +98,7 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
 import com.amsterdam.viewmodel.movieDetails.UserListUiState
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -434,7 +434,7 @@ fun MovieContent(
                                     isExpanded = state.isDescriptionExpanded,
                                     onToggleExpansion = movieDetailsInteractionListener::onDescriptionExpansionToggled
                                 )
-                                CastSection(
+                                MovieCastSection(
                                     modifier = Modifier.padding(top = 24.dp),
                                     actors = state.actors.take(10),
                                     onClickAllCast = movieDetailsInteractionListener::onClickShowAllCast,
@@ -476,7 +476,7 @@ fun MovieContent(
                                     }
                                 )
 
-                                MovieExtras.REVIEWS -> reviewSection(
+                                MovieExtras.REVIEWS -> reviewMovieSection(
                                     state.reviews,
                                     movieDetailsInteractionListener
                                 )

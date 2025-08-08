@@ -8,8 +8,8 @@ import com.amsterdam.domain.useCase.details.GetTvShowCastUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.entity.Actor
 import com.amsterdam.viewmodel.cast.CastUiState.CastErrorUiState
-import com.amsterdam.viewmodel.cast.mapper.toUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -53,7 +53,7 @@ class CastViewModel @Inject constructor(
     }
 
     private fun onGetCastSuccess(cast: List<Actor>) {
-        updateState { it.copy(cast = cast.map { it.toUiState() }, errorUiState = null) }
+        updateState { it.copy(cast = cast.toActorsUiState() , errorUiState = null) }
     }
 
     private fun onGetCastError(exception: AflamiException) {

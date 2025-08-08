@@ -3,11 +3,7 @@ package com.amsterdam.viewmodel.movieDetails
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ActorUiState
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ProductionCompanyUiState
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.SimilarMovieUiState
 
 data class MovieDetailsUiState(
     val movieId: Long = 0,
@@ -21,12 +17,12 @@ data class MovieDetailsUiState(
     val videoUrl: String = "",
     val isVideoLauncherFailed : Boolean = false,
     val moviePostersUrl: List<String> = emptyList(),
-    val actors: List<ActorUiState> = emptyList(),
+    val actors: List<ActorMovieUiState> = emptyList(),
     val extraItem: List<Selectable<MovieExtras>> = defaultMovieExtras,
     val similarMovies: List<SimilarMovieUiState> = emptyList(),
-    val productionCompany: List<ProductionCompanyUiState> = emptyList(),
+    val productionCompany: List<ProductionMovieCompanyUiState> = emptyList(),
     val gallery: List<String> = emptyList(),
-    val reviews: List<ReviewUiState> = emptyList(),
+    val reviews: List<ReviewMovieUiState> = emptyList(),
     val rateDialogUiState: RateDialogUiState = RateDialogUiState(),
     val isLoading: Boolean = false,
     val networkError: Boolean = false,
@@ -41,7 +37,33 @@ data class MovieDetailsUiState(
     val isAddMovieToListLoading: Boolean = false,
     val selectedList: UserListUiState? = null,
 ) {
+    data class SimilarMovieUiState(
+        val movieId: Long,
+        val rate: String = "",
+        val name: String = "",
+        val productionYear: String = "",
+        val posterUrl: String = ""
+    )
 
+    data class ReviewMovieUiState(
+        val author: String = "",
+        val username: String = "",
+        val rating: String = "",
+        val content: String = "",
+        val date: String = "",
+        val imageUrl: String? = "",
+        val isExpanded: Boolean = false,
+    )
+
+    data class ProductionMovieCompanyUiState(
+        val image: String = "",
+        val name: String = "",
+        val country: String = ""
+    )
+    data class ActorMovieUiState(
+        val photo: String = "",
+        val name: String = ""
+    )
     enum class MovieExtras {
         MORE_LIKE_THIS,
         REVIEWS,

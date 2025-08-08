@@ -7,28 +7,23 @@ import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiStateMapper
 import com.amsterdam.viewmodel.home.HomeEffect.NavigateToMovieDetailsEffect
 import com.amsterdam.viewmodel.home.HomeUiState.HomeError
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.comedyGenre
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.continueWatchingData
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.expectedComedyUiState
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.expectedMovies
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.expectedUiState
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.upcomingComedyMovies
-import com.amsterdam.viewmodel.home.fake.FakeHomeScreenData.upcomingMovies
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType.MOVIE
-import com.amsterdam.viewmodel.shared.uiStates.media.MediaType.TV_SHOW
+import com.amsterdam.viewmodel.home.HomeUiState.MoodPickerItemUiState
+import com.amsterdam.viewmodel.home.HomeUiState.UpcomingMoviesUiState
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
+import com.amsterdam.viewmodel.utils.entityHelper.createMovie
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -47,8 +42,6 @@ class HomeViewModelTest {
     private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase = mockk(relaxed = true)
 
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk(relaxed = true)
-    private val homeUiStateMapper: HomeUiStateMapper = mockk(relaxed = true)
-    private val continueWatchingUiStateMapper: ContinueWatchingUiStateMapper = mockk(relaxed = true)
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase = mockk(relaxed = true)
     private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var viewModel: HomeViewModel
@@ -64,12 +57,10 @@ class HomeViewModelTest {
         getContinueWatchingScreenDataUseCase = mockk(relaxed = true)
         viewModel = HomeViewModel(
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
-            homeUiStateMapper = homeUiStateMapper,
             dispatcherProvider = dispatcherProvider,
             getMoviesByMoodUseCase = getMoviesByMoodUseCase,
             getHomeScreenDataUseCase = getHomeScreenDataUseCase,
             getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
-            continueWatchingUiStateMapper = continueWatchingUiStateMapper,
             manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
         )
         Dispatchers.setMain(dispatcherProvider.testDispatcher)
@@ -92,12 +83,10 @@ class HomeViewModelTest {
             // When
             viewModel = HomeViewModel(
                 getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
-                homeUiStateMapper = homeUiStateMapper,
                 dispatcherProvider = dispatcherProvider,
                 getMoviesByMoodUseCase = getMoviesByMoodUseCase,
                 getHomeScreenDataUseCase = getHomeScreenDataUseCase,
                 getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
-                continueWatchingUiStateMapper = continueWatchingUiStateMapper,
                 manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
             )
             advanceUntilIdle()
@@ -112,8 +101,9 @@ class HomeViewModelTest {
     fun `when user selects upcoming genre, load and expose upcoming movies mapped to UI state`() =
         testScope.runTest {
             // Given
+            val comedyGenre = MovieGenre.COMEDY
+            val upcomingMovies = listOf(createMovie(id = 101, productionYear = 2020, rating = 8.5f))
             coEvery { getUpcomingMoviesUseCase(any()) } returns upcomingMovies
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
             // When
             viewModel.onChangeUpcomingMovieGenre(comedyGenre)
@@ -121,7 +111,7 @@ class HomeViewModelTest {
 
             // Then
             assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(
-                expectedUiState
+                listOf(UpcomingMoviesUiState(101, yearOfRelease = "2020", rate = "8.5"))
             )
 
         }
@@ -142,14 +132,21 @@ class HomeViewModelTest {
         assertThat(effects).contains(NavigateToMovieDetailsEffect(movieId))
     }
 
+    val upcomingMovies = listOf(
+        createMovie(id = 101),
+        createMovie(id = 102)
+    )
 
     @Test
     fun `onChangeUpcomingMovieGenre should updates selected genre in UI state`() =
         testScope.runTest {
             // Given
+            val upcomingMovies = listOf(
+                createMovie(id = 101),
+                createMovie(id = 102)
+            )
             val newGenre = MovieGenre.ACTION
             coEvery { getUpcomingMoviesUseCase(newGenre) } returns upcomingMovies
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
             // When
             viewModel.onChangeUpcomingMovieGenre(newGenre)
@@ -165,8 +162,11 @@ class HomeViewModelTest {
     fun `onChangeUpcomingMovieGenre triggers upcoming movies fetch with new genre`() =
         testScope.runTest {
             // Given
-            coEvery { getUpcomingMoviesUseCase(comedyGenre) } returns upcomingComedyMovies
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingComedyMovies) } returns expectedComedyUiState
+            val upcomingMovies = listOf(
+                createMovie(id = 101, productionYear = 2020, rating = 8.5f)
+            )
+            val comedyGenre = MovieGenre.COMEDY
+            coEvery { getUpcomingMoviesUseCase(comedyGenre) } returns upcomingMovies
 
             // When
             viewModel.onChangeUpcomingMovieGenre(comedyGenre)
@@ -174,7 +174,7 @@ class HomeViewModelTest {
 
             // Then
             assertThat(viewModel.state.value.upcomingMoviesSectionUiState.movies).isEqualTo(
-                expectedComedyUiState
+                listOf(UpcomingMoviesUiState(101, yearOfRelease = "2020", rate = "8.5"))
             )
         }
 
@@ -183,8 +183,8 @@ class HomeViewModelTest {
         testScope.runTest {
             // Given
             val genre = MovieGenre.ACTION
+            val upcomingMovies = listOf<Movie>()
             coEvery { getUpcomingMoviesUseCase(genre) } returns upcomingMovies
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(upcomingMovies) } returns expectedUiState
 
             // When
             viewModel.onChangeUpcomingMovieGenre(genre)
@@ -245,11 +245,8 @@ class HomeViewModelTest {
         testScope.runTest {
             // Given
             coEvery {
-                getContinueWatchingScreenDataUseCase(
-                    1,
-                    10
-                )
-            } returns flowOf(continueWatchingData)
+                getContinueWatchingScreenDataUseCase(1, 10)
+            } returns flow { }
 
             // When
             viewModel.onClickRetryLoading()
@@ -284,7 +281,7 @@ class HomeViewModelTest {
             val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
 
             // When
-            viewModel.onClickMediaItem(movieId, MOVIE)
+            viewModel.onClickMediaItem(movieId, MediaType.MOVIE)
             advanceUntilIdle()
             job.cancel()
 
@@ -301,7 +298,7 @@ class HomeViewModelTest {
             val job = launch { viewModel.effect.collect { it.let { effects.add(it) } } }
 
             // When
-            viewModel.onClickMediaItem(tvId, TV_SHOW)
+            viewModel.onClickMediaItem(tvId, MediaType.TV_SHOW)
             advanceUntilIdle()
             job.cancel()
 
@@ -380,8 +377,10 @@ class HomeViewModelTest {
     fun `onClickGetNow return movies, when selected mood is not null`() = testScope.runTest {
         // Given
         val selectedMood = Mood.ROMANTIC
-        coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
-        every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
+        val moodMovies = listOf(
+            createMovie(id = 101, productionYear = 2020, rating = 8.5f)
+        )
+        coEvery { getMoviesByMoodUseCase(selectedMood) } returns moodMovies
 
         // When
         viewModel.onChangeMood(selectedMood)
@@ -391,7 +390,11 @@ class HomeViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertThat(viewModel.state.value.moodPickerUiState.movies).isEqualTo(expectedUiState)
+        assertThat(viewModel.state.value.moodPickerUiState.movies).isEqualTo(
+            listOf(
+                MoodPickerItemUiState(101, yearOfRelease = "2020", rate = "8.5")
+            )
+        )
     }
 
     @Test
@@ -399,8 +402,13 @@ class HomeViewModelTest {
         testScope.runTest {
             // Given
             val selectedMood = Mood.ROMANTIC
-            coEvery { getMoviesByMoodUseCase(selectedMood) } returns expectedMovies
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns expectedUiState
+            val firstMoodMovies = listOf(
+                createMovie(id = 101)
+            )
+            val secondMoodMovies = listOf(
+                createMovie(id = 102),createMovie(id = 103)
+            )
+            coEvery{ getMoviesByMoodUseCase(selectedMood) } returns firstMoodMovies andThen secondMoodMovies
 
             // When and Then
             viewModel.onChangeMood(selectedMood)
@@ -409,12 +417,12 @@ class HomeViewModelTest {
             viewModel.onClickGetNow()
             advanceUntilIdle()
 
-            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(2)
+            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(1)
 
             viewModel.onClickGetAnotherMovie()
             advanceUntilIdle()
 
-            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(1)
+            assertThat(viewModel.state.value.moodPickerUiState.movies).hasSize(2)
         }
 
 
@@ -424,7 +432,6 @@ class HomeViewModelTest {
             // Given
             val selectedMood = Mood.ROMANTIC
             coEvery { getMoviesByMoodUseCase(selectedMood) } returns emptyList()
-            every { homeUiStateMapper.moviesToMoviesItemsUiState(expectedMovies) } returns emptyList()
 
             // When
             viewModel.onChangeMood(selectedMood)

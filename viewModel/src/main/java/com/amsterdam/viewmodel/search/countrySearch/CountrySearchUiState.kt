@@ -2,7 +2,7 @@ package com.amsterdam.viewmodel.search.countrySearch
 
 import androidx.paging.PagingData
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.viewmodel.shared.uiStates.MovieItemUiState
+import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -11,7 +11,7 @@ data class CountrySearchUiState(
     val selectedCountryIsoCode: String = "",
     val showSuggestedCountries: Boolean = false,
     val suggestedCountries: List<CountryItemUiState> = emptyList(),
-    val movies: Flow<PagingData<MovieItemUiState>> = emptyFlow(),
+    val movies: Flow<PagingData<SearchMediaItemUiState>> = emptyFlow(),
     val isLoading: Boolean = false,
     val errorUiState: CountrySearchErrorState? = null,
     val selectedMovieId: Long = 0

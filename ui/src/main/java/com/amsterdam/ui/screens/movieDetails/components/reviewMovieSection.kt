@@ -4,10 +4,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.res.stringResource
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
-import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.ReviewUiState
+import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ReviewMovieUiState
 
-fun LazyListScope.reviewSection(
-    reviews: List<ReviewUiState>,
+fun LazyListScope.reviewMovieSection(
+    reviews: List<ReviewMovieUiState>,
     interactionListener: MovieDetailsInteractionListener
 ) {
     if (reviews.isEmpty()) {
