@@ -38,7 +38,8 @@ class AuthenticationRepositoryImplTest {
         repository = AuthenticationRepositoryImpl(
             authenticationRemoteSource = authenticationRemoteSource,
             authenticationLocalDataSource = authenticationLocalDataSource,
-            cryptoData = cryptoData
+            cryptoData = cryptoData,
+            profileLocalDataSource = mockk()
         )
     }
 

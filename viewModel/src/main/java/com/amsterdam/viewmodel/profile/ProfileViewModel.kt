@@ -166,7 +166,7 @@ class ProfileViewModel @Inject constructor(
     private fun onApplyLanguageSuccess(unit: Unit) {
         updateState { state -> state.copy(updatedLanguage = state.language) }
         tryToExecute(
-            action = { delay(200)},
+            action = { },
             onSuccess = {sendNewEffect(ProfileEffect.LanguageChanged)},
             onError = {sendNewEffect(ProfileEffect.LanguageChanged)}
         )
@@ -175,7 +175,7 @@ class ProfileViewModel @Inject constructor(
     override fun onDismissLanguageDialog() {
         updateState { state -> state.copy(showLanguageDialog = false) }
         tryToExecute(
-            action = { delay(200)},
+            action = { },
             onSuccess = {updateState { state -> state.copy(language = state.updatedLanguage) }},
             onError = {updateState { state -> state.copy(language = state.updatedLanguage) }}
         )
@@ -211,7 +211,7 @@ class ProfileViewModel @Inject constructor(
     override fun onDismissThemeDialog() {
         updateState { state -> state.copy(showThemeDialog = false) }
         tryToExecute(
-            action = { delay(200)},
+            action = { },
             onSuccess = {updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }},
             onError = {updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }}
         )

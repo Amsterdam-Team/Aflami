@@ -1,51 +1,65 @@
-/*
+
 package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.Country
 import com.amsterdam.repository.dto.local.LocalCountryDto
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CountryLocalMapperTest {
 
-    private lateinit var mapper: CountryLocalMapper
-
-    @BeforeEach
-    fun setUp() {
-        mapper = CountryLocalMapper()
-    }
 
     @Test
     fun `toEntity should return Country entity when given LocalCountryDto`() {
-        // Arrange
+        // When
         val dto = LocalCountryDto(
             name = "Egypt",
-            isoCode = "EG"
+            isoCode = "EG",
+            storedLanguage = "en",
         )
 
-        // Act
-        val result = mapper.toEntity(dto)
+        // When
+        val result = dto.toEntity()
 
-        // Assert
+        // Then
         assertThat(result.countryName).isEqualTo("Egypt")
         assertThat(result.countryIsoCode).isEqualTo("EG")
     }
 
     @Test
     fun `toDto should return LocalCountryDto when given Country entity`() {
-        // Arrange
+        // Given
         val entity = Country(
             countryName = "France",
             countryIsoCode = "FR"
         )
 
-        // Act
-        val result = mapper.toDto(entity)
+        // When
+        val result = entity.LocalCountryDto("en")
 
-        // Assert
+        // Then
         assertThat(result.name).isEqualTo("France")
         assertThat(result.isoCode).isEqualTo("FR")
     }
+    @Test
+    fun `test list of LocalCountryDto is correctly mapped to list of Country`() {
+        // Given
+        val dtoList = listOf(
+            LocalCountryDto(name = "Egypt", isoCode = "EG", storedLanguage = "ar"),
+            LocalCountryDto(name = "Germany", isoCode = "DE", storedLanguage = "de")
+        )
+
+        // When
+        val countryList = dtoList.toEntityList()
+
+        // Then
+        assertThat(countryList).hasSize(2)
+
+        assertThat(countryList[0].countryName).isEqualTo("Egypt")
+        assertThat(countryList[0].countryIsoCode).isEqualTo("EG")
+
+        assertThat(countryList[1].countryName).isEqualTo("Germany")
+        assertThat(countryList[1].countryIsoCode).isEqualTo("DE")
+    }
+
 }
-*/

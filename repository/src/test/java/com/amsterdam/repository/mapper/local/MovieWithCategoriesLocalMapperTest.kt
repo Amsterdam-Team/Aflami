@@ -1,83 +1,56 @@
-/*
 package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.Movie
-import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
+import com.amsterdam.repository.dto.local.LocalMovieDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
-import com.amsterdam.repository.mapper.local.testFactory.createLocalMovieDtotest
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class MovieWithCategoriesLocalMapperTest {
 
-    private lateinit var movieGenreLocalMapper: MovieGenreLocalMapper
-    private lateinit var mapper: MovieWithCategoriesLocalMapper
-
-    @BeforeEach
-    fun setUp() {
-        movieGenreLocalMapper = mockk()
-        mapper = MovieWithCategoriesLocalMapper(movieGenreLocalMapper)
-    }
 
     @Test
     @DisplayName("should return Movie when converting from MovieWithCategories")
     fun `toEntity should return Movie when given MovieWithCategories`() {
-        // Arrange
-        val localMovie = createLocalMovieDtotest(
-            movieId = 10L,
-            name = "The Matrix",
-            description = "Sci-fi action",
-            poster = "matrix.jpg",
-            productionYear = 1999,
-            rating = 8.7f,
-            popularity = 80.0,
-            originCountry = "USA",
-            movieLength = 136,
-            hasVideo = true
+        // Given
+        val localMovie = MovieWithCategories(
+            movie = LocalMovieDto(
+                movieId = 101,
+                name = "Inception",
+                description = "A mind-bending thriller",
+                poster = "poster_url.jpg",
+                releaseDate = LocalDate.parse("2020-01-01"),
+                rating = 8.8f,
+                popularity = 99.5,
+                movieLength = 148,
+                originCountry = "USA",
+                storedLanguage = "en",
+            ),
+            categories = emptyList()
         )
 
-        val categoryDtos = listOf(
-            LocalMovieCategoryDto(categoryId = 2, name = "SCIENCE_FICTION"),
-            LocalMovieCategoryDto(categoryId = 0, name = "ALL")
-        )
-
-        val expectedGenres = listOf(
-            MovieGenre.SCIENCE_FICTION,
-            MovieGenre.ALL
-        )
-
-        every { movieGenreLocalMapper.toEntityList(categoryDtos) } returns expectedGenres
-
-        val movieWithCategories = MovieWithCategories(
-            movie = localMovie,
-            categories = categoryDtos
-        )
 
         val expectedDomainMovie = Movie(
-            id = 10L,
-            name = "The Matrix",
-            description = "Sci-fi action",
-            posterUrl = "matrix.jpg",
-            productionYear = 1999u,
-            rating = 8.7f,
-            popularity = 80.0,
+            id = 101,
+            name = "Inception",
+            description = "A mind-bending thriller",
+            posterUrl = "poster_url.jpg",
+            rating = 8.8f,
+            popularity = 99.5,
+            runTimeInMinutes = 148,
             originCountry = "USA",
-            runTimeInMinutes = 136,
-            hasVideo = true,
-            categories = expectedGenres
+            releaseDate = LocalDate.parse("2020-01-01"),
+            categories = emptyList(),
+            videoUrl = "",
         )
-
-        // Act
-        val result = mapper.toEntity(movieWithCategories)
-
-        // Assert (one line only)
+        //When
+        val result = localMovie.toEntity()
+        // Then
         assertThat(result).isEqualTo(expectedDomainMovie)
+
+
     }
 
 }
-*/

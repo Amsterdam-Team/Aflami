@@ -2,7 +2,8 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.repository.ProfileRepository
-import com.amsterdam.repository.datasource.remote.ProfileDataSource
+import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
+import com.amsterdam.repository.datasource.remote.ProfileRemoteDataSource
 import com.amsterdam.repository.mapper.remote.toEntity
 import com.amsterdam.repository.utils.accountDetails
 import com.google.common.truth.Truth.assertThat
@@ -14,7 +15,8 @@ import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 
 class ProfileRepositoryImplTest {
-    private lateinit var profileDataSource: ProfileDataSource
+    private lateinit var profileDataSource: ProfileRemoteDataSource
+    private lateinit var profileLocalDataSource: ProfileLocalDataSource
     private lateinit var profileRepository: ProfileRepository
     private lateinit var authenticationRepository: AuthenticationRepository
 
@@ -22,7 +24,7 @@ class ProfileRepositoryImplTest {
     fun setUp() {
         profileDataSource = mockk()
         authenticationRepository = mockk()
-        profileRepository = ProfileRepositoryImpl(profileDataSource, authenticationRepository)
+        profileRepository = ProfileRepositoryImpl(profileDataSource, profileLocalDataSource,authenticationRepository)
     }
 
     @Test
