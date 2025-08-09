@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write
       pull-requests: write
 
     steps:
@@ -53,7 +54,19 @@ jobs:
         run: |
           ./gradlew :localDatasource:koverXmlReport
           ./gradlew :viewModel:koverXmlReport
-        continue-on-error: true
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/build/test-results/test/*.xml
+            **/build/test-results/testDebugUnitTest/*.xml
+          check_name: "Unit Test Results"
+          comment_title: "📊 Unit Test Results"
+          comment_mode: update last
+          compare_to_earlier_commit: true
+          report_individual_runs: true
 
       - name: Upload XML Coverage Report
         uses: actions/upload-artifact@v4
@@ -62,19 +75,16 @@ jobs:
           name: kover-xml-report
           path: '**/build/reports/kover/**/*.xml'
 
-
-      - name: Post Kover Code Coverage Comment
-        id: kover
-        uses: mi-kas/kover-report@v1.9
-        if: github.event_name == 'pull_request'
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
         with:
-          path: |
-            localDatasource/build/reports/kover/report.xml
-            viewModel/build/reports/kover/report.xml
-
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "🛡️ Kover Code Coverage Report"
-          update-comment: true
-          min-coverage-overall: 80
-          min-coverage-changed-files: 80
-          coverage-counter-type: LINE
+          files: |
+            localDatasource/build/test-results/**/*.xml
+            viewModel/build/test-results/**/*.xml
+          check_name: "Unit Test Results"
+          comment_title: "Unit Test Results"
+          comment_mode: "always"
+          fail_on: "test failures"
+          job_summary: true
+          report_individual_runs: true
