@@ -64,7 +64,7 @@ jobs:
             **/build/test-results/testDebugUnitTest/*.xml
           check_name: "Unit Test Results"
           comment_title: "📊 Unit Test Results"
-          comment_mode: update last
+          comment_mode: always
           compare_to_earlier_commit: true
           report_individual_runs: true
 
