@@ -88,7 +88,6 @@ jobs:
         with:
           pattern: "*-coverage-report"
           path: coverage-reports
-          merge-multiple: true
 
       - name: List coverage reports directory
         run: ls -R coverage-reports
