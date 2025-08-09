@@ -3,6 +3,7 @@ package com.amsterdam.viewmodel.search.countrySearch
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
+import app.cash.turbine.test
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
@@ -10,6 +11,7 @@ import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.entity.Country
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -266,9 +268,12 @@ class SearchByCountryViewModelTest {
                 mediator = LoadStates(loadState, loadState, loadState),
             )
         )
+        advanceUntilIdle()
 
         // Then
-        Truth.assertThat(viewModel.state.value.errorUiState).isEqualTo(CountrySearchErrorState.NoNetworkConnection)
+        viewModel.state.test {
+            assertThat(awaitItem().errorUiState).isEqualTo(CountrySearchErrorState.NoNetworkConnection)
+        }
     }
 
 
@@ -316,7 +321,7 @@ class SearchByCountryViewModelTest {
         val res = viewModel.state.value.errorUiState
 
         // Then
-        Truth.assertThat(res).isEqualTo(expectedState)
+        assertThat(res).isEqualTo(expectedState)
     }
 
     companion object {
