@@ -90,12 +90,15 @@ jobs:
           path: coverage-reports
           merge-multiple: true
 
+      - name: List coverage reports directory
+        run: ls -R coverage-reports
+
       - name: Post Combined Coverage Comment
         uses: mi-kas/kover-report@v1.9
         with:
           path: |
-            localDatasource/build/reports/kover/report.xml
-            viewModel/build/reports/kover/report.xml
+            coverage-reports/localDatasource/build/reports/kover/report.xml
+            coverage-reports/viewModel/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "🛡️ Combined Code Coverage Report"
           update-comment: true
