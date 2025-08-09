@@ -68,13 +68,15 @@ fun AflamiApp(
                         BottomNavigation(
                             currentDestination = currentDestination,
                             onNavigate = {
-                                navController.navigate(it) {
-                                    popUpTo(Route.Tab.Home) {
-                                        saveState = true
-                                    }
+                                if (currentDestination != it) {
+                                    navController.navigate(it) {
+                                        popUpTo(Route.Tab.Home) {
+                                            saveState = true
+                                        }
 
-                                    launchSingleTop = true
-                                    restoreState = true
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
                             },
                         )
