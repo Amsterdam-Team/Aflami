@@ -2,15 +2,15 @@ package com.amsterdam.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -30,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -47,9 +49,11 @@ import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.HomeAppBar
-import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.*
+import com.amsterdam.ui.navigation.Route.ContinueWatching
 import com.amsterdam.ui.navigation.Route.MovieDetails
+import com.amsterdam.ui.navigation.Route.Search
+import com.amsterdam.ui.navigation.Route.SeriesDetails
+import com.amsterdam.ui.navigation.Route.TopRated
 import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
@@ -101,30 +105,44 @@ fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hil
     }
 
     HomeScreenContent(
-        modifier = modifier,
-        state = state,
-        interactionListener = homeViewModel
+        modifier = modifier, state = state, interactionListener = homeViewModel
     )
 }
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 private fun HomeScreenContent(
-    state: HomeUiState,
-    interactionListener: HomeInteractionListener,
-    modifier: Modifier = Modifier
+    state: HomeUiState, interactionListener: HomeInteractionListener, modifier: Modifier = Modifier
 ) {
-    val lazyListState = rememberLazyListState()
     val configuration = LocalConfiguration.current
-    val screenHeightDp = configuration.screenHeightDp.dp
-    var upcomingMoviesSectionYOffsetDp by remember { mutableStateOf(0.dp) }
-    val deviceWidth = configuration.screenWidthDp
+    val density = LocalDensity.current
 
-    val scrollOffset = remember {
-        derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
+    val parentLazyListState = rememberLazyListState()
+    val childLazyListState = rememberLazyListState()
+    var canChildScroll by remember { mutableStateOf(!parentLazyListState.canScrollForward) }
+    var appBarHeight by remember { mutableStateOf(0.dp) }
+    val bottomNavigationBarPadding = LocalScaffoldBottomPadding.current.value.dp
+    val deviceWidth = configuration.screenWidthDp
+    val deviceHeightDp = configuration.screenHeightDp.dp
+    val upcomingMoviesSectionHeightDp = calculateUpcomingMoviesSectionHeightDp(
+        deviceHeightDp, appBarHeight, bottomNavigationBarPadding
+    )
+
+    val scrollOffset by remember {
+        derivedStateOf { parentLazyListState.firstVisibleItemScrollOffset }
     }
+
+    LaunchedEffect(parentLazyListState.isScrollInProgress) {
+        canChildScroll = !parentLazyListState.canScrollForward
+    }
+
+    LaunchedEffect(childLazyListState.isScrollInProgress) {
+        canChildScroll = childLazyListState.canScrollBackward
+    }
+
+
     val appBarColor by animateColorAsState(
-        targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
+        targetValue = if (scrollOffset > 8) AppTheme.color.surface else Color.Transparent,
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
@@ -161,8 +179,7 @@ private fun HomeScreenContent(
         } else {
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 100.dp),
-                state = lazyListState,
+                state = parentLazyListState,
             ) {
                 popularSection(
                     state = state.popularMediaSectionUiState,
@@ -185,7 +202,10 @@ private fun HomeScreenContent(
                 )
 
                 item {
-                    AnimatedSectionVisibility(visible = !state.isLoading && state.error == null) {
+                    AnimatedSectionVisibility(
+                        visible = !state.isLoading && state.error == null,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    ) {
                         MoodPickerSection(
                             state = state.moodPickerUiState,
                             interactionListener = interactionListener
@@ -193,36 +213,22 @@ private fun HomeScreenContent(
                     }
                 }
 
-                upcomingMoviesSection(
-                    state = state.upcomingMoviesSectionUiState,
-                    onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
-                    onMovieClicked = interactionListener::onClickUpcomingMovieCard,
-                    isVisible = !state.isLoading && state.error == null,
-                    onVerticalOffsetChange = {
-                        upcomingMoviesSectionYOffsetDp = it
-                    },
-                    deviceWidth = deviceWidth,
-                )
-
-                if (state.error == null) {
-                    if (!state.upcomingMoviesSectionUiState.isLoading) {
-                        item {
-                            val lastVisibleItemInfo by remember { derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull() } }
-                            val totalItemsCount by remember { derivedStateOf { lazyListState.layoutInfo.totalItemsCount } }
-
-
-                            val spacerHeight: Dp by remember {
-                                derivedStateOf {
-                                    if (upcomingMoviesSectionYOffsetDp > 0.dp || (totalItemsCount > 0 && lastVisibleItemInfo?.index == totalItemsCount - 1)) {
-                                        screenHeightDp
-                                    } else {
-                                        0.dp
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(spacerHeight))
-                        }
+                item {
+                    LazyColumn(
+                        state = childLazyListState,
+                        userScrollEnabled = canChildScroll,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = upcomingMoviesSectionHeightDp)
+                            .animateContentSize(tween(500))
+                    ) {
+                        upcomingMoviesSection(
+                            state = state.upcomingMoviesSectionUiState,
+                            onChangeMovieGenre = interactionListener::onChangeUpcomingMovieGenre,
+                            onMovieClicked = interactionListener::onClickUpcomingMovieCard,
+                            isVisible = !state.isLoading && state.error == null,
+                            deviceWidth = deviceWidth,
+                        )
                     }
                 }
             }
@@ -238,22 +244,26 @@ private fun HomeScreenContent(
             HomeAppBar(
                 onSearchClicked = interactionListener::onClickSearch,
                 modifier = Modifier
+                    .onSizeChanged {
+                        appBarHeight = with(density) { it.height.toDp() }
+                    }
                     .background(appBarColor)
                     .statusBarsPadding()
-                    .padding(horizontal = 16.dp),
-            )
+                    .padding(horizontal = 16.dp))
         }
     }
 }
 
+private fun calculateUpcomingMoviesSectionHeightDp(
+    contentHeightDp: Dp, appBarHeight: Dp, bottomNavigationBarPadding: Dp
+) = contentHeightDp - appBarHeight - bottomNavigationBarPadding
 
 @ThemeAndLocalePreviews
 @Composable
 private fun HomeScreenPreview() {
     AflamiTheme {
         HomeScreenContent(
-            state = HomeUiState(),
-            interactionListener = object : HomeInteractionListener {
+            state = HomeUiState(), interactionListener = object : HomeInteractionListener {
                 override fun onClickRetryLoading() {}
                 override fun onClickSearch() {}
 
@@ -268,7 +278,6 @@ private fun HomeScreenPreview() {
                 override fun onDismissMoodPickerDialog() {}
                 override fun onClickViewDetails() {}
                 override fun onClickGetAnotherMovie() {}
-            }
-        )
+            })
     }
 }
