@@ -61,8 +61,7 @@ jobs:
         if: always()
         with:
           files: ${{ matrix.module }}/build/test-results/**/*.xml
-          check_name: "${{ matrix.module }} Test Results"
-          comment_title: "📊 ${{ matrix.module }} Test Results"  # FIXED: Made unique per module
+          comment_title: "📊 ${{ matrix.module }} Test Results"
           comment_mode: always
           compare_to_earlier_commit: true
           report_individual_runs: true
@@ -71,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.module }}-coverage-report  # FIXED: Unique name per module
+          name: ${{ matrix.module }}-coverage-report
           path: ${{ matrix.module }}/build/reports/kover/**/*.xml
 
   coverage:
@@ -99,7 +98,7 @@ jobs:
             coverage-reports/localDatasource-coverage-report/report.xml
             coverage-reports/viewModel-coverage-report/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "🛡️ Combined Code Coverage Report"
+          title: "🛡️ Total Code Coverage Report"
           update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
