@@ -36,6 +36,7 @@ jobs:
           echo baseUrl=\"$BASE_URL\" >> local.properties
           echo baseImageUrl=\"${{ secrets.BASE_IMAGE_URL }}\" >> local.properties
           echo movieSignUp=\"${{ secrets.REGISTER_URL }}\" >> local.properties
+          echo movieResetPassword=\"${{ secrets.RESET_PASSWORD_URL }}\" >> local.properties
 
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
