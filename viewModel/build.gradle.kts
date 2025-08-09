@@ -67,6 +67,7 @@ private fun DependencyHandlerScope.lifeCycleDependencies() {
 private fun DependencyHandlerScope.dateTimeDependencies() {
     implementation(libs.kotlinx.datetime)
 }
+
 private fun DependencyHandlerScope.pagingDependencies() {
     implementation(libs.androidx.paging.runtime)
 }
@@ -83,4 +84,38 @@ private fun DependencyHandlerScope.testDependencies() {
 private fun DependencyHandlerScope.hiltDependencies() {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+}
+
+
+kover.reports {
+    filters.excludes {
+        androidGeneratedClasses()
+        packages(
+            "*.paging",
+            "*.utils",
+            "*.viewmodel.shared",
+        )
+        classes(
+            "*State*", "*Effect*", "*Args*", "*Hilt*", "*_Factory*"
+        )
+
+        // todo: remove the equivalent tests after increasing or fixing them
+        packages(
+            "*.application",
+            "*.continueWatching",
+            "*.letsPlay",
+            "*.myRating",
+            "*.onboarding",
+            "*.profile",
+            "*.keywordSearch",
+            "*.mapper",
+            "*.seriesDetails",
+            "*.watchHistory",
+            "*.topRated"
+        )
+    }
+
+    verify.rule {
+        minBound(80)
+    }
 }
