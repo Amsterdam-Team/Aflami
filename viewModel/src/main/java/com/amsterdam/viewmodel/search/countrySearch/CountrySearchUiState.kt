@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 data class CountrySearchUiState(
     val keyword: String = "",
+    val keywordDebounceValue: String = "",
     val selectedCountryIsoCode: String = "",
     val showSuggestedCountries: Boolean = false,
     val suggestedCountries: List<CountryItemUiState> = emptyList(),

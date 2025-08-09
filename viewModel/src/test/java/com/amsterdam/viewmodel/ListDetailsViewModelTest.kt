@@ -1,13 +1,19 @@
 package com.amsterdam.viewmodel
 
 
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
+import androidx.paging.LoadStates
+import app.cash.turbine.test
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.list.DeleteListUseCase
 import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
 import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.viewmodel.listDetails.ListDetailsArgs
 import com.amsterdam.viewmodel.listDetails.ListDetailsEffect
+import com.amsterdam.viewmodel.listDetails.ListDetailsUiState
 import com.amsterdam.viewmodel.listDetails.ListDetailsViewModel
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.google.common.truth.Truth.assertThat
@@ -195,5 +201,73 @@ class ListDetailsViewModelTest {
         job.cancel()
 
         assertThat(effects.any { it is ListDetailsEffect.ShowErrorSnackbar })
+    }
+
+    @Test
+    fun `should set loading to true when pagination load changed to loading`() =
+        testScope.runTest {
+            // Given
+            val loadState = LoadState.Loading
+
+            // When
+            viewModel.onPagingLoadStateChanged(
+                CombinedLoadStates(
+                    refresh = loadState,
+                    prepend = loadState,
+                    append = loadState,
+                    source =
+                        LoadStates(loadState, loadState, loadState),
+                    mediator = LoadStates(loadState, loadState, loadState),
+                )
+            )
+
+            // Then
+            assertThat(viewModel.state.value.isLoading).isTrue()
+        }
+
+    @Test
+    fun `should set loading to false when pagination load changed to not loading`() =
+        testScope.runTest {
+            // Given
+            val loadState = LoadState.NotLoading(true)
+
+            // When
+            viewModel.onPagingLoadStateChanged(
+                CombinedLoadStates(
+                    refresh = loadState,
+                    prepend = loadState,
+                    append = loadState,
+                    source = LoadStates(loadState, loadState, loadState),
+                    mediator = LoadStates(loadState, loadState, loadState),
+                )
+            )
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.state.value.isLoading).isFalse()
+        }
+
+    @Test
+    fun `should set error ui state when pagination load changed to error`() = testScope.runTest {
+        // Given
+        val loadState = LoadState.Error(error = NetworkException())
+        loadState.error
+
+        // When
+        viewModel.onPagingLoadStateChanged(
+            CombinedLoadStates(
+                refresh = loadState,
+                prepend = loadState,
+                append = loadState,
+                source = LoadStates(loadState, loadState, loadState),
+                mediator = LoadStates(loadState, loadState, loadState),
+            )
+        )
+        advanceUntilIdle()
+
+        // Then
+        viewModel.state.test {
+            assertThat(awaitItem().error).isEqualTo(ListDetailsUiState.ListDetailsError.NoNetwork)
+        }
     }
 }

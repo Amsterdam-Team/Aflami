@@ -1,181 +1,65 @@
-/*
 package com.amsterdam.repository.mapper.remote
 
-import com.amsterdam.entity.Movie
-import com.amsterdam.repository.mapper.remote.testFactory.createRemoteMovieItemDto
-import com.amsterdam.repository.mapper.shared.toMovieCategory
-import com.amsterdam.repository.utils.DateParser
+import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class MovieRemoteMapperTest {
-
-    private lateinit var mapper: MovieRemoteMapper
-    private val dateParser: DateParser = mockk()
-
-    @BeforeEach
-    fun setUp() {
-        every { dateParser.parseYear(any()) } returns 2010
-        mapper = MovieRemoteMapper(dateParser)
-    }
-
     @Test
-    fun `toEntity should return instance of Movie`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
+    fun `given valid RemoteMovieItemDto when mapped then return correct Movie entity`() {
+        // Given
+        val dto = RemoteMovieItemDto(
+            id = 123,
+            title = "Test Movie",
+            overview = "This is a test movie",
+            posterPath = "/poster.jpg",
+            backdropPath = "/backdrop.jpg",
+            releaseDate = "2023-10-01",
+            voteAverage = 7.8,
+            popularity = 123.4,
+            genreIds = listOf(1, 2),
+            originCountry = listOf("US"),
+            runtime = 110,
+            adult = false,
+            originalLanguage = "en",
+            originalTitle = "Original Title",
+            video = false,
+            voteCount = 1000
         )
-        val result = mapper.toEntity(dto)
 
-        assertThat(result).isInstanceOf(Movie::class.java)
+        // When
+        val result = dto.toEntity(isPoster = true, videoUrl = "https://video.com")
+
+        // Then
+        assertThat(result.id).isEqualTo(123)
+        assertThat(result.name).isEqualTo("Test Movie")
+        assertThat(result.description).isEqualTo("This is a test movie")
+        assertThat(result.posterUrl).isEqualTo(dto.fullPosterUrl.orEmpty())
+        assertThat(result.releaseDate.toString()).isEqualTo("2023-10-01")
+        assertThat(result.categories).hasSize(2)
+        assertThat(result.rating).isEqualTo(7.8f)
+        assertThat(result.popularity).isEqualTo(123.4)
+        assertThat(result.originCountry).isEqualTo("US")
+        assertThat(result.runTimeInMinutes).isEqualTo(110)
+        assertThat(result.videoUrl).isEqualTo("https://video.com")
     }
-
     @Test
-    fun `toEntity should map id correctly`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
+    fun `given list of RemoteMovieItemDto when mapped then return list of Movie entities`() {
+        // Given
+        val dtoList = listOf(
+            RemoteMovieItemDto(id = 1, title = "Movie 1", genreIds = listOf(1), releaseDate = "2022-01-01", voteAverage = 8.0, popularity = 100.0, overview = "", posterPath = "", backdropPath = "", originCountry = listOf(), runtime = 90, productionCompanies = emptyList(), adult = false, originalLanguage = "en", originalTitle = "", video = false, voteCount = 0, genres = emptyList()),
+            RemoteMovieItemDto(id = 2, title = "Movie 2", genreIds = listOf(2), releaseDate = "2022-02-02", voteAverage = 7.5, popularity = 200.0, overview = "", posterPath = "", backdropPath = "", originCountry = listOf(), runtime = 100, productionCompanies = emptyList(), adult = false, originalLanguage = "en", originalTitle = "", video = false, voteCount = 0, genres = emptyList())
         )
-        val result = mapper.toEntity(dto)
 
-        assertThat(result.id).isEqualTo(dto.id)
+        // When
+        val result = dtoList.toMovieEntityList(isPoster = false)
+
+        // Then
+        assertThat(result).hasSize(2)
+        assertThat(result[0].id).isEqualTo(1)
+        assertThat(result[1].id).isEqualTo(2)
     }
 
-    @Test
-    fun `toEntity should map title to name`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
 
-        assertThat(result.name).isEqualTo(dto.title)
-    }
-
-    @Test
-    fun `toEntity should map overview to description`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.description).isEqualTo(dto.overview)
-    }
-
-    @Test
-    fun `toEntity should map posterPath to posterUrl`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.posterUrl).contains(dto.posterPath!!)
-    }
-
-    @Test
-    fun `toEntity should map release date to productionYear`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.productionYear).isEqualTo(2010u)
-    }
-
-    @Test
-    fun `toEntity should map genreIds to categories`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.categories).containsExactlyElementsIn(
-            listOf(
-                28L.toMovieCategory(),
-                12L.toMovieCategory()
-            )
-        )
-    }
-
-    @Test
-    fun `toEntity should map voteAverage to rating`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.rating).isEqualTo(dto.voteAverage.toFloat())
-    }
-
-    @Test
-    fun `toEntity should map popularity correctly`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.popularity).isEqualTo(dto.popularity)
-    }
-
-    @Test
-    fun `toEntity should map first originCountry correctly`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.originCountry).isEqualTo(dto.originCountry.first())
-    }
-
-    @Test
-    fun `toEntity should map runTimeInMinutes correctly`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.runTimeInMinutes).isEqualTo(dto.runTimeInMinutes)
-    }
-
-    @Test
-    fun `toEntity should map video correctly`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = listOf(28, 12),
-            genres = emptyList()
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.hasVideo).isEqualTo(dto.video)
-    }
-
-    @Test
-    fun `toEntity should map genres when genreIds is empty`() {
-        val dto = createRemoteMovieItemDto(
-            genreIds = emptyList(),
-            genres = listOf(
-                com.amsterdam.repository.dto.remote.RemoteCategoryDto(35, "Comedy"),
-                com.amsterdam.repository.dto.remote.RemoteCategoryDto(18, "Drama")
-            )
-        )
-        val result = mapper.toEntity(dto)
-
-        assertThat(result.categories).containsExactlyElementsIn(
-            listOf(
-                35L.toMovieCategory(),
-                18L.toMovieCategory()
-            )
-        )
-    }
 }
-*/
+

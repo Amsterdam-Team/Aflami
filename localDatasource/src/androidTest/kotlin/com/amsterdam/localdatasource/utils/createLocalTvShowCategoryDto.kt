@@ -7,5 +7,5 @@ fun createLocalTvShowCategoryDto(
     storedLanguage: String = "en",
     name: String = "Default"
 ): LocalTvShowCategoryDto {
-    return LocalTvShowCategoryDto(categoryId, storedLanguage, name)
+    return LocalTvShowCategoryDto(categoryId)
 }

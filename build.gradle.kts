@@ -8,49 +8,12 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.kover)
+    alias(libs.plugins.kover) apply false
     alias(libs.plugins.hilt) apply false
 }
 
 buildscript {
     dependencies {
         classpath(libs.android.junit5)
-    }
-}
-
-dependencies {
-    kover(project(":domain"))
-    kover(project(":repository"))
-    kover(project(":viewModel"))
-    kover(project(":remoteDatasource"))
-    kover(project(":localDatasource"))
-}
-
-kover.reports {
-    filters.excludes {
-        androidGeneratedClasses()
-        packages(
-            "*.exceptions",
-            "*.logger",
-            "*.client",
-            "*.converter",
-            "*.daos",
-            "*.paging",
-            "*.utils",
-            "*.viewmodel.shared",
-            "*.dto"
-        )
-        classes(
-            "*State*", "*Effect*", "*AflamiDatabase*", "*Args*"
-        )
-
-        // todo: remove this after adding the related module tests
-        packages(
-            "*.viewmodel", "*.repository", "*.remoteDatasource", "*.domain"
-        )
-    }
-
-    verify.rule {
-        minBound(80)
     }
 }

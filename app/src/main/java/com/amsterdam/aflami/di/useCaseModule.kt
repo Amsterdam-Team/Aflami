@@ -24,6 +24,8 @@ import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
 import com.amsterdam.domain.useCase.details.GetEpisodeVideosUseCase
+import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
+import com.amsterdam.domain.useCase.game.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
@@ -292,4 +294,8 @@ object UseCaseModule {
     fun provideGetAccountDetailsUseCase(repo: ProfileRepository): GetAccountDetailsUseCase =
         GetAccountDetailsUseCase(repo)
 
+    @Provides
+    fun provideGetTotalUserPointsUseCase() = GetTotalUserPointsUseCase()
+   @Provides
+   fun provideGetAvailableGamesUseCase() = GetAvailableGamesUseCase()
 }

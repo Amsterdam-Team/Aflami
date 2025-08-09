@@ -17,58 +17,41 @@ class UserListRepositoryImpl @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
     private val preferences: AppPreferencesRepository,
 ) : UserListRepository {
-    override suspend fun addMovieToList(
-    listId: Long,
-    movieId: Int,
-) {
-    val sessionId = authenticationRepository.getSessionId()
-        val response =
-            userListDataSource.addMovieToList(
-        listId,
-        sessionId,
-        movieId,
-            )
-        if (!response.success) throw UnknownException()
-}
-    override suspend fun createNewList(listName: String): Int =
-        userListDataSource
-            .createNewList(
-                listName = listName,
-                description = "",
-                language = preferences.getAppLanguage().first(),
-                sessionId = authenticationRepository.getSessionId(),
-            ).listId
 
-    override suspend fun getMoviesFromList(
-        listId: Long,
-        page: Int,
-    ): List<Movie> =
-        userListDataSource
-            .getMoviesFromList(listId, page)
-            .items
+    override suspend fun addMovieToList(listId: Long, movieId: Int) {
+        val sessionId = authenticationRepository.getSessionId()
+        val response =
+            userListDataSource.addMovieToList(listId, sessionId, movieId)
+        if (!response.success) throw UnknownException()
+    }
+
+    override suspend fun createNewList(listName: String): Int {
+        return userListDataSource.createNewList(
+            listName = listName,
+            description = "",
+            language = preferences.getAppLanguage().first(),
+            sessionId = authenticationRepository.getSessionId(),
+        ).listId
+    }
+
+    override suspend fun getMoviesFromList(listId: Long, page: Int): List<Movie> {
+        return userListDataSource.getMoviesFromList(listId, page).items
             .map { it.toMovie() }
+    }
 
     override suspend fun deleteList(listId: Long) {
         val sessionId = authenticationRepository.getSessionId()
         userListDataSource.deleteList(listId, sessionId)
     }
 
-        override suspend fun getUserLists(
-            accountId: Int,
-            page: Int,
-        ): List<UserList> {
-            val sessionId = authenticationRepository.getSessionId()
-            return userListDataSource
-                .getUserLists(accountId, page, sessionId)
-                .results
-                .map { it.toUserList() }
-        }
+    override suspend fun getUserLists(accountId: Int, page: Int): List<UserList> {
+        val sessionId = authenticationRepository.getSessionId()
+        return userListDataSource.getUserLists(accountId, page, sessionId).results
+            .map { it.toUserList() }
+    }
 
-    override suspend fun removeMovieFromList(
-        listId: Long,
-        movieId: Long,
-    ) {
+    override suspend fun removeMovieFromList(listId: Long, movieId: Long) {
         val sessionId = authenticationRepository.getSessionId()
         userListDataSource.removeMovieFromList(listId, sessionId, movieId)
     }
-    }
+}

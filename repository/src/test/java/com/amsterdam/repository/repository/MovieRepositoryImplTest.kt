@@ -1,5 +1,6 @@
 package com.amsterdam.repository.repository
 
+import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Country
 import com.amsterdam.entity.Gender
@@ -56,6 +57,7 @@ class MovieRepositoryImplTest {
 
     @Test
     fun `getMoviesByKeyword should return list of movies`() = runTest {
+        // Given
         val keyword = "keyword"
         val page = 1
         val moviesPerPage = 20
@@ -67,10 +69,10 @@ class MovieRepositoryImplTest {
         } returns RemoteMovieResponse(
             page = 1, results = expectedMovies, totalPages = 1, totalResults = 1
         )
+        // When
         val result = movieRepository.getMoviesByKeyword(keyword, page, moviesPerPage)
+        // Then
         assertThat(result).isEqualTo(expectedMovies.toMovieEntityList())
-
-
     }
 
     @Test
@@ -103,6 +105,7 @@ class MovieRepositoryImplTest {
             movieRemoteDataSource.getMoviesByActorIds(actorIds, page)
         }
     }
+
     @Test
     fun `getMoviesByCountry returns expected movies`() = runTest {
         // Given
@@ -114,7 +117,7 @@ class MovieRepositoryImplTest {
         )
 
         coEvery {
-           movieRemoteDataSource.getMoviesByCountryIsoCode(any(), any())
+            movieRemoteDataSource.getMoviesByCountryIsoCode(any(), any())
         } returns remoteMovieResponse
 
         // When
@@ -123,7 +126,7 @@ class MovieRepositoryImplTest {
         // Then
         assertThat(result).isEqualTo(expectedMovies)
         coVerify(exactly = 1) {
-           movieRemoteDataSource.getMoviesByCountryIsoCode(any(), any())
+            movieRemoteDataSource.getMoviesByCountryIsoCode(any(), any())
         }
     }
 
@@ -147,11 +150,11 @@ class MovieRepositoryImplTest {
         val result = movieRepository.getActorsByMovieId(movieId)
 
         // Then
-
         assertThat(result).isEqualTo(remoteActors)
 
         coVerify(exactly = 1) { movieRemoteDataSource.getCastByMovieId(movieId) }
     }
+
     @Test
     fun `setMovieRate should call remoteDataSource with decrypted sessionId`() = runTest {
         // Given
@@ -169,13 +172,14 @@ class MovieRepositoryImplTest {
         coEvery { movieRemoteDataSource.setMovieRate(rate.toFloat(), movieId, decryptedSession) } returns expectedResult
 
         // When
-      val result =  movieRepository.setMovieRate(rate, movieId)
+        val result =  movieRepository.setMovieRate(rate, movieId)
 
         // Then
         coVerify(exactly = 1) {
             movieRemoteDataSource.setMovieRate(rate.toFloat(), movieId, decryptedSession)
         }
     }
+
     @Test
     fun `getUserRatedMovies should return user rated movies from remote`() = runTest {
         // Given
@@ -198,6 +202,7 @@ class MovieRepositoryImplTest {
             movieRemoteDataSource.getRatedMovies(decryptedSession)
         }
     }
+
     @Test
     fun `deleteMovieRate should call remoteDataSource with correct sessionId`() = runTest {
         // Given
@@ -205,8 +210,8 @@ class MovieRepositoryImplTest {
         val encryptedSession = "encrypted-session"
         val decryptedSession = "decrypted-session"
 
-       coEvery { authenticationLocalDataSource.getCachedSessionId() } returns encryptedSession
-       coEvery { cryptoData.decryptString(encryptedSession) } returns decryptedSession
+        coEvery { authenticationLocalDataSource.getCachedSessionId() } returns encryptedSession
+        coEvery { cryptoData.decryptString(encryptedSession) } returns decryptedSession
         coEvery { movieRemoteDataSource.deleteMovieRate(movieId, decryptedSession) } just Runs
 
         // When
@@ -217,6 +222,7 @@ class MovieRepositoryImplTest {
             movieRemoteDataSource.deleteMovieRate(movieId, decryptedSession)
         }
     }
+
     @Test
     fun `getMoviesByGenres should return list of movies for given genres`() = runTest {
         // Given
@@ -228,9 +234,9 @@ class MovieRepositoryImplTest {
         val page = 1
 
         val expectedDtoGenres = listOf(
+            35L,
             28L,
-            12L,
-            14L
+            12L
         )
 
         coEvery {
@@ -242,10 +248,8 @@ class MovieRepositoryImplTest {
 
         // Then
         assertThat(result).isEqualTo(remoteMovieResponse.results.toMovieEntityList())
-       coVerify {
+        coVerify {
             movieRemoteDataSource.getMoviesByGenreIds(expectedDtoGenres, page)
         }
     }
-
-
 }

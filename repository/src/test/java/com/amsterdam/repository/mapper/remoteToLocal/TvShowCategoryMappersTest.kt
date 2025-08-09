@@ -17,8 +17,6 @@ class TvShowCategoryMappersTest {
 
         // Assert
         assertThat(localDto.categoryId).isEqualTo(10759L)
-        assertThat(localDto.name).isEqualTo("Action & Adventure")
-        assertThat(localDto.storedLanguage).isEqualTo("en")
     }
 
     @Test
@@ -38,12 +36,8 @@ class TvShowCategoryMappersTest {
 
         val firstCategory = localDtoList[0]
         assertThat(firstCategory.categoryId).isEqualTo(10759L)
-        assertThat(firstCategory.name).isEqualTo("Action & Adventure")
-        assertThat(firstCategory.storedLanguage).isEqualTo("es")
 
         val secondCategory = localDtoList[1]
         assertThat(secondCategory.categoryId).isEqualTo(35L)
-        assertThat(secondCategory.name).isEqualTo("Comedy")
-        assertThat(secondCategory.storedLanguage).isEqualTo("es")
     }
 }

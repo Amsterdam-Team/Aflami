@@ -1,10 +1,12 @@
+package com.amsterdam.repository.repository
+
 import com.amsterdam.domain.exceptions.UnknownException
 import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
+import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
 import com.amsterdam.repository.mapper.local.toLocalDto
-import com.amsterdam.repository.repository.AuthenticationRepositoryImpl
 import com.amsterdam.repository.security.CryptoData
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
@@ -25,6 +27,7 @@ class AuthenticationRepositoryImplTest {
 
     private val authenticationRemoteSource: AuthenticationRemoteSource = mockk()
     private val authenticationLocalDataSource: AuthenticationLocalDataSource = mockk()
+    private val profileLocalDataSource: ProfileLocalDataSource = mockk()
     private val cryptoData: CryptoData = mockk()
 
     private val testUsername = "testUser"
@@ -38,6 +41,7 @@ class AuthenticationRepositoryImplTest {
         repository = AuthenticationRepositoryImpl(
             authenticationRemoteSource = authenticationRemoteSource,
             authenticationLocalDataSource = authenticationLocalDataSource,
+            profileLocalDataSource = profileLocalDataSource,
             cryptoData = cryptoData
         )
     }
@@ -57,10 +61,9 @@ class AuthenticationRepositoryImplTest {
             coJustRun { authenticationLocalDataSource.setSessionType(SessionType.LOGGED_IN.toLocalDto()) }
 
             // When
-            val result = repository.loginWithPassword(testUsername, testPassword)
+            repository.loginWithPassword(testUsername, testPassword)
 
             // Then
-            assertThat(result).isEqualTo(Unit)
             coVerify(exactly = 1) {
                 authenticationRemoteSource.loginWithPassword(
                     testUsername,
@@ -158,21 +161,18 @@ class AuthenticationRepositoryImplTest {
         }
 
     @Test
-    fun `logout should delete remote session and then clear local data on success`() = runTest {
+    fun `logout should clear local data and delete account details`() = runTest {
         // Given
-        coEvery { authenticationLocalDataSource.getCachedSessionId() } returns encryptedSessionId
-        every { cryptoData.decryptString(encryptedSessionId) } returns testSessionId
         coJustRun { authenticationLocalDataSource.clearCachedSessionId() }
         coJustRun { authenticationLocalDataSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto()) }
+        coJustRun { profileLocalDataSource.deleteAccountDetails() }
 
         // When
-        val result = repository.logout()
+        repository.logout()
 
         // Then
-        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { authenticationLocalDataSource.clearCachedSessionId() }
         coVerify(exactly = 1) { authenticationLocalDataSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto()) }
+        coVerify(exactly = 1) { profileLocalDataSource.deleteAccountDetails() }
     }
-
-
 }

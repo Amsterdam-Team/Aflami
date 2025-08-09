@@ -58,7 +58,7 @@
     <string name="home">Home</string>
     <string name="lists">Lists</string>
     <string name="categories">Categories</string>
-    <string name="lets_play">Let’s Play</string>
+    <string name="lets_play">Let’s play</string>
     <string name="profile">Profile</string>
     <!-- -   -->
     <!-- - Login screen messages  -->
@@ -103,7 +103,7 @@
     <string name="lets_start">Let’s start</string>
     <string name="and">And</string>
     <string name="sec">Sec</string>
-    <string name="point_per_question">point per question.</string>
+    <string name="game_settings">%1$d questions, %2$d seconds, %3$d points per question</string>
     <string name="hint">hint? %1$d Pts.</string>
     <string name="next">Next</string>
     <string name="back_to_menue">Back to menu</string>
@@ -165,7 +165,7 @@
     <string name="list_title_hint">List title</string>
     <string name="no_list_yet">No lists yet!</string>
     <string name="no_list_description">Our brain is still empty, Click on + and start saving your favorite items and shows you love!</string>
-    <string name="points">Pts.</string>
+    <string name="points_format">%1$d Pts.</string>
     <string name="watch_history">Watch history</string>
     <string name="my_rating">My rating</string>
     <string name="language">Language</string>

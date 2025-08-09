@@ -9,7 +9,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.entity.Country
@@ -20,44 +19,38 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CountrySearchViewModel @Inject constructor(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
-    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
-    dispatcherProvider: DispatcherProvider,
+    private val dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<CountrySearchUiState, CountrySearchEffect>(
     CountrySearchUiState(),
     dispatcherProvider,
 ), CountrySearchInteractionListener {
-    private val _keyword = MutableStateFlow("")
-
     init {
-        manageLocaleLanguageUseCase.getAppLanguage()
-            .onEach {
-                observeKeywordFlow()
-            }.launchIn(viewModelScope)
-
         observeKeywordFlow()
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeKeywordFlow() {
-        viewModelScope.launch { _keyword.debounceSearch(::fetchCountriesByKeyword) }
+        tryToExecute(
+            action = {
+                state.map { it -> it.keywordDebounceValue.trim() }
+                    .debounceSearch(::fetchCountriesByKeyword)
+            },
+            dispatcher = dispatcherProvider.IO
+        )
     }
 
-    private fun fetchCountriesByKeyword(keyword: String): Job {
-        return tryToExecute(
+    private fun fetchCountriesByKeyword(keyword: String) {
+        tryToExecute(
             action = { getSuggestedCountriesUseCase(keyword) },
             onSuccess = ::onFetchCountriesSuccess,
             onError = ::onFetchError
@@ -86,11 +79,10 @@ class CountrySearchViewModel @Inject constructor(
     }
 
     override fun onChangeSearchKeyword(keyword: String) {
-        _keyword.update { keyword }
-
         updateState {
             it.copy(
                 keyword = keyword,
+                keywordDebounceValue = keyword,
                 isLoading = false,
                 selectedCountryIsoCode = "",
                 showSuggestedCountries = false,
@@ -111,11 +103,10 @@ class CountrySearchViewModel @Inject constructor(
     }
 
     override fun onClickRetry() {
-        val hasKeyword = state.value.keyword.isNotBlank()
         val hasSelectedCountry = state.value.selectedCountryIsoCode.isNotBlank()
 
         when {
-            !hasSelectedCountry && hasKeyword -> fetchCountriesByKeyword(state.value.keyword)
+            !hasSelectedCountry -> fetchCountriesByKeyword(state.value.keyword)
             hasSelectedCountry -> fetchMoviesByCountry(getSelectedCountry())
         }
     }
@@ -139,7 +130,6 @@ class CountrySearchViewModel @Inject constructor(
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
-            onError = {}
         )
     }
 

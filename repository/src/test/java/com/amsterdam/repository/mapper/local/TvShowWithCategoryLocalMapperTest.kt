@@ -1,53 +1,59 @@
-/*
 package com.amsterdam.repository.mapper.local
 
+import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.TvShowGenre
-import com.amsterdam.repository.mapper.local.testFactory.createLocalTvShowCategoryDtoList
-import com.amsterdam.repository.mapper.local.testFactory.createLocalTvShowDto
-import com.amsterdam.repository.mapper.local.testFactory.createTvShow
-import com.amsterdam.repository.mapper.local.testFactory.createTvShowWithCategory
+import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
+import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.Before
+import kotlinx.datetime.LocalDate
 import org.junit.Test
 
 class TvShowWithCategoryLocalMapperTest {
 
-    private lateinit var mapper: TvShowWithCategoryLocalMapper
-    private val genreMapper: TvShowGenreLocalMapper = mockk()
-
-    @Before
-    fun setUp() {
-        mapper = TvShowWithCategoryLocalMapper(genreMapper)
-    }
 
     @Test
     fun `toEntity maps TvShowWithCategory to TvShow correctly`() {
         // Arrange
-        val tvShowDto = createLocalTvShowDto()
-        val categories = createLocalTvShowCategoryDtoList()
-        val tvShowWithCategory = createTvShowWithCategory(dto = tvShowDto, categories = categories)
-
+        val dto = TvShowWithCategory(
+            tvShow = LocalTvShowDto(
+                tvShowId = 1,
+                name = "Drama",
+                description = "A drama movie",
+                poster = "",
+                storedLanguage = "en",
+                airDate = LocalDate.parse("2020-01-01"),
+                rating = 3.6f,
+                popularity = 4.0,
+                seasonCount = 3,
+                originCountry = "",
+            ),
+            categories = listOf(
+                LocalTvShowCategoryDto(
+                    categoryId = 1,
+                )
+            )
+        )
         val expectedGenres = listOf(TvShowGenre.DRAMA, TvShowGenre.CRIME)
-        every { genreMapper.toEntityList(categories) } returns expectedGenres
 
         // Act
-        val result = mapper.toEntity(tvShowWithCategory)
+        val result = dto.toEntity()
 
         // Assert
-        val expected = createTvShow(
-            id = tvShowDto.tvShowId,
-            name = tvShowDto.name,
-            description = tvShowDto.description,
-            posterUrl = tvShowDto.poster,
-            productionYear = tvShowDto.productionYear.toUInt(),
-            rating = tvShowDto.rating,
-            popularity = tvShowDto.popularity,
-            categories = expectedGenres
+        val expected = TvShow(
+            id = 1,
+            name = "Drama",
+            description = "A drama movie",
+            posterUrl = "",
+            airDate = LocalDate.parse("2020-01-01"),
+            rating = 3.6f,
+            categories = expectedGenres,
+            popularity = 4.0,
+            seasonCount = 3,
+            originCountry = "",
         )
 
         assertThat(result).isEqualTo(expected)
     }
 }
-*/
+

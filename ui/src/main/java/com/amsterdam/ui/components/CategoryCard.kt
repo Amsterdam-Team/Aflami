@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -87,7 +88,7 @@ fun CategoryCard(
 private fun CategoryCardPreview() {
     AflamiTheme {
         CategoryCard(
-            categoryName = "stringResource(R.string.family)",
+            categoryName = stringResource(R.string.family),
             categoryImage = painterResource(id = R.drawable.img_action),
         )
     }

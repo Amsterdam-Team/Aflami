@@ -28,4 +28,5 @@ private fun DependencyHandlerScope.kotlinExtensionDependencies() {
 
 private fun DependencyHandlerScope.androidPreviewDependencies() {
     implementation(libs.androidx.ui.tooling.preview.android)
+    debugImplementation(libs.androidx.ui.tooling)
 }

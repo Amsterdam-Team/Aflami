@@ -24,9 +24,9 @@ class GetAccountDetailsUseCaseTest {
     fun `should return account details`() = runTest {
         //Given
         val exceptedAccountDetails = AccountDetails(
-            id = 2,
-            username = "",
-            avatarUrl = ""
+            accountId = 2,
+            username = "test_user",
+            avatarUrl = "test_avatar.jpg"
         )
         coEvery { profileRepository.getAccountDetails() } returns exceptedAccountDetails
         //When
@@ -34,7 +34,5 @@ class GetAccountDetailsUseCaseTest {
         //Then
         assertThat(accountDetails).isEqualTo(exceptedAccountDetails)
         coVerify(exactly = 1) { profileRepository.getAccountDetails() }
-        
-
     }
 }

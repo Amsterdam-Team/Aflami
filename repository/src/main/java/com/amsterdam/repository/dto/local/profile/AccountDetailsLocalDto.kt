@@ -8,5 +8,6 @@ import com.amsterdam.repository.dto.local.utils.DatabaseConstants
 data class AccountDetailsLocalDto(
     @PrimaryKey val accountId: Int = 0,
     val username: String = "",
-    val avatarUrl: String = ""
+    val avatarUrl: String = "",
+    val totalGamePoints: Int = 0
 )

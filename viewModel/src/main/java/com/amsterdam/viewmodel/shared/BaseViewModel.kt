@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -55,8 +54,8 @@ open class BaseViewModel<S, E>(
 
     protected fun <T> tryToExecute(
         action: suspend () -> T,
-        onSuccess: (T) -> Unit,
-        onError: (AflamiException) -> Unit,
+        onSuccess: (T) -> Unit = {},
+        onError: (AflamiException) -> Unit = {},
         onCompletion: () -> Unit = {},
         dispatcher: CoroutineDispatcher = dispatcherProvider.IO,
     ): Job {

@@ -1,58 +1,46 @@
-/*
 package com.amsterdam.repository.mapper.local
 
-import com.amsterdam.repository.mapper.local.testFactory.createLocalTvShowDto
-import com.amsterdam.repository.mapper.local.testFactory.createTvShow
+import com.amsterdam.entity.Movie
+import com.amsterdam.repository.dto.local.LocalTvShowDto
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 
 class TvShowLocalMapperTest {
 
-    private lateinit var mapper: TvShowLocalMapper
-
-    @BeforeEach
-    fun setUp() {
-        mapper = TvShowLocalMapper()
-    }
-
     @Test
     fun `toEntity should map LocalTvShowDto to TvShow correctly`() {
-        val dto = createLocalTvShowDto()
-
-        val expected = createTvShow(
-            id = dto.tvShowId,
-            name = dto.name,
-            description = dto.description,
-            posterUrl = dto.poster,
-            productionYear = dto.productionYear.toUInt(),
-            rating = dto.rating,
-            popularity = dto.popularity,
-            categories = emptyList()
+        val dto = LocalTvShowDto(
+            tvShowId = 1,
+            name = "Game of Thrones",
+            description = "A fantasy drama series",
+            poster = "https://example.com/poster.jpg",
+            storedLanguage = "en",
+            airDate = LocalDate.parse(""),
+            rating = 4.6f,
+            popularity = 5.0,
+            seasonCount = 4,
+            originCountry = "",
         )
 
-        val result = mapper.toEntity(dto)
+        val expected = Movie(
+            id = 101,
+            name = "Inception",
+            description = "A mind-bending thriller",
+            posterUrl = "poster_url.jpg",
+            rating = 8.8f,
+            popularity = 99.5,
+            runTimeInMinutes = 148,
+            originCountry = "USA",
+            releaseDate = LocalDate.parse("2020-01-01"),
+            categories = emptyList(),
+            videoUrl = "",
+        )
+
+        val result = dto.toEntity()
 
         assertThat(result).isEqualTo(expected)
     }
 
-    @Test
-    fun `toDto should map TvShow to LocalTvShowDto correctly`() {
-        val entity = createTvShow()
-
-        val expected = createLocalTvShowDto(
-            tvShowId = entity.id,
-            name = entity.name,
-            description = entity.description,
-            poster = entity.posterUrl,
-            productionYear = entity.productionYear.toInt(),
-            rating = entity.rating,
-            popularity = entity.popularity
-        )
-
-        val result = mapper.toDto(entity)
-
-        assertThat(result).isEqualTo(expected)
-    }
 }
-*/
+

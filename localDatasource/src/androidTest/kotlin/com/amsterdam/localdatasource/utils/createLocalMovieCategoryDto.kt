@@ -9,7 +9,5 @@ fun createLocalMovieCategoryDto(
 ): LocalMovieCategoryDto {
     return LocalMovieCategoryDto(
         categoryId = categoryId,
-        storedLanguage = storedLanguage,
-        name = name
     )
 }

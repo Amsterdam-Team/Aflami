@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.designsystem.utils.modifierExtensions.dropShadow
@@ -81,7 +82,7 @@ fun GameCard(
                     width = 1.dp,
                     brush = Brush.horizontalGradient(colors = borderColors),
                     shape = RoundedCornerShape(16.dp),
-                ).clickable { onCardClick() },
+                ).clickable { if (!isPlayable) onCardClick() },
         verticalArrangement = Arrangement.Top,
     ) {
         UnlockPromptContainer(
@@ -412,14 +413,16 @@ private fun BlurredContent(
 @ThemeAndLocalePreviews
 @Composable
 private fun GameCardPreview() {
-    GameCard(
-        title = "Guess Game",
-        description = "Try to guess the movie preparation time!",
-        containerColor = Color.White,
-        borderColors = listOf(Color.Red, Color.Blue),
-        onCardClick = {},
-        gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
-        isPlayable = false,
-        unlockPrice = "120",
-    )
+    AflamiTheme {
+        GameCard(
+            title = "Guess Game",
+            description = "Try to guess the movie preparation time!",
+            containerColor = Color.White,
+            borderColors = listOf(Color.Red, Color.Blue),
+            onCardClick = {},
+            gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
+            isPlayable = false,
+            unlockPrice = "120",
+        )
+    }
 }

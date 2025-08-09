@@ -59,6 +59,7 @@ private fun DependencyHandlerScope.appCompactDependencies() {
 
 private fun DependencyHandlerScope.previewDependencies() {
     implementation(libs.androidx.ui.tooling.preview.android)
+    debugImplementation(libs.androidx.ui.tooling)
 }
 
 private fun DependencyHandlerScope.composeDependencies() {
@@ -82,9 +83,6 @@ private fun DependencyHandlerScope.kotlinxDateTime() {
     implementation(libs.kotlinx.datetime)
 }
 
-private fun DependencyHandlerScope.coilDependencies() {
-    implementation(libs.coil.compose)
-}
 
 private fun DependencyHandlerScope.splashScreenDependency() {
     implementation(libs.androidx.core.splashscreen)

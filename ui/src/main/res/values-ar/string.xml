@@ -130,6 +130,7 @@
     <string name="description">الوصف</string>
     <string name="cast">الممثلون</string>
     <string name="search">بحث</string>
+    <string name="game_settings">%1$d سؤال، %2$d ثانية، %3$d نقطة لكل سؤال</string>
     <string name="search_hint">ابحث…</string>
     <string name="serach_suggestions_hub">مركز اقتراحات البحث</string>
     <string name="search_description">ابدأ الاستكشاف! ابحث عن أفلامك ومسلسلاتك وعروضك المفضلة</string>
@@ -165,7 +166,7 @@
     <string name="list_title_hint">عنوان القائمة</string>
     <string name="no_list_yet">لا توجد قوائم بعد!</string>
     <string name="no_list_description">عقلنا لا يزال فارغًا، اضغط على + وابدأ بحفظ عناصرك وعروضك المفضلة التي تحبها!</string>
-    <string name="points">نقاط.</string>
+    <string name="points_format">%1$d نقطة</string>
     <string name="watch_history">سجل المشاهدة</string>
     <string name="my_rating">تقييماتي</string>
     <string name="language">اللغة</string>

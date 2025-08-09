@@ -2,7 +2,6 @@ package com.amsterdam.localdatasource.daos
 
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.repository.dto.local.LocalTvShowCategoryInterestDto
@@ -34,50 +33,50 @@ class TvShowCategoryInterestDaoTest {
     fun upsertInterest_shouldAddNewInterest() =
         runTest {
             // Given
-        val dto = LocalTvShowCategoryInterestDto(genre = TvShowGenre.DRAMA, interestCount = 1)
+            val dto = LocalTvShowCategoryInterestDto(1, interestCount = 1)
 
-        // When
+            // When
             interestDao.upsertInterest(dto)
 
-        //Then
-        val stored = interestDao.getAllInterests()
-        assertThat(stored).containsExactly(dto)
+            //Then
+            val stored = interestDao.getInterestCount(1)
+            assertThat(stored).isEqualTo(1)
         }
 
     @Test
     fun upsertInterest_shouldUpdateExistingInterest() =
         runTest {
-        // Given
-        val initial = LocalTvShowCategoryInterestDto(genre = TvShowGenre.DRAMA, interestCount = 1)
+            // Given
+            val initial = LocalTvShowCategoryInterestDto(1, interestCount = 1)
             interestDao.upsertInterest(initial)
 
-        val updated = LocalTvShowCategoryInterestDto(genre = TvShowGenre.DRAMA, interestCount = 5)
+            val updated = LocalTvShowCategoryInterestDto(1, interestCount = 5)
 
             // When
             interestDao.upsertInterest(updated)
 
-        // Then
-        val stored = interestDao.getAllInterests()
-        assertThat(stored).containsExactly(updated)
-    }
+            // Then
+            val stored = interestDao.getInterestCount(1)
+            assertThat(stored).isEqualTo(6)
+        }
 
     @Test
     fun getInterestCount_shouldReturnCorrectCount() =
         runTest {
             // Given
-            interestDao.upsertInterest(LocalTvShowCategoryInterestDto(genre = TvShowGenre.KIDS, interestCount = 3))
+            interestDao.upsertInterest(LocalTvShowCategoryInterestDto(1, interestCount = 3))
 
-        // When
-        val count = interestDao.getInterestCount(TvShowGenre.KIDS)
+            // When
+            val count = interestDao.getInterestCount(1)
 
-        // Then
-        assertThat(count).isEqualTo(3)
-    }
+            // Then
+            assertThat(count).isEqualTo(3)
+        }
 
     @Test
     fun getInterestCount_shouldReturnNull_whenNotStored() = runTest {
         // When
-        val count = interestDao.getInterestCount(TvShowGenre.MYSTERY)
+        val count = interestDao.getInterestCount(1)
 
         // Then
         assertThat(count).isNull()
@@ -86,43 +85,41 @@ class TvShowCategoryInterestDaoTest {
     @Test
     fun incrementInterest_shouldAddNewRecord_ifNotExist() = runTest {
         // When
-        interestDao.incrementInterest(TvShowGenre.KIDS)
+        interestDao.incrementInterest(1)
 
         // Then
-        val stored = interestDao.getAllInterests()
-        assertThat(stored).containsExactly(
-            LocalTvShowCategoryInterestDto(genre = TvShowGenre.KIDS, interestCount = 1)
-        )
+        val stored = interestDao.getInterestCount(1)
+        assertThat(stored).isEqualTo(1)
     }
 
     @Test
     fun incrementInterest_shouldIncrementExistingRecord() =
         runTest {
             // Given
-            interestDao.upsertInterest(LocalTvShowCategoryInterestDto(TvShowGenre.DOCUMENTARY, 2))
+            interestDao.upsertInterest(LocalTvShowCategoryInterestDto(1, 2))
 
-        // When
-        interestDao.incrementInterest(TvShowGenre.DOCUMENTARY)
+            // When
+            interestDao.incrementInterest(1)
 
-        // Then
-        val count = interestDao.getInterestCount(TvShowGenre.DOCUMENTARY)
-        assertThat(count).isEqualTo(3)
-    }
+            // Then
+            val count = interestDao.getInterestCount(1)
+            assertThat(count).isEqualTo(3)
+        }
 
     @Test
     fun getAllInterests_shouldReturnAllInsertedItems() = runTest {
         // Given
         val list = listOf(
-            LocalTvShowCategoryInterestDto(TvShowGenre.ANIMATION, 1),
-            LocalTvShowCategoryInterestDto(TvShowGenre.COMEDY, 2),
+            LocalTvShowCategoryInterestDto(1, 1),
+            LocalTvShowCategoryInterestDto(1, 2),
         )
         list.forEach { interestDao.upsertInterest(it) }
 
         // When
-        val stored = interestDao.getAllInterests()
+        val stored = interestDao.getInterestCount(1)
 
         // Then
-        assertThat(stored).containsExactlyElementsIn(list)
+        assertThat(stored).isEqualTo(3)
 
     }
 }

@@ -49,5 +49,9 @@ internal val darkThemeColors =
         loginGradient = listOf(Color(0x3DD85895), Color(0x00D85895)),
         topRatedGradientBackground = listOf(Color(0xCC64163B), Color(0x0064163B)),
         shimmerEffectGradient = listOf(Color(0x14FFFFFF), Color(0x00FFFFFF), Color(0x3DFFFFFF)),
-        onBoardingGradient = listOf(Color(0x000D0608), Color(0xFF0D0608))
+        onBoardingGradient = listOf(Color(0x000D0608), Color(0xFF0D0608)),
+        guessCharacterStrokeGradient = listOf(Color(0x80D85895), Color(0x05FFFFFF)),
+        guessMovieByPosterStrokeGradient = listOf(Color(0x802BA3D9), Color(0x05FFFFFF)),
+        guessMovieByReleaseStrokeGradient = listOf(Color(0x800A203A), Color(0x05FFFFFF)),
+        guessMovieByGenreStrokeGradient = listOf(Color(0x80E5A02E), Color(0x05FFFFFF))
     )
