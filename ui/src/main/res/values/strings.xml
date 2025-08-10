@@ -248,7 +248,8 @@
     <string name="theme_not_changed">Theme not changed, please try again</string>
 
     <string name="failed_to_load_user_data">Failure while loading user data, please try again</string>
-
+    <string name="save_restriction_success">Restriction level saved successfully.</string>
+    <string name="save_restriction_error">Failed to save restriction level. Please try again.</string>
 
     <plurals name="item_count">
         <item quantity="one">%d item</item>

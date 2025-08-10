@@ -10,4 +10,7 @@ sealed interface ProfileEffect {
     data object NavigateToMyRating: ProfileEffect
     data object ShowError: ProfileEffect
     data object UserDataNotLoaded : ProfileEffect
+
+    data object ShowRestrictionLevelUpdateSuccessSnackBar : ProfileEffect
+    data object ShowRestrictionLevelUpdateErrorSnackBar : ProfileEffect
 }

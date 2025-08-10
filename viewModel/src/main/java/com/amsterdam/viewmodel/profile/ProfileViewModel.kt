@@ -348,10 +348,18 @@ class ProfileViewModel @Inject constructor(
 
         tryToExecute(
             action = { saveRestrictionLevel() },
-            onSuccess = { _ -> },
-            onError = ::onError,
+            onSuccess = ::onSaveRestrictionLevelSuccess,
+            onError = ::onSaveRestrictionLevelError,
             onCompletion = ::onSaveRestrictionLevelCompletion
         )
+    }
+
+    private fun onSaveRestrictionLevelSuccess(unit: Unit){
+        sendNewEffect(ProfileEffect.ShowRestrictionLevelUpdateSuccessSnackBar)
+    }
+
+    private fun onSaveRestrictionLevelError(exception: AflamiException){
+        sendNewEffect(ProfileEffect.ShowRestrictionLevelUpdateErrorSnackBar)
     }
 
     override fun onClickRating() {

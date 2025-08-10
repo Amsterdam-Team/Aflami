@@ -49,12 +49,12 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                ProfileEffect.NavigateToLogin -> navController.navigate(Route.Login){
+                ProfileEffect.NavigateToLogin -> navController.navigate(Route.Login) {
                     popUpTo(0)
                 }
 
                 ProfileEffect.NavigateToResetPassword -> {
-                    navController.navigate(Route.ResetPassword){
+                    navController.navigate(Route.ResetPassword) {
                         popUpTo(Route.Tab.Profile)
                     }
                 }
@@ -64,6 +64,7 @@ fun ProfileScreen(
                         message = getProfileErrorMessage(state.profileErrorState, context)
                     )
                 }
+
                 is ProfileEffect.LanguageChanged -> {
                     SnackBarManager.showSuccess(
                         when (state.language) {
@@ -93,6 +94,7 @@ fun ProfileScreen(
                                     context.getString(R.string.light)
                                 )
                             }
+
                             true -> {
                                 context.getString(
                                     R.string.theme_changed,
@@ -122,6 +124,13 @@ fun ProfileScreen(
                 }
 
                 ProfileEffect.NavigateToMyRating -> navController.navigate(Route.MyRating)
+                ProfileEffect.ShowRestrictionLevelUpdateErrorSnackBar -> SnackBarManager.showError(
+                    context.getString(R.string.save_restriction_error)
+                )
+
+                ProfileEffect.ShowRestrictionLevelUpdateSuccessSnackBar -> SnackBarManager.showSuccess(
+                    context.getString(R.string.save_restriction_success)
+                )
             }
         }
     }

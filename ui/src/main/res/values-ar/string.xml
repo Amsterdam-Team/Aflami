@@ -251,7 +251,8 @@
     <string name="theme_not_changed">لم يتم تغيير النمط، يرجى المحاولة مرة أخرى</string>
 
     <string name="failed_to_load_user_data">حدث خطأ أثناء تحميل بيانات المستخدم، يرجى المحاولة مرة أخرى</string>
-
+    <string name="save_restriction_success">تم حفظ مستوى التقييد بنجاح.</string>
+    <string name="save_restriction_error">فشل في حفظ مستوى التقييد. الرجاء المحاولة مرة أخرى.</string>
 
     <plurals name="item_count">
         <item quantity="zero">لا عناصر</item>
