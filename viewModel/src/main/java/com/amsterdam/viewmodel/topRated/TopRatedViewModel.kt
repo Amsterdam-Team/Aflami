@@ -61,6 +61,7 @@ class TopRatedViewModel @Inject constructor(
             },
             onSuccess = ::onGetTopRatedMoviesSuccess
         )
+        print("test")
     }
 
 
