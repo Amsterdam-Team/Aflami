@@ -47,15 +47,24 @@ jobs:
 
       - name: Clean Project
         run: ./gradlew clean
-
+        
+      - name: Install mo3ta-coverage
+        run: npm install -g mo3ta-coverage
+        
       - name: Run Test And Kover Verification for ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
         continue-on-error: true
-
+        
       - name: Generate coverage report for ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:koverXmlReport
         continue-on-error: true
 
+      - name: Generate LCOV coverage report for ${{ matrix.module }}
+        run: ./gradlew :${{ matrix.module }}:koverReport --report-type=lcov
+        
+      - name: Check Changed Lines Coverage for ${{ matrix.module }}
+        run: mo3ta-coverage --base origin/main --lcov ${{ matrix.module }}/build/reports/kover/lcov.info --limit 80 --showCovered --shallowTests=false
+        
       - name: Publish Unit Test Results for ${{ matrix.module }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
@@ -65,7 +74,14 @@ jobs:
           comment_mode: always
           compare_to_earlier_commit: true
           report_individual_runs: true
-
+          
+      - name: Upload LCOV Report for ${{ matrix.module }}
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.module }}-lcov-report
+          path: ${{ matrix.module }}/build/reports/kover/lcov.info
+          
       - name: Upload Coverage Report for ${{ matrix.module }}
         uses: actions/upload-artifact@v4
         if: always()
