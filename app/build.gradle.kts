@@ -51,6 +51,11 @@ android {
     }
 }
 
+tasks.named("preBuild") {
+    val libraryLintTask = project.rootProject.project(":remoteDatasource").tasks.named("lintDebug")
+    dependsOn(libraryLintTask)
+}
+
 dependencies {
     appModulesDependencies()
     firebaseDependencies()

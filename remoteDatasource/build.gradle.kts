@@ -34,6 +34,9 @@ android {
 
         )
     }
+    lint {
+        abortOnError = true
+    }
 }
 
 dependencies {
@@ -45,6 +48,7 @@ dependencies {
     coroutinesDependencies()
     kotlinExtensionsDependencies()
     injectDependencies()
+    lintChecks(project(":lint-rules"))
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {

@@ -39,5 +39,6 @@ include(":domain")
 include(":entity")
 include(":repository")
 include(":imageViewer")
+include(":lint-rules")
 
 gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
