@@ -3,14 +3,11 @@ package com.amsterdam.viewmodel.search.actorSearch
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
-import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
-import com.amsterdam.paging.PagingSource
+import com.amsterdam.entity.Movie
 import com.amsterdam.viewmodel.search.mapper.toSearchMediaItemUiState
 import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
@@ -28,14 +25,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ActorSearchViewModel @Inject constructor(
-    private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
+    private val actorPagingSource: ActorSearchPagingSource,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<ActorSearchUiState, ActorSearchEffect>(
     ActorSearchUiState(),
     dispatcherProvider,
-),
-    ActorSearchInteractionListener {
+), ActorSearchInteractionListener {
+
     private val keywordFlow = MutableStateFlow("")
 
     init {
@@ -55,18 +52,8 @@ class ActorSearchViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = {
-                Pager(
-                    config = PagingConfig(pageSize = 20),
-                    pagingSourceFactory = {
-                        PagingSource { page ->
-                            getMoviesByActorUseCase(
-                                query,
-                                page,
-                            )
-                        }
-                    },
-                )
-                    .flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
+                actorPagingSource.getMovies(query)
+                    .map { pagingData -> pagingData.map(Movie::toSearchMediaItemUiState) }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::handleSearchResults
