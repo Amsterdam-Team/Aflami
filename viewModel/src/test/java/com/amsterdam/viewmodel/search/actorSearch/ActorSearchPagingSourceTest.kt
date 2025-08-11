@@ -1,7 +1,5 @@
 package com.amsterdam.viewmodel.search.actorSearch
 
-import androidx.paging.PagingConfig
-import androidx.paging.testing.TestPager
 import androidx.paging.testing.asSnapshot
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.viewmodel.utils.entityHelper.createMovie
