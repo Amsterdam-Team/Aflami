@@ -33,7 +33,7 @@ import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.listDetails.component.DeleteListDialog
-import com.amsterdam.ui.screens.listDetails.component.MoviesItemsGrid
+import com.amsterdam.ui.screens.listDetails.component.ListDetailsItemsGrid
 import com.amsterdam.ui.screens.listDetails.component.getListDetailsErrorMessage
 import com.amsterdam.viewmodel.listDetails.ListDetailsEffect
 import com.amsterdam.viewmodel.listDetails.ListDetailsInteractionListener
@@ -59,6 +59,10 @@ fun ListsDetailsScreen(viewModel: ListDetailsViewModel = hiltViewModel()) {
                     navController.navigate(Route.MovieDetails(effect.movieId))
                 }
 
+                is ListDetailsEffect.NavigateToTvShowDetailsScreen -> {
+                    navController.navigate(Route.SeriesDetails(effect.tvShowId))
+                }
+
                 ListDetailsEffect.NavigateBack -> navController.navigateUp()
 
                 ListDetailsEffect.ShowDeletionSuccessSnackBar -> {
@@ -76,6 +80,7 @@ fun ListsDetailsScreen(viewModel: ListDetailsViewModel = hiltViewModel()) {
                         getListDetailsErrorMessage(state.error, context)
                     )
                 }
+
             }
         }
     }
@@ -92,7 +97,7 @@ private fun ListDetailsContent(
     listener: ListDetailsInteractionListener
 ) {
 
-    val movies = state.listItems.collectAsLazyPagingItems()
+    val listMediaItems = state.listItems.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -120,7 +125,7 @@ private fun ListDetailsContent(
 
         with(state) {
             when {
-                isLoading && movies.itemCount == 0 -> {
+                isLoading && listMediaItems.itemCount == 0 -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -129,7 +134,7 @@ private fun ListDetailsContent(
                     }
                 }
 
-                !isLoading && error != null && movies.itemCount == 0-> {
+                !isLoading && error != null && listMediaItems.itemCount == 0-> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -140,7 +145,7 @@ private fun ListDetailsContent(
                     }
                 }
 
-                !isLoading && movies.itemCount == 0 -> {
+                !isLoading && listMediaItems.itemCount == 0 -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -153,10 +158,11 @@ private fun ListDetailsContent(
                 }
 
                 else -> {
-                    MoviesItemsGrid(
-                        movies = movies,
+                    ListDetailsItemsGrid(
+                        listMediaItems = listMediaItems,
                         modifier = Modifier.weight(1f),
                         onClickMovie = listener::onClickMovie,
+                        onClickTvShow = listener::onClickTvShow,
                         onClickRemoveItem = listener::onClickRemoveMovie
                     )
                 }
@@ -183,6 +189,7 @@ private fun ListDetailsScreenPreview() {
                 override fun onClickBack() {}
                 override fun onClickRetryLoading() {}
                 override fun onClickMovie(movieId: Long) {}
+                override fun onClickTvShow(tvShowId: Long) {}
                 override fun onClickDeleteList() {}
                 override fun onDeleteListConfirmed() {}
                 override fun onDeleteListDialogDismiss() {}

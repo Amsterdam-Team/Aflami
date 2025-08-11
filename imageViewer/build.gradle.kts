@@ -3,9 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-android {
-    namespace = "com.amsterdam.imageviewer"
-}
+android { namespace = libs.versions.namespaceImageViewer.get() }
 
 dependencies {
     tensorFlowDependencies()

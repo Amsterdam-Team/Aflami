@@ -32,13 +32,15 @@ import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.listDetails.ListDetailsUiState.ListDetailsItemsUiState
+import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
-internal fun MoviesItemsGrid(
-    movies: LazyPagingItems<ListDetailsItemsUiState>,
+internal fun ListDetailsItemsGrid(
+    listMediaItems: LazyPagingItems<ListDetailsItemsUiState>,
     modifier: Modifier = Modifier,
     onClickMovie: (Long) -> Unit,
+    onClickTvShow: (Long) -> Unit,
     onClickRemoveItem: (Long) -> Unit = {}
 ) {
     val gridState = rememberLazyGridState()
@@ -52,36 +54,48 @@ internal fun MoviesItemsGrid(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            count = movies.itemCount,
-            key = movies.itemKey { it.id }
+            count = listMediaItems.itemCount,
+            key = listMediaItems.itemKey { "${it.mediaType}${it.id}" }
         ) { index ->
-            val movie = movies[index] ?: return@items
+            val listMediaItem = listMediaItems[index] ?: return@items
+
+            val (topIcon, movieType, onCardClick) = when (listMediaItem.mediaType) {
+                MediaType.MOVIE -> Triple(
+                    painterResource(com.amsterdam.designsystem.R.drawable.ic_heart_remove),
+                    stringResource(com.amsterdam.designsystem.R.string.movies)
+                ) { onClickMovie(listMediaItem.id) }
+
+                else -> Triple(
+                    null,
+                    stringResource(com.amsterdam.designsystem.R.string.tv_shows),
+                ) { onClickTvShow(listMediaItem.id) }
+            }
 
             MediaCard(
                 modifier = Modifier.animateItem(),
                 movieImage = {
                     SafeImageView(
                         modifier = Modifier.fillMaxSize(),
-                        contentDescription = movie.name,
-                        model = movie.posterImageUrl,
+                        contentDescription = listMediaItem.name,
+                        model = listMediaItem.posterImageUrl,
                         safetyLevel = safetyLevel,
                         onLoading = { ImageLoadingIndicator() },
                         onError = { ImageErrorIndicator() },
                     )
                 },
-                movieType = stringResource(com.amsterdam.designsystem.R.string.movies),
-                movieYear = movie.yearOfRelease,
-                movieTitle = movie.name,
-                movieRating = movie.rate,
-                topIcon = painterResource(com.amsterdam.designsystem.R.drawable.ic_heart_remove),
-                onTopIconClick = { onClickRemoveItem(movie.id) },
-                onClick = { onClickMovie(movie.id) }
+                movieType = movieType,
+                movieYear = listMediaItem.yearOfRelease,
+                movieTitle = listMediaItem.name,
+                movieRating = listMediaItem.rate,
+                topIcon = topIcon,
+                onTopIconClick = { onClickRemoveItem(listMediaItem.id) },
+                onClick = onCardClick
             )
         }
 
         if (
-            movies.loadState.append is LoadState.Loading
-                && movies.itemCount > 1
+            listMediaItems.loadState.append is LoadState.Loading
+                && listMediaItems.itemCount > 1
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 LoadingIndicator(
@@ -92,16 +106,16 @@ internal fun MoviesItemsGrid(
             }
         }
 
-        if (movies.loadState.append is LoadState.Error) {
+        if (listMediaItems.loadState.append is LoadState.Error) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 PlainTextButton(
                     modifier = Modifier
                         .size(48.dp)
                         .padding(top = 8.dp),
                     title = stringResource(R.string.retry),
-                    onClick = { movies.retry() },
+                    onClick = { listMediaItems.retry() },
                     isEnabled = true,
-                    isLoading = movies.loadState.append is LoadState.Loading,
+                    isLoading = listMediaItems.loadState.append is LoadState.Loading,
                     isNegative = false,
                     colors = ButtonDefaults.textButtonColors()
                 )
@@ -114,9 +128,10 @@ internal fun MoviesItemsGrid(
 @Composable
 private fun MediaItemsGridPreview() {
     AflamiTheme {
-        MoviesItemsGrid(
-            movies = emptyFlow<PagingData<ListDetailsItemsUiState>>().collectAsLazyPagingItems(),
-            onClickMovie = { },
+        ListDetailsItemsGrid(
+            listMediaItems = emptyFlow<PagingData<ListDetailsItemsUiState>>().collectAsLazyPagingItems(),
+            onClickMovie = {},
+            onClickTvShow = {},
             onClickRemoveItem = {}
         )
     }

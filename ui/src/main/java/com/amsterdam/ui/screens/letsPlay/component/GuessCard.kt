@@ -1,4 +1,4 @@
-package com.amsterdam.ui.components.guessGame
+package com.amsterdam.ui.screens.letsPlay.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState

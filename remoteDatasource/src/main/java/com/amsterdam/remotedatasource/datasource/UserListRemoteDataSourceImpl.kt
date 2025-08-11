@@ -50,8 +50,8 @@ class UserListRemoteDataSourceImpl @Inject constructor(
         return responseCall { userListApiService.addMediaItemToList(listId, sessionId, movieId) }
     }
 
-    override suspend fun getMoviesFromList(listId: Long, page: Int): UserListDetailsResponse {
-        return responseCall({ userListApiService.getMoviesFromList(listId, page) }) {
+    override suspend fun getMoviesAndTvShowsFromList(listId: Long, page: Int): UserListDetailsResponse {
+        return responseCall({ userListApiService.getMoviesAndTvShowsFromList(listId, page) }) {
             val response = json.decodeFromString<AuthenticationResponseDto>(it)
             response.statusCode!!
         }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Aflami.splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/aflami_splash_still</item>
+        <item name="windowSplashScreenBackground">#FAF5F7</item>
+        <item name="postSplashScreenTheme">@style/Theme.Aflami</item>
+    </style>
+</resources>

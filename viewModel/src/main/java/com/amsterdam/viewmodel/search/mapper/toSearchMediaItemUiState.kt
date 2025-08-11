@@ -11,7 +11,7 @@ fun Movie.toSearchMediaItemUiState(): SearchMediaItemUiState {
         id = id,
         name = name,
         posterImageUrl = posterUrl,
-        yearOfRelease = releaseDate.year.toString(),
+        yearOfRelease = releaseDate?.year?.toString() ?: "",
         rate = rating.toFormattedRating(),
         mediaType = MediaType.MOVIE
     )
@@ -22,7 +22,7 @@ fun TvShow.toSearchMediaItemUiState(): SearchMediaItemUiState {
         id = id,
         name = name,
         posterImageUrl = posterUrl,
-        yearOfRelease = airDate.year.toString(),
+        yearOfRelease = airDate?.year?.toString() ?: "",
         rate = rating.toFormattedRating(),
         mediaType = MediaType.TV_SHOW
     )

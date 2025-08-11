@@ -89,15 +89,6 @@ class SeriesDetailsViewModel @Inject constructor(
         sendNewNavigationEffect(SeriesDetailsEffect.NavigateToCastScreen)
     }
 
-    override fun onAddToListClicked() {
-        viewModelScope.launch {
-            runIfLoggedIn(
-                onLoggedIn = {},
-                onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.AddToList) }
-            )
-        }
-    }
-
     override fun onClickRate() {
         viewModelScope.launch {
             runIfLoggedIn(

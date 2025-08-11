@@ -16,7 +16,8 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
-import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryItemUiState
+import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryMovieUiState
+import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryTvShowUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -56,7 +57,8 @@ class WatchHistoryViewModel @Inject constructor(
                             getContinueWatchingMoviesUseCase(page = page, pageSize = 20).first()
                         }
                     }
-                ).flow.map { it.map { it.movie.toWatchHistoryItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { it.map { it.movie.toWatchHistoryItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onGetMoviesContinueWatchingDataSuccess,
             onError = ::onError,
@@ -75,7 +77,8 @@ class WatchHistoryViewModel @Inject constructor(
                             getContinueWatchingTvShowsUseCase(page = page, pageSize = 20).first()
                         }
                     }
-                ).flow.map { it.map { it.tvShow.toWatchHistoryItemUiState() } }.cachedIn(viewModelScope)
+                ).flow.map { it.map { it.tvShow.toWatchHistoryItemUiState() } }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTvShowContinueWatchingDataSuccess,
             onError = ::onError,
@@ -84,23 +87,21 @@ class WatchHistoryViewModel @Inject constructor(
     }
 
     fun onGetMoviesContinueWatchingDataSuccess(
-        mediaItems:
-        Flow<PagingData<WatchHistoryItemUiState>>
+        movieItems: Flow<PagingData<WatchHistoryMovieUiState>>
     ) {
         updateState { currentState ->
             currentState.copy(
-                movies = mediaItems
+                movies = movieItems
             )
         }
     }
 
     fun onGetTvShowContinueWatchingDataSuccess(
-        mediaItems:
-        Flow<PagingData<WatchHistoryItemUiState>>
+        tvShowItems: Flow<PagingData<WatchHistoryTvShowUiState>>
     ) {
         updateState { currentState ->
             currentState.copy(
-                tvShows = mediaItems
+                tvShows = tvShowItems
             )
         }
     }

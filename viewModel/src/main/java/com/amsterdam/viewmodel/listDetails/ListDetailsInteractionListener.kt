@@ -4,6 +4,7 @@ import androidx.paging.CombinedLoadStates
 
 interface ListDetailsInteractionListener {
     fun onClickMovie(movieId: Long)
+    fun onClickTvShow(tvShowId: Long)
     fun onClickBack()
     fun onClickRetryLoading()
     fun onClickDeleteList()

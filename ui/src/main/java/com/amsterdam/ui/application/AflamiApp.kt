@@ -29,7 +29,6 @@ import com.amsterdam.ui.navigation.NavGraph
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.utils.setLocale
 import com.amsterdam.viewmodel.application.ApplicationViewModel
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun AflamiApp(
@@ -38,10 +37,8 @@ fun AflamiApp(
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
-    val startDestination = runBlocking {
-        getStartDestination(viewModel.setStartDestination())
-    }
     val state by viewModel.state.collectAsState()
+    val startDestination = getStartDestination(state.startDestination) ?: return
     val localConfigurations by rememberUpdatedState(LocalConfiguration.current)
     LaunchedEffect(Unit) {
         viewModel.initAppSettings(localConfigurations.locales[0])

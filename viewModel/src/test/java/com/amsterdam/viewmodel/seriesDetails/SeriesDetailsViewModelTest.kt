@@ -107,24 +107,6 @@ class SeriesDetailsViewModelTest {
         coEvery { getTvShowDetailsUseCase.invoke(100L) } returns tvShowDetails
     }
 
-
-    @Test
-    fun `onCancelClicked should hide the login dialog`() = runTest {
-        coEvery { getsSessionType.invoke() } returns SessionType.GUEST
-
-
-        advanceUntilIdle()
-
-        viewModel.onAddToListClicked()
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isLoginDialogVisible).isTrue()
-
-        viewModel.onCancelClicked()
-        advanceUntilIdle()
-        assertThat(viewModel.state.value.isLoginDialogVisible).isFalse()
-    }
-
     @Disabled
     @Test
     fun `init should update state with received tv show id`() = runTest {
@@ -235,34 +217,6 @@ class SeriesDetailsViewModelTest {
         // Then
         assertThat(effects).containsExactly(SeriesDetailsEffect.NavigateToCastScreen)
         collectJob.cancel()
-    }
-
-    @Test
-    fun `onAddToListClicked should show login dialog when user is a guest`() = runTest {
-        // Given
-        coEvery { getsSessionType.invoke() } returns SessionType.GUEST
-        advanceUntilIdle()
-
-        // When
-        viewModel.onAddToListClicked()
-        advanceUntilIdle()
-
-        // Then
-        assertThat(viewModel.state.value.isLoginDialogVisible).isTrue()
-    }
-
-    @Test
-    fun `onAddToListClicked should not show login dialog when user is logged in`() = runTest {
-        // Given
-        coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
-        advanceUntilIdle()
-
-        // When
-        viewModel.onAddToListClicked()
-        advanceUntilIdle()
-
-        // Then
-        assertThat(viewModel.state.value.isLoginDialogVisible).isFalse()
     }
 
     @Test

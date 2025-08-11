@@ -168,20 +168,20 @@ class UserListRemoteDataSourceImplTest {
     @Test
     fun `getMoviesFromList should return a list of movies and call the api service`() = runTest {
         val listId = 1L
-        coEvery { userListApiService.getMoviesFromList(listId, 1) } returns remoteListResponse
+        coEvery { userListApiService.getMoviesAndTvShowsFromList(listId, 1) } returns remoteListResponse
 
-        val result = userListRemoteDataSourceImpl.getMoviesFromList(listId, 1)
+        val result = userListRemoteDataSourceImpl.getMoviesAndTvShowsFromList(listId, 1)
 
         assertThat(result).isEqualTo(remoteListResponse)
-        coVerify(exactly = 1) { userListApiService.getMoviesFromList(listId, 1) }
+        coVerify(exactly = 1) { userListApiService.getMoviesAndTvShowsFromList(listId, 1) }
     }
 
     @Test
     fun `getMoviesFromList should throw NetworkException when api call fails`() = runTest {
         val listId = 1L
-        coEvery { userListApiService.getMoviesFromList(listId, 1) } throws NetworkException()
+        coEvery { userListApiService.getMoviesAndTvShowsFromList(listId, 1) } throws NetworkException()
 
-        assertThrows<NetworkException> { userListRemoteDataSourceImpl.getMoviesFromList(listId, 1) }
+        assertThrows<NetworkException> { userListRemoteDataSourceImpl.getMoviesAndTvShowsFromList(listId, 1) }
     }
 
     @Test

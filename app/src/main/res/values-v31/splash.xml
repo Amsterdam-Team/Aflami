@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Aflami.splash" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/aflami_splash</item>
+        <item name="android:windowSplashScreenBackground">#FAF5F7</item>
+        <item name="android:animationDuration">2833</item>
+        <item name="postSplashScreenTheme">@style/Theme.Aflami</item>
+    </style>
+</resources>

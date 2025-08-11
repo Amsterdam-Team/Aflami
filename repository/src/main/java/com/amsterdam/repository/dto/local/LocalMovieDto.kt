@@ -18,7 +18,7 @@ data class LocalMovieDto(
     val name: String,
     val description: String,
     val poster: String,
-    val releaseDate: LocalDate,
+    val releaseDate: LocalDate?,
     val popularity: Double,
     val rating: Float,
     val originCountry: String,

@@ -3,9 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-android {
-    namespace = "com.amsterdam.designsystem"
-}
+android { namespace = libs.versions.namespaceDesignSystem.get() }
 
 dependencies {
     jetpackMaterial3Dependencies()

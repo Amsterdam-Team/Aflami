@@ -48,7 +48,7 @@ private fun TvShow.toSimilarTvShowUiState(): SimilarTvShowUiState {
         movieId = id,
         rate = rating.toFormattedRating(),
         name = name,
-        productionYear = airDate.year.toString(),
+        productionYear = airDate?.year?.toString() ?: "",
         posterUrl = posterUrl
     )
 }

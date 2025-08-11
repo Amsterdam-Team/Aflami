@@ -92,7 +92,7 @@ fun MovieWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHome
             name = name,
             rate =  rating.toFormattedRating(),
             posterImageUrl = posterUrl,
-            yearOfRelease = releaseDate.year.toString(),
+            yearOfRelease = releaseDate?.year?.toString() ?: "",
             dateAdded = lastWatchedTime,
             mediaType = MediaType.MOVIE
         )
@@ -107,7 +107,7 @@ fun TvShowWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHom
             name = name,
             rate =  rating.toFormattedRating(),
             posterImageUrl = posterUrl,
-            yearOfRelease = airDate.year.toString(),
+            yearOfRelease = airDate?.year?.toString() ?: "",
             dateAdded = lastWatchedTime,
             mediaType = MediaType.TV_SHOW
         )

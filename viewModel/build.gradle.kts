@@ -13,21 +13,13 @@ plugins {
 }
 
 android {
-    namespace = "com.amsterdam.viewmodel"
-    buildFeatures {
-        buildConfig = true
-    }
+    namespace = libs.versions.namespaceViewModel.get()
+
+    buildFeatures { buildConfig = true }
+
     defaultConfig {
-        buildConfigField(
-            "String",
-            "MOVIE_SIGN_UP_URL",
-            movieSignUp
-        )
-        buildConfigField(
-            "String",
-            "MOVIE_RESET_PASSWORD_URL",
-            movieResetPassword
-        )
+        buildConfigField("String", "MOVIE_SIGN_UP_URL", movieSignUp)
+        buildConfigField("String", "MOVIE_RESET_PASSWORD_URL", movieResetPassword)
     }
 }
 
@@ -44,7 +36,7 @@ dependencies {
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
-    api(project(":domain"))
+    api(projects.domain)
 }
 
 private fun DependencyHandlerScope.coroutinesDependencies() {
@@ -79,6 +71,7 @@ private fun DependencyHandlerScope.testDependencies() {
     testImplementation(libs.truth)
     testImplementation(kotlin("test"))
     testImplementation("app.cash.turbine:turbine:1.1.0")
+    testImplementation(libs.androidx.paging.testing)
 }
 
 private fun DependencyHandlerScope.hiltDependencies() {

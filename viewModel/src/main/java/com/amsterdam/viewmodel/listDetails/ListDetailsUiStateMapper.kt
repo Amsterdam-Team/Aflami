@@ -1,9 +1,12 @@
 package com.amsterdam.viewmodel.listDetails
 
+import com.amsterdam.domain.useCase.list.GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems
 import com.amsterdam.entity.Movie
+import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.listDetails.ListDetailsUiState.ListDetailsItemsUiState
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
 import com.amsterdam.viewmodel.shared.uiStates.MediaType
+import com.amsterdam.viewmodel.utils.getLinearItemsList
 import com.amsterdam.viewmodel.utils.toYearString
 
 fun Movie.toListDetailsItemUiState(): ListDetailsItemsUiState {
@@ -17,4 +20,23 @@ fun Movie.toListDetailsItemUiState(): ListDetailsItemsUiState {
     )
 }
 
-fun List<Movie>.toListDetailsItemUiState(): List<ListDetailsItemsUiState> = map { it.toListDetailsItemUiState() }
+fun TvShow.toListDetailsItemUiState(): ListDetailsItemsUiState {
+    return ListDetailsItemsUiState(
+        id = id,
+        name = name,
+        yearOfRelease = airDate.toYearString(),
+        posterImageUrl = posterUrl,
+        rate = rating.toFormattedRating(),
+        mediaType = MediaType.TV_SHOW
+    )
+}
+
+fun ListScreenDetailsMediaItems.toListDetailsItemUiState(): List<ListDetailsItemsUiState> {
+    return getLinearItemsList(
+        this.listDetailsMovies,
+        this.listDetailsShows,
+        Movie::toListDetailsItemUiState,
+        TvShow::toListDetailsItemUiState
+    )
+
+}

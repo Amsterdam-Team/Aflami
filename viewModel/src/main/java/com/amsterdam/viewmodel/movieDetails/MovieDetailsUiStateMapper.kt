@@ -42,7 +42,7 @@ private fun Movie.toSimilarMovieUiState(): SimilarMovieUiState {
         movieId = id,
         rate = rating.toFormattedRating(),
         name = name,
-        productionYear = releaseDate.year.toString(),
+        productionYear = releaseDate?.year?.toString() ?: "",
         posterUrl = posterUrl
     )
 }

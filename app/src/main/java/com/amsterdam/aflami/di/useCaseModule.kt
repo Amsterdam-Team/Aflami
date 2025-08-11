@@ -43,7 +43,7 @@ import com.amsterdam.domain.useCase.myRating.tvShow.SetUserTvShowRatingUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
 import com.amsterdam.domain.useCase.list.DeleteListUseCase
-import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
+import com.amsterdam.domain.useCase.list.GetListMediaItemsFromListUseCase
 import com.amsterdam.domain.useCase.list.GetUserListsUseCase
 import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.preferences.GetOnboardingStatusUseCase
@@ -186,7 +186,7 @@ object UseCaseModule {
     @Provides
     fun provideGetMoviesFromListUseCase(
         userListRepository: UserListRepository
-    ): GetMoviesFromListUseCase = GetMoviesFromListUseCase(userListRepository)
+    ): GetListMediaItemsFromListUseCase = GetListMediaItemsFromListUseCase(userListRepository)
 
     @Provides
     fun provideDeleteListUseCase(

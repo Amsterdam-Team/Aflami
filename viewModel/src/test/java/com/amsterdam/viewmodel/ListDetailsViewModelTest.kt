@@ -8,7 +8,7 @@ import app.cash.turbine.test
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.list.DeleteListUseCase
-import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
+import com.amsterdam.domain.useCase.list.GetListMediaItemsFromListUseCase
 import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.viewmodel.listDetails.ListDetailsArgs
@@ -36,7 +36,7 @@ import kotlin.test.Test
 class ListDetailsViewModelTest {
 
     private lateinit var viewModel: ListDetailsViewModel
-    private val getMoviesFromListUseCase: GetMoviesFromListUseCase = mockk(relaxed = true)
+    private val getListMediaItemsFromListUseCase: GetListMediaItemsFromListUseCase = mockk(relaxed = true)
     private val removeMovieFromListUseCase: RemoveMovieFromListUseCase = mockk(relaxed = true)
     private val deleteListUseCase: DeleteListUseCase = mockk(relaxed = true)
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk(relaxed = true)
@@ -47,7 +47,7 @@ class ListDetailsViewModelTest {
     @BeforeEach
     fun setup() {
         viewModel = ListDetailsViewModel(
-            getMoviesFromListUseCase = getMoviesFromListUseCase,
+            getListMediaItemsFromListUseCase = getListMediaItemsFromListUseCase,
             removeMovieFromListUseCase = removeMovieFromListUseCase,
             deleteListUseCase = deleteListUseCase,
             manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
@@ -64,15 +64,13 @@ class ListDetailsViewModelTest {
 
     @Test
     fun `init should update state with args list id and name`() = testScope.runTest {
-        // Given
         val listId = 1L
         val listName = "List"
         every { args.listId } returns listId
         every { args.listName } returns listName
 
-        // When
         viewModel = ListDetailsViewModel(
-            getMoviesFromListUseCase = getMoviesFromListUseCase,
+            getListMediaItemsFromListUseCase = getListMediaItemsFromListUseCase,
             removeMovieFromListUseCase = removeMovieFromListUseCase,
             deleteListUseCase = deleteListUseCase,
             manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
@@ -81,18 +79,15 @@ class ListDetailsViewModelTest {
         )
         advanceUntilIdle()
 
-        // Then
         assertThat(viewModel.state.value.listId).isEqualTo(listId)
         assertThat(viewModel.state.value.listName).isEqualTo(listName)
     }
 
     @Test
     fun `onMovieClicked should send NavigateToDetails effect when its call`() = testScope.runTest {
-        // Given
         val movieId = 1L
         var effect: ListDetailsEffect? = null
 
-        // When
         val job = launch {
             viewModel.effect.collect { listEffects -> effect = listEffects }
         }
@@ -100,7 +95,6 @@ class ListDetailsViewModelTest {
         advanceUntilIdle()
         job.cancel()
 
-        // Then
         assertThat(effect).isEqualTo(ListDetailsEffect.NavigateToMovieDetailsScreen(1))
     }
 
@@ -206,10 +200,8 @@ class ListDetailsViewModelTest {
     @Test
     fun `should set loading to true when pagination load changed to loading`() =
         testScope.runTest {
-            // Given
             val loadState = LoadState.Loading
 
-            // When
             viewModel.onPagingLoadStateChanged(
                 CombinedLoadStates(
                     refresh = loadState,
@@ -221,17 +213,14 @@ class ListDetailsViewModelTest {
                 )
             )
 
-            // Then
             assertThat(viewModel.state.value.isLoading).isTrue()
         }
 
     @Test
     fun `should set loading to false when pagination load changed to not loading`() =
         testScope.runTest {
-            // Given
             val loadState = LoadState.NotLoading(true)
 
-            // When
             viewModel.onPagingLoadStateChanged(
                 CombinedLoadStates(
                     refresh = loadState,
@@ -243,17 +232,14 @@ class ListDetailsViewModelTest {
             )
             advanceUntilIdle()
 
-            // Then
             assertThat(viewModel.state.value.isLoading).isFalse()
         }
 
     @Test
     fun `should set error ui state when pagination load changed to error`() = testScope.runTest {
-        // Given
         val loadState = LoadState.Error(error = NetworkException())
         loadState.error
 
-        // When
         viewModel.onPagingLoadStateChanged(
             CombinedLoadStates(
                 refresh = loadState,
@@ -265,7 +251,6 @@ class ListDetailsViewModelTest {
         )
         advanceUntilIdle()
 
-        // Then
         viewModel.state.test {
             assertThat(awaitItem().error).isEqualTo(ListDetailsUiState.ListDetailsError.NoNetwork)
         }

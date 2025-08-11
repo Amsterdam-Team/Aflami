@@ -18,7 +18,7 @@ data class LocalTvShowDto(
     val name: String,
     val description: String,
     val poster: String,
-    val airDate: LocalDate,
+    val airDate: LocalDate?,
     val rating: Float,
     val popularity: Double,
     val seasonCount: Int,

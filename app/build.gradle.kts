@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "com.amsterdam.aflami"
+    namespace = libs.versions.namespaceAflami.get()
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.amsterdam.aflami"
+        applicationId = libs.versions.namespaceAflami.get()
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = libs.versions.versionCode.get().toInt()
@@ -62,12 +62,12 @@ dependencies {
 }
 
 private fun DependencyHandlerScope.appModulesDependencies() {
-    implementation(project(":ui"))
-    implementation(project(":viewModel"))
-    implementation(project(":localDatasource"))
-    implementation(project(":remoteDatasource"))
-    implementation(project(":domain"))
-    implementation(project(":repository"))
+    implementation(projects.ui)
+    implementation(projects.viewModel)
+    implementation(projects.localDatasource)
+    implementation(projects.remoteDatasource)
+    implementation(projects.domain)
+    implementation(projects.repository)
 }
 
 private fun DependencyHandlerScope.firebaseDependencies() {

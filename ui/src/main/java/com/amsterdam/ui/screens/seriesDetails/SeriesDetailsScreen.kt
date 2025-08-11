@@ -56,9 +56,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -203,7 +201,6 @@ fun SeriesDetailsContent(
     }
 
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
-    var seriesExtrasSectionYOffsetDp by remember { mutableStateOf(0.dp) }
     val animationDuration by remember { mutableIntStateOf(1000) }
     val surface = AppTheme.color.surface
     val transparent = AppTheme.color.surface.copy(alpha = 0f)
@@ -427,11 +424,7 @@ fun SeriesDetailsContent(
                             )
                             SeriesExtrasSection(
                                 modifier = Modifier
-                                    .padding(top = 12.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        seriesExtrasSectionYOffsetDp =
-                                            coordinates.positionOnScreen().y.dp
-                                    },
+                                    .padding(top = 12.dp),
                                 extras = state.extraItem,
                                 onClickExtras = seriesDetailsInteractionListener::onClickSeriesExtraItem
                             )
@@ -493,10 +486,8 @@ fun SeriesDetailsContent(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .statusBarsPadding(),
                 firstOption = painterResource(R.drawable.ic_outlined_star),
-                lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
                 onNavigateBackClicked = seriesDetailsInteractionListener::onNavigateBack,
                 onFirstOptionClicked = seriesDetailsInteractionListener::onClickRate,
-                onLastOptionClicked = seriesDetailsInteractionListener::onAddToListClicked
             )
             HorizontalDivider(color = dividerColor)
         }
@@ -662,7 +653,6 @@ private fun SeriesDetailsContentPreview() {
                 override fun onNavigateBack() {}
                 override fun onClickRetryButton() {}
                 override fun onClickShowAllCast() {}
-                override fun onAddToListClicked() {}
                 override fun onClickRate() {}
                 override fun onClickSeasonMenu(seasonNumber: Int) {}
                 override fun onNavigateToLoginClicked() {}
