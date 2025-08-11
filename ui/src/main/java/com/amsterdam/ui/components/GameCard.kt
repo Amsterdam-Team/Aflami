@@ -82,7 +82,7 @@ fun GameCard(
                     width = 1.dp,
                     brush = Brush.horizontalGradient(colors = borderColors),
                     shape = RoundedCornerShape(16.dp),
-                ).clickable { if (!isPlayable) onCardClick() },
+                ).clickable (enabled = isPlayable) { onCardClick() },
         verticalArrangement = Arrangement.Top,
     ) {
         UnlockPromptContainer(

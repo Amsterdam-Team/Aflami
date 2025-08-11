@@ -6,9 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
-android {
-    namespace = "com.amsterdam.ui"
-}
+android { namespace = libs.versions.namespaceUi.get() }
 
 dependencies {
     modulesDependencies()
@@ -27,9 +25,9 @@ dependencies {
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
-    implementation(project(":designSystem"))
-    implementation(project(":viewModel"))
-    implementation(project(":imageViewer"))
+    implementation(projects.designSystem)
+    implementation(projects.viewModel)
+    implementation(projects.imageViewer)
 }
 
 private fun DependencyHandlerScope.navigationDependencies() {
@@ -66,6 +64,7 @@ private fun DependencyHandlerScope.composeDependencies() {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.foundation)
+    implementation(libs.androidx.ui.graphics.android)
 }
 
 private fun DependencyHandlerScope.uiGraphicsDependencies() {

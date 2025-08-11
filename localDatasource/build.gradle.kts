@@ -6,7 +6,8 @@ plugins {
 }
 
 android {
-    namespace = "com.amsterdam.localdatasource"
+    namespace = libs.versions.namespaceLocalDatasource.get()
+
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] =
@@ -29,7 +30,7 @@ dependencies {
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
-    implementation(project(":repository"))
+    implementation(projects.repository)
 }
 
 private fun DependencyHandlerScope.roomDependencies() {

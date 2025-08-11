@@ -262,6 +262,7 @@
         <item quantity="many">%d عنصراً</item>
         <item quantity="other">%d عنصر</item>
     </plurals>
+    <string name="second">%1$dث</string>
 
     <string name="added_to_list_successfully">تمت الإضافة إلى القائمة بنجاح.</string>
     <string name="failed_to_add_to_list">فشل في الإضافة إلى القائمة.</string>

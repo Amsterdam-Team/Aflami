@@ -256,6 +256,7 @@
         <item quantity="other">%d items</item>
     </plurals>
 
+    <string name="second">%1$dS</string>
     <string name="added_to_list_successfully">Added to list successfully.</string>
     <string name="failed_to_add_to_list">Failed to add to list.</string>
     <string name="error_mood_movies_loading">Oops! We couldn’t find movies for that mood.</string>

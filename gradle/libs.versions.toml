@@ -55,6 +55,17 @@ firebaseMlCommon = "22.1.2"
 uiToolingPreviewAndroid = "1.8.3"
 uiTooling = "1.8.3"
 splashscreen = "1.0.1"
+uiGraphicsAndroid = "1.7.0"
+
+namespaceAflami= "com.amsterdam.aflami"
+namespaceLocalDatasource = "com.amsterdam.localdatasource"
+namespaceRemoteDataSource = "com.amsterdam.remotedatasource"
+namespaceRepository = "com.amsterdam.repository"
+namespaceViewModel= "com.amsterdam.viewmodel"
+namespaceDesignSystem = "com.amsterdam.designsystem"
+namespaceUi= "com.amsterdam.ui"
+namespaceImageViewer = "com.amsterdam.imageviewer"
+
 
 [libraries]
 android-test-core = { module = "de.mannodermaus.junit5:android-test-core", version.ref = "androidTestCore" }
@@ -119,6 +130,7 @@ firebase-ml-common = { group = "com.google.firebase", name = "firebase-ml-common
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
 
 
 [plugins]

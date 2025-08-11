@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
+import com.amsterdam.ui.screens.letsPlay.component.GuessCard
 import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
 import io.sifr.shaded.modifiers.blur
 

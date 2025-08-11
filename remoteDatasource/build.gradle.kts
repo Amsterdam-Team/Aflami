@@ -13,26 +13,13 @@ plugins {
 }
 
 android {
-    namespace = "com.amsterdam.remotedatasource"
+    namespace = libs.versions.namespaceRemoteDataSource.get()
 
-    buildFeatures {
-        buildConfig = true
-    }
+    buildFeatures { buildConfig = true }
 
     defaultConfig {
-        buildConfigField(
-            "String",
-            "BEARER_TOKEN",
-            bearerToken
-
-        )
-
-        buildConfigField(
-            "String",
-            "BASE_URL",
-            baseUrl
-
-        )
+        buildConfigField("String", "BEARER_TOKEN", bearerToken)
+        buildConfigField("String", "BASE_URL", baseUrl)
     }
     lint {
         abortOnError = true
@@ -48,11 +35,11 @@ dependencies {
     coroutinesDependencies()
     kotlinExtensionsDependencies()
     injectDependencies()
-    lintChecks(project(":lint-rules"))
+    lintChecks(projects.lintRules)
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
-    implementation(project(":repository"))
+    implementation(projects.repository)
 }
 
 private fun DependencyHandlerScope.retrofitDependencies() {

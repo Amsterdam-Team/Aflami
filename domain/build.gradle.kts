@@ -3,15 +3,18 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.kover)
 }
+
 java {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
     targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
 }
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
+
 dependencies {
     modulesDependencies()
     coroutinesDependencies()
@@ -20,7 +23,7 @@ dependencies {
 }
 
 private fun DependencyHandlerScope.modulesDependencies() {
-    api(project(":entity"))
+    api(projects.entity)
 }
 
 private fun DependencyHandlerScope.coroutinesDependencies() {
