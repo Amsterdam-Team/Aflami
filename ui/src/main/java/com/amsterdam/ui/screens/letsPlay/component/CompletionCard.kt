@@ -1,7 +1,9 @@
 package com.amsterdam.ui.screens.letsPlay.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,14 +36,16 @@ fun CompletionCard(modifier: Modifier = Modifier) {
         R.drawable.beam_light
     }
 
-    val backgroundColor = AppTheme.color.primary.copy(alpha = 0.1f)
-
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(backgroundColor)
-    ) {
+            .border(
+                BorderStroke(width = 8.dp, color = AppTheme.color.primaryVariant),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .background(AppTheme.color.surface),
+        ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -49,7 +53,7 @@ fun CompletionCard(modifier: Modifier = Modifier) {
                 .height(176.dp)
         ) {
             Image(
-                painter = painterResource(id = beamImageRes),
+                painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -62,7 +66,9 @@ fun CompletionCard(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(id = R.drawable.img_cup),
                     contentDescription = "Trophy",
-                    modifier = Modifier.size(95.dp)
+                    modifier = Modifier
+                        .width(99.dp)
+                        .height(91.dp)
                 )
                 Text(
                     text = stringResource(R.string.finish_game_message),
