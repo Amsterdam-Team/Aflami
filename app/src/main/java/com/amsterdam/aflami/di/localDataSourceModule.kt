@@ -90,7 +90,7 @@ object LocalDataSourceProviderModule {
 
     @Provides
     @Singleton
-    fun provideGamePointsDaoDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.gamePointsDao()
+    fun provideGamePointsDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.gamePointsDao()
 }
 
 @Module
