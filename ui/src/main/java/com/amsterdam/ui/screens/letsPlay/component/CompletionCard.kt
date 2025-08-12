@@ -4,13 +4,13 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.theme.LocalIsDarkTheme
@@ -38,45 +37,49 @@ fun CompletionCard(modifier: Modifier = Modifier) {
     }
 
     Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
+            .height(176.dp)
             .border(
-                BorderStroke(width = 8.dp, color = AppTheme.color.surface),
+                border = BorderStroke(width = 1.dp, color = AppTheme.color.stroke),
                 shape = RoundedCornerShape(24.dp)
             )
-            .background(AppTheme.color.primaryVariant),
-        ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(176.dp)
-        ) {
-            Image(
-                painter = painterResource(id = beamImageRes),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+            .padding(1.dp)
+            .background(
+                color = AppTheme.color.primaryVariant,
+                shape = RoundedCornerShape(24.dp)
             )
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.img_cup),
-                    contentDescription = "Trophy",
-                    modifier = Modifier
-                        .width(99.dp)
-                        .height(91.dp)
-                )
-                Text(
-                    text = stringResource(R.string.finish_game_message),
-                    color = AppTheme.color.title,
-                    style = AppTheme.textStyle.title.medium,
-                )
-            }
+            .border(
+                border = BorderStroke(width = 8.dp, color = AppTheme.color.surface),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clip(RoundedCornerShape(24.dp))
+    ) {
+        Image(
+            painter = painterResource(id = beamImageRes),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.img_cup),
+                contentDescription = "Trophy",
+                modifier = Modifier
+                    .width(99.dp)
+                    .height(91.dp)
+            )
+            Text(
+                text = stringResource(R.string.finish_game_message),
+                color = AppTheme.color.title,
+                style = AppTheme.textStyle.title.medium,
+            )
         }
     }
 }
