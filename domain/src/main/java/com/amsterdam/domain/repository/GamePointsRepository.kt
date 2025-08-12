@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface GamePointsRepository {
     suspend fun updatePoints(points: Int)
-    suspend fun getPoints(): Flow<Int>
+    fun getPoints(): Flow<Int>
 }

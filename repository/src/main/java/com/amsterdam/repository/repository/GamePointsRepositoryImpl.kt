@@ -13,7 +13,7 @@ class GamePointsRepositoryImpl @Inject constructor(
         gamePointsLocalDataSource.upsertPoints(points)
     }
 
-    override suspend fun getPoints(): Flow<Int> {
+    override fun getPoints(): Flow<Int> {
         return gamePointsLocalDataSource.getPoints().map { nullablePoints ->
             nullablePoints ?: 0
         }

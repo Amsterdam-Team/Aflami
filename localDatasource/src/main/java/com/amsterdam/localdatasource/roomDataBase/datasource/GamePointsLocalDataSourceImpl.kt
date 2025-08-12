@@ -13,7 +13,7 @@ class GamePointsLocalDataSourceImpl @Inject constructor(
         gamePointsDao.upsertPoints(GamePointsDto(points = points))
     }
 
-    override suspend fun getPoints(): Flow<Int?> {
+    override fun getPoints(): Flow<Int?> {
         return gamePointsDao.getPoints()
     }
 }
