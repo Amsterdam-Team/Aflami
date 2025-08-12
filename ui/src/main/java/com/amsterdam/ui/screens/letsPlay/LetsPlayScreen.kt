@@ -44,6 +44,12 @@ fun LetsPlayScreen(viewModel: LetsPlayViewModel = hiltViewModel()) {
             when (effect) {
                 is LetsPlayEffect.NavigateToGuessMovieByReleaseScreen ->
                     navController.navigate(Route.GuessReleaseYearGame(effect.difficulty))
+
+                is LetsPlayEffect.NavigateToGuessMovieByPosterScreen ->
+                    navController.navigate(Route.GuessMovieByPosterGame(effect.difficulty))
+
+                is LetsPlayEffect.NavigateToGuessCharacterScreen -> { /*TODO*/ }
+                is LetsPlayEffect.NavigateToGuessMovieByGenreScreen -> { /*TODO*/ }
             }
         }
     }
@@ -102,7 +108,6 @@ private fun LetsPlayScreenContent(
                 onClickStartGame = interactionListener::onClickStartGame
             )
         }
-
     }
 }
 
