@@ -5,8 +5,6 @@ import com.amsterdam.viewmodel.cast.CastScreenArgs
 import com.amsterdam.viewmodel.categoriesDetails.movies.CategoriesMovieDetailsArgs
 import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsArgs
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameArgs
-import com.amsterdam.viewmodel.categoriesDetails.movies.CategoriesMovieDetailsArgs
-import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsArgs
 import com.amsterdam.viewmodel.listDetails.ListDetailsArgs
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsArgs
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsArgs
@@ -36,17 +34,11 @@ object ViewModelViewModelScope {
         SeriesDetailsArgs(savedStateHandle)
 
     @Provides
-    fun provideCategoriesTvShowsDetailsArgs(savedStateHandle: SavedStateHandle): CategoriesTvShowsDetailsArgs =
-        CategoriesTvShowsDetailsArgs(savedStateHandle)
-
-    @Provides
-    fun provideCastScreenArgs(savedStateHandle: SavedStateHandle): CastScreenArgs =
-        CastScreenArgs(savedStateHandle)
-
-    @Provides
     fun provideGuessReleaseYearGameArgs(
         savedStateHandle: SavedStateHandle
     ): GuessReleaseYearGameArgs = GuessReleaseYearGameArgs(savedStateHandle)
+
+    @Provides
     fun provideCategoriesTvShowsDetailsArgs(savedStateHandle: SavedStateHandle): CategoriesTvShowsDetailsArgs =
         CategoriesTvShowsDetailsArgs(savedStateHandle)
 

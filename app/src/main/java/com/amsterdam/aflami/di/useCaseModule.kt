@@ -5,7 +5,6 @@ import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.domain.repository.GamePointsRepository
 import com.amsterdam.domain.repository.GameRepository
-import com.amsterdam.domain.repository.GamePointsRepository
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.repository.ProfileRepository
 import com.amsterdam.domain.repository.RecentSearchRepository
@@ -35,14 +34,8 @@ import com.amsterdam.domain.useCase.game.GenerateMovieReleaseYearQuestionsUseCas
 import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.GetTotalUserPointsUseCase
-import com.amsterdam.domain.useCase.game.GetUserPointsUseCase
 import com.amsterdam.domain.useCase.game.GuessPosterForMovieGameEngine
 import com.amsterdam.domain.useCase.game.GuessReleaseYearForMovieGameEngine
-import com.amsterdam.domain.useCase.details.GetTvShowsByGenreUseCase
-import com.amsterdam.domain.useCase.game.AddGamePointsUseCase
-import com.amsterdam.domain.useCase.game.DeductGamePointsUseCase
-import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
-import com.amsterdam.domain.useCase.game.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
@@ -344,7 +337,7 @@ object UseCaseModule {
     fun provideTimerHandler() = TimerHandler()
 
     @Provides
-    fun provideDoGuessReleaseGameHintUseCase()  = DoGuessReleaseGameHintUseCase()
+    fun provideDoGuessReleaseGameHintUseCase() = DoGuessReleaseGameHintUseCase()
 
     @Provides
     fun provideGuessReleaseYearForMovieGameEngine(
@@ -358,6 +351,7 @@ object UseCaseModule {
         doGuessReleaseGameHintUseCase,
         timerHandler
     )
+
     @Provides
     fun provideGenerateMoviePosterQuestionsUseCase(
         gameRepository: GameRepository
@@ -383,25 +377,6 @@ object UseCaseModule {
     fun provideDeductGamePointsUseCase(
         gameRepository: GamePointsRepository,
     ) = DeductGamePointsUseCase(gameRepository)
-
-    @Provides
-    fun provideGetAvailableGamesUseCase() = GetAvailableGamesUseCase()
-
-    @Provides
-    fun provideGetGamePointsUseCase(
-        gameRepository: GamePointsRepository
-    ) = GetUserPointsUseCase(gameRepository)
-
-    @Provides
-    fun provideDeductGamePointsUseCase(
-        gameRepository: GamePointsRepository,
-    ) = DeductGamePointsUseCase(gameRepository)
-
-    @Provides
-    fun provideAddGamePointsUseCase(
-        gameRepository: GamePointsRepository
-    ) = AddGamePointsUseCase(gameRepository)
-}
 
     @Provides
     fun provideAddGamePointsUseCase(

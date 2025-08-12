@@ -1,7 +1,7 @@
 package com.amsterdam.viewmodel.game
 
-import com.amsterdam.domain.repository.PosterGuessingGameQuestion
 import com.amsterdam.domain.useCase.game.GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion
+import com.amsterdam.domain.useCase.game.PosterGuessingGameQuestion
 import com.amsterdam.entity.Game
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 

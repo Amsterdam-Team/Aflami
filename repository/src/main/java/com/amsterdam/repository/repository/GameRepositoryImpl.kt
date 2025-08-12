@@ -1,7 +1,7 @@
 package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.GameRepository
-import com.amsterdam.domain.repository.PosterGuessingGameQuestion
+import com.amsterdam.domain.useCase.game.PosterGuessingGameQuestion
 import com.amsterdam.entity.Movie
 import com.amsterdam.repository.datasource.remote.MovieRemoteSource
 import com.amsterdam.repository.mapper.remote.toMovieEntityList
