@@ -8,7 +8,6 @@ import com.amsterdam.entity.Country
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.repository.datasource.local.AppPreferences
-import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
@@ -32,7 +31,6 @@ import com.amsterdam.repository.mapper.remote.toMovieUserRateEntityList
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
 import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDtoList
-import com.amsterdam.repository.security.CryptoData
 import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
