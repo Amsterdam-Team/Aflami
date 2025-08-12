@@ -1,10 +1,10 @@
 package com.amsterdam.viewmodel.letsPlay
 
 import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase.AvailableGames
-import com.amsterdam.entity.Game
-import com.amsterdam.entity.Game.GameType
-import com.amsterdam.entity.GameDifficulty
-import com.amsterdam.entity.GameDifficulty.DifficultyType
+import com.amsterdam.entity.game.Game
+import com.amsterdam.entity.game.Game.GameType
+import com.amsterdam.entity.game.GameDifficulty
+import com.amsterdam.entity.game.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState.DifficultyLevelUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState

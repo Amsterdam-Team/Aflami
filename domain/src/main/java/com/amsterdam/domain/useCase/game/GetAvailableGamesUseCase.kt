@@ -1,8 +1,8 @@
 package com.amsterdam.domain.useCase.game
 
-import com.amsterdam.entity.Game
-import com.amsterdam.entity.GameDifficulty
-import com.amsterdam.entity.GameDifficulty.DifficultyType
+import com.amsterdam.entity.game.Game
+import com.amsterdam.entity.game.GameDifficulty
+import com.amsterdam.entity.game.GameDifficulty.DifficultyType
 
 
 class GetAvailableGamesUseCase {

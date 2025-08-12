@@ -1,10 +1,10 @@
-package com.amsterdam.entity
+package com.amsterdam.entity.game
 
 data class Game(
     val gameType: GameType,
     val requiredPoints: Int
 ) {
-    enum class GameType() {
+    enum class GameType {
         GUESS_CHARACTER,
         GUESS_MOVIE_BY_POSTER,
         GUESS_MOVIE_BY_RELEASE,
