@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.api
 
+import com.amsterdam.remotedatasource.utils.RequiresSessionId
 import com.amsterdam.repository.dto.remote.AddItemToListResponse
 import com.amsterdam.repository.dto.remote.CreateUserListResponse
 import com.amsterdam.repository.dto.remote.RemoteUserListResponse
@@ -13,6 +14,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserListApiService {
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("list")
     suspend fun createNewList(
@@ -21,23 +23,27 @@ interface UserListApiService {
         @Field("language") language: String,
     ): CreateUserListResponse
 
+    @RequiresSessionId
     @GET("account/{account_id}/lists")
     suspend fun getUserLists(
         @Path("account_id") accountId: Int = 0,
         @Query("page") page: Int = 1,
     ): RemoteUserListResponse
 
+    @RequiresSessionId
     @GET("list/{list_id}")
     suspend fun getMoviesAndTvShowsFromList(
         @Path("list_id") listId: Long,
         @Query("page") page: Int,
     ): UserListDetailsResponse
 
+    @RequiresSessionId
     @DELETE("list/{list_id}")
     suspend fun deleteList(
         @Path("list_id") listId: Long,
     )
 
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("list/{list_id}/add_item")
     suspend fun addMediaItemToList(
@@ -45,6 +51,7 @@ interface UserListApiService {
         @Field("media_id") movieId: Long,
     ): AddItemToListResponse
 
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("list/{list_id}/remove_item")
     suspend fun removeMovieFromList(

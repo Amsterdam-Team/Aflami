@@ -9,6 +9,7 @@ import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.api.ProfileApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.api.UserListApiService
+import com.amsterdam.remotedatasource.utils.RequiresSessionId
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
 import com.amsterdam.repository.security.CryptoData
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -19,6 +20,7 @@ import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Invocation
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
@@ -55,7 +57,8 @@ class RetrofitClient(
             val language = runBlocking { preferences.getAppLanguage().first() }
             originalHttpUrlBuilder.addQueryParameter(LANGUAGE_PARAM_NAME, language)
 
-            val requireSession = originalRequest.header("X-Require-Session")?.toBoolean() == true
+            val requireSession = originalRequest.tag(Invocation::class.java)?.method()
+                ?.getAnnotation(RequiresSessionId::class.java) != null
 
             if (requireSession) {
                 val sessionId = runBlocking {
@@ -70,7 +73,6 @@ class RetrofitClient(
             val newRequest = originalRequest.newBuilder()
                 .url(originalHttpUrlBuilder.build())
                 .header(TOKEN_HEADER_NAME, "Bearer $token")
-                .removeHeader("X-Require-Session")
                 .build()
 
             chain.proceed(newRequest)
