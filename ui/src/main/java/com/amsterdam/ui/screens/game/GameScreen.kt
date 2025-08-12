@@ -40,18 +40,22 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.entity.Game
+import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.components.guessGame.GuessPicture
 import com.amsterdam.ui.components.guessGame.GuessTitle
 import com.amsterdam.ui.components.guessGame.TimerComponent
 import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
+import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.login.components.LoginBackground
+import com.amsterdam.viewmodel.game.GameEffect
 import com.amsterdam.viewmodel.game.GameInteractionListener
 import com.amsterdam.viewmodel.game.GameQuestionUiState
 import com.amsterdam.viewmodel.game.GameUiState
 import com.amsterdam.viewmodel.game.GameViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,6 +64,20 @@ fun GameScreen(
     viewModel: GameViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = LocalNavController.current
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is GameEffect.GameOver -> {
+                    navController.popBackStack(Route.Tab.LetsPlay, inclusive = false)
+                }
+                is GameEffect.CancelGame -> {
+                    navController.popBackStack(Route.Tab.LetsPlay, inclusive = false)
+                }
+            }
+        }
+    }
 
     GameScreenContent(
         state = state,
@@ -107,6 +125,7 @@ private fun GameScreenContent(
                 title = topBarTitle,
                 timerUiState = state.timerUiState,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                onCancelGameClick = interactionListener::onCancelGameClick
             )
             Row(
                 Modifier
@@ -214,7 +233,7 @@ fun GameQuestion(
                         }
                     } else {
                         AnswerStatus.Unselected
-                }
+                    }
 
                 AnswerSelectionItem(
                     text = answer,
@@ -272,46 +291,27 @@ private fun GameScreenPreview() {
                     questions =
                         listOf(
                             GameQuestionUiState(
-                                questionData = "A",
-                                answers =
-                                    listOf(
-                                        "A",
-                                        "B",
-                                        "C",
-                                        "D",
-                                    ),
+                                questionData = "Question A",
+                                answers = listOf("Answer 1", "Answer 2", "Answer 3", "Answer 4"),
+                                correctAnswer = "Answer 1"
                             ),
                             GameQuestionUiState(
-                                questionData = "B",
-                                answers =
-                                    listOf(
-                                        "A",
-                                        "B",
-                                        "C",
-                                        "D",
-                                    ),
+                                questionData = "Question B",
+                                answers = listOf("Answer 2", "Answer 2", "Answer 3", "Answer 4"),
+                                correctAnswer = "Answer 2"
                             ),
                             GameQuestionUiState(
-                                questionData = "C",
-                                answers =
-                                    listOf(
-                                        "A",
-                                        "B",
-                                        "C",
-                                        "D",
-                                    ),
+                                questionData = "Question C",
+                                answers = listOf("Answer 3", "Answer 2", "Answer 3", "Answer 4"),
+                                correctAnswer = "Answer 3"
                             ),
                             GameQuestionUiState(
-                                questionData = "D",
-                                answers =
-                                    listOf(
-                                        "A",
-                                        "B",
-                                        "C",
-                                        "D",
-                                    ),
+                                questionData = "Question D",
+                                answers = listOf("Answer 4", "Answer 2", "Answer 3", "Answer 4"),
+                                correctAnswer = "Answer 4"
                             ),
                         ),
+                    gameType = Game.GameType.GUESS_MOVIE_BY_GENRE
                 ),
             gameType = Game.GameType.GUESS_MOVIE_BY_GENRE,
             interactionListener =
