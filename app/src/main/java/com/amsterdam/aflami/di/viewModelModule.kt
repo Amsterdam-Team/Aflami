@@ -2,6 +2,8 @@ package com.amsterdam.aflami.di
 
 import androidx.lifecycle.SavedStateHandle
 import com.amsterdam.viewmodel.cast.CastScreenArgs
+import com.amsterdam.viewmodel.categoriesDetails.movies.CategoriesMovieDetailsArgs
+import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsArgs
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameArgs
 import com.amsterdam.viewmodel.listDetails.ListDetailsArgs
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsArgs
@@ -20,13 +22,24 @@ import javax.inject.Singleton
 object ViewModelViewModelScope {
 
     @Provides
-    fun provideMovieDetailsArgs(savedStateHandle: SavedStateHandle): MovieDetailsArgs = MovieDetailsArgs(savedStateHandle)
+    fun provideMovieDetailsArgs(savedStateHandle: SavedStateHandle): MovieDetailsArgs =
+        MovieDetailsArgs(savedStateHandle)
 
     @Provides
-    fun provideSeriesDetailsArgs(savedStateHandle: SavedStateHandle): SeriesDetailsArgs = SeriesDetailsArgs(savedStateHandle)
+    fun provideCategoriesMoviesDetailsArgs(savedStateHandle: SavedStateHandle): CategoriesMovieDetailsArgs =
+        CategoriesMovieDetailsArgs(savedStateHandle)
 
     @Provides
-    fun provideCastScreenArgs(savedStateHandle: SavedStateHandle): CastScreenArgs = CastScreenArgs(savedStateHandle)
+    fun provideSeriesDetailsArgs(savedStateHandle: SavedStateHandle): SeriesDetailsArgs =
+        SeriesDetailsArgs(savedStateHandle)
+
+    @Provides
+    fun provideCategoriesTvShowsDetailsArgs(savedStateHandle: SavedStateHandle): CategoriesTvShowsDetailsArgs =
+        CategoriesTvShowsDetailsArgs(savedStateHandle)
+
+    @Provides
+    fun provideCastScreenArgs(savedStateHandle: SavedStateHandle): CastScreenArgs =
+        CastScreenArgs(savedStateHandle)
 
     @Provides
     fun provideGuessReleaseYearGameArgs(

@@ -1,5 +1,6 @@
 package com.amsterdam.domain.repository
 
+import com.amsterdam.domain.useCase.game.PosterGuessingGameQuestion
 import com.amsterdam.entity.Movie
 
 interface GameRepository {
@@ -7,8 +8,3 @@ interface GameRepository {
     suspend fun getRandomMoviesWithNotNullDate(requiredMoviesNumber: Int): List<Movie>
     suspend fun getPosterGuessingGameQuestions(questionCount: Int): List<PosterGuessingGameQuestion>
 }
-data class PosterGuessingGameQuestion(
-    val posterUrl: String,
-    val movieChoices: List<String>,
-    val correctMovieName: String
-)

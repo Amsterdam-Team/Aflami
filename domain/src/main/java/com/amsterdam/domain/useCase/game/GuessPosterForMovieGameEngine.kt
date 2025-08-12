@@ -1,6 +1,5 @@
 package com.amsterdam.domain.useCase.game
 
-import com.amsterdam.domain.repository.PosterGuessingGameQuestion
 import com.amsterdam.domain.timer.TimerHandler
 import com.amsterdam.entity.GameDifficulty
 
@@ -30,3 +29,8 @@ class GuessPosterForMovieGameEngine(
         )
     }
 }
+data class PosterGuessingGameQuestion(
+    val posterUrl: String,
+    val movieChoices: List<String>,
+    val correctMovieName: String
+)
