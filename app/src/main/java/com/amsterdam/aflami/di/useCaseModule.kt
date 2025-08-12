@@ -27,10 +27,12 @@ import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
 import com.amsterdam.domain.useCase.details.GetEpisodeVideosUseCase
 import com.amsterdam.domain.useCase.game.DoGuessReleaseGameHintUseCase
+import com.amsterdam.domain.useCase.game.GenerateMoviePosterQuestionsUseCase
 import com.amsterdam.domain.useCase.game.GenerateMovieReleaseYearQuestionsUseCase
 import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.GetTotalUserPointsUseCase
+import com.amsterdam.domain.useCase.game.GuessPosterForMovieGameEngine
 import com.amsterdam.domain.useCase.game.GuessReleaseYearForMovieGameEngine
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
@@ -333,6 +335,21 @@ object UseCaseModule {
         generateMovieReleaseYearQuestionsUseCase,
         getGameDifficultyByDifficultyTypeUseCase,
         doGuessReleaseGameHintUseCase,
+        timerHandler
+    )
+    @Provides
+    fun provideGenerateMoviePosterQuestionsUseCase(
+        gameRepository: GameRepository
+    ) = GenerateMoviePosterQuestionsUseCase(gameRepository)
+
+    @Provides
+    fun provideGuessPosterForMovieGameEngine(
+        generateMoviePosterQuestionsUseCase: GenerateMoviePosterQuestionsUseCase,
+        getGameDifficultyByDifficultyTypeUseCase: GetGameDifficultyByDifficultyTypeUseCase,
+        timerHandler: TimerHandler
+    ) = GuessPosterForMovieGameEngine(
+        generateMoviePosterQuestionsUseCase,
+        getGameDifficultyByDifficultyTypeUseCase,
         timerHandler
     )
 }
