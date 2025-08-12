@@ -32,7 +32,7 @@ fun GameResultAppBar(
         title = {
             Text(
                 text = stringResource(R.string.guess_character_game_title),
-                style = AppTheme.textStyle.title.medium,
+                style = AppTheme.textStyle.title.large,
                 color = AppTheme.color.title,
                 fontSize = 20.sp
             )

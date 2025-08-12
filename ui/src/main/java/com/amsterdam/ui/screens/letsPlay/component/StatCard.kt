@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.designsystem.theme.LocalIsDarkTheme
 import com.amsterdam.ui.R
 
 @Composable
@@ -36,11 +37,11 @@ fun StatCard(
     label: String,
     value: String
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = LocalIsDarkTheme.current
     val beamImageRes = if (isDarkTheme) {
-        R.drawable.beam_dark
+        R.drawable.beem_dark
     } else {
-        R.drawable.beam_light
+        R.drawable.beem_light
     }
 
     Box(
@@ -64,11 +65,11 @@ fun StatCard(
                         BorderStroke(1.dp, AppTheme.color.stroke),
                         RoundedCornerShape(24.dp)
                     )
-                    .padding(horizontal = 16.dp)
                     .clip(RoundedCornerShape(16.dp))
+                    .padding(horizontal = 16.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.app_logo),
+                    painter = painterResource(id = beamImageRes),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -82,16 +83,13 @@ fun StatCard(
             ) {
                 Text(
                     text = label,
-                    color = AppTheme.color.body,
-                    style = AppTheme.textStyle.body.medium,
-                    fontSize = 14.sp
+                    color = AppTheme.color.hint,
+                    style = AppTheme.textStyle.label.medium,
                 )
                 Text(
                     text = value,
                     color = AppTheme.color.title,
-                    style = AppTheme.textStyle.title.medium,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
+                    style = AppTheme.textStyle.headline.medium,
                 )
             }
         }

@@ -24,16 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.designsystem.theme.LocalIsDarkTheme
 import com.amsterdam.ui.R
 
 @Composable
 fun CompletionCard(modifier: Modifier = Modifier) {
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = LocalIsDarkTheme.current
 
     val beamImageRes = if (isDarkTheme) {
-        R.drawable.beam_dark
+        R.drawable.beem_dark
     } else {
-        R.drawable.beam_light
+        R.drawable.beem_light
     }
 
     Box(
@@ -41,10 +42,10 @@ fun CompletionCard(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .border(
-                BorderStroke(width = 8.dp, color = AppTheme.color.primaryVariant),
+                BorderStroke(width = 8.dp, color = AppTheme.color.surface),
                 shape = RoundedCornerShape(24.dp)
             )
-            .background(AppTheme.color.surface),
+            .background(AppTheme.color.primaryVariant),
         ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -53,7 +54,7 @@ fun CompletionCard(modifier: Modifier = Modifier) {
                 .height(176.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.app_logo),
+                painter = painterResource(id = beamImageRes),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -73,8 +74,7 @@ fun CompletionCard(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.finish_game_message),
                     color = AppTheme.color.title,
-                    style = AppTheme.textStyle.title.large,
-                    fontSize = 18.sp
+                    style = AppTheme.textStyle.title.medium,
                 )
             }
         }
