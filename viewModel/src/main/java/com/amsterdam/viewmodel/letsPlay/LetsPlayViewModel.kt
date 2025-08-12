@@ -46,7 +46,8 @@ class LetsPlayViewModel @Inject constructor(
     }
 
     override fun onClickStartGame() {
-
+        updateState { it.copy(selectedGameTypeUiState = null) }
+        sendNewEffect(LetsPlayEffect.NavigateToGameScreen)
     }
 
 }

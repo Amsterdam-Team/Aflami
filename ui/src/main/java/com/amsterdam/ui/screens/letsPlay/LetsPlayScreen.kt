@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,9 +22,12 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.GameCard
+import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.letsPlay.component.DifficultyLevelDialog
 import com.amsterdam.ui.screens.letsPlay.component.PlayScreenAppBar
+import com.amsterdam.viewmodel.letsPlay.LetsPlayEffect
 import com.amsterdam.viewmodel.letsPlay.LetsPlayInteractionListener
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState
@@ -33,6 +37,17 @@ import com.amsterdam.viewmodel.letsPlay.LetsPlayViewModel
 @Composable
 fun LetsPlayScreen(viewModel: LetsPlayViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsStateWithLifecycle()
+    val navController = LocalNavController.current
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                LetsPlayEffect.NavigateToGameScreen -> {
+                    navController.navigate(Route.Game)
+                }
+            }
+        }
+    }
     LetsPlayScreenContent(state = state.value, interactionListener = viewModel)
 }
 

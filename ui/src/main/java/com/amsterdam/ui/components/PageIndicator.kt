@@ -1,14 +1,14 @@
-package com.amsterdam.ui.screens.onBoarding.component
+package com.amsterdam.ui.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,18 +40,17 @@ fun PageIndicator(
                 label = "PageIndicatorColorAnimation"
             )
 
-            val animatedWidth by animateDpAsState(
-                targetValue = if (isSelected) 48.dp else 48.dp,
-                animationSpec = tween(durationMillis = 300),
-                label = "PageIndicatorWidthAnimation"
-            )
-
             Box(
                 modifier = Modifier
                     .height(6.dp)
-                    .width(animatedWidth)
+                    .weight(1f)
                     .clip(RoundedCornerShape(100.dp))
-                    .background(animatedColor),
+                    .background(animatedColor)
+                    .border(
+                        width = 1.dp,
+                        color = AppTheme.color.stroke,
+                        shape = CircleShape,
+                    ),
             )
         }
     }

@@ -199,7 +199,7 @@ private fun MyRatingContent(
                                     onError = { ImageErrorIndicator() },
                                 )
                             },
-                            movieType = stringResource(R.string.movies),
+                            movieType = stringResource(R.string.tv_shows),
                             movieYear = yearOfRelease,
                             movieTitle = name,
                             movieRating = rate,

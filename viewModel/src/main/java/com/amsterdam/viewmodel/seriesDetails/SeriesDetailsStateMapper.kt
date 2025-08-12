@@ -13,6 +13,7 @@ import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.ReviewTvShowUi
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.EpisodeUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SimilarTvShowUiState
+import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.utils.formatDuration
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
 import com.amsterdam.viewmodel.utils.toFormattedString
@@ -40,6 +41,7 @@ fun TvShowDetails.toUiState(): SeriesDetailsUiState {
         gallery = gallery,
         postersUrls = posters,
         productionCompanies = productionsCompanies.toProductionTvShowCompanyUiStates(),
+        rateDialogUiState = RateDialogUiState(selectedStarIndex = userRate)
     )
 }
 

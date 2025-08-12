@@ -11,6 +11,7 @@ import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
 import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.GameLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.GamePointsLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.ProfileLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataDataSourceImpl
@@ -21,6 +22,7 @@ import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.CountryLocalDataSource
 import com.amsterdam.repository.datasource.local.GameLocalDataSource
+import com.amsterdam.repository.datasource.local.GamePointsLocalDataSource
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.local.RecentSearchLocalDataSource
@@ -85,6 +87,10 @@ object LocalDataSourceProviderModule {
     @Provides
     @Singleton
     fun provideAccountDetailsDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.accountDetailsDao()
+
+    @Provides
+    @Singleton
+    fun provideGamePointsDao(aflamiDatabase: AflamiDatabase) = aflamiDatabase.gamePointsDao()
 }
 
 @Module
@@ -150,4 +156,9 @@ abstract class LocalDataSourceBindsModule {
         gameLocalDataSource: GameLocalDataSourceImpl
     ): GameLocalDataSource
 
+    @Binds
+    @Singleton
+    abstract fun bindGamePointsLocalDataSource(
+        gamePointsLocalDataSource: GamePointsLocalDataSourceImpl
+    ): GamePointsLocalDataSource
 }

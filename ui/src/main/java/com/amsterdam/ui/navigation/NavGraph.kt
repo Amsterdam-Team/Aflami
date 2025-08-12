@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.amsterdam.ui.screens.cast.castScreenRoute
 import com.amsterdam.ui.screens.categories.categoriesScreenRoute
 import com.amsterdam.ui.screens.continueWatching.continueWatchingScreenRoute
+import com.amsterdam.ui.screens.game.gameScreenRoute
 import com.amsterdam.ui.screens.home.homeScreenRoute
 import com.amsterdam.ui.screens.letsPlay.letsPlayScreenRoute
 import com.amsterdam.ui.screens.letsPlay.resultScreenRoute
@@ -35,6 +36,7 @@ fun NavGraph(
         homeScreenRoute()
         listsScreenRoute()
         letsPlayScreenRoute()
+        gameScreenRoute()
         categoriesScreenRoute()
         profileScreenRoute()
         searchScreenRoute()

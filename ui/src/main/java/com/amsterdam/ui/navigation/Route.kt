@@ -72,5 +72,8 @@ sealed interface Route {
     data object MyRating: Route
 
     @Serializable
+    data object Game : Route
+
+    @Serializable
     data object ResultScreen: Route
 }

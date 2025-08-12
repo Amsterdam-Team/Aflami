@@ -1,4 +1,5 @@
 package com.amsterdam.viewmodel.letsPlay
 
-interface LetsPlayEffect {
+sealed interface LetsPlayEffect {
+    object NavigateToGameScreen : LetsPlayEffect
 }

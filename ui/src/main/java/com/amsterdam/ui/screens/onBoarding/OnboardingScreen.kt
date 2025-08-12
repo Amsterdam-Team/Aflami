@@ -21,9 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,10 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.amsterdam.designsystem.R
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.onBoarding.component.AnimatedSkipText
 import com.amsterdam.ui.screens.onBoarding.component.NavigationButton
-import com.amsterdam.ui.screens.onBoarding.component.PageIndicator
 import com.amsterdam.viewmodel.onboarding.OnboardingEffect
 import com.amsterdam.viewmodel.onboarding.OnboardingViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -178,6 +176,7 @@ private fun OnboardingScreenContent(
             pageCount = totalPages,
             currentPage = currentPageIndex,
             modifier = Modifier
+                .fillMaxWidth(0.6f)
                 .align(Alignment.BottomStart)
                 .padding(bottom = 300.dp, start = 12.dp)
         )
