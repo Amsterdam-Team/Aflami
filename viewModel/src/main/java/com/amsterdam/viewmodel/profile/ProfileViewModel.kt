@@ -9,6 +9,7 @@ import com.amsterdam.domain.useCase.preferences.ManageAppThemeUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
+import com.amsterdam.domain.useCase.profile.GetUserPointsUseCase
 import com.amsterdam.domain.utils.AppVersionProvider
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.domain.utils.SessionType
@@ -16,7 +17,6 @@ import com.amsterdam.entity.AccountDetails
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +24,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val getSessionTypeUseCase: GetsSessionType,
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
+    private val getUserPointsUseCase: GetUserPointsUseCase,
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     private val manageAppThemeUseCase: ManageAppThemeUseCase,
     private val logoutUseCase: LogoutUseCase,
@@ -106,6 +107,7 @@ class ProfileViewModel @Inject constructor(
             return
         }
         getUserProfileInfo()
+        getUserPoints()
     }
 
     private fun getUserProfileInfo() {
@@ -134,6 +136,18 @@ class ProfileViewModel @Inject constructor(
                     userAvatarUrl = accountDetails.avatarUrl
                 )
             )
+        }
+    }
+
+    private fun getUserPoints() {
+        viewModelScope.launch {
+            getUserPointsUseCase().collect { points ->
+                updateState { uiState ->
+                    uiState.copy(
+                        userInfo = state.value.userInfo.copy(userPoints = points)
+                    )
+                }
+            }
         }
     }
 

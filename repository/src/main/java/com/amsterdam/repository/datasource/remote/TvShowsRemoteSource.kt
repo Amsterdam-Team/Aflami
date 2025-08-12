@@ -5,7 +5,6 @@ import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
-import com.amsterdam.repository.dto.remote.VideoDto
 import com.amsterdam.repository.dto.remote.VideoResponse
 
 interface TvShowsRemoteSource {
@@ -14,6 +13,7 @@ interface TvShowsRemoteSource {
     suspend fun getTopRatedTvShows(
         page: Int
     ): RemoteTvShowResponse
+
     suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse
 
     suspend fun getTvShowsByKeyword(
@@ -21,7 +21,10 @@ interface TvShowsRemoteSource {
         page: Int,
     ): RemoteTvShowResponse
 
-    suspend fun getTvShowDetailsById(tvShowId: Long, sessionId: String = ""): TvShowDetailsRemoteResponse
+    suspend fun getTvShowDetailsById(
+        tvShowId: Long,
+        sessionId: String = ""
+    ): TvShowDetailsRemoteResponse
 
     suspend fun getEpisodesBySeasonNumber(tvShowId: Long, seasonNumber: Int): EpisodeResponse
     suspend fun getEpisodeVideos(
@@ -29,6 +32,8 @@ interface TvShowsRemoteSource {
         seasonNumber: Int,
         episodeNumber: Int
     ): VideoResponse
+
+    suspend fun getTvShowsByGenreId(genreId: Long, page: Int): RemoteTvShowResponse
 
     suspend fun getRatedTvShows(sessionId: String): RemoteTvShowResponse
 

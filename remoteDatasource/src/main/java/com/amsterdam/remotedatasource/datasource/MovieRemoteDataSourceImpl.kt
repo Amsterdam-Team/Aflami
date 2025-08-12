@@ -59,6 +59,13 @@ class MovieRemoteDataSourceImpl @Inject constructor(
         return responseCall { movieApiService.getMoviesByGenreIds(genresIds, page) }
     }
 
+    override suspend fun getMoviesByGenreId(
+        genreId: Long,
+        page: Int
+    ): RemoteMovieResponse {
+        return responseCall { movieApiService.getMoviesByGenreIds(listOf(genreId), page) }
+    }
+
     override suspend fun setMovieRate(rate: Float, movieId: Long, sessionId: String): RatingResponse? {
         return responseCall { movieApiService.postMovieRating(
             movieId = movieId,

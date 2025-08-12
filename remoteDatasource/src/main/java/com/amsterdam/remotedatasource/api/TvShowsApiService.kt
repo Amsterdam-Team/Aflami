@@ -49,6 +49,12 @@ interface TvShowsApiService {
         @Path("seasonNumber") seasonNumber: Int
     ): EpisodeResponse
 
+    @GET("discover/tv")
+    suspend fun getTvShowsByGenreIds(
+        @Query("with_genres") genresIds: List<Long>,
+        @Query("page") page: Int
+    ): RemoteTvShowResponse
+
     @GET("tv/{series_id}/season/{season_number}/episode/{episode_number}/videos")
     suspend fun getEpisodeVideos(
         @Path("series_id") tvShowId: Long,
