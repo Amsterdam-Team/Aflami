@@ -7,6 +7,7 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
+import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
@@ -22,6 +23,7 @@ import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
 import com.amsterdam.repository.dto.remote.RemoteTvShowItemDto
 import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
+import com.amsterdam.repository.mapper.local.toDto
 import com.amsterdam.repository.mapper.local.toEntity
 import com.amsterdam.repository.mapper.remote.toEntity
 import com.amsterdam.repository.mapper.remote.toEntityList
@@ -118,6 +120,18 @@ class TvShowRepositoryImpl @Inject constructor(
         ).results.firstOrNull()?.fullVideoUrl ?: ""
 
 
+    }
+
+    override suspend fun getTvShowsByGenre(
+        tvShowGenre:TvShowGenre,
+        page: Int
+    ): List<TvShow> {
+        return tvShowGenre.toDto().let { genreId ->
+            remoteTvDataSource.getTvShowsByGenreId(
+                genreId,
+                page
+            ).results.toEntityList()
+        }
     }
 
 

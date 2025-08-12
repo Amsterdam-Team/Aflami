@@ -22,3 +22,6 @@ class InvalidSessionException : AuthenticationException()
 class AccessDeniedException : AuthenticationException()
 
 class AccessRestrictedException : AuthenticationException()
+
+open class GameException : AflamiException()
+class NotEnoughPointsException : GameException()

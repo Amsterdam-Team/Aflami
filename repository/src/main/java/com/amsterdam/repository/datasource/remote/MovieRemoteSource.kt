@@ -32,4 +32,5 @@ interface MovieRemoteSource {
     suspend fun deleteMovieRate(movieId: Long, sessionId: String)
 
     suspend fun getMoviesByGenreIds(genresIds: List<Long>, page: Int): RemoteMovieResponse
+    suspend fun getMoviesByGenreId(genreId: Long, page: Int): RemoteMovieResponse
 }

@@ -30,7 +30,10 @@ class TvRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTvShowDetailsById(tvShowId: Long, sessionId: String): TvShowDetailsRemoteResponse {
+    override suspend fun getTvShowDetailsById(
+        tvShowId: Long,
+        sessionId: String
+    ): TvShowDetailsRemoteResponse {
         return responseCall { tvShowsApiService.getTvShowDetailsById(tvShowId, sessionId) }
     }
 
@@ -77,13 +80,20 @@ class TvRemoteDataSourceImpl @Inject constructor(
         seasonNumber: Int,
         episodeNumber: Int
     ): VideoResponse {
-        val actualSeasonNumber = if (seasonNumber<=0) 1 else seasonNumber
-        return  responseCall {
+        val actualSeasonNumber = if (seasonNumber <= 0) 1 else seasonNumber
+        return responseCall {
             tvShowsApiService.getEpisodeVideos(
                 tvShowId,
                 actualSeasonNumber,
                 episodeNumber
             )
         }
+    }
+
+    override suspend fun getTvShowsByGenreId(
+        genreId: Long,
+        page: Int
+    ): RemoteTvShowResponse {
+        return responseCall { tvShowsApiService.getTvShowsByGenreIds(listOf(genreId), page) }
     }
 }

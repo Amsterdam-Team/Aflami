@@ -6,6 +6,7 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
+import com.amsterdam.entity.category.TvShowGenre
 
 interface TvShowRepository {
     suspend fun getPopularTvShows(): List<TvShow>
@@ -24,4 +25,5 @@ interface TvShowRepository {
         seasonNumber: Int,
         episodeNumber: Int
     ): String
+    suspend fun getTvShowsByGenre(tvShowGenre: TvShowGenre, page: Int): List<TvShow>
 }

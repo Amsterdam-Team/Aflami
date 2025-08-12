@@ -165,18 +165,22 @@ private fun SearchContent(
                 tvShows
             }
 
-            AnimatedVisibility(state.keyword.isNotBlank()&& !state.isLoading && state.errorUiState == null && selectedItems.itemCount > 0) {
-                SuccessMediaItemsSection(
-                    onMovieClicked = interaction::onClickMovieCard,
-                    onTvShowClicked = interaction::onClickTvShowCard,
-                    selectedItems = selectedItems
-                )
+            AnimatedVisibility(state.keyword.isNotBlank()) {
+                AnimatedVisibility(
+                    selectedItems.itemCount > 0
+                ) {
+                    SuccessMediaItemsSection(
+                        onMovieClicked = interaction::onClickMovieCard,
+                        onTvShowClicked = interaction::onClickTvShowCard,
+                        selectedItems = selectedItems
+                    )
+                }
                 val isSelectedTabHasNoData = if (state.selectedTabOption == TabOption.MOVIES) {
                     movies.itemSnapshotList.isEmpty()
                 } else {
                     tvShows.itemSnapshotList.isEmpty()
                 }
-                if (state.isLoading || state.errorUiState != null || isSelectedTabHasNoData) {
+                AnimatedVisibility(state.isLoading || state.errorUiState != null || isSelectedTabHasNoData) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
