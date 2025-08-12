@@ -1,5 +1,7 @@
 package com.amsterdam.viewmodel.game
 
+import com.amsterdam.domain.repository.PosterGuessingGameQuestion
+import com.amsterdam.domain.useCase.game.GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion
 import com.amsterdam.entity.Game
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 
@@ -12,9 +14,37 @@ data class GameUiState(
     val isNextEnabled: Boolean = false,
     val selectedAnswerIndex: Int? = null,
     val isAnswerCorrect: Boolean? = null,
+    val isLoading: Boolean = true,
+    val score: Int = 0,
+    val totalPointsPerQuestion: Int = 0
 )
 
 data class GameQuestionUiState(
     val questionData: String,
     val answers: List<String>,
+    val correctAnswer: String,
 )
+
+fun PosterGuessingGameQuestion.toGameQuestionUiState(): GameQuestionUiState {
+    return GameQuestionUiState(
+        questionData = this.posterUrl,
+        answers = this.movieChoices,
+        correctAnswer = this.correctMovieName
+    )
+}
+
+fun MovieReleasedDateQuestion.toGameQuestionUiState(): GameQuestionUiState {
+    return GameQuestionUiState(
+        questionData = this.question,
+        answers = this.releaseYearChoices.map { it.toString() },
+        correctAnswer = this.correctChoice.toString()
+    )
+}
+
+fun GameQuestionUiState.toMovieReleasedDateQuestion(): MovieReleasedDateQuestion {
+    return MovieReleasedDateQuestion(
+        question = this.questionData,
+        releaseYearChoices = this.answers.map { it.toInt() },
+        correctChoice = this.correctAnswer.toInt()
+    )
+}
