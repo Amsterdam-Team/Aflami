@@ -5,10 +5,13 @@ import com.amsterdam.remotedatasource.api.AuthenticationApiService
 import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
+import com.amsterdam.remotedatasource.api.PeopleApiService
 import com.amsterdam.remotedatasource.api.ProfileApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
+import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
+import com.amsterdam.repository.security.CryptoData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,18 +34,28 @@ object ServiceProvidesModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitClient(json: Json, appPreferencesRepository: AppPreferencesRepository): RetrofitClient =
-        RetrofitClient(json, appPreferencesRepository)
+    fun provideRetrofitClient(
+        json: Json,
+        appPreferencesRepository: AppPreferencesRepository,
+        authenticationLocalDataSource: AuthenticationLocalDataSource,
+        cryptoData: CryptoData
+    ): RetrofitClient =
+        RetrofitClient(json, appPreferencesRepository, authenticationLocalDataSource, cryptoData)
 
     @Provides
     @Singleton
-    fun provideAuthenticationApiService(retrofitClient:  RetrofitClient): AuthenticationApiService =
+    fun provideAuthenticationApiService(retrofitClient: RetrofitClient): AuthenticationApiService =
         retrofitClient.authenticationApiService()
 
     @Provides
     @Singleton
     fun provideMovieApiService(retrofitClient: RetrofitClient): MovieApiService =
         retrofitClient.movieApiService()
+
+    @Provides
+    @Singleton
+    fun providePeopleApiService(retrofitClient: RetrofitClient): PeopleApiService =
+        retrofitClient.peopleApiService()
 
     @Provides
     @Singleton

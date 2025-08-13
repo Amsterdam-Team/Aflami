@@ -3,6 +3,7 @@ package com.amsterdam.repository.datasource.remote
 import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
+import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
 
 interface MovieRemoteSource {
@@ -17,19 +18,23 @@ interface MovieRemoteSource {
 
     suspend fun getCastByMovieId(movieId: Long): RemoteCastAndCrewResponse
 
-    suspend fun getMovieDetailsById(movieId: Long, sessionId: String = ""): RemoteMovieDetailsResponse
+    suspend fun getMovieDetailsById(movieId: Long): RemoteMovieDetailsResponse
 
-    suspend fun getPopularMovies(): RemoteMovieResponse
+    suspend fun getPopularMovies(page: Int = 1): RemoteMovieResponse
 
     suspend fun getUpcomingMovies(): RemoteMovieResponse
 
     suspend fun getTopRatedMovies(page: Int): RemoteMovieResponse
 
-    suspend fun getRatedMovies(sessionId: String): RemoteMovieResponse
+    suspend fun getRatedMovies(): RemoteMovieResponse
 
-    suspend fun setMovieRate(rate: Float, movieId: Long, sessionId: String): RatingResponse?
+    suspend fun setMovieRate(rate: Float, movieId: Long): RatingResponse?
 
-    suspend fun deleteMovieRate(movieId: Long, sessionId: String)
+    suspend fun deleteMovieRate(movieId: Long)
 
     suspend fun getMoviesByGenreIds(genresIds: List<Long>, page: Int): RemoteMovieResponse
+
+    suspend fun getRandomMoviesWithNotNullDate(requiredMoviesNumber: Int): List<RemoteMovieItemDto>
+    suspend fun getMoviesByGenreId(genreId: Long, page: Int): RemoteMovieResponse
+
 }

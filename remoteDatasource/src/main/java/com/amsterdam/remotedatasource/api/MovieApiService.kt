@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.api
 
+import com.amsterdam.remotedatasource.utils.RequiresSessionId
 import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
@@ -16,7 +17,9 @@ import retrofit2.http.Query
 interface MovieApiService {
 
     @GET("movie/popular")
-    suspend fun getPopularMovies(): RemoteMovieResponse
+    suspend fun getPopularMovies(
+        @Query("page") page: Int = 1
+    ): RemoteMovieResponse
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(): RemoteMovieResponse
@@ -50,9 +53,9 @@ interface MovieApiService {
     ): RemoteCastAndCrewResponse
 
     @GET("movie/{movieId}")
+    @RequiresSessionId
     suspend fun getMovieDetailsById(
         @Path("movieId") movieId: Long,
-        @Query("session_id") sessionId: String = "",
         @Query("append_to_response") append: String = "reviews,credits,actors,similar,images,videos,account_states",
         @Query("include_video_language") videoLang: String = "en"
     ): RemoteMovieDetailsResponse
@@ -68,23 +71,23 @@ interface MovieApiService {
         @Query("page") page: Int
     ): RemoteMovieResponse
 
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("movie/{movie_id}/rating")
     suspend fun postMovieRating(
         @Path("movie_id") movieId: Long,
         @Field("value") rate: Float,
-        @Query("session_id") sessionId: String
     ): RatingResponse
 
+    @RequiresSessionId
     @GET("account/{account_id}/rated/movies")
     suspend fun getRatedMovies(
         @Path("account_id") accountId: Int = 0,
-        @Query("session_id") sessionId: String
     ): RemoteMovieResponse
 
+    @RequiresSessionId
     @DELETE("movie/{movie_id}/rating")
     suspend fun deleteMovieRate(
         @Path("movie_id") movieId: Long,
-        @Query("session_id") sessionId: String,
     )
 }

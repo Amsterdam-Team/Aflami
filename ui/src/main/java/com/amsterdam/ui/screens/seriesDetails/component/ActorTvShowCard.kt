@@ -1,5 +1,6 @@
 package com.amsterdam.ui.screens.seriesDetails.component
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -30,6 +31,11 @@ fun ActorTvShowCard(modifier: Modifier = Modifier, actor: ActorTvShowUiState) {
         SafeImageView(
             modifier = Modifier
                 .size(78.dp)
+                .border(
+                    width = 1.dp,
+                    color = AppTheme.color.stroke,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .clip(RoundedCornerShape(16.dp)),
             model = actor.photo,
             contentDescription = actor.name,

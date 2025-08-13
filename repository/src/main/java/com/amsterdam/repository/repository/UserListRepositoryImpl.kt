@@ -17,23 +17,18 @@ import javax.inject.Inject
 
 class UserListRepositoryImpl @Inject constructor(
     private val userListDataSource: UserListRemoteSource,
-    private val authenticationRepository: AuthenticationRepository,
     private val preferences: AppPreferencesRepository,
 ) : UserListRepository {
 
-    override suspend fun addMovieToList(listId: Long, movieId: Int) {
-        val sessionId = authenticationRepository.getSessionId()
-        val response =
-            userListDataSource.addMovieToList(listId, sessionId, movieId)
+    override suspend fun addMovieToList(listId: Long, movieId: Long) {
+        val response = userListDataSource.addMovieToList(listId, movieId)
         if (!response.success) throw UnknownException()
     }
 
     override suspend fun createNewList(listName: String): Int {
         return userListDataSource.createNewList(
             listName = listName,
-            description = "",
             language = preferences.getAppLanguage().first(),
-            sessionId = authenticationRepository.getSessionId(),
         ).listId
     }
 
@@ -49,20 +44,14 @@ class UserListRepositoryImpl @Inject constructor(
         )
     }
 
-
-    override suspend fun deleteList(listId: Long) {
-        val sessionId = authenticationRepository.getSessionId()
-        userListDataSource.deleteList(listId, sessionId)
-    }
+    override suspend fun deleteList(listId: Long) = userListDataSource.deleteList(listId)
 
     override suspend fun getUserLists(accountId: Int, page: Int): List<UserList> {
-        val sessionId = authenticationRepository.getSessionId()
-        return userListDataSource.getUserLists(accountId, page, sessionId).results
+        return userListDataSource.getUserLists(accountId, page).results
             .map { it.toUserList() }
     }
 
     override suspend fun removeMovieFromList(listId: Long, movieId: Long) {
-        val sessionId = authenticationRepository.getSessionId()
-        userListDataSource.removeMovieFromList(listId, sessionId, movieId)
+        userListDataSource.deleteMovieFromList(listId, movieId)
     }
 }

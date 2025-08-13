@@ -1,7 +1,9 @@
 package com.amsterdam.repository.datasource.local
 
+import kotlinx.coroutines.flow.Flow
+
 interface GameLocalDataSource {
 
-    suspend fun addGamePoints(points: Int)
-    suspend fun getTotalGamePoints(): Int
+    suspend fun upsertPoints(points: Int)
+    fun getUserPoints(): Flow<Int>
 }

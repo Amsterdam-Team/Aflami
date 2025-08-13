@@ -6,6 +6,7 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
+import com.amsterdam.entity.category.TvShowGenre
 
 interface TvShowRepository {
     suspend fun getPopularTvShows(): List<TvShow>
@@ -14,14 +15,12 @@ interface TvShowRepository {
     suspend fun getTvShowByKeyword(keyword: String, page: Int, tvShowsPerPage: Int): List<TvShow>
     suspend fun getTvShowDetails(tvShowId: Long): TvShowDetails
     suspend fun getTvShowSeasons(tvShowId: Long): List<Season>
+    suspend fun getTvShowsByGenre(selectedGenre: TvShowGenre, page: Int): List<TvShow>
     suspend fun getEpisodesBySeasonNumber(tvShowId: Long, seasonNumber: Int): List<Episode>
 
     suspend fun setTvShowRate(rate: Int, tvShowId: Long)
     suspend fun getUserRatedTvShows(): List<UserRatedTvShow>
     suspend fun deleteTvShowRate(tvShowId: Long)
-    suspend fun getEpisodeVideoUrl(
-        tvShowId: Long,
-        seasonNumber: Int,
-        episodeNumber: Int
-    ): String
+
+    suspend fun getEpisodeVideoUrl(tvShowId: Long, seasonNumber: Int, episodeNumber: Int): String
 }

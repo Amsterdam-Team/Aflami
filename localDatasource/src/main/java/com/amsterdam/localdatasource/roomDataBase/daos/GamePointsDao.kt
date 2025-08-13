@@ -13,5 +13,5 @@ interface GamePointsDao {
     suspend fun upsertPoints(gamePoints: GamePointsDto)
 
     @Query("SELECT points FROM ${DatabaseConstants.GAME_POINTS_TABLE} LIMIT 1")
-    fun getPoints(): Flow<Int?>
+    fun getPoints(): Flow<Int>
 }

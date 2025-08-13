@@ -28,7 +28,6 @@ private fun DependencyHandlerScope.modulesDependencies() {
 
 private fun DependencyHandlerScope.coroutinesDependencies() {
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
 }
 
 private fun DependencyHandlerScope.kotlinDateTimeDependencies() {

@@ -23,7 +23,7 @@ class ProfileRepositoryImpl @Inject constructor(
             ?.let { sessionId ->
                 getAccountDetailsFromLocal()?.takeIf { accountDetails ->
                     accountDetails.username.isNotBlank()
-                }?.toEntity() ?: getAccountDetailsFromRemote(sessionId).toEntity()
+                }?.toEntity() ?: getAccountDetailsFromRemote().toEntity()
             } ?: AccountDetails(accountId = 0, username = "", avatarUrl = "")
     }
 
@@ -31,8 +31,8 @@ class ProfileRepositoryImpl @Inject constructor(
         return profileLocalDataSource.getAccountDetails()
     }
 
-    private suspend fun getAccountDetailsFromRemote(sessionId: String): AccountDetailsRemoteDto {
-        return profileRemoteDataSource.getAccountDetails(sessionId = sessionId)
+    private suspend fun getAccountDetailsFromRemote(): AccountDetailsRemoteDto {
+        return profileRemoteDataSource.getAccountDetails()
             .let { accountDetails ->
                 profileLocalDataSource.upsertAccountDetails(accountDetails.toLocal())
                 accountDetails

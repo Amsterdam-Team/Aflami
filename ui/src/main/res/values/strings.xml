@@ -92,7 +92,7 @@
     <string name="guess_movie_game_description">Match the poster with the right title!</string>
     <string name="genre_game_title">Which Genre?</string>
     <string name="genre_game_description">Which one is the real action movie?</string>
-    <string name="guess_character_game_title">Guess the Character</string>
+    <string name="guess_character_game_title">Guess the character</string>
     <string name="guess_character_game_description">Can you tell who this character?</string>
     <string name="play_now">Play now</string>
     <string name="points_to_unlock">Pts. to unlock</string>
@@ -103,7 +103,7 @@
     <string name="lets_start">Let’s start</string>
     <string name="and">And</string>
     <string name="sec">Sec</string>
-    <string name="game_settings">%1$d questions, %2$d seconds, %3$d points per question</string>
+    <string name="game_settings">%1$d questions, %2$dsec, %3$d points per question.</string>
     <string name="hint">hint? %1$d Pts.</string>
     <string name="next">Next</string>
     <string name="back_to_menue">Back to menu</string>
@@ -111,6 +111,10 @@
     <string name="points_acheived">Points Achieved</string>
     <string name="total_time">Total time</string>
     <string name="finish_game_message">You finished the GAME!</string>
+    <string name="not_enough_points">Not enough points</string>
+    <string name="not_enough_points_description">Sorry, you don’t have the enough points to have a hint</string>
+    <string name="ok">OK</string>
+    <string name="cd_cancel">Cancel</string>
     <!-- -   -->
     <!-- -   -->
     <string name="loading">Loading…</string>
@@ -263,5 +267,8 @@
     <string name="error_mood_movies_loading">Oops! We couldn’t find movies for that mood.</string>
 
     <string name="brightness_message">You will be attacked by a group of bright colors!</string>
+    <string name="when_is_released">When is released?</string>
+
+    <string name="oops_there_are_not_enough_points">Oops, there are not enough points</string>
 
 </resources>

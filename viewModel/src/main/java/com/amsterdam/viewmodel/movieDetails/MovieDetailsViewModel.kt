@@ -174,7 +174,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onSaveMovieToList(
-        movieId: Int,
+        movieId: Long,
         listId: Long,
     ) {
         updateState { it.copy(isAddMovieToListLoading = true) }
@@ -215,7 +215,7 @@ class MovieDetailsViewModel @Inject constructor(
             },
             onSuccess = { listId ->
                 sendNewEffect(MovieDetailsEffect.ListCreatedSuccessfully)
-                onSaveMovieToList(state.value.movieId.toInt(), listId.toLong())
+                onSaveMovieToList(state.value.movieId, listId.toLong())
             },
             onError = {
                 sendNewEffect(MovieDetailsEffect.FailedToCreateList)

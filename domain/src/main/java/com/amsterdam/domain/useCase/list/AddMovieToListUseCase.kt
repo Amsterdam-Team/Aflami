@@ -7,7 +7,7 @@ class AddMovieToListUseCase(
 ) {
     suspend operator fun invoke(
         listId: Long,
-        movieId: Int,
+        movieId: Long,
     ) {
         userListRepository.addMovieToList(listId, movieId)
     }

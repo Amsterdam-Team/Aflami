@@ -42,9 +42,15 @@ fun LetsPlayScreen(viewModel: LetsPlayViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                LetsPlayEffect.NavigateToGameScreen -> {
-                    navController.navigate(Route.Game)
-                }
+                is LetsPlayEffect.NavigateToGuessMovieByReleaseScreen ->
+                    navController.navigate(Route.GuessReleaseYearGame(effect.difficulty))
+
+                is LetsPlayEffect.NavigateToGuessCharacterScreen ->
+                    navController.navigate(Route.GuessCharacter(effect.difficulty))
+
+                is LetsPlayEffect.NavigateToGuessMovieByGenreScreen -> navController.navigate(
+                    Route.GenreGame(difficulty = effect.difficulty)
+                )
             }
         }
     }
@@ -78,7 +84,7 @@ private fun LetsPlayScreenContent(
                     onCardClick = { interactionListener.onClickGameCard(it.gameTypeUiState) },
                     gameCardImageContentType = gameCardData.gameCardImageContentType,
                     modifier = Modifier.padding(top = 12.dp),
-                    isPlayable = state.totalUserPoint <= it.requiredPoints,
+                    isPlayable = state.totalUserPoint >= it.requiredPoints,
                     unlockPrice = "${it.requiredPoints}"
                 )
             }

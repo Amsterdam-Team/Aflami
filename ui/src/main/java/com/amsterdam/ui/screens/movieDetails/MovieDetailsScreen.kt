@@ -327,7 +327,7 @@ fun MovieContent(
                 onSelectedListChange = movieDetailsInteractionListener::onSelectedListChange,
                 onAddToSelectedList = { listId ->
                     movieDetailsInteractionListener.onSaveMovieToList(
-                        movieId = state.movieId.toInt(),
+                        movieId = state.movieId,
                         listId = listId,
                     )
                 },
@@ -528,7 +528,7 @@ private fun SearchByActorContentPreview() {
                 override fun onClickAddToList() {}
 
                 override fun onSaveMovieToList(
-                    movieId: Int, listId: Long
+                    movieId: Long, listId: Long
                 ) {
                 }
 

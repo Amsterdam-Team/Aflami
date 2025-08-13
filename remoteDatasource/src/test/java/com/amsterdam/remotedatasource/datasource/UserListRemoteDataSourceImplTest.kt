@@ -216,7 +216,7 @@ class UserListRemoteDataSourceImplTest {
         val sessionId = "abc"
         coEvery { userListApiService.removeMovieFromList(listId, sessionId, movieId) } returns Unit
 
-        userListRemoteDataSourceImpl.removeMovieFromList(listId, sessionId, movieId)
+        userListRemoteDataSourceImpl.deleteMovieFromList(listId, sessionId, movieId)
 
         coVerify(exactly = 1) { userListApiService.removeMovieFromList(listId, sessionId, movieId) }
     }
@@ -235,7 +235,7 @@ class UserListRemoteDataSourceImplTest {
         } throws NetworkException()
 
         assertThrows<NetworkException> {
-            userListRemoteDataSourceImpl.removeMovieFromList(listId, sessionId, movieId)
+            userListRemoteDataSourceImpl.deleteMovieFromList(listId, sessionId, movieId)
         }
     }
 }

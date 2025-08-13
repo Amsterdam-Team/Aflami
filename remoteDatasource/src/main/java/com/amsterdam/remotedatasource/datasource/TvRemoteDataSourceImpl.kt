@@ -30,8 +30,8 @@ class TvRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTvShowDetailsById(tvShowId: Long, sessionId: String): TvShowDetailsRemoteResponse {
-        return responseCall { tvShowsApiService.getTvShowDetailsById(tvShowId, sessionId) }
+    override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse {
+        return responseCall { tvShowsApiService.getTvShowDetailsById(tvShowId) }
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): RemoteCastAndCrewResponse {
@@ -50,26 +50,24 @@ class TvRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRatedTvShows(sessionId: String): RemoteTvShowResponse {
-        return responseCall { tvShowsApiService.getRatedTvShows(sessionId = sessionId) }
+    override suspend fun getRatedTvShows(): RemoteTvShowResponse {
+        return responseCall { tvShowsApiService.getRatedTvShows() }
     }
 
     override suspend fun setTvShowRate(
         rate: Int,
         tvShowId: Long,
-        sessionId: String
     ): RatingResponse? {
         return responseCall {
             tvShowsApiService.postTvRating(
                 tvId = tvShowId,
                 rate = rate.toFloat(),
-                sessionId = sessionId
             )
         }
     }
 
-    override suspend fun deleteTvShowRate(tvShowId: Long, sessionId: String) {
-        responseCall { tvShowsApiService.deleteTvRating(tvId = tvShowId, sessionId = sessionId) }
+    override suspend fun deleteTvShowRate(tvShowId: Long) {
+        responseCall { tvShowsApiService.deleteTvRating(tvId = tvShowId) }
     }
 
     override suspend fun getEpisodeVideos(
@@ -77,13 +75,20 @@ class TvRemoteDataSourceImpl @Inject constructor(
         seasonNumber: Int,
         episodeNumber: Int
     ): VideoResponse {
-        val actualSeasonNumber = if (seasonNumber<=0) 1 else seasonNumber
-        return  responseCall {
+        val actualSeasonNumber = if (seasonNumber <= 0) 1 else seasonNumber
+        return responseCall {
             tvShowsApiService.getEpisodeVideos(
                 tvShowId,
                 actualSeasonNumber,
                 episodeNumber
             )
         }
+    }
+
+    override suspend fun getTvShowsByGenreId(
+        genreId: Long,
+        page: Int
+    ): RemoteTvShowResponse {
+        return responseCall { tvShowsApiService.getTvShowsByGenreIds(listOf(genreId), page) }
     }
 }

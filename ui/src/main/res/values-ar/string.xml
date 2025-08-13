@@ -111,6 +111,10 @@
     <string name="points_acheived">النقاط المحققة</string>
     <string name="total_time">الوقت الكلي</string>
     <string name="finish_game_message">لقد أنهيت اللعبة!</string>
+    <string name="not_enough_points">لا توجد نقاط كافية</string>
+    <string name="not_enough_points_description">عذرا، ليس لديك نقاط كافية للحصول على تلميح</string>
+    <string name="ok">حسنا</string>
+    <string name="cd_cancel">يلغي</string>
     <!-- -   -->
     <!-- -  -->
     <string name="loading">تحميل…</string>
@@ -269,4 +273,8 @@
     <string name="failed_to_add_to_list">فشل في الإضافة إلى القائمة.</string>
 
     <string name="brightness_message">سوف تتعرض لهجوم من قبل مجموعة من الألوان الزاهية!</string>
+    <string name="when_is_released">متي تم عرضه</string>
+
+    <string name="oops_there_are_not_enough_points">لا توجد نقاط كافية</string>
+
 </resources>

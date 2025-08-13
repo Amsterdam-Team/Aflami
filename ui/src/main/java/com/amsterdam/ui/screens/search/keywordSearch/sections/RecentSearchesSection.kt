@@ -85,7 +85,7 @@ internal fun RecentSearchesSection(
                 }
             }
 
-            it.keyword.isEmpty() && it.recentSearches.isEmpty() && it.isLoading == false -> {
+            it.keyword.isBlank() && it.recentSearches.isEmpty() && !it.isLoading -> {
                 val topPadding =
                     if (LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE) {
                         12.dp

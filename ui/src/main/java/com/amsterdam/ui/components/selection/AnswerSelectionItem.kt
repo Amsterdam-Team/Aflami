@@ -29,6 +29,7 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 fun AnswerSelectionItem(
     modifier: Modifier = Modifier,
     text: String = "",
+    isClickable : Boolean = true,
     status: AnswerStatus = AnswerStatus.Unselected,
     onClick: () -> Unit = {}
 ) {
@@ -47,7 +48,7 @@ fun AnswerSelectionItem(
                 shape = shape,
             )
             .clip(shape)
-            .clickable(onClick = onClick)
+            .clickable(enabled = isClickable,onClick = onClick)
             .padding(vertical = 16.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -399,23 +399,21 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val movieId = 550L
         val rating = 5.0f
-        val sessionId = "session_id"
         val expectedResponse = RatingResponse(statusCode = 12, statusMessage = "success")
 
         coEvery {
             movieApiService.postMovieRating(
                 movieId,
                 rating,
-                sessionId
             )
         } returns expectedResponse
 
         // When
-        val result = movieRemoteDataSourceImpl.setMovieRate(rating, movieId, sessionId)
+        val result = movieRemoteDataSourceImpl.setMovieRate(rating, movieId)
 
         // Then
         assertThat(result).isEqualTo(expectedResponse)
-        coVerify(exactly = 1) { movieApiService.postMovieRating(movieId, rating, sessionId) }
+        coVerify(exactly = 1) { movieApiService.postMovieRating(movieId, rating) }
 
 
     }
@@ -423,29 +421,27 @@ class MovieRemoteDataSourceImplTest {
     @Test
     fun `getRatedMovie should return Unit when successful`() = runTest {
         //Given
-        val sessionId = "session_id"
         val expectedResponse = RemoteMovieResponse(
             page = 1,
             results = listOf(remoteMovieItemDto),
             totalPages = 1,
             totalResults = 1
         )
-        coEvery { movieApiService.getRatedMovies(0, sessionId) } returns expectedResponse
+        coEvery { movieApiService.getRatedMovies(0) } returns expectedResponse
         //When
-        val result = movieRemoteDataSourceImpl.getRatedMovies(sessionId)
+        val result = movieRemoteDataSourceImpl.getRatedMovies()
         //Then
         assertThat(result).isEqualTo(expectedResponse)
-        coVerify(exactly = 1) { movieApiService.getRatedMovies(0, sessionId) }
+        coVerify(exactly = 1) { movieApiService.getRatedMovies(0) }
     }
 
     @Test
     fun `getRatedMovie should throw NetworkException when api call fails`() = runTest {
         //Given
-        val sessionId = "session_id"
-        coEvery { movieApiService.getRatedMovies(0, sessionId) } throws NetworkException()
+        coEvery { movieApiService.getRatedMovies(0) } throws NetworkException()
         //When & Then
         assertThrows<NetworkException> {
-            movieRemoteDataSourceImpl.getRatedMovies(sessionId)
+            movieRemoteDataSourceImpl.getRatedMovies()
         }
     }
 
@@ -453,17 +449,16 @@ class MovieRemoteDataSourceImplTest {
     fun `deleteMovieRate should call deleteMovieRate in API with correct parameters`() = runTest {
         // Given
         val movieId = 1399L
-        val sessionId = "session_id"
         coEvery {
-            movieApiService.deleteMovieRate(movieId, sessionId)
+            movieApiService.deleteMovieRate(movieId)
         } returns Unit
 
         // When
-        movieRemoteDataSourceImpl.deleteMovieRate(movieId, sessionId)
+        movieRemoteDataSourceImpl.deleteMovieRate(movieId)
 
         // Then
         coVerify(exactly = 1) {
-            movieApiService.deleteMovieRate(movieId, sessionId)
+            movieApiService.deleteMovieRate(movieId)
         }
     }
 }
