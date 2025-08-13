@@ -45,6 +45,9 @@ fun LetsPlayScreen(viewModel: LetsPlayViewModel = hiltViewModel()) {
                 is LetsPlayEffect.NavigateToGuessMovieByReleaseScreen ->
                     navController.navigate(Route.GuessReleaseYearGame(effect.difficulty))
 
+                is LetsPlayEffect.NavigateToGuessCharacterScreen ->
+                    navController.navigate(Route.GuessCharacter(effect.difficulty))
+
                 is LetsPlayEffect.NavigateToGuessMovieByGenreScreen -> navController.navigate(
                     Route.GenreGame(difficulty = effect.difficulty)
                 )

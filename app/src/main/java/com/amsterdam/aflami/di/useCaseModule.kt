@@ -29,6 +29,10 @@ import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.useCase.game.character.DoGuessCharacterGameHintUseCase
+import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUseCase
+import com.amsterdam.domain.useCase.game.character.GuessCharacterGameUseCase
+import com.amsterdam.domain.useCase.game.character.SubmitCharacterAnswerUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.DoGuessReleaseGameHintUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQuestionsUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.GuessReleaseYearGameUseCase
@@ -322,12 +326,14 @@ object UseCaseModule {
     fun provideGetTotalUserPointsUseCase(gameRepository: GameRepository) =
         GetTotalUserPointsUseCase(gameRepository)
 
+    @Provides
+    fun provideGetAvailableGamesUseCase() = GetAvailableGamesUseCase()
 
     @Provides
     fun provideGenerateMovieReleaseYearQuestionsUseCase(
         gameRepository: GameRepository,
         getGameDifficultyByDifficultyType: GetGameDifficultyByDifficultyTypeUseCase
-    ) = GenerateMovieReleaseYearQuestionsUseCase(gameRepository,getGameDifficultyByDifficultyType)
+    ) = GenerateMovieReleaseYearQuestionsUseCase(gameRepository, getGameDifficultyByDifficultyType)
 
     @Provides
     fun provideGetGameDifficultyByDifficultyTypeUseCase(
@@ -338,13 +344,16 @@ object UseCaseModule {
     fun provideTimerHandler() = TimerHandler()
 
     @Provides
-    fun provideUpdateUserGamePointsUseCase(gameRepository:GameRepository) =
+    fun provideUpdateUserGamePointsUseCase(gameRepository: GameRepository) =
         UpdateUserGamePointsUseCase(gameRepository)
 
 
     @Provides
-    fun provideDoGuessReleaseGameHintUseCase(getTotalUserPointsUseCase: GetTotalUserPointsUseCase,updatePoints: UpdateUserGamePointsUseCase) =
-        DoGuessReleaseGameHintUseCase(getTotalUserPointsUseCase,updatePoints)
+    fun provideDoGuessReleaseGameHintUseCase(
+        getTotalUserPointsUseCase: GetTotalUserPointsUseCase,
+        updatePoints: UpdateUserGamePointsUseCase
+    ) =
+        DoGuessReleaseGameHintUseCase(getTotalUserPointsUseCase, updatePoints)
 
     @Provides
     fun provideSubmitGuessReleaseYearAnswerUseCase(
@@ -359,8 +368,38 @@ object UseCaseModule {
         submitAnswer: SubmitGuessReleaseYearAnswerUseCase
     ) = GuessReleaseYearGameUseCase(getGameData, doHint, submitAnswer)
 
+
     @Provides
-    fun provideGetAvailableGamesUseCase() = GetAvailableGamesUseCase()
+    fun provideDoGuessCharacterGameHintUseCase(
+        getTotalUserPointsUseCase: GetTotalUserPointsUseCase,
+        updatePoints: UpdateUserGamePointsUseCase
+    ) = DoGuessCharacterGameHintUseCase(
+        getTotalUserPointsUseCase,
+        updatePoints
+    )
+
+    @Provides
+    fun provideGenerateCharacterQuestions(
+        gameRepository: GameRepository,
+        getDifficulty: GetGameDifficultyByDifficultyTypeUseCase,
+    ) = GenerateCharacterQuestionsUseCase(gameRepository, getDifficulty)
+
+    @Provides
+    fun provideSubmitCharacterAnswerUseCase(
+        getDifficulty: GetGameDifficultyByDifficultyTypeUseCase,
+        updatePoints: UpdateUserGamePointsUseCase
+    ) = SubmitCharacterAnswerUseCase(getDifficulty, updatePoints)
+
+    @Provides
+    fun providesGuessCharacterGameUseCase(
+        getGameData: GenerateCharacterQuestionsUseCase,
+        doHint: DoGuessCharacterGameHintUseCase,
+        submitAnswer: SubmitCharacterAnswerUseCase
+    ) = GuessCharacterGameUseCase(
+        getGameData,
+        doHint,
+        submitAnswer
+    )
 
     @Provides
     fun provideGetGamePointsUseCase(

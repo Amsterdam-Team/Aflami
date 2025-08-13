@@ -1,5 +1,6 @@
-package com.amsterdam.ui.screens.games
+package com.amsterdam.ui.screens.games.character
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,46 +30,55 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.components.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.components.guessGame.GuessTitle
+import com.amsterdam.ui.components.guessGame.GuessPicture
 import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.game.GameTopBar
 import com.amsterdam.ui.screens.login.components.LoginBackground
-import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameEffect
-import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameViewModel
-import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearInteractionListener
-import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearUiState
+import com.amsterdam.viewmodel.guessCharacterGame.GuessCharacterGameEffect
+import com.amsterdam.viewmodel.guessCharacterGame.GuessCharacterGameViewModel
+import com.amsterdam.viewmodel.guessCharacterGame.GuessCharacterUiState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun GuessReleaseYearScreen(viewModel: GuessReleaseYearGameViewModel = hiltViewModel()) {
-
+fun GuessCharacterScreen(viewModel: GuessCharacterGameViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is GuessReleaseYearGameEffect.NavigateBack -> {
+                is GuessCharacterGameEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
-                is GuessReleaseYearGameEffect.NavigateToGameResult -> {
-                    navController.navigate(Route.ResultScreen(effect.totalCollectedPoints,effect.totalSpentSeconds))
+
+                is GuessCharacterGameEffect.NavigateToGame -> {
+                    navController.navigate(Route.Tab.LetsPlay)
+                }
+
+                is GuessCharacterGameEffect.NavigateToGameResult -> {
+                    navController.navigate(
+                        Route.ResultScreen(
+                            effect.totalCollectedPoints,
+                            effect.totalSpentSeconds
+                        )
+                    )
                 }
             }
         }
     }
-    GameContent(state.value,viewModel)
+
+    GameContent(state.value, viewModel)
 }
 
 @Composable
 private fun GameContent(
-    state: GuessReleaseYearUiState,
-    interactionListener: GuessReleaseYearInteractionListener,
+    state: GuessCharacterUiState,
+    interactionListener: GuessCharacterGameViewModel,
 ) {
     val pagerState = rememberPagerState(pageCount = { state.questions.size })
     val scope = rememberCoroutineScope()
@@ -84,7 +95,7 @@ private fun GameContent(
                 .navigationBarsPadding()
         ) {
             GameTopBar(
-                title = stringResource(R.string.release_game_title),
+                title = stringResource(R.string.guess_character_game_title),
                 timerUiState = state.timerUiState,
                 onCancelGameClick = interactionListener::onClickClose,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -115,9 +126,9 @@ private fun GameContent(
                         .padding(top = 20.dp),
             ) { page ->
                 val question = state.questions[page]
-                ReleaseYearGameQuestion(
-                    question = question.movieName,
-                    answers = question.releaseYearAnswer,
+                CharacterGameQuestion(
+                    questionImageModel = question.characterImageUrl,
+                    answers = question.characterChoices,
                     selectedAnswerIndex = state.selectedAnswerIndex,
                     isAnswerCorrect = state.isAnswerCorrect,
                     isHintEnabled = state.isHintEnabled,
@@ -142,8 +153,8 @@ private fun GameContent(
 }
 
 @Composable
-fun ReleaseYearGameQuestion(
-    question: String,
+fun CharacterGameQuestion(
+    questionImageModel: String,
     answers: List<String>,
     selectedAnswerIndex: Int?,
     isAnswerCorrect: Boolean?,
@@ -158,13 +169,18 @@ fun ReleaseYearGameQuestion(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        GuessTitle(
-            title = question,
+
+        val animatedBlur by animateDpAsState(
+            targetValue = if (isHintEnabled) 8.dp else 5.dp,
+        )
+
+        GuessPicture(
+            blurRadius = animatedBlur,
             points = 10,
+            imageUrl = questionImageModel,
             isHintVisible = isHintEnabled,
             onClick = onHintClick,
         )
-
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),

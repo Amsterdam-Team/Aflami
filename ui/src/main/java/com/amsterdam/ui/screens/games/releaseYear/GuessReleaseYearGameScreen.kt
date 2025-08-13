@@ -1,10 +1,11 @@
-package com.amsterdam.ui.screens.guessGenre
+package com.amsterdam.ui.screens.games.releaseYear
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -20,14 +21,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
-import com.amsterdam.designsystem.components.snackBar.SnackBarManager
-import com.amsterdam.entity.category.MovieGenre
+import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
 import com.amsterdam.ui.components.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
@@ -36,76 +35,61 @@ import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
 import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.login.components.LoginBackground
-import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.uiModel
-import com.amsterdam.viewmodel.game.whichGenre.GameQuestionUiState
-import com.amsterdam.viewmodel.game.whichGenre.GenreGameEffect
-import com.amsterdam.viewmodel.game.whichGenre.GenreGameInteractionListener
-import com.amsterdam.viewmodel.game.whichGenre.GenreGameUiState
-import com.amsterdam.viewmodel.game.whichGenre.GuessGenreViewModel
+import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameEffect
+import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameViewModel
+import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearInteractionListener
+import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearUiState
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.amsterdam.ui.R as R2
+
 
 @Composable
-fun GuessGenreScreen(
-    viewModel: GuessGenreViewModel = hiltViewModel()
-) {
+fun GuessReleaseYearScreen(viewModel: GuessReleaseYearGameViewModel = hiltViewModel()) {
+
     val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-    val context = LocalContext.current
-
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
+        viewModel.effect.collectLatest { effect ->
             when (effect) {
-                GenreGameEffect.CancelGame -> {
+                is GuessReleaseYearGameEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
-
-                is GenreGameEffect.GameOver -> {
-                    navController.navigate(
-                        Route.ResultScreen(
-                            totalCollectedPoints = effect.totalEarnedPoints,
-                            totalSpentSeconds = effect.answersTotalTime
-                        )
-                    )
-                }
-
-                GenreGameEffect.ShowNotEnoughPointsSnackBar -> {
-                    SnackBarManager.showError(context.getString(R2.string.oops_there_are_not_enough_points))
+                is GuessReleaseYearGameEffect.NavigateToGameResult -> {
+                    navController.navigate(Route.ResultScreen(effect.totalCollectedPoints,effect.totalSpentSeconds))
                 }
             }
         }
     }
-
-    GameScreenContent(state.value, viewModel)
+    GameContent(state.value,viewModel)
 }
 
 @Composable
-private fun GameScreenContent(
-    state: GenreGameUiState,
-    listener: GenreGameInteractionListener
+private fun GameContent(
+    state: GuessReleaseYearUiState,
+    interactionListener: GuessReleaseYearInteractionListener,
 ) {
+    val pagerState = rememberPagerState(pageCount = { state.questions.size })
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(state.currentQuestionIndex) {
+        scope.launch { pagerState.animateScrollToPage(state.currentQuestionIndex) }
+    }
     Box {
         LoginBackground()
         Column(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .padding(bottom = 16.dp)
                 .navigationBarsPadding()
         ) {
-            val pagerState = rememberPagerState(pageCount = { state.questions.size })
-            val scope = rememberCoroutineScope()
-
-            LaunchedEffect(state.currentQuestionIndex) {
-                scope.launch { pagerState.animateScrollToPage(state.currentQuestionIndex) }
-            }
             GameTopBar(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                title = stringResource(com.amsterdam.ui.R.string.genre_game_title),
+                title = stringResource(R.string.release_game_title),
                 timerUiState = state.timerUiState,
-                onCancelGameClick = listener::onCancelGameClick
+                onCancelGameClick = interactionListener::onClickClose,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
+
             Row(
                 Modifier
                     .wrapContentHeight()
@@ -130,48 +114,44 @@ private fun GameScreenContent(
                         .fillMaxWidth()
                         .padding(top = 20.dp),
             ) { page ->
-                GameQuestion(
-                    question = state.questions[page],
-                    isHintEnabled = state.isHintEnabled,
+                val question = state.questions[page]
+                ReleaseYearGameQuestion(
+                    question = question.movieName,
+                    answers = question.releaseYearAnswer,
                     selectedAnswerIndex = state.selectedAnswerIndex,
                     isAnswerCorrect = state.isAnswerCorrect,
-                    onHintClick = listener::onUseHint,
-                    onSelectAnswer = { answerIndex, answer ->
-                        listener
-                            .onChooseAnswerClick(
-                                answer,
-                                answerIndex,
-                            )
-                    },
+                    isHintEnabled = state.isHintEnabled,
+                    isChoicesEnabled = state.isNextEnabled,
+                    onHintClick = interactionListener::onHintClicked,
+                    onSelectAnswer = interactionListener::onSelectAnswer,
                 )
             }
-
-            Box(modifier = Modifier.weight(1f))
-
+            Spacer(modifier = Modifier.weight(1f))
             ConfirmButton(
                 title = stringResource(com.amsterdam.designsystem.R.string.next),
-                onClick = listener::onMoveToNextQuestion,
+                onClick = interactionListener::onMoveToNextQuestion,
                 isEnabled = state.isNextEnabled,
                 isLoading = false,
                 isNegative = false,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             )
         }
     }
 }
 
 @Composable
-fun GameQuestion(
-    question: GameQuestionUiState,
+fun ReleaseYearGameQuestion(
+    question: String,
+    answers: List<String>,
     selectedAnswerIndex: Int?,
     isAnswerCorrect: Boolean?,
     isHintEnabled: Boolean,
     modifier: Modifier = Modifier,
+    isChoicesEnabled: Boolean = true,
     onHintClick: () -> Unit = {},
-    onSelectAnswer: (answerIndex: Int, answer: MovieGenre) -> Unit = { _, _ -> },
+    onSelectAnswer: (Int) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -179,33 +159,35 @@ fun GameQuestion(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         GuessTitle(
-            title = question.questionData,
+            title = question,
             points = 10,
             isHintVisible = isHintEnabled,
             onClick = onHintClick,
         )
 
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            itemsIndexed(question.answers) { index, answer ->
-                val state = if (selectedAnswerIndex == index) {
-                    when (isAnswerCorrect) {
-                        true -> AnswerStatus.Correct
-                        false -> AnswerStatus.Wrong
-                        null -> AnswerStatus.Unselected
+            itemsIndexed(answers) { index, answer ->
+                val state =
+                    if (selectedAnswerIndex == index) {
+                        when (isAnswerCorrect) {
+                            true -> AnswerStatus.Correct
+                            false -> AnswerStatus.Wrong
+                            null -> AnswerStatus.Unselected
+                        }
+                    } else {
+                        AnswerStatus.Unselected
                     }
-                } else {
-                    AnswerStatus.Unselected
-                }
 
                 AnswerSelectionItem(
-                    text = stringResource(answer.uiModel.displayableName),
+                    text = answer,
                     status = state,
                     onClick = {
-                        if (isAnswerCorrect != null) return@AnswerSelectionItem
-                        onSelectAnswer(index, answer)
-                    }
+                        if (isAnswerCorrect != null && isChoicesEnabled) return@AnswerSelectionItem
+                        onSelectAnswer(index)
+                    },
                 )
             }
         }
