@@ -33,7 +33,7 @@ import com.amsterdam.ui.components.guessGame.GuessTitle
 import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.game.GameTopBar
+import com.amsterdam.ui.screens.games.component.GameAppBar
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameEffect
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameViewModel
@@ -83,7 +83,7 @@ private fun GameContent(
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
-            GameTopBar(
+            GameAppBar(
                 title = stringResource(R.string.release_game_title),
                 timerUiState = state.timerUiState,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),

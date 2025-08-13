@@ -21,7 +21,7 @@ class GenerateCharacterQuestionsUseCase(
             val choices = generateCharacterChoices(correctAnswer)
             CharacterDataQuestion(
                 questionAsPosterUrl = correctAnswer.name,
-                answers = choices.map(People::name),
+                choices = choices.map(People::name),
                 correctAnswer = correctAnswer.name,
                 questionTimeSeconds = gameDifficulty.timeLimitSeconds
             )
@@ -44,7 +44,7 @@ class GenerateCharacterQuestionsUseCase(
 
     data class CharacterDataQuestion(
         val questionAsPosterUrl: String,
-        val answers: List<String>,
+        val choices: List<String>,
         val correctAnswer: String,
         val questionTimeSeconds: Int,
     )

@@ -388,7 +388,7 @@ object UseCaseModule {
 
     @Provides
     fun providesGuessCharacterGameUseCase(
-        getGameData: GenerateMovieReleaseYearQuestionsUseCase,
+        getGameData: GenerateCharacterQuestionsUseCase,
         doHint: DoGuessCharacterGameHintUseCase,
         submitAnswer: SubmitCharacterAnswerUseCase
     ) = GuessCharacterGameUseCase(

@@ -1,10 +1,9 @@
 package com.amsterdam.domain.useCase.game.character
 
-import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQuestionsUseCase
 import com.amsterdam.entity.GameDifficulty
 
 class GuessCharacterGameUseCase(
-    private val getGameData: GenerateMovieReleaseYearQuestionsUseCase,
+    private val getGameData: GenerateCharacterQuestionsUseCase,
     private val doHint: DoGuessCharacterGameHintUseCase,
     private val submitAnswer: SubmitCharacterAnswerUseCase
 ) {

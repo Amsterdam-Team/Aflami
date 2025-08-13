@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.character
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.game.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUseCase.*
 import kotlinx.coroutines.flow.first
 
 class DoGuessCharacterGameHintUseCase(
@@ -15,8 +16,8 @@ class DoGuessCharacterGameHintUseCase(
     }
 
     suspend operator fun invoke(
-        characterQuestions: GenerateCharacterQuestionsUseCase.CharacterDataQuestion
-    ) {
+        characterQuestion: CharacterDataQuestion
+    ): CharacterDataQuestion {
 
         val currentPoints = getTotalUserPointsUseCase().first()
 
@@ -24,5 +25,7 @@ class DoGuessCharacterGameHintUseCase(
             throw NotEnoughPointsException()
 
         updatePoints(-REQUIRED_HINT_POINTS)
+
+        return characterQuestion
     }
 }
