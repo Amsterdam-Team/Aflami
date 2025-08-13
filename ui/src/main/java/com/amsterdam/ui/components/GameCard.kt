@@ -61,6 +61,7 @@ fun GameCard(
     description: String,
     containerColor: Color,
     borderColors: List<Color>,
+    shadowColor: Color,
     onCardClick: () -> Unit,
     gameCardImageContentType: GameCardImageContentType,
     modifier: Modifier = Modifier,
@@ -73,9 +74,9 @@ fun GameCard(
             .fillMaxWidth()
             .dropShadow(
                 shape = RoundedCornerShape(16.dp),
-                color = borderColors.first().copy(alpha = 0.12f),
-                offsetY = 12.dp,
-                blur = 12.dp,
+                color = shadowColor.copy(alpha = 0.12f),
+                offsetY = 4.dp,
+                blur = 6.dp,
             )
             .clip(RoundedCornerShape(16.dp))
             .background(color = containerColor, shape = RoundedCornerShape(16.dp))
@@ -409,6 +410,7 @@ private fun GameCardPreview() {
             description = "Try to guess the movie preparation time!",
             containerColor = Color.White,
             borderColors = listOf(Color.Red, Color.Blue),
+            shadowColor = Color.White,
             onCardClick = {},
             gameCardImageContentType = GameCardImageContentType.FUN_CLOWN,
             isPlayable = false,

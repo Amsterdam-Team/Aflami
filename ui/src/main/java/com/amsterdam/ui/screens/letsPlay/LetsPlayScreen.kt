@@ -98,6 +98,7 @@ private fun LetsPlayScreenContent(
                     description = stringResource(gameCardData.description),
                     containerColor = gameCardData.containerColor,
                     borderColors = gameCardData.borderColors,
+                    shadowColor = gameCardData.shadowColor,
                     onCardClick = { interactionListener.onClickGameCard(it.gameTypeUiState) },
                     gameCardImageContentType = gameCardData.gameCardImageContentType,
                     modifier = Modifier.padding(horizontal = 16.dp),
