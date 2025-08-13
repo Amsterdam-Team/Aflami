@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.amsterdam.ui.R as R2
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,14 +28,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.components.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.components.guessGame.GuessTitle
 import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.game.GameTopBar
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.uiModel
 import com.amsterdam.viewmodel.game.whichGenre.GameQuestionUiState
@@ -45,6 +43,7 @@ import com.amsterdam.viewmodel.game.whichGenre.GenreGameInteractionListener
 import com.amsterdam.viewmodel.game.whichGenre.GenreGameUiState
 import com.amsterdam.viewmodel.game.whichGenre.GuessGenreViewModel
 import kotlinx.coroutines.launch
+import com.amsterdam.ui.R as R2
 
 @Composable
 fun GuessGenreScreen(
@@ -63,10 +62,12 @@ fun GuessGenreScreen(
                 }
 
                 is GenreGameEffect.GameOver -> {
-                    navController.navigate(Route.ResultScreen(
-                        totalCollectedPoints = effect.totalEarnedPoints,
-                        totalSpentSeconds = effect.answersTotalTime
-                    ))
+                    navController.navigate(
+                        Route.ResultScreen(
+                            totalCollectedPoints = effect.totalEarnedPoints,
+                            totalSpentSeconds = effect.answersTotalTime
+                        )
+                    )
                 }
 
                 GenreGameEffect.ShowNotEnoughPointsSnackBar -> {
