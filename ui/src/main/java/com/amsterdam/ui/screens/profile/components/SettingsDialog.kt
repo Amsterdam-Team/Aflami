@@ -80,10 +80,9 @@ fun SettingsDialog(
                         isLoading = false,
                         isEnabled = true,
                         isNegative = false,
-                        onClick = {}
+                        onClick = onLogoutClick
                     )
-                },
-                onClick = onLogoutClick
+                }
             )
         }
     }
