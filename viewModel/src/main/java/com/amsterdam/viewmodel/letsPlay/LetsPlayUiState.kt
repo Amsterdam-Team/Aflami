@@ -1,5 +1,6 @@
 package com.amsterdam.viewmodel.letsPlay
 
+import com.amsterdam.entity.Game
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState
 
 data class LetsPlayUiState(
@@ -30,5 +31,14 @@ data class LetsPlayUiState(
             GUESS_MOVIE_BY_RELEASE,
             GUESS_MOVIE_BY_GENRE
         }
+    }
+}
+
+fun GameTypeUiState.toGameType(): Game.GameType {
+    return when (this) {
+        GameTypeUiState.GUESS_CHARACTER -> Game.GameType.GUESS_CHARACTER
+        GameTypeUiState.GUESS_MOVIE_BY_POSTER -> Game.GameType.GUESS_MOVIE_BY_POSTER
+        GameTypeUiState.GUESS_MOVIE_BY_RELEASE -> Game.GameType.GUESS_MOVIE_BY_RELEASE
+        GameTypeUiState.GUESS_MOVIE_BY_GENRE -> Game.GameType.GUESS_MOVIE_BY_GENRE
     }
 }

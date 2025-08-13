@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.api
 
+import com.amsterdam.remotedatasource.utils.RequiresSessionId
 import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
@@ -9,7 +10,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -53,7 +53,7 @@ interface MovieApiService {
     ): RemoteCastAndCrewResponse
 
     @GET("movie/{movieId}")
-    @Headers("X-Require-Session: true")
+    @RequiresSessionId
     suspend fun getMovieDetailsById(
         @Path("movieId") movieId: Long,
         @Query("append_to_response") append: String = "reviews,credits,actors,similar,images,videos,account_states",
@@ -71,7 +71,7 @@ interface MovieApiService {
         @Query("page") page: Int
     ): RemoteMovieResponse
 
-    @Headers("X-Require-Session: true")
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("movie/{movie_id}/rating")
     suspend fun postMovieRating(
@@ -79,13 +79,13 @@ interface MovieApiService {
         @Field("value") rate: Float,
     ): RatingResponse
 
-    @Headers("X-Require-Session: true")
+    @RequiresSessionId
     @GET("account/{account_id}/rated/movies")
     suspend fun getRatedMovies(
         @Path("account_id") accountId: Int = 0,
     ): RemoteMovieResponse
 
-    @Headers("X-Require-Session: true")
+    @RequiresSessionId
     @DELETE("movie/{movie_id}/rating")
     suspend fun deleteMovieRate(
         @Path("movie_id") movieId: Long,

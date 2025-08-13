@@ -103,7 +103,7 @@
     <string name="lets_start">Let’s start</string>
     <string name="and">And</string>
     <string name="sec">Sec</string>
-    <string name="game_settings">%1$d questions, %2$d seconds, %3$d points per question</string>
+    <string name="game_settings">%1$d questions, %2$dsec, %3$d points per question.</string>
     <string name="hint">hint? %1$d Pts.</string>
     <string name="next">Next</string>
     <string name="back_to_menue">Back to menu</string>
@@ -269,5 +269,6 @@
     <string name="brightness_message">You will be attacked by a group of bright colors!</string>
     <string name="when_is_released">When is released?</string>
 
+    <string name="oops_there_are_not_enough_points">Oops, there are not enough points</string>
 
 </resources>

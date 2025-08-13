@@ -275,4 +275,6 @@
     <string name="brightness_message">سوف تتعرض لهجوم من قبل مجموعة من الألوان الزاهية!</string>
     <string name="when_is_released">متي تم عرضه</string>
 
+    <string name="oops_there_are_not_enough_points">لا توجد نقاط كافية</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.api
 
+import com.amsterdam.remotedatasource.utils.RequiresSessionId
 import com.amsterdam.repository.dto.remote.EpisodeResponse
 import com.amsterdam.repository.dto.remote.RatingResponse
 import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
@@ -10,7 +11,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -36,7 +36,7 @@ interface TvShowsApiService {
         @Path("tvShowId") tvShowId: Long
     ): RemoteCastAndCrewResponse
 
-    @Headers("X-Require-Session: true")
+    @RequiresSessionId
     @GET("tv/{tvShowId}")
     suspend fun getTvShowDetailsById(
         @Path("tvShowId") tvShowId: Long,
@@ -65,6 +65,7 @@ interface TvShowsApiService {
     ): VideoResponse
 
 
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("tv/{tv_id}/rating")
     suspend fun postTvRating(
@@ -72,11 +73,13 @@ interface TvShowsApiService {
         @Field("value") rate: Float,
     ): RatingResponse
 
+    @RequiresSessionId
     @DELETE("tv/{tv_id}/rating")
     suspend fun deleteTvRating(
         @Path("tv_id") tvId: Long,
     ): RatingResponse
 
+    @RequiresSessionId
     @GET("account/{account_id}/rated/tv")
     suspend fun getRatedTvShows(
         @Path("account_id") accountId: Int = 0,

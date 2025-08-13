@@ -33,24 +33,27 @@ import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayViewModel
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LetsPlayScreen(viewModel: LetsPlayViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
+
     LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest { effect ->
+        viewModel.effect.collect { effect ->
             when (effect) {
                 is LetsPlayEffect.NavigateToGuessMovieByReleaseScreen ->
                     navController.navigate(Route.GuessReleaseYearGame(effect.difficulty))
 
                 is LetsPlayEffect.NavigateToGuessCharacterScreen ->
                     navController.navigate(Route.GuessCharacter(effect.difficulty))
+
+                is LetsPlayEffect.NavigateToGuessMovieByGenreScreen -> navController.navigate(
+                    Route.GenreGame(difficulty = effect.difficulty)
+                )
             }
         }
     }
-
     LetsPlayScreenContent(state = state.value, interactionListener = viewModel)
 }
 
