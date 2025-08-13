@@ -5,4 +5,5 @@ interface GuessReleaseYearInteractionListener {
     fun onSelectAnswer(selectedAnswerIndex : Int)
     fun onMoveToNextQuestion()
     fun onCloseButtonClicked()
+    fun onClickClose()
 }

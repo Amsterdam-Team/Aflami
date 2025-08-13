@@ -28,12 +28,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.components.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.components.guessGame.GuessTitle
 import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
 import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.screens.games.component.GameAppBar
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameEffect
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameViewModel
@@ -56,7 +56,7 @@ fun GuessReleaseYearScreen(viewModel: GuessReleaseYearGameViewModel = hiltViewMo
                     navController.popBackStack()
                 }
                 is GuessReleaseYearGameEffect.NavigateToGameResult -> {
-                    navController.navigate(Route.ResultScreen)
+                    navController.navigate(Route.ResultScreen(effect.totalCollectedPoints,effect.totalSpentSeconds))
                 }
             }
         }
@@ -83,9 +83,10 @@ private fun GameContent(
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
-            GameAppBar(
+            GameTopBar(
                 title = stringResource(R.string.release_game_title),
                 timerUiState = state.timerUiState,
+                onCancelGameClick = interactionListener::onClickClose,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
 
@@ -120,6 +121,7 @@ private fun GameContent(
                     selectedAnswerIndex = state.selectedAnswerIndex,
                     isAnswerCorrect = state.isAnswerCorrect,
                     isHintEnabled = state.isHintEnabled,
+                    isChoicesEnabled = state.isNextEnabled,
                     onHintClick = interactionListener::onHintClicked,
                     onSelectAnswer = interactionListener::onSelectAnswer,
                 )
@@ -147,6 +149,7 @@ fun ReleaseYearGameQuestion(
     isAnswerCorrect: Boolean?,
     isHintEnabled: Boolean,
     modifier: Modifier = Modifier,
+    isChoicesEnabled: Boolean = true,
     onHintClick: () -> Unit = {},
     onSelectAnswer: (Int) -> Unit = {},
 ) {
@@ -182,7 +185,7 @@ fun ReleaseYearGameQuestion(
                     text = answer,
                     status = state,
                     onClick = {
-                        if (isAnswerCorrect != null) return@AnswerSelectionItem
+                        if (isAnswerCorrect != null && isChoicesEnabled) return@AnswerSelectionItem
                         onSelectAnswer(index)
                     },
                 )

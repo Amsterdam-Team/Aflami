@@ -6,6 +6,7 @@ import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUse
 import com.amsterdam.domain.useCase.game.character.GuessCharacterGameUseCase
 import com.amsterdam.domain.useCase.game.character.SubmitCharacterAnswerUseCase.AnswerResult
 import com.amsterdam.entity.GameDifficulty.DifficultyType
+import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -169,6 +170,10 @@ class GuessCharacterGameViewModel @Inject constructor(
     }
 
     override fun onCloseButtonClicked() {
+        sendNewNavigationEffect(GuessCharacterGameEffect.NavigateBack)
+    }
+
+    override fun onClickClose() {
         sendNewNavigationEffect(GuessCharacterGameEffect.NavigateBack)
     }
 

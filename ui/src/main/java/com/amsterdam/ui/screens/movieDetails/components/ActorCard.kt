@@ -1,5 +1,6 @@
 package com.amsterdam.ui.screens.movieDetails.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -26,11 +27,15 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiStat
 
 @Composable
 fun ActorCard(modifier: Modifier = Modifier, actor: ActorMovieUiState) {
-    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Column(modifier = modifier.width(78.dp)) {
         SafeImageView(
             modifier = Modifier
                 .size(78.dp)
+                .border(
+                    width = 1.dp,
+                    color = AppTheme.color.stroke,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .clip(RoundedCornerShape(16.dp)),
             model = actor.photo,
             contentDescription = actor.name,

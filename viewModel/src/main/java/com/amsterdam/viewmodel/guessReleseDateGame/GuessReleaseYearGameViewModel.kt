@@ -24,8 +24,9 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     dispatcherProvider
 ), GuessReleaseYearInteractionListener {
     private val difficultyType = DifficultyType.valueOf(args.difficulty)
-    private var spentTimeSeconds : Int = 0
-    private var totalCollectedPoints : Int = 0
+    private var spentTimeSeconds: Int = 0
+    private var totalCollectedPoints: Int = 0
+
     init {
         fetchQuestions()
     }
@@ -45,15 +46,20 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     }
 
     private fun onSuccessGetQuestions(questions: List<MovieReleasedDateQuestion>) {
-        updateState { it.copy(questions = questions.toQuestionsUiStateUiState()) }
-        startTheTimer()
+        viewModelScope.launch {
+            updateState { it.copy(questions = questions.toQuestionsUiStateUiState()) }
+            startTheTimer()
+        }
     }
 
-    private fun startTheTimer(){
+    private fun startTheTimer() {
         val currentQuestion =
             state.value.questions[state.value.currentQuestionIndex]
         viewModelScope.launch(dispatcherProvider.Default) {
-            timerHandler.startTimer( currentQuestion.questionTimeSeconds, onTimerFinish = ::onTimeFinish)
+            timerHandler.startTimer(
+                currentQuestion.questionTimeSeconds,
+                onTimerFinish = ::onTimeFinish
+            )
                 .collect(::onTimerUpdate)
         }
     }
@@ -151,7 +157,12 @@ class GuessReleaseYearGameViewModel @Inject constructor(
             }
             startTheTimer()
         } else {
-            sendNewNavigationEffect(GuessReleaseYearGameEffect.NavigateToGameResult(totalCollectedPoints, spentTimeSeconds))
+            sendNewNavigationEffect(
+                GuessReleaseYearGameEffect.NavigateToGameResult(
+                    totalCollectedPoints,
+                    spentTimeSeconds
+                )
+            )
         }
     }
 
@@ -160,6 +171,10 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     }
 
     override fun onCloseButtonClicked() {
+        sendNewNavigationEffect(GuessReleaseYearGameEffect.NavigateBack)
+    }
+
+    override fun onClickClose() {
         sendNewNavigationEffect(GuessReleaseYearGameEffect.NavigateBack)
     }
 
