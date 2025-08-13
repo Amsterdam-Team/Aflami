@@ -190,7 +190,7 @@ fun ReleaseYearGameQuestion(
                     text = answer,
                     status = state,
                     onClick = {
-                        if (isAnswerCorrect != null && isChoicesEnabled) return@AnswerSelectionItem
+                        if (isChoicesEnabled) return@AnswerSelectionItem
                         onSelectAnswer(index)
                     },
                 )

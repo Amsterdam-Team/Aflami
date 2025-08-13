@@ -45,7 +45,6 @@ import com.amsterdam.ui.components.guessGame.GuessPicture
 import com.amsterdam.ui.components.guessGame.TimerComponent
 import com.amsterdam.ui.components.selection.AnswerSelectionItem
 import com.amsterdam.ui.components.selection.AnswerStatus
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameEffect
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameViewModel
@@ -150,6 +149,7 @@ private fun GuessByPosterContent(
                     isHintEnabled = state.isHintEnabled,
                     selectedAnswerIndex = state.selectedAnswerIndex,
                     isAnswerCorrect = state.isAnswerCorrect,
+                    isChoiceEnabled = state.isNextEnabled,
                     onHintClick = interactionListener::onHintClicked,
                     onSelectAnswer = interactionListener::onSelectAnswer,
                 )
@@ -179,6 +179,7 @@ fun GameQuestion(
     isAnswerCorrect: Boolean?,
     isHintEnabled: Boolean,
     modifier: Modifier = Modifier,
+    isChoiceEnabled: Boolean = true,
     onHintClick: () -> Unit = {},
     onSelectAnswer: (Int) -> Unit = {},
 ) {
@@ -218,7 +219,7 @@ fun GameQuestion(
                     text = answer,
                     status = status,
                     onClick = {
-                        if (isAnswerCorrect != null) return@AnswerSelectionItem
+                        if (isChoiceEnabled) return@AnswerSelectionItem
                         onSelectAnswer(index)
                     },
                 )

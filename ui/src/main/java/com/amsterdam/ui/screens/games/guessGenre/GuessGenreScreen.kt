@@ -135,6 +135,7 @@ private fun GameScreenContent(
                     isHintEnabled = state.isHintEnabled,
                     selectedAnswerIndex = state.selectedAnswerIndex,
                     isAnswerCorrect = state.isAnswerCorrect,
+                    isChoiceEnabled = state.isNextEnabled,
                     onHintClick = listener::onUseHint,
                     onSelectAnswer = { answerIndex, answer ->
                         listener
@@ -170,6 +171,7 @@ fun GameQuestion(
     isAnswerCorrect: Boolean?,
     isHintEnabled: Boolean,
     modifier: Modifier = Modifier,
+    isChoiceEnabled: Boolean = true,
     onHintClick: () -> Unit = {},
     onSelectAnswer: (answerIndex: Int, answer: MovieGenre) -> Unit = { _, _ -> },
 ) {
@@ -203,7 +205,7 @@ fun GameQuestion(
                     text = stringResource(answer.uiModel.displayableName),
                     status = state,
                     onClick = {
-                        if (isAnswerCorrect != null) return@AnswerSelectionItem
+                        if (isChoiceEnabled) return@AnswerSelectionItem
                         onSelectAnswer(index, answer)
                     }
                 )
