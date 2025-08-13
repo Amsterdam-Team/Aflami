@@ -1,4 +1,4 @@
-package com.amsterdam.ui.screens.games
+package com.amsterdam.ui.screens.games.releaseYear
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

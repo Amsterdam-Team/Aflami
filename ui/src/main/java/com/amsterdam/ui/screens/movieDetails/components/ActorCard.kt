@@ -20,8 +20,6 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.application.LocalRestrictionLevel
-import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiState
 
 

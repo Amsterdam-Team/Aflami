@@ -10,36 +10,29 @@ import kotlin.uuid.ExperimentalUuidApi
 
 class GenerateCharacterQuestionsUseCase(
     private val gameRepository: GameRepository,
-    private val getGameDifficultyByDifficultyTypeUseCase: GetGameDifficultyByDifficultyTypeUseCase
+    private val getGameDifficultyByDifficultyTypeUseCase: GetGameDifficultyByDifficultyTypeUseCase,
 ) {
     suspend operator fun invoke(difficultyType: DifficultyType): List<CharacterDataQuestion> {
         val gameDifficulty = getGameDifficultyByDifficultyTypeUseCase(difficultyType)
         val peoples = gameRepository.getCharacterDataQuestions(gameDifficulty.totalQuestions)
 
         return peoples.map { people ->
-            val correctAnswer = people
-            val choices = generateCharacterChoices(correctAnswer)
+            val correctPeople = people
+            val choices = peoples
+                .filter { it.name != correctPeople.name }
+                .shuffled()
+                .take(3)
+                .map(People::name)
+                .plus(correctPeople.name)
+                .shuffled()
+
             CharacterDataQuestion(
-                questionAsPosterUrl = correctAnswer.name,
-                choices = choices.map(People::name),
-                correctAnswer = correctAnswer.name,
+                questionAsPosterUrl = correctPeople.imageUrl,
+                choices = choices,
+                correctAnswer = correctPeople.name,
                 questionTimeSeconds = gameDifficulty.timeLimitSeconds
             )
         }
-    }
-
-    private fun generateCharacterChoices(
-        correctAnswer: People,
-        numberOfChoices: Int = 4
-    ): List<People> {
-        val choices = mutableSetOf(correctAnswer)
-
-        while (choices.size < numberOfChoices) {
-            val randomCharacter = choices.random()
-            choices.add(randomCharacter)
-        }
-
-        return choices.shuffled()
     }
 
     data class CharacterDataQuestion(

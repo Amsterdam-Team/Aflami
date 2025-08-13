@@ -1,5 +1,6 @@
 package com.amsterdam.aflami.di
 
+import com.amsterdam.aflami.AppLogger
 import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.repository.AuthenticationRepository
 import com.amsterdam.domain.repository.CountryRepository
@@ -377,7 +378,7 @@ object UseCaseModule {
     @Provides
     fun provideGenerateCharacterQuestions(
         gameRepository: GameRepository,
-        getDifficulty: GetGameDifficultyByDifficultyTypeUseCase
+        getDifficulty: GetGameDifficultyByDifficultyTypeUseCase,
     ) = GenerateCharacterQuestionsUseCase(gameRepository, getDifficulty)
 
     @Provides
