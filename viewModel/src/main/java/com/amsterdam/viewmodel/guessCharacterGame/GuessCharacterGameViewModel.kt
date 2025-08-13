@@ -48,8 +48,10 @@ class GuessCharacterGameViewModel @Inject constructor(
     }
 
     private fun onSuccessGetQuestions(questions: List<CharacterDataQuestion>) {
-        updateState { it.copy(questions = questions.toQuestionsUiStateUiState()) }
-        startTheTimer()
+        viewModelScope.launch {
+            updateState { it.copy(questions = questions.toQuestionsUiState()) }
+            startTheTimer()
+        }
     }
 
     private fun startTheTimer() {
@@ -103,7 +105,7 @@ class GuessCharacterGameViewModel @Inject constructor(
                         questions = it.questions.toMutableList().apply {
                             set(
                                 state.value.currentQuestionIndex,
-                                newQuestion.toQuestionUiStateUiState()
+                                newQuestion.toQuestionUiState()
                             )
                         }, isHintEnabled = false
                     )

@@ -49,8 +49,10 @@ class GuessMovieByPosterGameViewModel @Inject constructor(
     }
 
     private fun onSuccessGetQuestions(questions: List<MoviePosterQuestion>) {
-        updateState { it.copy(questions = questions.toQuestionsUiState()) }
-        startTheTimer()
+        viewModelScope.launch {
+            updateState { it.copy(questions = questions.toQuestionsUiState()) }
+            startTheTimer()
+        }
     }
 
     private fun startTheTimer() {

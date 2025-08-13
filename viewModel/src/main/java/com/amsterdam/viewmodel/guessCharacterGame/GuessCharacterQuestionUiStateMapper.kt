@@ -3,7 +3,7 @@ package com.amsterdam.viewmodel.guessCharacterGame
 import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUseCase.CharacterDataQuestion
 import com.amsterdam.viewmodel.guessCharacterGame.GuessCharacterUiState.CharacterQuestionUiState
 
-fun CharacterDataQuestion.toQuestionUiStateUiState(): CharacterQuestionUiState {
+fun CharacterDataQuestion.toQuestionUiState(): CharacterQuestionUiState {
     return CharacterQuestionUiState(
         characterImageUrl = this.questionAsPosterUrl,
         characterChoices = this.choices,
@@ -21,5 +21,5 @@ fun CharacterQuestionUiState.toCharacterDataQuestion(): CharacterDataQuestion {
     )
 }
 
-fun List<CharacterDataQuestion>.toQuestionsUiStateUiState(): List<CharacterQuestionUiState> =
-    map { it.toQuestionUiStateUiState() }
+fun List<CharacterDataQuestion>.toQuestionsUiState(): List<CharacterQuestionUiState> =
+    map { it.toQuestionUiState() }
