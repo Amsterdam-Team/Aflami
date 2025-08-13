@@ -1,7 +1,5 @@
 package com.amsterdam.remotedatasource.datasource
 
-import android.util.Log
-import com.amsterdam.entity.People
 import com.amsterdam.remotedatasource.api.PeopleApiService
 import com.amsterdam.remotedatasource.utils.apiHandler.responseCall
 import com.amsterdam.repository.datasource.remote.PeopleRemoteSource
