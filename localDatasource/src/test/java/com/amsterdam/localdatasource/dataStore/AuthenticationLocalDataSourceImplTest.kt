@@ -1,10 +1,9 @@
-package com.amsterdam.localdatasource.dataStore.appPreferences
+package com.amsterdam.localdatasource.dataStore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.amsterdam.domain.utils.SessionType
-import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
