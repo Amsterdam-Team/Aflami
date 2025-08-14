@@ -2,8 +2,8 @@ package com.amsterdam.localdatasource.roomDataBase.datasource
 
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
-import com.amsterdam.localdatasource.utils.createMovie
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -11,6 +11,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 
 class MovieLocalDataSourceImplTest {
@@ -94,7 +95,7 @@ class MovieLocalDataSourceImplTest {
             coVerify(exactly = 1) { movieDao.upsertMovies(localMovies) }
             coVerify(exactly = 1) {
                 movieDao.upsertPopularMovies(match { list ->
-                    list.size == 1 &&
+                    list.size == localMovies.size &&
                             list[0].movieId == localMovies[0].movieId &&
                             list[0].storedLanguage == localMovies[0].storedLanguage
                 })
@@ -108,7 +109,7 @@ class MovieLocalDataSourceImplTest {
         coVerify(exactly = 1) { movieDao.upsertMovies(localMovies) }
         coVerify(exactly = 1) {
             movieDao.upsertTopRatedMovies(match { list ->
-                list.size == 1 &&
+                list.size == localMovies.size &&
                         list[0].movieId == localMovies[0].movieId &&
                         list[0].storedLanguage == localMovies[0].storedLanguage
             })
@@ -122,7 +123,7 @@ class MovieLocalDataSourceImplTest {
         coVerify(exactly = 1) { movieDao.upsertMovies(localMovies) }
         coVerify(exactly = 1) {
             movieDao.upsertUpcomingMovies(match { list ->
-                list.size == 1 &&
+                list.size == localMovies.size &&
                         list[0].movieId == localMovies[0].movieId &&
                         list[0].storedLanguage == localMovies[0].storedLanguage
             })
@@ -194,3 +195,22 @@ private val moviesWithCategories = listOf(
 private val localMovies = listOf(createMovie(movieId = 42, storedLanguage = storedLanguage))
 
 private val expirationTime = Instant.parse("2023-01-01T00:00:00Z")
+
+private fun createMovie(
+    movieId: Long,
+    storedLanguage: String,
+    name: String = "Sample Movie"
+): MovieLocalDto {
+    return MovieLocalDto(
+        movieId = movieId,
+        storedLanguage = storedLanguage,
+        name = name,
+        description = "Test description",
+        poster = "poster.jpg",
+        releaseDate = LocalDate.parse("2020-01-01"),
+        popularity = 9.5,
+        rating = 4.3f,
+        originCountry = "US",
+        movieLength = 120,
+    )
+}

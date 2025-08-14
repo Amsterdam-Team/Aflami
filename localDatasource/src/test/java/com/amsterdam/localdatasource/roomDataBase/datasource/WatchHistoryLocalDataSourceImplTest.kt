@@ -10,129 +10,87 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.datetime.Instant
 import org.junit.jupiter.api.Test
 
 class WatchHistoryLocalDataSourceImplTest {
 
-    private lateinit var watchHistoryDao: WatchHistoryDao
-    private lateinit var dataSource: WatchHistoryLocalDataSourceImpl
+    private val watchHistoryDao by lazy { mockk<WatchHistoryDao>(relaxed = true) }
+    private val dataSource by lazy { WatchHistoryLocalDataSourceImpl(watchHistoryDao) }
 
-    @BeforeEach
-    fun setUp() {
-        watchHistoryDao = mockk(relaxed = true)
-        dataSource = WatchHistoryLocalDataSourceImpl(watchHistoryDao)
+    @Test
+    fun `upsertMovieToWatchHistory should call addMovieToWatchHistory in the dao`() = runTest {
+        dataSource.upsertMovieToWatchHistory(movieWatchHistoryDto)
+
+        coVerify(exactly = 1) { watchHistoryDao.upsertMovieToWatchHistory(movieWatchHistoryDto) }
     }
 
     @Test
-    fun `addMovieToWatchHistory should call addMovieToWatchHistory in the watchHistoryDao`() =
-        runTest {
-            //Given
-            val movieWatchHistoryDto = MovieWatchHistoryDto(
-                movieId = 1,
-                watchedDate = Clock.System.now()
-            )
-
-            //When
-            dataSource.upsertMovieToWatchHistory(movieWatchHistoryDto)
-
-            // Then
-            coVerify(exactly = 1) { watchHistoryDao.upsertMovieToWatchHistory(movieWatchHistoryDto) }
-        }
-
-    @Test
     fun `getMoviesWatchHistory should call the dao with correct offset`() = runTest {
-        //Give
-        val page = 2
-        val pageSize = 20
-        val offset = (page - 1) * pageSize
-
-        //When
         dataSource.getMoviesWatchHistory(page, pageSize)
 
-        //Then
         coVerify(exactly = 1) { watchHistoryDao.getMoviesWatchHistory(offset, pageSize) }
     }
 
     @Test
-    fun `getMoviesWatchHistory should return the correct flow`() = runTest {
-        //Give
-        val movieWatchHistoryDto = MovieWatchHistoryDto(
-            movieId = 1,
-            watchedDate = Clock.System.now()
-        )
-        val movieWatchHistoryFlow = flow { emit(listOf(movieWatchHistoryDto)) }
-        coEvery {
-            watchHistoryDao.getMoviesWatchHistory(
-                any(),
-                any()
-            )
-        } returns movieWatchHistoryFlow
+    fun `getMoviesWatchHistory should return list of movieWatchHistoryDto when data returned`() =
+        runTest {
+            coEvery {
+                watchHistoryDao.getMoviesWatchHistory(
+                    any(),
+                    any()
+                )
+            } returns movieWatchHistoryFlow
 
-        //When
-        val result = dataSource.getMoviesWatchHistory(1, 20)
+            val result = dataSource.getMoviesWatchHistory(page, pageSize)
 
-        //Then
-        assertThat(result.first()).isEqualTo(listOf(movieWatchHistoryDto))
-
-    }
+            assertThat(result.first()).isEqualTo(listOf(movieWatchHistoryDto))
+        }
 
     @Test
-    fun `addTvShowToWatchHistory should call addTvShowToWatchHistory in the watchHistoryDao`() =
-        runTest {
-            // Given
-            val tvShowWatchHistoryDto = TvShowWatchHistoryDto(
-                tvShowId = 101,
-                watchedDate = Clock.System.now()
-            )
+    fun `upsertTvShowToWatchHistory should call addTvShowToWatchHistory in the dao`() = runTest {
+        dataSource.upsertTvShowToWatchHistory(tvShowWatchHistoryDto)
 
-            // When
-            dataSource.upsertTvShowToWatchHistory(tvShowWatchHistoryDto)
-
-            // Then
-            coVerify(exactly = 1) {
-                watchHistoryDao.upsertTvShowToWatchHistory(tvShowWatchHistoryDto)
-            }
-        }
+        coVerify(exactly = 1) { watchHistoryDao.upsertTvShowToWatchHistory(tvShowWatchHistoryDto) }
+    }
 
     @Test
     fun `getTvShowsWatchHistory should call the dao with correct offset`() = runTest {
-        // Given
-        val page = 3
-        val pageSize = 15
-        val offset = (page - 1) * pageSize
-
-        // When
         dataSource.getTvShowsWatchHistory(page, pageSize)
 
-        // Then
-        coVerify(exactly = 1) {
-            watchHistoryDao.getTvShowsWatchHistory(offset, pageSize)
-        }
+        coVerify(exactly = 1) { watchHistoryDao.getTvShowsWatchHistory(offset, pageSize) }
     }
 
     @Test
-    fun `getTvShowsWatchHistory should return the correct flow`() = runTest {
-        // Given
-        val currentDateTime = Clock.System.now()
-        val tvShowWatchHistoryFlow = flow {
-            emit(listOf(TvShowWatchHistoryDto(101, currentDateTime)))
+    fun `getTvShowsWatchHistory should return list of tvShowWatchHistoryDto when data returned`() =
+        runTest {
+            coEvery {
+                watchHistoryDao.getTvShowsWatchHistory(
+                    any(),
+                    any()
+                )
+            } returns tvShowWatchHistoryFlow
+
+            val result = dataSource.getTvShowsWatchHistory(page, pageSize)
+
+            assertThat(result.first()).isEqualTo(listOf(tvShowWatchHistoryDto))
         }
-        coEvery {
-            watchHistoryDao.getTvShowsWatchHistory(
-                any(),
-                any()
-            )
-        } returns tvShowWatchHistoryFlow
-
-        // When
-        val result = dataSource.getTvShowsWatchHistory(1, 20)
-
-        // Then
-        assertThat(result.first()).isEqualTo(listOf(TvShowWatchHistoryDto(101, currentDateTime)))
-    }
-
 }
 
+private val movieWatchHistoryDto = MovieWatchHistoryDto(
+    movieId = 1,
+    watchedDate = Instant.parse("2023-01-01T00:00:00Z")
+)
 
+private const val page = 2
+private const val pageSize = 20
+private const val offset = (page - 1) * pageSize
+
+private val movieWatchHistoryFlow = flow { emit(listOf(movieWatchHistoryDto)) }
+
+private val tvShowWatchHistoryDto = TvShowWatchHistoryDto(
+    tvShowId = 101,
+    watchedDate = Instant.parse("2023-01-01T00:00:00Z")
+)
+
+private val tvShowWatchHistoryFlow = flow { emit(listOf(tvShowWatchHistoryDto)) }

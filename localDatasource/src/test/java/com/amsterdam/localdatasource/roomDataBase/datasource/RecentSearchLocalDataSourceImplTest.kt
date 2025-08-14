@@ -7,71 +7,60 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class RecentSearchLocalDataSourceImplTest {
-    private lateinit var dao: RecentSearchDao
-    private lateinit var recentSearchLocalDataSourceImpl: RecentSearchLocalDataSourceImpl
+    private val dao by lazy { mockk<RecentSearchDao>(relaxed = true) }
+    private val recentSearchLocalDataSourceImpl by lazy { RecentSearchLocalDataSourceImpl(dao) }
 
-    @BeforeEach
-    fun setUp(){
-        dao = mockk(relaxed = true)
-        recentSearchLocalDataSourceImpl = RecentSearchLocalDataSourceImpl(dao)
+    @Test
+    fun `upsertRecentSearch should call upsertRecentSearch in dao with correct data`() = runTest {
+        recentSearchLocalDataSourceImpl.upsertRecentSearch(recentSearch)
+
+        coVerify(exactly = 1) { dao.upsertRecentSearch(recentSearch) }
     }
 
     @Test
-    fun `upsertRecentSearch should call dao with correct data`()=runTest{
-        //Given
-        val recentSearch = SearchLocalDto(
-            searchKeyword = "action"
-        )
-        //When
-       recentSearchLocalDataSourceImpl.upsertRecentSearch(recentSearch)
-        //Then
-        coVerify (exactly = 1) { dao.upsertRecentSearch(recentSearch) }
+    fun `getRecentSearches should return list of LocalSearchDto when dao return data`() = runTest {
+        coEvery { dao.getRecentSearches() } returns recentSearches
 
-    }
-    @Test
-    fun `getRecentSearches should return list of LocalSearchDto`()=runTest {
-        //Given
-        val expected = listOf(
-            SearchLocalDto(
-                searchKeyword = "action"
-            )
-        )
-        coEvery { dao.getRecentSearches() } returns expected
-        //When
         val result = recentSearchLocalDataSourceImpl.getRecentSearches()
-        //Then
-        assertThat(result).isEqualTo(expected)
+
+        assertThat(result).isEqualTo(recentSearches)
     }
 
     @Test
-    fun `getRecentSearches should return empty list when dao return empty list`()=runTest {
+    fun `getRecentSearches should return empty list when dao return empty list`() = runTest {
         coEvery { dao.getRecentSearches() } returns emptyList()
-        //When
+
         val result = recentSearchLocalDataSourceImpl.getRecentSearches()
-        //Then
+
         assertThat(result).isEmpty()
     }
 
     @Test
-    fun `deleteRecentSearches should call delete function in the dao`()=runTest {
-        //When
+    fun `deleteRecentSearches should call deleteAllSearches in the dao`() = runTest {
         recentSearchLocalDataSourceImpl.deleteRecentSearches()
-        //Then
-        coVerify { dao.deleteAllSearches() }
+
+        coVerify(exactly = 1) { dao.deleteAllSearches() }
     }
 
     @Test
-    fun `deleteRecentSearchByKeywordAndType should delete search entry and its cross-referenced movies`() = runTest {
-        // Given
-        val keyword = "action"
-        // When
+    fun `deleteRecentSearchByKeyword should call deleteSearchByKeyword in the dao`() = runTest {
         recentSearchLocalDataSourceImpl.deleteRecentSearchByKeyword(keyword)
-        // Then
+
         coVerify { dao.deleteSearchByKeyword(keyword) }
     }
-
 }
+
+private const val keyword = "action"
+
+private val recentSearch = SearchLocalDto(
+    searchKeyword = keyword
+)
+
+private val recentSearches = listOf(
+    SearchLocalDto(
+        searchKeyword = keyword
+    )
+)
