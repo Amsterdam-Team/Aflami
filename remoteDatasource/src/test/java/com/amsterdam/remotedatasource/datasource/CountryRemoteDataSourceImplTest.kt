@@ -8,77 +8,79 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class CountryRemoteDataSourceImplTest {
 
-    private lateinit var countryApiService: CountryApiService
-    private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataDataSourceImpl
+    private val countryApiService: CountryApiService = mockk()
+    private val countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl =
+        CountryRemoteDataSourceImpl(countryApiService)
 
-    @BeforeEach
-    fun setUp() {
-        countryApiService = mockk()
-        countryRemoteDataSourceImpl = CountryRemoteDataDataSourceImpl(countryApiService)
+    @Test
+    fun `getCountries should return the correct list of countries on success`() = runTest {
+        coEvery { countryApiService.getCountries() } returns expectedCountryList
+
+        val actualResponse = countryRemoteDataSourceImpl.getCountries()
+
+        assertThat(actualResponse).isEqualTo(expectedCountryList)
     }
 
     @Test
-    fun `getCountries should call CountryApiService`() = runTest {
-        // Given
-        coEvery { countryApiService.getCountries() } returns emptyList()
+    fun `getCountries should call the CountryApiService exactly once on success`() = runTest {
+        coEvery { countryApiService.getCountries() } returns expectedCountryList
 
-        // When
         countryRemoteDataSourceImpl.getCountries()
 
-        // Then
         coVerify(exactly = 1) { countryApiService.getCountries() }
     }
 
     @Test
-    fun `getCountries should return the correct data from CountryApiService`() = runTest {
-        // Given
-        val expectedResponse = listOf(
-            CountryRemoteDto(
-                englishName = "United States of America",
-                isoCode = "US",
-                nativeName = "United States"
-            ),
-            CountryRemoteDto(englishName = "Canada", isoCode = "CA", nativeName = "Canada")
-        )
-        coEvery { countryApiService.getCountries() } returns expectedResponse
+    fun `getCountries should return an empty list when the API service returns one`() = runTest {
+        coEvery { countryApiService.getCountries() } returns emptyList()
 
-        // When
         val actualResponse = countryRemoteDataSourceImpl.getCountries()
 
-        // Then
-        assertThat(actualResponse).isEqualTo(expectedResponse)
+        assertThat(actualResponse).isEmpty()
     }
 
     @Test
-    fun `getCountries should throw NetworkException when API service throws an exception`() =
+    fun `getCountries should call the API service exactly once when it returns an empty list`() =
         runTest {
-            // Given
-            coEvery { countryApiService.getCountries() } throws NetworkException()
+            coEvery { countryApiService.getCountries() } returns emptyList()
 
-            // When & Then
+            countryRemoteDataSourceImpl.getCountries()
+
+            coVerify(exactly = 1) { countryApiService.getCountries() }
+        }
+
+    @Test
+    fun `getCountries should throw NetworkException when the API service call fails`() = runTest {
+        coEvery { countryApiService.getCountries() } throws networkException
+
+        assertThrows<NetworkException> {
+            countryRemoteDataSourceImpl.getCountries()
+        }
+    }
+
+    @Test
+    fun `getCountries should rethrow a NetworkException when the API service throws an exception`() =
+        runTest {
+            coEvery { countryApiService.getCountries() } throws networkException
+
             assertThrows<NetworkException> {
                 countryRemoteDataSourceImpl.getCountries()
             }
         }
 
-    @Test
-    fun `getCountries should return an empty list when API service returns an empty list`() =
-        runTest {
-            // Given
-            val expectedResponse = emptyList<CountryRemoteDto>()
-            coEvery { countryApiService.getCountries() } returns expectedResponse
+    private val expectedCountryList = listOf(
+        CountryRemoteDto(
+            englishName = "United States of America",
+            isoCode = "US",
+            nativeName = "United States"
+        ),
+        CountryRemoteDto(englishName = "Canada", isoCode = "CA", nativeName = "Canada")
+    )
 
-            // When
-            val actualResponse = countryRemoteDataSourceImpl.getCountries()
-
-            // Then
-            assertThat(actualResponse).isEmpty()
-            coVerify(exactly = 1) { countryApiService.getCountries() }
-        }
+    private val networkException = NetworkException()
 }

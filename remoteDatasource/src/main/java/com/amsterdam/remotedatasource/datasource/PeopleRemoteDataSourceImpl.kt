@@ -9,7 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class PeopleRemoteDataDataSourceImpl @Inject constructor(
+class PeopleRemoteDataSourceImpl @Inject constructor(
     private val peopleApiService: PeopleApiService
 ) : PeopleRemoteDataSource {
 
