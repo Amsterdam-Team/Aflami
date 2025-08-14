@@ -4,7 +4,7 @@ import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.localdatasource.utils.createTvShow
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
-import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
+import com.amsterdam.repository.dto.local.relation.TvShowWithCategories
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,13 +18,13 @@ class TvShowLocalDataSourceImplTest {
 
     private lateinit var tvShowDao: TvShowDao
     private lateinit var tvShowCategoryInterestDao: TvShowCategoryInterestDao
-    private lateinit var dataSource: TvShowLocalDataDataSourceImpl
+    private lateinit var dataSource: TvShowLocalDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         tvShowDao = mockk(relaxed = true)
         tvShowCategoryInterestDao = mockk(relaxed = true)
-        dataSource = TvShowLocalDataDataSourceImpl(tvShowDao, tvShowCategoryInterestDao)
+        dataSource = TvShowLocalDataSourceImpl(tvShowDao, tvShowCategoryInterestDao)
     }
 
     @Test
@@ -175,7 +175,7 @@ class TvShowLocalDataSourceImplTest {
 
     val localTvShows = listOf(createTvShow(id = 42, language = "en"))
     val tvShowsWithCategories = listOf(
-        TvShowWithCategory(
+        TvShowWithCategories(
             tvShow = createTvShow(id = 42, language = "en"),
             categories = emptyList()
         )

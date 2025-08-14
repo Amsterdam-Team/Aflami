@@ -42,8 +42,7 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
-import com.amsterdam.ui.application.LocalNavController
-import com.amsterdam.ui.navigation.Route
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.ui.screens.login.components.getLoginErrorMessage
 import com.amsterdam.ui.screens.login.components.getPasswordTextFieldIcon
@@ -59,20 +58,18 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 LoginEffect.NavigateToHome -> {
-                    navController.navigate(Route.Tab.Home) {
-                        popUpTo(0)
-                    }
+                    navigationManager.toHome(clearBackStack = true)
                 }
 
-                LoginEffect.NavigateToRegister -> navController.navigate(Route.Register)
-                LoginEffect.NavigateToResetPassword -> navController.navigate(Route.ResetPassword)
+                LoginEffect.NavigateToRegister -> navigationManager.toRegister()
+                LoginEffect.NavigateToResetPassword -> navigationManager.toResetPassword()
                 LoginEffect.ShowCredentialsError -> {
                 }
             }

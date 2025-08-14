@@ -33,7 +33,7 @@ import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.navigation.Route.MovieDetails
@@ -55,7 +55,7 @@ import kotlinx.coroutines.flow.emptyFlow
 internal fun SearchByCountryScreen(
     viewModel: CountrySearchViewModel = hiltViewModel()
 ) {
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = state.movies.collectAsLazyPagingItems()
     LaunchedEffect(movies.loadState) {
@@ -65,12 +65,10 @@ internal fun SearchByCountryScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 CountrySearchEffect.NavigateBack -> {
-                    navController.navigateUp()
+                    navigationManager.navigateUp()
                 }
 
-                CountrySearchEffect.NavigateToMovieDetails -> navController.navigate(
-                    MovieDetails(state.selectedMovieId)
-                )
+                CountrySearchEffect.NavigateToMovieDetails -> navigationManager.toMovieDetails(state.selectedMovieId)
             }
         }
     }

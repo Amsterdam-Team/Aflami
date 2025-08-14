@@ -50,8 +50,8 @@ internal val lightThemeColors =
         topRatedGradientBackground = listOf(Color(0xCC64163B), Color(0x0064163B)),
         shimmerEffectGradient = listOf(Color(0x14000000), Color(0x00000000), Color(0x3D000000)),
         onBoardingGradient = listOf(Color(0x000D0608), Color(0x000D0608)),
-        guessCharacterStrokeGradient = listOf(Color(0x05FFFFFF), Color(0x80D85895)),
-        guessMovieByPosterStrokeGradient = listOf(Color(0x000D0608), Color(0xFF0D0608)),
-        guessMovieByReleaseStrokeGradient = listOf(Color(0x000D0608), Color(0xFF0D0608)),
-        guessMovieByGenreStrokeGradient = listOf(Color(0x000D0608), Color(0xFF0D0608))
+        guessCharacterStrokeGradient = listOf(Color(0x80D85895), Color(0x05FFFFFF)),
+        guessMovieByPosterStrokeGradient = listOf(Color(0x802BA3D9), Color(0x05FFFFFF)),
+        guessMovieByReleaseStrokeGradient = listOf(Color(0x800A203A), Color(0x05FFFFFF)),
+        guessMovieByGenreStrokeGradient = listOf(Color(0x80E5A02E), Color(0x05FFFFFF))
     )

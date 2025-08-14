@@ -34,10 +34,9 @@ import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.topRated.component.TopRatedBackgroundComponent
 import com.amsterdam.ui.screens.topRated.component.TopRatedMediaItemsGrid
@@ -51,7 +50,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val mediaItems = state.mediaItems.collectAsLazyPagingItems()
     TopRatedContent(state, viewModel, mediaItems)
     LaunchedEffect(mediaItems.loadState) {
@@ -61,15 +60,15 @@ fun TopRatedScreen(viewModel: TopRatedViewModel = hiltViewModel()) {
         viewModel.effect.collectLatest {
             when (it) {
                 is TopRatedEffect.NavigateToMovieDetailsScreen -> {
-                    navController.navigate(Route.MovieDetails(it.movieId))
+                    navigationManager.toMovieDetails(it.movieId)
                 }
 
                 is TopRatedEffect.NavigateToTvShowDetailsEffect -> {
-                    navController.navigate(Route.SeriesDetails(it.tvShowId))
+                    navigationManager.toSeriesDetails(it.tvShowId)
                 }
 
                 TopRatedEffect.NavigateBack -> {
-                    navController.navigateUp()
+                    navigationManager.navigateUp()
                 }
             }
         }

@@ -6,33 +6,27 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class SetUserMovieRatingUseCaseTest {
 
-    private lateinit var movieRepository: MovieRepository
-    private lateinit var setUserMovieRatingUseCase: SetUserMovieRatingUseCase
-
-    @BeforeEach
-    fun setUp() {
-        movieRepository = mockk(relaxed = true)
-        setUserMovieRatingUseCase = SetUserMovieRatingUseCase(movieRepository)
+    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val setUserMovieRatingUseCase by lazy {
+        SetUserMovieRatingUseCase(movieRepository)
     }
 
     @Test
-    fun `setUserMovieRate should call repository with correct parameters`() = runTest {
-        // Given
-        val rate = 8
-        val movieId = 123L
+    fun `should call repository with correct parameters`() = runTest {
         coEvery { movieRepository.setMovieRate(rate = rate, movieId = movieId) } returns Unit
-        // When
-       val result = setUserMovieRatingUseCase.setUserMovieRate(rate, movieId)
 
-        // Then
+        val result = setUserMovieRatingUseCase.setUserMovieRate(rate, movieId)
+
         assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) {
             movieRepository.setMovieRate(rate = rate, movieId = movieId)
         }
     }
+
+    private val rate = 8
+    private val movieId = 123L
 }

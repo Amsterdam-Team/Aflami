@@ -14,7 +14,7 @@ import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.UpcomingCard
 import com.amsterdam.ui.components.adaptiveGrid
-import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
+import com.amsterdam.ui.components.EmptyStateText
 import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SimilarTvShowUiState
 

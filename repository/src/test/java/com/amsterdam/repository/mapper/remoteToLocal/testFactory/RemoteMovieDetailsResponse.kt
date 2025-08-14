@@ -1,13 +1,13 @@
 package com.amsterdam.repository.mapper.remoteToLocal.testFactory
 
-import com.amsterdam.repository.dto.remote.ProductionCompanyDto
-import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteCategoryDto
-import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
-import com.amsterdam.repository.dto.remote.RemoteMovieResponse
-import com.amsterdam.repository.dto.remote.VideoResponse
-import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
-import com.amsterdam.repository.dto.remote.review.ReviewsResponse
+import com.amsterdam.repository.dto.remote.ProductionCompanyRemoteDto
+import com.amsterdam.repository.dto.remote.CastAndCrewRemoteResponse
+import com.amsterdam.repository.dto.remote.CategoryRemoteDto
+import com.amsterdam.repository.dto.remote.MovieDetailsRemoteResponse
+import com.amsterdam.repository.dto.remote.MovieRemoteResponse
+import com.amsterdam.repository.dto.remote.VideoRemoteResponse
+import com.amsterdam.repository.dto.remote.movieGallery.GalleryRemoteResponse
+import com.amsterdam.repository.dto.remote.review.ReviewsRemoteResponse
 
 fun createRemoteMovieDetailsResponse(
     id: Long = 550L,
@@ -24,35 +24,35 @@ fun createRemoteMovieDetailsResponse(
     genreIds: List<Int> = emptyList(),
     originalLanguage: String = "en",
     originalTitle: String = "Fight Club",
-    productionCompanies: List<ProductionCompanyDto> = emptyList(),
+    productionCompanies: List<ProductionCompanyRemoteDto> = emptyList(),
     video: Boolean = false,
     voteCount: Int = 1000,
-    genres: List<RemoteCategoryDto> = emptyList(),
-    reviews: ReviewsResponse = ReviewsResponse(
+    genres: List<CategoryRemoteDto> = emptyList(),
+    reviews: ReviewsRemoteResponse = ReviewsRemoteResponse(
         page = 1,
         results = emptyList(),
         totalPages = 1,
         totalResults = 0
     ),
-    credits: RemoteCastAndCrewResponse = RemoteCastAndCrewResponse(
+    credits: CastAndCrewRemoteResponse = CastAndCrewRemoteResponse(
         cast = emptyList(),
         crew = emptyList()
     ),
-    similar: RemoteMovieResponse = RemoteMovieResponse(
+    similar: MovieRemoteResponse = MovieRemoteResponse(
         results = emptyList(),
         page = 1,
         totalPages = 1,
         totalResults = 0
     ),
-    images: RemoteGalleryResponse = RemoteGalleryResponse(
+    images: GalleryRemoteResponse = GalleryRemoteResponse(
         backdrops = emptyList(),
         posters = emptyList(),
         id = id,
         logos = emptyList()
     ),
-    videos: VideoResponse = VideoResponse(results = emptyList())
-): RemoteMovieDetailsResponse {
-    return RemoteMovieDetailsResponse(
+    videos: VideoRemoteResponse = VideoRemoteResponse(results = emptyList())
+): MovieDetailsRemoteResponse {
+    return MovieDetailsRemoteResponse(
         id = id,
         title = title,
         overview = overview,

@@ -64,7 +64,7 @@ fun CategoryCard(
             Text(
                 modifier =
                     Modifier
-                        .padding(top = 8.dp)
+                        .padding(top = 12.dp)
                         .weight(1f),
                 style = AppTheme.textStyle.label.medium,
                 text = categoryName,

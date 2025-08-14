@@ -8,19 +8,15 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetPopularMoviesUseCaseTest {
-    private lateinit var movieRepository: MovieRepository
-    private lateinit var getPopularMoviesUseCase: GetPopularMoviesUseCase
-
-    @BeforeEach
-    fun setUp() {
-        movieRepository = mockk(relaxed = true)
-        getPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository)
+    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val getPopularMoviesUseCase by lazy {
+        GetPopularMoviesUseCase(movieRepository)
     }
+
 
     @Test
     fun `should call getPopularMovies exactly once`() = runTest {

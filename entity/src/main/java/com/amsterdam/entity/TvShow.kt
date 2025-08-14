@@ -8,7 +8,7 @@ data class TvShow(
     val name: String,
     val description: String,
     val posterUrl: String,
-    val airDate: LocalDate,
+    val airDate: LocalDate?,
     val categories: List<TvShowGenre>,
     val rating: Float,
     val popularity: Double,

@@ -3,27 +3,26 @@ package com.amsterdam.viewmodel.watchHistory
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
-import com.amsterdam.viewmodel.shared.uiStates.MediaType
-import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryItemUiState
+import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryMovieUiState
+import com.amsterdam.viewmodel.watchHistory.WatchHistoryUiState.WatchHistoryTvShowUiState
 
-fun Movie.toWatchHistoryItemUiState(): WatchHistoryItemUiState {
-    return WatchHistoryItemUiState(
+fun Movie.toWatchHistoryItemUiState(): WatchHistoryMovieUiState {
+    return WatchHistoryMovieUiState(
         id = id,
         name = name,
         posterImageUrl = posterUrl,
-        yearOfRelease = releaseDate.year.toString(),
+        yearOfRelease = releaseDate?.year?.toString() ?: "",
         rate = rating.toFormattedRating(),
-        mediaType = MediaType.MOVIE
     )
 }
-fun TvShow.toWatchHistoryItemUiState(): WatchHistoryItemUiState {
-    return WatchHistoryItemUiState(
+
+fun TvShow.toWatchHistoryItemUiState(): WatchHistoryTvShowUiState {
+    return WatchHistoryTvShowUiState(
         id = id,
         name = name,
         posterImageUrl = posterUrl,
-        yearOfRelease = airDate.year.toString(),
+        yearOfRelease = airDate?.year.toString(),
         rate = rating.toFormattedRating(),
-        mediaType = MediaType.TV_SHOW
     )
 }
 

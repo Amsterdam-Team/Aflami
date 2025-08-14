@@ -27,29 +27,45 @@ class ApplicationViewModel @Inject constructor(
 
     init {
         listenToAppSettings()
-        viewModelScope.launch {
-            getRestrictionLevel()
-        }
+        setStartDestination()
+        getRestrictionLevel()
     }
 
-    suspend fun setStartDestination(): ApplicationUiState.StartDestinations {
-        val isOnboardingCompleted = getOnboardingStatusUseCase()
+    private fun setStartDestination() {
+        viewModelScope.launch(dispatcherProvider.IO) {
+            val isOnboardingCompleted = getOnboardingStatusUseCase()
 
-        if (!isOnboardingCompleted) {
-            return ApplicationUiState.StartDestinations.ON_BOARDING
-        }
-
-        val sessionType = getsSessionType()
-        return when (sessionType) {
-            SessionType.NOT_LOGGED_IN -> ApplicationUiState.StartDestinations.LOGIN
-            SessionType.LOGGED_IN -> ApplicationUiState.StartDestinations.HOME
-            SessionType.GUEST -> ApplicationUiState.StartDestinations.HOME
+            if (!isOnboardingCompleted) {
+                updateState {
+                    it.copy(
+                        startDestination = ApplicationUiState.StartDestinations.ON_BOARDING,
+                        isDestinationLoaded = true
+                    )
+                }
+            } else {
+                setNonOnboardingStartDestination()
+            }
         }
     }
 
     fun initAppSettings(locale: Locale) {
         viewModelScope.launch(dispatcherProvider.IO) {
             manageLocaleLanguageUseCase.initAppLanguage(locale.language)
+        }
+    }
+
+    private suspend fun setNonOnboardingStartDestination(){
+        val sessionType = getsSessionType()
+        val destination = when (sessionType) {
+            SessionType.NOT_LOGGED_IN -> ApplicationUiState.StartDestinations.LOGIN
+            SessionType.LOGGED_IN -> ApplicationUiState.StartDestinations.HOME
+            SessionType.GUEST -> ApplicationUiState.StartDestinations.HOME
+        }
+        updateState {
+            it.copy(
+                startDestination = destination,
+                isDestinationLoaded = true
+            )
         }
     }
 
@@ -77,11 +93,13 @@ class ApplicationViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRestrictionLevel(){
-        val restrictionLevel = manageRestrictionLevelUseCase.getRestrictionLevel()
-        restrictionLevel.collectLatest { restriction ->
-            updateState {
-                it.copy(restrictionLevel = restriction)
+    private fun getRestrictionLevel() {
+        viewModelScope.launch {
+            val restrictionLevel = manageRestrictionLevelUseCase.getRestrictionLevel()
+            restrictionLevel.collectLatest { restriction ->
+                updateState {
+                    it.copy(restrictionLevel = restriction)
+                }
             }
         }
     }

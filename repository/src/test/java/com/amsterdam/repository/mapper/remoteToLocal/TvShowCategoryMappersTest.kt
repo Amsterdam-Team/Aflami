@@ -1,6 +1,8 @@
 package com.amsterdam.repository.mapper.remoteToLocal
 
 import com.amsterdam.repository.mapper.remoteToLocal.testFactory.createRemoteCategoryDto
+import com.amsterdam.repository.mapper.toLocalTvShowCategoryDto
+import com.amsterdam.repository.mapper.toLocalTvShowDtoList
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
@@ -29,7 +31,7 @@ class TvShowCategoryMappersTest {
         )
 
         // Act
-        val localDtoList = remoteDtoList.toLocalTvShowCategoryDtoList(storedLanguage)
+        val localDtoList = remoteDtoList.toLocalTvShowDtoList(storedLanguage)
 
         // Assert
         assertThat(localDtoList).hasSize(2)

@@ -1,8 +1,8 @@
 package com.amsterdam.localdatasource.roomDataBase.datasource
 
 import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -14,17 +14,17 @@ import org.junit.jupiter.api.Test
 class CategoryLocalDataSourceImplTest {
 
     private lateinit var dao: CategoryDao
-    private lateinit var categoryLocalDataSourceImpl: CategoryLocalDataDataSourceImpl
+    private lateinit var categoryLocalDataSourceImpl: CategoryLocalDataSourceImpl
 
     @BeforeEach
     fun setup() {
         dao = mockk(relaxed = true)
-        categoryLocalDataSourceImpl = CategoryLocalDataDataSourceImpl(dao)
+        categoryLocalDataSourceImpl = CategoryLocalDataSourceImpl(dao)
     }
 
     @Test
     fun `upsertMovieCategories should call dao with correct data`() = runTest {
-        val categories = listOf(LocalMovieCategoryDto(1))
+        val categories = listOf(MovieCategoryLocalDto(1))
 
         categoryLocalDataSourceImpl.upsertMovieCategories(categories)
 
@@ -33,7 +33,7 @@ class CategoryLocalDataSourceImplTest {
 
     @Test
     fun `upsertTvShowCategories should call dao with correct data`() = runTest {
-        val categories = listOf(LocalTvShowCategoryDto(1))
+        val categories = listOf(TvShowCategoryLocalDto(1))
 
         categoryLocalDataSourceImpl.upsertTvShowCategories(categories)
 
@@ -42,7 +42,7 @@ class CategoryLocalDataSourceImplTest {
 
     @Test
     fun `getMovieCategories should return data from dao`() = runTest {
-        val expected = listOf(LocalMovieCategoryDto(1))
+        val expected = listOf(MovieCategoryLocalDto(1))
         coEvery { dao.getAllMovieCategories() } returns expected
 
         val result = categoryLocalDataSourceImpl.getMovieCategories()
@@ -52,7 +52,7 @@ class CategoryLocalDataSourceImplTest {
     @Test
     fun `getMovieCategories should return emptyList from dao`() = runTest {
         //Given
-        val expected = emptyList<LocalMovieCategoryDto>()
+        val expected = emptyList<MovieCategoryLocalDto>()
         //When
         coEvery { dao.getAllMovieCategories() } returns expected
         val result = categoryLocalDataSourceImpl.getMovieCategories()
@@ -63,7 +63,7 @@ class CategoryLocalDataSourceImplTest {
     @Test
     fun `getTvShowCategories should return data from dao`() = runTest {
         //Given
-        val expected = listOf(LocalTvShowCategoryDto(1))
+        val expected = listOf(TvShowCategoryLocalDto(1))
         //When
         coEvery { dao.getAllTvShowCategories() } returns expected
         val result = categoryLocalDataSourceImpl.getTvShowCategories()

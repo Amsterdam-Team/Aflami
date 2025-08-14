@@ -46,9 +46,9 @@ class CastViewModel @Inject constructor(
     }
 
     private suspend fun executeFetchCast(): List<Actor> {
-        return when(MediaType.valueOf(args.mediaType!!)) {
-            MediaType.MOVIE -> getMovieCastUseCase(args.mediaId!!)
-            MediaType.TV_SHOW -> getTvShowCastUseCase(args.mediaId!!)
+        return when(MediaType.valueOf(args.mediaType)) {
+            MediaType.MOVIE -> getMovieCastUseCase(args.mediaId)
+            MediaType.TV_SHOW -> getTvShowCastUseCase(args.mediaId)
         }
     }
 

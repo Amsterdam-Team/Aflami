@@ -7,25 +7,18 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class LoginWithUsernamePasswordTest {
-    private lateinit var loginWithPasswordUseCase: LoginWithPasswordUseCase
-    private lateinit var authenticationRepository: AuthenticationRepository
-
-    @BeforeEach
-    fun setUp() {
-        authenticationRepository = mockk(relaxed = true)
-        loginWithPasswordUseCase = LoginWithPasswordUseCase(authenticationRepository)
+    private val authenticationRepository: AuthenticationRepository = mockk(relaxed = true)
+    private val loginWithPasswordUseCase by lazy {
+        LoginWithPasswordUseCase(authenticationRepository)
     }
 
     @Test
     fun `should call loginWithPassword with correct parameters`() =
         runTest {
-            val username = "testuser"
-            val password = "testpassword"
 
             loginWithPasswordUseCase(username, password)
 
@@ -35,8 +28,7 @@ class LoginWithUsernamePasswordTest {
     @Test
     fun `should throw AflamiException when loginWithPassword fails`() =
         runTest {
-            val username = "testuser"
-            val password = "testpassword"
+
 
             coEvery {
                 authenticationRepository.loginWithPassword(
@@ -53,22 +45,27 @@ class LoginWithUsernamePasswordTest {
         }
 
     @Test
-    fun `should throw InvalidCredentialsException for incorrect credentials`() =
+    fun `should throw InvalidCredentialsException when credentials are incorrect`() =
         runTest {
-            val username = "wronguser"
-            val password = "wrongpassword"
 
             coEvery {
                 authenticationRepository.loginWithPassword(
-                    username,
-                    password
+                    wrongUsername,
+                    wrongPassword
                 )
             } throws InvalidCredentialsException()
 
             assertThrows<InvalidCredentialsException> {
-                loginWithPasswordUseCase(username, password)
+                loginWithPasswordUseCase(wrongUsername, wrongPassword)
             }
 
-            coVerify(exactly = 1) { authenticationRepository.loginWithPassword(username, password) }
+            coVerify(exactly = 1) { authenticationRepository.loginWithPassword(wrongUsername, wrongPassword) }
         }
+
+    private val username = "testuser"
+    private val password = "testpassword"
+
+    private val wrongUsername = "wronguser"
+    private val wrongPassword = "wrongpassword"
+
 }

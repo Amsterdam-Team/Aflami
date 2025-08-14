@@ -56,9 +56,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -78,21 +76,18 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.EpisodeCard
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.components.details.DetailsPostersPager
-import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.Cast
-import com.amsterdam.ui.navigation.Route.SeriesDetails
-import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
-import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
-import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
-import com.amsterdam.ui.screens.movieDetails.components.PlayButton
-import com.amsterdam.ui.screens.movieDetails.components.RateDialog
+import com.amsterdam.ui.components.movieAndTvShowDetails.DetailsPostersPager
+import com.amsterdam.ui.components.CategoryChip
+import com.amsterdam.ui.components.movieAndTvShowDetails.DescriptionSection
+import com.amsterdam.ui.components.EmptyStateText
+import com.amsterdam.ui.components.movieAndTvShowDetails.PlayButton
+import com.amsterdam.ui.components.movieAndTvShowDetails.RateDialog
 import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
@@ -103,7 +98,6 @@ import com.amsterdam.ui.screens.seriesDetails.component.companyProductionTvShowS
 import com.amsterdam.ui.screens.seriesDetails.component.moreTvShowLikeSection
 import com.amsterdam.ui.screens.seriesDetails.component.reviewTvShowSection
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
-import com.amsterdam.ui.utils.navigateUpWithFlag
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsInteractionListener
@@ -125,12 +119,12 @@ fun SeriesDetailsScreen(
     viewModel: SeriesDetailsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val context = LocalContext.current
     val successRateMessage = stringResource(R.string.your_rating_has_been_saved)
     val failedRateMessage = stringResource(R.string.failed_to_save_your_rating)
 
-    BackHandler { navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
+    BackHandler { navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
 
     SeriesDetailsContent(
         state = state,
@@ -141,23 +135,17 @@ fun SeriesDetailsScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SeriesDetailsEffect.NavigateBack -> {
-                    navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
+                    navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
                 }
 
                 SeriesDetailsEffect.NavigateToCastScreen -> {
-                    navController.navigate(
-                        Cast(
-                            mediaType = MediaType.TV_SHOW.name, mediaId = state.tvShowId
-                        )
-                    )
+                    navigationManager.toCast(mediaType = MediaType.TV_SHOW.name, mediaId = state.tvShowId)
                 }
 
-                SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
-                    Route.Login
-                )
+                SeriesDetailsEffect.NavigateToLoginScreenEffect -> navigationManager.toLogin()
 
                 is SeriesDetailsEffect.NavigateToSeriesDetails -> {
-                    navController.navigate(SeriesDetails(effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
 
                 is SeriesDetailsEffect.ShowEpisodeTrailerNotFound -> {
@@ -203,7 +191,6 @@ fun SeriesDetailsContent(
     }
 
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
-    var seriesExtrasSectionYOffsetDp by remember { mutableStateOf(0.dp) }
     val animationDuration by remember { mutableIntStateOf(1000) }
     val surface = AppTheme.color.surface
     val transparent = AppTheme.color.surface.copy(alpha = 0f)
@@ -427,11 +414,7 @@ fun SeriesDetailsContent(
                             )
                             SeriesExtrasSection(
                                 modifier = Modifier
-                                    .padding(top = 12.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        seriesExtrasSectionYOffsetDp =
-                                            coordinates.positionOnScreen().y.dp
-                                    },
+                                    .padding(top = 12.dp),
                                 extras = state.extraItem,
                                 onClickExtras = seriesDetailsInteractionListener::onClickSeriesExtraItem
                             )
@@ -493,10 +476,8 @@ fun SeriesDetailsContent(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .statusBarsPadding(),
                 firstOption = painterResource(R.drawable.ic_outlined_star),
-                lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
                 onNavigateBackClicked = seriesDetailsInteractionListener::onNavigateBack,
                 onFirstOptionClicked = seriesDetailsInteractionListener::onClickRate,
-                onLastOptionClicked = seriesDetailsInteractionListener::onAddToListClicked
             )
             HorizontalDivider(color = dividerColor)
         }
@@ -662,7 +643,6 @@ private fun SeriesDetailsContentPreview() {
                 override fun onNavigateBack() {}
                 override fun onClickRetryButton() {}
                 override fun onClickShowAllCast() {}
-                override fun onAddToListClicked() {}
                 override fun onClickRate() {}
                 override fun onClickSeasonMenu(seasonNumber: Int) {}
                 override fun onNavigateToLoginClicked() {}

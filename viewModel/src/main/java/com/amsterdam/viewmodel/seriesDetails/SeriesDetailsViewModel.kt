@@ -42,7 +42,7 @@ class SeriesDetailsViewModel @Inject constructor(
 
     init {
         val tvShowId = args.tvShowId!!
-        updateState { it.copy(tvShowId = tvShowId) }
+        updateState { it.copy(tvShowId = tvShowId, isLoading = true) }
 
         manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
@@ -87,15 +87,6 @@ class SeriesDetailsViewModel @Inject constructor(
 
     override fun onClickShowAllCast() {
         sendNewNavigationEffect(SeriesDetailsEffect.NavigateToCastScreen)
-    }
-
-    override fun onAddToListClicked() {
-        viewModelScope.launch {
-            runIfLoggedIn(
-                onLoggedIn = {},
-                onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.AddToList) }
-            )
-        }
     }
 
     override fun onClickRate() {

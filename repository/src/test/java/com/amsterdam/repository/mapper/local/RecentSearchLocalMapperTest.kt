@@ -1,6 +1,8 @@
 package com.amsterdam.repository.mapper.local
 
-import com.amsterdam.repository.dto.local.LocalSearchDto
+import com.amsterdam.repository.dto.local.SearchLocalDto
+import com.amsterdam.repository.mapper.toEntity
+import com.amsterdam.repository.mapper.toEntityList
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -12,7 +14,7 @@ class RecentSearchLocalMapperTest {
     @DisplayName("should return searchKeyword from LocalSearchDto")
     fun `toEntity should return searchKeyword`() {
         // Arrange
-        val dto = LocalSearchDto(
+        val dto = SearchLocalDto(
             searchKeyword = "Inception",
         )
 
@@ -28,10 +30,10 @@ class RecentSearchLocalMapperTest {
     fun `toEntityList should return list of searchKeywords`() {
         // Arrange
         val dtoList = listOf(
-            LocalSearchDto(
+            SearchLocalDto(
                 searchKeyword = "Inception",
             ),
-            LocalSearchDto(
+            SearchLocalDto(
                 searchKeyword = "The Dark Knight",
             )
         )

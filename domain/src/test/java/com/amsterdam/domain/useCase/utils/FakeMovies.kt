@@ -176,3 +176,25 @@ val fakeMovieListWithRatings =
 
         ),
     )
+
+
+fun generateFakeMoviesByCount(count: Int): List<Movie>{
+    val list = mutableListOf<Movie>()
+    repeat(count){ i ->
+        list.add(
+            Movie(
+                id = i.toLong(),
+                name = "Action Movie",
+                description = "",
+                posterUrl = "fthft",
+                releaseDate = LocalDate(2023, 1, 1),
+                categories = listOf(MovieGenre.ACTION),
+                rating = 8.0f,
+                popularity = 10.0,
+                originCountry = "",
+                runTimeInMinutes = 1,
+            )
+        )
+    }
+    return list
+}

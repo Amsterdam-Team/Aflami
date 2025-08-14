@@ -11,7 +11,7 @@ import kotlinx.datetime.Instant
     primaryKeys = ["tvShowId", "storedLanguage"],
     foreignKeys = [
         ForeignKey(
-            entity = LocalTvShowDto::class,
+            entity = TvShowLocalDto::class,
             parentColumns = ["tvShowId", "storedLanguage"],
             childColumns = ["tvShowId", "storedLanguage"],
             onDelete = ForeignKey.CASCADE

@@ -5,7 +5,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.amsterdam.ui.R
+import com.amsterdam.ui.components.EmptyStateText
 import com.amsterdam.ui.components.adaptiveGrid
+import com.amsterdam.ui.components.movieAndTvShowDetails.CompanyCard
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ProductionMovieCompanyUiState
 
 fun LazyListScope.companyProductionSection(
@@ -13,7 +16,7 @@ fun LazyListScope.companyProductionSection(
     deviceWidth: Int
 ) {
     if (companies.isEmpty()) {
-        item { EmptyStateText(stringResource(com.amsterdam.ui.R.string.there_is_no_company_production)) }
+        item { EmptyStateText(stringResource(R.string.there_is_no_company_production)) }
     } else {
         adaptiveGrid(
             availableWidth = deviceWidth,
@@ -26,8 +29,10 @@ fun LazyListScope.companyProductionSection(
             itemsHorizontalPadding = 8.dp, itemsVerticalPadding = 8.dp
         ) { productionCompany ->
             CompanyCard(
-                productionCompany = productionCompany,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                name = productionCompany.name,
+                country = productionCompany.country,
+                image = productionCompany.image
             )
         }
     }

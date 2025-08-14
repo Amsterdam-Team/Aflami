@@ -1,8 +1,9 @@
 package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.Movie
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
+import com.amsterdam.repository.mapper.toEntity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.DisplayName
@@ -16,7 +17,7 @@ class MovieWithCategoriesLocalMapperTest {
     fun `toEntity should return Movie when given MovieWithCategories`() {
         // Given
         val localMovie = MovieWithCategories(
-            movie = LocalMovieDto(
+            movie = MovieLocalDto(
                 movieId = 101,
                 name = "Inception",
                 description = "A mind-bending thriller",

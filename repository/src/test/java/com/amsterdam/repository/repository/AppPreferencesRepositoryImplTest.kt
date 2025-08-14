@@ -3,7 +3,7 @@ package com.amsterdam.repository.repository
 import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.repository.datasource.local.AppPreferences
-import com.amsterdam.repository.mapper.local.toLocalDto
+import com.amsterdam.repository.mapper.toLocalDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

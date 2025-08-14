@@ -1,6 +1,8 @@
 package com.amsterdam.repository.mapper.remoteToLocal
 
 import com.amsterdam.repository.mapper.remoteToLocal.testFactory.createRemoteMovieItemDto
+import com.amsterdam.repository.mapper.toLocalDto
+import com.amsterdam.repository.mapper.toLocalMovieDtoList
 import com.amsterdam.repository.utils.ImageBaseUrlsConstant.BASE_IMAGE_URL_W300
 import com.amsterdam.repository.utils.ImageBaseUrlsConstant.BASE_IMAGE_URL_W500
 import com.google.common.truth.Truth.assertThat

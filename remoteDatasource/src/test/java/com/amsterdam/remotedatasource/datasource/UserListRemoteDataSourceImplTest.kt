@@ -2,10 +2,10 @@ package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.UserListApiService
-import com.amsterdam.repository.dto.remote.AddItemToListResponse
-import com.amsterdam.repository.dto.remote.CreateUserListResponse
-import com.amsterdam.repository.dto.remote.RemoteUserListResponse
-import com.amsterdam.repository.dto.remote.UserListDetailsResponse
+import com.amsterdam.repository.dto.remote.AddItemToListRemoteResponse
+import com.amsterdam.repository.dto.remote.CreateUserListRemoteResponse
+import com.amsterdam.repository.dto.remote.UserListRemoteResponse
+import com.amsterdam.repository.dto.remote.UserListDetailsRemoteResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,10 +18,10 @@ import org.junit.jupiter.api.assertThrows
 
 class UserListRemoteDataSourceImplTest {
 
-    private lateinit var userListRemoteDataSourceImpl: UserListRemoteDataSourceImpl
+    private lateinit var userListRemoteDataSourceImpl: UserListRemoteDataDataSourceImpl
     private lateinit var userListApiService: UserListApiService
 
-    private val remoteListResponse = UserListDetailsResponse(
+    private val remoteListResponse = UserListDetailsRemoteResponse(
         id = 1L,
         name = "Test List",
         description = "Test description",
@@ -36,7 +36,7 @@ class UserListRemoteDataSourceImplTest {
     fun setup() {
         userListApiService = mockk()
         val jsonMock: Json = mockk(relaxed = true)
-        userListRemoteDataSourceImpl = UserListRemoteDataSourceImpl(
+        userListRemoteDataSourceImpl = UserListRemoteDataDataSourceImpl(
             userListApiService = userListApiService,
             json = jsonMock
         )
@@ -48,7 +48,7 @@ class UserListRemoteDataSourceImplTest {
         val description = "A list of movies"
         val language = "en"
         val sessionId = "abc"
-        val expectedResponse = CreateUserListResponse(
+        val expectedResponse = CreateUserListRemoteResponse(
             listId = 1,
             statusCode = 1,
             statusMessage = "Success",
@@ -104,7 +104,7 @@ class UserListRemoteDataSourceImplTest {
         val accountId = 1
         val page = 1
         val sessionId = "abc"
-        val expectedResponse = RemoteUserListResponse(
+        val expectedResponse = UserListRemoteResponse(
             results = emptyList(),
             page = 1,
             totalPages = 1,
@@ -130,7 +130,7 @@ class UserListRemoteDataSourceImplTest {
         val listId = 1L
         val movieId = 1
         val sessionId = "abc"
-        val expectedResponse = AddItemToListResponse(1, "success", true)
+        val expectedResponse = AddItemToListRemoteResponse(1, "success", true)
 
         coEvery {
             userListApiService.addMediaItemToList(
@@ -168,20 +168,20 @@ class UserListRemoteDataSourceImplTest {
     @Test
     fun `getMoviesFromList should return a list of movies and call the api service`() = runTest {
         val listId = 1L
-        coEvery { userListApiService.getMoviesFromList(listId, 1) } returns remoteListResponse
+        coEvery { userListApiService.getMoviesAndTvShowsFromList(listId, 1) } returns remoteListResponse
 
-        val result = userListRemoteDataSourceImpl.getMoviesFromList(listId, 1)
+        val result = userListRemoteDataSourceImpl.getMoviesAndTvShowsFromList(listId, 1)
 
         assertThat(result).isEqualTo(remoteListResponse)
-        coVerify(exactly = 1) { userListApiService.getMoviesFromList(listId, 1) }
+        coVerify(exactly = 1) { userListApiService.getMoviesAndTvShowsFromList(listId, 1) }
     }
 
     @Test
     fun `getMoviesFromList should throw NetworkException when api call fails`() = runTest {
         val listId = 1L
-        coEvery { userListApiService.getMoviesFromList(listId, 1) } throws NetworkException()
+        coEvery { userListApiService.getMoviesAndTvShowsFromList(listId, 1) } throws NetworkException()
 
-        assertThrows<NetworkException> { userListRemoteDataSourceImpl.getMoviesFromList(listId, 1) }
+        assertThrows<NetworkException> { userListRemoteDataSourceImpl.getMoviesAndTvShowsFromList(listId, 1) }
     }
 
     @Test
@@ -216,7 +216,7 @@ class UserListRemoteDataSourceImplTest {
         val sessionId = "abc"
         coEvery { userListApiService.removeMovieFromList(listId, sessionId, movieId) } returns Unit
 
-        userListRemoteDataSourceImpl.removeMovieFromList(listId, sessionId, movieId)
+        userListRemoteDataSourceImpl.deleteMovieFromList(listId, sessionId, movieId)
 
         coVerify(exactly = 1) { userListApiService.removeMovieFromList(listId, sessionId, movieId) }
     }
@@ -235,7 +235,7 @@ class UserListRemoteDataSourceImplTest {
         } throws NetworkException()
 
         assertThrows<NetworkException> {
-            userListRemoteDataSourceImpl.removeMovieFromList(listId, sessionId, movieId)
+            userListRemoteDataSourceImpl.deleteMovieFromList(listId, sessionId, movieId)
         }
     }
 }

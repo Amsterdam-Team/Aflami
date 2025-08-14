@@ -1,68 +1,64 @@
 package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.entity.Movie
+import com.amsterdam.domain.useCase.utils.fakeMovieList
+import com.amsterdam.domain.useCase.utils.fakeTvShowList
 import com.amsterdam.entity.MovieWatchHistory
-import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.TvShowWatchHistory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetContinueWatchingScreenDataUseCaseTest {
-    private lateinit var getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase
-    private lateinit var getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase
-    private lateinit var getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase
-
-    @BeforeEach
-    fun setUp() {
-        getContinueWatchingMoviesUseCase = mockk()
-        getContinueWatchingTvShowsUseCase = mockk()
-        getContinueWatchingScreenDataUseCase =
-            GetContinueWatchingScreenDataUseCase(
-                getContinueWatchingMoviesUseCase,
-                getContinueWatchingTvShowsUseCase
-            )
+    private val getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase = mockk()
+    private val getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase = mockk()
+    private val getContinueWatchingScreenDataUseCase by lazy {
+        GetContinueWatchingScreenDataUseCase(
+            getContinueWatchingMoviesUseCase,
+            getContinueWatchingTvShowsUseCase
+        )
     }
 
     @Test
-    fun `should call both child use cases with half the page size`() = runTest {
-        // Given
-        val page = 1
-        val pageSize = 20
-        coEvery { getContinueWatchingMoviesUseCase(page, pageSize / 2) } returns flow {
-            emit(
-                emptyList()
-            )
-        }
-        coEvery { getContinueWatchingTvShowsUseCase(page, pageSize / 2) } returns flow {
-            emit(
-                emptyList()
-            )
-        }
+    fun `should call getContinueWatchingMoviesUseCases with half the page size`() = runTest {
+        coEvery { getContinueWatchingMoviesUseCase(page, any()) } returns flowOf(emptyList())
+        coEvery { getContinueWatchingTvShowsUseCase(page, any()) } returns flowOf(emptyList())
 
-        // When
         getContinueWatchingScreenDataUseCase(page, pageSize)
 
-        // Then
-        coVerify(exactly = 1) { getContinueWatchingMoviesUseCase(page, 10) }
-        coVerify(exactly = 1) { getContinueWatchingTvShowsUseCase(page, 10) }
+        coVerify(exactly = 1) { getContinueWatchingMoviesUseCase(page, pageSize / 2) }
     }
+
+    @Test
+    fun `should call getContinueWatchingTvShowsUseCase with half the page size`() = runTest {
+        coEvery { getContinueWatchingMoviesUseCase(page, any()) } returns flowOf(emptyList())
+        coEvery { getContinueWatchingTvShowsUseCase(page, any()) } returns flowOf(emptyList())
+
+        getContinueWatchingScreenDataUseCase(page, pageSize)
+
+        coVerify(exactly = 1) { getContinueWatchingTvShowsUseCase(page, pageSize / 2) }
+    }
+
     @Test
     fun `should return ContinueWatchingScreenData object with correct flows`() = runTest {
-        // Given
         val expectedMovieList = listOf(fakeMovieWatchHistory)
         val expectedTvShowList = listOf(fakeTvShowWatchHistory)
+
+        val continueWatchingDataExpectedResult = GetContinueWatchingScreenDataUseCase.ContinueWatchingScreenData(
+            expectedMovieList,
+            expectedTvShowList
+        )
 
         val movieFlow = flow { emit(expectedMovieList) }
         val tvShowFlow = flow { emit(expectedTvShowList) }
@@ -70,21 +66,16 @@ class GetContinueWatchingScreenDataUseCaseTest {
         coEvery { getContinueWatchingMoviesUseCase(any(), any()) } returns movieFlow
         coEvery { getContinueWatchingTvShowsUseCase(any(), any()) } returns tvShowFlow
 
-        // When
         val result = getContinueWatchingScreenDataUseCase().first()
 
-        // Then
-        assertThat(result.continueWatchingMovies).isEqualTo(expectedMovieList)
-        assertThat(result.continueWatchingTvShows).isEqualTo(expectedTvShowList)
+        assertThat(result).isEqualTo(continueWatchingDataExpectedResult)
     }
 
 
     @Test
     fun `should propagate exception from getContinueWatchingMoviesUseCase`() = runTest {
-        // Given
         coEvery { getContinueWatchingMoviesUseCase(any(), any()) } throws AflamiException()
 
-        // When & Then
         assertThrows<AflamiException> {
             getContinueWatchingScreenDataUseCase().single()
         }
@@ -92,7 +83,6 @@ class GetContinueWatchingScreenDataUseCaseTest {
 
     @Test
     fun `should propagate exception from getContinueWatchingTvShowsUseCase`() = runTest {
-        // Given
         coEvery {
             getContinueWatchingMoviesUseCase(
                 any(),
@@ -101,36 +91,20 @@ class GetContinueWatchingScreenDataUseCaseTest {
         } returns flow { emit(emptyList()) }
         coEvery { getContinueWatchingTvShowsUseCase(any(), any()) } throws AflamiException()
 
-        // When & Then
         assertThrows<AflamiException> {
             getContinueWatchingScreenDataUseCase().single()
         }
     }
 
-    private companion object {
-        val fakeMovieWatchHistory = MovieWatchHistory(
-            movie = Movie(
-                id = 1L, name = "Movie", description = "", posterUrl = "",
-                releaseDate = LocalDate(2023, 1, 1), categories = emptyList(), rating = 1.0f,
-                popularity = 1.0, originCountry = "", runTimeInMinutes = 1,
-            ),
-            lastWatchedTime = Instant.DISTANT_PAST
-        )
-        val fakeTvShowWatchHistory = TvShowWatchHistory(
-            tvShow = TvShow(
-                id = 1L,
-                name = "TV Show",
-                description = "",
-                posterUrl = "",
-                airDate = LocalDate(2023, 1, 1),
-                categories = emptyList(),
-                rating = 1.0f,
-                popularity = 1.0,
-                seasonCount = 1,
-                originCountry = "",
+    private val page = 1
+    private val pageSize = 20
 
-            ),
-            lastWatchedTime = Instant.DISTANT_PAST
-        )
-    }
+    private val fakeMovieWatchHistory = MovieWatchHistory(
+        movie = fakeMovieList.first(),
+        lastWatchedTime = Instant.DISTANT_PAST
+    )
+    private val fakeTvShowWatchHistory = TvShowWatchHistory(
+        tvShow = fakeTvShowList.first(),
+        lastWatchedTime = Instant.DISTANT_PAST
+    )
 }

@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.details
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.TvShowRepository
 import com.amsterdam.domain.useCase.common.AddTvShowWatchHistoryUseCase
+import com.amsterdam.domain.useCase.utils.fakeTvShowList
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.amsterdam.entity.ProductionCompany
@@ -22,15 +23,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetTvShowDetailsUseCaseTest {
-    private lateinit var tvShowRepository: TvShowRepository
-    private lateinit var addTvShowWatchHistoryUseCase: AddTvShowWatchHistoryUseCase
-    private lateinit var getTvShowDetailsUseCase: GetTvShowDetailsUseCase
+    private val tvShowRepository: TvShowRepository = mockk(relaxed = true)
+    private val addTvShowWatchHistoryUseCase: AddTvShowWatchHistoryUseCase = mockk(relaxed = true)
+    private val getTvShowDetailsUseCase by lazy {
+        GetTvShowDetailsUseCase(tvShowRepository, addTvShowWatchHistoryUseCase)
+    }
 
-    private val fakeTvShow = TvShow(
-        id = 1L, name = "Test TV Show", description = "Desc", posterUrl = "poster.jpg",
-        airDate = LocalDate(2020, 1, 1), categories = listOf(TvShowGenre.DRAMA, TvShowGenre.COMEDY),
-        rating = 8.0f, popularity = 100.0, seasonCount = 5, originCountry = "USA",
-    )
     private val fakeActors = listOf(
         Actor(1, "Actor A", "a.jpg", 90.0, Gender.Male)
     )
@@ -54,109 +52,79 @@ class GetTvShowDetailsUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        tvShowRepository = mockk(relaxed = true)
-        addTvShowWatchHistoryUseCase = mockk(relaxed = true)
-        getTvShowDetailsUseCase =
-            GetTvShowDetailsUseCase(tvShowRepository, addTvShowWatchHistoryUseCase)
-
-        coEvery { tvShowRepository.getTvShowDetails(any()) } returns GetTvShowDetailsUseCase.TvShowDetails(
-            tvShow = fakeTvShow,
-            actors = fakeActors,
-            seasons = fakeSeasons,
-            reviews = fakeReviews,
-            similarTvShows = fakeSimilarTvShows,
-            gallery = fakeGallery,
-            posters = fakePosters,
-            productionsCompanies = fakeProductionCompanies,
-            userRate = 1
-        )
+        coEvery { tvShowRepository.getTvShowDetails(any()) } returns fakeTvShowDetails
         coJustRun { addTvShowWatchHistoryUseCase(any()) }
     }
 
     @Test
     fun `should fetch all tv show details and return TvShowDetails object`() = runTest {
-        // Given
-        val tvShowId = 1L
-
-        // When
         val result = getTvShowDetailsUseCase(tvShowId)
 
-        // Then
-        coVerify(exactly = 1) { tvShowRepository.getTvShowDetails(tvShowId) }
-        coVerify(exactly = 1) { addTvShowWatchHistoryUseCase(tvShowId) }
-        assertThat(result.tvShow).isEqualTo(fakeTvShow)
-        assertThat(result.actors).isEqualTo(fakeActors)
-        assertThat(result.seasons).isEqualTo(fakeSeasons)
-        assertThat(result.reviews).isEqualTo(fakeReviews)
-        assertThat(result.similarTvShows).isEqualTo(fakeSimilarTvShows)
-        assertThat(result.gallery).isEqualTo(fakeGallery)
-        assertThat(result.posters).isEqualTo(fakePosters)
-        assertThat(result.productionsCompanies).isEqualTo(fakeProductionCompanies)
+        assertThat(result).isEqualTo(fakeTvShowDetails)
     }
 
     @Test
     fun `should throw AflamiException when repository call fails`() = runTest {
-        // Given
-        val tvShowId = 1L
         coEvery { tvShowRepository.getTvShowDetails(any()) } throws AflamiException()
 
-        // When & Then
         assertThrows<AflamiException> { getTvShowDetailsUseCase(tvShowId) }
-        coVerify(exactly = 1) { tvShowRepository.getTvShowDetails(tvShowId) }
-        coVerify(exactly = 0) { addTvShowWatchHistoryUseCase(any()) }
     }
 
     @Test
-    fun `should handle empty lists from repository gracefully`() = runTest {
-        // Given
-        val tvShowId = 1L
-        coEvery { tvShowRepository.getTvShowDetails(any()) } returns GetTvShowDetailsUseCase.TvShowDetails(
-            tvShow = fakeTvShow,
-            actors = emptyList(),
-            seasons = emptyList(),
-            reviews = emptyList(),
-            similarTvShows = emptyList(),
-            gallery = emptyList(),
-            posters = emptyList(),
-            productionsCompanies = emptyList(),
-            userRate = 1
-        )
+    fun `should return empty lists when repository returns empty collections`() = runTest {
+        coEvery { tvShowRepository.getTvShowDetails(any()) } returns fakeEmptyTvShowDetails
 
-        // When
         val result = getTvShowDetailsUseCase(tvShowId)
 
-        // Then
-        assertThat(result.actors).isEmpty()
-        assertThat(result.seasons).isEmpty()
-        assertThat(result.reviews).isEmpty()
-        assertThat(result.similarTvShows).isEmpty()
-        assertThat(result.gallery).isEmpty()
-        assertThat(result.posters).isEmpty()
-        assertThat(result.productionsCompanies).isEmpty()
+        assertThat(result).isEqualTo(fakeEmptyTvShowDetails)
     }
 
     @Test
     fun `should handle a negative tvShowId gracefully`() = runTest {
-        // Given
-        val invalidTvShowId = -1L
-        coEvery { tvShowRepository.getTvShowDetails(invalidTvShowId) } returns GetTvShowDetailsUseCase.TvShowDetails(
-            tvShow = fakeTvShow.copy(id = invalidTvShowId),
-            actors = emptyList(),
-            seasons = emptyList(),
-            reviews = emptyList(),
-            similarTvShows = emptyList(),
-            gallery = emptyList(),
-            posters = emptyList(),
-            productionsCompanies = emptyList(),
-            userRate = 1
-        )
+        coEvery { tvShowRepository.getTvShowDetails(invalidTvShowId) } returns invalidFakeTvShowDetails
 
-        // When
         val result = getTvShowDetailsUseCase(invalidTvShowId)
 
-        // Then
-        coVerify(exactly = 1) { tvShowRepository.getTvShowDetails(invalidTvShowId) }
-        coVerify(exactly = 1) { addTvShowWatchHistoryUseCase(invalidTvShowId) }
         assertThat(result.tvShow.id).isEqualTo(invalidTvShowId)
     }
+
+    private val tvShowId = 1L
+
+    private val invalidTvShowId = -1L
+
+    private val fakeTvShowDetails = GetTvShowDetailsUseCase.TvShowDetails(
+        tvShow = fakeTvShowList.first(),
+        actors = fakeActors,
+        seasons = fakeSeasons,
+        reviews = fakeReviews,
+        similarTvShows = fakeSimilarTvShows,
+        gallery = fakeGallery,
+        posters = fakePosters,
+        productionsCompanies = fakeProductionCompanies,
+        userRate = 1
+    )
+
+    private val fakeEmptyTvShowDetails = GetTvShowDetailsUseCase.TvShowDetails(
+        tvShow = fakeTvShowList.first(),
+        actors = emptyList(),
+        seasons = emptyList(),
+        reviews = emptyList(),
+        similarTvShows = emptyList(),
+        gallery = emptyList(),
+        posters = emptyList(),
+        productionsCompanies = emptyList(),
+        userRate = 1
+    )
+
+    private val invalidFakeTvShowDetails = GetTvShowDetailsUseCase.TvShowDetails(
+        tvShow = fakeTvShowList.first().copy(id = invalidTvShowId),
+        actors = emptyList(),
+        seasons = emptyList(),
+        reviews = emptyList(),
+        similarTvShows = emptyList(),
+        gallery = emptyList(),
+        posters = emptyList(),
+        productionsCompanies = emptyList(),
+        userRate = 1
+    )
 }

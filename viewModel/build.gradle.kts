@@ -71,6 +71,7 @@ private fun DependencyHandlerScope.testDependencies() {
     testImplementation(libs.truth)
     testImplementation(kotlin("test"))
     testImplementation("app.cash.turbine:turbine:1.1.0")
+    testImplementation(libs.androidx.paging.testing)
 }
 
 private fun DependencyHandlerScope.hiltDependencies() {

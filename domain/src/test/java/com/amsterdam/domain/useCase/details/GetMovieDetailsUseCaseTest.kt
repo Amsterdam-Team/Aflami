@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.details
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
+import com.amsterdam.domain.useCase.utils.fakeMovieList
 import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Gender
 import com.amsterdam.entity.Movie
@@ -20,23 +21,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetMovieDetailsUseCaseTest {
-    private lateinit var movieRepository: MovieRepository
-    private lateinit var addWatchHistoryUseCase: AddMovieWatchHistoryUseCase
-    private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
+    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val addWatchHistoryUseCase: AddMovieWatchHistoryUseCase = mockk(relaxed = true)
+    private val getMovieDetailsUseCase by lazy {
+        GetMovieDetailsUseCase(movieRepository, addWatchHistoryUseCase)
+    }
 
-    private val fakeMovie = Movie(
-        id = 1L,
-        name = "Test Movie",
-        description = "Desc",
-        posterUrl = "poster.jpg",
-        releaseDate = LocalDate(2020, 1, 1),
-        categories = listOf(MovieGenre.ACTION, MovieGenre.DRAMA),
-        rating = 8.0f,
-        popularity = 100.0,
-        originCountry = "USA",
-        runTimeInMinutes = 120,
-
-        )
     private val fakeReviews = listOf(
         Review(1, "Reviewer1", "user1", 4.5f, "Great", LocalDate(2023, 1, 1), "url1"),
     )
@@ -64,27 +54,13 @@ class GetMovieDetailsUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        movieRepository = mockk(relaxed = true)
-        addWatchHistoryUseCase = mockk(relaxed = true)
-        getMovieDetailsUseCase =
-            GetMovieDetailsUseCase(movieRepository, addWatchHistoryUseCase)
-
-        coEvery { movieRepository.getMovieDetailsById(any()) } returns GetMovieDetailsUseCase.MovieDetails(
-            movie = fakeMovie,
-            reviews = fakeReviews,
-            actors = fakeActors,
-            similarMovies = fakeSimilarMovies,
-            movieGallery = fakeGallery,
-            moviePosters = fakePosters,
-            productionCompanies = emptyList(),
-            userRate = null,
-        )
+        coEvery { movieRepository.getMovieDetailsById(any()) } returns fakeMovieDetails
 
         coJustRun { addWatchHistoryUseCase.invoke(any()) }
     }
 
     @Test
-    fun `should fetch all movie details and return MovieDetails object`() = runTest {
+    fun `should return MovieDetails object when called with valid movieId`() = runTest {
         val movieId = 1L
 
         val result = getMovieDetailsUseCase(movieId)
@@ -92,22 +68,18 @@ class GetMovieDetailsUseCaseTest {
         coVerify(exactly = 1) { movieRepository.getMovieDetailsById(movieId) }
         coVerify(exactly = 1) { addWatchHistoryUseCase(movieId) }
 
-        assertThat(result.movie).isEqualTo(fakeMovie)
-        assertThat(result.reviews).isEqualTo(fakeReviews)
-        assertThat(result.actors).isEqualTo(fakeActors)
-        assertThat(result.similarMovies).isEqualTo(fakeSimilarMovies)
-        assertThat(result.movieGallery).isEqualTo(fakeGallery)
-        assertThat(result.moviePosters).isEqualTo(fakePosters)
+        assertThat(result).isEqualTo(fakeMovieDetails)
     }
 
     @Test
     fun `should throw AflamiException when getMovieDetailsById fails`() = runTest {
         coEvery { movieRepository.getMovieDetailsById(any()) } throws AflamiException()
+
         assertThrows<AflamiException> { getMovieDetailsUseCase(1L) }
     }
 
     @Test
-    fun `should not add to watch history if getMovieDetailsById fails`() = runTest {
+    fun `should not add to watch history when getMovieDetailsById fails`() = runTest {
         coEvery { movieRepository.getMovieDetailsById(any()) } throws AflamiException()
 
         assertThrows<AflamiException> { getMovieDetailsUseCase(1L) }
@@ -116,44 +88,42 @@ class GetMovieDetailsUseCaseTest {
     }
 
     @Test
-    fun `should return MovieDetails with empty lists if repository returns empty for collections`() =
+    fun `should return MovieDetails with empty lists when repository returns empty for collections`() =
         runTest {
-            coEvery { movieRepository.getMovieDetailsById(any()) } returns GetMovieDetailsUseCase.MovieDetails(
-                movie = fakeMovie,
-                reviews = emptyList(),
-                actors = emptyList(),
-                similarMovies = emptyList(),
-                movieGallery = emptyList(),
-                moviePosters = emptyList(),
-                productionCompanies = emptyList(),
-                userRate = null,
-            )
+            coEvery { movieRepository.getMovieDetailsById(any()) } returns fakeEmptyMovieDetails
 
             val result = getMovieDetailsUseCase(1L)
 
-            assertThat(result.reviews).isEmpty()
-            assertThat(result.actors).isEmpty()
-            assertThat(result.similarMovies).isEmpty()
-            assertThat(result.movieGallery).isEmpty()
-            assertThat(result.moviePosters).isEmpty()
+            assertThat(result).isEqualTo(fakeEmptyMovieDetails)
         }
 
     @Test
     fun `should handle the case where MovieDetails data class fields are null`() = runTest {
-        coEvery { movieRepository.getMovieDetailsById(any()) } returns GetMovieDetailsUseCase.MovieDetails(
-            movie = fakeMovie,
-            reviews = emptyList(),
-            actors = emptyList(),
-            similarMovies = emptyList(),
-            movieGallery = emptyList(),
-            moviePosters = emptyList(),
-            productionCompanies = emptyList(),
-            userRate = null,
-        )
+        coEvery { movieRepository.getMovieDetailsById(any()) } returns fakeEmptyMovieDetails
         val result = getMovieDetailsUseCase(1L)
 
-        assertThat(result.reviews).isEmpty()
-        assertThat(result.actors).isEmpty()
-        assertThat(result.similarMovies).isEmpty()
+        assertThat(result).isEqualTo(fakeEmptyMovieDetails)
     }
+
+    private val fakeEmptyMovieDetails = GetMovieDetailsUseCase.MovieDetails(
+        movie = fakeMovieList.first(),
+        reviews = emptyList(),
+        actors = emptyList(),
+        similarMovies = emptyList(),
+        movieGallery = emptyList(),
+        moviePosters = emptyList(),
+        productionCompanies = emptyList(),
+        userRate = null,
+    )
+
+    private val fakeMovieDetails = GetMovieDetailsUseCase.MovieDetails(
+        movie = fakeMovieList.first(),
+        reviews = fakeReviews,
+        actors = fakeActors,
+        similarMovies = fakeSimilarMovies,
+        movieGallery = fakeGallery,
+        moviePosters = fakePosters,
+        productionCompanies = emptyList(),
+        userRate = null,
+    )
 }

@@ -1,10 +1,10 @@
 package com.amsterdam.repository.utils
 
 import com.amsterdam.entity.Movie
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import kotlinx.datetime.LocalDate
 
-val localMovieDto1 = LocalMovieDto(
+val movieLocalDto1 = MovieLocalDto(
     movieId = 1,
     storedLanguage = "en",
     name = "Movie A",
@@ -16,7 +16,7 @@ val localMovieDto1 = LocalMovieDto(
     originCountry = "USA",
     movieLength = 120,
 )
-val localMovieDto2 = LocalMovieDto(
+val movieLocalDto2 = MovieLocalDto(
     movieId = 2,
     storedLanguage = "en",
     name = "Movie B",
@@ -30,26 +30,26 @@ val localMovieDto2 = LocalMovieDto(
 
     )
 val movie1 = Movie(
-    id = localMovieDto1.movieId,
-    name = localMovieDto1.name,
-    description = localMovieDto1.description,
-    posterUrl = localMovieDto1.poster,
-    releaseDate = localMovieDto1.releaseDate,
+    id = movieLocalDto1.movieId,
+    name = movieLocalDto1.name,
+    description = movieLocalDto1.description,
+    posterUrl = movieLocalDto1.poster,
+    releaseDate = movieLocalDto1.releaseDate,
     categories = emptyList(),
-    rating = localMovieDto1.rating,
-    popularity = localMovieDto1.popularity,
-    originCountry = localMovieDto1.originCountry,
-    runTimeInMinutes = localMovieDto1.movieLength,
+    rating = movieLocalDto1.rating,
+    popularity = movieLocalDto1.popularity,
+    originCountry = movieLocalDto1.originCountry,
+    runTimeInMinutes = movieLocalDto1.movieLength,
 )
 val movie2 = Movie(
-    id = localMovieDto2.movieId,
-    name = localMovieDto2.name,
-    description = localMovieDto2.description,
-    posterUrl = localMovieDto2.poster,
-    releaseDate = localMovieDto2.releaseDate,
+    id = movieLocalDto2.movieId,
+    name = movieLocalDto2.name,
+    description = movieLocalDto2.description,
+    posterUrl = movieLocalDto2.poster,
+    releaseDate = movieLocalDto2.releaseDate,
     categories = emptyList(),
-    rating = localMovieDto2.rating,
-    popularity = localMovieDto2.popularity,
-    originCountry = localMovieDto2.originCountry,
-    runTimeInMinutes = localMovieDto2.movieLength,
+    rating = movieLocalDto2.rating,
+    popularity = movieLocalDto2.popularity,
+    originCountry = movieLocalDto2.originCountry,
+    runTimeInMinutes = movieLocalDto2.movieLength,
 )

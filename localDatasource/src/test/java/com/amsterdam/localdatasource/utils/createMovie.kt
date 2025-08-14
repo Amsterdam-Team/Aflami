@@ -1,14 +1,14 @@
 package com.amsterdam.localdatasource.utils
 
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import kotlinx.datetime.LocalDate
 
 fun createMovie(
         movieId: Long,
         storedLanguage: String,
         name : String = "Sample Movie"
-    ): LocalMovieDto {
-        return LocalMovieDto(
+    ): MovieLocalDto {
+        return MovieLocalDto(
             movieId = movieId,
             storedLanguage = storedLanguage,
             name = name,

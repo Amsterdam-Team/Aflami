@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.SectionTitle
+import com.amsterdam.ui.components.movieAndTvShowDetails.ActorCard
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiState
 
 @Composable
@@ -50,7 +51,10 @@ fun MovieCastSection(
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(actors) {
-                    ActorCard(actor = it)
+                    ActorCard(
+                        name = it.name,
+                        photoUrl = it.photo
+                    )
                 }
             }
         }

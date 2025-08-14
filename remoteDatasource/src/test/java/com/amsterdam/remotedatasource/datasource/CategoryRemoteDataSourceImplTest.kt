@@ -2,8 +2,8 @@ package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.CategoryApiService
-import com.amsterdam.repository.dto.remote.RemoteCategoryDto
-import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
+import com.amsterdam.repository.dto.remote.CategoryRemoteDto
+import com.amsterdam.repository.dto.remote.CategoryRemoteResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -16,21 +16,21 @@ import org.junit.jupiter.api.assertThrows
 class CategoryRemoteDataSourceImplTest {
 
     private lateinit var categoryApiService: CategoryApiService
-    private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
+    private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         categoryApiService = mockk()
-        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryApiService)
+        categoryRemoteDataSourceImpl = CategoryRemoteDataDataSourceImpl(categoryApiService)
     }
 
     @Test
     fun `getMovieCategories should return a list of movie categories when successful`() = runTest {
         // Given
-        val expectedCategoryResponse = RemoteCategoryResponse(
+        val expectedCategoryResponse = CategoryRemoteResponse(
             genres = listOf(
-                RemoteCategoryDto(id = 28, name = "Action"),
-                RemoteCategoryDto(id = 12, name = "Adventure")
+                CategoryRemoteDto(id = 28, name = "Action"),
+                CategoryRemoteDto(id = 12, name = "Adventure")
             )
         )
 
@@ -48,10 +48,10 @@ class CategoryRemoteDataSourceImplTest {
     fun `getTvShowCategories should return a list of TV show categories when successful`() =
         runTest {
             // Given
-            val expectedCategoryResponse = RemoteCategoryResponse(
+            val expectedCategoryResponse = CategoryRemoteResponse(
                 genres = listOf(
-                    RemoteCategoryDto(id = 10759, name = "Action & Adventure"),
-                    RemoteCategoryDto(id = 16, name = "Animation")
+                    CategoryRemoteDto(id = 10759, name = "Action & Adventure"),
+                    CategoryRemoteDto(id = 16, name = "Animation")
                 )
             )
 

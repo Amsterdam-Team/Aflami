@@ -9,7 +9,7 @@ import javax.inject.Inject
 class ProfileRemoteDataSourceImpl @Inject constructor(
     private val profileApiService: ProfileApiService
 ) : ProfileRemoteDataSource {
-    override suspend fun getAccountDetails(sessionId: String): AccountDetailsRemoteDto {
-        return responseCall { profileApiService.getAccountDetails(sessionId = sessionId) }
+    override suspend fun getAccountDetails(): AccountDetailsRemoteDto {
+        return responseCall { profileApiService.getAccountDetails() }
     }
 }

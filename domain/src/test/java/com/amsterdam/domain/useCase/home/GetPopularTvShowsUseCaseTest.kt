@@ -8,59 +8,44 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetPopularTvShowsUseCaseTest {
-    private lateinit var tvShowRepository: TvShowRepository
-    private lateinit var getPopularTvShowsUseCase: GetPopularTvShowsUseCase
-
-    @BeforeEach
-    fun setUp() {
-        tvShowRepository = mockk(relaxed = true)
-        getPopularTvShowsUseCase = GetPopularTvShowsUseCase(tvShowRepository)
+    private val tvShowRepository: TvShowRepository = mockk(relaxed = true)
+    private val getPopularTvShowsUseCase by lazy {
+        GetPopularTvShowsUseCase(tvShowRepository)
     }
 
     @Test
     fun `should call getPopularTvShows exactly once`() = runTest {
-        // When
         getPopularTvShowsUseCase()
 
-        // Then
         coVerify(exactly = 1) { tvShowRepository.getPopularTvShows() }
     }
 
     @Test
     fun `should return a list of popular tv shows when data is available`() = runTest {
-        // Given
         coEvery { tvShowRepository.getPopularTvShows() } returns fakeTvShowList
 
-        // When
         val result = getPopularTvShowsUseCase()
 
-        // Then
         assertThat(result).isEqualTo(fakeTvShowList)
     }
 
     @Test
     fun `should return an empty list when no popular tv shows are available`() = runTest {
-        // Given
         coEvery { tvShowRepository.getPopularTvShows() } returns emptyList()
 
-        // When
         val result = getPopularTvShowsUseCase()
 
-        // Then
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `should throw an AflamiException when the repository call fails`() = runTest {
-        // Given
         coEvery { tvShowRepository.getPopularTvShows() } throws AflamiException()
 
-        // When & Then
         assertThrows<AflamiException> { getPopularTvShowsUseCase() }
     }
 }

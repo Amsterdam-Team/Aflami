@@ -2,7 +2,7 @@ package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.CountryApiService
-import com.amsterdam.repository.dto.remote.RemoteCountryDto
+import com.amsterdam.repository.dto.remote.CountryRemoteDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,12 +15,12 @@ import org.junit.jupiter.api.assertThrows
 class CountryRemoteDataSourceImplTest {
 
     private lateinit var countryApiService: CountryApiService
-    private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
+    private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         countryApiService = mockk()
-        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryApiService)
+        countryRemoteDataSourceImpl = CountryRemoteDataDataSourceImpl(countryApiService)
     }
 
     @Test
@@ -39,12 +39,12 @@ class CountryRemoteDataSourceImplTest {
     fun `getCountries should return the correct data from CountryApiService`() = runTest {
         // Given
         val expectedResponse = listOf(
-            RemoteCountryDto(
+            CountryRemoteDto(
                 englishName = "United States of America",
                 isoCode = "US",
                 nativeName = "United States"
             ),
-            RemoteCountryDto(englishName = "Canada", isoCode = "CA", nativeName = "Canada")
+            CountryRemoteDto(englishName = "Canada", isoCode = "CA", nativeName = "Canada")
         )
         coEvery { countryApiService.getCountries() } returns expectedResponse
 
@@ -71,7 +71,7 @@ class CountryRemoteDataSourceImplTest {
     fun `getCountries should return an empty list when API service returns an empty list`() =
         runTest {
             // Given
-            val expectedResponse = emptyList<RemoteCountryDto>()
+            val expectedResponse = emptyList<CountryRemoteDto>()
             coEvery { countryApiService.getCountries() } returns expectedResponse
 
             // When

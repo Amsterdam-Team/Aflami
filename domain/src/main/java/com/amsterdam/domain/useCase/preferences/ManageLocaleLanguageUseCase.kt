@@ -9,12 +9,9 @@ class ManageLocaleLanguageUseCase(
     private val preferencesRepository: AppPreferencesRepository,
 ) {
     suspend fun initAppLanguage(language: String) {
-        preferencesRepository.getAppLanguage().firstOrNull()?.let {
-            it.takeIf { it.isEmpty() }.let {
-                setAppLanguage(Language.fromLanguage(language))
-            }
-            return
-        } ?: setAppLanguage(Language.fromLanguage(language))
+        preferencesRepository.getAppLanguage().firstOrNull()
+            ?.takeIf { it.isNotEmpty() }
+            ?: setAppLanguage(Language.fromLanguage(language))
     }
 
     suspend fun setAppLanguage(language: Language) {

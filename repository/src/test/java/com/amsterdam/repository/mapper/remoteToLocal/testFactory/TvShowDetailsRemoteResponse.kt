@@ -1,14 +1,14 @@
 package com.amsterdam.repository.mapper.remoteToLocal.testFactory
 
-import com.amsterdam.repository.dto.remote.ProductionCompanyDto
-import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteCategoryDto
-import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
-import com.amsterdam.repository.dto.remote.SeasonDto
+import com.amsterdam.repository.dto.remote.ProductionCompanyRemoteDto
+import com.amsterdam.repository.dto.remote.CastAndCrewRemoteResponse
+import com.amsterdam.repository.dto.remote.CategoryRemoteDto
+import com.amsterdam.repository.dto.remote.TvShowRemoteResponse
+import com.amsterdam.repository.dto.remote.SeasonRemoteDto
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
-import com.amsterdam.repository.dto.remote.VideoResponse
-import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
-import com.amsterdam.repository.dto.remote.review.ReviewsResponse
+import com.amsterdam.repository.dto.remote.VideoRemoteResponse
+import com.amsterdam.repository.dto.remote.movieGallery.GalleryRemoteResponse
+import com.amsterdam.repository.dto.remote.review.ReviewsRemoteResponse
 
 fun createTvShowDetailsRemoteResponse(
     id: Long = 1399L,
@@ -22,34 +22,34 @@ fun createTvShowDetailsRemoteResponse(
     originCountry: List<String> = listOf("US"),
     adult: Boolean = false,
     backdropPath: String? = "/backdrop.jpg",
-    genres: List<RemoteCategoryDto> = emptyList(),
+    genres: List<CategoryRemoteDto> = emptyList(),
     originalLanguage: String = "en",
     originalTitle: String = "Game of Thrones",
-    seasons: List<SeasonDto> = emptyList(),
-    productionCompanies: List<ProductionCompanyDto> = emptyList(),
-    reviews: ReviewsResponse = ReviewsResponse(
+    seasons: List<SeasonRemoteDto> = emptyList(),
+    productionCompanies: List<ProductionCompanyRemoteDto> = emptyList(),
+    reviews: ReviewsRemoteResponse = ReviewsRemoteResponse(
         page = 1,
         results = emptyList(),
         totalPages = 1,
         totalResults = 0
     ),
-    credits: RemoteCastAndCrewResponse = RemoteCastAndCrewResponse(
+    credits: CastAndCrewRemoteResponse = CastAndCrewRemoteResponse(
         cast = emptyList(),
         crew = emptyList()
     ),
-    similar: RemoteTvShowResponse = RemoteTvShowResponse(
+    similar: TvShowRemoteResponse = TvShowRemoteResponse(
         results = emptyList(),
         page = 1,
         totalPages = 1,
         totalResults = 0
     ),
-    images: RemoteGalleryResponse = RemoteGalleryResponse(
+    images: GalleryRemoteResponse = GalleryRemoteResponse(
         backdrops = emptyList(),
         posters = emptyList(),
         id = id,
         logos = emptyList()
     ),
-    videos: VideoResponse = VideoResponse(results = emptyList())
+    videos: VideoRemoteResponse = VideoRemoteResponse(results = emptyList())
 ): TvShowDetailsRemoteResponse {
     return TvShowDetailsRemoteResponse(
         id = id,

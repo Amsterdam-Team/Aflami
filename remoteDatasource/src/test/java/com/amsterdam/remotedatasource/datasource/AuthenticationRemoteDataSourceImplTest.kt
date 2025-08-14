@@ -2,9 +2,9 @@ package com.amsterdam.remotedatasource.datasource
 
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.AuthenticationApiService
-import com.amsterdam.repository.dto.remote.authentication.AuthenticationResponseDto
-import com.amsterdam.repository.dto.remote.authentication.CreateSessionDto
-import com.amsterdam.repository.dto.remote.authentication.CreateSessionResponseDto
+import com.amsterdam.repository.dto.remote.authentication.AuthenticationRemoteResponse
+import com.amsterdam.repository.dto.remote.authentication.CreateSessionRemoteDto
+import com.amsterdam.repository.dto.remote.authentication.CreateSessionRemoteResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -19,14 +19,14 @@ class AuthenticationRemoteDataSourceImplTest {
 
     private lateinit var authenticationApiService: AuthenticationApiService
     private lateinit var json: Json
-    private lateinit var authenticationRemoteDataSourceImpl: AuthenticationRemoteDataSourceImpl
+    private lateinit var authenticationRemoteDataSourceImpl: AuthenticationRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         authenticationApiService = mockk()
         json = Json { ignoreUnknownKeys = true }
         authenticationRemoteDataSourceImpl =
-            AuthenticationRemoteDataSourceImpl(json, authenticationApiService)
+            AuthenticationRemoteDataDataSourceImpl(json, authenticationApiService)
     }
 
     @Test
@@ -38,17 +38,17 @@ class AuthenticationRemoteDataSourceImplTest {
         val activeRequestToken = "active_request_token"
         val sessionId = "final_session_id"
 
-        val unactiveTokenResponse = AuthenticationResponseDto(
+        val unactiveTokenResponse = AuthenticationRemoteResponse(
             isSuccess = true,
             expiresAt = "2025-08-04",
             requestToken = requestToken
         )
-        val activeTokenResponse = AuthenticationResponseDto(
+        val activeTokenResponse = AuthenticationRemoteResponse(
             isSuccess = true,
             expiresAt = "2025-08-04",
             requestToken = activeRequestToken
         )
-        val createSessionResponse = CreateSessionResponseDto(
+        val createSessionResponse = CreateSessionRemoteResponse(
             success = true,
             sessionId = sessionId
         )
@@ -56,7 +56,7 @@ class AuthenticationRemoteDataSourceImplTest {
         coEvery { authenticationApiService.createRequestToken() } returns unactiveTokenResponse
         coEvery {
             authenticationApiService.createSessionWithLogin(
-                CreateSessionDto(
+                CreateSessionRemoteDto(
                     username,
                     password,
                     requestToken
@@ -73,7 +73,7 @@ class AuthenticationRemoteDataSourceImplTest {
         coVerify(exactly = 1) { authenticationApiService.createRequestToken() }
         coVerify(exactly = 1) {
             authenticationApiService.createSessionWithLogin(
-                CreateSessionDto(
+                CreateSessionRemoteDto(
                     username,
                     password,
                     requestToken
@@ -107,7 +107,7 @@ class AuthenticationRemoteDataSourceImplTest {
             val username = "testUser"
             val password = "testPassword"
             val requestToken = "unactive_request_token"
-            val unactiveTokenResponse = AuthenticationResponseDto(
+            val unactiveTokenResponse = AuthenticationRemoteResponse(
                 isSuccess = true,
                 expiresAt = "2025-08-04",
                 requestToken = requestToken
@@ -132,12 +132,12 @@ class AuthenticationRemoteDataSourceImplTest {
         val password = "testPassword"
         val requestToken = "unactive_request_token"
         val activeRequestToken = "active_request_token"
-        val unactiveTokenResponse = AuthenticationResponseDto(
+        val unactiveTokenResponse = AuthenticationRemoteResponse(
             isSuccess = true,
             expiresAt = "2025-08-04",
             requestToken = requestToken
         )
-        val activeTokenResponse = AuthenticationResponseDto(
+        val activeTokenResponse = AuthenticationRemoteResponse(
             isSuccess = true,
             expiresAt = "2025-08-04",
             requestToken = activeRequestToken
@@ -165,17 +165,17 @@ class AuthenticationRemoteDataSourceImplTest {
         val activeRequestToken = "active_request_token"
         val sessionId = "final_session_id"
 
-        val unactiveTokenResponse = AuthenticationResponseDto(
+        val unactiveTokenResponse = AuthenticationRemoteResponse(
             isSuccess = true,
             expiresAt = "2025-08-04",
             requestToken = requestToken
         )
-        val activeTokenResponse = AuthenticationResponseDto(
+        val activeTokenResponse = AuthenticationRemoteResponse(
             isSuccess = true,
             expiresAt = "2025-08-04",
             requestToken = activeRequestToken
         )
-        val createSessionResponse = CreateSessionResponseDto(
+        val createSessionResponse = CreateSessionRemoteResponse(
             success = true,
             sessionId = sessionId
         )
@@ -207,7 +207,7 @@ class AuthenticationRemoteDataSourceImplTest {
         """.trimIndent()
 
         // When
-        val response = json.decodeFromString<AuthenticationResponseDto>(jsonString)
+        val response = json.decodeFromString<AuthenticationRemoteResponse>(jsonString)
 
         // Then
         assertThat(response.statusCode).isNotNull()
@@ -227,7 +227,7 @@ class AuthenticationRemoteDataSourceImplTest {
 
         // When & Then
         assertThrows<NullPointerException> {
-            val response = json.decodeFromString<AuthenticationResponseDto>(jsonString)
+            val response = json.decodeFromString<AuthenticationRemoteResponse>(jsonString)
             response.statusCode!!
         }
     }

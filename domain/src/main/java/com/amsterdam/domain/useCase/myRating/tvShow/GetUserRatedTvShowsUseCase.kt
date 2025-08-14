@@ -2,7 +2,6 @@ package com.amsterdam.domain.useCase.myRating.tvShow
 
 import com.amsterdam.domain.repository.TvShowRepository
 import com.amsterdam.entity.TvShow
-import kotlin.collections.sortedByDescending
 
 class GetUserRatedTvShowsUseCase(
     private val tvShowRepository: TvShowRepository,

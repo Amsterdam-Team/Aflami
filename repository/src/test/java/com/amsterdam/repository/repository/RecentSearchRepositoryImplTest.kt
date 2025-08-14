@@ -2,7 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.RecentSearchRepository
 import com.amsterdam.repository.datasource.local.RecentSearchLocalDataSource
-import com.amsterdam.repository.dto.local.LocalSearchDto
+import com.amsterdam.repository.dto.local.SearchLocalDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -43,9 +43,9 @@ class RecentSearchRepositoryImplTest {
     fun `getAllRecentSearches should return mapped BY_KEYWORD searches from local source`() =
         runTest {
             // Given
-            val localSearchDto1 = LocalSearchDto("movie1")
-            val localSearchDto2 = LocalSearchDto("movie2")
-            val localSearches = listOf(localSearchDto1, localSearchDto2)
+            val searchLocalDto1 = SearchLocalDto("movie1")
+            val searchLocalDto2 = SearchLocalDto("movie2")
+            val localSearches = listOf(searchLocalDto1, searchLocalDto2)
             val expectedKeywords = listOf("movie1", "movie2")
             coEvery { recentSearchLocalDataSource.getRecentSearches() } returns localSearches
 

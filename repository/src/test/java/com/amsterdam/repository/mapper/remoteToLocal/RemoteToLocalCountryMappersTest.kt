@@ -1,6 +1,8 @@
 package com.amsterdam.repository.mapper.remoteToLocal
 
 import com.amsterdam.repository.mapper.remoteToLocal.testFactory.createRemoteCountryDto
+import com.amsterdam.repository.mapper.toLocalDto
+import com.amsterdam.repository.mapper.toLocalDtoList
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 

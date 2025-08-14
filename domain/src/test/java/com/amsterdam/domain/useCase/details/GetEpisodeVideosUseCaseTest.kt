@@ -6,25 +6,17 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class GetEpisodeVideosUseCaseTest {
-    private lateinit var tvShowRepository: TvShowRepository
-    private lateinit var getEpisodeVideosUseCase: GetEpisodeVideosUseCase
-
-    @BeforeEach
-    fun setUp() {
-        tvShowRepository = mockk(relaxed = true)
-        getEpisodeVideosUseCase = GetEpisodeVideosUseCase(tvShowRepository)
+    private val tvShowRepository: TvShowRepository = mockk(relaxed = true)
+    private val getEpisodeVideosUseCase by lazy {
+        GetEpisodeVideosUseCase(tvShowRepository)
     }
 
+
     @Test
-    fun `getEpisodeVideosUseCase should return video url when  `() = runTest {
-        val tvShowId = 2435L
-        val seasonNumber = 1
-        val episodeNumber = 1
-        val expectedVideoUrl = "efhafjj"
+    fun `should return video url when called with correct data`() = runTest {
         coEvery {
             tvShowRepository.getEpisodeVideoUrl(
                 tvShowId,
@@ -49,4 +41,9 @@ class GetEpisodeVideosUseCaseTest {
         }
 
     }
+
+    private val tvShowId = 2435L
+    private val seasonNumber = 1
+    private val episodeNumber = 1
+    private val expectedVideoUrl = "efhafjj"
 }

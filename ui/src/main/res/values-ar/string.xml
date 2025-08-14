@@ -88,7 +88,8 @@
     <!-- - Game section   -->
     <string name="release_game_title">متى تم إصداره؟</string>
     <string name="release_game_description">اختر سنة الإصدار الصحيحة.</string>
-    <string name="guess_movie_game_title">خمن الفيلم من الملصق</string>
+    <string name="guess_by_poster">خمن من الملصق</string>
+    <string name="guess_movie_game_title">خمن الفيلم من خلال الملصق</string>
     <string name="guess_movie_game_description">طابق الملصق مع العنوان الصحيح!</string>
     <string name="genre_game_title">أي نوع؟</string>
     <string name="genre_game_description">أي واحد هو فيلم الأكشن الحقيقي؟</string>
@@ -111,6 +112,10 @@
     <string name="points_acheived">النقاط المحققة</string>
     <string name="total_time">الوقت الكلي</string>
     <string name="finish_game_message">لقد أنهيت اللعبة!</string>
+    <string name="not_enough_points">لا توجد نقاط كافية</string>
+    <string name="not_enough_points_description">عذرا، ليس لديك نقاط كافية للحصول على تلميح</string>
+    <string name="ok">حسنا</string>
+    <string name="cd_cancel">يلغي</string>
     <!-- -   -->
     <!-- -  -->
     <string name="loading">تحميل…</string>
@@ -239,6 +244,7 @@
     <!-- List -->
     <string name="remove_from_list">حذف عنصر</string>
     <string name="no_saved_items_here">لا توجد عناصر محفوظة</string>
+    <string name="no_items_here">لا توجد عناصر هنا</string>
     <string name="confirm_delete">هل أنت متأكد من مواصلة الحذف؟</string>
     <string name="list_deleted_successfully">تم حذف القائمة بنجاح</string>
     <string name="movie_deleted_successfully">تم حذف الفيلم بنجاح</string>
@@ -268,4 +274,8 @@
     <string name="failed_to_add_to_list">فشل في الإضافة إلى القائمة.</string>
 
     <string name="brightness_message">سوف تتعرض لهجوم من قبل مجموعة من الألوان الزاهية!</string>
+    <string name="when_is_released">متي تم عرضه</string>
+
+    <string name="oops_there_are_not_enough_points">لا توجد نقاط كافية</string>
+
 </resources>

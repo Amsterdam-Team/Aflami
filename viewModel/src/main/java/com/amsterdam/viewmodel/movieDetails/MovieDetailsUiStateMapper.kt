@@ -9,6 +9,7 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiStat
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ProductionMovieCompanyUiState
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ReviewMovieUiState
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
+import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
 import com.amsterdam.viewmodel.utils.movieLengthToHourMinuteString
 import com.amsterdam.viewmodel.utils.toFormattedString
@@ -30,7 +31,8 @@ fun MovieDetails.toUiState(): MovieDetailsUiState {
         similarMovies = similarMovies.toSimilarMoviesUiState(),
         productionCompany = productionCompanies.toProductionMovieCompaniesUiState(),
         gallery = movieGallery,
-        reviews = reviews.map(Review::toUiState)
+        reviews = reviews.map(Review::toUiState),
+        rateDialogUiState = RateDialogUiState(selectedStarIndex = userRate)
     )
 }
 fun Actor.toActorMovieUiState(): ActorMovieUiState = ActorMovieUiState(photo = imageUrl, name = name)
@@ -42,7 +44,7 @@ private fun Movie.toSimilarMovieUiState(): SimilarMovieUiState {
         movieId = id,
         rate = rating.toFormattedRating(),
         name = name,
-        productionYear = releaseDate.year.toString(),
+        productionYear = releaseDate?.year?.toString() ?: "",
         posterUrl = posterUrl
     )
 }

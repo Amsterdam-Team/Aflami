@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.resetPassword.components.ResetPasswordWebView
 import com.amsterdam.viewmodel.resetPassword.ResetPasswordEffect
@@ -26,14 +26,14 @@ import com.amsterdam.viewmodel.resetPassword.ResetPasswordViewModel
 fun ResetPasswordScreen(
     viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val state by viewModel.state.collectAsState()
 
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                ResetPasswordEffect.NavigateToSignIn -> navController.navigateUp()
+                ResetPasswordEffect.NavigateToSignIn -> navigationManager.navigateUp()
             }
         }
     }

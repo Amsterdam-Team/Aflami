@@ -7,27 +7,22 @@ import com.amsterdam.domain.useCase.utils.fakeTvShowListWithCategories
 import com.amsterdam.domain.useCase.utils.fakeTvShowListWithRatings
 import com.amsterdam.domain.useCase.utils.specificTvShowList
 import com.amsterdam.entity.category.TvShowGenre
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetAndFilterTvShowsByKeywordUseCaseTest {
-    private lateinit var tvShowRepository: TvShowRepository
-    private lateinit var getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase
-
-    @BeforeEach
-    fun setUp() {
-        tvShowRepository = mockk(relaxed = true)
-        getAndFilterTvShowsByKeywordUseCase = GetAndFilterTvShowsByKeywordUseCase(tvShowRepository)
+    private val tvShowRepository: TvShowRepository = mockk(relaxed = true)
+    private val getAndFilterTvShowsByKeywordUseCase by lazy {
+        GetAndFilterTvShowsByKeywordUseCase(tvShowRepository)
     }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should call getTvShowByKeyword one time`() = runTest {
+    fun `should call getTvShowByKeyword one time`() = runTest {
         coEvery {
             tvShowRepository.getTvShowByKeyword(
                 any(),
@@ -46,7 +41,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
     }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return a list of tv shows when there is data returned`() =
+    fun `should return a list of tv shows when there is data returned`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -56,11 +51,11 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
                 )
             } returns fakeTvShowList
             val tvShows = getAndFilterTvShowsByKeywordUseCase("keyword")
-            Truth.assertThat(tvShows).isEqualTo(fakeTvShowList)
+            assertThat(tvShows).isEqualTo(fakeTvShowList)
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return empty list when no data returned`() =
+    fun `should return empty list when no data returned`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -69,11 +64,11 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
                     tvShowsPerPage = 20
                 )
             } returns emptyList()
-            Truth.assertThat(getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")).isEmpty()
+            assertThat(getAndFilterTvShowsByKeywordUseCase("nonexistentKeyword")).isEmpty()
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return empty list when filters yield an empty list`() =
+    fun `should return empty list when filters yield an empty list`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -88,11 +83,11 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
                 rating = 10,
                 tvGenre = TvShowGenre.COMEDY
             )
-            Truth.assertThat(result).isEmpty()
+            assertThat(result).isEmpty()
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return filtered tv shows when a minimum rating is specified`() =
+    fun `should return filtered tv shows when a minimum rating is specified`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -104,12 +99,12 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
 
             val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 6)
 
-            Truth.assertThat(result).hasSize(1)
-            Truth.assertThat(result[0].id).isEqualTo(1)
+            assertThat(result).hasSize(1)
+            assertThat(result[0].id).isEqualTo(1)
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return all tv shows when rating filter is 0`() =
+    fun `should return all tv shows when rating filter is 0`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -121,11 +116,11 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
 
             val result = getAndFilterTvShowsByKeywordUseCase("keyword", rating = 0)
 
-            Truth.assertThat(result).isEqualTo(fakeTvShowListWithRatings)
+            assertThat(result).isEqualTo(fakeTvShowListWithRatings)
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return filtered tv shows when a genre is specified`() =
+    fun `should return filtered tv shows when a genre is specified`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -138,12 +133,12 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
             val result =
                 getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.COMEDY)
 
-            Truth.assertThat(result).hasSize(1)
-            Truth.assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
+            assertThat(result).hasSize(1)
+            assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should return all tv shows when genre filter is All`() =
+    fun `should return all tv shows when genre filter is All`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -155,11 +150,11 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
 
             val result = getAndFilterTvShowsByKeywordUseCase("keyword", tvGenre = TvShowGenre.ALL)
 
-            Truth.assertThat(result).isEqualTo(fakeTvShowListWithCategories)
+            assertThat(result).isEqualTo(fakeTvShowListWithCategories)
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should throw Aflami exception when an error happened`() =
+    fun `should throw Aflami exception when an error happened`() =
         runTest {
             coEvery {
                 tvShowRepository.getTvShowByKeyword(
@@ -172,7 +167,7 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
         }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should filter by both rating and genre`() = runTest {
+    fun `should filter by both rating and genre`() = runTest {
         coEvery {
             tvShowRepository.getTvShowByKeyword(
                 any(),
@@ -184,12 +179,12 @@ class GetAndFilterTvShowsByKeywordUseCaseTest {
         val result =
             getAndFilterTvShowsByKeywordUseCase("keyword", rating = 7, tvGenre = TvShowGenre.COMEDY)
 
-        Truth.assertThat(result).hasSize(1)
-        Truth.assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
+        assertThat(result).hasSize(1)
+        assertThat(result).containsExactly(fakeTvShowListWithCategories[2])
     }
 
     @Test
-    fun `getAndFilterTvShowsByKeywordUseCase should pass correct pagination parameters`() =
+    fun `should pass correct pagination parameters`() =
         runTest {
             val keyword = "test"
             val page = 2

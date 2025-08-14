@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.amsterdam.designsystem.components.Scaffold
@@ -26,23 +25,28 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.ui.components.bottomNavigation.BottomNavigation
 import com.amsterdam.ui.navigation.NavGraph
-import com.amsterdam.ui.navigation.Route
+import com.amsterdam.ui.navigation.NavigationManager
 import com.amsterdam.ui.utils.setLocale
 import com.amsterdam.viewmodel.application.ApplicationViewModel
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun AflamiApp(
     viewModel: ApplicationViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
+
+    val navigationManager = NavigationManager(navController)
+
     val currentDestination = backStackEntry?.destination
-    val startDestination = runBlocking {
-        getStartDestination(viewModel.setStartDestination())
-    }
+
     val state by viewModel.state.collectAsState()
+
+    val startDestination = getStartDestination(state.startDestination) ?: return
+
     val localConfigurations by rememberUpdatedState(LocalConfiguration.current)
+
     LaunchedEffect(Unit) {
         viewModel.initAppSettings(localConfigurations.locales[0])
     }
@@ -59,7 +63,7 @@ fun AflamiApp(
         isDarkTheme = state.isDarkTheme,
     ) {
         CompositionLocalProvider(
-            LocalNavController provides navController,
+            LocalNavManager provides  navigationManager,
             LocalRestrictionLevel provides restrictionLevel
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
@@ -68,16 +72,7 @@ fun AflamiApp(
                         BottomNavigation(
                             currentDestination = currentDestination,
                             onNavigate = {
-                                if (currentDestination != it) {
-                                    navController.navigate(it) {
-                                        popUpTo(Route.Tab.Home) {
-                                            saveState = true
-                                        }
-
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
+                                navigationManager.toTab(it, currentDestination)
                             },
                         )
                     }
@@ -99,7 +94,7 @@ fun AflamiApp(
     }
 }
 
-val LocalNavController = staticCompositionLocalOf<NavController> {
+val LocalNavManager = staticCompositionLocalOf<NavigationManager> {
     error("NavController not found")
 }
 

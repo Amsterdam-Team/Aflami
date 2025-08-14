@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.amsterdam.designsystem.R
 import com.amsterdam.entity.category.MovieGenre
 
+// CAP = MovieGenre.name, MovieGenre.valueOf = Enum
 internal val MovieGenre.uiModel: GenreUiModel
     get() = when (this) {
         MovieGenre.ALL -> GenreUiModel(R.drawable.ic_nav_categories, R.string.all)

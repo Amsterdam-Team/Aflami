@@ -5,10 +5,10 @@ import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.util.actorSearchItemDto
 import com.amsterdam.remotedatasource.util.remoteMovieDetailsResponse
 import com.amsterdam.remotedatasource.util.remoteMovieItemDto
-import com.amsterdam.repository.dto.remote.RatingResponse
-import com.amsterdam.repository.dto.remote.RemoteActorSearchResponse
-import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteMovieResponse
+import com.amsterdam.repository.dto.remote.RatingRemoteResponse
+import com.amsterdam.repository.dto.remote.ActorSearchRemoteResponse
+import com.amsterdam.repository.dto.remote.CastAndCrewRemoteResponse
+import com.amsterdam.repository.dto.remote.MovieRemoteResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,12 +21,12 @@ import org.junit.jupiter.api.assertThrows
 class MovieRemoteDataSourceImplTest {
 
     private lateinit var movieApiService: MovieApiService
-    private lateinit var movieRemoteDataSourceImpl: MovieRemoteDataSourceImpl
+    private lateinit var movieRemoteDataSourceImpl: MovieRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         movieApiService = mockk()
-        movieRemoteDataSourceImpl = MovieRemoteDataSourceImpl(movieApiService)
+        movieRemoteDataSourceImpl = MovieRemoteDataDataSourceImpl(movieApiService)
     }
 
     @Test
@@ -34,7 +34,7 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val keyword = "Inception"
         val page = 1
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = 1,
             results = listOf(
                 remoteMovieItemDto
@@ -69,7 +69,7 @@ class MovieRemoteDataSourceImplTest {
     fun `getMoviesByActorIds should return movies for a given actor when successful`() = runTest {
         // Given
         val actorIds = listOf(6193)
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = 1,
             results = listOf(
                 remoteMovieItemDto
@@ -105,7 +105,7 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val name = "Leonardo DiCaprio"
         val page = 1
-        val expectedResponse = RemoteActorSearchResponse(
+        val expectedResponse = ActorSearchRemoteResponse(
             page = 1,
             totalPages = 1,
             totalResults = 1,
@@ -128,7 +128,7 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val name = "No Actor"
         val page = 1
-        val expectedResponse = RemoteActorSearchResponse(
+        val expectedResponse = ActorSearchRemoteResponse(
             page = 1,
             totalPages = 1,
             totalResults = 0,
@@ -162,7 +162,7 @@ class MovieRemoteDataSourceImplTest {
             // Given
             val countryIsoCode = "US"
             val page = 1
-            val expectedResponse = RemoteMovieResponse(
+            val expectedResponse = MovieRemoteResponse(
                 page = 1,
                 results = listOf(
                     remoteMovieItemDto
@@ -213,7 +213,7 @@ class MovieRemoteDataSourceImplTest {
     fun `getCastByMovieId should return cast and crew for a movie when successful`() = runTest {
         // Given
         val movieId = 550L
-        val expectedResponse = RemoteCastAndCrewResponse(
+        val expectedResponse = CastAndCrewRemoteResponse(
             id = movieId,
             cast = emptyList(),
             crew = emptyList()
@@ -271,7 +271,7 @@ class MovieRemoteDataSourceImplTest {
     @Test
     fun `getPopularMovies should return popular movies when successful`() = runTest {
         // Given
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = 1,
             results = listOf(remoteMovieItemDto),
             totalPages = 1,
@@ -301,7 +301,7 @@ class MovieRemoteDataSourceImplTest {
     @Test
     fun `getUpcomingMovies should return upcoming movies when successful`() = runTest {
         // Given
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = 1,
             results = listOf(remoteMovieItemDto),
             totalPages = 1,
@@ -332,7 +332,7 @@ class MovieRemoteDataSourceImplTest {
     fun `getTopRatedMovies should return top rated movies when successful`() = runTest {
         // Given
         val page = 1
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = page,
             results = listOf(remoteMovieItemDto),
             totalPages = 1,
@@ -364,7 +364,7 @@ class MovieRemoteDataSourceImplTest {
     fun `getMoviesByGenreIds should return movies for given genre IDs when successful`() = runTest {
         // Given
         val genreIds = listOf(28L, 53L)
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = 1,
             results = listOf(
                 remoteMovieItemDto
@@ -399,23 +399,21 @@ class MovieRemoteDataSourceImplTest {
         // Given
         val movieId = 550L
         val rating = 5.0f
-        val sessionId = "session_id"
-        val expectedResponse = RatingResponse(statusCode = 12, statusMessage = "success")
+        val expectedResponse = RatingRemoteResponse(statusCode = 12, statusMessage = "success")
 
         coEvery {
             movieApiService.postMovieRating(
                 movieId,
                 rating,
-                sessionId
             )
         } returns expectedResponse
 
         // When
-        val result = movieRemoteDataSourceImpl.setMovieRate(rating, movieId, sessionId)
+        val result = movieRemoteDataSourceImpl.setMovieRate(rating, movieId)
 
         // Then
         assertThat(result).isEqualTo(expectedResponse)
-        coVerify(exactly = 1) { movieApiService.postMovieRating(movieId, rating, sessionId) }
+        coVerify(exactly = 1) { movieApiService.postMovieRating(movieId, rating) }
 
 
     }
@@ -423,29 +421,27 @@ class MovieRemoteDataSourceImplTest {
     @Test
     fun `getRatedMovie should return Unit when successful`() = runTest {
         //Given
-        val sessionId = "session_id"
-        val expectedResponse = RemoteMovieResponse(
+        val expectedResponse = MovieRemoteResponse(
             page = 1,
             results = listOf(remoteMovieItemDto),
             totalPages = 1,
             totalResults = 1
         )
-        coEvery { movieApiService.getRatedMovies(0, sessionId) } returns expectedResponse
+        coEvery { movieApiService.getRatedMovies(0) } returns expectedResponse
         //When
-        val result = movieRemoteDataSourceImpl.getRatedMovies(sessionId)
+        val result = movieRemoteDataSourceImpl.getRatedMovies()
         //Then
         assertThat(result).isEqualTo(expectedResponse)
-        coVerify(exactly = 1) { movieApiService.getRatedMovies(0, sessionId) }
+        coVerify(exactly = 1) { movieApiService.getRatedMovies(0) }
     }
 
     @Test
     fun `getRatedMovie should throw NetworkException when api call fails`() = runTest {
         //Given
-        val sessionId = "session_id"
-        coEvery { movieApiService.getRatedMovies(0, sessionId) } throws NetworkException()
+        coEvery { movieApiService.getRatedMovies(0) } throws NetworkException()
         //When & Then
         assertThrows<NetworkException> {
-            movieRemoteDataSourceImpl.getRatedMovies(sessionId)
+            movieRemoteDataSourceImpl.getRatedMovies()
         }
     }
 
@@ -453,17 +449,16 @@ class MovieRemoteDataSourceImplTest {
     fun `deleteMovieRate should call deleteMovieRate in API with correct parameters`() = runTest {
         // Given
         val movieId = 1399L
-        val sessionId = "session_id"
         coEvery {
-            movieApiService.deleteMovieRate(movieId, sessionId)
+            movieApiService.deleteMovieRate(movieId)
         } returns Unit
 
         // When
-        movieRemoteDataSourceImpl.deleteMovieRate(movieId, sessionId)
+        movieRemoteDataSourceImpl.deleteMovieRate(movieId)
 
         // Then
         coVerify(exactly = 1) {
-            movieApiService.deleteMovieRate(movieId, sessionId)
+            movieApiService.deleteMovieRate(movieId)
         }
     }
 }

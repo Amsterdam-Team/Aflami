@@ -7,55 +7,51 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 
 class GetUserListsUseCaseTest {
-    private lateinit var userListRepository: UserListRepository
-    private lateinit var getUserListsUseCase: GetUserListsUseCase
-
-    @BeforeEach
-    fun setUp() {
-        userListRepository = mockk()
-        getUserListsUseCase = GetUserListsUseCase(userListRepository)
+    private val userListRepository: UserListRepository = mockk()
+    private val getUserListsUseCase by lazy {
+        GetUserListsUseCase(userListRepository)
     }
 
     @Test
-    fun `getUserListsUseCase should return list of user lists`() =runTest{
-        //Given
-        val page = 1
-        val expectedResult = listOf(
-            UserList(
-                description = "description",
-                itemCount =2,
-                name = "name",
-                id = 1
-            )
-        )
-        coEvery { userListRepository.getUserLists(0,page) } returns expectedResult
+    fun `should return list of user lists when invoked`() = runTest {
+        coEvery { userListRepository.getUserLists(0, page) } returns expectedResult
 
-        //When
         val result = getUserListsUseCase(page)
 
-        //Then
         assertThat(result).isEqualTo(expectedResult)
-        coVerify(exactly = 1) { userListRepository.getUserLists(0,page) }
-
     }
+
     @Test
-    fun `getUserListsUseCase should return empty list when no user lists found`() =runTest{
-        //Given
-        val page = 1
+    fun `should use default page value when no page is provided`() = runTest {
         val expectedResult = emptyList<UserList>()
-        coEvery { userListRepository.getUserLists(0,page) } returns expectedResult
-        //When
-        val result = getUserListsUseCase(page)
-        //Then
-        assertThat(result).isEqualTo(expectedResult)
-        coVerify(exactly = 1) { userListRepository.getUserLists(0,page) }
+        coEvery { userListRepository.getUserLists(any()) } returns expectedResult
 
+        getUserListsUseCase()
 
+        coVerify(exactly = 1) { userListRepository.getUserLists(page = 1) }
     }
 
+    @Test
+    fun `should return empty list when no user lists found`() = runTest {
+        val expectedResult = emptyList<UserList>()
+        coEvery { userListRepository.getUserLists(0, page) } returns expectedResult
+
+        val result = getUserListsUseCase(page)
+
+        assertThat(result).isEqualTo(expectedResult)
+    }
+
+    private val page = 1
+    private val expectedResult = listOf(
+        UserList(
+            description = "description",
+            itemCount = 2,
+            name = "name",
+            id = 1
+        )
+    )
 }

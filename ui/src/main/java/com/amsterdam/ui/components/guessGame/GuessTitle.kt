@@ -9,7 +9,7 @@ import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.screens.letsPlay.component.GuessCard
+import com.amsterdam.ui.screens.games.component.GuessCard
 
 @Composable
 fun GuessTitle(

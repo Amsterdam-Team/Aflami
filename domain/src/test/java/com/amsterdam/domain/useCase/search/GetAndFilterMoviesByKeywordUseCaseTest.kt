@@ -7,28 +7,23 @@ import com.amsterdam.domain.useCase.utils.fakeMovieListWithCategories
 import com.amsterdam.domain.useCase.utils.fakeMovieListWithRatings
 import com.amsterdam.domain.useCase.utils.specificMovieList
 import com.amsterdam.entity.category.MovieGenre
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class GetAndFilterMoviesByKeywordUseCaseTest {
-    private lateinit var movieRepository: MovieRepository
-    private lateinit var getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase
-
-
-    @BeforeEach
-    fun setUp() {
-        movieRepository = mockk(relaxed = true)
-        getAndFilterMoviesByKeywordUseCase = GetAndFilterMoviesByKeywordUseCase(movieRepository)
+    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val getAndFilterMoviesByKeywordUseCase by lazy {
+        GetAndFilterMoviesByKeywordUseCase(movieRepository)
     }
 
+
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should call getMoviesByKeyword exactly one time`() =
+    fun `should call getMoviesByKeyword exactly one time`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -48,7 +43,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return empty list when filters yield an empty list`() =
+    fun `should return empty list when filters yield an empty list`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -63,11 +58,11 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 page = 1,
                 movieGenre = MovieGenre.ANIMATION
             )
-            Truth.assertThat(result).isEmpty()
+            assertThat(result).isEmpty()
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return filtered movies when a minimum rating is specified`() =
+    fun `should return filtered movies when a minimum rating is specified`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -79,12 +74,12 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
 
             val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 6)
 
-            Truth.assertThat(result).hasSize(1)
-            Truth.assertThat(result[0].id).isEqualTo(1)
+            assertThat(result).hasSize(1)
+            assertThat(result[0].id).isEqualTo(1)
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return all movies when rating filter is 0`() =
+    fun `should return all movies when rating filter is 0`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -94,11 +89,11 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 )
             } returns fakeMovieListWithRatings
             val result = getAndFilterMoviesByKeywordUseCase("keyword", rating = 0)
-            Truth.assertThat(result).isEqualTo(fakeMovieListWithRatings)
+            assertThat(result).isEqualTo(fakeMovieListWithRatings)
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return filtered movies when a genre is specified`() =
+    fun `should return filtered movies when a genre is specified`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -111,15 +106,15 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
             val result =
                 getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.ACTION)
 
-            Truth.assertThat(result).hasSize(2)
-            Truth.assertThat(result).containsExactly(
+            assertThat(result).hasSize(2)
+            assertThat(result).containsExactly(
                 fakeMovieListWithCategories[0],
                 fakeMovieListWithCategories[2]
             )
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return all movies when genre filter is All`() =
+    fun `should return all movies when genre filter is All`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -131,11 +126,11 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
 
             val result = getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.ALL)
 
-            Truth.assertThat(result).isEqualTo(fakeMovieListWithCategories)
+            assertThat(result).isEqualTo(fakeMovieListWithCategories)
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return empty list when no movies match the specified genre`() =
+    fun `should return empty list when no movies match the specified genre`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -146,11 +141,11 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
             } returns fakeMovieListWithCategories
             val result =
                 getAndFilterMoviesByKeywordUseCase("keyword", movieGenre = MovieGenre.TV_MOVIE)
-            Truth.assertThat(result).isEmpty()
+            assertThat(result).isEmpty()
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should return empty list when no movies returned`() =
+    fun `should return empty list when no movies returned`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -160,11 +155,11 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
                 )
             } returns emptyList()
             val result = getAndFilterMoviesByKeywordUseCase("keyword")
-            Truth.assertThat(result).isEmpty()
+            assertThat(result).isEmpty()
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should throw AflamiException when an error happens`() =
+    fun `should throw AflamiException when an error happens`() =
         runTest {
             coEvery {
                 movieRepository.getMoviesByKeyword(
@@ -177,7 +172,7 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
         }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should filter by both rating and genre`() = runTest {
+    fun `should filter by both rating and genre`() = runTest {
         coEvery {
             movieRepository.getMoviesByKeyword(
                 any(),
@@ -192,15 +187,15 @@ class GetAndFilterMoviesByKeywordUseCaseTest {
             movieGenre = MovieGenre.ACTION
         )
 
-        Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result).containsExactly(
+        assertThat(result).hasSize(2)
+        assertThat(result).containsExactly(
             fakeMovieListWithCategories[0],
             fakeMovieListWithCategories[2]
         ).inOrder()
     }
 
     @Test
-    fun `getAndFilterMoviesByKeywordUseCase should pass correct pagination parameters`() =
+    fun `should pass correct pagination parameters`() =
         runTest {
             val keyword = "test"
             val page = 2

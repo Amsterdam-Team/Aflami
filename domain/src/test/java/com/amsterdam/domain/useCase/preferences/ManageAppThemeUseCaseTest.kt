@@ -1,53 +1,43 @@
+package com.amsterdam.domain.useCase.preferences
+
 import com.amsterdam.domain.repository.AppPreferencesRepository
-import com.amsterdam.domain.useCase.preferences.ManageAppThemeUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
+
 
 class ManageAppThemeUseCaseTest {
 
-    private lateinit var preferencesRepository: AppPreferencesRepository
-    private lateinit var manageAppThemeUseCase: ManageAppThemeUseCase
-
-    @Before
-    fun setup() {
-        preferencesRepository = mockk(relaxed = true)
-        manageAppThemeUseCase = ManageAppThemeUseCase(preferencesRepository)
+    private val preferencesRepository: AppPreferencesRepository = mockk(relaxed = true)
+    private val manageAppThemeUseCase: ManageAppThemeUseCase by lazy {
+        ManageAppThemeUseCase(preferencesRepository)
     }
 
     @Test
-    fun `setAppTheme should call repository with correct value`() = runTest {
-        // Given
+    fun `should call repository with correct value`() = runTest {
         val isDark = true
         coEvery { preferencesRepository.setAppTheme(isDark) } returns Unit
 
-        // When
         manageAppThemeUseCase.setAppTheme(isDark)
 
-        // Then
         coVerify { preferencesRepository.setAppTheme(isDark) }
     }
 
     @Test
-    fun `getAppTheme should return expected theme`() = runTest {
-        // Given
+    fun `should return true when theme is dark`() = runTest {
         val expected = true
-       coEvery{ preferencesRepository.getAppTheme() } returns flowOf(expected)
+        coEvery{ preferencesRepository.getAppTheme() } returns flowOf(expected)
 
-        // When
         val themeFlow = manageAppThemeUseCase.getAppTheme()
         var actual: Boolean? = null
         themeFlow.collect { value ->
             actual = value
         }
 
-        // Then
         assertThat(actual).isEqualTo(expected)
-        coVerify { preferencesRepository.getAppTheme() }
     }
 }

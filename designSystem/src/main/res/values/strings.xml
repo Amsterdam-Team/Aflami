@@ -83,13 +83,13 @@
     <string name="get_another_movie">Get another movie</string>
     <!-- -   -->
     <!-- - Game section   -->
-    <string name="release_game_title">When Was It Released?</string>
+    <string name="release_game_title">When is released?</string>
     <string name="release_game_description">Pick the right release year.</string>
-    <string name="guess_movie_game_title">Guess the Movie by Poster</string>
+    <string name="guess_movie_game_title">Guess by poster</string>
     <string name="guess_movie_game_description">Match the poster with the right title!</string>
-    <string name="genre_game_title">Which Genre?</string>
+    <string name="genre_game_title">Which genre?</string>
     <string name="genre_game_description">Which one is the real action movie?</string>
-    <string name="guess_character_game_title">Guess the Character</string>
+    <string name="guess_character_game_title">Guess the character </string>
     <string name="guess_character_game_description">Can you tell who this character?</string>
     <string name="play_now">Play now</string>
     <string name="points_to_unlock">Pts. to unlock</string>

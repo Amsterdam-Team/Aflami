@@ -18,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.Icon
+import com.amsterdam.designsystem.components.RadioButton
+import com.amsterdam.designsystem.components.RadioState
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
@@ -27,6 +29,7 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 fun AnswerSelectionItem(
     modifier: Modifier = Modifier,
     text: String = "",
+    isClickable : Boolean = true,
     status: AnswerStatus = AnswerStatus.Unselected,
     onClick: () -> Unit = {}
 ) {
@@ -40,12 +43,12 @@ fun AnswerSelectionItem(
                 shape = shape,
             )
             .border(
-                color = status.backgroundColor(),
+                color = status.borderColor(),
                 width = 1.dp,
                 shape = shape,
             )
             .clip(shape)
-            .clickable(onClick = onClick)
+            .clickable(enabled = isClickable,onClick = onClick)
             .padding(vertical = 16.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -58,11 +61,21 @@ fun AnswerSelectionItem(
                 .weight(1f)
                 .padding(start = 8.dp)
         )
-        Icon(
-            painter = painterResource(status.icon),
-            contentDescription = null,
-            tint = status.borderColor()
-        )
+        when (status) {
+            AnswerStatus.Unselected -> {
+                RadioButton(
+                    state = RadioState.Default,
+                )
+            }
+
+            AnswerStatus.Correct, AnswerStatus.Wrong -> {
+                Icon(
+                    painter = painterResource(status.icon),
+                    contentDescription = null,
+                    tint = status.borderColor(),
+                )
+            }
+        }
     }
 }
 

@@ -1,9 +1,10 @@
 package com.amsterdam.remotedatasource.api
 
-import com.amsterdam.repository.dto.remote.AddItemToListResponse
-import com.amsterdam.repository.dto.remote.CreateUserListResponse
-import com.amsterdam.repository.dto.remote.RemoteUserListResponse
-import com.amsterdam.repository.dto.remote.UserListDetailsResponse
+import com.amsterdam.remotedatasource.utils.RequiresSessionId
+import com.amsterdam.repository.dto.remote.AddItemToListRemoteResponse
+import com.amsterdam.repository.dto.remote.CreateUserListRemoteResponse
+import com.amsterdam.repository.dto.remote.UserListRemoteResponse
+import com.amsterdam.repository.dto.remote.UserListDetailsRemoteResponse
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -13,47 +14,48 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserListApiService {
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("list")
     suspend fun createNewList(
-        @Query("session_id") sessionId: String,
         @Field("name") listName: String,
-        @Field("description") description: String,
+        @Field("description") description: String = "",
         @Field("language") language: String,
-    ): CreateUserListResponse
+    ): CreateUserListRemoteResponse
 
+    @RequiresSessionId
     @GET("account/{account_id}/lists")
     suspend fun getUserLists(
         @Path("account_id") accountId: Int = 0,
         @Query("page") page: Int = 1,
-        @Query("session_id") sessionId: String,
-    ): RemoteUserListResponse
+    ): UserListRemoteResponse
 
+    @RequiresSessionId
     @GET("list/{list_id}")
-    suspend fun getMoviesFromList(
+    suspend fun getMoviesAndTvShowsFromList(
         @Path("list_id") listId: Long,
         @Query("page") page: Int,
-    ): UserListDetailsResponse
+    ): UserListDetailsRemoteResponse
 
+    @RequiresSessionId
     @DELETE("list/{list_id}")
     suspend fun deleteList(
         @Path("list_id") listId: Long,
-        @Query("session_id") sessionId: String,
     )
 
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("list/{list_id}/add_item")
     suspend fun addMediaItemToList(
         @Path("list_id") listId: Long,
-        @Query("session_id") sessionId: String,
-        @Field("media_id") movieId: Int,
-    ): AddItemToListResponse
+        @Field("media_id") movieId: Long,
+    ): AddItemToListRemoteResponse
 
+    @RequiresSessionId
     @FormUrlEncoded
     @POST("list/{list_id}/remove_item")
     suspend fun removeMovieFromList(
         @Path("list_id") listId: Long,
-        @Query("session_id") sessionId: String,
         @Field("media_id") movieId: Long,
     )
 

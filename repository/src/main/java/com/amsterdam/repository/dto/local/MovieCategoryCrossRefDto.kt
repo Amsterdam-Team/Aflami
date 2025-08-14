@@ -10,13 +10,13 @@ import com.amsterdam.repository.dto.local.utils.DatabaseConstants
     primaryKeys = ["movieId", "categoryId", "storedLanguage"],
     foreignKeys = [
         ForeignKey(
-            entity = LocalMovieDto::class,
+            entity = MovieLocalDto::class,
             parentColumns = ["movieId", "storedLanguage"],
             childColumns = ["movieId", "storedLanguage"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = LocalMovieCategoryDto::class,
+            entity = MovieCategoryLocalDto::class,
             parentColumns = ["categoryId"],
             childColumns = ["categoryId"],
             onDelete = ForeignKey.CASCADE

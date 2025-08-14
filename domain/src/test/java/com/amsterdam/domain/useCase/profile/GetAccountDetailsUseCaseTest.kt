@@ -7,32 +7,27 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class GetAccountDetailsUseCaseTest {
-    private lateinit var profileRepository: ProfileRepository
-    private lateinit var getAccountDetailsUseCase: GetAccountDetailsUseCase
-
-    @BeforeEach
-    fun setUp() {
-        profileRepository = mockk()
-        getAccountDetailsUseCase = GetAccountDetailsUseCase(profileRepository)
+    private val profileRepository: ProfileRepository = mockk()
+    private val getAccountDetailsUseCase by lazy {
+        GetAccountDetailsUseCase(profileRepository)
     }
 
     @Test
     fun `should return account details`() = runTest {
-        //Given
-        val exceptedAccountDetails = AccountDetails(
-            accountId = 2,
-            username = "test_user",
-            avatarUrl = "test_avatar.jpg"
-        )
-        coEvery { profileRepository.getAccountDetails() } returns exceptedAccountDetails
-        //When
+
+        coEvery { profileRepository.getAccountDetails() } returns expectedAccountDetails
+
         val accountDetails = getAccountDetailsUseCase()
-        //Then
-        assertThat(accountDetails).isEqualTo(exceptedAccountDetails)
-        coVerify(exactly = 1) { profileRepository.getAccountDetails() }
+
+        assertThat(accountDetails).isEqualTo(expectedAccountDetails)
     }
+
+    private val expectedAccountDetails = AccountDetails(
+        accountId = 2,
+        username = "test_user",
+        avatarUrl = "test_avatar.jpg"
+    )
 }

@@ -1,23 +1,23 @@
 package com.amsterdam.remotedatasource.util
 
-import com.amsterdam.repository.dto.remote.ActorSearchItemDto
-import com.amsterdam.repository.dto.remote.EpisodeDto
-import com.amsterdam.repository.dto.remote.EpisodeResponse
-import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteCategoryDto
-import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
-import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
-import com.amsterdam.repository.dto.remote.RemoteMovieResponse
-import com.amsterdam.repository.dto.remote.RemoteTvShowItemDto
-import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
+import com.amsterdam.repository.dto.remote.ActorSearchItemRemoteDto
+import com.amsterdam.repository.dto.remote.EpisodeRemoteDto
+import com.amsterdam.repository.dto.remote.EpisodeRemoteResponse
+import com.amsterdam.repository.dto.remote.CastAndCrewRemoteResponse
+import com.amsterdam.repository.dto.remote.CategoryRemoteDto
+import com.amsterdam.repository.dto.remote.MovieDetailsRemoteResponse
+import com.amsterdam.repository.dto.remote.MovieItemRemoteDto
+import com.amsterdam.repository.dto.remote.MovieRemoteResponse
+import com.amsterdam.repository.dto.remote.TvShowItemRemoteDto
+import com.amsterdam.repository.dto.remote.TvShowRemoteResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
-import com.amsterdam.repository.dto.remote.VideoDto
-import com.amsterdam.repository.dto.remote.VideoResponse
-import com.amsterdam.repository.dto.remote.authentication.AuthenticationResponseDto
-import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
-import com.amsterdam.repository.dto.remote.review.ReviewsResponse
+import com.amsterdam.repository.dto.remote.VideoRemoteDto
+import com.amsterdam.repository.dto.remote.VideoRemoteResponse
+import com.amsterdam.repository.dto.remote.authentication.AuthenticationRemoteResponse
+import com.amsterdam.repository.dto.remote.movieGallery.GalleryRemoteResponse
+import com.amsterdam.repository.dto.remote.review.ReviewsRemoteResponse
 
-val remoteMovieItemDto = RemoteMovieItemDto(
+val remoteMovieItemDto = MovieItemRemoteDto(
     id = 445566,
     title = "Upcoming Movie",
     adult = false,
@@ -34,7 +34,7 @@ val remoteMovieItemDto = RemoteMovieItemDto(
 )
 val movieId = 550L
 
-val remoteMovieDetailsResponse = RemoteMovieDetailsResponse(
+val remoteMovieDetailsResponse = MovieDetailsRemoteResponse(
     id = movieId,
     adult = false,
     backdropPath = null,
@@ -48,34 +48,34 @@ val remoteMovieDetailsResponse = RemoteMovieDetailsResponse(
     video = false,
     voteAverage = 5.0,
     voteCount = 1,
-    reviews = ReviewsResponse(
+    reviews = ReviewsRemoteResponse(
         id = movieId,
         page = 1,
         results = emptyList(),
         totalPages = 1,
         totalResults = 0
     ),
-    credits = RemoteCastAndCrewResponse(
+    credits = CastAndCrewRemoteResponse(
         id = movieId,
         cast = emptyList(),
         crew = emptyList()
     ),
-    similar = RemoteMovieResponse(
+    similar = MovieRemoteResponse(
         page = 1,
         results = emptyList(),
         totalPages = 1,
         totalResults = 0
     ),
-    images = RemoteGalleryResponse(
+    images = GalleryRemoteResponse(
         id = movieId,
         backdrops = emptyList(),
         logos = emptyList(),
         posters = emptyList()
     ),
-    videos = VideoResponse(emptyList())
+    videos = VideoRemoteResponse(emptyList())
 )
 val name = "Leonardo DiCaprio"
-val actorSearchItemDto=  ActorSearchItemDto(
+val actorSearchItemDto=  ActorSearchItemRemoteDto(
     id = 6193,
     name = name,
     adult = false,
@@ -87,7 +87,7 @@ val actorSearchItemDto=  ActorSearchItemDto(
 )
 
 //tv
-val remoteTvShowItemDto =  RemoteTvShowItemDto(
+val remoteTvShowItemDto =  TvShowItemRemoteDto(
     id = 1L,
     title = "Popular Show",
     adult = false,
@@ -112,7 +112,7 @@ val remoteTvShowDetailsResponse = TvShowDetailsRemoteResponse(
     posterPath = "/poster_got.jpg",
     seasonCount = 8,
     adult = false,
-    genres = listOf(RemoteCategoryDto(id = 10765, name = "Sci-Fi & Fantasy")),
+    genres = listOf(CategoryRemoteDto(id = 10765, name = "Sci-Fi & Fantasy")),
     originCountry = listOf("US"),
     originalLanguage = "en",
     originalTitle = "Game of Thrones",
@@ -120,34 +120,34 @@ val remoteTvShowDetailsResponse = TvShowDetailsRemoteResponse(
     releaseDate = "2011-04-17",
     voteAverage = 8.4,
     productionCompanies = emptyList(),
-    reviews = ReviewsResponse(
+    reviews = ReviewsRemoteResponse(
         id = tvShowId,
         page = 1,
         results = emptyList(),
         totalPages = 1,
         totalResults = 0
     ),
-    credits = RemoteCastAndCrewResponse(
+    credits = CastAndCrewRemoteResponse(
         id = tvShowId,
         cast = emptyList(),
         crew = emptyList()
     ),
-    similar = RemoteTvShowResponse(
+    similar = TvShowRemoteResponse(
         page = 1,
         results = emptyList(),
         totalPages = 1,
         totalResults = 0
     ),
-    images = RemoteGalleryResponse(
+    images = GalleryRemoteResponse(
         id = tvShowId,
         backdrops = emptyList(),
         logos = emptyList(),
         posters = emptyList()
     ),
-    videos = VideoResponse(emptyList())
+    videos = VideoRemoteResponse(emptyList())
 
 )
-val episodeDto=EpisodeDto(
+val episodeDto=EpisodeRemoteDto(
     id = 456L,
     title = "Winter is Coming",
     seasonNumber = 1,
@@ -158,7 +158,7 @@ val episodeDto=EpisodeDto(
     stillPath = "/still_path.jpg",
     airDate = "2011-04-17"
 )
-val episodeResponse=EpisodeResponse(
+val episodeResponse=EpisodeRemoteResponse(
     id = 123L,
     episodes = listOf(episodeDto),
     airDate = "2011-04-17",
@@ -168,7 +168,7 @@ val episodeResponse=EpisodeResponse(
     seasonNumber = 1L,
     voteAverage = 8.4
 )
-val videoDto= VideoDto(
+val videoDto= VideoRemoteDto(
     id = "123",
    languageCode = "en",
     countryCode = "US",
@@ -181,7 +181,7 @@ val videoDto= VideoDto(
     type = "Trailer"
 
 )
-val authenticationResponseDto= AuthenticationResponseDto(
+val authenticationResponseDto= AuthenticationRemoteResponse(
     isSuccess =  true,
     expiresAt = "2023-01-01",
     requestToken = "token",

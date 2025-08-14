@@ -13,18 +13,20 @@ import com.amsterdam.localdatasource.roomDataBase.daos.CountryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
 import com.amsterdam.localdatasource.roomDataBase.daos.AccountDetailsDao
+import com.amsterdam.localdatasource.roomDataBase.daos.GamePointsDao
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.localdatasource.roomDataBase.daos.WatchHistoryDao
-import com.amsterdam.repository.dto.local.LocalCountryDto
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalMovieCategoryInterestDto
-import com.amsterdam.repository.dto.local.LocalMovieDto
-import com.amsterdam.repository.dto.local.LocalSearchDto
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryInterestDto
-import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.GamePointsDto
+import com.amsterdam.repository.dto.local.CountryLocalDto
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.dto.local.MovieCategoryInterestLocalDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
+import com.amsterdam.repository.dto.local.SearchLocalDto
+import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
+import com.amsterdam.repository.dto.local.TvShowCategoryInterestLocalDto
+import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
 import com.amsterdam.repository.dto.local.PopularMovieDto
@@ -37,16 +39,16 @@ import com.amsterdam.repository.dto.local.UpcomingMovieDto
 import com.amsterdam.repository.dto.local.profile.AccountDetailsLocalDto
 
 @Database(
-    entities = [LocalSearchDto::class,
-        LocalCountryDto::class,
-        LocalMovieDto::class,
-        LocalTvShowDto::class,
+    entities = [SearchLocalDto::class,
+        CountryLocalDto::class,
+        MovieLocalDto::class,
+        TvShowLocalDto::class,
         MovieWatchHistoryDto::class,
         TvShowWatchHistoryDto::class,
-        LocalMovieCategoryInterestDto::class,
-        LocalTvShowCategoryInterestDto::class,
-        LocalMovieCategoryDto::class,
-        LocalTvShowCategoryDto::class,
+        MovieCategoryInterestLocalDto::class,
+        TvShowCategoryInterestLocalDto::class,
+        MovieCategoryLocalDto::class,
+        TvShowCategoryLocalDto::class,
         MovieCategoryCrossRefDto::class,
         TvShowCategoryCrossRefDto::class,
         PopularMovieDto::class,
@@ -54,7 +56,8 @@ import com.amsterdam.repository.dto.local.profile.AccountDetailsLocalDto
         TopRatedMovieDto::class,
         TopRatedTvShowDto::class,
         UpcomingMovieDto::class,
-        AccountDetailsLocalDto::class
+        AccountDetailsLocalDto::class,
+        GamePointsDto::class
     ],
     version = 1,
     exportSchema = false
@@ -70,6 +73,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun movieCategoryInterestDao(): MovieCategoryInterestDao
     abstract fun tvShowCategoryInterestDao(): TvShowCategoryInterestDao
     abstract fun accountDetailsDao(): AccountDetailsDao
+    abstract fun gamePointsDao(): GamePointsDao
 
     companion object {
         private const val DATABASE_NAME = "AflamiDatabase.db"

@@ -8,26 +8,19 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class RecentSearchesUseCaseTest {
-    private lateinit var recentSearchRepository: RecentSearchRepository
-    private lateinit var recentSearchesUseCase: RecentSearchesUseCase
-    private val country = Country("EGYPT", "EG")
-
-    @BeforeEach
-    fun setUp() {
-        recentSearchRepository = mockk(relaxed = true)
-        recentSearchesUseCase = RecentSearchesUseCase(recentSearchRepository)
+    private val recentSearchRepository: RecentSearchRepository = mockk(relaxed = true)
+    private val recentSearchesUseCase by lazy {
+        RecentSearchesUseCase(recentSearchRepository)
     }
 
     @Test
     fun `addRecentSearch should call repository with valid keyword`() = runTest {
-        val keyword = "keyword"
-        recentSearchesUseCase.addRecentSearch(keyword)
-        coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(keyword) }
+        recentSearchesUseCase.addRecentSearch(searchKeyword)
+        coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(searchKeyword) }
     }
 
     @Test
@@ -58,7 +51,6 @@ class RecentSearchesUseCaseTest {
 
     @Test
     fun `addRecentSearchForActor should call repository with valid actor name`() = runTest {
-        val actorName = "keyword"
         recentSearchesUseCase.addRecentSearch(actorName)
         coVerify(exactly = 1) { recentSearchRepository.addRecentSearch(actorName) }
     }
@@ -93,7 +85,6 @@ class RecentSearchesUseCaseTest {
 
     @Test
     fun `deleteRecentSearch should call repository once with the correct keyword`() = runTest {
-        val searchKeyword = "searchKeyword"
         recentSearchesUseCase.deleteRecentSearch(searchKeyword)
         coVerify(exactly = 1) { recentSearchRepository.deleteRecentSearch(searchKeyword) }
     }
@@ -113,9 +104,8 @@ class RecentSearchesUseCaseTest {
 
     @Test
     fun `addRecentSearch should throw AflamiException when repository fails`() = runTest {
-        val keyword = "testKeyword"
-        coEvery { recentSearchRepository.addRecentSearch(keyword) } throws AflamiException()
-        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearch(keyword) }
+        coEvery { recentSearchRepository.addRecentSearch(searchKeyword) } throws AflamiException()
+        assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearch(searchKeyword) }
     }
 
     @Test
@@ -126,15 +116,17 @@ class RecentSearchesUseCaseTest {
 
     @Test
     fun `addRecentSearchForActor should throw AflamiException when repository fails`() = runTest {
-        val actorName = "actorName"
         coEvery { recentSearchRepository.addRecentSearch(actorName) } throws AflamiException()
         assertThrows<AflamiException> { recentSearchesUseCase.addRecentSearch(actorName) }
     }
 
     @Test
     fun `deleteRecentSearch should throw AflamiException when repository fails`() = runTest {
-        val searchKeyword = "testKeyword"
         coEvery { recentSearchRepository.deleteRecentSearch(searchKeyword) } throws AflamiException()
         assertThrows<AflamiException> { recentSearchesUseCase.deleteRecentSearch(searchKeyword) }
     }
+
+    private val actorName = "actorName"
+    private val searchKeyword = "testKeyword"
+    private val country = Country("EGYPT", "EG")
 }

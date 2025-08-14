@@ -9,7 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.useCase.list.DeleteListUseCase
-import com.amsterdam.domain.useCase.list.GetMoviesFromListUseCase
+import com.amsterdam.domain.useCase.list.GetListMediaItemsFromListUseCase
 import com.amsterdam.domain.useCase.list.RemoveMovieFromListUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.paging.PagingSource
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListDetailsViewModel @Inject constructor(
-    private val getMoviesFromListUseCase: GetMoviesFromListUseCase,
+    private val getListMediaItemsFromListUseCase: GetListMediaItemsFromListUseCase,
     private val removeMovieFromListUseCase: RemoveMovieFromListUseCase,
     private val deleteListUseCase: DeleteListUseCase,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
@@ -59,8 +59,8 @@ class ListDetailsViewModel @Inject constructor(
                     config = PagingConfig(pageSize = 10),
                     pagingSourceFactory = {
                         currentPagingSource =  PagingSource { page ->
-                           getMoviesFromListUseCase(state.value.listId, page)
-                                .toListDetailsItemUiState()
+                           getListMediaItemsFromListUseCase(state.value.listId, page)
+                               .toListDetailsItemUiState()
                         }
                         currentPagingSource!!
                     }
@@ -79,6 +79,10 @@ class ListDetailsViewModel @Inject constructor(
 
     override fun onClickMovie(movieId: Long) {
         sendNewEffect(ListDetailsEffect.NavigateToMovieDetailsScreen(movieId))
+    }
+
+    override fun onClickTvShow(tvShowId: Long) {
+        sendNewNavigationEffect(ListDetailsEffect.NavigateToTvShowDetailsScreen(tvShowId))
     }
 
     override fun onClickBack() {

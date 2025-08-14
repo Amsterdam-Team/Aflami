@@ -13,25 +13,21 @@ import org.junit.jupiter.api.Test
 
 class DeleteUserRatedMovieUseCaseTest {
 
-    private lateinit var movieRepository: MovieRepository
-    private lateinit var useCase: DeleteUserRatedMovieUseCase
-
-    @BeforeEach
-    fun setUp() {
-        movieRepository  = mockk(relaxed = true)
-        useCase = DeleteUserRatedMovieUseCase(movieRepository)
+    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val useCase by lazy {
+        DeleteUserRatedMovieUseCase(movieRepository)
     }
 
     @Test
-    fun `deleteMovieRate should call deleteMovieRate on repository with correct movieId`() = runTest {
-        // Given
-        val movieId = 42L
-        coEvery { movieRepository.deleteMovieRate(movieId) } just Runs
-        // When
-       val result = useCase.deleteMovieRate(movieId)
+    fun `should call deleteMovieRate on repository with correct movieId`() =
+        runTest {
+            coEvery { movieRepository.deleteMovieRate(movieId) } just Runs
 
-        // Then
-        assertThat(result).isEqualTo(Unit)
-        coVerify(exactly = 1) { movieRepository.deleteMovieRate(movieId) }
-    }
+            val result = useCase.deleteMovieRate(movieId)
+
+            assertThat(result).isEqualTo(Unit)
+            coVerify(exactly = 1) { movieRepository.deleteMovieRate(movieId) }
+        }
+
+    private val movieId = 42L
 }

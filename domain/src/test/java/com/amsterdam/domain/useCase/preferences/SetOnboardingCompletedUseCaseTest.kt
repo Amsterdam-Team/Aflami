@@ -9,16 +9,13 @@ import org.junit.jupiter.api.Test
 
 class SetOnboardingCompletedUseCaseTest {
 
-    private lateinit var setOnboardingCompletedUseCase: SetOnboardingCompletedUseCase
     private val preferencesRepository: AppPreferencesRepository = mockk(relaxed = true)
-
-    @BeforeEach
-    fun setUp() {
-        setOnboardingCompletedUseCase = SetOnboardingCompletedUseCase(preferencesRepository)
+    private val setOnboardingCompletedUseCase by lazy {
+        SetOnboardingCompletedUseCase(preferencesRepository)
     }
 
     @Test
-    fun `setOnboardingCompleted should set onboarding completed status when isCompleted true`() =
+    fun `should set onboarding completed status when isCompleted true`() =
         runTest {
             val isCompleted = true
             setOnboardingCompletedUseCase(isCompleted)

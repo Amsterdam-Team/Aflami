@@ -28,7 +28,6 @@ private fun DependencyHandlerScope.modulesDependencies() {
 
 private fun DependencyHandlerScope.coroutinesDependencies() {
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
 }
 
 private fun DependencyHandlerScope.kotlinDateTimeDependencies() {
@@ -44,4 +43,18 @@ private fun DependencyHandlerScope.testDependencies() {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+kover.reports{
+
+    filters.excludes{
+        packages(
+            "*.exceptions",
+            "*.logger",
+            "*.models",
+        )
+
+        classes("*${'$'}${'$'}inlined${'$'}*")
+    }
+
 }

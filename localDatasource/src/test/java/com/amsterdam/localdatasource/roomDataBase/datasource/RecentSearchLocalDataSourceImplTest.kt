@@ -1,7 +1,7 @@
 package com.amsterdam.localdatasource.roomDataBase.datasource
 
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
-import com.amsterdam.repository.dto.local.LocalSearchDto
+import com.amsterdam.repository.dto.local.SearchLocalDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -12,18 +12,18 @@ import org.junit.jupiter.api.Test
 
 class RecentSearchLocalDataSourceImplTest {
     private lateinit var dao: RecentSearchDao
-    private lateinit var recentSearchLocalDataSourceImpl: RecentSearchLocalDataDataSourceImpl
+    private lateinit var recentSearchLocalDataSourceImpl: RecentSearchLocalDataSourceImpl
 
     @BeforeEach
     fun setUp(){
         dao = mockk(relaxed = true)
-        recentSearchLocalDataSourceImpl = RecentSearchLocalDataDataSourceImpl(dao)
+        recentSearchLocalDataSourceImpl = RecentSearchLocalDataSourceImpl(dao)
     }
 
     @Test
     fun `upsertRecentSearch should call dao with correct data`()=runTest{
         //Given
-        val recentSearch = LocalSearchDto(
+        val recentSearch = SearchLocalDto(
             searchKeyword = "action"
         )
         //When
@@ -36,7 +36,7 @@ class RecentSearchLocalDataSourceImplTest {
     fun `getRecentSearches should return list of LocalSearchDto`()=runTest {
         //Given
         val expected = listOf(
-            LocalSearchDto(
+            SearchLocalDto(
                 searchKeyword = "action"
             )
         )

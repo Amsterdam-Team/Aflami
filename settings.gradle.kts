@@ -11,9 +11,6 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
-        flatDir {
-            dirs ("libs")
-        }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -25,9 +22,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
-        flatDir {
-            dirs("libs")
-        }
     }
 }
 

@@ -6,10 +6,10 @@ import com.amsterdam.remotedatasource.util.episodeResponse
 import com.amsterdam.remotedatasource.util.remoteTvShowDetailsResponse
 import com.amsterdam.remotedatasource.util.remoteTvShowItemDto
 import com.amsterdam.remotedatasource.util.videoDto
-import com.amsterdam.repository.dto.remote.RatingResponse
-import com.amsterdam.repository.dto.remote.RemoteCastAndCrewResponse
-import com.amsterdam.repository.dto.remote.RemoteTvShowResponse
-import com.amsterdam.repository.dto.remote.VideoResponse
+import com.amsterdam.repository.dto.remote.RatingRemoteResponse
+import com.amsterdam.repository.dto.remote.CastAndCrewRemoteResponse
+import com.amsterdam.repository.dto.remote.TvShowRemoteResponse
+import com.amsterdam.repository.dto.remote.VideoRemoteResponse
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -22,18 +22,18 @@ import org.junit.jupiter.api.assertThrows
 class TvRemoteDataSourceImplTest {
 
     private lateinit var tvShowsApiService: TvShowsApiService
-    private lateinit var tvRemoteDataSourceImpl: TvRemoteDataSourceImpl
+    private lateinit var tvRemoteDataSourceImpl: TvRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         tvShowsApiService = mockk()
-        tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(tvShowsApiService)
+        tvRemoteDataSourceImpl = TvRemoteDataDataSourceImpl(tvShowsApiService)
     }
 
     @Test
     fun `getPopularTvShows should return a list of TV shows when successful`() = runTest {
         // Given
-        val expectedResponse = RemoteTvShowResponse(
+        val expectedResponse = TvShowRemoteResponse(
             page = 1,
             results = listOf(
                 remoteTvShowItemDto
@@ -65,7 +65,7 @@ class TvRemoteDataSourceImplTest {
     @Test
     fun `getPopularTvShows should return an empty list when API response is empty`() = runTest {
         // Given
-        val expectedResponse = RemoteTvShowResponse(
+        val expectedResponse = TvShowRemoteResponse(
             page = 1,
             results = emptyList(),
             totalPages = 1,
@@ -86,7 +86,7 @@ class TvRemoteDataSourceImplTest {
         runTest {
             // Given
             val page = 1
-            val expectedResponse = RemoteTvShowResponse(
+            val expectedResponse = TvShowRemoteResponse(
                 page = page,
                 results = listOf(
                     remoteTvShowItemDto
@@ -122,7 +122,7 @@ class TvRemoteDataSourceImplTest {
         // Given
         val keyword = "Game of Thrones"
         val page = 1
-        val expectedResponse = RemoteTvShowResponse(
+        val expectedResponse = TvShowRemoteResponse(
             page = page,
             results = listOf(
                 remoteTvShowItemDto
@@ -192,7 +192,7 @@ class TvRemoteDataSourceImplTest {
     fun `getTvShowCast should return cast and crew for a TV show when successful`() = runTest {
         // Given
         val tvShowId = 1399L
-        val expectedCastAndCrewResponse = RemoteCastAndCrewResponse(
+        val expectedCastAndCrewResponse = CastAndCrewRemoteResponse(
             id = tvShowId,
             cast = emptyList(),
             crew = emptyList()
@@ -270,7 +270,7 @@ class TvRemoteDataSourceImplTest {
         val tvShowId = 1399L
         val seasonNumber = 1
         val episodeNumber = 1
-        val expectedResponse = VideoResponse(
+        val expectedResponse = VideoRemoteResponse(
             results = listOf(
                 videoDto
             )
@@ -308,7 +308,7 @@ class TvRemoteDataSourceImplTest {
         val tvShowId = 123L
         val sessionId = "mock_session"
         val rate = 8
-        val expectedResponse = RatingResponse(statusCode = 1, statusMessage = "Success")
+        val expectedResponse = RatingRemoteResponse(statusCode = 1, statusMessage = "Success")
 
         coEvery {
             tvShowsApiService.postTvRating(tvShowId, rate.toFloat(), sessionId)
@@ -334,7 +334,7 @@ class TvRemoteDataSourceImplTest {
         //Given
         val sessionId = "session_id"
 
-        val expectedResponse = RemoteTvShowResponse(
+        val expectedResponse = TvShowRemoteResponse(
             page = 1,
             results = listOf(
                 remoteTvShowItemDto
@@ -356,7 +356,7 @@ class TvRemoteDataSourceImplTest {
         // Given
         val tvShowId = 1399L
         val sessionId = "session_id"
-        val expectedResponse = RatingResponse(
+        val expectedResponse = RatingRemoteResponse(
             statusCode = 200,
             statusMessage = "Success"
         )

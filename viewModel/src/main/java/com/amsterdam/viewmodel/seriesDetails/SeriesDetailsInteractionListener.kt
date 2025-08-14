@@ -7,7 +7,6 @@ interface SeriesDetailsInteractionListener {
     fun onNavigateBack()
     fun onClickRetryButton()
     fun onClickShowAllCast()
-    fun onAddToListClicked()
     fun onClickRate()
     fun onClickSeasonMenu(seasonNumber: Int)
     fun onNavigateToLoginClicked()

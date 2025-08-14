@@ -13,14 +13,15 @@ import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.repository.repository.AppPreferencesRepositoryImpl
 import com.amsterdam.repository.repository.AuthenticationRepositoryImpl
 import com.amsterdam.repository.repository.CountryRepositoryImpl
+import com.amsterdam.repository.repository.GameRepositoryImpl
 import com.amsterdam.repository.repository.MovieRepositoryImpl
 import com.amsterdam.repository.repository.ProfileRepositoryImpl
 import com.amsterdam.repository.repository.RecentSearchRepositoryImpl
 import com.amsterdam.repository.repository.TvShowRepositoryImpl
 import com.amsterdam.repository.repository.UserListRepositoryImpl
 import com.amsterdam.repository.repository.WatchHistoryRepositoryImpl
-import com.amsterdam.repository.security.CryptoData
-import com.amsterdam.repository.security.CryptoDataImpl
+import com.amsterdam.repository.security.CryptoManager
+import com.amsterdam.repository.security.CryptoManagerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -34,8 +35,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindCryptoData(
-        impl: CryptoDataImpl
-    ): CryptoData
+        impl: CryptoManagerImpl
+    ): CryptoManager
 
     @Binds
     @Singleton
@@ -93,4 +94,9 @@ abstract class RepositoryModule {
     ): ProfileRepository
 
 
+    @Binds
+    @Singleton
+    abstract fun bindGameRepository(
+        gameRepository: GameRepositoryImpl
+    ): GameRepository
 }

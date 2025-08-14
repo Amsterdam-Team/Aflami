@@ -79,11 +79,6 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onSearchKeywordChanged(keyword: String) {
-        if (keyword.isBlank()) {
-            updateState { it.copy(movies = emptyFlow(), tvShows = emptyFlow(), errorUiState = null, isLoading = false) }
-            return
-        }
-
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByKeyword(keyword)
             TabOption.TV_SHOWS -> fetchTvShowsByKeyword(keyword)
@@ -229,9 +224,11 @@ class SearchViewModel @Inject constructor(
     private fun startLoading(start: Boolean = true) = updateState { it.copy(isLoading = start) }
 
     override fun onChangeSearchKeyword(keyword: String) {
-        if (keyword.trim() != state.value.keyword.trim()) {
+        if (keyword.trim() != state.value.keyword.trim() && keyword.isNotBlank()) {
             _keyword.update { keyword }
-            startLoading()
+        }
+        if (keyword.isBlank()) {
+            updateState { it.copy(movies = emptyFlow(), tvShows = emptyFlow(), errorUiState = null, isLoading = false) }
         }
         updateState { it.copy(keyword = keyword) }
     }

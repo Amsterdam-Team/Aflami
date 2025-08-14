@@ -1,6 +1,8 @@
 package com.amsterdam.repository.mapper.remoteToLocal
 
 import com.amsterdam.repository.mapper.remoteToLocal.testFactory.createRemoteTvShowItemDto
+import com.amsterdam.repository.mapper.toLocalDto
+import com.amsterdam.repository.mapper.toLocalTvShowDtoList
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
@@ -74,7 +76,7 @@ class RemoteToLocalTvShowMappersTest {
         )
 
         // Act
-        val localDtoList = remoteDtoList.toLocalDtoList(storedLanguage)
+        val localDtoList = remoteDtoList.toLocalTvShowDtoList(storedLanguage)
 
         // Assert
         assertThat(localDtoList).hasSize(2)

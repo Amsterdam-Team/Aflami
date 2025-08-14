@@ -4,16 +4,18 @@ import com.amsterdam.remotedatasource.datasource.AuthenticationRemoteDataSourceI
 import com.amsterdam.remotedatasource.datasource.CategoryRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.CountryRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.MovieRemoteDataSourceImpl
+import com.amsterdam.remotedatasource.datasource.PeopleRemoteDataDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.ProfileRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.TvRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.UserListRemoteDataSourceImpl
-import com.amsterdam.repository.datasource.remote.AuthenticationRemoteSource
-import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
-import com.amsterdam.repository.datasource.remote.CountryRemoteSource
-import com.amsterdam.repository.datasource.remote.MovieRemoteSource
+import com.amsterdam.repository.datasource.remote.AuthenticationRemoteDataSource
+import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
+import com.amsterdam.repository.datasource.remote.CountryRemoteDataSource
+import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
+import com.amsterdam.repository.datasource.remote.PeopleRemoteDataSource
 import com.amsterdam.repository.datasource.remote.ProfileRemoteDataSource
-import com.amsterdam.repository.datasource.remote.TvShowsRemoteSource
-import com.amsterdam.repository.datasource.remote.UserListRemoteSource
+import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
+import com.amsterdam.repository.datasource.remote.UserListRemoteDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,37 +30,44 @@ abstract class RemoteDataSourceBindModule {
     @Singleton
     abstract fun bindAuthenticationRemoteSource(
         authenticationRemoteDataSourceImpl: AuthenticationRemoteDataSourceImpl
-    ): AuthenticationRemoteSource
+    ): AuthenticationRemoteDataSource
 
     @Binds
     @Singleton
     abstract fun bindCategoryRemoteSource(
         categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
-    ): CategoryRemoteSource
+    ): CategoryRemoteDataSource
 
     @Binds
     @Singleton
     abstract fun bindCountryRemoteSource(
         countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
-    ): CountryRemoteSource
+    ): CountryRemoteDataSource
 
     @Binds
     @Singleton
     abstract fun bindMovieRemoteSource(
         movieRemoteDataSourceImpl: MovieRemoteDataSourceImpl
-    ): MovieRemoteSource
+    ): MovieRemoteDataSource
+
+
+    @Binds
+    @Singleton
+    abstract fun bindPeopleRemoteSource(
+        peopleRemoteDataSourceImpl: PeopleRemoteDataDataSourceImpl
+    ): PeopleRemoteDataSource
 
     @Binds
     @Singleton
     abstract fun bindTvShowsRemoteSource(
         tvRemoteDataSourceImpl: TvRemoteDataSourceImpl
-    ): TvShowsRemoteSource
+    ): TvShowsRemoteDataSource
 
     @Binds
     @Singleton
     abstract fun bindUserListRemoteSource(
         impl: UserListRemoteDataSourceImpl
-    ): UserListRemoteSource
+    ): UserListRemoteDataSource
 
     @Binds
     @Singleton

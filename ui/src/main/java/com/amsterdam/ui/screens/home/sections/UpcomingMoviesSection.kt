@@ -26,7 +26,7 @@ import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.adaptiveGrid
 import com.amsterdam.ui.screens.home.sections.placeholder.upcomingMoviesSectionPlaceholder
-import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
+import com.amsterdam.ui.components.EmptyStateText
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.ui.utils.toSafetyLevel

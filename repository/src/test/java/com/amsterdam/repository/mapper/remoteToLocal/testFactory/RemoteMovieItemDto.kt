@@ -1,8 +1,8 @@
 package com.amsterdam.repository.mapper.remoteToLocal.testFactory
 
-import com.amsterdam.repository.dto.remote.ProductionCompanyDto
-import com.amsterdam.repository.dto.remote.RemoteCategoryDto
-import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
+import com.amsterdam.repository.dto.remote.ProductionCompanyRemoteDto
+import com.amsterdam.repository.dto.remote.CategoryRemoteDto
+import com.amsterdam.repository.dto.remote.MovieItemRemoteDto
 
 fun createRemoteMovieItemDto(
     id: Long = 123L,
@@ -19,13 +19,13 @@ fun createRemoteMovieItemDto(
     genreIds: List<Int> = emptyList(),
     originalLanguage: String = "en",
     originalTitle: String = "Example Movie",
-    productionCompanies: List<ProductionCompanyDto> = emptyList(),
+    productionCompanies: List<ProductionCompanyRemoteDto> = emptyList(),
     video: Boolean = false,
     voteCount: Int = 100,
-    genres: List<RemoteCategoryDto> = emptyList(),
+    genres: List<CategoryRemoteDto> = emptyList(),
     rating: Float = voteAverage.toFloat()
-): RemoteMovieItemDto {
-    return RemoteMovieItemDto(
+): MovieItemRemoteDto {
+    return MovieItemRemoteDto(
         id = id,
         title = title,
         overview = overview,

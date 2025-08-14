@@ -5,17 +5,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class GetOnboardingStatusUseCaseTest {
 
-    private lateinit var getOnboardingStatusUseCase: GetOnboardingStatusUseCase
     private val preferencesRepository: AppPreferencesRepository = mockk(relaxed = true)
-
-    @BeforeEach
-    fun setUp() {
-        getOnboardingStatusUseCase = GetOnboardingStatusUseCase(preferencesRepository)
+    private val getOnboardingStatusUseCase by lazy {
+        GetOnboardingStatusUseCase(preferencesRepository)
     }
 
     @Test
