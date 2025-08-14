@@ -11,186 +11,141 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class MovieLocalDataSourceImplTest {
-
-    private lateinit var movieDao: MovieDao
-    private lateinit var interestDao: MovieCategoryInterestDao
-    private lateinit var dataSource: MovieLocalDataSourceImpl
-
-    @BeforeEach
-    fun setUp() {
-        movieDao = mockk(relaxed = true)
-        interestDao = mockk(relaxed = true)
-        dataSource = MovieLocalDataSourceImpl(movieDao, interestDao)
-    }
+    private val movieDao by lazy { mockk<MovieDao>(relaxed = true) }
+    private val interestDao by lazy { mockk<MovieCategoryInterestDao>(relaxed = true) }
+    private val dataSource by lazy { MovieLocalDataSourceImpl(movieDao, interestDao) }
 
     @Test
-    fun `getMovieById should return the correct movie`() = runTest {
-        //Given
-        val storedLanguage = "en"
-        val movie = createMovie(movieId = 42, storedLanguage = storedLanguage)
-        coEvery { movieDao.getMovieById(42, storedLanguage) } returns movie
-        //When
-        val result = dataSource.getMovieById(42, storedLanguage)
-        //Then
+    fun `getMovieById should return the correct movie when there is date returned`() = runTest {
+        coEvery { movieDao.getMovieById(movie.movieId, movie.storedLanguage) } returns movie
+
+        val result = dataSource.getMovieById(movie.movieId, movie.storedLanguage)
+
         assertThat(result).isEqualTo(movie)
     }
 
     @Test
-    fun `incrementGenreInterest should call incrementInterest in the interestDao with correct genre`() =
+    fun `getMovieById should call getMovieById from the movieDao with correct data when called`() =
         runTest {
-            //Given
-            val categoryId = 1L
-            //When
+            dataSource.getMovieById(movie.movieId, movie.storedLanguage)
+
+            coVerify(exactly = 1) { movieDao.getMovieById(movie.movieId, movie.storedLanguage) }
+        }
+
+    @Test
+    fun `incrementGenreInterest should call incrementInterest in the interestDao with correct data`() =
+        runTest {
             dataSource.incrementGenreInterest(categoryId)
-            //Then
+
             coVerify(exactly = 1) { interestDao.incrementInterest(categoryId) }
         }
 
     @Test
-    fun `addMovieWithCategories should insert the movie and corresponding category cross-references`() =
+    fun `upsertMovieWithCategories should call upsertMovie and upsertMovieCategoryCrossRefs in the movieDao with correct data`() =
         runTest {
-            // Given
-            val movie = createMovie(movieId = 1L, storedLanguage = "en")
-            val categories = listOf(1L)
-            val expectedCrossRefs = listOf(
-                MovieCategoryCrossRefDto(
-                    movieId = movie.movieId,
-                    categoryId = categories.first(),
-                    storedLanguage = "en"
-                )
-            )
+            dataSource.upsertMovieWithCategories(movie, categories, storedLanguage)
 
-            // When
-            dataSource.upsertMovieWithCategories(movie, categories, "en")
-
-            // Then
             coVerify(exactly = 1) { movieDao.upsertMovie(movie) }
-            coVerify(exactly = 1) { movieDao.upsertMovieCategoryCrossRefs(expectedCrossRefs) }
+            coVerify(exactly = 1) { movieDao.upsertMovieCategoryCrossRefs(movieCategoryCrossRefs) }
         }
 
     @Test
-    fun `insertMovie should call insertMovie in the movieDao with provided movie`() = runTest {
-        //Given
-        val storedLanguage = "en"
-        val movie = createMovie(movieId = 42, storedLanguage = storedLanguage)
-        //When
+    fun `upsertMovie should call upsertMovie in the movieDao with provided movie`() = runTest {
         dataSource.upsertMovie(movie)
-        // Then
+
         coVerify(exactly = 1) { movieDao.upsertMovie(movie) }
     }
 
     @Test
-    fun `getPopularMovies should return non empty list of movie`() = runTest {
-        //Given
-        val storedLanguage = "en"
+    fun `getPopularMovies should return moviesWithCategories list when data returned`() = runTest {
         coEvery { movieDao.getPopularMovies(storedLanguage) } returns moviesWithCategories
-        //When
+
         val result = dataSource.getPopularMovies(storedLanguage)
-        //Then
+
         assertThat(result).isEqualTo(moviesWithCategories)
     }
 
     @Test
-    fun `getUpcomingMovies should return non empty list of movie`() = runTest {
-        //Given
-        val storedLanguage = "en"
+    fun `getUpcomingMovies should return moviesWithCategories list when data returned`() = runTest {
         coEvery { movieDao.getUpcomingMovies(storedLanguage) } returns moviesWithCategories
-        //When
+
         val result = dataSource.getUpcomingMovies(storedLanguage)
-        //Then
+
         assertThat(result).isEqualTo(moviesWithCategories)
     }
 
     @Test
-    fun `getTopRatedMovies should return non empty list of movie`() = runTest {
-        //Given
-        val storedLanguage = "en"
-        val localMovies = listOf(createMovie(movieId = 42, storedLanguage = storedLanguage))
+    fun `getTopRatedMovies should return MovieLocalDto list when data returned`() = runTest {
         coEvery { movieDao.getTopRatedMovies(storedLanguage) } returns localMovies
-        //When
+
         val result = dataSource.getTopRatedMovies(storedLanguage)
-        //Then
+
         assertThat(result).isEqualTo(localMovies)
     }
 
     @Test
-    fun `addPopularMovies should call insertPopularMovies in the movieDao`() = runTest {
-        //Given
-        val localMovies = listOf(createMovie(movieId = 42, storedLanguage = "en"))
-        //When
-        dataSource.upsertPopularMovies(localMovies)
-        // Then
-        coVerify(exactly = 1) {
-            movieDao.upsertPopularMovies(
-                match { list ->
+    fun `upsertPopularMovies should call upsertMovies and upsertPopularMovies in the movieDao with correct data`() =
+        runTest {
+            dataSource.upsertPopularMovies(localMovies)
+
+            coVerify(exactly = 1) { movieDao.upsertMovies(localMovies) }
+            coVerify(exactly = 1) {
+                movieDao.upsertPopularMovies(match { list ->
                     list.size == 1 &&
-                        list[0].movieId == 42L &&
-                        list[0].storedLanguage == "en"
+                            list[0].movieId == localMovies[0].movieId &&
+                            list[0].storedLanguage == localMovies[0].storedLanguage
+                })
             }
-                    )
         }
-    }
 
     @Test
-    fun `addTopRatedMovies should call insertTopRatedMovies in the movieDao`() = runTest {
-        //Given
-        val localMovies = listOf(createMovie(movieId = 42, storedLanguage = "en"))
-        //When
+    fun `upsertTopRatedMovies should call upsertTopRatedMovies in the movieDao`() = runTest {
         dataSource.upsertTopRatedMovies(localMovies)
-        // Then
+
+        coVerify(exactly = 1) { movieDao.upsertMovies(localMovies) }
         coVerify(exactly = 1) {
             movieDao.upsertTopRatedMovies(match { list ->
                 list.size == 1 &&
-                        list[0].movieId == 42L &&
-                        list[0].storedLanguage == "en"
+                        list[0].movieId == localMovies[0].movieId &&
+                        list[0].storedLanguage == localMovies[0].storedLanguage
             })
         }
     }
 
     @Test
-    fun `addUpcomingMovies should call insertUpcomingMovies in the movieDao`() = runTest {
-        //Given
-        val localMovies = listOf(createMovie(movieId = 42, storedLanguage = "en"))
-        //When
+    fun `upsertUpcomingMovies should call insertUpcomingMovies in the movieDao`() = runTest {
         dataSource.upsertUpcomingMovies(localMovies)
-        // Then
+
+        coVerify(exactly = 1) { movieDao.upsertMovies(localMovies) }
         coVerify(exactly = 1) {
             movieDao.upsertUpcomingMovies(match { list ->
                 list.size == 1 &&
-                        list[0].movieId == 42L &&
-                        list[0].storedLanguage == "en"
+                        list[0].movieId == localMovies[0].movieId &&
+                        list[0].storedLanguage == localMovies[0].storedLanguage
             })
         }
     }
 
     @Test
-    fun `deleteExpiredPopularMovies should call deleteExpiredPopularMovies`() = runTest {
-        //Given
-        val expirationTime = Instant.parse("2023-01-01T00:00:00Z")
-        val storedLanguage = "en"
-        //When
-        dataSource.deleteExpiredPopularMovies(expirationTime, storedLanguage)
-        //Then
-        coVerify(exactly = 1) {
-            movieDao.deleteExpiredPopularMovies(
-                expirationTime,
-                storedLanguage
-            )
+    fun `deleteExpiredPopularMovies should call deleteExpiredPopularMovies in the movieDao`() =
+        runTest {
+            dataSource.deleteExpiredPopularMovies(expirationTime, storedLanguage)
+
+            coVerify(exactly = 1) {
+                movieDao.deleteExpiredPopularMovies(
+                    expirationTime,
+                    storedLanguage
+                )
+            }
         }
-    }
 
     @Test
     fun `deleteAllExpiredTopRatedMovies should call deleteAllExpiredTopRatedMovies`() = runTest {
-        //Given
-        val expirationTime = Instant.parse("2023-01-01T00:00:00Z")
-        val storedLanguage = "en"
-        //When
         dataSource.deleteAllExpiredTopRatedMovies(expirationTime, storedLanguage)
-        //Then
+
         coVerify(exactly = 1) {
             movieDao.deleteAllExpiredTopRatedMovies(
                 expirationTime,
@@ -201,12 +156,8 @@ class MovieLocalDataSourceImplTest {
 
     @Test
     fun `deleteExpiredUpcomingMovies should call deleteExpiredUpcomingMovies`() = runTest {
-        //Given
-        val expirationTime = Instant.parse("2023-01-01T00:00:00Z")
-        val storedLanguage = "en"
-        //When
         dataSource.deleteExpiredUpcomingMovies(expirationTime, storedLanguage)
-        //Then
+
         coVerify(exactly = 1) {
             movieDao.deleteExpiredUpcomingMovies(
                 expirationTime,
@@ -215,11 +166,31 @@ class MovieLocalDataSourceImplTest {
         }
     }
 
-    val moviesWithCategories = listOf(
-        MovieWithCategories(
-            movie = createMovie(movieId = 42, storedLanguage = "en"),
-            categories = emptyList()
-        )
-    )
-
 }
+
+private const val storedLanguage = "en"
+
+private val movie = createMovie(movieId = 42, storedLanguage = storedLanguage)
+
+private const val categoryId = 1L
+
+private val categories = listOf(1L)
+
+private val movieCategoryCrossRefs = listOf(
+    MovieCategoryCrossRefDto(
+        movieId = movie.movieId,
+        categoryId = categories.first(),
+        storedLanguage = storedLanguage
+    )
+)
+
+private val moviesWithCategories = listOf(
+    MovieWithCategories(
+        movie = createMovie(movieId = 42, storedLanguage = "en"),
+        categories = emptyList()
+    )
+)
+
+private val localMovies = listOf(createMovie(movieId = 42, storedLanguage = storedLanguage))
+
+private val expirationTime = Instant.parse("2023-01-01T00:00:00Z")
