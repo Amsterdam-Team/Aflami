@@ -40,10 +40,10 @@ import com.amsterdam.viewmodel.movieDetails.UserListUiState
 fun AddToListDialog(
     userLists: List<UserListUiState>,
     modifier: Modifier = Modifier,
-    selectedList: UserListUiState? = null,
+    selectedLists: List<UserListUiState> = emptyList(),
     isAddMovieToListLoading: Boolean = false,
-    onSelectedListChange: (UserListUiState) -> Unit = {},
-    onAddToSelectedList: (Long) -> Unit = {},
+    onSelectedListChange: (List<UserListUiState>) -> Unit = {},
+    onAddToSelectedList: (List<Long>) -> Unit = {},
     onCreateNewList: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
@@ -70,13 +70,20 @@ fun AddToListDialog(
                     SelectionListItem(
                         listName = userList.name,
                         itemCount = userList.itemCount,
-                        isSelected = selectedList == userList,
-                        onSelectItem = { onSelectedListChange(userList) },
+                        isSelected = selectedLists.contains(userList),
+                        onSelectItem = { 
+                            val updatedSelection = if (selectedLists.contains(userList)) {
+                                selectedLists - userList
+                            } else {
+                                selectedLists + userList
+                            }
+                            onSelectedListChange(updatedSelection)
+                        },
                     )
                 }
             }
             ActionButtonsSection(
-                selectedList = selectedList,
+                selectedList = selectedLists,
                 isAddMovieToListLoading = isAddMovieToListLoading,
                 onAddToSelectedList = onAddToSelectedList,
                 onCreateNewList = onCreateNewList,
@@ -148,9 +155,9 @@ private fun SelectionListItem(
 
 @Composable
 private fun ActionButtonsSection(
-    selectedList: UserListUiState?,
+    selectedList: List<UserListUiState>,
     isAddMovieToListLoading: Boolean,
-    onAddToSelectedList: (Long) -> Unit,
+    onAddToSelectedList: (List<Long>) -> Unit,
     onCreateNewList: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -160,8 +167,8 @@ private fun ActionButtonsSection(
     ) {
         ConfirmButton(
             title = stringResource(R.string.add),
-            onClick = { onAddToSelectedList(selectedList?.id!!) },
-            isEnabled = selectedList != null,
+            onClick = { onAddToSelectedList(selectedList.map { it.id }) },
+            isEnabled = selectedList.isNotEmpty(),
             isLoading = isAddMovieToListLoading,
             isNegative = false,
             modifier = Modifier,
@@ -205,6 +212,7 @@ private fun PreviewAddToListDialog() {
     AflamiTheme {
         AddToListDialog(
             userLists = emptyList(),
+            selectedLists = emptyList(),
         )
     }
 }

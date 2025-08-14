@@ -35,7 +35,7 @@ data class MovieDetailsUiState(
     val listName: String = "",
     val isCreateListLoading: Boolean = false,
     val isAddMovieToListLoading: Boolean = false,
-    val selectedList: UserListUiState? = null,
+    val selectedLists: List<UserListUiState> = emptyList(),
 ) {
     data class SimilarMovieUiState(
         val movieId: Long,

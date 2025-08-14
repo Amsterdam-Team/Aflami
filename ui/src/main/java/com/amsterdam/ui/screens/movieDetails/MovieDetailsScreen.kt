@@ -310,13 +310,13 @@ fun MovieContent(
         ) {
             AddToListDialog(
                 userLists = state.userLists,
-                selectedList = state.selectedList,
+                selectedLists = state.selectedLists,
                 isAddMovieToListLoading = state.isAddMovieToListLoading,
                 onSelectedListChange = movieDetailsInteractionListener::onSelectedListChange,
-                onAddToSelectedList = { listId ->
+                onAddToSelectedList = { listIds ->
                     movieDetailsInteractionListener.onSaveMovieToList(
                         movieId = state.movieId,
-                        listId = listId,
+                        listIds = listIds,
                     )
                 },
                 onCreateNewList = movieDetailsInteractionListener::onClickCreateList,
@@ -516,7 +516,7 @@ private fun SearchByActorContentPreview() {
                 override fun onClickAddToList() {}
 
                 override fun onSaveMovieToList(
-                    movieId: Long, listId: Long
+                    movieId: Long, listIds: List<Long>
                 ) {
                 }
 
@@ -526,7 +526,7 @@ private fun SearchByActorContentPreview() {
 
                 override fun onClickCreateNewList() {}
 
-                override fun onSelectedListChange(selectedList: UserListUiState) {}
+                override fun onSelectedListChange(selectedLists: List<UserListUiState>) {}
 
                 override fun onClickRate() {}
 

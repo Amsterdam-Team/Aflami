@@ -129,7 +129,7 @@ class MovieDetailsViewModel @Inject constructor(
                 isLoginDialogVisible = false,
                 isAddToListDialogVisible = false,
                 isCreateNewListDialogVisible = false,
-                selectedList = null,
+                selectedLists = emptyList(),
                 listName = "",
             )
         }
@@ -175,11 +175,16 @@ class MovieDetailsViewModel @Inject constructor(
 
     override fun onSaveMovieToList(
         movieId: Long,
-        listId: Long,
+        listIds: List<Long>,
     ) {
         updateState { it.copy(isAddMovieToListLoading = true) }
         tryToExecute(
-            action = { addMovieToListUseCase(movieId = movieId, listId = listId) },
+            action = {
+                // Add movie to all selected lists
+                listIds.forEach { listId ->
+                    addMovieToListUseCase(movieId = movieId, listId = listId)
+                }
+            },
             onSuccess = {
                 sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListSuccessfully)
             },
@@ -192,7 +197,7 @@ class MovieDetailsViewModel @Inject constructor(
                     it.copy(
                         isAddToListDialogVisible = false,
                         isCreateNewListDialogVisible = false,
-                        selectedList = null,
+                        selectedLists = emptyList(),
                     )
                 }
             },
@@ -215,7 +220,7 @@ class MovieDetailsViewModel @Inject constructor(
             },
             onSuccess = { listId ->
                 sendNewEffect(MovieDetailsEffect.ListCreatedSuccessfully)
-                onSaveMovieToList(state.value.movieId, listId.toLong())
+                onSaveMovieToList(state.value.movieId, listOf(listId.toLong()))
             },
             onError = {
                 sendNewEffect(MovieDetailsEffect.FailedToCreateList)
@@ -232,8 +237,8 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    override fun onSelectedListChange(selectedList: UserListUiState) {
-        updateState { it.copy(selectedList = selectedList) }
+    override fun onSelectedListChange(selectedLists: List<UserListUiState>) {
+        updateState { it.copy(selectedLists = selectedLists) }
     }
 
     private suspend fun runIfLoggedIn(

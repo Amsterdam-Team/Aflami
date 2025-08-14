@@ -12,7 +12,7 @@ interface MovieDetailsInteractionListener {
 
     fun onSaveMovieToList(
         movieId: Long,
-        listId: Long,
+        listIds: List<Long>,
     )
 
     fun onClickCreateList()
@@ -21,7 +21,7 @@ interface MovieDetailsInteractionListener {
 
     fun onClickCreateNewList()
 
-    fun onSelectedListChange(selectedList: UserListUiState)
+    fun onSelectedListChange(selectedLists: List<UserListUiState>)
 
     fun onClickRate()
 
