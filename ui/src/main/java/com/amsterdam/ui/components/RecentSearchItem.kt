@@ -43,7 +43,7 @@ fun RecentSearchItem(
         )
 
         Text(
-            modifier = Modifier.padding(horizontal = 8.dp).weight(1f),
+            modifier = Modifier.padding(start = 8.dp).weight(1f),
             text = title,
             style = AppTheme.textStyle.body.medium,
             color = AppTheme.color.title,
