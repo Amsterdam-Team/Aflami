@@ -7,6 +7,7 @@ open class NetworkException : AflamiException()
 class UnknownException : NetworkException()
 
 class NoInternetException : NetworkException()
+
 class ServerErrorException : NetworkException()
 
 open class AuthenticationException : NetworkException()
@@ -24,4 +25,5 @@ class AccessDeniedException : AuthenticationException()
 class AccessRestrictedException : AuthenticationException()
 
 open class GameException : AflamiException()
+
 class NotEnoughPointsException : GameException()

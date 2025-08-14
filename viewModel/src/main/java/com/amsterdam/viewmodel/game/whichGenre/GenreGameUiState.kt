@@ -9,6 +9,7 @@ data class GenreGameUiState(
     val questions: List<GameQuestionUiState> = emptyList(),
     val currentQuestionIndex: Int = 0,
     val isHintEnabled: Boolean = true,
+    val isNotEnoughPointsDialogVisible: Boolean = false,
     val timerUiState: TimerUiState = TimerUiState(),
     val isNextEnabled: Boolean = false,
     val selectedAnswerIndex: Int? = null,

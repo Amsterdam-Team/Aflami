@@ -87,6 +87,13 @@ class LetsPlayViewModel @Inject constructor(
                 return
             }
         }
+        updateState {
+            it.copy(
+                selectedGameTypeUiState = null,
+                selectedDifficultyLevel = null,
+                isStartGameButtonEnable = false
+            )
+        }
         sendNewNavigationEffect(navigateEffect)
     }
 

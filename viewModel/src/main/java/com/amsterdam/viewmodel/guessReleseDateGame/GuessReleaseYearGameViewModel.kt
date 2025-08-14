@@ -1,6 +1,8 @@
 package com.amsterdam.viewmodel.guessReleseDateGame
 
 import androidx.lifecycle.viewModelScope
+import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.timer.TimerHandler
 import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion
 import com.amsterdam.domain.useCase.game.releaseYear.GuessReleaseYearGameUseCase
@@ -8,7 +10,6 @@ import com.amsterdam.domain.useCase.game.releaseYear.SubmitGuessReleaseYearAnswe
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.gameEnd.ResultScreenData
 import com.amsterdam.viewmodel.gameEnd.ResultSideEffect
-import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -61,7 +62,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.Default) {
             timerHandler.startTimer(
                 currentQuestion.questionTimeSeconds,
-                onTimerFinish = ::onTimeFinish
+                onTimerFinish = ::onMoveToNextQuestion
             )
                 .collect(::onTimerUpdate)
         }
@@ -82,19 +83,12 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         increaseSpentTimeSecondsByOne()
     }
 
-    private fun onTimeFinish() {
-        updateState { it.copy(isNextEnabled = true) }
-    }
-
-    fun onError(error: Exception) {
-
-    }
-
-    fun onCompletion() {
+    private fun onCompletion() {
         updateState { it.copy(isLoading = false) }
     }
 
     override fun onHintClicked() {
+        if (state.value.isNextEnabled) return
         tryToExecute(
             action = {
                 val currentQuestion = state.value.questions[state.value.currentQuestionIndex]
@@ -129,7 +123,8 @@ class GuessReleaseYearGameViewModel @Inject constructor(
                     difficultyType
                 )
             },
-            onSuccess = { onSuccessSubmitAnswer(it, selectedAnswerIndex) }
+            onSuccess = { onSuccessSubmitAnswer(it, selectedAnswerIndex) },
+            onCompletion = timerHandler::stopTimer
         )
     }
 
@@ -141,9 +136,8 @@ class GuessReleaseYearGameViewModel @Inject constructor(
                 selectedAnswerIndex = selectedAnswerIndex
             )
         }
-        if (answerResult.isCorrect) {
             totalCollectedPoints += answerResult.earnedPoints
-        }
+
     }
 
     override fun onMoveToNextQuestion() {
@@ -156,6 +150,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
                     selectedAnswerIndex = null,
                     isAnswerCorrect = null,
                     isNextEnabled = false,
+                    isNotEnoughPointsDialogVisible = false
                 )
             }
             startTheTimer()
@@ -180,8 +175,17 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         sendNewNavigationEffect(GuessReleaseYearGameEffect.NavigateBack)
     }
 
+    override fun dismissNotEnoughPointsDialog() {
+        updateState { it.copy(isNotEnoughPointsDialogVisible = false) }
+    }
+
     override fun onClickClose() {
         sendNewNavigationEffect(GuessReleaseYearGameEffect.NavigateBack)
     }
 
+    private fun onError(error: AflamiException) {
+        when(error){
+            is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
+        }
+    }
 }

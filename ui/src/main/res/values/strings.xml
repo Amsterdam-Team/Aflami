@@ -88,6 +88,7 @@
     <!-- - Game section   -->
     <string name="release_game_title">When Was It Released?</string>
     <string name="release_game_description">Pick the right release year.</string>
+    <string name="guess_by_poster">Guess by Poster</string>
     <string name="guess_movie_game_title">Guess the Movie by Poster</string>
     <string name="guess_movie_game_description">Match the poster with the right title!</string>
     <string name="genre_game_title">Which Genre?</string>

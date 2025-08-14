@@ -88,7 +88,8 @@
     <!-- - Game section   -->
     <string name="release_game_title">متى تم إصداره؟</string>
     <string name="release_game_description">اختر سنة الإصدار الصحيحة.</string>
-    <string name="guess_movie_game_title">خمن الفيلم من الملصق</string>
+    <string name="guess_by_poster">خمن من الملصق</string>
+    <string name="guess_movie_game_title">خمن الفيلم من خلال الملصق</string>
     <string name="guess_movie_game_description">طابق الملصق مع العنوان الصحيح!</string>
     <string name="genre_game_title">أي نوع؟</string>
     <string name="genre_game_description">أي واحد هو فيلم الأكشن الحقيقي؟</string>

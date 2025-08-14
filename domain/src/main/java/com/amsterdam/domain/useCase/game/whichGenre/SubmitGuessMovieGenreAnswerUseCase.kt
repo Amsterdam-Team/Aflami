@@ -17,9 +17,13 @@ class SubmitGuessMovieGenreAnswerUseCase(
     ): AnswerResult {
         val gameDifficulty = getGameDifficultyUseCase(difficultyType)
         val correct = question.correctChoice == answer
-        if (question.correctChoice == answer) updateUserGamePointsUseCase(gameDifficulty.pointsPerQuestion)
+        var earnedPoints = 0
+        if (question.correctChoice == answer){
+            updateUserGamePointsUseCase(gameDifficulty.pointsPerQuestion)
+            earnedPoints = gameDifficulty.pointsPerQuestion
+        }
 
-        return AnswerResult(correct, gameDifficulty.pointsPerQuestion)
+        return AnswerResult(correct, earnedPoints)
     }
 
     data class AnswerResult(

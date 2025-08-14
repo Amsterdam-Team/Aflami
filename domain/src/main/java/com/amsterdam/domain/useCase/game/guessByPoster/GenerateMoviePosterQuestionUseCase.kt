@@ -12,22 +12,19 @@ class GenerateMoviePosterQuestionsUseCase(
 
     suspend operator fun invoke(difficultyType: GameDifficulty.DifficultyType): List<MoviePosterQuestion> {
         val gameDifficulty = getGameDifficultyByDifficultyTypeUseCase(difficultyType)
-        val movies = gameRepository.getRandomMoviesWithNotNullPoster(gameDifficulty.totalQuestions)
 
-        return movies.mapIndexed { _, movie ->
-            val correctMovieName = movie.name
-            val wrongChoices = movies
-                .filter { it.name != correctMovieName }
-                .shuffled()
-                .take(3)
-                .map { it.name }
+        val movies = gameRepository.getRandomMoviesWithNotNullPoster(gameDifficulty.totalQuestions * 4)
 
-            val movieNameChoices = (wrongChoices + correctMovieName).shuffled()
+        return movies.chunked(4).map { group ->
+            val correctMovie = group.random()
+            val wrongChoices = group.filter { it != correctMovie }.map { it.name }
+
+            val movieNameChoices = (wrongChoices + correctMovie.name).shuffled()
 
             MoviePosterQuestion(
-                posterUrl = movie.posterUrl,
+                posterUrl = correctMovie.posterUrl,
                 movieNameChoices = movieNameChoices,
-                correctMovieName = correctMovieName,
+                correctMovieName = correctMovie.name,
                 questionTimeSeconds = gameDifficulty.timeLimitSeconds
             )
         }

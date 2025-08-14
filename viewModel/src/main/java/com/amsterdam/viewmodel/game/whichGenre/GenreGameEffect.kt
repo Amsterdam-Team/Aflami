@@ -7,5 +7,4 @@ sealed interface GenreGameEffect {
     data class GameOver(
         val resultScreenData : ResultScreenData
     ) : GenreGameEffect
-    data object ShowNotEnoughPointsSnackBar: GenreGameEffect
 }

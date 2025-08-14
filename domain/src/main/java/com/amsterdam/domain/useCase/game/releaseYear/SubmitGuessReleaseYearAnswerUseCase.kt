@@ -15,12 +15,13 @@ class SubmitGuessReleaseYearAnswerUseCase(
     ): AnswerResult {
         val gameDifficulty = getDifficulty(difficultyType)
         val correct = question.correctChoice == answer
+        var earnedPoints = 0
         if (correct) {
             updatePoints(gameDifficulty.pointsPerQuestion)
+            earnedPoints = gameDifficulty.pointsPerQuestion
         }
-        updatePoints(gameDifficulty.pointsPerQuestion)
 
-        return AnswerResult(correct, gameDifficulty.pointsPerQuestion)
+        return AnswerResult(correct,earnedPoints)
     }
 
     data class AnswerResult(

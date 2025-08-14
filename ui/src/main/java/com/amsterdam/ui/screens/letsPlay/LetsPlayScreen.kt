@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -76,11 +78,15 @@ private fun LetsPlayScreenContent(
             .fillMaxSize()
             .background(AppTheme.color.surface)
             .statusBarsPadding()
+            .navigationBarsPadding()
             .windowInsetsPadding(WindowInsets(bottom = LocalScaffoldBottomPadding.current))
     ) {
-        LazyColumn(
+        LazyVerticalGrid(
             contentPadding = PaddingValues(bottom = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
+            columns = GridCells.Adaptive(328.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             stickyHeader {
                 PlayScreenAppBar(
@@ -91,7 +97,7 @@ private fun LetsPlayScreenContent(
                 )
             }
 
-            items(state.games) {
+            this.items(state.games) {
                 val gameCardData = it.gameTypeUiState.getGameTypeData()
                 GameCard(
                     title = stringResource(gameCardData.title),
@@ -101,31 +107,31 @@ private fun LetsPlayScreenContent(
                     shadowColor = gameCardData.shadowColor,
                     onClick = { interactionListener.onClickGameCard(it.gameTypeUiState) },
                     gameCardImageContentType = gameCardData.gameCardImageContentType,
-                    modifier = Modifier.padding(horizontal = 16.dp),
                     isPlayable = state.totalUserPoint >= it.requiredPoints,
                     unlockPrice = "${it.requiredPoints}"
                 )
             }
-
         }
 
-        AnimatedVisibility(
-            visible = state.selectedGameTypeUiState != null,
-            modifier = Modifier.align(Alignment.Center),
-            enter = fadeIn(animationSpec = tween(600)),
-            exit = fadeOut(animationSpec = tween(0))
-        ) {
-            DifficultyLevelDialog(
-                difficulties = state.difficulties,
-                selectedDifficultyLevel = state.selectedDifficultyLevel,
-                isStartGameButtonEnable = state.isStartGameButtonEnable,
-                onLevelSelected = interactionListener::onSelectDifficultyLevel,
-                onCloseDialogClicked = interactionListener::onClickCloseDifficultyLevelDialog,
-                onClickStartGame = interactionListener::onClickStartGame
-            )
-        }
 
+
+    AnimatedVisibility(
+        visible = state.selectedGameTypeUiState != null,
+        modifier = Modifier.align(Alignment.Center),
+        enter = fadeIn(animationSpec = tween(600)),
+        exit = fadeOut(animationSpec = tween(0))
+    ) {
+        DifficultyLevelDialog(
+            difficulties = state.difficulties,
+            selectedDifficultyLevel = state.selectedDifficultyLevel,
+            isStartGameButtonEnable = state.isStartGameButtonEnable,
+            onLevelSelected = interactionListener::onSelectDifficultyLevel,
+            onCloseDialogClicked = interactionListener::onClickCloseDifficultyLevelDialog,
+            onClickStartGame = interactionListener::onClickStartGame
+        )
     }
+
+}
 }
 
 @Preview

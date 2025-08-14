@@ -27,10 +27,10 @@ import com.amsterdam.ui.R
 
 @Composable
 fun NotEnoughPointsDialog(
-    modifier: Modifier = Modifier,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
-) {
+    modifier: Modifier = Modifier,
+    ) {
     Dialog(
         onDismiss = onDismiss,
         modifier = modifier

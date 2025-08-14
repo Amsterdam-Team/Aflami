@@ -10,6 +10,7 @@ data class GuessCharacterUiState(
     val selectedAnswerIndex: Int? = null,
     val isAnswerCorrect : Boolean? = null,
     val isHintEnabled : Boolean = true,
+    val isNotEnoughPointsDialogVisible: Boolean = false,
     val isNextEnabled : Boolean = false,
     val questionsCounts: Int = 0,
     val currentQuestionIndex: Int = 0,
@@ -19,7 +20,8 @@ data class GuessCharacterUiState(
         val characterImageUrl: String = "",
         val characterChoices: List<String> = emptyList(),
         val correctAnswer : String = "",
-        val questionTimeSeconds : Int = 0
+        val questionTimeSeconds : Int = 0,
+        val blurRadius: Int = 8
     )
 }
 

@@ -1,6 +1,5 @@
 package com.amsterdam.remotedatasource.datasource
 
-import android.util.Log
 import com.amsterdam.remotedatasource.api.MovieApiService
 import com.amsterdam.remotedatasource.utils.apiHandler.responseCall
 import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
@@ -93,8 +92,6 @@ class MovieRemoteDataSourceImpl @Inject constructor(
             val pageMovies = getPopularMoviesByPage(randomPage)
                 .filter { it.releaseDate != null }
 
-            Log.e("getRandomMoviesWithNotNullDate", pageMovies.toString())
-            Log.e("getRandomMoviesWithNotNullDate", pageMovies.toString())
             for (movie in pageMovies) {
                 if (!collectedMovies.contains(movie)) {
                     collectedMovies.add(movie)

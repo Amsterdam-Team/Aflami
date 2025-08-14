@@ -7,7 +7,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.amsterdam.viewmodel.gameEnd.ResultSideEffect
 
 @Immutable
 class NavigationManager(
@@ -39,15 +38,15 @@ class NavigationManager(
             }
         }
     }
-
-    fun toHome(clearBackStack: Boolean = false) {
-        navController.navigate(Route.Tab.Home) {
-            if (clearBackStack) popUpTo(0)
-        }
-    }
-
     fun toLetsPlay(clearBackStack: Boolean = false) {
         navController.navigate(Route.Tab.LetsPlay) {
+            if (clearBackStack) popUpTo(Route.Tab.Home){
+                inclusive = false
+            }
+        }
+    }
+    fun toHome(clearBackStack: Boolean = false) {
+        navController.navigate(Route.Tab.Home) {
             if (clearBackStack) popUpTo(0)
         }
     }
@@ -152,7 +151,9 @@ class NavigationManager(
                 gameType = gameType,
                 difficulty = difficulty
             )
-        )
+        ) {
+            popUpTo(Route.Tab.LetsPlay) { inclusive = false }
+        }
     }
 
     @Composable

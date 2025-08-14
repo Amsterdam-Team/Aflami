@@ -10,6 +10,7 @@ data class GuessReleaseYearUiState(
     val selectedAnswerIndex: Int? = null,
     val isAnswerCorrect : Boolean? = null,
     val isHintEnabled : Boolean = true,
+    val isNotEnoughPointsDialogVisible: Boolean = false,
     val isNextEnabled : Boolean = false,
     val questionsCounts: Int = 0,
     val currentQuestionIndex: Int = 0,

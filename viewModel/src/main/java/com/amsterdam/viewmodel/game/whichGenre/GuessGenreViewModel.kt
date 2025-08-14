@@ -2,12 +2,12 @@ package com.amsterdam.viewmodel.game.whichGenre
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.timer.TimerHandler
 import com.amsterdam.domain.useCase.game.whichGenre.GenerateMovieGenreQuestionsUseCase.MovieGenreQuestion
 import com.amsterdam.domain.useCase.game.whichGenre.GuessMovieGenreUseCase
 import com.amsterdam.domain.useCase.game.whichGenre.SubmitGuessMovieGenreAnswerUseCase
 import com.amsterdam.entity.GameDifficulty.DifficultyType
-import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.gameEnd.ResultScreenData
 import com.amsterdam.viewmodel.gameEnd.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
@@ -61,7 +61,7 @@ class GuessGenreViewModel @Inject constructor(
         val currentQuestion =
             state.value.questions[state.value.currentQuestionIndex]
         viewModelScope.launch(dispatcherProvider.Default) {
-            timerHandler.startTimer( currentQuestion.questionTime, onTimerFinish = ::onTimeFinish)
+            timerHandler.startTimer( currentQuestion.questionTime, onTimerFinish = ::onMoveToNextQuestion)
                 .collect(::onTimerUpdate)
         }
     }
@@ -80,24 +80,6 @@ class GuessGenreViewModel @Inject constructor(
         }
     }
 
-    private fun onTimeFinish() {
-        if (state.value.currentQuestionIndex < state.value.questions.lastIndex) {
-            onMoveToNextQuestion()
-        } else {
-            val resultData = ResultScreenData(
-                totalCollectedPoints = totalEarnedPoints,
-                totalSpentSeconds = answersTotalTime,
-                difficulty = difficultyType.name,
-                gameType = ResultSideEffect.GameType.GUESS_GENRE.name
-            )
-            sendNewEffect(GenreGameEffect.GameOver(resultData))
-        }
-    }
-
-    private fun onError(error: Exception) {
-
-    }
-
     private fun onCompletion() {
         updateState { it.copy(isLoading = false) }
     }
@@ -106,16 +88,18 @@ class GuessGenreViewModel @Inject constructor(
         sendNewEffect(GenreGameEffect.CancelGame)
     }
 
-    override fun onChooseAnswerClick(answer: MovieGenre, answerIndex: Int) {
+    override fun onChooseAnswerClick(answerIndex: Int) {
         timerHandler.stopTimer()
         val currentQuestion =  state.value.questions[state.value.currentQuestionIndex]
         tryToExecute(
             action = { guessMovieGenreUseCase.checkAnswer(
-                answer = answer,
+                answer = currentQuestion.answers[answerIndex],
                 question = currentQuestion.toQuestion(),
                 difficultyType = difficultyType
             ) },
-            onSuccess = { answer -> onAnswerCorrect(answer, answerIndex) }
+            onSuccess = { answer -> onAnswerCorrect(answer, answerIndex) },
+           onCompletion = timerHandler::stopTimer
+
         )
     }
 
@@ -123,24 +107,24 @@ class GuessGenreViewModel @Inject constructor(
         answerResult: SubmitGuessMovieGenreAnswerUseCase.AnswerResult,
         answerIndex: Int
     ) {
-        if (answerResult.isCorrect) {
-            totalEarnedPoints += answerResult.earnedPoints
-        }
         updateState {
             it.copy(
                 selectedAnswerIndex = answerIndex,
                 isAnswerCorrect = answerResult.isCorrect,
-                isNextEnabled = true
+                isNextEnabled = true,
+                isNotEnoughPointsDialogVisible = false
             )
         }
+        totalEarnedPoints += answerResult.earnedPoints
     }
 
     override fun onUseHint() {
+        if (state.value.isNextEnabled) return
         val currentQuestion = state.value.questions[state.value.currentQuestionIndex]
         tryToExecute(
             action = { guessMovieGenreUseCase.giveHint(currentQuestion.toQuestion()) },
             onSuccess = ::onUseHintSuccess,
-            onError = ::onUseHintError,
+            onError = ::onError,
             onCompletion = ::onUseHintCompletion
         )
     }
@@ -155,10 +139,6 @@ class GuessGenreViewModel @Inject constructor(
                 isHintEnabled = false
             )
         }
-    }
-
-    private fun onUseHintError(exception: AflamiException) {
-        sendNewEffect(GenreGameEffect.ShowNotEnoughPointsSnackBar)
     }
 
     private fun onUseHintCompletion() {
@@ -185,6 +165,16 @@ class GuessGenreViewModel @Inject constructor(
                 gameType = ResultSideEffect.GameType.GUESS_GENRE.name
             )
             sendNewEffect(GenreGameEffect.GameOver(resultData))
+        }
+    }
+
+    override fun dismissNotEnoughPointsDialog() {
+        updateState { it.copy(isNotEnoughPointsDialogVisible = false) }
+    }
+
+    private fun onError(error: AflamiException) {
+        when(error){
+            is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
         }
     }
 }

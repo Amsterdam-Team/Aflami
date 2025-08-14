@@ -16,12 +16,14 @@ class SubmitGuessMovieByPosterAnswerUseCase(
     ): AnswerResult {
         val gameDifficulty = getDifficulty(difficultyType)
         val correct = question.correctMovieName == answer
-
+        var earnedPoints = 0
         if (correct) {
             updatePoints(gameDifficulty.pointsPerQuestion)
+             earnedPoints = gameDifficulty.pointsPerQuestion
+
         }
 
-        return AnswerResult(correct, if (correct) gameDifficulty.pointsPerQuestion else 0)
+        return AnswerResult(correct,earnedPoints)
     }
 
     data class AnswerResult(

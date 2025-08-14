@@ -19,11 +19,9 @@ class DoGuessMovieByPosterHintUseCase(
             throw NotEnoughPointsException()
         }
 
-        val choices = moviePosterQuestion.movieNameChoices.toMutableList()
-
         updatePoints(-REQUIRED_HINT_POINTS)
 
-        return moviePosterQuestion.copy(movieNameChoices = choices)
+        return moviePosterQuestion
     }
 
     companion object {
