@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
@@ -42,13 +41,11 @@ import com.amsterdam.designsystem.components.TabsLayout
 import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route.MovieDetails
-import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.myRating.placeholders.emptyRatingListPlaceholder
 import com.amsterdam.ui.screens.myRating.placeholders.mediaCardsPlaceholder
 import com.amsterdam.ui.utils.SavedStateKeys
@@ -65,10 +62,10 @@ import kotlinx.coroutines.flow.collectLatest
 fun MyRatingScreen(
     viewModel: MyRatingViewModel = hiltViewModel()
 ) {
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val state by viewModel.state.collectAsState()
 
-    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+    val currentBackStackEntry = navigationManager.getCurrentBackStackEntryAsState().value
     val savedStateHandle = currentBackStackEntry?.savedStateHandle
 
     val refreshAfterRating = savedStateHandle
@@ -86,11 +83,11 @@ fun MyRatingScreen(
     val errorRateDeletionMessage = stringResource(R.string.failed_to_delete_your_rating)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            with(navController) {
+            with(navigationManager) {
                 when (effect) {
                     is MyRatingUiEffect.NavigateBack -> navigateUp()
-                    is MyRatingUiEffect.NavigateToMovieDetails -> navigate(MovieDetails(movieId = effect.movieId))
-                    is MyRatingUiEffect.NavigateToSeriesDetails -> navigate(SeriesDetails(tvShowId = effect.tvShowId))
+                    is MyRatingUiEffect.NavigateToMovieDetails -> toMovieDetails(effect.movieId)
+                    is MyRatingUiEffect.NavigateToSeriesDetails -> toSeriesDetails(effect.tvShowId)
                     MyRatingUiEffect.ShowDeleteRateSuccessSnackBar -> SnackBarManager.showSuccess(
                         message = successRateDeletionMessage
                     )

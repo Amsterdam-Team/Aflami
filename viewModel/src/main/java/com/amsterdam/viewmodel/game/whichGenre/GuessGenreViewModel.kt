@@ -8,6 +8,8 @@ import com.amsterdam.domain.useCase.game.whichGenre.GuessMovieGenreUseCase
 import com.amsterdam.domain.useCase.game.whichGenre.SubmitGuessMovieGenreAnswerUseCase
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.entity.category.MovieGenre
+import com.amsterdam.viewmodel.gameEnd.ResultScreenData
+import com.amsterdam.viewmodel.gameEnd.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -82,7 +84,13 @@ class GuessGenreViewModel @Inject constructor(
         if (state.value.currentQuestionIndex < state.value.questions.lastIndex) {
             onMoveToNextQuestion()
         } else {
-            sendNewEffect(GenreGameEffect.GameOver(totalEarnedPoints, answersTotalTime))
+            val resultData = ResultScreenData(
+                totalCollectedPoints = totalEarnedPoints,
+                totalSpentSeconds = answersTotalTime,
+                difficulty = difficultyType.name,
+                gameType = ResultSideEffect.GameType.GUESS_GENRE.name
+            )
+            sendNewEffect(GenreGameEffect.GameOver(resultData))
         }
     }
 
@@ -170,7 +178,13 @@ class GuessGenreViewModel @Inject constructor(
             }
             startTheTimer()
         } else {
-            sendNewEffect(GenreGameEffect.GameOver(totalEarnedPoints, answersTotalTime))
+            val resultData = ResultScreenData(
+                totalCollectedPoints = totalEarnedPoints,
+                totalSpentSeconds = answersTotalTime,
+                difficulty = difficultyType.name,
+                gameType = ResultSideEffect.GameType.GUESS_GENRE.name
+            )
+            sendNewEffect(GenreGameEffect.GameOver(resultData))
         }
     }
 }

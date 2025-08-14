@@ -11,7 +11,7 @@ import kotlinx.datetime.Instant
     primaryKeys = ["movieId", "storedLanguage"],
     foreignKeys = [
         ForeignKey(
-            entity = LocalMovieDto::class,
+            entity = MovieLocalDto::class,
             parentColumns = ["movieId", "storedLanguage"],
             childColumns = ["movieId", "storedLanguage"],
             onDelete = ForeignKey.CASCADE

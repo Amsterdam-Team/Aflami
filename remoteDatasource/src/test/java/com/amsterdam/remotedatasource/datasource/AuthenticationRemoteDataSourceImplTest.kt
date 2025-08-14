@@ -19,14 +19,14 @@ class AuthenticationRemoteDataSourceImplTest {
 
     private lateinit var authenticationApiService: AuthenticationApiService
     private lateinit var json: Json
-    private lateinit var authenticationRemoteDataSourceImpl: AuthenticationRemoteDataSourceImpl
+    private lateinit var authenticationRemoteDataSourceImpl: AuthenticationRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         authenticationApiService = mockk()
         json = Json { ignoreUnknownKeys = true }
         authenticationRemoteDataSourceImpl =
-            AuthenticationRemoteDataSourceImpl(json, authenticationApiService)
+            AuthenticationRemoteDataDataSourceImpl(json, authenticationApiService)
     }
 
     @Test

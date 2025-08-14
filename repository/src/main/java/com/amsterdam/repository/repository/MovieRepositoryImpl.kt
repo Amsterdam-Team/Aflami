@@ -10,27 +10,25 @@ import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
-import com.amsterdam.repository.datasource.remote.CategoryRemoteSource
-import com.amsterdam.repository.datasource.remote.MovieRemoteSource
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
+import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import com.amsterdam.repository.dto.remote.RemoteCategoryDto
 import com.amsterdam.repository.dto.remote.RemoteCategoryResponse
 import com.amsterdam.repository.dto.remote.RemoteMovieItemDto
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
-import com.amsterdam.repository.mapper.local.toDto
-import com.amsterdam.repository.mapper.local.toDtoList
-import com.amsterdam.repository.mapper.local.toEntity
-import com.amsterdam.repository.mapper.remote.toEntity
-import com.amsterdam.repository.mapper.remote.toEntityList
-import com.amsterdam.repository.mapper.remote.toMovieDetailsEntity
-import com.amsterdam.repository.mapper.remote.toMovieEntityList
-import com.amsterdam.repository.mapper.remote.toMovieItemDto
-import com.amsterdam.repository.mapper.remote.toMovieUserRateEntityList
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalDtoList
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalMovieDtoList
+import com.amsterdam.repository.mapper.toDto
+import com.amsterdam.repository.mapper.toDtoList
+import com.amsterdam.repository.mapper.toEntity
+import com.amsterdam.repository.mapper.toMovieEntityList
+import com.amsterdam.repository.mapper.toLocalTvShowDtoList
+import com.amsterdam.repository.mapper.toEntityList
+import com.amsterdam.repository.mapper.toLocalDto
+import com.amsterdam.repository.mapper.toLocalMovieDtoList
+import com.amsterdam.repository.mapper.toMovieItemDto
+import com.amsterdam.repository.mapper.toMovieUserRateEntityList
 import com.amsterdam.repository.utils.getCachedOrRemoteData
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
@@ -40,8 +38,8 @@ import kotlin.time.Duration.Companion.days
 class MovieRepositoryImpl @Inject constructor(
     private val categoryLocalDataSource: CategoryLocalDataSource,
     private val movieLocalDataSource: MovieLocalDataSource,
-    private val categoryRemoteSource: CategoryRemoteSource,
-    private val movieRemoteDataSource: MovieRemoteSource,
+    private val categoryRemoteDataSource: CategoryRemoteDataSource,
+    private val movieRemoteDataSource: MovieRemoteDataSource,
     private val preferences: AppPreferences,
 ) : MovieRepository {
 
@@ -78,7 +76,7 @@ class MovieRepositoryImpl @Inject constructor(
             .also {
                 incrementUserInterestByMovie(it.genres)
                 cacheWatchedMovie(it.toMovieItemDto())
-            }.toMovieDetailsEntity()
+            }.toEntity()
     }
 
     override suspend fun getUpcomingMovies(): List<Movie> {
@@ -106,12 +104,12 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getTopRatedMovies(
         page: Int,
     ): List<Movie> {
-        return getCachedOrRemoteData<LocalMovieDto, RemoteMovieItemDto, Movie>(
+        return getCachedOrRemoteData<MovieLocalDto, RemoteMovieItemDto, Movie>(
             deleteExpired = ::deleteExpiredTopRatedMovies,
             getFromLocal = ::getTopRatedMoviesFromLocal,
             getFromRemote = { getTopRatedMoviesFromRemote(page) },
             saveRemoteToDatabase = ::saveTopRatedMovies,
-            mapFromLocalToEntity = LocalMovieDto::toEntity,
+            mapFromLocalToEntity = MovieLocalDto::toEntity,
             mapFromRemoteToEntity = { it.toEntity(isPoster = true) }
         )
     }
@@ -207,7 +205,7 @@ class MovieRepositoryImpl @Inject constructor(
         )
     }
 
-    private suspend fun getTopRatedMoviesFromLocal(): List<LocalMovieDto> {
+    private suspend fun getTopRatedMoviesFromLocal(): List<MovieLocalDto> {
         return movieLocalDataSource.getTopRatedMovies(
             preferences.getAppLanguage().first()
         )
@@ -289,15 +287,15 @@ class MovieRepositoryImpl @Inject constructor(
 
     suspend fun cacheMovieCategoriesIfNotCached() {
         getMovieCategoriesFromLocal().takeIf { it.isNotEmpty() }
-            ?: saveMovieCategoriesToDatabase(categoryRemoteSource.getMovieCategories())
+            ?: saveMovieCategoriesToDatabase(categoryRemoteDataSource.getMovieCategories())
     }
 
-    private suspend fun getMovieCategoriesFromLocal(): List<LocalMovieCategoryDto> {
+    private suspend fun getMovieCategoriesFromLocal(): List<MovieCategoryLocalDto> {
         return categoryLocalDataSource.getMovieCategories()
     }
 
     private suspend fun saveMovieCategoriesToDatabase(movieCategories: RemoteCategoryResponse) {
-        categoryLocalDataSource.upsertMovieCategories(movieCategories.genres.toLocalDtoList())
+        categoryLocalDataSource.upsertMovieCategories(movieCategories.genres.toLocalTvShowDtoList())
     }
 
 }

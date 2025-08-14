@@ -15,12 +15,12 @@ import org.junit.jupiter.api.assertThrows
 class CountryRemoteDataSourceImplTest {
 
     private lateinit var countryApiService: CountryApiService
-    private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataSourceImpl
+    private lateinit var countryRemoteDataSourceImpl: CountryRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         countryApiService = mockk()
-        countryRemoteDataSourceImpl = CountryRemoteDataSourceImpl(countryApiService)
+        countryRemoteDataSourceImpl = CountryRemoteDataDataSourceImpl(countryApiService)
     }
 
     @Test

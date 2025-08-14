@@ -18,7 +18,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CategoriesTvShowsDetailsViewModel @Inject constructor(
@@ -116,7 +115,7 @@ class CategoriesTvShowsDetailsViewModel @Inject constructor(
     }
 
     private fun getInitialGenre() {
-        val initialGenre = TvShowGenre.valueOf(categoriesTvShowsDetailsArgs.genreName!!)
+        val initialGenre = TvShowGenre.valueOf(categoriesTvShowsDetailsArgs.genreName)
         updateUiStateForSelectedGenre(initialGenre)
     }
 

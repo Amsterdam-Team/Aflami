@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.register.components.RegisterWebView
 import com.amsterdam.viewmodel.register.RegisterEffect
@@ -26,14 +26,14 @@ import com.amsterdam.viewmodel.register.RegisterViewModel
 fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val state by viewModel.state.collectAsState()
 
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                RegisterEffect.NavigateToSignIn -> navController.navigateUp()
+                RegisterEffect.NavigateToSignIn -> navigationManager.navigateUp()
             }
         }
     }

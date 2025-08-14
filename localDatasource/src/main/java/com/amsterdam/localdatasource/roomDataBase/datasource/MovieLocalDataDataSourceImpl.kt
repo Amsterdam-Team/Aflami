@@ -4,7 +4,7 @@ import androidx.room.Transaction
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.TopRatedMovieDto
@@ -20,13 +20,13 @@ class MovieLocalDataDataSourceImpl @Inject constructor(
     override suspend fun getMovieById(
         movieId: Long,
         storedLanguage: String
-    ): LocalMovieDto? {
+    ): MovieLocalDto? {
         return movieDao.getMovieById(movieId, storedLanguage)
     }
 
     @Transaction
     override suspend fun upsertMovieWithCategories(
-        movie: LocalMovieDto,
+        movie: MovieLocalDto,
         categoryIds: List<Long>,
         storedLanguage: String
     ) {
@@ -45,7 +45,7 @@ class MovieLocalDataDataSourceImpl @Inject constructor(
         interestDao.incrementInterest(categoryId)
     }
 
-    override suspend fun upsertMovie(movie: LocalMovieDto) {
+    override suspend fun upsertMovie(movie: MovieLocalDto) {
         movieDao.upsertMovie(movie)
     }
 
@@ -57,12 +57,12 @@ class MovieLocalDataDataSourceImpl @Inject constructor(
         return movieDao.getUpcomingMovies(storedLanguage)
     }
 
-    override suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto> {
+    override suspend fun getTopRatedMovies(storedLanguage: String): List<MovieLocalDto> {
         return movieDao.getTopRatedMovies(storedLanguage)
     }
 
     @Transaction
-    override suspend fun upsertPopularMovies(movies: List<LocalMovieDto>) {
+    override suspend fun upsertPopularMovies(movies: List<MovieLocalDto>) {
         movieDao.upsertMovies(movies)
         val entries = movies.map { movie ->
             PopularMovieDto(
@@ -81,7 +81,7 @@ class MovieLocalDataDataSourceImpl @Inject constructor(
     }
 
     @Transaction
-    override suspend fun upsertTopRatedMovies(movies: List<LocalMovieDto>) {
+    override suspend fun upsertTopRatedMovies(movies: List<MovieLocalDto>) {
         movieDao.upsertMovies(movies)
         val entries = movies.map { movie ->
             TopRatedMovieDto(
@@ -100,7 +100,7 @@ class MovieLocalDataDataSourceImpl @Inject constructor(
     }
 
     @Transaction
-    override suspend fun upsertUpcomingMovies(movies: List<LocalMovieDto>) {
+    override suspend fun upsertUpcomingMovies(movies: List<MovieLocalDto>) {
         movieDao.upsertMovies(movies)
         val entries = movies.map { movie ->
             UpcomingMovieDto(

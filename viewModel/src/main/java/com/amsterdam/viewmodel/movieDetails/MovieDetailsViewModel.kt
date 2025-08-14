@@ -43,7 +43,7 @@ class MovieDetailsViewModel @Inject constructor(
 ), MovieDetailsInteractionListener, RateDialogInteractionListener {
 
     init {
-        val movieId = args.movieId!!
+        val movieId = args.movieId
         updateState { it.copy(movieId = movieId) }
 
         manageLocaleLanguageUseCase.getAppLanguage()

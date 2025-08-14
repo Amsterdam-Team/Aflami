@@ -21,12 +21,12 @@ import org.junit.jupiter.api.assertThrows
 class MovieRemoteDataSourceImplTest {
 
     private lateinit var movieApiService: MovieApiService
-    private lateinit var movieRemoteDataSourceImpl: MovieRemoteDataSourceImpl
+    private lateinit var movieRemoteDataSourceImpl: MovieRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         movieApiService = mockk()
-        movieRemoteDataSourceImpl = MovieRemoteDataSourceImpl(movieApiService)
+        movieRemoteDataSourceImpl = MovieRemoteDataDataSourceImpl(movieApiService)
     }
 
     @Test

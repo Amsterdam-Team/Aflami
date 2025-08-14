@@ -75,7 +75,7 @@ class LetsPlayViewModel @Inject constructor(
                 LetsPlayEffect.NavigateToGuessCharacterScreen(difficultyLevelName)
 
             GameTypeUiState.GUESS_MOVIE_BY_POSTER ->
-                LetsPlayEffect.NavigateToGuessMovieByReleaseScreen(difficultyLevelName)
+                LetsPlayEffect.NavigateToGuessMovieByPosterScreen(difficultyLevelName)
 
             GameTypeUiState.GUESS_MOVIE_BY_RELEASE ->
                 LetsPlayEffect.NavigateToGuessMovieByReleaseScreen(difficultyLevelName)

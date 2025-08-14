@@ -1,7 +1,7 @@
 package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.RecentSearchDao
-import com.amsterdam.repository.dto.local.LocalSearchDto
+import com.amsterdam.repository.dto.local.SearchLocalDto
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
@@ -69,7 +69,7 @@ class RecentSearchDaoTest : BaseDaoTest() {
         val dateAdded: Long
     )
 
-    private fun LocalSearchDto.toComparable(): ComparableSearchDto {
+    private fun SearchLocalDto.toComparable(): ComparableSearchDto {
         return ComparableSearchDto(
             searchKeyword = this.searchKeyword,
             dateAdded = this.dateAdded.toEpochMilliseconds()
@@ -80,8 +80,8 @@ class RecentSearchDaoTest : BaseDaoTest() {
 private fun createLocalSearchDto(
     keyword: String,
     dateAdded: Instant = Clock.System.now(),
-): LocalSearchDto {
-    return LocalSearchDto(
+): SearchLocalDto {
+    return SearchLocalDto(
         searchKeyword = keyword,
         dateAdded = dateAdded
     )

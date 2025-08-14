@@ -36,11 +36,10 @@ import com.amsterdam.designsystem.components.LoadingIndicator
 import com.amsterdam.designsystem.components.chip.Chip
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
 import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsInteractionListener
@@ -53,7 +52,7 @@ fun CategoriesTvShowsDetailsScreen(
     viewModel: CategoriesTvShowsDetailsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val tvShows = state.tvShows.collectAsLazyPagingItems()
 
     LaunchedEffect(tvShows.loadState) {
@@ -64,14 +63,12 @@ fun CategoriesTvShowsDetailsScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is CategoriesTvShowsDetailsUiEffect.NavigateBack -> {
-                    navController.popBackStack()
+                    navigationManager.navigateUp()
                 }
 
                 is CategoriesTvShowsDetailsUiEffect.NavigateToTvShowDetails -> {
-                    navController.navigate(
-                        Route.SeriesDetails(
-                            tvShowId = effect.tvShowId
-                        )
+                    navigationManager.toSeriesDetails(
+                        tvShowId = effect.tvShowId
                     )
                 }
             }

@@ -1,8 +1,8 @@
 package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -85,14 +85,14 @@ private val tvShowCategoriesWithSameIds = listOf(
 
 private fun createLocalMovieCategoryDto(
     categoryId: Long = 0L
-): LocalMovieCategoryDto {
-    return LocalMovieCategoryDto(
+): MovieCategoryLocalDto {
+    return MovieCategoryLocalDto(
         categoryId = categoryId
     )
 }
 
 private fun createLocalTvShowCategoryDto(
     categoryId: Long = 0,
-): LocalTvShowCategoryDto {
-    return LocalTvShowCategoryDto(categoryId)
+): TvShowCategoryLocalDto {
+    return TvShowCategoryLocalDto(categoryId)
 }

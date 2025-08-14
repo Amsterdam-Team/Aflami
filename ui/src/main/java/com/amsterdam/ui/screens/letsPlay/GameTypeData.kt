@@ -12,6 +12,7 @@ data class GameTypeData(
     val description: Int,
     val containerColor: Color,
     val borderColors: List<Color>,
+    val shadowColor: Color,
     val gameCardImageContentType: GameCardImageContentType,
 )
 @Composable
@@ -22,6 +23,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             R.string.guess_character_game_description,
             AppTheme.color.primaryVariant,
             AppTheme.color.guessCharacterStrokeGradient,
+            AppTheme.color.primary,
             GameCardImageContentType.FUN_CLOWN,
         )
 
@@ -30,6 +32,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             R.string.guess_movie_game_description,
             AppTheme.color.blueCard,
             AppTheme.color.guessMovieByPosterStrokeGradient,
+            AppTheme.color.blueAccent,
             GameCardImageContentType.MANY_POSTERS,
         )
         GameTypeUiState.GUESS_MOVIE_BY_RELEASE -> GameTypeData(
@@ -37,6 +40,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             R.string.release_game_description,
             AppTheme.color.navyCard,
             AppTheme.color.guessMovieByReleaseStrokeGradient,
+            AppTheme.color.darkBlue,
             GameCardImageContentType.CALENDER,
         )
 
@@ -45,6 +49,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             R.string.genre_game_description,
             AppTheme.color.yellowCard,
             AppTheme.color.guessMovieByGenreStrokeGradient,
+            AppTheme.color.yellowAccent,
             GameCardImageContentType.LAWN_CHAIR,
         )
     }

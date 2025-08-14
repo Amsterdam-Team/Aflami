@@ -24,12 +24,11 @@ import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.ui.R
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.profile.components.LoggedInContent
 import com.amsterdam.ui.screens.profile.components.NotLoggedInContent
 import com.amsterdam.ui.screens.profile.components.getProfileErrorMessage
@@ -43,20 +42,16 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                ProfileEffect.NavigateToLogin -> navController.navigate(Route.Login) {
-                    popUpTo(0)
-                }
+                ProfileEffect.NavigateToLogin -> navigationManager.toLogin()
 
                 ProfileEffect.NavigateToResetPassword -> {
-                    navController.navigate(Route.ResetPassword) {
-                        popUpTo(Route.Tab.Profile)
-                    }
+                    navigationManager.toResetPassword()
                 }
 
                 ProfileEffect.ShowError -> {
@@ -123,7 +118,7 @@ fun ProfileScreen(
                     )
                 }
 
-                ProfileEffect.NavigateToMyRating -> navController.navigate(Route.MyRating)
+                ProfileEffect.NavigateToMyRating -> navigationManager.toMyRating()
                 ProfileEffect.ShowRestrictionLevelUpdateErrorSnackBar -> SnackBarManager.showError(
                     context.getString(R.string.save_restriction_error)
                 )
@@ -146,7 +141,7 @@ private fun ProfileScreenContent(
     interactionListener: ProfileInteractionListener
 ) {
     val animationDuration by remember { mutableIntStateOf(1000) }
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
 
     Box(
         modifier = Modifier
@@ -175,7 +170,7 @@ private fun ProfileScreenContent(
                 state = state,
                 interactionListener = interactionListener,
                 onClickHistory = {
-                    navController.navigate(Route.WatchHistory)
+                    navigationManager.toWatchHistory()
                 }
             )
         }

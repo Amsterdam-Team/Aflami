@@ -1,7 +1,7 @@
 package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
-import com.amsterdam.repository.dto.local.LocalMovieCategoryInterestDto
+import com.amsterdam.repository.dto.local.MovieCategoryInterestLocalDto
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -17,28 +17,28 @@ class MovieCategoryInterestDaoTest : BaseDaoTest() {
 
     @Test
     fun upsertInterest_shouldAddNewInterest() = runTest {
-        interestDao.upsertInterest(localMovieCategoryInterestDto)
-        val stored = interestDao.getInterestCount(localMovieCategoryInterestDto.categoryId)
+        interestDao.upsertInterest(movieCategoryInterestLocalDto)
+        val stored = interestDao.getInterestCount(movieCategoryInterestLocalDto.categoryId)
 
-        assertThat(stored).isEqualTo(localMovieCategoryInterestDto.interestCount)
+        assertThat(stored).isEqualTo(movieCategoryInterestLocalDto.interestCount)
     }
 
     @Test
     fun upsertInterest_shouldUpdateExistingInterest() = runTest {
-        interestDao.upsertInterest(localMovieCategoryInterestDto)
-        interestDao.upsertInterest(updatedLocalMovieCategoryInterestDto)
-        val stored = interestDao.getInterestCount(localMovieCategoryInterestDto.categoryId)
+        interestDao.upsertInterest(movieCategoryInterestLocalDto)
+        interestDao.upsertInterest(updatedMovieCategoryInterestLocalDto)
+        val stored = interestDao.getInterestCount(movieCategoryInterestLocalDto.categoryId)
 
-        assertThat(stored).isEqualTo(updatedLocalMovieCategoryInterestDto.interestCount)
+        assertThat(stored).isEqualTo(updatedMovieCategoryInterestLocalDto.interestCount)
     }
 
     @Test
     fun getInterestCount_shouldReturnCorrectCount() = runTest {
-        interestDao.upsertInterest(localMovieCategoryInterestDto)
+        interestDao.upsertInterest(movieCategoryInterestLocalDto)
 
-        val count = interestDao.getInterestCount(localMovieCategoryInterestDto.categoryId)
+        val count = interestDao.getInterestCount(movieCategoryInterestLocalDto.categoryId)
 
-        assertThat(count).isEqualTo(localMovieCategoryInterestDto.interestCount)
+        assertThat(count).isEqualTo(movieCategoryInterestLocalDto.interestCount)
     }
 
     @Test
@@ -58,21 +58,21 @@ class MovieCategoryInterestDaoTest : BaseDaoTest() {
 
     @Test
     fun incrementInterest_shouldIncrementExistingRecord() = runTest {
-        interestDao.upsertInterest(localMovieCategoryInterestDto)
+        interestDao.upsertInterest(movieCategoryInterestLocalDto)
 
-        interestDao.incrementInterest(localMovieCategoryInterestDto.categoryId)
-        val count = interestDao.getInterestCount(localMovieCategoryInterestDto.categoryId)
+        interestDao.incrementInterest(movieCategoryInterestLocalDto.categoryId)
+        val count = interestDao.getInterestCount(movieCategoryInterestLocalDto.categoryId)
 
-        assertThat(count).isEqualTo(localMovieCategoryInterestDto.interestCount + 1)
+        assertThat(count).isEqualTo(movieCategoryInterestLocalDto.interestCount + 1)
     }
 }
 
-private val localMovieCategoryInterestDto = LocalMovieCategoryInterestDto(
+private val movieCategoryInterestLocalDto = MovieCategoryInterestLocalDto(
     interestCount = 1,
     categoryId = 123
 )
 
-private val updatedLocalMovieCategoryInterestDto = LocalMovieCategoryInterestDto(
+private val updatedMovieCategoryInterestLocalDto = MovieCategoryInterestLocalDto(
     interestCount = 5,
     categoryId = 123
 )

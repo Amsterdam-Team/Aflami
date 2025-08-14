@@ -76,16 +76,13 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.EpisodeCard
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.components.details.DetailsPostersPager
-import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.Cast
-import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.EmptyStateText
@@ -101,7 +98,6 @@ import com.amsterdam.ui.screens.seriesDetails.component.companyProductionTvShowS
 import com.amsterdam.ui.screens.seriesDetails.component.moreTvShowLikeSection
 import com.amsterdam.ui.screens.seriesDetails.component.reviewTvShowSection
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
-import com.amsterdam.ui.utils.navigateUpWithFlag
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsInteractionListener
@@ -123,12 +119,12 @@ fun SeriesDetailsScreen(
     viewModel: SeriesDetailsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val context = LocalContext.current
     val successRateMessage = stringResource(R.string.your_rating_has_been_saved)
     val failedRateMessage = stringResource(R.string.failed_to_save_your_rating)
 
-    BackHandler { navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
+    BackHandler { navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
 
     SeriesDetailsContent(
         state = state,
@@ -139,23 +135,17 @@ fun SeriesDetailsScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SeriesDetailsEffect.NavigateBack -> {
-                    navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
+                    navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
                 }
 
                 SeriesDetailsEffect.NavigateToCastScreen -> {
-                    navController.navigate(
-                        Cast(
-                            mediaType = MediaType.TV_SHOW.name, mediaId = state.tvShowId
-                        )
-                    )
+                    navigationManager.toCast(mediaType = MediaType.TV_SHOW.name, mediaId = state.tvShowId)
                 }
 
-                SeriesDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
-                    Route.Login
-                )
+                SeriesDetailsEffect.NavigateToLoginScreenEffect -> navigationManager.toLogin()
 
                 is SeriesDetailsEffect.NavigateToSeriesDetails -> {
-                    navController.navigate(SeriesDetails(effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
 
                 is SeriesDetailsEffect.ShowEpisodeTrailerNotFound -> {

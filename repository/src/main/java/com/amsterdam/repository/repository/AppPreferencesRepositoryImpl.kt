@@ -3,8 +3,8 @@ package com.amsterdam.repository.repository
 import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.repository.datasource.local.AppPreferences
-import com.amsterdam.repository.mapper.local.stringToRestrictionLevelEntity
-import com.amsterdam.repository.mapper.local.toLocalDto
+import com.amsterdam.repository.mapper.stringToRestrictionLevelEntity
+import com.amsterdam.repository.mapper.toLocalDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

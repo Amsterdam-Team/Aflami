@@ -77,12 +77,13 @@ fun SettingsDialog(
                     PlainTextButton(
                         title = stringResource(R.string.logout),
                         style = AppTheme.textStyle.label.medium,
-                        onClick = onLogoutClick,
                         isLoading = false,
                         isEnabled = true,
                         isNegative = false,
+                        onClick = {}
                     )
                 },
+                onClick = onLogoutClick
             )
         }
     }

@@ -6,8 +6,8 @@ import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
-import com.amsterdam.repository.datasource.remote.MovieRemoteSource
-import com.amsterdam.repository.datasource.remote.TvShowsRemoteSource
+import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
+import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
 import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
 import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
 import com.google.common.truth.Truth.assertThat
@@ -29,9 +29,9 @@ class WatchHistoryRepositoryImplTest {
 
     private val watchHistoryLocalDataSource: WatchHistoryLocalDataSource = mockk()
     private val movieLocalDataSource: MovieLocalDataSource = mockk()
-    private val movieRemoteDataSource: MovieRemoteSource = mockk()
+    private val movieRemoteDataSource: MovieRemoteDataSource = mockk()
     private val tvShowLocalDataSource: TvShowLocalDataSource = mockk()
-    private val tvShowRemoteSource: TvShowsRemoteSource = mockk()
+    private val tvShowRemoteSource: TvShowsRemoteDataSource = mockk()
     private val preferences: AppPreferences = mockk()
     private val localTvDataSource: TvShowLocalDataSource = mockk()
 

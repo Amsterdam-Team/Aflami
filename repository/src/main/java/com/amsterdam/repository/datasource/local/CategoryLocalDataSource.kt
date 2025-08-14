@@ -1,11 +1,11 @@
 package com.amsterdam.repository.datasource.local
 
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
 
 interface CategoryLocalDataSource {
-    suspend fun upsertMovieCategories(categories: List<LocalMovieCategoryDto>)
-    suspend fun getMovieCategories(): List<LocalMovieCategoryDto>
-    suspend fun upsertTvShowCategories(categories: List<LocalTvShowCategoryDto>)
-    suspend fun getTvShowCategories(): List<LocalTvShowCategoryDto>
+    suspend fun upsertMovieCategories(categories: List<MovieCategoryLocalDto>)
+    suspend fun getMovieCategories(): List<MovieCategoryLocalDto>
+    suspend fun upsertTvShowCategories(categories: List<TvShowCategoryLocalDto>)
+    suspend fun getTvShowCategories(): List<TvShowCategoryLocalDto>
 }

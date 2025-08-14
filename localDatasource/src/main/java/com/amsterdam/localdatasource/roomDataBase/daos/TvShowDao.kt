@@ -3,7 +3,7 @@ package com.amsterdam.localdatasource.roomDataBase.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.PopularTvShowDto
 import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -14,13 +14,13 @@ import kotlinx.datetime.Instant
 @Dao
 interface TvShowDao {
     @Upsert
-    suspend fun upsertTvShow(tvShow: LocalTvShowDto)
+    suspend fun upsertTvShow(tvShow: TvShowLocalDto)
 
     @Upsert
-    suspend fun upsertTvShows(tvShows: List<LocalTvShowDto>)
+    suspend fun upsertTvShows(tvShows: List<TvShowLocalDto>)
 
     @Query(" SELECT * FROM ${DatabaseConstants.TV_SHOW_TABLE} WHERE tvShowId = :tvShowId and storedLanguage = :storedLanguage")
-    suspend fun getTvShowById(tvShowId: Long, storedLanguage: String): LocalTvShowDto?
+    suspend fun getTvShowById(tvShowId: Long, storedLanguage: String): TvShowLocalDto?
 
     @Upsert
     suspend fun upsertTvShowCategoryCrossRefs(crossRefs: List<TvShowCategoryCrossRefDto>)
@@ -48,7 +48,7 @@ interface TvShowDao {
         AND tv.storedLanguage = :storedLanguage
     """
     )
-    suspend fun getTopRatedTvShows(storedLanguage: String): List<LocalTvShowDto>
+    suspend fun getTopRatedTvShows(storedLanguage: String): List<TvShowLocalDto>
 
     @Upsert
     suspend fun upsertPopularTvShows(tvShows: List<PopularTvShowDto>)

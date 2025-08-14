@@ -7,16 +7,16 @@ import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
-import com.amsterdam.repository.datasource.remote.MovieRemoteSource
-import com.amsterdam.repository.datasource.remote.TvShowsRemoteSource
-import com.amsterdam.repository.dto.local.LocalMovieDto
-import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
+import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
+import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.TvShowWatchHistoryDto
 import com.amsterdam.repository.dto.remote.RemoteMovieDetailsResponse
 import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
-import com.amsterdam.repository.mapper.local.toWatchHistoryEntity
-import com.amsterdam.repository.mapper.remoteToLocal.toLocalDto
+import com.amsterdam.repository.mapper.toEntity
+import com.amsterdam.repository.mapper.toLocalDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -25,9 +25,9 @@ import javax.inject.Inject
 class WatchHistoryRepositoryImpl @Inject constructor(
     private val watchHistoryLocalDataSource : WatchHistoryLocalDataSource,
     private val movieLocalDataSource : MovieLocalDataSource,
-    private val movieRemoteDataSource : MovieRemoteSource,
+    private val movieRemoteDataSource : MovieRemoteDataSource,
     private val tvShowLocalDataSource : TvShowLocalDataSource,
-    private val tvShowRemoteSource : TvShowsRemoteSource,
+    private val tvShowRemoteSource : TvShowsRemoteDataSource,
     private val preferences : AppPreferences,
     private val localTvDataSource : TvShowLocalDataSource
 ) : WatchHistoryRepository {
@@ -48,7 +48,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
 
     private suspend fun getMovieWatchHistory(movieWatchHistoryDto: MovieWatchHistoryDto): MovieWatchHistory {
         val language = preferences.getAppLanguage().first()
-        return movieWatchHistoryDto.toWatchHistoryEntity(
+        return movieWatchHistoryDto.toEntity(
             getMovieByIdFromLocal(movieWatchHistoryDto.movieId, language)
                 ?: fetchAndCacheRemoteMovie(movieWatchHistoryDto.movieId, language)
         )
@@ -57,7 +57,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private suspend fun getMovieByIdFromLocal(movieId: Long, language: String) =
         movieLocalDataSource.getMovieById(movieId, language)
 
-    private suspend fun fetchAndCacheRemoteMovie(movieId: Long, language: String): LocalMovieDto {
+    private suspend fun fetchAndCacheRemoteMovie(movieId: Long, language: String): MovieLocalDto {
         return movieRemoteDataSource.getMovieDetailsById(movieId)
             .also { cacheWatchedMovie(it) }
             .toLocalDto(language)
@@ -86,7 +86,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private suspend fun getTvShowWatchHistory(tvShowWatchHistoryDto: TvShowWatchHistoryDto): TvShowWatchHistory {
         val language = preferences.getAppLanguage().first()
 
-        return tvShowWatchHistoryDto.toWatchHistoryEntity(
+        return tvShowWatchHistoryDto.toEntity(
             getTvShowByIdFromLocal(tvShowWatchHistoryDto.tvShowId, language)
                 ?: fetchAndCacheRemoteTvShow(tvShowWatchHistoryDto.tvShowId, language)
         )
@@ -95,7 +95,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private suspend fun getTvShowByIdFromLocal(tvShowId: Long, language: String) =
         tvShowLocalDataSource.getTvShowById(tvShowId, language)
 
-    private suspend fun fetchAndCacheRemoteTvShow(movieId: Long, language: String): LocalTvShowDto {
+    private suspend fun fetchAndCacheRemoteTvShow(movieId: Long, language: String): TvShowLocalDto {
         return tvShowRemoteSource.getTvShowDetailsById(movieId)
             .also { cacheWatchedTvShow(it) }
             .toLocalDto(language)

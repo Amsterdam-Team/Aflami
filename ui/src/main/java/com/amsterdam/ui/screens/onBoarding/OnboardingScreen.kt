@@ -1,6 +1,5 @@
 package com.amsterdam.ui.screens.onBoarding
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.amsterdam.designsystem.R
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.onBoarding.component.AnimatedSkipText
 import com.amsterdam.ui.screens.onBoarding.component.NavigationButton
 import com.amsterdam.viewmodel.onboarding.OnboardingEffect
@@ -39,12 +36,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
-    navController: NavController = LocalNavController.current,
     onboardingViewModel: OnboardingViewModel = hiltViewModel()
 ) {
+    val navigationManager = LocalNavManager.current
     val state by onboardingViewModel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(
         initialPage = state.currentPageIndex,
@@ -54,9 +50,7 @@ fun OnboardingScreen(
         onboardingViewModel.effect.collectLatest { effect ->
             when (effect) {
                 is OnboardingEffect.NavigateToLoginScreen -> {
-                    navController.navigate(Route.Login) {
-                        popUpTo(Route.Onboarding) { inclusive = true }
-                    }
+                    navigationManager.toLogin()
                 }
             }
         }
@@ -80,7 +74,6 @@ fun OnboardingScreen(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OnboardingScreenContent(
     currentPageIndex: Int,

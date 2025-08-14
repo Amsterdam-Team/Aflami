@@ -36,11 +36,10 @@ import com.amsterdam.designsystem.components.LoadingIndicator
 import com.amsterdam.designsystem.components.chip.Chip
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.viewmodel.categoriesDetails.movies.CategoriesMoviesDetailsInteractionListener
@@ -53,7 +52,7 @@ fun CategoriesMoviesDetailsScreen(
     viewModel: CategoriesMoviesDetailsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val movies = state.movies.collectAsLazyPagingItems()
     LaunchedEffect(
         key1 = movies.loadState,
@@ -65,14 +64,12 @@ fun CategoriesMoviesDetailsScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is CategoriesMoviesDetailsUiEffect.NavigateBack -> {
-                    navController.popBackStack()
+                    navigationManager.navigateUp()
                 }
 
                 is CategoriesMoviesDetailsUiEffect.NavigateToMovieDetails -> {
-                    navController.navigate(
-                        Route.MovieDetails(
-                            movieId = effect.movieId
-                        )
+                    navigationManager.toMovieDetails(
+                        movieId = effect.movieId
                     )
                 }
             }

@@ -4,7 +4,7 @@ import androidx.room.Transaction
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
-import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.PopularTvShowDto
 import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -18,7 +18,7 @@ class TvShowLocalDataDataSourceImpl @Inject constructor(
 ) : TvShowLocalDataSource {
     @Transaction
     override suspend fun upsertTvShowWithCategories(
-        tvShow: LocalTvShowDto,
+        tvShow: TvShowLocalDto,
         categoryIds: List<Long>,
         storedLanguage: String
     ) {
@@ -37,14 +37,14 @@ class TvShowLocalDataDataSourceImpl @Inject constructor(
         tvShowCategoryInterestDao.incrementInterest(categoryId)
     }
 
-    override suspend fun upsertTvShow(tvShow: LocalTvShowDto) {
+    override suspend fun upsertTvShow(tvShow: TvShowLocalDto) {
         tvShowDao.upsertTvShow(tvShow)
     }
 
     override suspend fun getTvShowById(
         tvShowId: Long,
         storedLanguage: String
-    ): LocalTvShowDto? {
+    ): TvShowLocalDto? {
         return tvShowDao.getTvShowById(tvShowId, storedLanguage)
     }
 
@@ -52,12 +52,12 @@ class TvShowLocalDataDataSourceImpl @Inject constructor(
         return tvShowDao.getPopularTvShows(storedLanguage)
     }
 
-    override suspend fun getTopRatedTvShows(storedLanguage: String): List<LocalTvShowDto> {
+    override suspend fun getTopRatedTvShows(storedLanguage: String): List<TvShowLocalDto> {
         return tvShowDao.getTopRatedTvShows(storedLanguage)
     }
 
     @Transaction
-    override suspend fun upsertPopularTvShows(tvShows: List<LocalTvShowDto>) {
+    override suspend fun upsertPopularTvShows(tvShows: List<TvShowLocalDto>) {
         tvShowDao.upsertTvShows(tvShows)
         val entries = tvShows.map { tvShow ->
             PopularTvShowDto(
@@ -75,7 +75,7 @@ class TvShowLocalDataDataSourceImpl @Inject constructor(
         tvShowDao.deleteExpiredPopularTvShows(expirationTime, storedLanguage)
     }
 
-    override suspend fun upsertTopRatedTvShows(tvShows: List<LocalTvShowDto>) {
+    override suspend fun upsertTopRatedTvShows(tvShows: List<TvShowLocalDto>) {
         tvShowDao.upsertTvShows(tvShows)
         val entries = tvShows.map { tvShow ->
             TopRatedTvShowDto(

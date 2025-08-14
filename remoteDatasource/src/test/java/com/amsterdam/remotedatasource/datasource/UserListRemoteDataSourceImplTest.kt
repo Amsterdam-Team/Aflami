@@ -18,7 +18,7 @@ import org.junit.jupiter.api.assertThrows
 
 class UserListRemoteDataSourceImplTest {
 
-    private lateinit var userListRemoteDataSourceImpl: UserListRemoteDataSourceImpl
+    private lateinit var userListRemoteDataSourceImpl: UserListRemoteDataDataSourceImpl
     private lateinit var userListApiService: UserListApiService
 
     private val remoteListResponse = UserListDetailsResponse(
@@ -36,7 +36,7 @@ class UserListRemoteDataSourceImplTest {
     fun setup() {
         userListApiService = mockk()
         val jsonMock: Json = mockk(relaxed = true)
-        userListRemoteDataSourceImpl = UserListRemoteDataSourceImpl(
+        userListRemoteDataSourceImpl = UserListRemoteDataDataSourceImpl(
             userListApiService = userListApiService,
             json = jsonMock
         )

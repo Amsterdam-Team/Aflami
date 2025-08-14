@@ -3,7 +3,7 @@ package com.amsterdam.localdatasource.roomDataBase.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.TopRatedMovieDto
@@ -15,13 +15,13 @@ import kotlinx.datetime.Instant
 @Dao
 interface MovieDao {
     @Upsert
-    suspend fun upsertMovies(movies: List<LocalMovieDto>)
+    suspend fun upsertMovies(movies: List<MovieLocalDto>)
 
     @Upsert
-    suspend fun upsertMovie(movies: LocalMovieDto)
+    suspend fun upsertMovie(movies: MovieLocalDto)
 
     @Query(" SELECT * FROM ${DatabaseConstants.MOVIE_TABLE} WHERE movieId = :movieId and storedLanguage = :storedLanguage")
-    suspend fun getMovieById(movieId: Long, storedLanguage: String): LocalMovieDto?
+    suspend fun getMovieById(movieId: Long, storedLanguage: String): MovieLocalDto?
 
     @Upsert
     suspend fun upsertMovieCategoryCrossRefs(crossRefs: List<MovieCategoryCrossRefDto>)
@@ -48,7 +48,7 @@ interface MovieDao {
         AND movie.storedLanguage = :storedLanguage
     """
     )
-    suspend fun getTopRatedMovies(storedLanguage: String): List<LocalMovieDto>
+    suspend fun getTopRatedMovies(storedLanguage: String): List<MovieLocalDto>
 
 
     @Query(

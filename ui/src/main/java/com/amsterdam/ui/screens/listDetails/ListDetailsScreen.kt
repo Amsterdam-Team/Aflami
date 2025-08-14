@@ -27,11 +27,10 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.listDetails.component.DeleteListDialog
 import com.amsterdam.ui.screens.listDetails.component.ListDetailsItemsGrid
 import com.amsterdam.ui.screens.listDetails.component.getListDetailsErrorMessage
@@ -45,7 +44,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun ListsDetailsScreen(viewModel: ListDetailsViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = state.listItems.collectAsLazyPagingItems()
     LaunchedEffect(movies.loadState) {
@@ -56,14 +55,14 @@ fun ListsDetailsScreen(viewModel: ListDetailsViewModel = hiltViewModel()) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is ListDetailsEffect.NavigateToMovieDetailsScreen -> {
-                    navController.navigate(Route.MovieDetails(effect.movieId))
+                    navigationManager.toMovieDetails(effect.movieId)
                 }
 
                 is ListDetailsEffect.NavigateToTvShowDetailsScreen -> {
-                    navController.navigate(Route.SeriesDetails(effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
 
-                ListDetailsEffect.NavigateBack -> navController.navigateUp()
+                ListDetailsEffect.NavigateBack -> navigationManager.navigateUp()
 
                 ListDetailsEffect.ShowDeletionSuccessSnackBar -> {
                     SnackBarManager.showSuccess(

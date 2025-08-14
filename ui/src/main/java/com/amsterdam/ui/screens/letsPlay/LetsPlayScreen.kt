@@ -5,10 +5,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -18,13 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
+import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.components.GameCard
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.letsPlay.component.DifficultyLevelDialog
 import com.amsterdam.ui.screens.letsPlay.component.PlayScreenAppBar
 import com.amsterdam.viewmodel.letsPlay.LetsPlayEffect
@@ -37,19 +40,25 @@ import com.amsterdam.viewmodel.letsPlay.LetsPlayViewModel
 @Composable
 fun LetsPlayScreen(viewModel: LetsPlayViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is LetsPlayEffect.NavigateToGuessMovieByReleaseScreen ->
-                    navController.navigate(Route.GuessReleaseYearGame(effect.difficulty))
+                is LetsPlayEffect.NavigateToGuessMovieByReleaseScreen -> navigationManager.toGuessReleaseYearGame(
+                    effect.difficulty
+                )
 
-                is LetsPlayEffect.NavigateToGuessCharacterScreen ->
-                    navController.navigate(Route.GuessCharacter(effect.difficulty))
+                is LetsPlayEffect.NavigateToGuessCharacterScreen -> navigationManager.toGuessCharacter(
+                    effect.difficulty
+                )
 
-                is LetsPlayEffect.NavigateToGuessMovieByGenreScreen -> navController.navigate(
-                    Route.GenreGame(difficulty = effect.difficulty)
+                is LetsPlayEffect.NavigateToGuessMovieByPosterScreen -> navigationManager.toGuessMovieByPosterGame(
+                    effect.difficulty
+                )
+
+                is LetsPlayEffect.NavigateToGuessMovieByGenreScreen -> navigationManager.toGenreGame(
+                    effect.difficulty
                 )
             }
         }
@@ -62,16 +71,24 @@ private fun LetsPlayScreenContent(
     state: LetsPlayUiState,
     interactionListener: LetsPlayInteractionListener,
 ) {
-    Box {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surface)
+            .statusBarsPadding()
+            .windowInsetsPadding(WindowInsets(bottom = LocalScaffoldBottomPadding.current))
+    ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppTheme.color.surface)
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp)
+            contentPadding = PaddingValues(bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item {
-                PlayScreenAppBar(totalScore = state.totalUserPoint)
+            stickyHeader {
+                PlayScreenAppBar(
+                    totalScore = state.totalUserPoint,
+                    modifier = Modifier
+                        .background(AppTheme.color.surface)
+                        .padding(horizontal = 16.dp)
+                )
             }
 
             items(state.games) {
@@ -81,9 +98,10 @@ private fun LetsPlayScreenContent(
                     description = stringResource(gameCardData.description),
                     containerColor = gameCardData.containerColor,
                     borderColors = gameCardData.borderColors,
-                    onCardClick = { interactionListener.onClickGameCard(it.gameTypeUiState) },
+                    shadowColor = gameCardData.shadowColor,
+                    onClick = { interactionListener.onClickGameCard(it.gameTypeUiState) },
                     gameCardImageContentType = gameCardData.gameCardImageContentType,
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     isPlayable = state.totalUserPoint >= it.requiredPoints,
                     unlockPrice = "${it.requiredPoints}"
                 )
@@ -93,9 +111,7 @@ private fun LetsPlayScreenContent(
 
         AnimatedVisibility(
             visible = state.selectedGameTypeUiState != null,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .zIndex(1f),
+            modifier = Modifier.align(Alignment.Center),
             enter = fadeIn(animationSpec = tween(600)),
             exit = fadeOut(animationSpec = tween(0))
         ) {
@@ -116,12 +132,10 @@ private fun LetsPlayScreenContent(
 @Composable
 private fun LetsPlayScreenPreview() {
     LetsPlayScreenContent(
-        state = LetsPlayUiState(),
-        interactionListener = object : LetsPlayInteractionListener {
+        state = LetsPlayUiState(), interactionListener = object : LetsPlayInteractionListener {
             override fun onSelectDifficultyLevel(difficultyLevel: GameDifficultyUiState) {}
             override fun onClickCloseDifficultyLevelDialog() {}
             override fun onClickGameCard(gameTypeUiState: GameTypeUiState) {}
             override fun onClickStartGame() {}
-        }
-    )
+        })
 }

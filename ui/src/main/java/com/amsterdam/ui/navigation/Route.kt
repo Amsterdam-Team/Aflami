@@ -33,25 +33,25 @@ sealed interface Route {
     data object SearchByCountry : Route
 
     @Serializable
-    data class MovieDetails(private val movieId: Long) : Route
+    data class MovieDetails(val movieId: Long) : Route
 
     @Serializable
     data class Cast(
-        private val mediaId: Long,
-        private val mediaType: String
+        val mediaId: Long,
+        val mediaType: String
     ) : Route
 
     @Serializable
     data class CategoriesDetails(
-        private val genreName: String,
+        val genreName: String,
     ) : Route
     @Serializable
     data class CategoriesTvShowsDetails(
-        private val genreName: String
+        val genreName: String
     ) : Route
 
     @Serializable
-    data class SeriesDetails(private val tvShowId: Long) : Route
+    data class SeriesDetails(val tvShowId: Long) : Route
 
     @Serializable
     data object TopRated : Route
@@ -70,8 +70,8 @@ sealed interface Route {
 
     @Serializable
     data class ListDetails(
-        private val listId: Long,
-        private val listName: String
+        val listId: Long,
+        val listName: String
     ) : Route
 
     @Serializable
@@ -82,16 +82,25 @@ sealed interface Route {
 
 
     @Serializable
-    data class GuessReleaseYearGame(private val difficulty : String): Route
+    data class GuessReleaseYearGame(val difficulty : String): Route
 
     @Serializable
-    data class GuessCharacter(private val difficulty : String): Route
-
-    @Serializable
-    data class ResultScreen (private val totalCollectedPoints: Int , private val totalSpentSeconds: Int): Route
+    data class GuessCharacter(val difficulty : String): Route
 
     @Serializable
     data class GenreGame(
-        private val difficulty: String
+        val difficulty: String
     ) : Route
+
+    @Serializable
+    data class GuessMovieByPosterGame(val difficulty: String): Route
+
+
+    @Serializable
+    data class ResultScreen (
+        val totalCollectedPoints: Int,
+        val totalSpentSeconds: Int,
+        val gameType: String,
+        val difficulty: String
+    ): Route
 }

@@ -43,15 +43,13 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.components.CreateNewListDialog
 import com.amsterdam.ui.components.ListItem
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.ListDetails
 import com.amsterdam.ui.screens.profile.components.NotLoggedInContent
 import com.amsterdam.viewmodel.lists.ListsEffect
 import com.amsterdam.viewmodel.lists.ListsInteractionListener
@@ -64,7 +62,7 @@ fun ListsScreen(
     modifier: Modifier = Modifier,
     viewModel: UserListsViewModel = hiltViewModel(),
 ) {
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val uiState = viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
@@ -76,7 +74,7 @@ fun ListsScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is ListsEffect.NavigateToListDetails -> {
-                    navController.navigate(ListDetails(listId = effect.listId, listName = effect.listName))
+                    navigationManager.toListDetails(listId = effect.listId, listName = effect.listName)
                 }
 
                 ListsEffect.FailedToCreateList -> {
@@ -94,7 +92,7 @@ fun ListsScreen(
                 }
 
                 ListsEffect.NavigateToLogin -> {
-                    navController.navigate(Route.Login)
+                    navigationManager.toLogin()
                 }
             }
         }

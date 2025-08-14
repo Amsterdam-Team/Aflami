@@ -67,7 +67,7 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.AddToListDialog
 import com.amsterdam.ui.components.CreateNewListDialog
 import com.amsterdam.ui.components.MustLoginDialog
@@ -75,9 +75,6 @@ import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.components.details.DetailsPostersPager
-import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.Cast
-import com.amsterdam.ui.navigation.Route.MovieDetails
 import com.amsterdam.ui.screens.movieDetails.components.CategoryChip
 import com.amsterdam.ui.screens.movieDetails.components.DescriptionSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieCastSection
@@ -92,7 +89,6 @@ import com.amsterdam.ui.screens.movieDetails.components.reviewMovieSection
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
-import com.amsterdam.ui.utils.navigateUpWithFlag
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState
@@ -110,38 +106,30 @@ import kotlinx.coroutines.launch
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
 
     val successRateMessage = stringResource(R.string.your_rating_has_been_saved)
     val failedRateMessage = stringResource(R.string.failed_to_save_your_rating)
 
     val context = LocalContext.current
 
-    BackHandler { navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
+    BackHandler { navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 MovieDetailsEffect.NavigateBackEffect -> {
-                    navController.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
+                    navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
                 }
 
                 MovieDetailsEffect.NavigateToCastsScreenEffect -> {
-                    navController.navigate(
-                        Cast(
-                            mediaType = MediaType.MOVIE.name, mediaId = state.value.movieId
-                        )
-                    )
+                    navigationManager.toCast(mediaType = MediaType.MOVIE.name, mediaId = state.value.movieId)
                 }
 
-                MovieDetailsEffect.NavigateToLoginScreenEffect -> navController.navigate(
-                    Route.Login
-                )
+                MovieDetailsEffect.NavigateToLoginScreenEffect -> navigationManager.toLogin()
 
                 is MovieDetailsEffect.NavigateToMovieDetails -> {
-                    navController.navigate(
-                        MovieDetails(effect.movieId)
-                    )
+                    navigationManager.toMovieDetails(effect.movieId)
                 }
 
                 MovieDetailsEffect.ShowRatingSuccessSnackBar -> SnackBarManager.showSuccess(message = successRateMessage)

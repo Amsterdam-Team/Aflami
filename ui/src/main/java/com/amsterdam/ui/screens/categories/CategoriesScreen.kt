@@ -32,9 +32,8 @@ import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.TabsLayout
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.CategoryCard
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.categoriesDetails.GenreMovieUiModel
 import com.amsterdam.ui.screens.categoriesDetails.GenreTvShowUiModel
 import com.amsterdam.viewmodel.categories.CategoriesInteractionListener
@@ -45,28 +44,24 @@ import com.amsterdam.viewmodel.shared.TabOption
 
 @Composable
 fun CategoriesScreen(
-    viewModel: CategoriesViewModel = hiltViewModel()
+    viewModel: CategoriesViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     CategoriesScreenContent(interaction = viewModel, state = state)
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is CategoriesUiEffect.NavigateToCategoriesDetailsScreen -> {
-                    navController.navigate(
-                        Route.CategoriesDetails(
-                            genreName = effect.genreName,
-                        )
+                    navigationManager.toCategoriesDetails(
+                        genreName = effect.genreName
                     )
                 }
 
                 is CategoriesUiEffect.NavigateToCategoriesTvShowsDetailsScreen -> {
-                    navController.navigate(
-                        Route.CategoriesTvShowsDetails(
-                            genreName = effect.genreName,
-                        )
+                    navigationManager.toCategoriesTvShowsDetails(
+                        genreName = effect.genreName
                     )
                 }
             }
@@ -76,7 +71,7 @@ fun CategoriesScreen(
 
 @Composable
 private fun CategoriesScreenContent(
-    interaction: CategoriesInteractionListener, state: CategoriesUiState
+    interaction: CategoriesInteractionListener, state: CategoriesUiState,
 ) {
     val lazyState = rememberLazyGridState()
     var appBarHeight by remember { mutableIntStateOf(0) }
@@ -115,7 +110,7 @@ private fun CategoriesScreenContent(
                 state = lazyState,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(top = 17.dp, bottom = 80.dp),
+                contentPadding = PaddingValues(top = 17.dp, bottom = 89.dp),
                 columns = GridCells.Adaptive(160.dp)
             ) {
                 when (state.selectedTabOption) {

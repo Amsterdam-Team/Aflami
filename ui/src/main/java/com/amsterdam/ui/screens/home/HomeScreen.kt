@@ -45,15 +45,10 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.domain.models.Mood
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.ui.R
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.HomeAppBar
-import com.amsterdam.ui.navigation.Route.ContinueWatching
-import com.amsterdam.ui.navigation.Route.MovieDetails
-import com.amsterdam.ui.navigation.Route.Search
-import com.amsterdam.ui.navigation.Route.SeriesDetails
-import com.amsterdam.ui.navigation.Route.TopRated
 import com.amsterdam.ui.screens.home.component.MovieMoodPickerDialog
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.ui.screens.home.sections.MoodPickerSection
@@ -72,29 +67,29 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel = hiltViewModel()) {
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     val state by homeViewModel.state.collectAsStateWithLifecycle()
 
     val errorGetMoviesByMoodMessage = stringResource(R.string.error_mood_movies_loading)
     LaunchedEffect(Unit) {
         homeViewModel.effect.collectLatest { effect ->
             when (effect) {
-                is NavigateToSearchScreenEffect -> navController.navigate(Search)
+                is NavigateToSearchScreenEffect -> navigationManager.toSearchByKeyword()
 
                 is NavigateToMovieDetailsEffect -> {
-                    navController.navigate(MovieDetails(movieId = effect.movieId))
+                    navigationManager.toMovieDetails(effect.movieId)
                 }
 
                 is HomeEffect.NavigateToTvShowDetailsEffect -> {
-                    navController.navigate(SeriesDetails(tvShowId = effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
 
                 is HomeEffect.NavigateToTopRatedMoviesEffect -> {
-                    navController.navigate(TopRated)
+                    navigationManager.toTopRated()
                 }
 
                 is HomeEffect.NavigateToContinueWatchingMoviesScreen -> {
-                    navController.navigate(ContinueWatching)
+                    navigationManager.toContinueWatching()
                 }
 
                 HomeEffect.ShowGetMoviesByMoodErrorSnackBar -> SnackBarManager.showError(

@@ -7,9 +7,8 @@ import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.remote.ProfileRemoteDataSource
 import com.amsterdam.repository.dto.local.profile.AccountDetailsLocalDto
 import com.amsterdam.repository.dto.remote.profile.AccountDetailsRemoteDto
-import com.amsterdam.repository.mapper.local.toEntity
-import com.amsterdam.repository.mapper.remote.toEntity
-import com.amsterdam.repository.mapper.remoteToLocal.toLocal
+import com.amsterdam.repository.mapper.toEntity
+import com.amsterdam.repository.mapper.toLocalDto
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
@@ -34,7 +33,7 @@ class ProfileRepositoryImpl @Inject constructor(
     private suspend fun getAccountDetailsFromRemote(): AccountDetailsRemoteDto {
         return profileRemoteDataSource.getAccountDetails()
             .let { accountDetails ->
-                profileLocalDataSource.upsertAccountDetails(accountDetails.toLocal())
+                profileLocalDataSource.upsertAccountDetails(accountDetails.toLocalDto())
                 accountDetails
             }
     }

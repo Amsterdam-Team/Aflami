@@ -172,7 +172,7 @@ class SeriesDetailsViewModelTest {
     fun `onNavigateBack should send NavigateBack effect`() = runTest {
         // Given
         val effects = mutableListOf<SeriesDetailsEffect>()
-        val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
+        val collectJob = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
         viewModel.onNavigateBack()
@@ -208,7 +208,7 @@ class SeriesDetailsViewModelTest {
     fun `onClickShowAllCast should send NavigateToCastScreen effect`() = runTest {
         // Given
         val effects = mutableListOf<SeriesDetailsEffect>()
-        val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
+        val collectJob = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
         viewModel.onClickShowAllCast()
@@ -323,7 +323,7 @@ class SeriesDetailsViewModelTest {
     fun `onNavigateToLoginClicked should send NavigateToLoginScreenEffect`() = runTest {
         // Given
         val effects = mutableListOf<SeriesDetailsEffect>()
-        val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
+        val collectJob = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
         viewModel.onNavigateToLoginClicked()
@@ -339,7 +339,7 @@ class SeriesDetailsViewModelTest {
         // Given
         val similarTvShowId = 200L
         val effects = mutableListOf<SeriesDetailsEffect>()
-        val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
+        val collectJob = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
         viewModel.onClickSimilarMovie(similarTvShowId)
@@ -453,7 +453,7 @@ class SeriesDetailsViewModelTest {
         coEvery { setUserTvShowRatingUseCase.setUserMovieRate(rating, tvShowId) } returns Unit
 
         val effects = mutableListOf<SeriesDetailsEffect>()
-        val collectJob = launch { viewModel.effect.collect { effects.add(it!!) } }
+        val collectJob = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
         viewModel.onClickRate()

@@ -1,7 +1,9 @@
 package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.mapper.toDtoList
+import com.amsterdam.repository.mapper.toEntity
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,12 +13,12 @@ class MovieGenreLocalMapperTest {
     @Test
     fun `toEntity should return ALL genre when categoryId is invalid`() {
         // Given
-        val dto = LocalMovieCategoryDto(
+        val dto = MovieCategoryLocalDto(
             categoryId = 100,
         )
 
         // When
-        val result = dto.toMovieGenreEntity()
+        val result = dto.toEntity()
 
         // Then
         assertThat(result).isEqualTo(MovieGenre.ALL)
@@ -24,11 +26,11 @@ class MovieGenreLocalMapperTest {
 
     @Test
     fun `toEntity should return ALL genre when categoryId is 0`() {
-        val dto = LocalMovieCategoryDto(
+        val dto = MovieCategoryLocalDto(
             categoryId = 0,
             )
 
-        val result = dto.toMovieGenreEntity()
+        val result = dto.toEntity()
 
         assertThat(result).isEqualTo(MovieGenre.ALL)
     }

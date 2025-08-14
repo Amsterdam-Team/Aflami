@@ -22,12 +22,12 @@ import org.junit.jupiter.api.assertThrows
 class TvRemoteDataSourceImplTest {
 
     private lateinit var tvShowsApiService: TvShowsApiService
-    private lateinit var tvRemoteDataSourceImpl: TvRemoteDataSourceImpl
+    private lateinit var tvRemoteDataSourceImpl: TvRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         tvShowsApiService = mockk()
-        tvRemoteDataSourceImpl = TvRemoteDataSourceImpl(tvShowsApiService)
+        tvRemoteDataSourceImpl = TvRemoteDataDataSourceImpl(tvShowsApiService)
     }
 
     @Test

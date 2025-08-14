@@ -28,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CountrySearchViewModel @Inject constructor(
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase,
-    private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
+    private val countrySearchPagingSource: CountrySearchPagingSource,
     private val dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<CountrySearchUiState, CountrySearchEffect>(
     CountrySearchUiState(),
@@ -115,18 +115,8 @@ class CountrySearchViewModel @Inject constructor(
         updateState { it.copy(isLoading = true, showSuggestedCountries = false) }
         tryToExecute(
             action = {
-                Pager(
-                    config = PagingConfig(pageSize = 20),
-                    pagingSourceFactory = {
-                        PagingSource { page ->
-                            getMoviesByCountryUseCase(
-                                selectedCountry,
-                                page,
-                            )
-                        }
-                    },
-                )
-                    .flow.map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
+                countrySearchPagingSource.getMovies(selectedCountry)
+                    .map { pagingData -> pagingData.map { it.toSearchMediaItemUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,

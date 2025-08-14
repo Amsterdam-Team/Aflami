@@ -1,13 +1,13 @@
 package com.amsterdam.localdatasource.utils
 
-import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.TvShowLocalDto
 import kotlinx.datetime.LocalDate
 
 fun createTvShow(
     id: Long = 1L,
     language: String = "en",
     name: String = "Test Show"
-) = LocalTvShowDto(
+) = TvShowLocalDto(
     tvShowId = id,
     storedLanguage = language,
     name = name,

@@ -16,12 +16,12 @@ import org.junit.jupiter.api.assertThrows
 class CategoryRemoteDataSourceImplTest {
 
     private lateinit var categoryApiService: CategoryApiService
-    private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl
+    private lateinit var categoryRemoteDataSourceImpl: CategoryRemoteDataDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         categoryApiService = mockk()
-        categoryRemoteDataSourceImpl = CategoryRemoteDataSourceImpl(categoryApiService)
+        categoryRemoteDataSourceImpl = CategoryRemoteDataDataSourceImpl(categoryApiService)
     }
 
     @Test

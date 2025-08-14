@@ -1,6 +1,7 @@
 package com.amsterdam.repository.mapper.remote
 
 import com.amsterdam.repository.dto.remote.movieGallery.RemoteGalleryResponse
+import com.amsterdam.repository.mapper.toEntityList
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 

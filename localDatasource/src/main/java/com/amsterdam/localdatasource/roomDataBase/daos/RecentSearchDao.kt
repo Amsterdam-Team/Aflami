@@ -3,13 +3,13 @@ package com.amsterdam.localdatasource.roomDataBase.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.amsterdam.repository.dto.local.LocalSearchDto
+import com.amsterdam.repository.dto.local.SearchLocalDto
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
 
 @Dao
 interface RecentSearchDao {
     @Upsert
-    suspend fun upsertRecentSearch(search: LocalSearchDto)
+    suspend fun upsertRecentSearch(search: SearchLocalDto)
 
     @Query(
     """
@@ -18,7 +18,7 @@ interface RecentSearchDao {
         ORDER BY dateAdded DESC
     """
     )
-    suspend fun getRecentSearches(): List<LocalSearchDto>
+    suspend fun getRecentSearches(): List<SearchLocalDto>
 
     @Query("DELETE FROM ${DatabaseConstants.RECENT_SEARCH_TABLE}")
     suspend fun deleteAllSearches()

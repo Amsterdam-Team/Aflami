@@ -4,8 +4,8 @@ import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.entity.Country
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.CountryLocalDataSource
-import com.amsterdam.repository.datasource.remote.CountryRemoteSource
-import com.amsterdam.repository.dto.local.LocalCountryDto
+import com.amsterdam.repository.datasource.remote.CountryRemoteDataSource
+import com.amsterdam.repository.dto.local.CountryLocalDto
 import com.amsterdam.repository.dto.remote.RemoteCountryDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -23,7 +23,7 @@ class CountryRepositoryImplTest {
     private lateinit var repository: CountryRepository
 
     private val localDataSource: CountryLocalDataSource = mockk()
-    private val remoteDataSource: CountryRemoteSource = mockk()
+    private val remoteDataSource: CountryRemoteDataSource = mockk()
     private val preferences: AppPreferences = mockk()
     private val testLanguage = "en"
 
@@ -41,8 +41,8 @@ class CountryRepositoryImplTest {
     fun `Given local countries not empty, When getCountries is called, Then return local countries without calling remote`() =
         runTest {
             // Given
-            val localDto1 = LocalCountryDto(isoCode = "US", name = "United States", storedLanguage = testLanguage)
-            val localDto2 = LocalCountryDto(isoCode = "CA", name = "Canada", storedLanguage = testLanguage)
+            val localDto1 = CountryLocalDto(isoCode = "US", name = "United States", storedLanguage = testLanguage)
+            val localDto2 = CountryLocalDto(isoCode = "CA", name = "Canada", storedLanguage = testLanguage)
             val localDtos = listOf(localDto1, localDto2)
             coEvery { localDataSource.getCountries(testLanguage) } returns localDtos
 
@@ -75,7 +75,7 @@ class CountryRepositoryImplTest {
             val remoteCountriesDto = listOf(remoteDto1)
             coEvery { remoteDataSource.getCountries() } returns remoteCountriesDto
 
-            val localSavedDto1 = LocalCountryDto(
+            val localSavedDto1 = CountryLocalDto(
                 isoCode = "US",
                 name = "الولايات المتحدة",
                 storedLanguage = testLanguage
@@ -111,7 +111,7 @@ class CountryRepositoryImplTest {
             coEvery { remoteDataSource.getCountries() } returns remoteCountriesDto
 
             val localSavedDto1 =
-                LocalCountryDto(isoCode = "CA", name = "كندا", storedLanguage = testLanguage)
+                CountryLocalDto(isoCode = "CA", name = "كندا", storedLanguage = testLanguage)
             val localSavedCountriesDto = listOf(localSavedDto1)
 
             coJustRun { localDataSource.upsertCountries(localSavedCountriesDto) }

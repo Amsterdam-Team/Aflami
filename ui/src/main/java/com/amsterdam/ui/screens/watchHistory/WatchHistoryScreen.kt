@@ -33,13 +33,12 @@ import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.TabsLayout
 import com.amsterdam.ui.R.drawable.no_saved_items
 import com.amsterdam.ui.R.string.no_items_here
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.components.grids.SuccessMovieMediaItemsSection
 import com.amsterdam.ui.components.grids.SuccessTvShowMediaItemsSection
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.watchHistory.WatchHistoryEffect
@@ -51,21 +50,21 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun WatchHistoryScreen(viewModel: WatchHistoryViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     WatchHistoryContent(state, viewModel, viewModel::onClickTabOption)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is WatchHistoryEffect.NavigateToMovieDetails -> {
-                    navController.navigate(Route.MovieDetails(effect.movieId))
+                    navigationManager.toMovieDetails(effect.movieId)
                 }
 
                 is WatchHistoryEffect.NavigateToTvShowDetails -> {
-                    navController.navigate(Route.SeriesDetails(effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
 
                 WatchHistoryEffect.NavigateBack -> {
-                    navController.navigateUp()
+                    navigationManager.navigateUp()
                 }
             }
         }
@@ -163,8 +162,8 @@ fun WatchHistoryContent(
 
 @Composable
 private fun NoItemFoundContainer(
+    modifier: Modifier = Modifier,
     headerHeight: Dp = 0.dp,
-    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier

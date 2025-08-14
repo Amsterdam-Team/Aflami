@@ -11,7 +11,7 @@ import com.amsterdam.remotedatasource.api.TvShowsApiService
 import com.amsterdam.remotedatasource.api.UserListApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
-import com.amsterdam.repository.security.CryptoData
+import com.amsterdam.repository.security.CryptoManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,9 +38,9 @@ object ServiceProvidesModule {
         json: Json,
         appPreferencesRepository: AppPreferencesRepository,
         authenticationLocalDataSource: AuthenticationLocalDataSource,
-        cryptoData: CryptoData
+        cryptoManager: CryptoManager
     ): RetrofitClient =
-        RetrofitClient(json, appPreferencesRepository, authenticationLocalDataSource, cryptoData)
+        RetrofitClient(json, appPreferencesRepository, authenticationLocalDataSource, cryptoManager)
 
     @Provides
     @Singleton

@@ -1,10 +1,11 @@
 package com.amsterdam.viewmodel.game.whichGenre
 
+import com.amsterdam.viewmodel.gameEnd.ResultScreenData
+
 sealed interface GenreGameEffect {
-    object CancelGame : GenreGameEffect
+    data object CancelGame : GenreGameEffect
     data class GameOver(
-        val totalEarnedPoints: Int,
-        val answersTotalTime: Int
+        val resultScreenData : ResultScreenData
     ) : GenreGameEffect
-    object ShowNotEnoughPointsSnackBar: GenreGameEffect
+    data object ShowNotEnoughPointsSnackBar: GenreGameEffect
 }

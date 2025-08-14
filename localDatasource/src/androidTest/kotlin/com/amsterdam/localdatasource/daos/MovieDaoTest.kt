@@ -2,8 +2,8 @@ package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieDao
-import com.amsterdam.repository.dto.local.LocalMovieCategoryDto
-import com.amsterdam.repository.dto.local.LocalMovieDto
+import com.amsterdam.repository.dto.local.MovieCategoryLocalDto
+import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.MovieCategoryCrossRefDto
 import com.amsterdam.repository.dto.local.PopularMovieDto
 import com.amsterdam.repository.dto.local.TopRatedMovieDto
@@ -232,8 +232,8 @@ private val popularMovies = listOf(PopularMovieDto(1L, "en"))
 private val upcomingMovies = listOf(UpcomingMovieDto(1L, "en"))
 
 private val moviesCategories = listOf(
-    LocalMovieCategoryDto(1),
-    LocalMovieCategoryDto(2)
+    MovieCategoryLocalDto(1),
+    MovieCategoryLocalDto(2)
 )
 
 private val movie = createMovie()
@@ -262,8 +262,8 @@ private fun createMovie(
     movieId: Long = 1L,
     storedLanguage: String = "en",
     name: String = "Original"
-): LocalMovieDto {
-    return LocalMovieDto(
+): MovieLocalDto {
+    return MovieLocalDto(
         movieId = movieId,
         storedLanguage = storedLanguage,
         name = name,

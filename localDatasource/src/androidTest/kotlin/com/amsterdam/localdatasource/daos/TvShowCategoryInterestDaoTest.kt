@@ -1,7 +1,7 @@
 package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowCategoryInterestDao
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryInterestDto
+import com.amsterdam.repository.dto.local.TvShowCategoryInterestLocalDto
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -67,6 +67,6 @@ class TvShowCategoryInterestDaoTest : BaseDaoTest() {
     }
 }
 
-private val initialTvShowCategoryInterestDto = LocalTvShowCategoryInterestDto(1, interestCount = 1)
+private val initialTvShowCategoryInterestDto = TvShowCategoryInterestLocalDto(1, interestCount = 1)
 
-private val updatedTvShowCategoryInterestDto = LocalTvShowCategoryInterestDto(1, interestCount = 5)
+private val updatedTvShowCategoryInterestDto = TvShowCategoryInterestLocalDto(1, interestCount = 5)

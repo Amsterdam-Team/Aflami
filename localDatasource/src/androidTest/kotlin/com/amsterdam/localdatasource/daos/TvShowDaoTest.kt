@@ -2,8 +2,8 @@ package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.TvShowDao
-import com.amsterdam.repository.dto.local.LocalTvShowCategoryDto
-import com.amsterdam.repository.dto.local.LocalTvShowDto
+import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
+import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.PopularTvShowDto
 import com.amsterdam.repository.dto.local.TopRatedTvShowDto
 import com.amsterdam.repository.dto.local.TvShowCategoryCrossRefDto
@@ -155,8 +155,8 @@ private val tvShow = createTvShow()
 private val updatedTvShow = tvShow.copy(name = "Updated")
 
 private val tvShowCategories = listOf(
-    LocalTvShowCategoryDto(1L),
-    LocalTvShowCategoryDto(2L)
+    TvShowCategoryLocalDto(1L),
+    TvShowCategoryLocalDto(2L)
 )
 
 private val tvShowsCategoryCrossRefs = listOf(
@@ -185,8 +185,8 @@ private val topRatedTvShows = listOf(
     TopRatedTvShowDto(1L, "en")
 )
 
-private fun createTvShow(): LocalTvShowDto {
-    return LocalTvShowDto(
+private fun createTvShow(): TvShowLocalDto {
+    return TvShowLocalDto(
         tvShowId = 1L,
         storedLanguage = "en",
         name = "Original",

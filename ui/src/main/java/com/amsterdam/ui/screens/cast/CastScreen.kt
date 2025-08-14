@@ -40,7 +40,7 @@ import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
@@ -56,12 +56,12 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CastScreen(viewModel: CastViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                CastUiEffect.NavigateBack -> navController.navigateUp()
+                CastUiEffect.NavigateBack -> navigationManager.navigateUp()
             }
         }
     }

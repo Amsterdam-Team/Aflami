@@ -5,9 +5,9 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Country
 import com.amsterdam.entity.Gender
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.repository.datasource.remote.MovieRemoteSource
+import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
 import com.amsterdam.repository.dto.remote.RemoteMovieResponse
-import com.amsterdam.repository.mapper.remote.toMovieEntityList
+import com.amsterdam.repository.mapper.toMovieEntityList
 import com.amsterdam.repository.utils.remoteCastAndCrewResponse
 import com.amsterdam.repository.utils.remoteMovieItemDto
 import com.amsterdam.repository.utils.remoteUserRatedMovie
@@ -21,13 +21,13 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class MovieRepositoryImplTest {
-    private val movieRemoteDataSource: MovieRemoteSource = mockk()
+    private val movieRemoteDataSource: MovieRemoteDataSource = mockk()
 
     val movieRepository: MovieRepository by lazy {
         MovieRepositoryImpl(
             categoryLocalDataSource = mockk(),
             movieLocalDataSource = mockk(),
-            categoryRemoteSource = mockk(),
+            categoryRemoteDataSource = mockk(),
             movieRemoteDataSource = movieRemoteDataSource,
             preferences = mockk()
         )

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.amsterdam.repository.dto.local.LocalMovieCategoryInterestDto
+import com.amsterdam.repository.dto.local.MovieCategoryInterestLocalDto
 import com.amsterdam.repository.dto.local.utils.DatabaseConstants
 
 @Dao
@@ -14,11 +14,11 @@ interface MovieCategoryInterestDao {
     suspend fun getInterestCount(categoryId: Long): Int?
 
     @Upsert
-    suspend fun upsertInterest(entity: LocalMovieCategoryInterestDto)
+    suspend fun upsertInterest(entity: MovieCategoryInterestLocalDto)
 
     @Transaction
     suspend fun incrementInterest(categoryId: Long) {
         val current = getInterestCount(categoryId) ?: 0
-        upsertInterest(LocalMovieCategoryInterestDto(categoryId, current + 1))
+        upsertInterest(MovieCategoryInterestLocalDto(categoryId, current + 1))
     }
 }

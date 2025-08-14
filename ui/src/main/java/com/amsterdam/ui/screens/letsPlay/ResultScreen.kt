@@ -24,8 +24,7 @@ import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
-import com.amsterdam.ui.application.LocalNavController
-import com.amsterdam.ui.navigation.Route
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.letsPlay.component.CompletionCard
 import com.amsterdam.ui.screens.letsPlay.component.GameResultAppBar
 import com.amsterdam.ui.screens.letsPlay.component.StatCard
@@ -42,12 +41,28 @@ fun ResultScreen(
 
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-   val navController = LocalNavController.current
+   val navigationManager = LocalNavManager.current
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is ResultSideEffect.NavigateToGame ->{}
-                is ResultSideEffect.NavigateBackToMenu -> navController.navigate(Route.Tab.LetsPlay)
+                is ResultSideEffect.NavigateToGame ->{
+                    when (effect.gameType) {
+                        ResultSideEffect.GameType.GUESS_MOVIE_BY_POSTER -> {
+                            navigationManager.toGuessMovieByPosterGame(effect.difficulty.difficultyType.name)
+                        }
+                        ResultSideEffect.GameType.GUESS_RELEASE_YEAR -> {
+                            navigationManager.toGuessReleaseYearGame(effect.difficulty.difficultyType.name)
+                        }
+
+                        ResultSideEffect.GameType.GUESS_CHARACTER -> {
+                            navigationManager.toGuessCharacter(effect.difficulty.difficultyType.name)
+                        }
+                        ResultSideEffect.GameType.GUESS_GENRE -> {
+                            navigationManager.toGenreGame(effect.difficulty.difficultyType.name)
+                        }
+                    }
+                }
+                is ResultSideEffect.NavigateBackToMenu -> navigationManager.toLetsPlay(clearBackStack = true)
             }
         }
     }

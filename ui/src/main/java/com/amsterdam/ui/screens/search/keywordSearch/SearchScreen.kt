@@ -30,12 +30,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.LoadingContainer
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
-import com.amsterdam.ui.navigation.Route
-import com.amsterdam.ui.navigation.Route.MovieDetails
-import com.amsterdam.ui.navigation.Route.SeriesDetails
 import com.amsterdam.ui.screens.search.keywordSearch.sections.RecentSearchesSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SearchScreenHeaderSection
 import com.amsterdam.ui.screens.search.keywordSearch.sections.SuccessMediaItemsSection
@@ -56,7 +53,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movieFlow = state.movies.collectAsLazyPagingItems()
     val tvShowFlow = state.tvShows.collectAsLazyPagingItems()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     LaunchedEffect(movieFlow.loadState) {
         if (state.selectedTabOption == TabOption.MOVIES) {
             viewModel.onPagingLoadStateChanged(movieFlow.loadState)
@@ -71,25 +68,25 @@ internal fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SearchUiEffect.NavigateBack -> {
-                    navController.navigateUp()
+                    navigationManager.navigateUp()
                 }
 
                 SearchUiEffect.NavigateToActorSearch -> {
-                    navController.navigate(Route.SearchByActor)
+                    navigationManager.toSearchByActor()
                 }
 
                 SearchUiEffect.NavigateToWorldSearch -> {
-                    navController.navigate(Route.SearchByCountry)
+                    navigationManager.toSearchByCountry()
                 }
 
                 is SearchUiEffect.NavigateToMovieDetails -> {
                     viewModel.onSaveSearchHistory()
-                    navController.navigate(MovieDetails(effect.movieId))
+                    navigationManager.toMovieDetails(effect.movieId)
                 }
 
                 is SearchUiEffect.NavigateToTvShowDetails -> {
                     viewModel.onSaveSearchHistory()
-                    navController.navigate(SeriesDetails(effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
             }
         }

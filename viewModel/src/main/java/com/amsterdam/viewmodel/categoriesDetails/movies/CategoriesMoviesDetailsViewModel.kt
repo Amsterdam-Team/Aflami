@@ -54,7 +54,7 @@ class CategoriesMoviesDetailsViewModel @Inject constructor(
     }
 
     private fun getInitialGenre() {
-        val initialGenre = MovieGenre.valueOf(categoriesMovieDetailsArgs.genreName!!)
+        val initialGenre = MovieGenre.valueOf(categoriesMovieDetailsArgs.genreName)
         updateUiStateForSelectedGenre(initialGenre)
     }
 

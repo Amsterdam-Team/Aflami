@@ -23,10 +23,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.ui.application.LocalNavController
+import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.navigation.Route
 import com.amsterdam.ui.screens.continueWatching.component.ContinueWatchingMediaItemsGrid
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingEffect
@@ -38,21 +37,21 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ContinueWatchingScreen(viewModel: ContinueWatchingViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val navigationManager = LocalNavManager.current
     ContinueWatchingContent(state, viewModel)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is ContinueWatchingEffect.NavigateToMovieDetailsScreen -> {
-                    navController.navigate(Route.MovieDetails(effect.movieId))
+                    navigationManager.toMovieDetails(effect.movieId)
                 }
 
                 is ContinueWatchingEffect.NavigateToTvShowDetailsEffect -> {
-                    navController.navigate(Route.SeriesDetails(effect.tvShowId))
+                    navigationManager.toSeriesDetails(effect.tvShowId)
                 }
 
                 ContinueWatchingEffect.NavigateBack -> {
-                    navController.navigateUp()
+                    navigationManager.navigateUp()
                 }
             }
         }

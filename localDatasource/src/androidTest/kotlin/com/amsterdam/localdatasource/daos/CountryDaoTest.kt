@@ -1,7 +1,7 @@
 package com.amsterdam.localdatasource.daos
 
 import com.amsterdam.localdatasource.roomDataBase.daos.CountryDao
-import com.amsterdam.repository.dto.local.LocalCountryDto
+import com.amsterdam.repository.dto.local.CountryLocalDto
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -59,19 +59,19 @@ class CountryDaoTest : BaseDaoTest() {
 }
 
 private val countriesWithSameLanguage = listOf(
-    LocalCountryDto(isoCode = "US", storedLanguage = "en", name = "United States"),
-    LocalCountryDto(isoCode = "FR", storedLanguage = "en", name = "France")
+    CountryLocalDto(isoCode = "US", storedLanguage = "en", name = "United States"),
+    CountryLocalDto(isoCode = "FR", storedLanguage = "en", name = "France")
 )
 
 private val initialCountries = listOf(
-    LocalCountryDto(isoCode = "US", storedLanguage = "en", name = "United States")
+    CountryLocalDto(isoCode = "US", storedLanguage = "en", name = "United States")
 )
 
 private val updatedCountries = listOf(
-    LocalCountryDto(isoCode = "US", storedLanguage = "en", name = "USA")
+    CountryLocalDto(isoCode = "US", storedLanguage = "en", name = "USA")
 )
 
 private val countriesWithDifferentLanguage = listOf(
-    LocalCountryDto(isoCode = "US", storedLanguage = "en", name = "USA"),
-    LocalCountryDto(isoCode = "EG", storedLanguage = "ar", name = "مصر")
+    CountryLocalDto(isoCode = "US", storedLanguage = "en", name = "USA"),
+    CountryLocalDto(isoCode = "EG", storedLanguage = "ar", name = "مصر")
 )

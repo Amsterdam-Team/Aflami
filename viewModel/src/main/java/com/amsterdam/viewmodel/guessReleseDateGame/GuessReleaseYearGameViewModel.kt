@@ -6,6 +6,9 @@ import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQue
 import com.amsterdam.domain.useCase.game.releaseYear.GuessReleaseYearGameUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.SubmitGuessReleaseYearAnswerUseCase.AnswerResult
 import com.amsterdam.entity.GameDifficulty.DifficultyType
+import com.amsterdam.viewmodel.gameEnd.ResultScreenData
+import com.amsterdam.viewmodel.gameEnd.ResultSideEffect
+import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -157,11 +160,14 @@ class GuessReleaseYearGameViewModel @Inject constructor(
             }
             startTheTimer()
         } else {
+            val resultData = ResultScreenData(
+                totalCollectedPoints = totalCollectedPoints,
+                totalSpentSeconds = spentTimeSeconds,
+                difficulty = difficultyType.name,
+                gameType = ResultSideEffect.GameType.GUESS_RELEASE_YEAR.name
+            )
             sendNewNavigationEffect(
-                GuessReleaseYearGameEffect.NavigateToGameResult(
-                    totalCollectedPoints,
-                    spentTimeSeconds
-                )
+                GuessReleaseYearGameEffect.NavigateToGameResult(resultData)
             )
         }
     }

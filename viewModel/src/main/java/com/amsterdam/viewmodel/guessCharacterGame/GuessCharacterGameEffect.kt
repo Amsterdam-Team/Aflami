@@ -1,9 +1,11 @@
 package com.amsterdam.viewmodel.guessCharacterGame
 
+import com.amsterdam.viewmodel.gameEnd.ResultScreenData
+
 
 interface GuessCharacterGameEffect {
     object NavigateBack : GuessCharacterGameEffect
     data object NavigateToGame : GuessCharacterGameEffect
-    data class NavigateToGameResult(val totalCollectedPoints: Int, val totalSpentSeconds: Int) :
+    data class NavigateToGameResult(val resultScreenData : ResultScreenData) :
         GuessCharacterGameEffect
 }
