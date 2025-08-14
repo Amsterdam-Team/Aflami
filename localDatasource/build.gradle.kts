@@ -79,11 +79,11 @@ kover.reports{
         androidGeneratedClasses()
         packages(
             "*.converter",
-            "*.daos",
-            "*.dataStore"
+            "*.daos"
         )
         classes(
-            "*AflamiDatabase*"
+            "*AflamiDatabase*",
+            "*${'$'}${'$'}inlined${'$'}*"
         )
     }
 
