@@ -3,15 +3,11 @@ package com.amsterdam.viewmodel.categoriesDetails.tvShow
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.useCase.details.GetTvShowsByGenreUseCase
 import com.amsterdam.entity.category.TvShowGenre
-import com.amsterdam.paging.PagingSource
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +17,7 @@ import kotlinx.coroutines.flow.map
 
 @HiltViewModel
 class CategoriesTvShowsDetailsViewModel @Inject constructor(
-    private val getTvShowsByGenreIdUseCase: GetTvShowsByGenreUseCase,
+    private val categoriesTvShowDetailsPagingSource: CategoriesTvShowDetailsPagingSource,
     private val categoriesTvShowsDetailsArgs: CategoriesTvShowsDetailsArgs,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<CategoriesTvShowsDetailsUiState, CategoriesTvShowsDetailsUiEffect>(
@@ -93,14 +89,8 @@ class CategoriesTvShowsDetailsViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = {
-                Pager(
-                    config = PagingConfig(pageSize = 20),
-                    pagingSourceFactory = {
-                        PagingSource { page ->
-                            getTvShowsByGenreIdUseCase(state.value.selectedGenre, page)
-                        }
-                    }
-                ).flow.map { pagingData -> pagingData.map { it.toTvShowUiState() } }
+                categoriesTvShowDetailsPagingSource.getTvShows(state.value.selectedGenre)
+                    .map { pagingData -> pagingData.map { it.toTvShowUiState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTvShowsByGenreSuccess,
