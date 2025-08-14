@@ -12,7 +12,7 @@ import com.amsterdam.repository.dto.local.relation.TvShowWithCategory
 import kotlinx.datetime.Instant
 import javax.inject.Inject
 
-class TvShowLocalDataDataSourceImpl @Inject constructor(
+class TvShowLocalDataSourceImpl @Inject constructor(
     private val tvShowDao: TvShowDao,
     private val tvShowCategoryInterestDao: TvShowCategoryInterestDao
 ) : TvShowLocalDataSource {

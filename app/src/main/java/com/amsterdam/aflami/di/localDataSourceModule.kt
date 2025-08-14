@@ -6,15 +6,15 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.amsterdam.localdatasource.dataStore.AppPreferencesImpl
-import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataDataSourceImpl
+import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.AflamiDatabase
-import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.CategoryLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.CountryLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.GameLocalDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.MovieLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.ProfileLocalDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataDataSourceImpl
-import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.RecentSearchLocalDataSourceImpl
+import com.amsterdam.localdatasource.roomDataBase.datasource.TvShowLocalDataSourceImpl
 import com.amsterdam.localdatasource.roomDataBase.datasource.WatchHistoryLocalDataSourceImpl
 import com.amsterdam.repository.datasource.local.AppPreferences
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
@@ -97,7 +97,7 @@ abstract class LocalDataSourceBindsModule {
     @Binds
     @Singleton
     abstract fun bindAuthenticationLocalDataSource(
-        authenticationLocalDataSourceImpl: AuthenticationLocalDataDataSourceImpl
+        authenticationLocalDataSourceImpl: AuthenticationLocalDataSourceImpl
     ): AuthenticationLocalDataSource
 
     @Binds
@@ -109,31 +109,31 @@ abstract class LocalDataSourceBindsModule {
     @Binds
     @Singleton
     abstract fun bindCountryLocalDataSource(
-        countryLocalDataSourceImpl: CountryLocalDataDataSourceImpl
+        countryLocalDataSourceImpl: CountryLocalDataSourceImpl
     ): CountryLocalDataSource
 
     @Binds
     @Singleton
     abstract fun bindCategoryLocalSource(
-        impl: CategoryLocalDataDataSourceImpl
+        impl: CategoryLocalDataSourceImpl
     ): CategoryLocalDataSource
 
     @Binds
     @Singleton
     abstract fun bindMovieLocalDataSource(
-        movieLocalDataSourceImpl: MovieLocalDataDataSourceImpl
+        movieLocalDataSourceImpl: MovieLocalDataSourceImpl
     ): MovieLocalDataSource
 
     @Binds
     @Singleton
     abstract fun bindTvShowLocalDataSource(
-        tvShowLocalDataSourceImpl: TvShowLocalDataDataSourceImpl
+        tvShowLocalDataSourceImpl: TvShowLocalDataSourceImpl
     ): TvShowLocalDataSource
 
     @Binds
     @Singleton
     abstract fun bindRecentSearchLocalDataSource(
-        recentSearchLocalDataSourceImpl: RecentSearchLocalDataDataSourceImpl
+        recentSearchLocalDataSourceImpl: RecentSearchLocalDataSourceImpl
     ): RecentSearchLocalDataSource
 
     @Binds

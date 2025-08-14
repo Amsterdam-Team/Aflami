@@ -18,13 +18,13 @@ class TvShowLocalDataSourceImplTest {
 
     private lateinit var tvShowDao: TvShowDao
     private lateinit var tvShowCategoryInterestDao: TvShowCategoryInterestDao
-    private lateinit var dataSource: TvShowLocalDataDataSourceImpl
+    private lateinit var dataSource: TvShowLocalDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         tvShowDao = mockk(relaxed = true)
         tvShowCategoryInterestDao = mockk(relaxed = true)
-        dataSource = TvShowLocalDataDataSourceImpl(tvShowDao, tvShowCategoryInterestDao)
+        dataSource = TvShowLocalDataSourceImpl(tvShowDao, tvShowCategoryInterestDao)
     }
 
     @Test

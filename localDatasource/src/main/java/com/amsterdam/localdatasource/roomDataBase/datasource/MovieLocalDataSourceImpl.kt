@@ -13,7 +13,7 @@ import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 import kotlinx.datetime.Instant
 import javax.inject.Inject
 
-class MovieLocalDataDataSourceImpl @Inject constructor(
+class MovieLocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
     private val interestDao: MovieCategoryInterestDao
 ) : MovieLocalDataSource {

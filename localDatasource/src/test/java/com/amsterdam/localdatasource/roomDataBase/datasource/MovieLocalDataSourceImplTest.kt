@@ -18,13 +18,13 @@ class MovieLocalDataSourceImplTest {
 
     private lateinit var movieDao: MovieDao
     private lateinit var interestDao: MovieCategoryInterestDao
-    private lateinit var dataSource: MovieLocalDataDataSourceImpl
+    private lateinit var dataSource: MovieLocalDataSourceImpl
 
     @BeforeEach
     fun setUp() {
         movieDao = mockk(relaxed = true)
         interestDao = mockk(relaxed = true)
-        dataSource = MovieLocalDataDataSourceImpl(movieDao, interestDao)
+        dataSource = MovieLocalDataSourceImpl(movieDao, interestDao)
     }
 
     @Test

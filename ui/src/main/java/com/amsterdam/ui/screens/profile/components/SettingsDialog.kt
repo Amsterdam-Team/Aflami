@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Dialog
 import com.amsterdam.designsystem.components.Icon
-import com.amsterdam.designsystem.components.buttons.PlainTextButton
+import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -74,13 +74,10 @@ fun SettingsDialog(
                 title = stringResource(R.string.tired_of_watching),
                 leadingIcon = painterResource(R.drawable.ic_logout),
                 trailingContent = {
-                    PlainTextButton(
-                        title = stringResource(R.string.logout),
+                    Text(
+                        text = stringResource(R.string.logout),
                         style = AppTheme.textStyle.label.medium,
-                        isLoading = false,
-                        isEnabled = true,
-                        isNegative = false,
-                        onClick = {}
+                        color = AppTheme.color.primary,
                     )
                 },
                 onClick = onLogoutClick

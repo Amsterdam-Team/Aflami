@@ -4,14 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataDataSourceImpl.PreferenceKeys.SESSION_ID
-import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataDataSourceImpl.PreferenceKeys.SESSION_TYPE
+import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl.PreferenceKeys.SESSION_ID
+import com.amsterdam.localdatasource.dataStore.AuthenticationLocalDataSourceImpl.PreferenceKeys.SESSION_TYPE
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AuthenticationLocalDataDataSourceImpl @Inject constructor(
+class AuthenticationLocalDataSourceImpl @Inject constructor(
     private val datastore: DataStore<Preferences>,
 ) : AuthenticationLocalDataSource {
     private object PreferenceKeys {

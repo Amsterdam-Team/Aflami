@@ -195,6 +195,7 @@ private fun ListsScreenContent(
                                 title = stringResource(com.amsterdam.ui.R.string.no_list_yet),
                                 description = stringResource(com.amsterdam.ui.R.string.no_list_description),
                                 imageRes = painterResource(id = com.amsterdam.ui.R.drawable.placeholder_no_saved_items),
+                                imageAlpha = 0.64f,
                             )
                         }
 

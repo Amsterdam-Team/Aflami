@@ -5,7 +5,7 @@ import com.amsterdam.repository.datasource.local.RecentSearchLocalDataSource
 import com.amsterdam.repository.dto.local.SearchLocalDto
 import javax.inject.Inject
 
-class RecentSearchLocalDataDataSourceImpl @Inject constructor(
+class RecentSearchLocalDataSourceImpl @Inject constructor(
     private val dao: RecentSearchDao
 ) : RecentSearchLocalDataSource {
 

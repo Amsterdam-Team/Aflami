@@ -5,7 +5,7 @@ import com.amsterdam.repository.datasource.local.CountryLocalDataSource
 import com.amsterdam.repository.dto.local.CountryLocalDto
 import javax.inject.Inject
 
-class CountryLocalDataDataSourceImpl @Inject constructor(
+class CountryLocalDataSourceImpl @Inject constructor(
     private val dao: CountryDao
 ) : CountryLocalDataSource {
     override suspend fun getCountries(storedLanguage: String): List<CountryLocalDto> {

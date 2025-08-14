@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test
 
 class CountryLocalDataSourceImplTest {
     private lateinit var dao: CountryDao
-    private lateinit var countryLocalDataSourceImpl: CountryLocalDataDataSourceImpl
+    private lateinit var countryLocalDataSourceImpl: CountryLocalDataSourceImpl
 
     @BeforeEach
     fun setup() {
         dao = mockk(relaxed = true)
-        countryLocalDataSourceImpl = CountryLocalDataDataSourceImpl(dao)
+        countryLocalDataSourceImpl = CountryLocalDataSourceImpl(dao)
     }
 
     @Test
