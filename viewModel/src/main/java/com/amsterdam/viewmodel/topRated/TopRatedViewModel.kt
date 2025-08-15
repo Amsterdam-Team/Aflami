@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.topRated
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
