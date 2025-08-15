@@ -13,12 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.designsystem.utils.modifierExtensions.dropShadow
 
 @Composable
@@ -28,7 +28,7 @@ fun PlayButton(
     onClick: () -> Unit = {},
 ) {
     val playButtonColor = if (isActive) AppTheme.color.primary else AppTheme.color.disable
-    val playButtonBlurColor = if (isActive) Color(0x1F8951FF) else Color.Transparent
+    val playButtonBlur = if (isActive) 12.dp else 0.dp
     Box(
         modifier =
             modifier
@@ -42,11 +42,8 @@ fun PlayButton(
                 .border(2.dp, AppTheme.color.stroke, shape = CircleShape)
                 .dropShadow(
                     CircleShape,
-                    playButtonBlurColor,
-                    spread = 12.dp,
-                    blur = 24.dp,
-                    offsetX = 0.dp,
-                    offsetY = 4.dp,
+                    AppTheme.color.playButtonShadow,
+                    blur = playButtonBlur,
                 )
                 .background(
                     color = AppTheme.color.surfaceHigh,
@@ -64,9 +61,16 @@ fun PlayButton(
                         if (isActive) it.clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() },
-                            onClick = onClick)
+                            onClick = onClick
+                        )
                         else it
                     }
         )
     }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun PlayButtonPreview() {
+    PlayButton(isActive = true)
 }
