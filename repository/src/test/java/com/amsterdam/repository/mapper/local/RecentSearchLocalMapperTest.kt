@@ -8,39 +8,39 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class RecentSearchLocalMapperTest {
-
-
     @Test
     @DisplayName("should return searchKeyword from LocalSearchDto")
     fun `toEntity should return searchKeyword`() {
-        // Arrange
-        val dto = SearchLocalDto(
-            searchKeyword = "Inception",
-        )
+        val dto = singleSearchDto
 
-        // Act
         val result = dto.toEntity()
 
-        // Assert
-        assertThat(result).isEqualTo("Inception")
+        assertThat(result).isEqualTo(SEARCH_KEYWORD_1)
     }
 
     @Test
     @DisplayName("should return list of searchKeywords from list of LocalSearchDto")
     fun `toEntityList should return list of searchKeywords`() {
-        // Arrange
-        val dtoList = listOf(
-            SearchLocalDto(
-                searchKeyword = "Inception",
-            ),
-            SearchLocalDto(
-                searchKeyword = "The Dark Knight",
-            )
-        )
-        // Act
+        val dtoList = searchDtoList
+
         val result = dtoList.toEntityList()
-        // Assert
-        assertThat(result).containsExactly("Inception", "The Dark Knight")
+
+        assertThat(result).containsExactlyElementsIn(expectedKeywords).inOrder()
+    }
+
+    companion object {
+        private const val SEARCH_KEYWORD_1 = "Inception"
+        private const val SEARCH_KEYWORD_2 = "The Dark Knight"
+
+        private val singleSearchDto = SearchLocalDto(
+            searchKeyword = SEARCH_KEYWORD_1,
+        )
+
+        private val searchDtoList = listOf(
+            SearchLocalDto(searchKeyword = SEARCH_KEYWORD_1),
+            SearchLocalDto(searchKeyword = SEARCH_KEYWORD_2)
+        )
+
+        private val expectedKeywords = listOf(SEARCH_KEYWORD_1, SEARCH_KEYWORD_2)
     }
 }
-
