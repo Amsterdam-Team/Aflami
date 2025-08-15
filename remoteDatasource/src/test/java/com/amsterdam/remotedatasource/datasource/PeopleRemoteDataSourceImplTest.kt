@@ -1,6 +1,5 @@
 package com.amsterdam.remotedatasource.datasource
 
-import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.PeopleApiService
 import com.amsterdam.repository.dto.remote.RemotePeopleItemDto
 import com.amsterdam.repository.dto.remote.RemotePeopleResponse
@@ -10,59 +9,12 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class PeopleRemoteDataSourceImplTest {
 
     private val peopleApiService: PeopleApiService = mockk()
     private val peopleRemoteDataSourceImpl: PeopleRemoteDataSourceImpl =
         PeopleRemoteDataSourceImpl(peopleApiService)
-
-    @Test
-    fun `getTrendingPeople should return a list of people on successful API call`() = runTest {
-        coEvery { peopleApiService.getTrendingPeople(any()) } returns trendingPeopleResponse
-
-        val people = peopleRemoteDataSourceImpl.getTrendingPeople(page = 1)
-
-        assertThat(people).isEqualTo(trendingPeopleResponse)
-    }
-
-    @Test
-    fun `getTrendingPeople should call getTrendingPeople exactly once on a successful API call`() =
-        runTest {
-            coEvery { peopleApiService.getTrendingPeople(any()) } returns trendingPeopleResponse
-
-            peopleRemoteDataSourceImpl.getTrendingPeople(page = 1)
-
-            coVerify(exactly = 1) { peopleApiService.getTrendingPeople(any()) }
-        }
-
-    @Test
-    fun `getTrendingPeople should rethrow a NetworkException when the service provider throws one`() =
-        runTest {
-            coEvery { peopleApiService.getTrendingPeople(any()) } throws networkException
-
-            assertThrows<NetworkException> { peopleRemoteDataSourceImpl.getTrendingPeople(page = 1) }
-        }
-
-    @Test
-    fun `getTrendingPeople should return an empty list when the API service returns an empty list`() =
-        runTest {
-            coEvery { peopleApiService.getTrendingPeople(any()) } returns emptyPeopleResponse
-
-            val people = peopleRemoteDataSourceImpl.getTrendingPeople(page = 1)
-
-            assertThat(people.results).isEmpty()
-        }
-
-    @Test
-    fun `getTrendingPeople should call the API exactly once when it returns an empty list`() = runTest {
-        coEvery { peopleApiService.getTrendingPeople(any()) } returns emptyPeopleResponse
-
-        peopleRemoteDataSourceImpl.getTrendingPeople(page = 1)
-
-        coVerify(exactly = 1) { peopleApiService.getTrendingPeople(any()) }
-    }
 
     @Test
     fun `getRandomizedTrendingPeople should return the required number of people`() = runTest {
@@ -127,24 +79,6 @@ class PeopleRemoteDataSourceImplTest {
             assertThat(people).isEmpty()
         }
 
-    private val networkException = NetworkException()
-
-    private val trendingPeopleResponse = RemotePeopleResponse(
-        page = 1,
-        totalPages = 2,
-        totalResults = 4,
-        results = listOf(
-            createPeopleItemDto(id = 1, name = "Person A", profilePath = "path/a.jpg"),
-            createPeopleItemDto(id = 2, name = "Person B", profilePath = "path/b.jpg")
-        )
-    )
-
-    private val emptyPeopleResponse = RemotePeopleResponse(
-        page = 1,
-        totalPages = 1,
-        totalResults = 0,
-        results = emptyList()
-    )
 
     private fun createPeopleItemDto(
         id: Int,

@@ -13,10 +13,6 @@ class PeopleRemoteDataSourceImpl @Inject constructor(
     private val peopleApiService: PeopleApiService
 ) : PeopleRemoteDataSource {
 
-    override suspend fun getTrendingPeople(page: Int): RemotePeopleResponse {
-        return responseCall { peopleApiService.getTrendingPeople(page = page) }
-    }
-
     override suspend fun getRandomizedTrendingPeople(requiredNumber: Int): List<RemotePeopleItemDto> {
 
         val totalPages = getTrendingPeople(FIRST_PAGE).totalPages
@@ -47,6 +43,10 @@ class PeopleRemoteDataSourceImpl @Inject constructor(
 
     private fun onFilterHighQualityPeopleData(people: RemotePeopleItemDto): Boolean {
         return people.name.isNotBlank() && !people.fullPosterUrl.isNullOrBlank()
+    }
+
+    private suspend fun getTrendingPeople(page: Int): RemotePeopleResponse {
+        return responseCall { peopleApiService.getTrendingPeople(page = page) }
     }
 
     private companion object {
