@@ -190,11 +190,13 @@ class MovieDetailsViewModel @Inject constructor(
             },
             onError = {
                 it.printStackTrace()
+                updateState { state -> state.copy(isAddMovieToListLoading = false) }
                 sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListError)
             },
             onCompletion = {
                 updateState {
                     it.copy(
+                        isAddMovieToListLoading = false,
                         isAddToListDialogVisible = false,
                         isCreateNewListDialogVisible = false,
                         selectedLists = emptyList(),
