@@ -20,31 +20,31 @@ class GetTopRatedScreenDataUseCaseTest {
 
     @Test
     fun `should call both child use cases with default page number`() = runTest {
-        coEvery { getTopRatedMoviesUseCase(any()) } returns emptyList()
-        coEvery { getTopRatedTvShowsUseCase(any()) } returns emptyList()
+        coEvery { getTopRatedMoviesUseCase(any(), any()) } returns emptyList()
+        coEvery { getTopRatedTvShowsUseCase(any(), any()) } returns emptyList()
 
         getTopRatedScreenDataUseCase()
 
-        coVerify(exactly = 1) { getTopRatedMoviesUseCase(1) }
-        coVerify(exactly = 1) { getTopRatedTvShowsUseCase(1) }
+        coVerify(exactly = 1) { getTopRatedMoviesUseCase(1, false) }
+        coVerify(exactly = 1) { getTopRatedTvShowsUseCase(1, false) }
     }
 
     @Test
     fun `should call both child use cases with specified page number`() = runTest {
         val page = 5
-        coEvery { getTopRatedMoviesUseCase(any()) } returns emptyList()
-        coEvery { getTopRatedTvShowsUseCase(any()) } returns emptyList()
+        coEvery { getTopRatedMoviesUseCase(any(), any()) } returns emptyList()
+        coEvery { getTopRatedTvShowsUseCase(any(), any()) } returns emptyList()
 
         getTopRatedScreenDataUseCase(page)
 
-        coVerify(exactly = 1) { getTopRatedMoviesUseCase(page) }
-        coVerify(exactly = 1) { getTopRatedTvShowsUseCase(page) }
+        coVerify(exactly = 1) { getTopRatedMoviesUseCase(page, false) }
+        coVerify(exactly = 1) { getTopRatedTvShowsUseCase(page, false) }
     }
 
     @Test
     fun `should return TopRatedScreenData object with correct lists`() = runTest {
-        coEvery { getTopRatedMoviesUseCase(any()) } returns fakeMovieList
-        coEvery { getTopRatedTvShowsUseCase(any()) } returns fakeTvShowList
+        coEvery { getTopRatedMoviesUseCase(any(), any()) } returns fakeMovieList
+        coEvery { getTopRatedTvShowsUseCase(any(), any()) } returns fakeTvShowList
 
         val result = getTopRatedScreenDataUseCase()
 
@@ -54,7 +54,7 @@ class GetTopRatedScreenDataUseCaseTest {
 
     @Test
     fun `should propagate exception when getTopRatedMoviesUseCase throws`() = runTest {
-        coEvery { getTopRatedMoviesUseCase(any()) } throws AflamiException()
+        coEvery { getTopRatedMoviesUseCase(any(), any()) } throws AflamiException()
 
         assertThrows<AflamiException> {
             getTopRatedScreenDataUseCase()
@@ -63,8 +63,8 @@ class GetTopRatedScreenDataUseCaseTest {
 
     @Test
     fun `should propagate exception when getTopRatedTvShowsUseCase throws`() = runTest {
-        coEvery { getTopRatedMoviesUseCase(any()) } returns emptyList()
-        coEvery { getTopRatedTvShowsUseCase(any()) } throws AflamiException()
+        coEvery { getTopRatedMoviesUseCase(any(), any()) } returns emptyList()
+        coEvery { getTopRatedTvShowsUseCase(any(), any()) } throws AflamiException()
 
         assertThrows<AflamiException> {
             getTopRatedScreenDataUseCase()

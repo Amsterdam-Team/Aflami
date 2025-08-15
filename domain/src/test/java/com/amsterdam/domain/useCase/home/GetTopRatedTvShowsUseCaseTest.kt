@@ -22,7 +22,7 @@ class GetTopRatedTvShowsUseCaseTest {
     fun `should call getTopRatedTvShows with default page when no page is provided`() = runTest {
         getTopRatedTvShowsUseCase()
 
-        coVerify(exactly = 1) { tvShowRepository.getTopRatedTvShows(page = 1) }
+        coVerify(exactly = 1) { tvShowRepository.getCachedTopRatedTvShows(page = 1) }
     }
 
     @Test
@@ -31,12 +31,12 @@ class GetTopRatedTvShowsUseCaseTest {
 
         getTopRatedTvShowsUseCase(page)
 
-        coVerify(exactly = 1) { tvShowRepository.getTopRatedTvShows(page = page) }
+        coVerify(exactly = 1) { tvShowRepository.getCachedTopRatedTvShows(page = page) }
     }
 
     @Test
     fun `should return a list of top rated tv shows when data is available`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTvShows(any()) } returns fakeTvShowList
+        coEvery { tvShowRepository.getCachedTopRatedTvShows(any()) } returns fakeTvShowList
 
         val result = getTopRatedTvShowsUseCase()
 
@@ -45,7 +45,7 @@ class GetTopRatedTvShowsUseCaseTest {
 
     @Test
     fun `should return an empty list when no top rated tv shows are available`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTvShows(any()) } returns emptyList()
+        coEvery { tvShowRepository.getCachedTopRatedTvShows(any()) } returns emptyList()
 
         val result = getTopRatedTvShowsUseCase()
 
@@ -54,7 +54,7 @@ class GetTopRatedTvShowsUseCaseTest {
 
     @Test
     fun `should throw an AflamiException when the repository call fails`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTvShows(any()) } throws AflamiException()
+        coEvery { tvShowRepository.getCachedTopRatedTvShows(any()) } throws AflamiException()
 
         assertThrows<AflamiException> { getTopRatedTvShowsUseCase() }
     }

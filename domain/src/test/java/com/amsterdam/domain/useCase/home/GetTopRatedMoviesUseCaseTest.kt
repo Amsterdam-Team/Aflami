@@ -23,7 +23,7 @@ class GetTopRatedMoviesUseCaseTest {
     fun `should call getTopRatedMovies with default page when no page is provided`() = runTest {
         getTopRatedMoviesUseCase()
 
-        coVerify(exactly = 1) { movieRepository.getTopRatedMovies(page = 1) }
+        coVerify(exactly = 1) { movieRepository.getCachedTopRatedMovies(page = 1) }
     }
 
     @Test
@@ -32,12 +32,12 @@ class GetTopRatedMoviesUseCaseTest {
 
         getTopRatedMoviesUseCase(page)
 
-        coVerify(exactly = 1) { movieRepository.getTopRatedMovies(page = page) }
+        coVerify(exactly = 1) { movieRepository.getCachedTopRatedMovies(page = page) }
     }
 
     @Test
     fun `should return top rated movies when repository returns them`() = runTest {
-        coEvery { movieRepository.getTopRatedMovies(any()) } returns specificMovieList
+        coEvery { movieRepository.getCachedTopRatedMovies(any()) } returns specificMovieList
 
         val result = getTopRatedMoviesUseCase()
 
@@ -46,7 +46,7 @@ class GetTopRatedMoviesUseCaseTest {
 
     @Test
     fun `should return empty list when repository returns an empty list`() = runTest {
-        coEvery { movieRepository.getTopRatedMovies(any()) } returns emptyList()
+        coEvery { movieRepository.getCachedTopRatedMovies(any()) } returns emptyList()
 
         val result = getTopRatedMoviesUseCase()
 
@@ -56,7 +56,7 @@ class GetTopRatedMoviesUseCaseTest {
     @Test
     fun `should throw AflamiException when repository throws an exception`() = runTest {
         val expectedException = AflamiException()
-        coEvery { movieRepository.getTopRatedMovies(any()) } throws expectedException
+        coEvery { movieRepository.getCachedTopRatedMovies(any()) } throws expectedException
 
         val exception = assertThrows<AflamiException> {
             getTopRatedMoviesUseCase()

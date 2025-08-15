@@ -218,7 +218,7 @@ class MovieDetailsViewModelTest {
         coEvery { addMovieToListUseCase.invoke(any(), any()) } just Runs
 
         viewModel.effect.test {
-            viewModel.onSaveMovieToList(listId, movieId)
+            viewModel.onSaveMovieToList(listId, listIds = listOf(movieId))
             assertThat(awaitItem()).isEqualTo(MovieDetailsEffect.MovieAddedToListSuccessfully)
         }
     }
@@ -333,10 +333,10 @@ class MovieDetailsViewModelTest {
         viewModel
         advanceUntilIdle()
 
-        viewModel.onSelectedListChange(selectedList)
+        viewModel.onSelectedListChange(listOf(selectedList))
         advanceUntilIdle()
 
-        assertThat(viewModel.state.value.selectedList).isEqualTo(selectedList)
+        assertThat(viewModel.state.value.selectedLists).isEqualTo(listOf(selectedList))
     }
 
     @Test
