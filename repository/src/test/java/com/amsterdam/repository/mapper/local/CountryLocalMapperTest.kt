@@ -1,47 +1,45 @@
-
 package com.amsterdam.repository.mapper.local
 
 import com.amsterdam.entity.Country
 import com.amsterdam.repository.dto.local.CountryLocalDto
 import com.amsterdam.repository.mapper.toEntity
-import com.amsterdam.repository.mapper.toEntityList
 import com.amsterdam.repository.mapper.toLocalDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class CountryLocalMapperTest {
-
-
     @Test
     fun `toEntity should return Country entity when given LocalCountryDto`() {
-        // When
-        val dto = CountryLocalDto(
-            name = "Egypt",
-            isoCode = "EG",
-            storedLanguage = "en",
-        )
+        val result = countryLocalDto.toEntity()
 
-        // When
-        val result = dto.toEntity()
-
-        // Then
-        assertThat(result.countryName).isEqualTo("Egypt")
-        assertThat(result.countryIsoCode).isEqualTo("EG")
+        assertThat(result.countryName).isEqualTo(EGYPT_NAME)
+        assertThat(result.countryIsoCode).isEqualTo(EGYPT_ISO_CODE)
     }
 
     @Test
     fun `toDto should return LocalCountryDto when given Country entity`() {
-        // Given
-        val entity = Country(
-            countryName = "France",
-            countryIsoCode = "FR"
+        val result = countryEntity.toLocalDto(STORED_LANGUAGE)
+
+        assertThat(result.name).isEqualTo(FRANCE_NAME)
+        assertThat(result.isoCode).isEqualTo(FRANCE_ISO_CODE)
+    }
+
+    companion object {
+        private const val EGYPT_NAME = "Egypt"
+        private const val EGYPT_ISO_CODE = "EG"
+        private const val STORED_LANGUAGE = "en"
+        private const val FRANCE_NAME = "France"
+        private const val FRANCE_ISO_CODE = "FR"
+
+        private val countryLocalDto = CountryLocalDto(
+            name = EGYPT_NAME,
+            isoCode = EGYPT_ISO_CODE,
+            storedLanguage = STORED_LANGUAGE,
         )
 
-        // When
-        val result = entity.toLocalDto("en")
-
-        // Then
-        assertThat(result.name).isEqualTo("France")
-        assertThat(result.isoCode).isEqualTo("FR")
+        private val countryEntity = Country(
+            countryName = FRANCE_NAME,
+            countryIsoCode = FRANCE_ISO_CODE
+        )
     }
 }
