@@ -11,12 +11,18 @@ import kotlinx.datetime.LocalDate
 import org.junit.Test
 
 class TvShowWithCategoriesLocalMapperTest {
-
-
     @Test
     fun `toEntity maps TvShowWithCategory to TvShow correctly`() {
-        // Arrange
-        val dto = TvShowWithCategories(
+        val dto = tvShowWithCategoriesDto
+        val expected = expectedTvShow
+
+        val result = dto.toEntity()
+
+        assertThat(result).isEqualTo(expected)
+    }
+
+    companion object {
+        private val tvShowWithCategoriesDto = TvShowWithCategories(
             tvShow = TvShowLocalDto(
                 tvShowId = 1,
                 name = "Drama",
@@ -35,13 +41,10 @@ class TvShowWithCategoriesLocalMapperTest {
                 )
             )
         )
-        val expectedGenres = listOf(TvShowGenre.DRAMA, TvShowGenre.CRIME)
 
-        // Act
-        val result = dto.toEntity()
+        private val expectedGenres = listOf(TvShowGenre.DRAMA, TvShowGenre.CRIME)
 
-        // Assert
-        val expected = TvShow(
+        private val expectedTvShow = TvShow(
             id = 1,
             name = "Drama",
             description = "A drama movie",
@@ -53,8 +56,5 @@ class TvShowWithCategoriesLocalMapperTest {
             seasonCount = 3,
             originCountry = "",
         )
-
-        assertThat(result).isEqualTo(expected)
     }
 }
-
