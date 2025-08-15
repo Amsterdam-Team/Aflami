@@ -32,6 +32,7 @@ class TopRatedViewModel @Inject constructor(
     TopRatedInteractionListener {
 
     init {
+        showLoadingState()
         manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getTopRatedScreenData()
@@ -41,8 +42,6 @@ class TopRatedViewModel @Inject constructor(
     }
 
     private fun getTopRatedScreenData() {
-        updateState { it.copy(isLoading = true) }
-
         tryToExecute(
             action = {
                 Pager(
@@ -59,7 +58,9 @@ class TopRatedViewModel @Inject constructor(
                 ).flow
                     .cachedIn(viewModelScope)
             },
-            onSuccess = ::onGetTopRatedMoviesSuccess
+            onSuccess = ::onGetTopRatedMoviesSuccess,
+            onError = ::onError,
+            onCompletion = ::onCompletion
         )
     }
 
@@ -118,4 +119,7 @@ class TopRatedViewModel @Inject constructor(
     override fun onClickBack() {
         sendNewNavigationEffect(TopRatedEffect.NavigateBack)
     }
+
+    private fun showLoadingState() = updateState { it.copy(isLoading = true, error = null) }
+    private fun onCompletion() = updateState { it.copy(isLoading = false, error = null) }
 }
