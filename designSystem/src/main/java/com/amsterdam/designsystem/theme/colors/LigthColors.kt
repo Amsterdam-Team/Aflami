@@ -30,6 +30,7 @@ internal val lightThemeColors =
         blueCard = Color(0x3d8dd3f2),
         navyCard = Color(0x3d91a9fa),
         yellowCard = Color(0x3dfad291),
+        playButtonShadow = Color(0x1FD85895),
         backgroundCircles = Color(0x3dd85895),
         profileOverlay = Color(0x80faf5f7),
         dialogBackground = Color(0x1A000000),

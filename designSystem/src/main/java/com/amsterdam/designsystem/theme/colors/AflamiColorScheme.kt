@@ -32,6 +32,7 @@ data class AflamiColorScheme(
     val blueCard: Color,
     val navyCard: Color,
     val yellowCard: Color,
+    val playButtonShadow: Color,
     val backgroundCircles: Color,
     val profileOverlay: Color,
     val dialogBackground: Color,
@@ -52,10 +53,10 @@ data class AflamiColorScheme(
     val droppedShadowColor: Color,
     val shimmerEffectGradient: List<Color>,
     val onBoardingGradient: List<Color>,
-    val guessCharacterStrokeGradient:List<Color>,
-    val guessMovieByPosterStrokeGradient:List<Color>,
-    val guessMovieByReleaseStrokeGradient:List<Color>,
-    val guessMovieByGenreStrokeGradient:List<Color>,
-    )
+    val guessCharacterStrokeGradient: List<Color>,
+    val guessMovieByPosterStrokeGradient: List<Color>,
+    val guessMovieByReleaseStrokeGradient: List<Color>,
+    val guessMovieByGenreStrokeGradient: List<Color>,
+)
 
 internal val LocalAflamiAppColors = staticCompositionLocalOf { lightThemeColors }
