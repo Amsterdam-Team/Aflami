@@ -7,10 +7,9 @@ class GetTopRatedMoviesUseCase(private val movieRepository: MovieRepository) {
 
     suspend operator fun invoke(
         page: Int = 1,
+        isCached: Boolean = true
     ): List<Movie> {
-        return movieRepository.getTopRatedMovies(
-            page = page,
-        )
+        return if (isCached) movieRepository.getCachedTopRatedMovies(page = page)
+        else movieRepository.getRemoteTopRatedMovies(page = page)
     }
-
 }

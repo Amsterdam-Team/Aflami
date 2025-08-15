@@ -13,8 +13,8 @@ class GetTopRatedScreenDataUseCase(
         page: Int = 1,
     ) : TopRatedScreenData{
         return TopRatedScreenData(
-            topRatedMovies = getTopRatedMoviesUseCase(page),
-            topRatedTvShows = getTopRatedTvShowsUseCase(page),
+            topRatedMovies = getTopRatedMoviesUseCase(page, isCached = false),
+            topRatedTvShows = getTopRatedTvShowsUseCase(page, isCached = false),
         )
     }
 

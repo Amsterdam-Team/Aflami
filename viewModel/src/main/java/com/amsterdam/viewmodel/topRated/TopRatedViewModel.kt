@@ -1,5 +1,6 @@
 package com.amsterdam.viewmodel.topRated
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -49,14 +50,14 @@ class TopRatedViewModel @Inject constructor(
                     pagingSourceFactory = {
                         PagingSource { page ->
                             val result = getTopRatedScreenDataUseCase(page)
+                            Log.d("nb", "$result")
                             getTopRatedMediaItems(
                                 result.topRatedMovies,
                                 result.topRatedTvShows
                             )
                         }
                     }
-                ).flow
-                    .cachedIn(viewModelScope)
+                ).flow.cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTopRatedMoviesSuccess,
             onError = ::onError,

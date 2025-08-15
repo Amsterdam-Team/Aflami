@@ -61,7 +61,7 @@ class TvShowRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {
+    override suspend fun getCachedTopRatedTvShows(page: Int): List<TvShow> {
         return getCachedOrRemoteData<TvShowLocalDto, TvShowItemRemoteDto, TvShow>(
             deleteExpired = ::deleteExpiredTopRatedTvShows,
             getFromLocal = ::getTopRatedTvShowsFromLocal,
@@ -70,6 +70,9 @@ class TvShowRepositoryImpl @Inject constructor(
             mapFromLocalToEntity = { it.toEntity() },
             mapFromRemoteToEntity = { it.toEntity() }
         )
+    }
+    override suspend fun getRemoteTopRatedTvShows(page: Int): List<TvShow> {
+        return getTopRatedTvShowsFromRemote(page).toEntityList()
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): List<Actor> {
