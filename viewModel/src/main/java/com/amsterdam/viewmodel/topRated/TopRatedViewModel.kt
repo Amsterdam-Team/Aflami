@@ -33,7 +33,6 @@ class TopRatedViewModel @Inject constructor(
     TopRatedInteractionListener {
 
     init {
-        showLoadingState()
         manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 getTopRatedScreenData()
@@ -43,6 +42,7 @@ class TopRatedViewModel @Inject constructor(
     }
 
     private fun getTopRatedScreenData() {
+        showLoadingState()
         tryToExecute(
             action = {
                 Pager(
@@ -50,7 +50,6 @@ class TopRatedViewModel @Inject constructor(
                     pagingSourceFactory = {
                         PagingSource { page ->
                             val result = getTopRatedScreenDataUseCase(page)
-                            Log.d("nb", "$result")
                             getTopRatedMediaItems(
                                 result.topRatedMovies,
                                 result.topRatedTvShows

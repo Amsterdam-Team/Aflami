@@ -16,12 +16,12 @@ import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
 import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
 import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategories
-import com.amsterdam.repository.dto.remote.EpisodeRemoteDto
 import com.amsterdam.repository.dto.remote.CategoryRemoteDto
 import com.amsterdam.repository.dto.remote.CategoryRemoteResponse
+import com.amsterdam.repository.dto.remote.EpisodeRemoteDto
+import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.dto.remote.TvShowItemRemoteDto
 import com.amsterdam.repository.dto.remote.TvShowRemoteResponse
-import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.toDto
 import com.amsterdam.repository.mapper.toEntity
 import com.amsterdam.repository.mapper.toEntityList
@@ -71,6 +71,7 @@ class TvShowRepositoryImpl @Inject constructor(
             mapFromRemoteToEntity = { it.toEntity() }
         )
     }
+
     override suspend fun getRemoteTopRatedTvShows(page: Int): List<TvShow> {
         return getTopRatedTvShowsFromRemote(page).toEntityList()
     }
@@ -117,10 +118,10 @@ class TvShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTvShowsByGenre(
-        tvShowGenre: TvShowGenre,
+        selectedGenre: TvShowGenre,
         page: Int
     ): List<TvShow> {
-        return tvShowGenre.toDto().let { genreId ->
+        return selectedGenre.toDto().let { genreId ->
             remoteTvDataSource.getTvShowsByGenreId(
                 genreId,
                 page
