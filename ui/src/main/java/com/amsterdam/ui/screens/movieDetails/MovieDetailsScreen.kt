@@ -485,7 +485,7 @@ fun MovieContent(
         ) {
             DefaultAppBar(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 16.dp)
                     .statusBarsPadding()
                     .zIndex(10f),
                 firstOption = painterResource(R.drawable.ic_outlined_star),
