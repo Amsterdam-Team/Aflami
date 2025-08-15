@@ -92,6 +92,9 @@ import com.amsterdam.ui.screens.movieDetails.components.reviewMovieSection
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
+import com.amsterdam.ui.utils.formatMovieLength
+import com.amsterdam.ui.utils.localizeCountryCode
+import com.amsterdam.ui.utils.reverseDateFormat
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState
@@ -368,6 +371,7 @@ fun MovieContent(
                     )
                 }
                 item {
+
                     MovieDetailsMainContent(
                         state = state,
                         screenWidthDp = screenWidthDp,
@@ -486,9 +490,9 @@ private fun MovieDetailsMainContent(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .padding(horizontal = 16.dp),
-                releaseDate = state.releaseDate,
-                movieLength = state.movieLength,
-                originCountry = state.originCountry,
+                releaseDate = reverseDateFormat(state.releaseDate),
+                movieLength = formatMovieLength(state.movieLength),
+                originCountry = localizeCountryCode(state.originCountry),
             )
 
             DescriptionSection(

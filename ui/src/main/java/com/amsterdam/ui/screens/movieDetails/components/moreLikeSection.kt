@@ -15,6 +15,8 @@ import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.EmptyStateText
 import com.amsterdam.ui.components.UpcomingCard
 import com.amsterdam.ui.components.adaptiveGrid
+import com.amsterdam.ui.utils.reverseDateFormat
+import com.amsterdam.ui.utils.toLocalizedNumbers
 import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 
@@ -53,7 +55,7 @@ fun LazyListScope.moreLikeSection(
                 },
                 movieTitle = similarMovie.name,
                 movieType = stringResource(R.string.movie),
-                movieYear = similarMovie.productionYear,
+                movieYear = similarMovie.productionYear.toLocalizedNumbers(),
                 modifier = Modifier
                     .weight(1f),
                 movieRating = similarMovie.rate,
