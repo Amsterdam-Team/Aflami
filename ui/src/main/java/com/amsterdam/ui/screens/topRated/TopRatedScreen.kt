@@ -45,6 +45,7 @@ import com.amsterdam.viewmodel.topRated.TopRatedInteractionListener
 import com.amsterdam.viewmodel.topRated.TopRatedUiState
 import com.amsterdam.viewmodel.topRated.TopRatedUiState.TopRatedMediaItemUiState
 import com.amsterdam.viewmodel.topRated.TopRatedViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -81,6 +82,15 @@ private fun TopRatedContent(
     interactionListener: TopRatedInteractionListener,
     mediaItems: LazyPagingItems<TopRatedMediaItemUiState>,
 ) {
+    AnimatedSectionVisibility(
+        visible = state.isLoading
+    ) {
+        LoadingContainer(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(10f)
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -115,16 +125,6 @@ private fun TopRatedContent(
                     .onSizeChanged { headerHeight = it.height.dp },
                 onNavigateBackClicked = interactionListener::onClickBack
             )
-
-            AnimatedSectionVisibility(
-                visible = state.isLoading
-            ) {
-                LoadingContainer(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(10f)
-                )
-            }
 
             AnimatedSectionVisibility(
                 visible = state.error == TopRatedUiState.TopRatedError.NetworkError
