@@ -91,7 +91,7 @@ fun ReviewCard(
                     lineHeight = 28.sp,
                 )
                 Text(
-                    text = username,
+                    text = "@$username",
                     style = AppTheme.textStyle.label.small,
                     color = AppTheme.color.hint,
                     lineHeight = 16.sp,
