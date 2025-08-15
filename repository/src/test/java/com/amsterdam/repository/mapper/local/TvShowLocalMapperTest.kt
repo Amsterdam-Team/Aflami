@@ -8,10 +8,18 @@ import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 
 class TvShowLocalMapperTest {
-
     @Test
     fun `toEntity should map LocalTvShowDto to TvShow correctly`() {
-        val dto = TvShowLocalDto(
+        val dto = tvShowLocalDto
+        val expected = expectedMovie
+
+        val result = dto.toEntity()
+
+        assertThat(result).isEqualTo(expected)
+    }
+
+    companion object {
+        private val tvShowLocalDto = TvShowLocalDto(
             tvShowId = 1,
             name = "Game of Thrones",
             description = "A fantasy drama series",
@@ -24,7 +32,7 @@ class TvShowLocalMapperTest {
             originCountry = "",
         )
 
-        val expected = Movie(
+        private val expectedMovie = Movie(
             id = 101,
             name = "Inception",
             description = "A mind-bending thriller",
@@ -37,11 +45,5 @@ class TvShowLocalMapperTest {
             categories = emptyList(),
             videoUrl = "",
         )
-
-        val result = dto.toEntity()
-
-        assertThat(result).isEqualTo(expected)
     }
-
 }
-
