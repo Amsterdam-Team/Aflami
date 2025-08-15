@@ -5,7 +5,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Immutable
@@ -26,25 +25,29 @@ class NavigationManager(
     }
 
     // --- Tabs ---
-    fun toTab(tab: Route, currentDestination: NavDestination?) {
-        if (currentDestination != tab) {
+    fun toTab(tab: Route, selectedDestination: Route) {
+        if (selectedDestination != tab) {
             navController.navigate(tab) {
-                popUpTo(Route.Tab.Home) {
+                navController.popBackStack(
+                    route = Route.Tab.Home,
+                    inclusive = true,
                     saveState = true
-                }
+                )
 
                 launchSingleTop = true
                 restoreState = true
             }
         }
     }
+
     fun toLetsPlay(clearBackStack: Boolean = false) {
         navController.navigate(Route.Tab.LetsPlay) {
-            if (clearBackStack) popUpTo(Route.Tab.Home){
+            if (clearBackStack) popUpTo(Route.Tab.Home) {
                 inclusive = false
             }
         }
     }
+
     fun toHome(clearBackStack: Boolean = false) {
         navController.navigate(Route.Tab.Home) {
             if (clearBackStack) popUpTo(0)

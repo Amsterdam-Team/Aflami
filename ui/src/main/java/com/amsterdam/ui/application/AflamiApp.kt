@@ -63,7 +63,7 @@ fun AflamiApp(
         isDarkTheme = state.isDarkTheme,
     ) {
         CompositionLocalProvider(
-            LocalNavManager provides  navigationManager,
+            LocalNavManager provides navigationManager,
             LocalRestrictionLevel provides restrictionLevel
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
@@ -71,8 +71,8 @@ fun AflamiApp(
                     bottomBar = {
                         BottomNavigation(
                             currentDestination = currentDestination,
-                            onNavigate = {
-                                navigationManager.toTab(it, currentDestination)
+                            onNavigate = { tab, selectedTab ->
+                                navigationManager.toTab(tab, selectedTab)
                             },
                         )
                     }
