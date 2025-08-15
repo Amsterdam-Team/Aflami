@@ -8,27 +8,18 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class MovieGenreLocalMapperTest {
-
-
     @Test
     fun `toEntity should return ALL genre when categoryId is invalid`() {
-        // Given
-        val dto = MovieCategoryLocalDto(
-            categoryId = 100,
-        )
+        val dto = invalidCategoryDto
 
-        // When
         val result = dto.toEntity()
 
-        // Then
         assertThat(result).isEqualTo(MovieGenre.ALL)
     }
 
     @Test
     fun `toEntity should return ALL genre when categoryId is 0`() {
-        val dto = MovieCategoryLocalDto(
-            categoryId = 0,
-            )
+        val dto = zeroCategoryDto
 
         val result = dto.toEntity()
 
@@ -37,8 +28,23 @@ class MovieGenreLocalMapperTest {
 
     @Test
     fun `given list of MovieGenre, when toDtoList is called, then it should return list of ids in order`() {
-        // Given
-        val genres = listOf(
+        val genres = movieGenres
+
+        val result = genres.toDtoList()
+
+        assertThat(result).containsExactlyElementsIn(expectedGenreIds).inOrder()
+    }
+
+    companion object {
+        private val invalidCategoryDto = MovieCategoryLocalDto(
+            categoryId = 100,
+        )
+
+        private val zeroCategoryDto = MovieCategoryLocalDto(
+            categoryId = 0,
+        )
+
+        private val movieGenres = listOf(
             MovieGenre.ALL,
             MovieGenre.DRAMA,
             MovieGenre.COMEDY,
@@ -61,33 +67,9 @@ class MovieGenreLocalMapperTest {
             MovieGenre.SCIENCE_FICTION
         )
 
-        // When
-        val result = genres.toDtoList()
-
-        // Then
-        assertThat(result).containsExactly(
-            35L,
-            18L,
-            35L,
-            10751L,
-            10749L,
-            10770L,
-            99L,
-            14L,
-            36L,
-            27L,
-            10402L,
-            9648L,
-            53L,
-            10752L,
-            37L,
-            28L,
-            12L,
-            16L,
-            80L,
-            878L
-        ).inOrder()
+        private val expectedGenreIds = listOf(
+            35L, 18L, 35L, 10751L, 10749L, 10770L, 99L, 14L, 36L, 27L,
+            10402L, 9648L, 53L, 10752L, 37L, 28L, 12L, 16L, 80L, 878L
+        )
     }
-
 }
-
