@@ -1,5 +1,4 @@
-package com.amsterdam.domain.useCase.home
-
+package com.amsterdam.domain.useCase.topRated
 
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
@@ -11,10 +10,10 @@ class GetTopRatedScreenDataUseCase(
 
     suspend operator fun invoke(
         page: Int = 1,
-    ) : TopRatedScreenData{
+    ): TopRatedScreenData {
         return TopRatedScreenData(
-            topRatedMovies = getTopRatedMoviesUseCase(page, isCached = false),
-            topRatedTvShows = getTopRatedTvShowsUseCase(page, isCached = false),
+            topRatedMovies = getTopRatedMoviesUseCase(page),
+            topRatedTvShows = getTopRatedTvShowsUseCase(page),
         )
     }
 

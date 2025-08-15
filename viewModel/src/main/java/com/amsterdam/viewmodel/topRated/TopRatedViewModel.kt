@@ -9,7 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedScreenDataUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.paging.PagingSource
 import com.amsterdam.viewmodel.shared.BaseViewModel

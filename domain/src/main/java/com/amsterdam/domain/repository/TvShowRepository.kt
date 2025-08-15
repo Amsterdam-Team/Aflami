@@ -10,8 +10,8 @@ import com.amsterdam.entity.category.TvShowGenre
 
 interface TvShowRepository {
     suspend fun getPopularTvShows(): List<TvShow>
-    suspend fun getCachedTopRatedTvShows(page: Int): List<TvShow>
-    suspend fun getRemoteTopRatedTvShows(page: Int): List<TvShow>
+    suspend fun getTopRatedTvShows(page: Int): List<TvShow>
+    suspend fun getAllTopRatedTvShows(page: Int): List<TvShow>
     suspend fun getTvShowCast(tvShowId: Long): List<Actor>
     suspend fun getTvShowByKeyword(keyword: String, page: Int, tvShowsPerPage: Int): List<TvShow>
     suspend fun getTvShowDetails(tvShowId: Long): TvShowDetails

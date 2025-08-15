@@ -5,8 +5,8 @@ import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.MovieGenre
 
 class GetHomeScreenDataUseCase(
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase,
+    private val getHomeTopRatedMoviesUseCase: GetHomeTopRatedMoviesUseCase,
+    private val getHomeTopRatedTvShowsUseCase: GetHomeTopRatedTvShowsUseCase,
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
     private val getPopularTvShowsUseCase: GetPopularTvShowsUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
@@ -14,8 +14,8 @@ class GetHomeScreenDataUseCase(
 
     suspend operator fun invoke(): HomeScreenData {
         return HomeScreenData(
-            topRatedMovies = getTopRatedMoviesUseCase(),
-            topRatedTvShows = getTopRatedTvShowsUseCase(),
+            topRatedMovies = getHomeTopRatedMoviesUseCase(),
+            topRatedTvShows = getHomeTopRatedTvShowsUseCase(),
             popularMovies = getPopularMoviesUseCase(),
             popularTvShows = getPopularTvShowsUseCase(),
             upComingMovies = getUpcomingMoviesUseCase(MovieGenre.ALL)

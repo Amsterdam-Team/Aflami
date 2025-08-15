@@ -1,4 +1,4 @@
-package com.amsterdam.domain.useCase.home
+package com.amsterdam.domain.useCase.topRated
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.MovieRepository
@@ -14,32 +14,32 @@ import org.junit.jupiter.api.assertThrows
 class GetTopRatedMoviesUseCaseTest {
 
     private val movieRepository: MovieRepository = mockk(relaxed = true)
-    private val getHomeTopRatedMoviesUseCase by lazy {
-        GetHomeTopRatedMoviesUseCase(movieRepository)
+    private val getTopRatedMoviesUseCase by lazy {
+        GetTopRatedMoviesUseCase(movieRepository)
     }
 
 
     @Test
     fun `should call getTopRatedMovies with default page when no page is provided`() = runTest {
-        getHomeTopRatedMoviesUseCase()
+        getTopRatedMoviesUseCase()
 
-        coVerify(exactly = 1) { movieRepository.getTopRatedMovies(page = 1) }
+        coVerify(exactly = 1) { movieRepository.getAllTopRatedMovies(page = 1) }
     }
 
     @Test
     fun `should call getTopRatedMovies with specified page`() = runTest {
         val page = 5
 
-        getHomeTopRatedMoviesUseCase(page)
+        getTopRatedMoviesUseCase(page)
 
-        coVerify(exactly = 1) { movieRepository.getTopRatedMovies(page = page) }
+        coVerify(exactly = 1) { movieRepository.getAllTopRatedMovies(page = page) }
     }
 
     @Test
     fun `should return top rated movies when repository returns them`() = runTest {
-        coEvery { movieRepository.getTopRatedMovies(any()) } returns specificMovieList
+        coEvery { movieRepository.getAllTopRatedMovies(any()) } returns specificMovieList
 
-        val result = getHomeTopRatedMoviesUseCase()
+        val result = getTopRatedMoviesUseCase()
 
         assertThat(result).isEqualTo(specificMovieList)
     }
@@ -48,7 +48,7 @@ class GetTopRatedMoviesUseCaseTest {
     fun `should return empty list when repository returns an empty list`() = runTest {
         coEvery { movieRepository.getTopRatedMovies(any()) } returns emptyList()
 
-        val result = getHomeTopRatedMoviesUseCase()
+        val result = getTopRatedMoviesUseCase()
 
         assertThat(result).isEmpty()
     }
@@ -56,10 +56,10 @@ class GetTopRatedMoviesUseCaseTest {
     @Test
     fun `should throw AflamiException when repository throws an exception`() = runTest {
         val expectedException = AflamiException()
-        coEvery { movieRepository.getTopRatedMovies(any()) } throws expectedException
+        coEvery { movieRepository.getAllTopRatedMovies(any()) } throws expectedException
 
         val exception = assertThrows<AflamiException> {
-            getHomeTopRatedMoviesUseCase()
+            getTopRatedMoviesUseCase()
         }
 
         assertThat(exception).isEqualTo(expectedException)

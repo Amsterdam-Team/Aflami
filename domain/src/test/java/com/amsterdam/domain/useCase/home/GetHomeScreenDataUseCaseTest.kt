@@ -13,15 +13,15 @@ import org.junit.jupiter.api.assertThrows
 
 
 class GetHomeScreenDataUseCaseTest {
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase = mockk(relaxed = true)
-    private val getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase = mockk(relaxed = true)
+    private val getHomeTopRatedMoviesUseCase: GetHomeTopRatedMoviesUseCase = mockk(relaxed = true)
+    private val getHomeTopRatedTvShowsUseCase: GetHomeTopRatedTvShowsUseCase = mockk(relaxed = true)
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase = mockk(relaxed = true)
     private val getPopularTvShowsUseCase: GetPopularTvShowsUseCase = mockk(relaxed = true)
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase = mockk(relaxed = true)
     private val getHomeScreenDataUseCase by lazy {
         GetHomeScreenDataUseCase(
-            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
-            getTopRatedTvShowsUseCase = getTopRatedTvShowsUseCase,
+            getHomeTopRatedMoviesUseCase = getHomeTopRatedMoviesUseCase,
+            getHomeTopRatedTvShowsUseCase = getHomeTopRatedTvShowsUseCase,
             getPopularMoviesUseCase = getPopularMoviesUseCase,
             getPopularTvShowsUseCase = getPopularTvShowsUseCase,
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase
@@ -31,8 +31,8 @@ class GetHomeScreenDataUseCaseTest {
 
     @Test
     fun `should return all data when all child use cases return data`() = runTest {
-        coEvery { getTopRatedMoviesUseCase() } returns fakeMovieList
-        coEvery { getTopRatedTvShowsUseCase() } returns fakeTvShowList
+        coEvery { getHomeTopRatedMoviesUseCase() } returns fakeMovieList
+        coEvery { getHomeTopRatedTvShowsUseCase() } returns fakeTvShowList
         coEvery { getPopularMoviesUseCase() } returns fakeMovieList
         coEvery { getPopularTvShowsUseCase() } returns fakeTvShowList
         coEvery { getUpcomingMoviesUseCase(MovieGenre.ALL) } returns fakeMovieList
@@ -52,16 +52,16 @@ class GetHomeScreenDataUseCaseTest {
 
     @Test
     fun `should call all child use cases exactly once`() = runTest {
-        coEvery { getTopRatedMoviesUseCase() } returns emptyList()
-        coEvery { getTopRatedTvShowsUseCase() } returns emptyList()
+        coEvery { getHomeTopRatedMoviesUseCase() } returns emptyList()
+        coEvery { getHomeTopRatedTvShowsUseCase() } returns emptyList()
         coEvery { getPopularMoviesUseCase() } returns emptyList()
         coEvery { getPopularTvShowsUseCase() } returns emptyList()
         coEvery { getUpcomingMoviesUseCase(MovieGenre.ALL) } returns emptyList()
 
         getHomeScreenDataUseCase()
 
-        coVerify(exactly = 1) { getTopRatedMoviesUseCase() }
-        coVerify(exactly = 1) { getTopRatedTvShowsUseCase() }
+        coVerify(exactly = 1) { getHomeTopRatedMoviesUseCase() }
+        coVerify(exactly = 1) { getHomeTopRatedTvShowsUseCase() }
         coVerify(exactly = 1) { getPopularMoviesUseCase() }
         coVerify(exactly = 1) { getPopularTvShowsUseCase() }
         coVerify(exactly = 1) { getUpcomingMoviesUseCase(MovieGenre.ALL) }
@@ -70,7 +70,7 @@ class GetHomeScreenDataUseCaseTest {
     @Test
     fun `should throw exception when getTopRatedMoviesUseCase throws`() = runTest {
         val expectedMessage = "Top rated movies error"
-        coEvery { getTopRatedMoviesUseCase() } throws Exception(expectedMessage)
+        coEvery { getHomeTopRatedMoviesUseCase() } throws Exception(expectedMessage)
 
         val exception = assertThrows<Exception> {
             getHomeScreenDataUseCase()
@@ -82,8 +82,8 @@ class GetHomeScreenDataUseCaseTest {
     @Test
     fun `should throw exception when getTopRatedTvShowsUseCase throws`() = runTest {
         val expectedMessage = "Top rated TV shows error"
-        coEvery { getTopRatedMoviesUseCase() } returns fakeMovieList
-        coEvery { getTopRatedTvShowsUseCase() } throws Exception(expectedMessage)
+        coEvery { getHomeTopRatedMoviesUseCase() } returns fakeMovieList
+        coEvery { getHomeTopRatedTvShowsUseCase() } throws Exception(expectedMessage)
 
         val exception = assertThrows<Exception> {
             getHomeScreenDataUseCase()
@@ -95,8 +95,8 @@ class GetHomeScreenDataUseCaseTest {
     @Test
     fun `should throw exception when getPopularMoviesUseCase throws`() = runTest {
         val expectedMessage = "Popular movies error"
-        coEvery { getTopRatedMoviesUseCase() } returns fakeMovieList
-        coEvery { getTopRatedTvShowsUseCase() } returns fakeTvShowList
+        coEvery { getHomeTopRatedMoviesUseCase() } returns fakeMovieList
+        coEvery { getHomeTopRatedTvShowsUseCase() } returns fakeTvShowList
         coEvery { getPopularMoviesUseCase() } throws Exception(expectedMessage)
 
         val exception = assertThrows<Exception> {
@@ -109,8 +109,8 @@ class GetHomeScreenDataUseCaseTest {
     @Test
     fun `should throw exception when getPopularTvShowsUseCase throws`() = runTest {
         val expectedMessage = "Popular TV shows error"
-        coEvery { getTopRatedMoviesUseCase() } returns fakeMovieList
-        coEvery { getTopRatedTvShowsUseCase() } returns fakeTvShowList
+        coEvery { getHomeTopRatedMoviesUseCase() } returns fakeMovieList
+        coEvery { getHomeTopRatedTvShowsUseCase() } returns fakeTvShowList
         coEvery { getPopularMoviesUseCase() } returns fakeMovieList
         coEvery { getPopularTvShowsUseCase() } throws Exception(expectedMessage)
 
@@ -124,8 +124,8 @@ class GetHomeScreenDataUseCaseTest {
     @Test
     fun `should throw exception when getUpcomingMoviesUseCase throws`() = runTest {
         val expectedMessage = "Upcoming movies error"
-        coEvery { getTopRatedMoviesUseCase() } returns fakeMovieList
-        coEvery { getTopRatedTvShowsUseCase() } returns fakeTvShowList
+        coEvery { getHomeTopRatedMoviesUseCase() } returns fakeMovieList
+        coEvery { getHomeTopRatedTvShowsUseCase() } returns fakeTvShowList
         coEvery { getPopularMoviesUseCase() } returns fakeMovieList
         coEvery { getPopularTvShowsUseCase() } returns fakeTvShowList
         coEvery { getUpcomingMoviesUseCase(MovieGenre.ALL) } throws Exception(expectedMessage)

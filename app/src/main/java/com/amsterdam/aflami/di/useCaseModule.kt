@@ -17,6 +17,7 @@ import com.amsterdam.domain.useCase.authentication.LoginWithPasswordUseCase
 import com.amsterdam.domain.useCase.authentication.LogoutUseCase
 import com.amsterdam.domain.useCase.common.AddMovieWatchHistoryUseCase
 import com.amsterdam.domain.useCase.common.AddTvShowWatchHistoryUseCase
+import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.details.GetEpisodeVideosUseCase
 import com.amsterdam.domain.useCase.details.GetEpisodesBySeasonNumberUseCase
 import com.amsterdam.domain.useCase.details.GetMovieCastUseCase
@@ -28,14 +29,14 @@ import com.amsterdam.domain.useCase.details.GetTvShowsByGenreUseCase
 import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
-import com.amsterdam.domain.useCase.game.guessByPoster.DoGuessMovieByPosterHintUseCase
-import com.amsterdam.domain.useCase.game.guessByPoster.GenerateMoviePosterQuestionsUseCase
-import com.amsterdam.domain.useCase.game.guessByPoster.GuessMovieByPosterGameUseCase
-import com.amsterdam.domain.useCase.game.guessByPoster.SubmitGuessMovieByPosterAnswerUseCase
 import com.amsterdam.domain.useCase.game.character.DoGuessCharacterGameHintUseCase
 import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUseCase
 import com.amsterdam.domain.useCase.game.character.GuessCharacterGameUseCase
 import com.amsterdam.domain.useCase.game.character.SubmitCharacterAnswerUseCase
+import com.amsterdam.domain.useCase.game.guessByPoster.DoGuessMovieByPosterHintUseCase
+import com.amsterdam.domain.useCase.game.guessByPoster.GenerateMoviePosterQuestionsUseCase
+import com.amsterdam.domain.useCase.game.guessByPoster.GuessMovieByPosterGameUseCase
+import com.amsterdam.domain.useCase.game.guessByPoster.SubmitGuessMovieByPosterAnswerUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.DoGuessReleaseGameHintUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQuestionsUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.GuessReleaseYearGameUseCase
@@ -48,12 +49,11 @@ import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
 import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
+import com.amsterdam.domain.useCase.home.GetHomeTopRatedMoviesUseCase
+import com.amsterdam.domain.useCase.home.GetHomeTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
 import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
 import com.amsterdam.domain.useCase.home.GetPopularTvShowsUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
 import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
@@ -73,13 +73,15 @@ import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.preferences.SetOnboardingCompletedUseCase
 import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
-import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.domain.useCase.search.RecentSearchesUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedMoviesUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedScreenDataUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedTvShowsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -186,8 +188,17 @@ object UseCaseModule {
         GetUpcomingMoviesUseCase(movieRepository)
 
     @Provides
+    fun provideGetHomeTopRatedMoviesUseCase(movieRepository: MovieRepository): GetHomeTopRatedMoviesUseCase =
+        GetHomeTopRatedMoviesUseCase(movieRepository)
+
+
+    @Provides
     fun provideGetTopRatedMoviesUseCase(movieRepository: MovieRepository): GetTopRatedMoviesUseCase =
         GetTopRatedMoviesUseCase(movieRepository)
+
+    @Provides
+    fun provideGetTopRatedTvShowsUseCase(movieRepository: TvShowRepository): GetTopRatedTvShowsUseCase =
+        GetTopRatedTvShowsUseCase(movieRepository)
 
     @Provides
     fun provideGetMoviesByGenreUseCase(movieRepository: MovieRepository): GetMoviesByGenreUseCase =
@@ -224,8 +235,8 @@ object UseCaseModule {
     ): DeleteListUseCase = DeleteListUseCase(userListRepository)
 
     @Provides
-    fun provideGetTopRatedTvShowsUseCase(tvShowRepository: TvShowRepository): GetTopRatedTvShowsUseCase =
-        GetTopRatedTvShowsUseCase(tvShowRepository)
+    fun provideGetHomeTopRatedTvShowsUseCase(tvShowRepository: TvShowRepository): GetHomeTopRatedTvShowsUseCase =
+        GetHomeTopRatedTvShowsUseCase(tvShowRepository)
 
     @Provides
     fun provideGetPopularTvShowsUseCase(tvShowRepository: TvShowRepository): GetPopularTvShowsUseCase =
@@ -238,15 +249,15 @@ object UseCaseModule {
 
     @Provides
     fun provideGetHomeScreenDataUseCase(
-        getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-        getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase,
+        getHomeTopRatedMoviesUseCase: GetHomeTopRatedMoviesUseCase,
+        getHomeTopRatedTvShowsUseCase: GetHomeTopRatedTvShowsUseCase,
         getPopularMoviesUseCase: GetPopularMoviesUseCase,
         getPopularTvShowsUseCase: GetPopularTvShowsUseCase,
         getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
     ): GetHomeScreenDataUseCase =
         GetHomeScreenDataUseCase(
-            getTopRatedMoviesUseCase,
-            getTopRatedTvShowsUseCase,
+            getHomeTopRatedMoviesUseCase,
+            getHomeTopRatedTvShowsUseCase,
             getPopularMoviesUseCase,
             getPopularTvShowsUseCase,
             getUpcomingMoviesUseCase

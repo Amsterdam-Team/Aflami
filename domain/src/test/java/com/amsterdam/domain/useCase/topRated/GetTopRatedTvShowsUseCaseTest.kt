@@ -1,4 +1,4 @@
-package com.amsterdam.domain.useCase.home
+package com.amsterdam.domain.useCase.topRated
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.repository.TvShowRepository
@@ -13,49 +13,49 @@ import org.junit.jupiter.api.assertThrows
 
 class GetTopRatedTvShowsUseCaseTest {
     private val tvShowRepository: TvShowRepository = mockk(relaxed = true)
-    private val getHomeTopRatedTvShowsUseCase by lazy {
-        GetHomeTopRatedTvShowsUseCase(tvShowRepository)
+    private val getTopRatedTvShowsUseCase by lazy {
+        GetTopRatedTvShowsUseCase(tvShowRepository)
     }
 
 
     @Test
     fun `should call getTopRatedTvShows with default page when no page is provided`() = runTest {
-        getHomeTopRatedTvShowsUseCase()
+        getTopRatedTvShowsUseCase()
 
-        coVerify(exactly = 1) { tvShowRepository.getTopRatedTvShows(page = 1) }
+        coVerify(exactly = 1) { tvShowRepository.getAllTopRatedTvShows(page = 1) }
     }
 
     @Test
     fun `should call getTopRatedTvShows with a specific page`() = runTest {
         val page = 3
 
-        getHomeTopRatedTvShowsUseCase(page)
+        getTopRatedTvShowsUseCase(page)
 
-        coVerify(exactly = 1) { tvShowRepository.getTopRatedTvShows(page = page) }
+        coVerify(exactly = 1) { tvShowRepository.getAllTopRatedTvShows(page = page) }
     }
 
     @Test
     fun `should return a list of top rated tv shows when data is available`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTvShows(any()) } returns fakeTvShowList
+        coEvery { tvShowRepository.getAllTopRatedTvShows(any()) } returns fakeTvShowList
 
-        val result = getHomeTopRatedTvShowsUseCase()
+        val result = getTopRatedTvShowsUseCase()
 
         assertThat(result).isEqualTo(fakeTvShowList)
     }
 
     @Test
     fun `should return an empty list when no top rated tv shows are available`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTvShows(any()) } returns emptyList()
+        coEvery { tvShowRepository.getAllTopRatedTvShows(any()) } returns emptyList()
 
-        val result = getHomeTopRatedTvShowsUseCase()
+        val result = getTopRatedTvShowsUseCase()
 
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `should throw an AflamiException when the repository call fails`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTvShows(any()) } throws AflamiException()
+        coEvery { tvShowRepository.getAllTopRatedTvShows(any()) } throws AflamiException()
 
-        assertThrows<AflamiException> { getHomeTopRatedTvShowsUseCase() }
+        assertThrows<AflamiException> { getTopRatedTvShowsUseCase() }
     }
 }
