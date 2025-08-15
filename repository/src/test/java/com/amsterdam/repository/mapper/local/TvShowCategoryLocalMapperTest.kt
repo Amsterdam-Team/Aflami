@@ -10,13 +10,19 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class TvShowCategoryLocalMapperTest {
-
-
     @Test
     @DisplayName("should map LocalTvShowCategoryDto to Category correctly")
     fun `toEntity should map correctly`() {
-        // Arrange
-        val dto = TvShowWithCategories(
+        val dto = tvShowWithCategoriesDto
+
+        val result = dto.toEntity()
+
+        assertThat(result.id).isEqualTo(1)
+        assertThat(result.name).isEqualTo("Drama")
+    }
+
+    companion object {
+        private val tvShowWithCategoriesDto = TvShowWithCategories(
             tvShow = TvShowLocalDto(
                 tvShowId = 1,
                 name = "Drama",
@@ -35,14 +41,5 @@ class TvShowCategoryLocalMapperTest {
                 )
             )
         )
-
-        // Act
-        val result = dto.toEntity()
-
-        // Assert
-        assertThat(result.id).isEqualTo(1)
-        assertThat(result.name).isEqualTo("Drama")
     }
-
-
 }
