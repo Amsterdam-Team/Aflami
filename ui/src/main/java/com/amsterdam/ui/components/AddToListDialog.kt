@@ -87,7 +87,6 @@ fun AddToListDialog(
                 isAddMovieToListLoading = isAddMovieToListLoading,
                 onAddToSelectedList = onAddToSelectedList,
                 onCreateNewList = onCreateNewList,
-                modifier = Modifier.padding(bottom = 12.dp),
             )
         }
     }
@@ -162,7 +161,6 @@ private fun ActionButtonsSection(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier,
     ) {
         ConfirmButton(
@@ -171,7 +169,7 @@ private fun ActionButtonsSection(
             isEnabled = selectedList.isNotEmpty(),
             isLoading = isAddMovieToListLoading,
             isNegative = false,
-            modifier = Modifier,
+            modifier = Modifier.padding(bottom = 12.dp),
         )
 
         OutlinedButton(
