@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class RemotePeopleResponse(
+data class RemoteCharacterResponse(
     val page: Int,
-    val results: List<RemotePeopleItemDto>,
+    val results: List<RemoteCharacterItemDto>,
     @SerialName("total_pages") val totalPages: Int,
     @SerialName("total_results") val totalResults: Int
 )

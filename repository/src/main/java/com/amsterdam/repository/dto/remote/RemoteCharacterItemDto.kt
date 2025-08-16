@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RemotePeopleItemDto(
+data class RemoteCharacterItemDto(
     val adult: Boolean,
     val gender: Int,
     val id: Int,

@@ -1,13 +1,13 @@
 package com.amsterdam.repository.mapper
 
-import com.amsterdam.entity.People
-import com.amsterdam.repository.dto.remote.RemotePeopleItemDto
+import com.amsterdam.entity.Character
+import com.amsterdam.repository.dto.remote.RemoteCharacterItemDto
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
-class PeopleMapperTest {
+class CharacterMapperTest {
     @Test
-    fun `toEntity should map RemotePeopleItemDto to People entity`() {
+    fun `toEntity should map RemoteCharacterItemDto to Character entity`() {
         val result = remotePersonDto.toEntity()
 
         assertThat(result).isEqualTo(expectedPersonEntity)
@@ -21,22 +21,22 @@ class PeopleMapperTest {
     }
 
     @Test
-    fun `toEntityList should map a list of Dtos to a list of People entities`() {
+    fun `toEntityList should map a list of Dtos to a list of Character entities`() {
         val dtoList = listOf(remotePersonDto, remotePersonDtoWithNullImage)
         val result = dtoList.toEntityList()
 
-        assertThat(result).isEqualTo(expectedPeopleList)
+        assertThat(result).isEqualTo(expectedCharacterList)
     }
 
     @Test
     fun `toEntityList should return an empty list when given an empty list`() {
-        val emptyDtoList = emptyList<RemotePeopleItemDto>()
+        val emptyDtoList = emptyList<RemoteCharacterItemDto>()
         val result = emptyDtoList.toEntityList()
 
         assertThat(result).isEmpty()
     }
 
-    private val remotePersonDto = RemotePeopleItemDto(
+    private val remotePersonDto = RemoteCharacterItemDto(
         id = 1,
         name = "Tom Holland",
         profilePath = "/tom_holland.jpg",
@@ -54,19 +54,19 @@ class PeopleMapperTest {
         profilePath = null
     )
 
-    private val expectedPersonEntity = People(
+    private val expectedPersonEntity = Character(
         id = 1L,
         name = "Tom Holland",
-        imageUrl = "https://image.tmdb.org/t/p/w300/tom_holland.jpg"
+        imageUrl = "https://image.tmdb.org/t/p/w500/tom_holland.jpg"
     )
 
-    private val expectedPersonWithNullImage = People(
+    private val expectedPersonWithNullImage = Character(
         id = 2L,
         name = "Zendaya",
         imageUrl = ""
     )
 
-    private val expectedPeopleList = listOf(
+    private val expectedCharacterList = listOf(
         expectedPersonEntity,
         expectedPersonWithNullImage
     )

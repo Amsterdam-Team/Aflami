@@ -6,7 +6,7 @@ import com.amsterdam.entity.Character
 import com.amsterdam.repository.datasource.local.GameLocalDataSource
 import com.amsterdam.repository.datasource.local.GameSessionLocalDataSource
 import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
-import com.amsterdam.repository.datasource.remote.PeopleRemoteDataSource
+import com.amsterdam.repository.datasource.remote.CharacterRemoteDataSource
 import com.amsterdam.repository.mapper.toEntityList
 import com.amsterdam.repository.mapper.toMovieEntityList
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +16,7 @@ class GameRepositoryImpl @Inject constructor(
     private val gameLocalDataSource: GameLocalDataSource,
     private val gameSessionLocalDataSource : GameSessionLocalDataSource,
     private val movieRemoteDataSource: MovieRemoteDataSource,
-    private val peopleRemoteDataSource: PeopleRemoteDataSource
+    private val characterRemoteDataSource: CharacterRemoteDataSource
 ) : GameRepository {
 
     override suspend fun getRandomMoviesWithReleaseDate(requiredMoviesNumber: Int): List<Movie> {
@@ -40,7 +40,7 @@ class GameRepositoryImpl @Inject constructor(
     override suspend fun getCharacterDataQuestions(
         requiredNumber: Int,
     ): List<Character> {
-        return peopleRemoteDataSource.getRandomizedTrendingPeople(requiredNumber = requiredNumber)
+        return characterRemoteDataSource.getRandomizedTrendingCharacter(requiredNumber = requiredNumber)
             .toEntityList()
     }
 

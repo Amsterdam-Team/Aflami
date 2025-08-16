@@ -15,17 +15,17 @@ class GenerateCharacterQuestionsUseCase(
     suspend operator fun invoke(difficultyType: DifficultyType): List<GameQuestion<String>> {
         val gameDifficulty = getGameDifficultyByDifficultyTypeUseCase(difficultyType)
 
-        val peoples = gameRepository.getCharacterDataQuestions(gameDifficulty.totalQuestions * 4)
+        val characters = gameRepository.getCharacterDataQuestions(gameDifficulty.totalQuestions * 4)
 
-        return peoples.chunked(4).map { chunk ->
-            val correctPeople = chunk.random()
-            val wrongAnswers = chunk.filter { it != correctPeople }.map { it.name }
-            val choices = (wrongAnswers + correctPeople.name).shuffled()
+        return characters.chunked(4).map { chunk ->
+            val correctCharacter = chunk.random()
+            val wrongAnswers = chunk.filter { it != correctCharacter }.map { it.name }
+            val choices = (wrongAnswers + correctCharacter.name).shuffled()
 
             GameQuestion(
-                question = correctPeople.imageUrl,
+                question = correctCharacter.imageUrl,
                 choices = choices,
-                correctChoice = correctPeople.name,
+                correctChoice = correctCharacter.name,
                 questionTime = gameDifficulty.timeLimitSeconds
             )
         }

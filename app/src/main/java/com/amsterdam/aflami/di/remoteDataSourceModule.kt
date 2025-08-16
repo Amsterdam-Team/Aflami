@@ -4,7 +4,7 @@ import com.amsterdam.remotedatasource.datasource.AuthenticationRemoteDataSourceI
 import com.amsterdam.remotedatasource.datasource.CategoryRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.CountryRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.MovieRemoteDataSourceImpl
-import com.amsterdam.remotedatasource.datasource.PeopleRemoteDataSourceImpl
+import com.amsterdam.remotedatasource.datasource.CharacterRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.ProfileRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.TvRemoteDataSourceImpl
 import com.amsterdam.remotedatasource.datasource.WishListRemoteDataSourceImpl
@@ -12,7 +12,7 @@ import com.amsterdam.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
 import com.amsterdam.repository.datasource.remote.CountryRemoteDataSource
 import com.amsterdam.repository.datasource.remote.MovieRemoteDataSource
-import com.amsterdam.repository.datasource.remote.PeopleRemoteDataSource
+import com.amsterdam.repository.datasource.remote.CharacterRemoteDataSource
 import com.amsterdam.repository.datasource.remote.ProfileRemoteDataSource
 import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
 import com.amsterdam.repository.datasource.remote.WishListRemoteDataSource
@@ -53,9 +53,9 @@ abstract class RemoteDataSourceBindModule {
 
     @Binds
     @Singleton
-    abstract fun bindPeopleRemoteSource(
-        peopleRemoteDataSourceImpl: PeopleRemoteDataSourceImpl
-    ): PeopleRemoteDataSource
+    abstract fun bindCharacterRemoteSource(
+        characterRemoteDataSourceImpl: CharacterRemoteDataSourceImpl
+    ): CharacterRemoteDataSource
 
     @Binds
     @Singleton
