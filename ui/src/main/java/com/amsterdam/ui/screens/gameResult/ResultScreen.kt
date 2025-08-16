@@ -3,8 +3,9 @@ package com.amsterdam.ui.screens.gameResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -92,8 +93,8 @@ fun ResultScreenContent(
         bottomBar = {
             Column(
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -134,32 +135,37 @@ fun ResultScreenContent(
                     onCloseClicked = listener::onClickClose
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Column(
                     modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 12.dp),
+                        .fillMaxSize()
+                        .padding(start = 12.dp, end = 12.dp, top = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CompletionCard()
-                    Spacer(modifier = Modifier.height(8.dp))
+                    CompletionCard(isWin = state.points > 0)
+
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth()
+                            .height(IntrinsicSize.Min),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         StatCard(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
                             iconRes = R.drawable.img_user_rating,
-                            label = "Points Achieved",
-                            value = "${state.points} Pts."
+                            label = stringResource(R.string.points_acheived),
+                            value = "${state.points} ${stringResource(R.string.points_as_pts)}"
                         )
 
                         StatCard(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
                             iconRes = R.drawable.img_user_history,
-                            label = "Total time",
-                            value = "${state.timeInSeconds} Sec."
+                            label = stringResource(R.string.total_time),
+                            value = "${state.timeInSeconds} ${stringResource(R.string.seconds_as_sec)}"
                         )
                     }
                 }

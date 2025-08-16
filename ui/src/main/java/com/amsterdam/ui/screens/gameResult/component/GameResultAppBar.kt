@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amsterdam.designsystem.components.buttons.IconButton
@@ -36,7 +37,9 @@ fun GameResultAppBar(
                 text = gameType.toStringResource(),
                 style = AppTheme.textStyle.title.large,
                 color = AppTheme.color.title,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         leadingIcon = {
