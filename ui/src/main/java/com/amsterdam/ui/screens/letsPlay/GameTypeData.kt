@@ -3,9 +3,9 @@ package com.amsterdam.ui.screens.letsPlay
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.entity.Game
 import com.amsterdam.ui.R
 import com.amsterdam.ui.screens.letsPlay.component.GameCardImageContentType
-import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState
 
 data class GameTypeData(
     val title: Int,
@@ -16,9 +16,9 @@ data class GameTypeData(
     val gameCardImageContentType: GameCardImageContentType,
 )
 @Composable
-fun GameTypeUiState.getGameTypeData(): GameTypeData {
+fun Game.GameType.getGameTypeData(): GameTypeData {
     return when (this) {
-        GameTypeUiState.GUESS_CHARACTER -> GameTypeData(
+        Game.GameType.GUESS_CHARACTER -> GameTypeData(
             R.string.guess_character_game_title,
             R.string.guess_character_game_description,
             AppTheme.color.primaryVariant,
@@ -27,7 +27,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             GameCardImageContentType.FUN_CLOWN,
         )
 
-        GameTypeUiState.GUESS_MOVIE_BY_POSTER -> GameTypeData(
+        Game.GameType.GUESS_MOVIE_BY_POSTER -> GameTypeData(
             R.string.guess_movie_game_title,
             R.string.guess_movie_game_description,
             AppTheme.color.blueCard,
@@ -35,7 +35,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             AppTheme.color.blueAccent,
             GameCardImageContentType.MANY_POSTERS,
         )
-        GameTypeUiState.GUESS_MOVIE_BY_RELEASE -> GameTypeData(
+        Game.GameType.GUESS_RELEASE_YEAR -> GameTypeData(
             R.string.release_game_title,
             R.string.release_game_description,
             AppTheme.color.navyCard,
@@ -44,7 +44,7 @@ fun GameTypeUiState.getGameTypeData(): GameTypeData {
             GameCardImageContentType.CALENDER,
         )
 
-        GameTypeUiState.GUESS_MOVIE_BY_GENRE -> GameTypeData(
+        Game.GameType.GUESS_GENRE -> GameTypeData(
             R.string.genre_game_title,
             R.string.genre_game_description,
             AppTheme.color.yellowCard,

@@ -3,19 +3,19 @@ package com.amsterdam.viewmodel.guessMovieByPosterGame
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
-import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
 import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
 import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
 import com.amsterdam.domain.useCase.game.guessByPoster.GuessMovieByPosterGameUseCase
 import com.amsterdam.domain.utils.AnswerResult
 import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
-import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,7 +69,7 @@ class GuessMovieByPosterGameViewModel @Inject constructor(
                 currentQuestion.questionTimeSeconds,
                 onTimerFinish = ::onMoveToNextQuestion
             )
-                .collect(::onTimerUpdate)
+                    .collect(::onTimerUpdate)
         }
     }
 
@@ -179,7 +179,7 @@ class GuessMovieByPosterGameViewModel @Inject constructor(
         } else {
             val resultData = ResultScreenData(
                 difficulty = difficultyType.name,
-                gameType = ResultSideEffect.GameTypeUi.GUESS_MOVIE_BY_POSTER.name,
+                gameType = Game.GameType.GUESS_MOVIE_BY_POSTER.name,
                 gameSessionId = state.value.gameSessionId
             )
             sendNewNavigationEffect(

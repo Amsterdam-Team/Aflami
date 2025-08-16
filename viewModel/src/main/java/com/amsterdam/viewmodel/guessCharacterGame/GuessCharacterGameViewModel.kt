@@ -3,19 +3,19 @@ package com.amsterdam.viewmodel.guessCharacterGame
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
-import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
 import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
 import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
 import com.amsterdam.domain.useCase.game.character.GuessCharacterGameUseCase
 import com.amsterdam.domain.utils.AnswerResult
 import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
-import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class GuessCharacterGameViewModel @Inject constructor(
     private val timerHandler: TimerHandler,
     private val dispatcherProvider: DispatcherProvider,
     args: GuessCharacterGameArgs
-    ) : BaseViewModel<GuessCharacterUiState, GuessCharacterGameEffect>(
+) : BaseViewModel<GuessCharacterUiState, GuessCharacterGameEffect>(
     GuessCharacterUiState(),
     dispatcherProvider
 ), GuessCharacterInteractionListener {
@@ -69,7 +69,7 @@ class GuessCharacterGameViewModel @Inject constructor(
                 currentQuestion.questionTimeSeconds,
                 onTimerFinish = ::onMoveToNextQuestion
             )
-                .collect(::onTimerUpdate)
+                    .collect(::onTimerUpdate)
         }
     }
 
@@ -141,7 +141,7 @@ class GuessCharacterGameViewModel @Inject constructor(
                 selectedAnswerIndex = selectedAnswerIndex
             )
         }
-        addPointsToGameUseCase(answerResult.earnedPoints,state.value.gameSessionId)
+        addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
     }
 
     private fun onSubmitTheAnswerComplete() {
@@ -185,7 +185,7 @@ class GuessCharacterGameViewModel @Inject constructor(
     private fun handleGameFinished() {
         val resultData = ResultScreenData(
             difficulty = difficultyType.name,
-            gameType = ResultSideEffect.GameTypeUi.GUESS_CHARACTER.name,
+            gameType = Game.GameType.GUESS_CHARACTER.name,
             gameSessionId = state.value.gameSessionId
         )
         sendNewNavigationEffect(

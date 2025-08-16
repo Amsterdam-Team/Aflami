@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.entity.Game
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.screens.letsPlay.component.GameCard
@@ -36,7 +37,6 @@ import com.amsterdam.viewmodel.letsPlay.LetsPlayEffect
 import com.amsterdam.viewmodel.letsPlay.LetsPlayInteractionListener
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState
-import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState
 import com.amsterdam.viewmodel.letsPlay.LetsPlayViewModel
 
 @Composable
@@ -98,14 +98,14 @@ private fun LetsPlayScreenContent(
             }
 
             this.items(state.games) {
-                val gameCardData = it.gameTypeUiState.getGameTypeData()
+                val gameCardData = it.gameType.getGameTypeData()
                 GameCard(
                     title = stringResource(gameCardData.title),
                     description = stringResource(gameCardData.description),
                     containerColor = gameCardData.containerColor,
                     borderColors = gameCardData.borderColors,
                     shadowColor = gameCardData.shadowColor,
-                    onClick = { interactionListener.onClickGameCard(it.gameTypeUiState) },
+                    onClick = { interactionListener.onClickGameCard(it.gameType) },
                     gameCardImageContentType = gameCardData.gameCardImageContentType,
                     isPlayable = state.totalUserPoint >= it.requiredPoints,
                     unlockPrice = "${it.requiredPoints}"
@@ -116,7 +116,7 @@ private fun LetsPlayScreenContent(
 
 
     AnimatedVisibility(
-        visible = state.selectedGameTypeUiState != null,
+        visible = state.selectedGameType != null,
         modifier = Modifier.align(Alignment.Center),
         enter = fadeIn(animationSpec = tween(600)),
         exit = fadeOut(animationSpec = tween(0))
@@ -141,7 +141,7 @@ private fun LetsPlayScreenPreview() {
         state = LetsPlayUiState(), interactionListener = object : LetsPlayInteractionListener {
             override fun onSelectDifficultyLevel(difficultyLevel: GameDifficultyUiState) {}
             override fun onClickCloseDifficultyLevelDialog() {}
-            override fun onClickGameCard(gameTypeUiState: GameTypeUiState) {}
+            override fun onClickGameCard(gameType: Game.GameType) {}
             override fun onClickStartGame() {}
         })
 }

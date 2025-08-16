@@ -19,8 +19,8 @@ class GetAvailableGamesUseCaseTest {
         games = listOf(
             Game(gameType = Game.GameType.GUESS_CHARACTER, requiredPoints = 0),
             Game(gameType = Game.GameType.GUESS_MOVIE_BY_POSTER, requiredPoints = 0),
-            Game(gameType = Game.GameType.GUESS_MOVIE_BY_RELEASE, requiredPoints = 400),
-            Game(gameType = Game.GameType.GUESS_MOVIE_BY_GENRE, requiredPoints = 400)
+            Game(gameType = Game.GameType.GUESS_RELEASE_YEAR, requiredPoints = 400),
+            Game(gameType = Game.GameType.GUESS_GENRE, requiredPoints = 400)
         ),
         difficultyLevels = listOf(
             GameDifficulty(5, 45, 5, GameDifficulty.DifficultyType.EASY),

@@ -3,8 +3,8 @@ package com.amsterdam.viewmodel.letsPlay
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.GetAvailableGamesUseCase
+import com.amsterdam.entity.Game
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState
-import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,17 +52,17 @@ class LetsPlayViewModel @Inject constructor(
     override fun onClickCloseDifficultyLevelDialog() {
         updateState {
             it.copy(
-                selectedGameTypeUiState = null,
+                selectedGameType = null,
                 selectedDifficultyLevel = null,
                 isStartGameButtonEnable = false
             )
         }
     }
 
-    override fun onClickGameCard(gameTypeUiState: GameTypeUiState) {
+    override fun onClickGameCard(gameType: Game.GameType) {
         updateState {
             it.copy(
-                selectedGameTypeUiState = gameTypeUiState
+                selectedGameType = gameType
             )
         }
     }
@@ -70,17 +70,17 @@ class LetsPlayViewModel @Inject constructor(
     override fun onClickStartGame() {
         val difficultyLevelName =
             state.value.selectedDifficultyLevel?.difficultyLevel?.name ?: return
-        val navigateEffect = when (state.value.selectedGameTypeUiState) {
-            GameTypeUiState.GUESS_CHARACTER ->
+        val navigateEffect = when (state.value.selectedGameType) {
+            Game.GameType.GUESS_CHARACTER ->
                 LetsPlayEffect.NavigateToGuessCharacterScreen(difficultyLevelName)
 
-            GameTypeUiState.GUESS_MOVIE_BY_POSTER ->
+            Game.GameType.GUESS_MOVIE_BY_POSTER ->
                 LetsPlayEffect.NavigateToGuessMovieByPosterScreen(difficultyLevelName)
 
-            GameTypeUiState.GUESS_MOVIE_BY_RELEASE ->
+            Game.GameType.GUESS_RELEASE_YEAR ->
                 LetsPlayEffect.NavigateToGuessMovieByReleaseScreen(difficultyLevelName)
 
-            GameTypeUiState.GUESS_MOVIE_BY_GENRE ->
+            Game.GameType.GUESS_GENRE ->
                 LetsPlayEffect.NavigateToGuessMovieByGenreScreen(difficultyLevelName)
 
             null -> {
@@ -89,7 +89,7 @@ class LetsPlayViewModel @Inject constructor(
         }
         updateState {
             it.copy(
-                selectedGameTypeUiState = null,
+                selectedGameType = null,
                 selectedDifficultyLevel = null,
                 isStartGameButtonEnable = false
             )

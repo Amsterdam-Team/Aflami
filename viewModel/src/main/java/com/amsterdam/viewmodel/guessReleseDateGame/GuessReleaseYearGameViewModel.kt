@@ -3,19 +3,19 @@ package com.amsterdam.viewmodel.guessReleseDateGame
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
-import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
 import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
 import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.GuessReleaseYearGameUseCase
 import com.amsterdam.domain.utils.AnswerResult
 import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
-import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     private val timerHandler: TimerHandler,
     private val dispatcherProvider: DispatcherProvider,
     args: GuessReleaseYearGameArgs
-    ) : BaseViewModel<GuessReleaseYearUiState, GuessReleaseYearGameEffect>(
+) : BaseViewModel<GuessReleaseYearUiState, GuessReleaseYearGameEffect>(
     GuessReleaseYearUiState(),
     dispatcherProvider
 ), GuessReleaseYearInteractionListener {
@@ -69,7 +69,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
                 currentQuestion.questionTimeSeconds,
                 onTimerFinish = ::onMoveToNextQuestion
             )
-                .collect(::onTimerUpdate)
+                    .collect(::onTimerUpdate)
         }
     }
 
@@ -162,7 +162,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         } else {
             val resultData = ResultScreenData(
                 difficulty = difficultyType.name,
-                gameType = ResultSideEffect.GameTypeUi.GUESS_RELEASE_YEAR.name,
+                gameType = Game.GameType.GUESS_RELEASE_YEAR.name,
                 gameSessionId = state.value.gameSessionId
             )
             sendNewNavigationEffect(

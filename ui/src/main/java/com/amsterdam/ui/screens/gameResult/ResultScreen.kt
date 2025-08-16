@@ -26,6 +26,7 @@ import com.amsterdam.designsystem.components.Scaffold
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.entity.Game
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.gameResult.component.CompletionCard
@@ -50,19 +51,19 @@ fun ResultScreen(
             when (effect) {
                 is ResultSideEffect.NavigateToGame -> {
                     when (effect.gameType) {
-                        ResultSideEffect.GameTypeUi.GUESS_MOVIE_BY_POSTER -> {
+                        Game.GameType.GUESS_MOVIE_BY_POSTER -> {
                             navigationManager.toGuessMovieByPosterGame(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameTypeUi.GUESS_RELEASE_YEAR -> {
+                        Game.GameType.GUESS_RELEASE_YEAR -> {
                             navigationManager.toGuessReleaseYearGame(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameTypeUi.GUESS_CHARACTER -> {
+                        Game.GameType.GUESS_CHARACTER -> {
                             navigationManager.toGuessCharacter(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameTypeUi.GUESS_GENRE -> {
+                        Game.GameType.GUESS_GENRE -> {
                             navigationManager.toGenreGame(effect.difficultyType)
                         }
                     }

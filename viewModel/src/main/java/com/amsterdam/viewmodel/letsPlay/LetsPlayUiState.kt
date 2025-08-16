@@ -1,11 +1,11 @@
 package com.amsterdam.viewmodel.letsPlay
 
-import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameUiState.GameTypeUiState
+import com.amsterdam.entity.Game
 
 data class LetsPlayUiState(
     val difficulties: List<GameDifficultyUiState> = emptyList(),
     val games: List<GameUiState> = emptyList(),
-    val selectedGameTypeUiState: GameTypeUiState? = null,
+    val selectedGameType: Game.GameType? = null,
     val selectedDifficultyLevel: GameDifficultyUiState? = null,
     val isStartGameButtonEnable: Boolean = false,
     val totalUserPoint: Int = 0
@@ -24,12 +24,5 @@ data class LetsPlayUiState(
         }
     }
 
-    data class GameUiState(val gameTypeUiState: GameTypeUiState, val requiredPoints: Int) {
-        enum class GameTypeUiState {
-            GUESS_CHARACTER,
-            GUESS_MOVIE_BY_POSTER,
-            GUESS_MOVIE_BY_RELEASE,
-            GUESS_MOVIE_BY_GENRE
-        }
-    }
+    data class GameUiState(val gameType: Game.GameType, val requiredPoints: Int)
 }
