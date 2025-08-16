@@ -1,5 +1,6 @@
 package com.amsterdam.remotedatasource.datasource
 
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.remotedatasource.api.PeopleApiService
 import com.amsterdam.repository.dto.remote.RemotePeopleItemDto
 import com.amsterdam.repository.dto.remote.RemotePeopleResponse
@@ -9,12 +10,25 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class PeopleRemoteDataSourceImplTest {
 
     private val peopleApiService: PeopleApiService = mockk()
     private val peopleRemoteDataSourceImpl: PeopleRemoteDataSourceImpl =
         PeopleRemoteDataSourceImpl(peopleApiService)
+
+    @Test
+    fun `getTrendingPeople should rethrow a NetworkException when the service provider throws one`() =
+        runTest {
+            coEvery { peopleApiService.getTrendingPeople(any()) } throws NetworkException()
+
+            assertThrows<NetworkException> {
+                peopleRemoteDataSourceImpl.getRandomizedTrendingPeople(
+                    requiredNumber = 5
+                )
+            }
+        }
 
     @Test
     fun `getRandomizedTrendingPeople should return the required number of people`() = runTest {
@@ -135,7 +149,8 @@ class PeopleRemoteDataSourceImplTest {
         createPeopleItemDto(id = 2, name = "Jerry", profilePath = null)
     )
 
-    private val firstPageForRandomizedTest = createMockPeopleResponse(totalPages = 2, results = peopleForRandomizedTest)
+    private val firstPageForRandomizedTest =
+        createMockPeopleResponse(totalPages = 2, results = peopleForRandomizedTest)
     private val secondPageForRandomizedTest = createMockPeopleResponse(
         totalPages = 2, results = listOf(
             createPeopleItemDto(id = 3, name = "Spike", profilePath = "path3"),
@@ -154,7 +169,8 @@ class PeopleRemoteDataSourceImplTest {
         totalPages = 1, results = peopleWithExtraData
     )
     private val firstPageWithDuplicateId = createMockPeopleResponse(
-        totalPages = 2, results = listOf(createPeopleItemDto(id = 1, name = "Tom", profilePath = "path1"))
+        totalPages = 2,
+        results = listOf(createPeopleItemDto(id = 1, name = "Tom", profilePath = "path1"))
     )
     private val secondPageWithDuplicateId = createMockPeopleResponse(
         totalPages = 2, results = peopleWithDuplicateId

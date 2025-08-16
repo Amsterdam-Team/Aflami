@@ -20,12 +20,12 @@ class PeopleRemoteDataSourceImpl @Inject constructor(
 
         while (collectedPeople.size < requiredNumber && usedPages.size < totalPages) {
             val peoples = (FIRST_PAGE..totalPages)
-                .random()
-                .also { usedPages.add(it) }
-                .let { page -> getTrendingPeople(page).results }
-                .filter(::onFilterHighQualityPeopleData)
-                .shuffled()
-                .distinctBy(RemotePeopleItemDto::id)
+                    .random()
+                    .also { usedPages.add(it) }
+                    .let { page -> getTrendingPeople(page).results }
+                    .filter(::onFilterHighQualityPeopleData)
+                    .shuffled()
+                    .distinctBy(RemotePeopleItemDto::id)
 
 
             for (people in peoples) {
@@ -44,7 +44,11 @@ class PeopleRemoteDataSourceImpl @Inject constructor(
     }
 
     private suspend fun getTrendingPeople(page: Int): RemotePeopleResponse {
-        return responseCall { peopleApiService.getTrendingPeople(page = page) }
+        return responseCall(
+            execute = {
+                peopleApiService.getTrendingPeople(page = page)
+            }
+        )
     }
 
     private companion object {
