@@ -27,6 +27,7 @@ class GameResultViewModel @Inject constructor(
     init {
         updateState {
             it.copy(
+                gameType = gameType,
                 points = getCollectedPointsUseCase(gameSessionId),
                 timeInSeconds = getSpentSecondsUseCase(gameSessionId)
             )

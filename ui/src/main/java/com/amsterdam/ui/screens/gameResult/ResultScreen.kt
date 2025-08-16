@@ -33,16 +33,15 @@ import com.amsterdam.ui.screens.gameResult.component.CompletionCard
 import com.amsterdam.ui.screens.gameResult.component.GameResultAppBar
 import com.amsterdam.ui.screens.gameResult.component.StatCard
 import com.amsterdam.ui.screens.login.components.LoginBackground
+import com.amsterdam.viewmodel.gameResult.GameResultViewModel
 import com.amsterdam.viewmodel.gameResult.ResultInteractionListener
 import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.gameResult.ResultUiState
-import com.amsterdam.viewmodel.gameResult.GameResultViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ResultScreen(
     viewModel: GameResultViewModel = hiltViewModel()
-
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navigationManager = LocalNavManager.current
@@ -88,11 +87,13 @@ fun ResultScreenContent(
 ) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(),
+                .fillMaxSize()
+                .navigationBarsPadding(),
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -122,19 +123,23 @@ fun ResultScreenContent(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding())
-                    .verticalScroll(rememberScrollState())
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
+                        .fillMaxSize()
+                        .padding(bottom = innerPadding.calculateBottomPadding())
+                        .verticalScroll(rememberScrollState())
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
             ) {
-                GameResultAppBar(onCloseClicked = listener::onClickClose)
+                GameResultAppBar(
+                    gameType = state.gameType,
+                    onCloseClicked = listener::onClickClose
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 12.dp),
+                            .fillMaxSize()
+                            .padding(horizontal = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CompletionCard()

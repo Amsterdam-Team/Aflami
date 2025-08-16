@@ -15,23 +15,25 @@ import com.amsterdam.designsystem.components.TopAppBar
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.entity.Game
 import com.amsterdam.ui.R
 import com.amsterdam.designsystem.R as DesignSystemR
 
 
 @Composable
 fun GameResultAppBar(
+    gameType: Game.GameType,
     onCloseClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
         containerColor = Color.Transparent,
         title = {
             Text(
-                text = stringResource(R.string.guess_character_game_title),
+                text = gameType.toStringResource(),
                 style = AppTheme.textStyle.title.large,
                 color = AppTheme.color.title,
                 fontSize = 20.sp
@@ -48,11 +50,23 @@ fun GameResultAppBar(
     )
 }
 
+@Composable
+private fun Game.GameType.toStringResource(): String {
+    return when (this) {
+        Game.GameType.GUESS_CHARACTER -> stringResource(R.string.guess_character_game_title)
+        Game.GameType.GUESS_MOVIE_BY_POSTER -> stringResource(R.string.guess_by_poster)
+        Game.GameType.GUESS_RELEASE_YEAR -> stringResource(R.string.release_game_title)
+        Game.GameType.GUESS_GENRE -> stringResource(R.string.genre_game_title)
+    }
+}
 
 @ThemeAndLocalePreviews
 @Composable
 private fun GameResultAppBarPreview() {
     AflamiTheme {
-        GameResultAppBar(onCloseClicked = {})
+        GameResultAppBar(
+            gameType = Game.GameType.GUESS_CHARACTER,
+            onCloseClicked = {}
+        )
     }
 }
