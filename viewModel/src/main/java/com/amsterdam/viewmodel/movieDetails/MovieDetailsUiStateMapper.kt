@@ -25,7 +25,7 @@ fun MovieDetails.toUiState(): MovieDetailsUiState {
         movieLength = movieLengthToHourMinuteString(movie.runTimeInMinutes),
         originCountry = movie.originCountry,
         description = movie.description,
-        videoUrl = movie.videoUrl,
+        videoUrl = movie.videoUrl ?: "",
         actors = actors.toActorsMovieUiState(),
         extraItem = MovieDetailsUiState.defaultMovieExtras,
         similarMovies = similarMovies.toSimilarMoviesUiState(),

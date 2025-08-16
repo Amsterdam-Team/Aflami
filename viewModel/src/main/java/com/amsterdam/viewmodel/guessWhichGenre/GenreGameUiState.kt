@@ -8,6 +8,7 @@ data class GenreGameUiState(
     val isLoading: Boolean = false,
     val questions: List<GameQuestionUiState> = emptyList(),
     val currentQuestionIndex: Int = 0,
+    val gameSessionId : Long = 0,
     val isHintEnabled: Boolean = true,
     val isNotEnoughPointsDialogVisible: Boolean = false,
     val timerUiState: TimerUiState = TimerUiState(),
@@ -18,7 +19,6 @@ data class GenreGameUiState(
 )
 
 data class GameQuestionUiState(
-    val id: Long,
     val questionData: String,
     val answers: List<MovieGenre>,
     val correctAnswer: MovieGenre,

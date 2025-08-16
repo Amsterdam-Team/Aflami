@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.releaseYear
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -27,7 +28,7 @@ class DoGuessReleaseGameHintUseCaseTest {
 
         val result = doGuessReleaseGameHintUseCase(movieReleasedDateQuestion)
 
-        assertThat(result.releaseYearChoices.size).isEqualTo(movieReleasedDateQuestion.releaseYearChoices.size - 1)
+        assertThat(result.choices.size).isEqualTo(movieReleasedDateQuestion.choices.size - 1)
     }
 
     @Test
@@ -41,10 +42,10 @@ class DoGuessReleaseGameHintUseCaseTest {
 
     private val currentPoints = 20
     private val lowPoints = 5
-    private val movieReleasedDateQuestion = GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion(
+    private val movieReleasedDateQuestion = GameQuestion(
         question = "Sample Movie",
-        releaseYearChoices = listOf(1972, 1973, 1974),
+        choices = listOf(1972, 1973, 1974),
         correctChoice = 1972,
-        questionTimeSeconds = 30
+        questionTime = 30
     )
 }

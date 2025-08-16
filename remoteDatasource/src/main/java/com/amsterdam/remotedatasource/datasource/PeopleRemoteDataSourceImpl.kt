@@ -5,10 +5,8 @@ import com.amsterdam.remotedatasource.utils.apiHandler.responseCall
 import com.amsterdam.repository.datasource.remote.PeopleRemoteDataSource
 import com.amsterdam.repository.dto.remote.RemotePeopleItemDto
 import com.amsterdam.repository.dto.remote.RemotePeopleResponse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PeopleRemoteDataSourceImpl @Inject constructor(
     private val peopleApiService: PeopleApiService
 ) : PeopleRemoteDataSource {

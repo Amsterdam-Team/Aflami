@@ -5,20 +5,19 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.amsterdam.localdatasource.dataStore.AppPreferencesImpl.PreferenceKeys.CURRENT_LANGUAGE
-import com.amsterdam.localdatasource.dataStore.AppPreferencesImpl.PreferenceKeys.IS_DARK_THEME
-import com.amsterdam.localdatasource.dataStore.AppPreferencesImpl.PreferenceKeys.IS_ONBOARDING_COMPLETED
-import com.amsterdam.localdatasource.dataStore.AppPreferencesImpl.PreferenceKeys.RESTRICTION_LEVEL
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.localdatasource.dataStore.AppLocalPreferencesDataStore.PreferenceKeys.CURRENT_LANGUAGE
+import com.amsterdam.localdatasource.dataStore.AppLocalPreferencesDataStore.PreferenceKeys.IS_DARK_THEME
+import com.amsterdam.localdatasource.dataStore.AppLocalPreferencesDataStore.PreferenceKeys.IS_ONBOARDING_COMPLETED
+import com.amsterdam.localdatasource.dataStore.AppLocalPreferencesDataStore.PreferenceKeys.RESTRICTION_LEVEL
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AppPreferencesImpl @Inject constructor(
+class AppLocalPreferencesDataStore @Inject constructor(
     private val dataStore: DataStore<Preferences>
-) : AppPreferences {
+) : AppLocalPreferences {
 
     override suspend fun setAppLanguage(language: String) {
         dataStore.edit { preferences ->

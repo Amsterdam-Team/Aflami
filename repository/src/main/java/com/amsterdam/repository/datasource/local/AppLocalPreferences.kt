@@ -2,7 +2,7 @@ package com.amsterdam.repository.datasource.local
 
 import kotlinx.coroutines.flow.Flow
 
-interface AppPreferences {
+interface AppLocalPreferences {
     suspend fun setOnboardingCompleted(isCompleted: Boolean)
     suspend fun isOnboardingCompleted(): Boolean
 

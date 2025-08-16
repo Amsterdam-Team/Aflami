@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.character
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
@@ -41,10 +42,10 @@ class DoGuessCharacterGameHintUseCaseTest {
 
     private val currentPoints = 20
     private val lowPoints = 5
-    private val movieCharacterQuestion = GenerateCharacterQuestionsUseCase.CharacterDataQuestion(
-        questionAsPosterUrl = "character",
+    private val movieCharacterQuestion = GameQuestion(
+        question = "character",
         choices = listOf("john", "man", "woman"),
-        correctAnswer = "john",
-        questionTimeSeconds = 30
+        correctChoice = "john",
+        questionTime = 30
     )
 }

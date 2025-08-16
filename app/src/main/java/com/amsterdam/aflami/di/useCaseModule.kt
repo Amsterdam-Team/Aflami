@@ -74,6 +74,11 @@ import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.preferences.SetOnboardingCompletedUseCase
 import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
+import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
+import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
+import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
+import com.amsterdam.domain.useCase.game.GetCollectedPointsUseCase
+import com.amsterdam.domain.useCase.game.GetSpentSecondsUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterMoviesByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetAndFilterTvShowsByKeywordUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
@@ -464,6 +469,30 @@ object UseCaseModule {
         updatePoints: UpdateUserGamePointsUseCase,
     ): DoGuessMovieByPosterHintUseCase =
         DoGuessMovieByPosterHintUseCase(getTotalUserPointsUseCase, updatePoints)
+
+    @Provides
+    fun provideCreateGameSessionIdUseCase() = CreateGameSessionIdUseCase()
+
+    @Provides
+    fun provideAddSecondToGameTimeUseCase(
+        gameRepository: GameRepository
+    ): AddSecondToGameTimeUseCase = AddSecondToGameTimeUseCase(gameRepository)
+
+    @Provides
+    fun provideGetSpentSecondsUseCase(
+        gameRepository: GameRepository
+    ): GetSpentSecondsUseCase = GetSpentSecondsUseCase(gameRepository)
+
+    @Provides
+    fun provideAddPointsToGameUseCase(
+        gameRepository: GameRepository
+    ): AddPointsToGameUseCase = AddPointsToGameUseCase(gameRepository)
+
+    @Provides
+    fun provideGetCollectedPointsUseCase(
+        gameRepository: GameRepository
+    ): GetCollectedPointsUseCase = GetCollectedPointsUseCase(gameRepository)
+
 }
 
 

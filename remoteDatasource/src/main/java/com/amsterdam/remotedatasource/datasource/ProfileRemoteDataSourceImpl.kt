@@ -10,6 +10,6 @@ class ProfileRemoteDataSourceImpl @Inject constructor(
     private val profileApiService: ProfileApiService
 ) : ProfileRemoteDataSource {
     override suspend fun getAccountDetails(): AccountDetailsRemoteDto {
-        return responseCall { profileApiService.getAccountDetails() }
+        return responseCall(execute = { profileApiService.getAccountDetails() })
     }
 }

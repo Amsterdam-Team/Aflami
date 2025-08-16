@@ -33,11 +33,11 @@ class RetrofitClient(
     private val cryptoManager: CryptoManager
 
 ) {
-    private val TOKEN_HEADER_NAME = "Authorization"
-    private val LANGUAGE_PARAM_NAME = "language"
-    private val SESSION_PARAM_NAME = "session_id"
-
-    private val token = BuildConfig.BEARER_TOKEN
+    private companion object {
+        private const val TOKEN_HEADER_NAME = "Authorization"
+        private const val LANGUAGE_PARAM_NAME = "language"
+        private const val SESSION_PARAM_NAME = "session_id"
+    }
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -74,7 +74,7 @@ class RetrofitClient(
 
             val newRequest = originalRequest.newBuilder()
                 .url(originalHttpUrlBuilder.build())
-                .header(TOKEN_HEADER_NAME, "Bearer $token")
+                .header(TOKEN_HEADER_NAME, "Bearer ${BuildConfig.BEARER_TOKEN}")
                 .build()
 
             chain.proceed(newRequest)

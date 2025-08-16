@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.releaseYear
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import kotlinx.coroutines.flow.first
 
 class DoGuessReleaseGameHintUseCase(
@@ -15,15 +16,15 @@ class DoGuessReleaseGameHintUseCase(
     }
 
     suspend operator fun invoke(
-        movieReleasedDateQuestion: GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion
-    ): GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion {
+        movieReleasedDateQuestion: GameQuestion<Int>,
+    ): GameQuestion<Int> {
 
         val currentPoints = getTotalUserPointsUseCase().first()
 
         if (currentPoints < REQUIRED_HINT_POINTS)
             throw NotEnoughPointsException()
 
-        val choices = movieReleasedDateQuestion.releaseYearChoices.toMutableList()
+        val choices = movieReleasedDateQuestion.choices.toMutableList()
 
         val wrongChoiceToRemove = choices
             .filter { it != movieReleasedDateQuestion.correctChoice }
@@ -31,6 +32,6 @@ class DoGuessReleaseGameHintUseCase(
 
         choices.remove(wrongChoiceToRemove)
         updatePoints(-REQUIRED_HINT_POINTS)
-        return movieReleasedDateQuestion.copy(releaseYearChoices = choices)
+        return movieReleasedDateQuestion.copy(choices = choices)
     }
 }

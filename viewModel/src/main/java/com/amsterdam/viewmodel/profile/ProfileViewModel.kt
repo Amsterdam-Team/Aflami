@@ -133,7 +133,7 @@ class ProfileViewModel @Inject constructor(
             state.copy(
                 userInfo = state.userInfo.copy(
                     username = accountDetails.username,
-                    userAvatarUrl = accountDetails.avatarUrl
+                    userAvatarUrl = accountDetails.avatarUrl ?: ""
                 )
             )
         }

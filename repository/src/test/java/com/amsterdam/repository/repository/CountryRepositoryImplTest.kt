@@ -2,7 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.CountryRepository
 import com.amsterdam.entity.Country
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.CountryLocalDataSource
 import com.amsterdam.repository.datasource.remote.CountryRemoteDataSource
 import com.amsterdam.repository.dto.local.CountryLocalDto
@@ -24,7 +24,7 @@ class CountryRepositoryImplTest {
 
     private val localDataSource: CountryLocalDataSource = mockk()
     private val remoteDataSource: CountryRemoteDataSource = mockk()
-    private val preferences: AppPreferences = mockk()
+    private val preferences: AppLocalPreferences = mockk()
     private val testLanguage = "en"
 
     @BeforeEach

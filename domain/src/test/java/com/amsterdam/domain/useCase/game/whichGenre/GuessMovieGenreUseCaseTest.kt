@@ -1,5 +1,7 @@
 package com.amsterdam.domain.useCase.game.whichGenre
 
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 import com.amsterdam.entity.category.MovieGenre
 import com.google.common.truth.Truth.assertThat
@@ -26,7 +28,7 @@ class GuessMovieGenreUseCaseTest {
 
         val result = guessMovieGenreUseCase.startGame(difficultyType)
 
-        assertThat(result).isEqualTo(listOf(testQuestion))
+        assertThat(result).isEqualTo(listOf<GameQuestion<MovieGenre>>(testQuestion))
     }
 
     @Test
@@ -48,13 +50,12 @@ class GuessMovieGenreUseCaseTest {
     }
 
     private val difficultyType = GameDifficulty.DifficultyType.EASY
-    private val testQuestion = GenerateMovieGenreQuestionsUseCase.MovieGenreQuestion(
-        id = 1,
+    private val testQuestion = GameQuestion(
         question = "Test Movie",
-        genreChoices = listOf(MovieGenre.ACTION, MovieGenre.DRAMA),
+        choices = listOf(MovieGenre.ACTION, MovieGenre.DRAMA),
         correctChoice = MovieGenre.ACTION,
         questionTime = 30
     )
-    private val hintedQuestion = testQuestion.copy(genreChoices = listOf(MovieGenre.ACTION))
-    private val answerResult = SubmitGuessMovieGenreAnswerUseCase.AnswerResult(true, 10)
+    private val hintedQuestion = testQuestion.copy(choices = listOf(MovieGenre.ACTION))
+    private val answerResult = AnswerResult(true, 10)
 }

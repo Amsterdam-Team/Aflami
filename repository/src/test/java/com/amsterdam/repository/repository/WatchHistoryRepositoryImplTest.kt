@@ -2,7 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.entity.MovieWatchHistory
 import com.amsterdam.entity.TvShowWatchHistory
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
@@ -32,7 +32,7 @@ class WatchHistoryRepositoryImplTest {
     private val movieRemoteDataSource: MovieRemoteDataSource = mockk()
     private val tvShowLocalDataSource: TvShowLocalDataSource = mockk()
     private val tvShowRemoteSource: TvShowsRemoteDataSource = mockk()
-    private val preferences: AppPreferences = mockk()
+    private val preferences: AppLocalPreferences = mockk()
     private val localTvDataSource: TvShowLocalDataSource = mockk()
 
 

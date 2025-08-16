@@ -74,10 +74,9 @@ fun GuessByPosterGameScreen(
                 is GuessMovieByPosterGameEffect.NavigateToGameResult -> {
                     val resultScreenData = effect.resultScreenData
                     navigationManager.toResultScreen(
-                        totalCollectedPoints = resultScreenData.totalCollectedPoints,
-                        totalSpentSeconds = resultScreenData.totalSpentSeconds,
                         gameType = resultScreenData.gameType,
-                        difficulty = resultScreenData.difficulty
+                        difficulty = resultScreenData.difficulty,
+                        gameSessionId = resultScreenData.gameSessionId
                     )
                 }
             }
@@ -99,7 +98,7 @@ private fun GuessByPosterContent(
 ) {
     val pagerState = rememberPagerState(pageCount = { state.questions.size })
     val scope = rememberCoroutineScope()
-    val topBarTitle = stringResource(com.amsterdam.ui.R.string.guess_by_poster)
+    val topBarTitle = stringResource(R.string.guess_by_poster)
 
     LaunchedEffect(state.currentQuestionIndex) {
         scope.launch { pagerState.animateScrollToPage(state.currentQuestionIndex) }

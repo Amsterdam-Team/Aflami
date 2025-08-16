@@ -22,7 +22,7 @@ fun List<Episode>.toUiState() = map(Episode::toUiState)
 
 fun TvShowDetails.toUiState(): SeriesDetailsUiState {
     return SeriesDetailsUiState(
-        videoUrl = tvShow.videoUrl,
+        videoUrl = tvShow.videoUrl ?: "",
         tvShowId = tvShow.id,
         rating = tvShow.rating.toFormattedRating(),
         posterUrl = tvShow.posterUrl,

@@ -173,7 +173,7 @@ private fun CategoriesTvShowsDetailsContent(
                                         )
                                     },
                                     movieTitle = tvShow.name,
-                                    movieType = stringResource(R.string.tv_shows),
+                                    movieType = stringResource(R.string.tv),
                                     movieYear = tvShow.yearOfRelease,
                                     movieRating = tvShow.rate,
                                     onClick = { interactionListener.onClickTvShowCard(tvShow.id) }

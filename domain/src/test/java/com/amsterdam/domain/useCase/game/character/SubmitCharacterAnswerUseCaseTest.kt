@@ -2,6 +2,8 @@ package com.amsterdam.domain.useCase.game.character
 
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
@@ -40,12 +42,12 @@ class SubmitCharacterAnswerUseCaseTest {
 
     private val difficultyType = GameDifficulty.DifficultyType.EASY
     private val gameDifficulty = GameDifficulty(5, 30, 10, GameDifficulty.DifficultyType.EASY)
-    private val movieCharacterQuestion = GenerateCharacterQuestionsUseCase.CharacterDataQuestion(
-        questionAsPosterUrl = "character",
+    private val movieCharacterQuestion = GameQuestion(
+        question = "character",
         choices = listOf("john", "man", "woman"),
-        correctAnswer = "john",
-        questionTimeSeconds = 30
+        correctChoice = "john",
+        questionTime = 30
     )
-    private val expectedCorrectResult = SubmitCharacterAnswerUseCase.AnswerResult(true, 10)
-    private val expectedIncorrectResult = SubmitCharacterAnswerUseCase.AnswerResult(false, 0)
+    private val expectedCorrectResult = AnswerResult(true, 10)
+    private val expectedIncorrectResult = AnswerResult(false, 0)
 }

@@ -2,24 +2,25 @@ package com.amsterdam.domain.useCase.game.releaseYear
 
 import com.amsterdam.domain.repository.GameRepository
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 
 class GenerateMovieReleaseYearQuestionsUseCase(
     private val gameRepository: GameRepository,
     private val getGameDifficultyByDifficultyTypeUseCase: GetGameDifficultyByDifficultyTypeUseCase
 ) {
-    suspend operator fun invoke(difficultyType: DifficultyType): List<MovieReleasedDateQuestion> {
+    suspend operator fun invoke(difficultyType: DifficultyType): List<GameQuestion<Int>> {
       val gameDifficulty =  getGameDifficultyByDifficultyTypeUseCase(difficultyType)
         val movies = gameRepository.getRandomMoviesWithNotNullDate(gameDifficulty.totalQuestions)
 
         return movies.map { movie ->
             val correctYear = movie.releaseDate!!.year
             val choices = generateYearChoices(correctYear)
-            MovieReleasedDateQuestion(
+            GameQuestion(
                 question = movie.name,
-                releaseYearChoices = choices,
+                choices = choices,
                 correctChoice = correctYear,
-                questionTimeSeconds = gameDifficulty.timeLimitSeconds
+                questionTime = gameDifficulty.timeLimitSeconds
             )
         }
     }
@@ -34,11 +35,4 @@ class GenerateMovieReleaseYearQuestionsUseCase(
 
         return choices.shuffled()
     }
-
-    data class MovieReleasedDateQuestion(
-        val question: String,
-        val releaseYearChoices: List<Int>,
-        val correctChoice: Int,
-        val questionTimeSeconds: Int
-    )
 }

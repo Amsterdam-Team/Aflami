@@ -11,4 +11,8 @@ interface GameRepository {
     suspend fun updatePoints(points: Int)
     fun getUserPoints(): Flow<Int>
     suspend fun getCharacterDataQuestions(requiredNumber: Int): List<People>
+    fun addOneSecondToGameTime(gameSessionId: Long)
+    fun getTotalSpentSeconds(gameSessionId: Long): Int
+    fun addPointsToGame(points: Int, gameSessionId: Long)
+    fun getCollectedPoints(gameSessionId: Long): Int
 }

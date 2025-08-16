@@ -10,6 +10,6 @@ class CountryRemoteDataSourceImpl @Inject constructor(
     private val countryApiService: CountryApiService
 ) : CountryRemoteDataSource {
     override suspend fun getCountries(): List<CountryRemoteDto> {
-        return responseCall { countryApiService.getCountries() }
+        return responseCall(execute = { countryApiService.getCountries() })
     }
 }

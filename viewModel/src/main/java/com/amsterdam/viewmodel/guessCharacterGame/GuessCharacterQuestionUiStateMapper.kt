@@ -1,25 +1,25 @@
 package com.amsterdam.viewmodel.guessCharacterGame
 
-import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUseCase.CharacterDataQuestion
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.viewmodel.guessCharacterGame.GuessCharacterUiState.CharacterQuestionUiState
 
-fun CharacterDataQuestion.toQuestionUiState(): CharacterQuestionUiState {
+fun GameQuestion<String>.toQuestionUiState(): CharacterQuestionUiState {
     return CharacterQuestionUiState(
-        characterImageUrl = this.questionAsPosterUrl,
+        characterImageUrl = this.question,
         characterChoices = this.choices,
-        correctAnswer = this.correctAnswer,
-        questionTimeSeconds = this.questionTimeSeconds
+        correctAnswer = this.correctChoice,
+        questionTimeSeconds = this.questionTime
     )
 }
 
-fun CharacterQuestionUiState.toCharacterDataQuestion(): CharacterDataQuestion {
-    return CharacterDataQuestion(
-        questionAsPosterUrl = this.characterImageUrl,
+fun CharacterQuestionUiState.toCharacterDataQuestion(): GameQuestion<String> {
+    return GameQuestion(
+        question = this.characterImageUrl,
         choices = this.characterChoices,
-        correctAnswer = this.correctAnswer,
-        questionTimeSeconds = this.questionTimeSeconds
+        correctChoice = this.correctAnswer,
+        questionTime = this.questionTimeSeconds
     )
 }
 
-fun List<CharacterDataQuestion>.toQuestionsUiState(): List<CharacterQuestionUiState> =
+fun List<GameQuestion<String>>.toQuestionsUiState(): List<CharacterQuestionUiState> =
     map { it.toQuestionUiState() }

@@ -142,17 +142,15 @@ class NavigationManager(
     }
 
     fun toResultScreen(
-        totalCollectedPoints: Int,
-        totalSpentSeconds: Int,
         gameType: String,
         difficulty: String,
+        gameSessionId: Long,
     ) {
         navController.navigate(
             Route.ResultScreen(
-                totalCollectedPoints = totalCollectedPoints,
-                totalSpentSeconds = totalSpentSeconds,
                 gameType = gameType,
-                difficulty = difficulty
+                difficulty = difficulty,
+                gameSessionId = gameSessionId,
             )
         ) {
             popUpTo(Route.Tab.LetsPlay) { inclusive = false }

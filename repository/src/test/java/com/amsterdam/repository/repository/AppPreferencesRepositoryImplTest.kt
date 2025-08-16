@@ -2,7 +2,7 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.utils.RestrictionLevel
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.mapper.toLocalDto
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 class AppPreferencesRepositoryImplTest {
 
     private lateinit var repository: AppPreferencesRepository
-    private val preferences: AppPreferences = mockk()
+    private val preferences: AppLocalPreferences = mockk()
 
     @BeforeEach
     fun setUp() {

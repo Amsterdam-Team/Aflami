@@ -50,20 +50,20 @@ fun ResultScreen(
             when (effect) {
                 is ResultSideEffect.NavigateToGame -> {
                     when (effect.gameType) {
-                        ResultSideEffect.GameType.GUESS_MOVIE_BY_POSTER -> {
-                            navigationManager.toGuessMovieByPosterGame(effect.difficulty.difficultyType.name)
+                        ResultSideEffect.GameTypeUi.GUESS_MOVIE_BY_POSTER -> {
+                            navigationManager.toGuessMovieByPosterGame(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameType.GUESS_RELEASE_YEAR -> {
-                            navigationManager.toGuessReleaseYearGame(effect.difficulty.difficultyType.name)
+                        ResultSideEffect.GameTypeUi.GUESS_RELEASE_YEAR -> {
+                            navigationManager.toGuessReleaseYearGame(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameType.GUESS_CHARACTER -> {
-                            navigationManager.toGuessCharacter(effect.difficulty.difficultyType.name)
+                        ResultSideEffect.GameTypeUi.GUESS_CHARACTER -> {
+                            navigationManager.toGuessCharacter(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameType.GUESS_GENRE -> {
-                            navigationManager.toGenreGame(effect.difficulty.difficultyType.name)
+                        ResultSideEffect.GameTypeUi.GUESS_GENRE -> {
+                            navigationManager.toGenreGame(effect.difficultyType)
                         }
                     }
                 }

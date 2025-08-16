@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -104,15 +105,21 @@ private fun BoxScope.MovieInfoSection(
             overflow = TextOverflow.Ellipsis,
             color = AppTheme.color.onPrimary,
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
+                modifier = Modifier.weight(weight = 1f, fill = false),
                 text = movieType,
                 style = AppTheme.textStyle.label.small,
                 color = AppTheme.color.onPrimaryBody,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Box(
                 Modifier
-                    .padding(horizontal = 4.dp)
                     .size(3.dp)
                     .clip(CircleShape)
                     .background(AppTheme.color.onPrimaryBody),

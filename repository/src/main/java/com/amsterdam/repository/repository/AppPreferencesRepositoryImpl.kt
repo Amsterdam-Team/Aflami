@@ -2,14 +2,14 @@ package com.amsterdam.repository.repository
 
 import com.amsterdam.domain.repository.AppPreferencesRepository
 import com.amsterdam.domain.utils.RestrictionLevel
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.mapper.stringToRestrictionLevelEntity
 import com.amsterdam.repository.mapper.toLocalDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AppPreferencesRepositoryImpl @Inject constructor(
-    private val preferences: AppPreferences,
+    private val preferences: AppLocalPreferences,
 ) : AppPreferencesRepository {
     override fun getAppLanguage(): Flow<String> = preferences.getAppLanguage()
 

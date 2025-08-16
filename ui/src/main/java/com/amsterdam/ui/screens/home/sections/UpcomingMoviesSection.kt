@@ -106,7 +106,7 @@ fun LazyListScope.upcomingMoviesSection(
                                 onError = { ImageErrorIndicator() },
                             )
                         },
-                        movieType = stringResource(R.string.movies),
+                        movieType = stringResource(R.string.movie),
                         movieYear = movie.yearOfRelease,
                         movieTitle = movie.name,
                         movieRating = movie.rate,

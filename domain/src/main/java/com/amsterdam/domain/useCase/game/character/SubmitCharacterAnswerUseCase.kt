@@ -2,6 +2,8 @@ package com.amsterdam.domain.useCase.game.character
 
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 
 class SubmitCharacterAnswerUseCase(
@@ -9,12 +11,12 @@ class SubmitCharacterAnswerUseCase(
     private val updatePoints: UpdateUserGamePointsUseCase
 ) {
     suspend operator fun invoke(
-        question: GenerateCharacterQuestionsUseCase.CharacterDataQuestion,
+        question: GameQuestion<String>,
         answer: String,
         difficultyType: GameDifficulty.DifficultyType
     ): AnswerResult {
         val gameDifficulty = getDifficulty(difficultyType)
-        val correct = question.correctAnswer == answer
+        val correct = question.correctChoice == answer
         var earnedPoints = 0
         if (correct) {
             updatePoints(gameDifficulty.pointsPerQuestion)
@@ -23,9 +25,4 @@ class SubmitCharacterAnswerUseCase(
 
         return AnswerResult(correct, earnedPoints)
     }
-
-    data class AnswerResult(
-        val isCorrect: Boolean,
-        val earnedPoints: Int
-    )
 }

@@ -1,5 +1,6 @@
 package com.amsterdam.domain.useCase.game.character
 
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 
 class GuessCharacterGameUseCase(
@@ -10,11 +11,11 @@ class GuessCharacterGameUseCase(
     suspend fun startGame(difficultyType: GameDifficulty.DifficultyType) =
         getGameData(difficultyType)
 
-    suspend fun giveHint(question: GenerateCharacterQuestionsUseCase.CharacterDataQuestion) =
+    suspend fun giveHint(question: GameQuestion<String>) =
         doHint(question)
 
     suspend fun answer(
-        question: GenerateCharacterQuestionsUseCase.CharacterDataQuestion,
+        question: GameQuestion<String>,
         answer: String,
         difficultyType: GameDifficulty.DifficultyType
     ) = submitAnswer(question, answer, difficultyType)

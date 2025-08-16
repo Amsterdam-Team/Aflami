@@ -5,8 +5,8 @@ import com.amsterdam.remotedatasource.utils.apiHandler.responseCall
 import com.amsterdam.repository.datasource.remote.UserListRemoteDataSource
 import com.amsterdam.repository.dto.remote.AddItemToListRemoteResponse
 import com.amsterdam.repository.dto.remote.CreateUserListRemoteResponse
-import com.amsterdam.repository.dto.remote.UserListRemoteResponse
 import com.amsterdam.repository.dto.remote.UserListDetailsRemoteResponse
+import com.amsterdam.repository.dto.remote.UserListRemoteResponse
 import com.amsterdam.repository.dto.remote.authentication.AuthenticationRemoteResponse
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -19,9 +19,9 @@ class UserListRemoteDataSourceImpl @Inject constructor(
         listName: String,
         language: String,
     ): CreateUserListRemoteResponse {
-        return responseCall {
+        return responseCall(execute = {
             userListApiService.createNewList(listName = listName, language = language)
-        }
+        })
     }
 
     override suspend fun getUserLists(accountId: Int, page: Int): UserListRemoteResponse {
@@ -32,7 +32,7 @@ class UserListRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun addMovieToList(listId: Long, movieId: Long): AddItemToListRemoteResponse {
-        return responseCall { userListApiService.addMediaItemToList(listId, movieId) }
+        return responseCall(execute = { userListApiService.addMediaItemToList(listId, movieId) })
     }
 
     override suspend fun getMoviesAndTvShowsFromList(

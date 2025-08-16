@@ -8,7 +8,7 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.TvShowGenre
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
@@ -37,7 +37,7 @@ import kotlin.time.Duration.Companion.days
 class TvShowRepositoryImpl @Inject constructor(
     private val localTvDataSource: TvShowLocalDataSource,
     private val remoteTvDataSource: TvShowsRemoteDataSource,
-    private val preferences: AppPreferences,
+    private val preferences: AppLocalPreferences,
     private val categoryLocalDataSource: CategoryLocalDataSource,
     private val categoryRemoteDataSource: CategoryRemoteDataSource
 ) : TvShowRepository {

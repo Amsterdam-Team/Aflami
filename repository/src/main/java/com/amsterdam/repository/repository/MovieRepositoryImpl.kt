@@ -7,7 +7,7 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Country
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
@@ -40,7 +40,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieLocalDataSource: MovieLocalDataSource,
     private val categoryRemoteDataSource: CategoryRemoteDataSource,
     private val movieRemoteDataSource: MovieRemoteDataSource,
-    private val preferences: AppPreferences,
+    private val preferences: AppLocalPreferences,
 ) : MovieRepository {
 
     override suspend fun getMoviesByKeyword(

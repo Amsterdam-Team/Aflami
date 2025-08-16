@@ -11,10 +11,10 @@ class CategoryRemoteDataSourceImpl @Inject constructor(
 ) : CategoryRemoteDataSource {
 
     override suspend fun getMovieCategories(): CategoryRemoteResponse {
-        return responseCall { categoryApiService.getMovieCategories() }
+        return responseCall(execute = { categoryApiService.getMovieCategories() })
     }
 
     override suspend fun getTvShowCategories(): CategoryRemoteResponse {
-        return responseCall { categoryApiService.getTvShowCategories() }
+        return responseCall(execute = { categoryApiService.getTvShowCategories() })
     }
 }
