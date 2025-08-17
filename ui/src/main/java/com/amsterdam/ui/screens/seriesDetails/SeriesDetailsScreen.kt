@@ -511,6 +511,8 @@ private fun SeriesExtrasSection(
                 icon = painterResource(extrasSectionItemInfo.iconResId),
                 label = stringResource(extrasSectionItemInfo.textResId),
                 isSelected = it.isSelected,
+                labelMinLines = 2,
+                labelMaxLines = 2,
                 onClick = { onClickExtras(it.item) })
         }
     }
