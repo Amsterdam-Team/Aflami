@@ -333,11 +333,7 @@ fun SeriesDetailsContent(
             ) {
                 item {
                     Box(modifier = Modifier.height(293.dp)) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(263.dp)
-                        ) {
+                        Box(modifier = Modifier.height(263.dp)) {
                             if (state.postersUrls.isEmpty()) {
                                 ImageErrorIndicator()
                             } else {
@@ -349,8 +345,7 @@ fun SeriesDetailsContent(
                                 state.rating,
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
-                                    .padding(bottom = 4.dp)
-                                    .padding(start = 4.dp)
+                                    .padding(bottom = 4.dp, start = 4.dp)
                             )
                         }
                         PlayButton(
@@ -362,7 +357,9 @@ fun SeriesDetailsContent(
                 }
                 item {
                     Column(
-                        modifier = Modifier.background(AppTheme.color.surface)
+                        modifier = Modifier
+                            .background(AppTheme.color.surface)
+                            .padding(top = 8.dp)
                     ) {
                         Column(
                             modifier = Modifier.fillMaxWidth()
