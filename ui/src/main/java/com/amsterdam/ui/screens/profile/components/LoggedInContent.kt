@@ -70,7 +70,7 @@ fun LoggedInContent(
                 modifier = Modifier
                     .fillMaxSize(),
                 state = lazyListState,
-                contentPadding = PaddingValues(bottom = 12.dp)
+                contentPadding = PaddingValues(bottom = 40.dp)
             ) {
                 item { ProfileImageSection(state.userInfo.userAvatarUrl) }
                 item { ProfileInfoSection(state.userInfo.username, state.userInfo.userPoints) }
