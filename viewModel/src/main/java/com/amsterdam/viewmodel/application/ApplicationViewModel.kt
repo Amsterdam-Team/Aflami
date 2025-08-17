@@ -57,9 +57,9 @@ class ApplicationViewModel @Inject constructor(
     private suspend fun setNonOnboardingStartDestination(){
         val sessionType = getsSessionType()
         val destination = when (sessionType) {
-            SessionType.NOT_LOGGED_IN -> ApplicationUiState.StartDestinations.LOGIN
             SessionType.LOGGED_IN -> ApplicationUiState.StartDestinations.HOME
             SessionType.GUEST -> ApplicationUiState.StartDestinations.HOME
+            null -> ApplicationUiState.StartDestinations.LOGIN
         }
         updateState {
             it.copy(

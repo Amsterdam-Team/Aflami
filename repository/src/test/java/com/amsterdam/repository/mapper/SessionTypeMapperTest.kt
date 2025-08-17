@@ -24,9 +24,9 @@ class SessionTypeMapperTest {
 
         @Test
         fun `toLocalDto should map NOT_LOGGED_IN to its correct string`() {
-            val result = notLoggedInSession.toLocalDto()
+            val result = notLoggedInSession
 
-            assertThat(result).isEqualTo("NOT_LOGGED_IN")
+            assertThat(result).isEqualTo("")
         }
     }
 
@@ -47,23 +47,23 @@ class SessionTypeMapperTest {
         }
 
         @Test
-        fun `stringToSessionTypeEntity should map 'NOT_LOGGED_IN' string to NOT_LOGGED_IN entity`() {
+        fun `stringToSessionTypeEntity should map 'NOT_LOGGED_IN' string to null`() {
             val result = stringToSessionTypeEntity("NOT_LOGGED_IN")
 
-            assertThat(result).isEqualTo(SessionType.NOT_LOGGED_IN)
+            assertThat(result).isNull()
         }
 
         @Test
-        fun `stringToSessionTypeEntity should map any other string to NOT_LOGGED_IN as default`() {
+        fun `stringToSessionTypeEntity should map any other string to null as default`() {
             val resultFromUnknown = stringToSessionTypeEntity("UNKNOWN_STATE")
             val resultFromEmpty = stringToSessionTypeEntity("")
 
-            assertThat(resultFromUnknown).isEqualTo(SessionType.NOT_LOGGED_IN)
-            assertThat(resultFromEmpty).isEqualTo(SessionType.NOT_LOGGED_IN)
+            assertThat(resultFromUnknown).isNull()
+            assertThat(resultFromEmpty).isNull()
         }
     }
 
     private val loggedInSession = SessionType.LOGGED_IN
     private val guestSession = SessionType.GUEST
-    private val notLoggedInSession = SessionType.NOT_LOGGED_IN
+    private val notLoggedInSession = ""
 }

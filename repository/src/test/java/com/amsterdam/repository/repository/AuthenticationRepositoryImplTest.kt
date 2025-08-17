@@ -166,7 +166,7 @@ class AuthenticationRepositoryImplTest {
     fun `logout should clear local data and delete account details`() = runTest {
         // Given
         coJustRun { authenticationLocalDataSource.clearCachedSessionId() }
-        coJustRun { authenticationLocalDataSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto()) }
+        coJustRun { authenticationLocalDataSource.setSessionType("") }
         coJustRun { profileLocalDataSource.deleteAccountDetails() }
 
         // When
@@ -174,7 +174,7 @@ class AuthenticationRepositoryImplTest {
 
         // Then
         coVerify(exactly = 1) { authenticationLocalDataSource.clearCachedSessionId() }
-        coVerify(exactly = 1) { authenticationLocalDataSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto()) }
+        coVerify(exactly = 1) { authenticationLocalDataSource.setSessionType("") }
         coVerify(exactly = 1) { profileLocalDataSource.deleteAccountDetails() }
     }
 }

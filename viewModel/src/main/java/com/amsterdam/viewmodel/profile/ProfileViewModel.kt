@@ -101,7 +101,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun onGetSessionTypeSuccess(sessionType: SessionType) {
+    private fun onGetSessionTypeSuccess(sessionType: SessionType?) {
         if (sessionType != SessionType.LOGGED_IN) {
             updateState { state -> state.copy(isUserLoggedIn = false, isLoading = false) }
             return

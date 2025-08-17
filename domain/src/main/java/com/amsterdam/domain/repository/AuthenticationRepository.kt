@@ -7,7 +7,7 @@ interface AuthenticationRepository {
 
     suspend fun getSessionId(): String
     suspend fun setSessionType(sessionType: SessionType)
-    suspend fun getSessionType(): SessionType
+    suspend fun getSessionType(): SessionType?
 
     suspend fun logout()
 }

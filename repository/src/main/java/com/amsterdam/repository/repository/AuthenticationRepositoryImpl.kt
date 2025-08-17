@@ -35,13 +35,13 @@ class AuthenticationRepositoryImpl @Inject constructor(
         authenticationLocalDataSource.setSessionType(sessionType.toLocalDto())
     }
 
-    override suspend fun getSessionType(): SessionType {
+    override suspend fun getSessionType(): SessionType? {
         return stringToSessionTypeEntity(authenticationLocalDataSource.getSessionType())
     }
 
     override suspend fun logout() {
         authenticationLocalDataSource.clearCachedSessionId()
-        authenticationLocalDataSource.setSessionType(SessionType.NOT_LOGGED_IN.toLocalDto())
+        authenticationLocalDataSource.setSessionType("")
         profileLocalDataSource.deleteAccountDetails()
     }
 }
