@@ -138,7 +138,8 @@ class GuessReleaseYearGameViewModel @Inject constructor(
             it.copy(
                 isAnswerCorrect = answerResult.isCorrect,
                 isNextEnabled = true,
-                selectedAnswerIndex = selectedAnswerIndex
+                selectedAnswerIndex = selectedAnswerIndex,
+                earnedPoints = answerResult.earnedPoints
             )
         }
         addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
@@ -149,26 +150,35 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         val currentQuestionIndex = state.value.currentQuestionIndex
         val nextQuestionIndex = currentQuestionIndex + 1
         if (nextQuestionIndex < state.value.questions.size) {
-            updateState {
-                it.copy(
-                    currentQuestionIndex = nextQuestionIndex,
-                    selectedAnswerIndex = null,
-                    isAnswerCorrect = null,
-                    isNextEnabled = false,
-                    isNotEnoughPointsDialogVisible = false
-                )
-            }
-            startTheTimer()
+            handleMoveToNextQuestion(nextQuestionIndex)
         } else {
-            val resultData = ResultScreenData(
-                difficulty = difficultyType.name,
-                gameType = Game.GameType.GUESS_RELEASE_YEAR.name,
-                gameSessionId = state.value.gameSessionId
-            )
-            sendNewNavigationEffect(
-                GuessReleaseYearGameEffect.NavigateToGameResult(resultData)
+            handleGameFinished()
+        }
+    }
+
+    private fun handleMoveToNextQuestion(nextQuestionIndex: Int) {
+        updateState {
+            it.copy(
+                currentQuestionIndex = nextQuestionIndex,
+                selectedAnswerIndex = null,
+                isAnswerCorrect = null,
+                isNextEnabled = false,
+                isNotEnoughPointsDialogVisible = false,
+                earnedPoints = null
             )
         }
+        startTheTimer()
+    }
+
+    private fun handleGameFinished() {
+        val resultData = ResultScreenData(
+            difficulty = difficultyType.name,
+            gameType = Game.GameType.GUESS_RELEASE_YEAR.name,
+            gameSessionId = state.value.gameSessionId
+        )
+        sendNewNavigationEffect(
+            GuessReleaseYearGameEffect.NavigateToGameResult(resultData)
+        )
     }
 
     private fun increaseSpentTimeSecondsByOne() {

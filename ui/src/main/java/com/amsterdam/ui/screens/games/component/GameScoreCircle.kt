@@ -3,7 +3,6 @@ package com.amsterdam.ui.screens.games.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -36,8 +35,7 @@ fun GameScoreCircle(
             text = "$sign$score",
             style = AppTheme.textStyle.label.large,
             color = textColor,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 10.dp, horizontal = 11.dp)
+            textAlign = TextAlign.Center
         )
     }
 }

@@ -141,7 +141,8 @@ class GuessMovieByPosterGameViewModel @Inject constructor(
             it.copy(
                 isAnswerCorrect = answerResult.isCorrect,
                 isNextEnabled = true,
-                selectedAnswerIndex = selectedAnswerIndex
+                selectedAnswerIndex = selectedAnswerIndex,
+                earnedPoints = answerResult.earnedPoints
             )
         }
         addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
@@ -166,26 +167,36 @@ class GuessMovieByPosterGameViewModel @Inject constructor(
         val nextQuestionIndex = currentQuestionIndex + 1
 
         if (nextQuestionIndex < state.value.questions.size) {
-            updateState {
-                it.copy(
-                    currentQuestionIndex = nextQuestionIndex,
-                    selectedAnswerIndex = null,
-                    isAnswerCorrect = null,
-                    isNextEnabled = false,
-                    isNotEnoughPointsDialogVisible = false
-                )
-            }
-            startTheTimer()
+            handleMoveToNextQuestion(nextQuestionIndex)
         } else {
-            val resultData = ResultScreenData(
-                difficulty = difficultyType.name,
-                gameType = Game.GameType.GUESS_MOVIE_BY_POSTER.name,
-                gameSessionId = state.value.gameSessionId
-            )
-            sendNewNavigationEffect(
-                GuessMovieByPosterGameEffect.NavigateToGameResult(resultData)
+            handleGameFinished()
+        }
+    }
+
+
+    private fun handleMoveToNextQuestion(nextQuestionIndex: Int) {
+        updateState {
+            it.copy(
+                currentQuestionIndex = nextQuestionIndex,
+                selectedAnswerIndex = null,
+                isAnswerCorrect = null,
+                isNextEnabled = false,
+                isNotEnoughPointsDialogVisible = false,
+                earnedPoints = null
             )
         }
+        startTheTimer()
+    }
+
+    private fun handleGameFinished() {
+        val resultData = ResultScreenData(
+            difficulty = difficultyType.name,
+            gameType = Game.GameType.GUESS_MOVIE_BY_POSTER.name,
+            gameSessionId = state.value.gameSessionId
+        )
+        sendNewNavigationEffect(
+            GuessMovieByPosterGameEffect.NavigateToGameResult(resultData)
+        )
     }
 
     override fun dismissNotEnoughPointsDialog() {

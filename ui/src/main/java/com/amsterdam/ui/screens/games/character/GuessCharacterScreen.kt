@@ -1,7 +1,6 @@
 package com.amsterdam.ui.screens.games.character
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -34,10 +33,8 @@ import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.screens.games.component.AdaptiveAnswersColumn
-import com.amsterdam.ui.screens.games.component.GameScoreCircle
+import com.amsterdam.ui.screens.games.component.GameQuestionWithImage
 import com.amsterdam.ui.screens.games.component.GameTopBar
-import com.amsterdam.ui.screens.games.component.GuessPicture
 import com.amsterdam.ui.screens.games.component.NotEnoughPointsDialog
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessCharacterGame.GuessCharacterGameEffect
@@ -87,8 +84,8 @@ private fun GameContent(
 
     Scaffold(
         modifier = Modifier
-                .fillMaxSize()
-                .navigationBarsPadding(),
+            .fillMaxSize()
+            .navigationBarsPadding(),
         bottomBar = {
             ConfirmButton(
                 title = stringResource(R.string.next),
@@ -97,8 +94,8 @@ private fun GameContent(
                 isLoading = false,
                 isNegative = false,
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
         }
     ) { innerPadding ->
@@ -126,9 +123,9 @@ private fun GameContent(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding()
-                            .padding(bottom = innerPadding.calculateBottomPadding()),
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .padding(bottom = innerPadding.calculateBottomPadding()),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item {
@@ -142,10 +139,10 @@ private fun GameContent(
 
                             Row(
                                 Modifier
-                                        .wrapContentHeight()
-                                        .fillMaxWidth()
-                                        .padding(top = 16.dp)
-                                        .padding(horizontal = 16.dp),
+                                    .wrapContentHeight()
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp)
+                                    .padding(horizontal = 16.dp),
                                 horizontalArrangement = Arrangement.Center,
                             ) {
                                 PageIndicator(
@@ -163,13 +160,13 @@ private fun GameContent(
                             contentPadding = PaddingValues(horizontal = 12.dp),
                             pageSpacing = 12.dp,
                             modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 20.dp),
+                                .fillMaxWidth()
+                                .padding(top = 20.dp),
                         ) { page ->
                             val question = state.questions.getOrNull(page)
                             if (question != null) {
-                                CharacterGameQuestion(
-                                    questionImageModel = question.characterImageUrl,
+                                GameQuestionWithImage(
+                                    question = question.characterImageUrl,
                                     answers = question.characterChoices,
                                     blurRadius = question.blurRadius,
                                     selectedAnswerIndex = state.selectedAnswerIndex,
@@ -177,84 +174,14 @@ private fun GameContent(
                                     isHintEnabled = state.isHintEnabled,
                                     isChoicesEnabled = state.isNextEnabled,
                                     onHintClick = interactionListener::onHintClicked,
-                                    onSelectAnswer = interactionListener::onSelectAnswer
+                                    onSelectAnswer = interactionListener::onSelectAnswer,
+                                    earnedPoint = state.earnedPoints
                                 )
                             }
                         }
                     }
-
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun CharacterGameQuestion(
-    questionImageModel: String,
-    answers: List<String>,
-    blurRadius: Int,
-    selectedAnswerIndex: Int?,
-    isAnswerCorrect: Boolean?,
-    isHintEnabled: Boolean,
-    modifier: Modifier = Modifier,
-    isChoicesEnabled: Boolean = true,
-    onHintClick: () -> Unit = {},
-    onSelectAnswer: (Int) -> Unit = {},
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        CharacterImageWithScore(
-            questionImageModel = questionImageModel,
-            blurRadius = blurRadius,
-            isChoicesEnabled = isChoicesEnabled,
-            isAnswerCorrect = isAnswerCorrect,
-            isHintEnabled = isHintEnabled,
-            onHintClick = onHintClick,
-        )
-        AdaptiveAnswersColumn(
-            answers,
-            selectedAnswerIndex,
-            isAnswerCorrect,
-            isChoicesEnabled,
-            onSelectAnswer
-        )
-    }
-}
-
-@Composable
-fun CharacterImageWithScore(
-    questionImageModel: String,
-    blurRadius: Int,
-    isChoicesEnabled: Boolean,
-    isAnswerCorrect: Boolean?,
-    isHintEnabled: Boolean,
-    modifier: Modifier = Modifier,
-    onHintClick: () -> Unit = {}
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        GuessPicture(
-            blurRadius = blurRadius.dp,
-            points = 10,
-            imageUrl = questionImageModel,
-            isHintVisible = isHintEnabled,
-            onClick = onHintClick,
-        )
-        AnimatedVisibility(
-            visible = isChoicesEnabled && isAnswerCorrect ?: false,
-            enter = fadeIn(spring()),
-            exit = fadeOut(spring()),
-        ) {
-            GameScoreCircle(
-                score = 0,
-                modifier = Modifier.padding(bottom = if (isHintEnabled) 24.dp else 0.dp)
-            )
         }
     }
 }

@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,35 +23,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.ui.R
-import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.Scaffold
-import com.amsterdam.designsystem.components.Text
-import com.amsterdam.designsystem.components.TopAppBar
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.theme.AflamiTheme
-import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.screens.games.component.AdaptiveAnswersColumn
-import com.amsterdam.ui.screens.games.component.GuessPicture
-import com.amsterdam.ui.screens.games.component.TimerComponent
+import com.amsterdam.ui.screens.games.component.GameQuestionWithImage
+import com.amsterdam.ui.screens.games.component.GameTopBar
 import com.amsterdam.ui.screens.games.component.NotEnoughPointsDialog
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameEffect
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameViewModel
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterInteractionListener
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterUiState
-import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -154,7 +144,8 @@ private fun GuessByPosterContent(
                 LazyColumn(
                     modifier =
                         modifier
-                            .fillMaxSize().statusBarsPadding()
+                            .fillMaxSize()
+                            .statusBarsPadding()
                             .padding(bottom = innerPadding.calculateBottomPadding())
                 ) {
                     item {
@@ -190,14 +181,18 @@ private fun GuessByPosterContent(
                                     .fillMaxWidth()
                                     .padding(top = 20.dp),
                         ) { page ->
-                            GameQuestion(
-                                question = state.questions[page],
+                            val question = state.questions[page]
+                            GameQuestionWithImage(
+                                question = question.posterUrl,
                                 isHintEnabled = state.isHintEnabled,
                                 selectedAnswerIndex = state.selectedAnswerIndex,
                                 isAnswerCorrect = state.isAnswerCorrect,
-                                isChoiceEnabled = state.isNextEnabled,
+                                isChoicesEnabled = state.isNextEnabled,
                                 onHintClick = interactionListener::onHintClicked,
                                 onSelectAnswer = interactionListener::onSelectAnswer,
+                                earnedPoint = state.earnedPoints,
+                                blurRadius = question.blurRadius,
+                                answers = question.movieNameChoices,
                             )
                         }
                     }
@@ -205,74 +200,6 @@ private fun GuessByPosterContent(
             }
         }
     }
-}
-
-@Composable
-fun GameQuestion(
-    question: GuessMovieByPosterUiState.QuestionUiState,
-    selectedAnswerIndex: Int?,
-    isAnswerCorrect: Boolean?,
-    isHintEnabled: Boolean,
-    modifier: Modifier = Modifier,
-    isChoiceEnabled: Boolean = true,
-    onHintClick: () -> Unit = {},
-    onSelectAnswer: (Int) -> Unit = {},
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        GuessPicture(
-            blurRadius = question.blurRadius.dp,
-            points = 10,
-            imageUrl = question.posterUrl,
-            isHintVisible = isHintEnabled,
-            onClick = {
-                onHintClick()
-            },
-        )
-        AdaptiveAnswersColumn(
-            question.movieNameChoices,
-            selectedAnswerIndex,
-            isAnswerCorrect,
-            isChoiceEnabled,
-            onSelectAnswer
-        )
-    }
-}
-
-@Composable
-internal fun GameTopBar(
-    title: String,
-    timerUiState: TimerUiState,
-    modifier: Modifier = Modifier,
-    onCancelGameClick: () -> Unit = {},
-) {
-    TopAppBar(
-        modifier = modifier,
-        containerColor = Color.Transparent,
-        title = {
-            Text(
-                text = title,
-                color = AppTheme.color.title,
-                style = AppTheme.textStyle.title.large,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        },
-        leadingIcon = {
-            IconButton(
-                painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_cancel),
-                tint = AppTheme.color.title,
-                contentDescription = stringResource(R.string.back_to_menue),
-                onClick = onCancelGameClick,
-            )
-        },
-        trailingIcon = {
-            TimerComponent(timerUiState)
-        },
-    )
 }
 
 @ThemeAndLocalePreviews

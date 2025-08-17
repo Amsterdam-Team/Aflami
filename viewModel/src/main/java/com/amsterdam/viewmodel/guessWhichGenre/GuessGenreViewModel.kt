@@ -13,7 +13,6 @@ import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
-import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
@@ -124,7 +123,8 @@ class GuessGenreViewModel @Inject constructor(
                 selectedAnswerIndex = answerIndex,
                 isAnswerCorrect = answerResult.isCorrect,
                 isNextEnabled = true,
-                isNotEnoughPointsDialogVisible = false
+                isNotEnoughPointsDialogVisible = false,
+                earnedPoints = answerResult.earnedPoints
             )
         }
         addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
@@ -160,23 +160,32 @@ class GuessGenreViewModel @Inject constructor(
     override fun onMoveToNextQuestion() {
         val nextQuestionIndex = state.value.currentQuestionIndex + 1
         if (nextQuestionIndex < state.value.questions.size) {
-            updateState {
-                it.copy(
-                    currentQuestionIndex = nextQuestionIndex,
-                    selectedAnswerIndex = null,
-                    isAnswerCorrect = null,
-                    isNextEnabled = false
-                )
-            }
-            startTheTimer()
+            handleMoveToNextQuestion(nextQuestionIndex)
         } else {
-            val resultData = ResultScreenData(
-                difficulty = difficultyType.name,
-                gameType = Game.GameType.GUESS_GENRE.name,
-                gameSessionId = state.value.gameSessionId
-            )
-            sendNewNavigationEffect(GenreGameEffect.GameOver(resultData))
+            handleGameFinished()
         }
+    }
+
+    private fun handleMoveToNextQuestion(nextQuestionIndex: Int) {
+        updateState {
+            it.copy(
+                currentQuestionIndex = nextQuestionIndex,
+                selectedAnswerIndex = null,
+                isAnswerCorrect = null,
+                isNextEnabled = false,
+                earnedPoints = null
+            )
+        }
+        startTheTimer()
+    }
+
+    private fun handleGameFinished() {
+        val resultData = ResultScreenData(
+            difficulty = difficultyType.name,
+            gameType = Game.GameType.GUESS_GENRE.name,
+            gameSessionId = state.value.gameSessionId
+        )
+        sendNewNavigationEffect(GenreGameEffect.GameOver(resultData))
     }
 
     override fun dismissNotEnoughPointsDialog() {

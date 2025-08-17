@@ -6,6 +6,7 @@ data class GuessReleaseYearUiState(
     val isLoading: Boolean = true,
     val timerCounter: Int = 0,
     val gameSessionId : Long = 0,
+    val earnedPoints : Int? = null,
     val totalCollectedPoints: Int = 0,
     val questions: List<QuestionUiState> = emptyList(),
     val selectedAnswerIndex: Int? = null,

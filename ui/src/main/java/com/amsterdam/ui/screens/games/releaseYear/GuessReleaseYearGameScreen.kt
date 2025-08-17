@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,8 +33,7 @@ import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.games.component.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.screens.games.component.AdaptiveAnswersColumn
-import com.amsterdam.ui.screens.games.component.GuessTitle
+import com.amsterdam.ui.screens.games.component.GameQuestionWithTitle
 import com.amsterdam.ui.screens.games.component.NotEnoughPointsDialog
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearGameEffect
@@ -161,7 +159,7 @@ private fun GameContent(
                                     .padding(top = 20.dp),
                         ) { page ->
                             val question = state.questions[page]
-                            ReleaseYearGameQuestion(
+                            GameQuestionWithTitle(
                                 question = question.movieName,
                                 answers = question.releaseYearAnswer,
                                 selectedAnswerIndex = state.selectedAnswerIndex,
@@ -170,46 +168,12 @@ private fun GameContent(
                                 isChoicesEnabled = state.isNextEnabled,
                                 onHintClick = interactionListener::onHintClicked,
                                 onSelectAnswer = interactionListener::onSelectAnswer,
+                                earnedPoint = state.earnedPoints
                             )
                         }
                     }
-
                 }
             }
         }
-    }
-}
-
-@Composable
-fun ReleaseYearGameQuestion(
-    question: String,
-    answers: List<String>,
-    selectedAnswerIndex: Int?,
-    isAnswerCorrect: Boolean?,
-    isHintEnabled: Boolean,
-    modifier: Modifier = Modifier,
-    isChoicesEnabled: Boolean = true,
-    onHintClick: () -> Unit = {},
-    onSelectAnswer: (Int) -> Unit = {},
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        GuessTitle(
-            title = question,
-            points = 10,
-            isHintVisible = isHintEnabled,
-            onClick = onHintClick,
-        )
-
-        AdaptiveAnswersColumn(
-            answers,
-            selectedAnswerIndex,
-            isAnswerCorrect,
-            isChoicesEnabled,
-            onSelectAnswer
-        )
     }
 }

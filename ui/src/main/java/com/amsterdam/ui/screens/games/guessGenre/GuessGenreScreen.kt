@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,12 +33,10 @@ import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.games.component.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.screens.games.component.AdaptiveAnswersColumn
-import com.amsterdam.ui.screens.games.component.GuessTitle
+import com.amsterdam.ui.screens.games.component.GameQuestionWithTitle
 import com.amsterdam.ui.screens.games.component.NotEnoughPointsDialog
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.uiModel
-import com.amsterdam.viewmodel.guessWhichGenre.GameQuestionUiState
 import com.amsterdam.viewmodel.guessWhichGenre.GenreGameEffect
 import com.amsterdam.viewmodel.guessWhichGenre.GenreGameInteractionListener
 import com.amsterdam.viewmodel.guessWhichGenre.GenreGameUiState
@@ -170,52 +167,22 @@ private fun GameScreenContent(
                                     .fillMaxWidth()
                                     .padding(top = 20.dp),
                         ) { page ->
-                            GameQuestion(
-                                question = state.questions[page],
+                            val question = state.questions[page]
+                            GameQuestionWithTitle(
+                                question = question.questionData,
                                 isHintEnabled = state.isHintEnabled,
                                 selectedAnswerIndex = state.selectedAnswerIndex,
                                 isAnswerCorrect = state.isAnswerCorrect,
-                                isChoiceEnabled = state.isNextEnabled,
+                                isChoicesEnabled = state.isNextEnabled,
                                 onHintClick = interactionListener::onUseHint,
                                 onSelectAnswer = interactionListener::onChooseAnswerClick,
+                                answers = question.answers.map { stringResource(it.uiModel.displayableName) },
+                                earnedPoint = state.earnedPoints
                             )
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun GameQuestion(
-    question: GameQuestionUiState,
-    selectedAnswerIndex: Int?,
-    isAnswerCorrect: Boolean?,
-    isHintEnabled: Boolean,
-    modifier: Modifier = Modifier,
-    isChoiceEnabled: Boolean = true,
-    onHintClick: () -> Unit = {},
-    onSelectAnswer: (answerIndex: Int) -> Unit = { },
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        GuessTitle(
-            title = question.questionData,
-            points = 10,
-            isHintVisible = isHintEnabled,
-            onClick = onHintClick,
-        )
-        AdaptiveAnswersColumn(
-            question.answers.map { stringResource(it.uiModel.displayableName) },
-            selectedAnswerIndex,
-            isAnswerCorrect,
-            isChoiceEnabled,
-            onSelectAnswer
-        )
-
     }
 }

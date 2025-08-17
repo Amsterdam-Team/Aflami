@@ -138,7 +138,8 @@ class GuessCharacterGameViewModel @Inject constructor(
             it.copy(
                 isAnswerCorrect = answerResult.isCorrect,
                 isNextEnabled = true,
-                selectedAnswerIndex = selectedAnswerIndex
+                selectedAnswerIndex = selectedAnswerIndex,
+                earnedPoints = answerResult.earnedPoints
             )
         }
         addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
@@ -176,7 +177,8 @@ class GuessCharacterGameViewModel @Inject constructor(
                 selectedAnswerIndex = null,
                 isAnswerCorrect = null,
                 isNextEnabled = false,
-                isNotEnoughPointsDialogVisible = false
+                isNotEnoughPointsDialogVisible = false,
+                earnedPoints = null
             )
         }
         startTheTimer()
