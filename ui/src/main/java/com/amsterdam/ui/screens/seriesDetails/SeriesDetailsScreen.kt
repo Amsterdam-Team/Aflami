@@ -479,7 +479,7 @@ fun SeriesDetailsContent(
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
                     .statusBarsPadding(),
-                firstOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_outlined_star),
+                firstOption = if (state.isLoading) null else painterResource(com.amsterdam.designsystem.R.drawable.ic_outlined_star),
                 onNavigateBackClicked = seriesDetailsInteractionListener::onNavigateBack,
                 onFirstOptionClicked = seriesDetailsInteractionListener::onClickRate,
             )
