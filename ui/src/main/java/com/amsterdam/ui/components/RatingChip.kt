@@ -17,6 +17,8 @@ import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.ui.utils.withEnglishDigits
+import com.amsterdam.ui.utils.withEnglishFloat
 
 @Composable
 fun RatingChip(
@@ -44,7 +46,7 @@ fun RatingChip(
                     .padding(end = 2.dp),
             tint = AppTheme.color.yellowAccent,
         )
-        Text(rating, style = AppTheme.textStyle.label.small, color = AppTheme.color.body)
+        Text(rating.withEnglishFloat(), style = AppTheme.textStyle.label.small, color = AppTheme.color.body)
     }
 }
 

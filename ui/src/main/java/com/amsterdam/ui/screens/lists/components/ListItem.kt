@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import com.amsterdam.designsystem.theme.shapes.FolderShape
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.designsystem.utils.ripple
 import com.amsterdam.ui.R
+import com.amsterdam.ui.utils.withEnglishDigits
 import com.amsterdam.viewmodel.shared.uiStates.WishListItemUiState
 
 @Composable
@@ -63,7 +65,7 @@ fun ListItem(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = stringResource(R.string.list_items, list.itemCount),
+                text = pluralStringResource(R.plurals.item_count, list.itemCount, list.itemCount).withEnglishDigits(),
                 style = AppTheme.textStyle.label.large,
                 color = AppTheme.color.hint,
             )

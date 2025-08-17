@@ -32,6 +32,7 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.R
 import com.amsterdam.ui.components.EmptyStateText
+import com.amsterdam.ui.utils.withEnglishDigits
 import com.amsterdam.viewmodel.movieDetails.WishListUiState
 
 @Composable
@@ -145,7 +146,7 @@ private fun SelectionListItem(
                 color = AppTheme.color.body,
             )
 
-            val listItemCount = pluralStringResource(R.plurals.item_count, itemCount, itemCount)
+            val listItemCount = pluralStringResource(R.plurals.item_count, itemCount, itemCount).withEnglishDigits()
             Text(
                 text = listItemCount,
                 style = AppTheme.textStyle.label.small,

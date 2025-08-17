@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Text
@@ -21,6 +22,9 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.R
+import com.amsterdam.ui.utils.withEnglishDigits
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun ProfileInfoSection(username: String, userPoints: Int) {
@@ -48,7 +52,7 @@ fun ProfileInfoSection(username: String, userPoints: Int) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$userPoints Pts.",
+                text = pluralStringResource(com.amsterdam.ui.R.plurals.points_format, userPoints, userPoints).withEnglishDigits(),
                 style = AppTheme.textStyle.label.small,
                 color = AppTheme.color.onPrimary,
                 modifier = Modifier.padding(end = 4.dp)
