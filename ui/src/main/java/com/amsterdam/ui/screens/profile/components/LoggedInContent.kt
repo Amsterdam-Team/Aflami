@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,8 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.TopAppBar
+import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.divider.HorizontalDivider
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
@@ -36,6 +35,7 @@ import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.ui.R
 import com.amsterdam.viewmodel.profile.ProfileInteractionListener
 import com.amsterdam.viewmodel.profile.ProfileUiState
+
 
 @Composable
 fun LoggedInContent(
@@ -48,12 +48,12 @@ fun LoggedInContent(
         derivedStateOf { lazyListState.firstVisibleItemScrollOffset }
     }
     val appBarColor by animateColorAsState(
-        targetValue = if (lazyListState.firstVisibleItemIndex > 0 || scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
+        targetValue = if (scrollOffset.value > 8) AppTheme.color.surface else Color.Transparent,
         animationSpec = tween(800),
         label = "AppBarScrollColor"
     )
 
-    val isScrolledToEnd by remember {
+    val showVersion by remember {
         derivedStateOf {
             !lazyListState.canScrollForward
         }
@@ -61,14 +61,16 @@ fun LoggedInContent(
 
     ScreenDialogs(state, interactionListener)
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
-        Column(modifier = Modifier.fillMaxSize()) {
-
+    Box {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             LazyColumn(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .fillMaxSize(),
                 state = lazyListState,
-                contentPadding = PaddingValues(top = 80.dp)
+                contentPadding = PaddingValues(bottom = 12.dp)
             ) {
                 item { ProfileImageSection(state.userInfo.userAvatarUrl) }
                 item { ProfileInfoSection(state.userInfo.username, state.userInfo.userPoints) }
@@ -88,9 +90,11 @@ fun LoggedInContent(
                     )
                 }
             }
-
             AnimatedVisibility(
-                visible = isScrolledToEnd,
+                visible = showVersion,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(vertical = 12.dp),
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -98,14 +102,11 @@ fun LoggedInContent(
                     text = "v ${state.appVersion}",
                     style = AppTheme.textStyle.label.small,
                     color = AppTheme.color.hint,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp, top = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
             }
         }
-
         TopAppBar(
             title = {
                 Text(
@@ -200,21 +201,13 @@ private fun LoggedInContentPreview() {
         LoggedInContent(
             ProfileUiState(), object : ProfileInteractionListener {
                 override fun onClickLogin() {}
-
                 override fun onClickLanguageSetting() {}
-
                 override fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language) {}
-
                 override fun onApplyLanguage() {}
-
                 override fun onDismissLanguageDialog() {}
-
                 override fun onClickThemeSetting() {}
-
                 override fun onChangeTheme(isDarkTheme: Boolean) {}
-
                 override fun onApplyTheme() {}
-
                 override fun onDismissThemeDialog() {}
                 override fun onClickSettings() {}
                 override fun onDismissSettingsDialog() {}
