@@ -247,7 +247,6 @@ class MovieDetailsViewModel @Inject constructor(
                         isAddMovieToListLoading = false,
                         isAddToListDialogVisible = false,
                         isCreateNewListDialogVisible = false,
-                        isAddMovieToListLoading = false,
                         selectedLists = emptyList(),
                     )
                 }

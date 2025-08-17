@@ -404,8 +404,8 @@ fun MovieContent(
                 .padding(horizontal = 16.dp)
                 .statusBarsPadding()
                 .zIndex(10f),
-            firstOption = painterResource(R.drawable.ic_outlined_star),
-            lastOption = painterResource(R.drawable.ic_outlined_add_to_favourite),
+            firstOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_outlined_star),
+            lastOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_outlined_add_to_favourite),
             onNavigateBackClicked = movieDetailsInteractionListener::onClickBack,
             onFirstOptionClicked = movieDetailsInteractionListener::onClickRate,
             onLastOptionClicked = movieDetailsInteractionListener::onClickAddToList,
