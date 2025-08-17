@@ -77,9 +77,6 @@ fun RateDialog(
                 modifier = Modifier.padding(bottom = 24.dp),
                 selectedStarIndex = selectedStarIndex,
                 onRatingStarChanged = interaction::onChangeRating,
-                starsCount = 5,
-                starSize = 32.dp,
-                useEqualSpacing = false
             )
 
             ConfirmButton(
