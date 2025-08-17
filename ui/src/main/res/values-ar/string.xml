@@ -106,7 +106,14 @@
     <string name="and">و</string>
     <string name="sec">ثانية</string>
     <string name="point_per_question">نقطة لكل سؤال.</string>
-    <string name="hint">تلميح؟ %1$s نقاط.</string>
+    <plurals name="hint">
+        <item quantity="zero">تلميح؟ %1$s نقطة.</item>
+        <item quantity="one">تلميح؟ %1$s نقطة.</item>
+        <item quantity="two">تلميح؟ %1$s نقطتان.</item>
+        <item quantity="few">تلميح؟ %1$s نقاط.</item>
+        <item quantity="many">تلميح؟ %1$s نقطة.</item>
+        <item quantity="other">تلميح؟ %1$s نقطة.</item>
+    </plurals>
     <string name="next">التالي</string>
     <string name="back_to_menue">العودة للقائمة</string>
     <string name="play_again">العب مرة أخرى</string>
@@ -118,8 +125,22 @@
     <string name="not_enough_points_description">عذرا، ليس لديك نقاط كافية للحصول على تلميح</string>
     <string name="ok">حسنا</string>
     <string name="cd_cancel">يلغي</string>
-    <string name="points_as_pts">نقاط</string>
-    <string name="seconds_as_sec">ثواني</string>
+    <plurals name="points_as_pts">
+        <item quantity="zero">%1$s نقطة</item>
+        <item quantity="one">%1$s نقطة</item>
+        <item quantity="two">%1$s نقطتان</item>
+        <item quantity="few">%1$s نقاط</item>
+        <item quantity="many">%1$s نقطة</item>
+        <item quantity="other">%1$s نقطة</item>
+    </plurals>
+    <plurals name="seconds_as_sec">
+        <item quantity="zero">%s ثانية</item>
+        <item quantity="one">ثانية واحدة</item>
+        <item quantity="two">ثانيتان</item>
+        <item quantity="few">%s ثوان</item>
+        <item quantity="many">%s ثانية</item>
+        <item quantity="other">%s ثانية</item>
+    </plurals>
 
     <!-- -   -->
     <!-- -  -->
@@ -140,7 +161,37 @@
     <string name="description">الوصف</string>
     <string name="cast">الممثلون</string>
     <string name="search">بحث</string>
-    <string name="game_settings">%1$s سؤال، %2$s ثانية، %3$s نقطة لكل سؤال</string>
+    <string name="game_settings_format">%1$s، %2$s، %3$s لكل سؤال</string>
+
+    <!-- Plurals for the "questions" part (سؤال) -->
+    <plurals name="game_settings_questions">
+        <item quantity="zero">%1$d سؤال</item>
+        <item quantity="one">سؤال واحد</item>
+        <item quantity="two">سؤالان</item>
+        <item quantity="few">%1$d أسئلة</item>
+        <item quantity="many">%1$d سؤالاً</item>
+        <item quantity="other">%1$d سؤال</item>
+    </plurals>
+
+    <!-- Plurals for the "seconds" part (ثانية) -->
+    <plurals name="game_settings_seconds">
+        <item quantity="zero">%1$d ثانية</item>
+        <item quantity="one">ثانية واحدة</item>
+        <item quantity="two">ثانيتان</item>
+        <item quantity="few">%1$d ثوان</item>
+        <item quantity="many">%1$d ثانية</item>
+        <item quantity="other">%1$d ثانية</item>
+    </plurals>
+
+    <!-- Plurals for the "points" part (نقطة) -->
+    <plurals name="game_settings_points">
+        <item quantity="zero">%1$d نقطة</item>
+        <item quantity="one">نقطة واحدة</item>
+        <item quantity="two">نقطتان</item>
+        <item quantity="few">%1$d نقاط</item>
+        <item quantity="many">%1$d نقطة</item>
+        <item quantity="other">%1$d نقطة</item>
+    </plurals>
     <string name="search_hint">ابحث...</string>
     <string name="serach_suggestions_hub">مركز اقتراحات البحث</string>
     <string name="search_description">ابدأ الاستكشاف! ابحث عن أفلامك ومسلسلاتك وعروضك المفضلة</string>

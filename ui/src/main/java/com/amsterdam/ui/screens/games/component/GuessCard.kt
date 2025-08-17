@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.ui.R
@@ -36,6 +37,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.theme.shapes.SkewedRectangleShape
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.designsystem.utils.modifierExtensions.autoMirroredContent
+import com.amsterdam.ui.utils.withEnglishDigits
 
 @Composable
 fun GuessCard(
@@ -112,7 +114,7 @@ fun GuessCard(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = stringResource(R.string.hint, points),
+                        text = pluralStringResource(R.plurals.hint, points, points).withEnglishDigits(),
                         style = AppTheme.textStyle.label.small,
                         color = AppTheme.color.yellowAccent,
                         modifier = Modifier.padding(end = 2.dp),

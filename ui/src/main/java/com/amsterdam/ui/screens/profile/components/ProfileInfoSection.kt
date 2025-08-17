@@ -52,7 +52,7 @@ fun ProfileInfoSection(username: String, userPoints: Int) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = pluralStringResource(com.amsterdam.ui.R.plurals.points_format, userPoints, userPoints).withEnglishDigits(),
+                text = pluralStringResource(R.plurals.points_format, userPoints, userPoints).withEnglishDigits(),
                 style = AppTheme.textStyle.label.small,
                 color = AppTheme.color.onPrimary,
                 modifier = Modifier.padding(end = 4.dp)
