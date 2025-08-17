@@ -543,7 +543,7 @@ private fun LazyListScope.seasonsSection(
             val episodes = if (season.isExpanded) season.episodes else emptyList()
 
             if (season.isLoading) {
-                item { EpisodeCardPlaceholder() }
+                item { EpisodeCardPlaceholder(modifier = Modifier.padding(horizontal = 16.dp)) }
             } else {
                 items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
                     EpisodesMenu(season.seasonNumber, it, interaction::onPlayEpisodeClicked)
