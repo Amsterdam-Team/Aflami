@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.ui.SafeImageView
 import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
@@ -17,8 +18,8 @@ import io.sifr.shaded.modifiers.blur
 @Composable
 fun BlurredMediaPoster(
     posterUrl: String,
-    modifier: Modifier = Modifier,
-    ) {
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -33,10 +34,26 @@ fun BlurredMediaPoster(
             modifier = Modifier
                 .matchParentSize()
                 .blur(
-                    radius = 5f,
+                    radius = 8f,
                     edgeTreatment = BlurEdgeTreatment.UNBOUNDED
                 )
                 .background(Color(0x80000000))
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(86.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xCC000000),
+                            Color.Transparent
+                        ),
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
+                    )
+                )
         )
 
         Box(
@@ -45,7 +62,7 @@ fun BlurredMediaPoster(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color(0x80FFFFFF),
+                            AppTheme.color.blurOverlay,
                             Color.Transparent
                         ),
                         startY = 0f,

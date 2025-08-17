@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,7 +43,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -173,7 +171,7 @@ fun TextField(
 }
 
 @Composable
-private fun RowScope.InnerTextFieldWithHint(
+private fun InnerTextFieldWithHint(
     innerTextField: @Composable (() -> Unit),
     text: String,
     hintText: String,
@@ -303,7 +301,7 @@ private fun ColumnScope.AnimatedErrorBox(
 }
 
 @Composable
-private fun ColumnScope.AnimatedMaxCharacters(
+private fun AnimatedMaxCharacters(
     canShowMaxCharacters: Boolean,
     message: String,
     style: TextStyle,
@@ -343,26 +341,26 @@ private fun CustomTextFieldPreview() {
         ) {
             TextField(
                 "",
-                hintText = stringResource(R.string.user_name_hint),
+                hintText = "user name",
                 leadingIcon = R.drawable.ic_user,
             )
             TextField(
                 "",
-                hintText = stringResource(R.string.password_hint),
+                hintText = "password",
                 leadingIcon = R.drawable.ic_user,
                 trailingIcon = R.drawable.ic_password_hide,
                 isError = true,
-                errorMessage = stringResource(R.string.general_error_message),
+                errorMessage = "invalid password",
             )
             TextField(
-                stringResource(R.string.action_adventure),
-                hintText = stringResource(R.string.hint),
+                "Action Advanture",
+                hintText = "hint text",
                 trailingIcon = R.drawable.ic_add,
                 maxCharacters = 20,
             )
             TextField(
                 "",
-                hintText = stringResource(R.string.country_name_hint),
+                hintText = "hint text",
             )
         }
     }

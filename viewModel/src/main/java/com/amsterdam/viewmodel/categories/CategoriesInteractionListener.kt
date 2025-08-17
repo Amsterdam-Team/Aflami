@@ -6,7 +6,4 @@ interface CategoriesInteractionListener {
     fun onChangeTabOption(tabOption: TabOption)
     fun onClickMovieGenreCard(genreName: String)
     fun onClickTvShowGenreCard(genreName: String)
-
-
-
 }

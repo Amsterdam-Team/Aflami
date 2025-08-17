@@ -1,13 +1,13 @@
 package com.amsterdam.domain.useCase.utils
 
-import com.amsterdam.entity.People
+import com.amsterdam.entity.Character
 
 
-fun generateFakePeopleByCount(count: Int): List<People>{
-    val list = mutableListOf<People>()
+fun generateFakePeopleByCount(count: Int): List<Character>{
+    val list = mutableListOf<Character>()
     repeat(count){ i ->
         list.add(
-            People(
+            Character(
                 id = i.toLong(),
                 name = "John",
                 imageUrl = "",

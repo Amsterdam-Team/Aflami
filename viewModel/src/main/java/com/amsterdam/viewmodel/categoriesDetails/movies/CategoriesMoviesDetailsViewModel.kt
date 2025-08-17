@@ -33,9 +33,10 @@ class CategoriesMoviesDetailsViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = {
-                categoriesMoviesDetailsPagingSource.getMovies(state.value.selectedGenre).map { pagingData ->
-                    pagingData.map { it.toMovieUiState() }
-                }.cachedIn(viewModelScope)
+                categoriesMoviesDetailsPagingSource.getMovies(state.value.selectedGenre)
+                    .map { pagingData ->
+                        pagingData.map { it.toMovieUiState() }
+                    }.cachedIn(viewModelScope)
             },
             onSuccess = ::onGetMoviesByGenreSuccess,
             onCompletion = ::onCompletion

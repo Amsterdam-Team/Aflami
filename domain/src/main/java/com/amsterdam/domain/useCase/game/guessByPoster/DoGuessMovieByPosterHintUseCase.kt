@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.guessByPoster
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import kotlinx.coroutines.flow.first
 
 class DoGuessMovieByPosterHintUseCase(
@@ -10,8 +11,8 @@ class DoGuessMovieByPosterHintUseCase(
     private val updatePoints: UpdateUserGamePointsUseCase
 ) {
     suspend operator fun invoke(
-        moviePosterQuestion: MoviePosterQuestion
-    ): MoviePosterQuestion {
+        moviePosterQuestion: GameQuestion<String>
+    ): GameQuestion<String> {
 
         val currentPoints = getTotalUserPointsUseCase().first()
 

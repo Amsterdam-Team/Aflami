@@ -107,14 +107,14 @@ private fun SearchByActorContent(
                 .padding(horizontal = 16.dp)
         ) {
             DefaultAppBar(
-                title = stringResource(com.amsterdam.designsystem.R.string.find_by_actor),
+                title = stringResource(R.string.find_by_actor),
                 showNavigateBackButton = true,
                 onNavigateBackClicked = interactionListener::onClickNavigateBack
             )
             TextField(
                 modifier = Modifier.padding(top = 8.dp),
                 text = state.keyword,
-                hintText = stringResource(com.amsterdam.designsystem.R.string.find_by_actor_hint),
+                hintText = stringResource(R.string.find_by_actor_hint),
                 onValueChange = { interactionListener.onUserSearchChange(it) },
                 imeAction = ImeAction.Search,
                 keyboardActions = KeyboardActions(
@@ -157,8 +157,8 @@ private fun SearchByActorContent(
                             NoDataContainer(
                                 modifier = Modifier.padding(horizontal = 24.dp),
                                 imageRes = painterResource(R.drawable.img_suggestion_magician),
-                                title = stringResource(com.amsterdam.designsystem.R.string.find_by_actor),
-                                description = stringResource(com.amsterdam.designsystem.R.string.find_by_actor_description)
+                                title = stringResource(R.string.find_by_actor),
+                                description = stringResource(R.string.find_by_actor_description)
                             )
                         }
 
@@ -178,7 +178,7 @@ private fun SearchByActorContent(
 }
 
 @Composable
-internal fun MovieImage(imageUrl: String) {
+internal fun MovieImage(imageUrl: String, isAdult: Boolean) {
     val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     SafeImageView(
         model = imageUrl,
@@ -188,6 +188,7 @@ internal fun MovieImage(imageUrl: String) {
         safetyLevel = safetyLevel,
         onLoading = { ImageLoadingIndicator() },
         onError = { ImageErrorIndicator() },
+        isAdult = isAdult
     )
 }
 
@@ -197,7 +198,7 @@ private fun SearchByActorContentPreview() {
     AflamiTheme {
         SearchByActorContent(
             state = ActorSearchUiState(),
-            movies = emptyFlow<PagingData< SearchMediaItemUiState>>().collectAsLazyPagingItems(),
+            movies = emptyFlow<PagingData<SearchMediaItemUiState>>().collectAsLazyPagingItems(),
             interactionListener = object : ActorSearchInteractionListener {
                 override fun onUserSearchChange(keyword: String) {}
                 override fun onClickNavigateBack() {}

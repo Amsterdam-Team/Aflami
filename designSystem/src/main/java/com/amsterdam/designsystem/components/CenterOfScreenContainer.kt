@@ -24,9 +24,9 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 @Composable
 fun CenterOfScreenContainer(
     unneededSpace: Dp,
+    modifier: Modifier = Modifier,
     isStatusBarTransparent: Boolean = false,
     isNavigationBarTransparent: Boolean = false,
-    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     var paddingValueDp by remember { mutableStateOf(0.dp) }

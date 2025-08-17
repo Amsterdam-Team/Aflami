@@ -12,12 +12,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Dialog
-import com.amsterdam.designsystem.components.IconButton
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.R
-import com.amsterdam.ui.components.selection.LanguageSelectionItem
 import com.amsterdam.ui.screens.profile.model.Language
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase.Language as DomainLanguage
 

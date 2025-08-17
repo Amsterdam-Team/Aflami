@@ -30,8 +30,8 @@ fun TvShowDetailsRemoteResponse.toEntity(): TvShowDetails {
         similarTvShows = similar.results.toEntityList(),
         gallery = images.toEntityList(),
         posters = images.toEntityList(),
-        productionsCompanies =productionCompanies.toEntityList(),
-        userRate = if(accountStates?.rated is Rated.RatedValue) accountStates.rated.value.toInt() else null
+        productionsCompanies = productionCompanies.toEntityList(),
+        userRate = if (accountStates?.rated is Rated.RatedValue) accountStates.rated.value.toInt() else null
     )
 }
 

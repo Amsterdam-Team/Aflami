@@ -4,8 +4,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.amsterdam.domain.models.Mood
 import com.amsterdam.ui.screens.home.component.MoodPickerCard
+import com.amsterdam.ui.screens.home.mapper.toCardMood
+import com.amsterdam.ui.screens.home.mapper.toMood
 import com.amsterdam.ui.screens.home.model.CardMood
 import com.amsterdam.viewmodel.home.HomeInteractionListener
 import com.amsterdam.viewmodel.home.HomeUiState
@@ -14,21 +15,16 @@ import com.amsterdam.viewmodel.home.HomeUiState
 fun MoodPickerSection(
     state: HomeUiState.MoodPickerUiState,
     interactionListener: HomeInteractionListener,
-    modifier: Modifier=Modifier
+    modifier: Modifier = Modifier
 ) {
     MoodPickerCard(
-        cardMoods = state.moods.map {
-            CardMood.getModeByName(
-                it.name
-            )
-        },
-        selectedMood = state.selectedMood?.let { CardMood.getModeByName(it.name) },
+        cardMoods = state.moods.map { it.toCardMood() },
+        selectedMood = state.selectedMood?.toCardMood(),
         isButtonEnabled = state.selectedMood != null,
         isLoading = state.isLoadingMovies,
         modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 26.dp),
         onSelectMood = {
-            val mood =
-                Mood.getMoodByName(it.name)
+            val mood = it.toMood()
             interactionListener.onChangeMood(mood)
         },
         onClickGetNow = interactionListener::onClickGetNow

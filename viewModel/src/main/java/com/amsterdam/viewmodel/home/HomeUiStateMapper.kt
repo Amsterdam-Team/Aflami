@@ -61,7 +61,8 @@ fun Movie.toMoodPickerItemUiState(): MoodPickerItemUiState {
     )
 }
 
-fun List<Movie>.toMoodPickerItemsUiState(): List<MoodPickerItemUiState> = map { it.toMoodPickerItemUiState() }
+fun List<Movie>.toMoodPickerItemsUiState(): List<MoodPickerItemUiState> =
+    map { it.toMoodPickerItemUiState() }
 
 fun Movie.toPopularMediaItemUiState(): PopularMediaItemUiState {
     return PopularMediaItemUiState(
@@ -85,12 +86,12 @@ fun TvShow.toPopularMediaItemUiState(): PopularMediaItemUiState {
     )
 }
 
-fun MovieWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHomeItemUiState{
+fun MovieWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHomeItemUiState {
     with(movie) {
         return ContinueWatchingHomeItemUiState(
             id = id,
             name = name,
-            rate =  rating.toFormattedRating(),
+            rate = rating.toFormattedRating(),
             posterImageUrl = posterUrl,
             yearOfRelease = releaseDate?.year?.toString() ?: "",
             dateAdded = lastWatchedTime,
@@ -105,7 +106,7 @@ fun TvShowWatchHistory.toContinueWatchingMediaItemUiState(): ContinueWatchingHom
         return ContinueWatchingHomeItemUiState(
             id = id,
             name = name,
-            rate =  rating.toFormattedRating(),
+            rate = rating.toFormattedRating(),
             posterImageUrl = posterUrl,
             yearOfRelease = airDate?.year?.toString() ?: "",
             dateAdded = lastWatchedTime,

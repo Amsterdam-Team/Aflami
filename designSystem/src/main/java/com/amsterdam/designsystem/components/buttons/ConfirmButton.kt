@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 
@@ -43,7 +41,7 @@ private fun ConfirmButtonPreview() {
             modifier = Modifier.padding(16.dp),
         ) {
             ConfirmButton(
-                title = stringResource(R.string.add),
+                title = "Button",
                 onClick = {},
                 isEnabled = true,
                 isLoading = false,

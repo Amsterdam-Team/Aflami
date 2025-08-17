@@ -21,7 +21,7 @@ class GenerateMoviePosterQuestionsUseCaseTest {
     @Test
     fun `should generate movie poster questions`() = runTest {
         every { getGameDifficultyUseCase(difficultyType) } returns gameDifficulty
-        coEvery { gameRepository.getRandomMoviesWithNotNullPoster(gameDifficulty.totalQuestions * 4) } returns generateFakeMoviesByCount(gameDifficulty.totalQuestions * 4)
+        coEvery { gameRepository.getRandomMoviesWithPoster(gameDifficulty.totalQuestions * 4) } returns generateFakeMoviesByCount(gameDifficulty.totalQuestions * 4)
 
         val result = generateMoviePosterQuestionsUseCase(difficultyType)
 

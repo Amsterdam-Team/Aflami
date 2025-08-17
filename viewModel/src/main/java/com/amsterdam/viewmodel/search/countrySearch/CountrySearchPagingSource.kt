@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class CountrySearchPagingSource @Inject constructor(
     private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase,
-): BasePagingSource<Movie>() {
+) : BasePagingSource<Movie>() {
 
     private lateinit var country: Country
 

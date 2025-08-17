@@ -8,8 +8,9 @@ import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase.MovieDetails
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
+import com.amsterdam.domain.useCase.list.CheckIsMovieInListUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
-import com.amsterdam.domain.useCase.list.GetUserListsUseCase
+import com.amsterdam.domain.useCase.list.GetWishListsUseCase
 import com.amsterdam.domain.useCase.myRating.movie.SetUserMovieRatingUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.utils.SessionType
@@ -31,12 +32,13 @@ class MovieDetailsViewModel @Inject constructor(
     args: MovieDetailsArgs,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val addMovieToListUseCase: AddMovieToListUseCase,
-    private val getUserListsUseCase: GetUserListsUseCase,
+    private val getWishListsUseCase: GetWishListsUseCase,
     private val createListUseCase: CreateNewListUseCase,
     private val getsSessionType: GetsSessionType,
     private val setUserRatingUseCase: SetUserMovieRatingUseCase,
+    private val checkIsMovieInListUseCase: CheckIsMovieInListUseCase,
     manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
-    dispatcherProvider: DispatcherProvider
+    dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsEffect>(
     MovieDetailsUiState(),
     dispatcherProvider
@@ -49,9 +51,8 @@ class MovieDetailsViewModel @Inject constructor(
         manageLocaleLanguageUseCase.getAppLanguage()
             .onEach {
                 loadMovieDetails()
+                loadWishLists()
             }.launchIn(viewModelScope)
-
-        loadMovieDetails()
     }
 
     private fun loadMovieDetails() {
@@ -64,11 +65,53 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
+    private fun loadWishLists() {
+        tryToExecute(
+            action = ::getWishLists,
+            onCompletion = ::onGetWishListsComplete
+        )
+    }
+
+    private suspend fun getWishLists() {
+        updateState {
+            it.copy(
+                isUserListsLoading = true,
+            )
+        }
+        runIfLoggedIn(
+            onLoggedIn = {
+                val list = getWishListsUseCase().toUiState()
+                val userLists = list
+                    .map { lists ->
+                        lists.copy(
+                            isMovieInList = checkIsMovieInListUseCase(
+                                movieId = state.value.movieId,
+                                listId = lists.id
+                            )
+                        )
+                    }
+                updateState {
+                    it.copy(
+                        userLists = userLists,
+                    )
+                }
+            },
+        )
+    }
+
+    private fun onGetWishListsComplete() {
+        updateState {
+            it.copy(
+                isUserListsLoading = false
+            )
+        }
+    }
+
     private suspend fun getMovieDetails() =
         getMovieDetailsUseCase(state.value.movieId)
 
     private fun onGetMovieDetailsSuccess(movieDetails: MovieDetails) {
-        updateState { movieDetails.toUiState() }
+        updateState { movieDetails.toUiState(it) }
     }
 
     override fun onClickMovieExtras(movieExtras: MovieExtras) {
@@ -91,6 +134,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     override fun onClickRetryRequest() {
         loadMovieDetails()
+        loadWishLists()
     }
 
     override fun onClickRate() {
@@ -165,8 +209,12 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             runIfLoggedIn(
                 onLoggedIn = {
-                    val userList = getUserListsUseCase()
-                    updateState { it.copy(isAddToListDialogVisible = true, userLists = userList.toUiState()) }
+                    val userList = getWishListsUseCase()
+                    updateState {
+                        it.copy(
+                            isAddToListDialogVisible = true,
+                        )
+                    }
                 },
                 onGuest = { showMustLoginDialog(MovieAndSeriesDetailsDialogType.AddToList) },
             )
@@ -180,13 +228,13 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(isAddMovieToListLoading = true) }
         tryToExecute(
             action = {
-                // Add movie to all selected lists
                 listIds.forEach { listId ->
                     addMovieToListUseCase(movieId = movieId, listId = listId)
                 }
             },
             onSuccess = {
-                sendNewNavigationEffect(MovieDetailsEffect.MovieAddedToListSuccessfully)
+                sendNewEffect(MovieDetailsEffect.MovieAddedToListSuccessfully)
+                setListToAdded(listIds)
             },
             onError = {
                 it.printStackTrace()
@@ -199,6 +247,7 @@ class MovieDetailsViewModel @Inject constructor(
                         isAddMovieToListLoading = false,
                         isAddToListDialogVisible = false,
                         isCreateNewListDialogVisible = false,
+                        isAddMovieToListLoading = false,
                         selectedLists = emptyList(),
                     )
                 }
@@ -206,8 +255,28 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
+    private fun setListToAdded(listIds: List<Long>) {
+        val ids = listIds.toHashSet()
+        updateState { state ->
+            state.copy(
+                userLists = state.userLists.map { list ->
+                    if (list.id in ids) {
+                        list.copy(isMovieInList = true, itemCount = list.itemCount + 1)
+                    } else {
+                        list
+                    }
+                }
+            )
+        }
+    }
+
     override fun onClickCreateList() {
-        updateState { it.copy(isCreateNewListDialogVisible = true, isAddToListDialogVisible = false) }
+        updateState {
+            it.copy(
+                isCreateNewListDialogVisible = true,
+                isAddToListDialogVisible = false
+            )
+        }
     }
 
     override fun onChangeListName(listName: String) {
@@ -223,6 +292,7 @@ class MovieDetailsViewModel @Inject constructor(
             onSuccess = { listId ->
                 sendNewEffect(MovieDetailsEffect.ListCreatedSuccessfully)
                 onSaveMovieToList(state.value.movieId, listOf(listId.toLong()))
+                loadWishLists()
             },
             onError = {
                 sendNewEffect(MovieDetailsEffect.FailedToCreateList)
@@ -239,13 +309,13 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    override fun onSelectedListChange(selectedLists: List<UserListUiState>) {
+    override fun onSelectedListChange(selectedLists: List<WishListUiState>) {
         updateState { it.copy(selectedLists = selectedLists) }
     }
 
     private suspend fun runIfLoggedIn(
         onLoggedIn: suspend () -> Unit,
-        onGuest: () -> Unit,
+        onGuest: () -> Unit = {},
     ) {
         if (getsSessionType() != SessionType.GUEST) {
             onLoggedIn()
@@ -269,7 +339,14 @@ class MovieDetailsViewModel @Inject constructor(
     private fun onCompletion() = updateState { it.copy(isLoading = false) }
 
     override fun onClickCancelRateDialog() {
-        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false, selectedStarIndex = state.value.rateDialogUiState.previousStarIndex)) }
+        updateState {
+            it.copy(
+                rateDialogUiState = it.rateDialogUiState.copy(
+                    isVisible = false,
+                    selectedStarIndex = state.value.rateDialogUiState.previousStarIndex
+                )
+            )
+        }
     }
 
     override fun onClickSubmit() {
@@ -287,12 +364,27 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun onSubmitRateSuccess(unit: Unit) {
-        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false, isLoading = false)) }
+        updateState {
+            it.copy(
+                rateDialogUiState = it.rateDialogUiState.copy(
+                    isVisible = false,
+                    isLoading = false
+                )
+            )
+        }
         sendNewEffect(MovieDetailsEffect.ShowRatingSuccessSnackBar)
     }
 
     private fun onSubmitRateError(exception: AflamiException) {
-        updateState { it.copy(rateDialogUiState = it.rateDialogUiState.copy(isVisible = false, isLoading = false, selectedStarIndex = it.rateDialogUiState.previousStarIndex)) }
+        updateState {
+            it.copy(
+                rateDialogUiState = it.rateDialogUiState.copy(
+                    isVisible = false,
+                    isLoading = false,
+                    selectedStarIndex = it.rateDialogUiState.previousStarIndex
+                )
+            )
+        }
         sendNewEffect(MovieDetailsEffect.ShowRatingErrorSnackBar)
     }
 

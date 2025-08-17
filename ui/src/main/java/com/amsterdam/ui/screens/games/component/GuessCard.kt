@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -118,7 +118,7 @@ fun GuessCard(
                         modifier = Modifier.padding(end = 2.dp),
                     )
                     Icon(
-                        painter = painterResource(R.drawable.ic_user_pts),
+                        painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_user_pts),
                         contentDescription = "points",
                         tint = AppTheme.color.yellowAccent,
                         modifier =

@@ -7,7 +7,6 @@ import com.amsterdam.domain.utils.RestrictionLevel
 interface ProfileInteractionListener {
     fun onClickLogin()
 
-    //region Settings
     fun onClickSettings()
     fun onDismissSettingsDialog()
 
@@ -23,7 +22,6 @@ interface ProfileInteractionListener {
 
     fun onUpdateRestrictionLevel(restrictionLevel: RestrictionLevel)
     fun onSaveRestrictionLevel()
-    //endregion
 
     fun onClickLanguageSetting()
     fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language)

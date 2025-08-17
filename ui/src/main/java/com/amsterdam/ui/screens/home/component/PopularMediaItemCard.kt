@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -48,24 +49,26 @@ fun PopularMediaItemCard(
 ) {
     val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Column(modifier = modifier,horizontalAlignment = Alignment.CenterHorizontally) {
-        Box {
+        Box(
+            modifier = Modifier.height(300.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
             Box (
                 Modifier
-                    .height(300.dp)
+                    .size(imageWidth, imageHeight)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = { onClickMediaItem(popularMediaItem.id, popularMediaItem.type) },
                     ),
-                contentAlignment = Alignment
-                    .BottomCenter
+                contentAlignment = Alignment.BottomCenter
             ) {
                 SafeImageView(
                     model = popularMediaItem.posterUrl,
                     contentDescription = "",
                     modifier =
                         Modifier
-                            .size(imageWidth, imageHeight)
+                            .fillMaxSize()
                             .clip(RoundedCornerShape(24.dp))
                             .border(
                                 width = 1.dp,
@@ -76,25 +79,33 @@ fun PopularMediaItemCard(
                     onLoading = { ImageLoadingIndicator() },
                     safetyLevel = safetyLevel,
                     onError = { ImageErrorIndicator() },
+                    isAdult = popularMediaItem.isAdult
+                )
+
+                RatingChip(
+                    popularMediaItem.rating,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .alpha(ratingAlpha)
                 )
             }
-            RatingChip(
-                popularMediaItem.rating,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .alpha(ratingAlpha)
-            )
+
             Box(
                 modifier = Modifier
                     .size(64.dp)
+                    .alpha(ratingAlpha)
                     .background(color = AppTheme.color.onPrimary, shape = CircleShape)
                     .align(Alignment.Center),
                 contentAlignment = Alignment.Center
-            ) {
-                Icon(painter = painterResource(R.drawable.ic_play), contentDescription = null)
+            ){
+                Icon(
+                    painter = painterResource(R.drawable.ic_play),
+                    contentDescription = null
+                )
             }
         }
+
         Text(
             text = popularMediaItem.name,
             style = AppTheme.textStyle.title.small,
@@ -102,7 +113,6 @@ fun PopularMediaItemCard(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-
     }
 }
 

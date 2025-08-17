@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.whichGenre
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.category.MovieGenre
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
@@ -28,7 +29,7 @@ class DoGuessGenreGameHintUseCaseTest {
 
         val result = doGuessGenreGameHintUseCase(movieGenreQuestion)
 
-        assertThat(result.genreChoices.size).isEqualTo(movieGenreQuestion.genreChoices.size - 1)
+        assertThat(result.choices.size).isEqualTo(movieGenreQuestion.choices.size - 1)
     }
 
     @Test
@@ -42,10 +43,9 @@ class DoGuessGenreGameHintUseCaseTest {
 
     private val currentPoints = 20
     private val lowPoints = 5
-    private val movieGenreQuestion = GenerateMovieGenreQuestionsUseCase.MovieGenreQuestion(
-        id = 1,
+    private val movieGenreQuestion = GameQuestion(
         question = "Sample Movie",
-        genreChoices = listOf(MovieGenre.ACTION, MovieGenre.DRAMA, MovieGenre.COMEDY),
+        choices = listOf(MovieGenre.ACTION, MovieGenre.DRAMA, MovieGenre.COMEDY),
         correctChoice = MovieGenre.ACTION,
         questionTime = 30
     )

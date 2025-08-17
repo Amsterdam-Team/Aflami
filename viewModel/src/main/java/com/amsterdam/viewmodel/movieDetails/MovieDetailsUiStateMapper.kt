@@ -14,7 +14,7 @@ import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
 import com.amsterdam.viewmodel.utils.movieLengthToHourMinuteString
 import com.amsterdam.viewmodel.utils.toFormattedString
 
-fun MovieDetails.toUiState(): MovieDetailsUiState {
+fun MovieDetails.toUiState(uiState: MovieDetailsUiState): MovieDetailsUiState {
     return MovieDetailsUiState(
         movieId = movie.id,
         rating = movie.rating.toFormattedRating(),
@@ -25,19 +25,35 @@ fun MovieDetails.toUiState(): MovieDetailsUiState {
         movieLength = movieLengthToHourMinuteString(movie.runTimeInMinutes),
         originCountry = movie.originCountry,
         description = movie.description,
-        videoUrl = movie.videoUrl,
+        videoUrl = movie.videoUrl ?: "",
         actors = actors.toActorsMovieUiState(),
         extraItem = MovieDetailsUiState.defaultMovieExtras,
         similarMovies = similarMovies.toSimilarMoviesUiState(),
         productionCompany = productionCompanies.toProductionMovieCompaniesUiState(),
         gallery = movieGallery,
         reviews = reviews.map(Review::toUiState),
-        rateDialogUiState = RateDialogUiState(selectedStarIndex = userRate)
+        rateDialogUiState = RateDialogUiState(selectedStarIndex = userRate),
+        isVideoLauncherFailed = uiState.isVideoLauncherFailed,
+        isLoading = uiState.isLoading,
+        networkError = uiState.networkError,
+        isLoginDialogVisible = uiState.isLoginDialogVisible,
+        dialogType = uiState.dialogType,
+        isDescriptionExpanded = uiState.isDescriptionExpanded,
+        isAddToListDialogVisible = uiState.isAddToListDialogVisible,
+        isCreateNewListDialogVisible = uiState.isCreateNewListDialogVisible,
+        userLists = uiState.userLists,
+        listName = uiState.listName,
+        isCreateListLoading = uiState.isCreateListLoading,
+        isAddMovieToListLoading = uiState.isAddMovieToListLoading,
+        isUserListsLoading = uiState.isUserListsLoading,
+        selectedLists = uiState.selectedLists,
     )
 }
-fun Actor.toActorMovieUiState(): ActorMovieUiState = ActorMovieUiState(photo = imageUrl, name = name)
 
-fun List<Actor>.toActorsMovieUiState() : List<ActorMovieUiState> = map { it.toActorMovieUiState() }
+fun Actor.toActorMovieUiState(): ActorMovieUiState =
+    ActorMovieUiState(photo = imageUrl, name = name)
+
+fun List<Actor>.toActorsMovieUiState(): List<ActorMovieUiState> = map { it.toActorMovieUiState() }
 
 private fun Movie.toSimilarMovieUiState(): SimilarMovieUiState {
     return SimilarMovieUiState(
@@ -45,7 +61,8 @@ private fun Movie.toSimilarMovieUiState(): SimilarMovieUiState {
         rate = rating.toFormattedRating(),
         name = name,
         productionYear = releaseDate?.year?.toString() ?: "",
-        posterUrl = posterUrl
+        posterUrl = posterUrl,
+        isAdult = isAdult
     )
 }
 
@@ -70,4 +87,5 @@ fun ProductionCompany.toProductionMovieCompanyUiState(): ProductionMovieCompanyU
     )
 }
 
-fun List<ProductionCompany>.toProductionMovieCompaniesUiState() = map { it.toProductionMovieCompanyUiState() }
+fun List<ProductionCompany>.toProductionMovieCompaniesUiState() =
+    map { it.toProductionMovieCompanyUiState() }

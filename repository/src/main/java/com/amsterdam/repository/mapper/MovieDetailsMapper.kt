@@ -76,5 +76,6 @@ fun MovieDetailsRemoteResponse.toLocalDto(storedLanguage: String): MovieLocalDto
         popularity = popularity,
         movieLength = runtime,
         originCountry = originCountry.firstOrNull() ?: "",
+        isAdult = adult,
     )
 }

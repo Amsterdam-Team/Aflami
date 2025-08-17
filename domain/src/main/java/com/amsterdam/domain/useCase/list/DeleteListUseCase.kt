@@ -1,11 +1,11 @@
 package com.amsterdam.domain.useCase.list
 
-import com.amsterdam.domain.repository.UserListRepository
+import com.amsterdam.domain.repository.WishListRepository
 
 class DeleteListUseCase(
-    private val userListRepository: UserListRepository
+    private val wishListRepository: WishListRepository
 ) {
     suspend operator fun invoke(listId: Long) {
-        userListRepository.deleteList(listId)
+        wishListRepository.deleteList(listId)
     }
 }

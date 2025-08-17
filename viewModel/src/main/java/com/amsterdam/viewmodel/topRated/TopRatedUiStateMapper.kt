@@ -27,25 +27,27 @@ fun getTopRatedMediaItems(
 }
 
 @SuppressLint("DefaultLocale")
-fun Movie.toTopRatedMediaItemUiState(): TopRatedMediaItemUiState {
+private fun Movie.toTopRatedMediaItemUiState(): TopRatedMediaItemUiState {
     return TopRatedMediaItemUiState(
         id = id,
         name = name,
         rate = rating.toFormattedRating(),
         posterImageUrl = posterUrl,
         yearOfRelease = releaseDate?.year?.toString() ?: "",
-        mediaType = MediaType.MOVIE
+        mediaType = MediaType.MOVIE,
+        isAdult = isAdult
     )
 }
 
 @SuppressLint("DefaultLocale")
-fun TvShow.toTopRatedMediaItemUiState(): TopRatedMediaItemUiState {
+private fun TvShow.toTopRatedMediaItemUiState(): TopRatedMediaItemUiState {
     return TopRatedMediaItemUiState(
         id = id,
         name = name,
         rate = rating.toFormattedRating(),
         posterImageUrl = posterUrl,
         yearOfRelease = airDate?.year?.toString() ?: "",
-        mediaType = MediaType.TV_SHOW
+        mediaType = MediaType.TV_SHOW,
+        isAdult = isAdult
     )
 }

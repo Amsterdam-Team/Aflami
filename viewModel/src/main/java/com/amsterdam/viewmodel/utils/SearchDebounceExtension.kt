@@ -10,8 +10,7 @@ import kotlinx.coroutines.flow.map
 
 @OptIn(FlowPreview::class)
 suspend fun Flow<String>.debounceSearch(onCollect: suspend (String) -> Unit) {
-    this
-        .distinctUntilChanged()
+    this.distinctUntilChanged()
         .debounce(300L)
         .map(String::trim)
         .filter(String::isNotBlank)

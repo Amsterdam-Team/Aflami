@@ -13,6 +13,7 @@ fun Movie.toWatchHistoryItemUiState(): WatchHistoryMovieUiState {
         posterImageUrl = posterUrl,
         yearOfRelease = releaseDate?.year?.toString() ?: "",
         rate = rating.toFormattedRating(),
+        isAdult = isAdult
     )
 }
 
@@ -23,6 +24,7 @@ fun TvShow.toWatchHistoryItemUiState(): WatchHistoryTvShowUiState {
         posterImageUrl = posterUrl,
         yearOfRelease = airDate?.year.toString(),
         rate = rating.toFormattedRating(),
+        isAdult = isAdult
     )
 }
 

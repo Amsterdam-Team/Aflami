@@ -1,7 +1,7 @@
 package com.amsterdam.repository.dto.remote
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class VideoRemoteResponse(

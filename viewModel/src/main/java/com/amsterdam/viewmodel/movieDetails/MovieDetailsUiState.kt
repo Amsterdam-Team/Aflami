@@ -15,7 +15,7 @@ data class MovieDetailsUiState(
     val originCountry: String = "",
     val description: String = "",
     val videoUrl: String = "",
-    val isVideoLauncherFailed : Boolean = false,
+    val isVideoLauncherFailed: Boolean = false,
     val moviePostersUrl: List<String> = emptyList(),
     val actors: List<ActorMovieUiState> = emptyList(),
     val extraItem: List<Selectable<MovieExtras>> = defaultMovieExtras,
@@ -24,25 +24,27 @@ data class MovieDetailsUiState(
     val gallery: List<String> = emptyList(),
     val reviews: List<ReviewMovieUiState> = emptyList(),
     val rateDialogUiState: RateDialogUiState = RateDialogUiState(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val networkError: Boolean = false,
     val isLoginDialogVisible: Boolean = false,
     val dialogType: MovieAndSeriesDetailsDialogType? = null,
     val isDescriptionExpanded: Boolean = false,
     val isAddToListDialogVisible: Boolean = false,
     val isCreateNewListDialogVisible: Boolean = false,
-    val userLists: List<UserListUiState> = emptyList(),
+    val userLists: List<WishListUiState> = emptyList(),
     val listName: String = "",
+    val isUserListsLoading: Boolean = true,
     val isCreateListLoading: Boolean = false,
     val isAddMovieToListLoading: Boolean = false,
-    val selectedLists: List<UserListUiState> = emptyList(),
+    val selectedLists: List<WishListUiState> = emptyList(),
 ) {
     data class SimilarMovieUiState(
         val movieId: Long,
         val rate: String = "",
         val name: String = "",
         val productionYear: String = "",
-        val posterUrl: String = ""
+        val posterUrl: String = "",
+        val isAdult: Boolean = false
     )
 
     data class ReviewMovieUiState(
@@ -60,10 +62,12 @@ data class MovieDetailsUiState(
         val name: String = "",
         val country: String = ""
     )
+
     data class ActorMovieUiState(
         val photo: String = "",
         val name: String = ""
     )
+
     enum class MovieExtras {
         MORE_LIKE_THIS,
         REVIEWS,

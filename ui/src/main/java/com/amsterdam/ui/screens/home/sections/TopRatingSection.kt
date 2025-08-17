@@ -54,7 +54,7 @@ fun LazyListScope.topRatingSection(
                             stringResource(R.string.tv)
 
                         MediaCard(
-                            movieImage = { MovieImage(item.posterImageUrl) },
+                            movieImage = { MovieImage(item.posterImageUrl,item.isAdult) },
                             movieType = movieType,
                             movieYear = item.yearOfRelease,
                             movieTitle = item.name,

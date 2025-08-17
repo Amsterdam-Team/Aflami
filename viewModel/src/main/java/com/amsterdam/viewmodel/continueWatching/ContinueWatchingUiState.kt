@@ -1,5 +1,6 @@
 package com.amsterdam.viewmodel.continueWatching
 
+import androidx.annotation.BoolRes
 import androidx.paging.PagingData
 import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,7 @@ data class ContinueWatchingUiState(
         val yearOfRelease: String = "",
         val rate: String = "",
         val dateAdded: Instant = Clock.System.now(),
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult: Boolean = false
     )
 }

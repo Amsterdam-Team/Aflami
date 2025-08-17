@@ -4,6 +4,7 @@ package com.amsterdam.domain.useCase.game.character
 
 import com.amsterdam.domain.repository.GameRepository
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -11,29 +12,22 @@ class GenerateCharacterQuestionsUseCase(
     private val gameRepository: GameRepository,
     private val getGameDifficultyByDifficultyTypeUseCase: GetGameDifficultyByDifficultyTypeUseCase,
 ) {
-    suspend operator fun invoke(difficultyType: DifficultyType): List<CharacterDataQuestion> {
+    suspend operator fun invoke(difficultyType: DifficultyType): List<GameQuestion<String>> {
         val gameDifficulty = getGameDifficultyByDifficultyTypeUseCase(difficultyType)
 
-        val peoples = gameRepository.getCharacterDataQuestions(gameDifficulty.totalQuestions * 4)
+        val characters = gameRepository.getCharacterDataQuestions(gameDifficulty.totalQuestions * 4)
 
-        return peoples.chunked(4).map { chunk ->
-            val correctPeople = chunk.random()
-            val wrongAnswers = chunk.filter { it != correctPeople }.map { it.name }
-            val choices = (wrongAnswers + correctPeople.name).shuffled()
+        return characters.chunked(4).map { chunk ->
+            val correctCharacter = chunk.random()
+            val wrongAnswers = chunk.filter { it != correctCharacter }.map { it.name }
+            val choices = (wrongAnswers + correctCharacter.name).shuffled()
 
-            CharacterDataQuestion(
-                questionAsPosterUrl = correctPeople.imageUrl,
+            GameQuestion(
+                question = correctCharacter.imageUrl,
                 choices = choices,
-                correctAnswer = correctPeople.name,
-                questionTimeSeconds = gameDifficulty.timeLimitSeconds
+                correctChoice = correctCharacter.name,
+                questionTime = gameDifficulty.timeLimitSeconds
             )
         }
     }
-
-    data class CharacterDataQuestion(
-        val questionAsPosterUrl: String,
-        val choices: List<String>,
-        val correctAnswer: String,
-        val questionTimeSeconds: Int,
-    )
 }

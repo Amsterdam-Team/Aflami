@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class CategoriesTvShowsDetailsUiState(
-    val selectedGenre: TvShowGenre= TvShowGenre.COMEDY,
+    val selectedGenre: TvShowGenre = TvShowGenre.COMEDY,
     val tvShowGenres: List<TvShowGenreItemUiState> = defaultTvShowGenres,
     val tvShows: Flow<PagingData<TvShowsUiState>> = emptyFlow(),
     val isLoading: Boolean = false,
@@ -27,12 +27,12 @@ data class CategoriesTvShowsDetailsUiState(
         }
     }
 
-
     data class TvShowsUiState(
         val id: Long = 0,
         val name: String = "",
         val posterImageUrl: String = "",
         val rate: String = "",
         val yearOfRelease: String = "",
+        val isAdult : Boolean = false
     )
 }

@@ -55,7 +55,7 @@ fun HistoryAndRatingSection(
             onClick = onClickHistory
         )
         CustomCard(
-            imageResourceId = com.amsterdam.designsystem.R.drawable.img_user_rating,
+            imageResourceId = R.drawable.img_user_rating,
             text = stringResource(R.string.my_rating),
             onClick = onClickRating
         )

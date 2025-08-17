@@ -1,11 +1,11 @@
 package com.amsterdam.domain.useCase.list
 
-import com.amsterdam.domain.repository.UserListRepository
+import com.amsterdam.domain.repository.WishListRepository
 
 class RemoveMovieFromListUseCase(
-    private val userListRepository: UserListRepository
+    private val wishListRepository: WishListRepository
 ) {
     suspend operator fun invoke(listId: Long, movieId: Long) {
-        return userListRepository.removeMovieFromList(listId, movieId)
+        return wishListRepository.removeMovieFromList(listId, movieId)
     }
 }

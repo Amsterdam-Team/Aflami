@@ -11,7 +11,6 @@ class RegisterViewModel @Inject constructor(dispatcherProvider: DispatcherProvid
     BaseViewModel<RegisterUiState, RegisterEffect>(RegisterUiState(), dispatcherProvider) {
     init {
         updateState { it.copy(signUpUrl = BuildConfig.MOVIE_SIGN_UP_URL) }
-
     }
 
     fun setLoading(isLoading: Boolean) {

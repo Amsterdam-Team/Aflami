@@ -8,5 +8,6 @@ data class SearchMediaItemUiState(
     val posterImageUrl: String = "",
     val yearOfRelease: String = "",
     val rate: String = "",
-    val mediaType: MediaType = MediaType.MOVIE
+    val mediaType: MediaType = MediaType.MOVIE,
+    val isAdult: Boolean = false
 )

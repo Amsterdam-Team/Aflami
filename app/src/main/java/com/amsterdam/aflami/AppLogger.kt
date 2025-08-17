@@ -2,79 +2,80 @@ package com.amsterdam.aflami
 
 import android.util.Log
 import com.amsterdam.domain.logger.Logger
-import com.google.firebase.BuildConfig
-import javax.inject.Inject
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
-class AppLogger @Inject constructor() : Logger {
+class AppLogger(
+    private val tag: String,
+    private val isLoggerEnabled: Boolean = BuildConfig.DEBUG
+) : Logger {
 
     companion object {
         const val TAG_PREFIX = "AflamiApp"
         const val MAX_LOG_LENGTH = 4000
+        const val MAX_TAG_LENGTH = 23
     }
-
-    private var isLoggerEnabled = BuildConfig.DEBUG
 
     private val callerInfo: String
-        get() {
-            return getLoggerInfo()
+        get() = getDetailedSourceInfo()
+
+    override fun debug(message: Any) {
+        log(Log.DEBUG, "🐛", message.toString())
+    }
+
+    override fun info(message: Any) {
+        log(Log.INFO, "ℹ️", message.toString())
+    }
+
+    override fun warning(message: Any) {
+        log(Log.WARN, "⚠️", message.toString())
+    }
+
+    override fun error(message: String, throwable: Throwable?) {
+        log(Log.ERROR, "🔥", message, throwable)
+        recordTheProblemInFirebaseCrashlytics(throwable, message)
+    }
+
+    private fun recordTheProblemInFirebaseCrashlytics(throwable: Throwable?, message: String) {
+        if (throwable != null) {
+            val crashlytics = FirebaseCrashlytics.getInstance()
+            crashlytics.log(message)
+            crashlytics.recordException(throwable)
         }
-
-    override fun debug(message: Any, tag: String) {
-        log(Log.DEBUG, "🐛", message.toString(), tag)
     }
 
-    override fun info(message: Any, tag: String) {
-        log(Log.INFO, "ℹ️", message.toString(), tag)
-    }
-
-    override fun warning(message: Any, tag: String) {
-        log(Log.WARN, "⚠️", message.toString(), tag)
-    }
-
-    override fun error(message: String, tag: String, throwable: Throwable?) {
-        log(Log.ERROR, "🔥", message, tag, throwable)
-    }
-
-    private fun getLoggerInfo(): String {
+    private fun getDetailedSourceInfo(): String {
         val stackTrace = Thread.currentThread().stackTrace
         val loggerClassName = AppLogger::class.java.name
-        var foundLogger = false
-        for (element in stackTrace) {
-            if (element.className.startsWith(loggerClassName)) {
-                foundLogger = true
+        val startIndex = 5
+
+        for (i in startIndex until stackTrace.size) {
+            val element = stackTrace[i]
+            val className = element.className
+            if (className.startsWith(loggerClassName) ||
+                className.startsWith("kotlinx.coroutines.") ||
+                className.startsWith("java.lang.")
+            ) {
                 continue
             }
-            if (foundLogger) {
-                val className = element.className.substringAfterLast('.')
-                return "($className.kt:${element.lineNumber}) - ${element.methodName}()"
-            }
+            val simpleClassName = className.substringAfterLast('.')
+            return "($simpleClassName.kt:${element.lineNumber}) - ${element.methodName}()"
         }
+
         return "(Unknown Source)"
-    }
-
-    private fun generateTag(customTag: String?): String {
-        val callerClassName = Thread.currentThread().stackTrace
-            .getOrNull(4)
-            ?.className
-            ?.substringAfterLast('.') ?: "App"
-
-        return if (customTag != null) {
-            "$TAG_PREFIX-$customTag"
-        } else {
-            "$TAG_PREFIX-$callerClassName"
-        }
     }
 
     private fun log(
         priority: Int,
         emoji: String,
         message: String,
-        tag: String?,
         throwable: Throwable? = null
     ) {
         if (!isLoggerEnabled) return
 
-        val finalTag = generateTag(tag)
+        val maxClassNameLength = MAX_TAG_LENGTH - (TAG_PREFIX.length + 1)
+        val className = this.tag
+        val shortenedClassName = className.take(maxClassNameLength)
+        val finalTag = "$TAG_PREFIX-$shortenedClassName"
         val threadInfo = "[${Thread.currentThread().name}]"
         val header = "$emoji $threadInfo $callerInfo"
 

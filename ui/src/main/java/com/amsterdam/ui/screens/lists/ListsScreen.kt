@@ -37,7 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -46,7 +46,7 @@ import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.application.LocalScaffoldBottomPadding
 import com.amsterdam.ui.components.CreateNewListDialog
-import com.amsterdam.ui.components.ListItem
+import com.amsterdam.ui.screens.lists.components.ListItem
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
@@ -54,13 +54,13 @@ import com.amsterdam.ui.screens.profile.components.NotLoggedInContent
 import com.amsterdam.viewmodel.lists.ListsEffect
 import com.amsterdam.viewmodel.lists.ListsInteractionListener
 import com.amsterdam.viewmodel.lists.ListsUiState
-import com.amsterdam.viewmodel.lists.UserListsViewModel
-import com.amsterdam.viewmodel.shared.uiStates.UserListItemUiState
+import com.amsterdam.viewmodel.lists.WishListsViewModel
+import com.amsterdam.viewmodel.shared.uiStates.WishListItemUiState
 
 @Composable
 fun ListsScreen(
     modifier: Modifier = Modifier,
-    viewModel: UserListsViewModel = hiltViewModel(),
+    viewModel: WishListsViewModel = hiltViewModel(),
 ) {
     val navigationManager = LocalNavManager.current
     val uiState = viewModel.state.collectAsStateWithLifecycle()
@@ -160,7 +160,7 @@ private fun ListsScreenContent(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     showNavigateBackButton = false,
                     title = stringResource(com.amsterdam.ui.R.string.lists),
-                    lastOption = painterResource(R.drawable.ic_add),
+                    lastOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_add),
                     onLastOptionClicked = interaction::onClickAddList,
                 )
 
@@ -206,9 +206,9 @@ private fun ListsScreenContent(
                                         .fillMaxSize(),
                                 columns = GridCells.Adaptive(minSize = 156.dp),
                                 state = rememberLazyGridState(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                             ) {
                                 items(lists) { userList ->
                                     ListItem(
@@ -315,25 +315,25 @@ private fun ListsScreenPreview_WithData() {
                     isLoading = false,
                     userLists =
                         listOf(
-                            UserListItemUiState(
+                            WishListItemUiState(
                                 id = 1,
                                 name = "Favorite Movies",
                                 description = "My favorite movies collection",
                                 itemCount = 15,
                             ),
-                            UserListItemUiState(
+                            WishListItemUiState(
                                 id = 2,
                                 name = "Watch Later",
                                 description = "Movies to watch later",
                                 itemCount = 8,
                             ),
-                            UserListItemUiState(
+                            WishListItemUiState(
                                 id = 3,
                                 name = "Action Movies",
                                 description = "Action genre movies",
                                 itemCount = 23,
                             ),
-                            UserListItemUiState(
+                            WishListItemUiState(
                                 id = 4,
                                 name = "Comedy Collection",
                                 description = "Funny movies",

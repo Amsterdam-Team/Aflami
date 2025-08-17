@@ -22,19 +22,21 @@ data class ListDetailsUiState(
         val posterImageUrl: String = "",
         val rate: String = "",
         val yearOfRelease: String = "",
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult: Boolean = false
     )
 
-sealed interface ListDetailsError {
-    data object NoNetwork : ListDetailsError
-    data object UnknownError : ListDetailsError
+    sealed interface ListDetailsError {
+        data object NoNetwork : ListDetailsError
+        data object UnknownError : ListDetailsError
 
-    companion object {
-        fun toListDetailsError(exception: Throwable): ListDetailsError {
-            return when (exception) {
-                is NetworkException -> NoNetwork
-                else -> UnknownError
+        companion object {
+            fun toListDetailsError(exception: Throwable): ListDetailsError {
+                return when (exception) {
+                    is NetworkException -> NoNetwork
+                    else -> UnknownError
+                }
             }
         }
     }
-}}
+}

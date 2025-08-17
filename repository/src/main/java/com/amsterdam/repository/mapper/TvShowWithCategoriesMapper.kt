@@ -3,8 +3,8 @@ package com.amsterdam.repository.mapper
 import com.amsterdam.entity.TvShow
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategories
 
-fun TvShowWithCategories.toEntity(): TvShow =
-    TvShow(
+fun TvShowWithCategories.toEntity(): TvShow {
+    return TvShow(
         id = tvShow.tvShowId,
         name = tvShow.name,
         description = tvShow.description,
@@ -18,3 +18,4 @@ fun TvShowWithCategories.toEntity(): TvShow =
         seasonCount = tvShow.seasonCount,
         originCountry = tvShow.originCountry
     )
+}

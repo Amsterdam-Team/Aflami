@@ -34,5 +34,4 @@ interface MovieLocalDataSource {
     suspend fun upsertUpcomingMovies(movies: List<MovieLocalDto>)
 
     suspend fun deleteExpiredUpcomingMovies(expirationTime: Instant, storedLanguage: String)
-
 }

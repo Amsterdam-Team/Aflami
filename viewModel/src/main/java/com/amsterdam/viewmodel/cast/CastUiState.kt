@@ -12,7 +12,6 @@ data class CastUiState(
     )
 
     sealed interface CastErrorUiState {
-        object NoNetworkConnection : CastErrorUiState
+        data object NoNetworkConnection : CastErrorUiState
     }
-
 }

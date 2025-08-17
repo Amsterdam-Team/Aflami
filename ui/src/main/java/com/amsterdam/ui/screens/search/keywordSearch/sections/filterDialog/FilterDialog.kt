@@ -25,8 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.amsterdam.designsystem.R
-import com.amsterdam.designsystem.components.IconButton
+import com.amsterdam.ui.R
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
@@ -101,7 +101,7 @@ internal fun FilterDialog(
                 )
 
                 IconButton(
-                    painter = painterResource(R.drawable.ic_cancel),
+                    painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_cancel),
                     contentDescription = "",
                     onClick = interaction::onClickCancel,
                     tint = AppTheme.color.title,

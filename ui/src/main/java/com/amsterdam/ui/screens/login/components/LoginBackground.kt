@@ -12,10 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
+import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 
 @Composable
 private fun BackgroundCircle(
@@ -37,11 +39,11 @@ private fun BackgroundCircle(
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun LoginBackground() {
-
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val screenHeight = configuration.screenHeightDp
     val circles = getBackgroundCircles()
+    val layoutDirection = LocalLayoutDirection.current
 
     Box(
         modifier = Modifier
@@ -56,8 +58,11 @@ fun LoginBackground() {
         repeat(circles.size) { index ->
             val circle = circles[index]
             val size = circle.size
-            val xOffset = (circle.xCoord / 360f) * screenWidth
+            var xOffset = (circle.xCoord / 360f) * screenWidth
             val yOffset = (circle.yCoord / 800f) * screenHeight
+            if (layoutDirection == LayoutDirection.Rtl){
+                xOffset = screenWidth - xOffset - size.value
+            }
             BackgroundCircle(
                 modifier = Modifier
                     .size(size)
@@ -67,14 +72,10 @@ fun LoginBackground() {
     }
 }
 
-
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFF0D090B,
-)
+@ThemeAndLocalePreviews
 @Composable
 private fun LoginBackgroundPreview() {
     AflamiTheme(isDarkTheme = true) {
-        LoginBackground()
+            LoginBackground()
     }
 }

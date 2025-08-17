@@ -30,9 +30,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.amsterdam.designsystem.components.IconButton
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.TextField
+import com.amsterdam.designsystem.components.TextWithClickablePart
 import com.amsterdam.designsystem.components.buttons.ButtonDefaults
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
@@ -197,20 +198,14 @@ private fun LoginScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = stringResource(R.string.dont_have_account),
-                    style = AppTheme.textStyle.label.medium,
-                    color = AppTheme.color.hint,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-
-                PlainTextButton(
-                    stringResource(R.string.create_account),
+                TextWithClickablePart(
+                    nonClickableText = stringResource(R.string.dont_have_account),
+                    clickableText = stringResource(R.string.create_account),
                     onClick = interactionListener::onCreateAccountClicked,
-                    isLoading = false,
-                    isEnabled = true,
-                    isNegative = false,
-                    style = AppTheme.textStyle.label.medium
+                    nonClickableTextColor = AppTheme.color.hint,
+                    nonClickableTextStyle = AppTheme.textStyle.label.medium,
+                    clickableTextColor = ButtonDefaults.textButtonColors().containerColor,
+                    clickableTextStyle = AppTheme.textStyle.label.medium
                 )
             }
         }

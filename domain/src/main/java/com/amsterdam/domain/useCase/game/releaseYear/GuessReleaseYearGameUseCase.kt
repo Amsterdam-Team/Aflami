@@ -1,5 +1,6 @@
 package com.amsterdam.domain.useCase.game.releaseYear
 
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 
 class GuessReleaseYearGameUseCase(
@@ -10,11 +11,11 @@ class GuessReleaseYearGameUseCase(
     suspend fun startGame(difficultyType: GameDifficulty.DifficultyType) =
         getGameData(difficultyType)
 
-    suspend fun giveHint(question: GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion) =
+    suspend fun giveHint(question: GameQuestion<Int>) =
         doHint(question)
 
     suspend fun answer(
-        question: GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion,
+        question: GameQuestion<Int>,
         answer: Int,
         difficultyType: GameDifficulty.DifficultyType
     ) = submitAnswer(question, answer, difficultyType)

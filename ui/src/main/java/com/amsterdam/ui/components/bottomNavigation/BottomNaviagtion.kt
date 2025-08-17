@@ -11,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.amsterdam.designsystem.components.bottomNavBar.NavigationBar
 import com.amsterdam.ui.navigation.Route
 
 
 @Composable
 fun BottomNavigation(
     currentDestination: NavDestination?,
-    onNavigate: (Route) -> Unit,
+    onNavigate: (Route, Route) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val visible =
@@ -48,7 +47,9 @@ fun BottomNavigation(
             modifier = modifier,
             items = BottomBarItems.entries,
             selectedBottomBarItems = selectedDestination,
-            onDestinationClicked = { onNavigate(it) },
+            onDestinationClicked = {
+                onNavigate(it, selectedDestination.route)
+            },
         )
     }
 }

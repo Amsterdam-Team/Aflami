@@ -9,7 +9,6 @@ import javax.inject.Inject
 class RecentSearchRepositoryImpl @Inject constructor(
     private val recentSearchLocalDataSource: RecentSearchLocalDataSource
 ) : RecentSearchRepository {
-
     override suspend fun getAllRecentSearches(): List<String> {
         return recentSearchLocalDataSource.getRecentSearches().toEntityList()
     }
@@ -25,5 +24,4 @@ class RecentSearchRepositoryImpl @Inject constructor(
     override suspend fun addRecentSearch(searchKeyword: String) {
         recentSearchLocalDataSource.upsertRecentSearch(SearchLocalDto(searchKeyword))
     }
-
 }

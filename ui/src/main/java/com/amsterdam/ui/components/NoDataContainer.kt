@@ -29,7 +29,7 @@ fun NoDataContainer(
     modifier: Modifier = Modifier,
     title: String = "",
     description: String = "",
-    imageAlpha: Float = 1f,
+    imageAlpha: Float = .68f,
 ) {
     Column(
         modifier =
@@ -47,14 +47,17 @@ fun NoDataContainer(
         )
         if (title.isNotEmpty()) {
             Text(
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    .alpha(.68f),
                 text = title,
                 style = AppTheme.textStyle.title.medium,
                 color = AppTheme.color.title,
+                textAlign = TextAlign.Center
             )
         }
         if (description.isNotEmpty()) {
             Text(
+                modifier = Modifier.alpha(.68f),
                 text = description,
                 style = AppTheme.textStyle.body.small,
                 color = AppTheme.color.body,

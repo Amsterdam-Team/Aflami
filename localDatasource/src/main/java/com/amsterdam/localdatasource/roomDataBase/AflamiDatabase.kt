@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.amsterdam.localdatasource.roomDataBase.converter.InstantConverter
 import com.amsterdam.localdatasource.roomDataBase.converter.LocalDateConverter
-import com.amsterdam.localdatasource.roomDataBase.converter.SearchTypeConverter
 import com.amsterdam.localdatasource.roomDataBase.daos.CategoryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.CountryDao
 import com.amsterdam.localdatasource.roomDataBase.daos.MovieCategoryInterestDao
@@ -62,7 +61,7 @@ import com.amsterdam.repository.dto.local.profile.AccountDetailsLocalDto
     version = 1,
     exportSchema = false
 )
-@TypeConverters(InstantConverter::class, SearchTypeConverter::class, LocalDateConverter::class)
+@TypeConverters(InstantConverter::class, LocalDateConverter::class)
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun recentSearchDao(): RecentSearchDao
     abstract fun countryDao(): CountryDao

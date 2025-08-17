@@ -19,22 +19,25 @@ class AuthenticationRepositoryImpl @Inject constructor(
     private val profileLocalDataSource: ProfileLocalDataSource,
     val cryptoManager: CryptoManager,
 ) : AuthenticationRepository {
-    override suspend fun loginWithPassword(username: String, password: String, ) {
+    override suspend fun loginWithPassword(username: String, password: String) {
         authenticationRemoteDataSource.loginWithPassword(username, password).let { sessionId ->
-        authenticationLocalDataSource.cacheSessionId(cryptoManager.encryptString(sessionId)) }
+            authenticationLocalDataSource.cacheSessionId(cryptoManager.encryptString(sessionId))
+        }
         authenticationLocalDataSource.setSessionType(SessionType.LOGGED_IN.toLocalDto())
     }
 
-    override suspend fun getSessionId(): String =
-        cryptoManager.decryptString(authenticationLocalDataSource.getCachedSessionId())
+    override suspend fun getSessionId(): String {
+        return cryptoManager.decryptString(authenticationLocalDataSource.getCachedSessionId())
             ?: throw UnknownException()
+    }
 
     override suspend fun setSessionType(sessionType: SessionType) {
         authenticationLocalDataSource.setSessionType(sessionType.toLocalDto())
     }
 
-    override suspend fun getSessionType(): SessionType =
-        stringToSessionTypeEntity(authenticationLocalDataSource.getSessionType())
+    override suspend fun getSessionType(): SessionType {
+        return stringToSessionTypeEntity(authenticationLocalDataSource.getSessionType())
+    }
 
     override suspend fun logout() {
         authenticationLocalDataSource.clearCachedSessionId()

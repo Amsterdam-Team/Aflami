@@ -3,8 +3,8 @@ package com.amsterdam.repository.mapper
 import com.amsterdam.entity.Movie
 import com.amsterdam.repository.dto.local.relation.MovieWithCategories
 
-fun MovieWithCategories.toEntity(): Movie =
-    Movie(
+fun MovieWithCategories.toEntity(): Movie {
+    return Movie(
         id = movie.movieId,
         name = movie.name,
         description = movie.description,
@@ -18,3 +18,4 @@ fun MovieWithCategories.toEntity(): Movie =
         runTimeInMinutes = movie.movieLength,
         originCountry = movie.originCountry
     )
+}

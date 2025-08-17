@@ -7,9 +7,7 @@ interface RecentSearchLocalDataSource {
 
     suspend fun getRecentSearches(): List<SearchLocalDto>
 
-
     suspend fun deleteRecentSearches()
 
-    suspend fun deleteRecentSearchByKeyword(
-        keyword: String)
+    suspend fun deleteRecentSearchByKeyword(keyword: String)
 }

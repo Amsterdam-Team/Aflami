@@ -31,8 +31,8 @@ class GetAvailableGamesUseCase {
         val games = listOf(
             Game(gameType = Game.GameType.GUESS_CHARACTER, requiredPoints = 0),
             Game(gameType = Game.GameType.GUESS_MOVIE_BY_POSTER, requiredPoints = 0),
-            Game(gameType = Game.GameType.GUESS_MOVIE_BY_RELEASE, requiredPoints = 400),
-            Game(gameType = Game.GameType.GUESS_MOVIE_BY_GENRE, requiredPoints = 400)
+            Game(gameType = Game.GameType.GUESS_RELEASE_YEAR, requiredPoints = 400),
+            Game(gameType = Game.GameType.GUESS_GENRE, requiredPoints = 400)
         )
         return AvailableGames(games, defaultLevels)
     }

@@ -13,7 +13,6 @@ class ResetPasswordViewModel @Inject constructor(dispatcherProvider: DispatcherP
         dispatcherProvider
     ) {
 
-
     init {
         updateState { it.copy(resetPasswordUrl = BuildConfig.MOVIE_RESET_PASSWORD_URL) }
     }

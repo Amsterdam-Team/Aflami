@@ -9,7 +9,6 @@ import com.amsterdam.viewmodel.shared.uiStates.MovieGenreItemUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-
 data class CategoriesMoviesDetailsUiState(
     val selectedGenre: MovieGenre = MovieGenre.COMEDY,
     val movieGenres: List<MovieGenreItemUiState> = defaultMovieGenres,
@@ -23,8 +22,10 @@ data class CategoriesMoviesDetailsUiState(
         val posterImageUrl: String = "",
         val rate: String = "",
         val yearOfRelease: String = "",
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult : Boolean = false
     )
+
     sealed interface CategoriesDetailsErrorState {
         data object NoNetworkConnection : CategoriesDetailsErrorState
         data object UnknownError : CategoriesDetailsErrorState

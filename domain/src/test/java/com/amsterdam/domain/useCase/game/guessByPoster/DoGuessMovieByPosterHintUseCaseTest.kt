@@ -3,6 +3,7 @@ package com.amsterdam.domain.useCase.game.guessByPoster
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
 import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
@@ -41,10 +42,10 @@ class DoGuessMovieByPosterHintUseCaseTest {
 
     private val currentPoints = 20
     private val lowPoints = 5
-    private val moviePosterQuestion = MoviePosterQuestion(
-        posterUrl = "Sample Movie",
-        movieNameChoices = listOf("spiderman", "batman", "superman"),
-        correctMovieName = "spiderman",
-        questionTimeSeconds = 30
+    private val moviePosterQuestion = GameQuestion(
+        question = "Sample Movie",
+        choices = listOf("spiderman", "batman", "superman"),
+        correctChoice = "spiderman",
+        questionTime = 30
     )
 }

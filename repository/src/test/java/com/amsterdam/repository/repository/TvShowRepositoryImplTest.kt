@@ -6,7 +6,7 @@ import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
 import com.amsterdam.repository.dto.remote.CastAndCrewRemoteResponse
 import com.amsterdam.repository.dto.remote.TvShowRemoteResponse
 import com.amsterdam.repository.dto.remote.VideoRemoteResponse
-import com.amsterdam.repository.mapper.remote.toEntityList
+import com.amsterdam.repository.mapper.toEntityList
 import com.amsterdam.repository.utils.remoteCastDto
 import com.amsterdam.repository.utils.remoteTvShowItemDto
 import com.amsterdam.repository.utils.tvShowDetailsRemoteResponse

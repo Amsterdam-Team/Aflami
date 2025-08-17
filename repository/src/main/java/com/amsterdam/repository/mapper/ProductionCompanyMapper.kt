@@ -12,5 +12,6 @@ fun ProductionCompanyRemoteDto.toEntity(): ProductionCompany {
     )
 }
 
-fun List<ProductionCompanyRemoteDto>.toEntityList(): List<ProductionCompany> =
-    map { it.toEntity() }
+fun List<ProductionCompanyRemoteDto>.toEntityList(): List<ProductionCompany> {
+    return map { it.toEntity() }
+}

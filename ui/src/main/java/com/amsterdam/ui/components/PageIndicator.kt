@@ -22,9 +22,9 @@ import com.amsterdam.designsystem.theme.AppTheme
 
 @Composable
 fun PageIndicator(
-    modifier: Modifier = Modifier,
     pageCount: Int,
     currentPage: Int,
+    modifier: Modifier = Modifier,
     selectedColor: Color = AppTheme.color.onPrimary,
     unselectedColor: Color = AppTheme.color.onPrimaryHint,
 ) {

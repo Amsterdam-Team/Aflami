@@ -3,8 +3,9 @@ package com.amsterdam.ui.screens.gameResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,22 +27,22 @@ import com.amsterdam.designsystem.components.Scaffold
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.entity.Game
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.screens.gameResult.component.CompletionCard
 import com.amsterdam.ui.screens.gameResult.component.GameResultAppBar
 import com.amsterdam.ui.screens.gameResult.component.StatCard
 import com.amsterdam.ui.screens.login.components.LoginBackground
+import com.amsterdam.viewmodel.gameResult.GameResultViewModel
 import com.amsterdam.viewmodel.gameResult.ResultInteractionListener
 import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.gameResult.ResultUiState
-import com.amsterdam.viewmodel.gameResult.GameResultViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ResultScreen(
     viewModel: GameResultViewModel = hiltViewModel()
-
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navigationManager = LocalNavManager.current
@@ -50,20 +51,20 @@ fun ResultScreen(
             when (effect) {
                 is ResultSideEffect.NavigateToGame -> {
                     when (effect.gameType) {
-                        ResultSideEffect.GameType.GUESS_MOVIE_BY_POSTER -> {
-                            navigationManager.toGuessMovieByPosterGame(effect.difficulty.difficultyType.name)
+                        Game.GameType.GUESS_MOVIE_BY_POSTER -> {
+                            navigationManager.toGuessMovieByPosterGame(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameType.GUESS_RELEASE_YEAR -> {
-                            navigationManager.toGuessReleaseYearGame(effect.difficulty.difficultyType.name)
+                        Game.GameType.GUESS_RELEASE_YEAR -> {
+                            navigationManager.toGuessReleaseYearGame(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameType.GUESS_CHARACTER -> {
-                            navigationManager.toGuessCharacter(effect.difficulty.difficultyType.name)
+                        Game.GameType.GUESS_CHARACTER -> {
+                            navigationManager.toGuessCharacter(effect.difficultyType)
                         }
 
-                        ResultSideEffect.GameType.GUESS_GENRE -> {
-                            navigationManager.toGenreGame(effect.difficulty.difficultyType.name)
+                        Game.GameType.GUESS_GENRE -> {
+                            navigationManager.toGenreGame(effect.difficultyType)
                         }
                     }
                 }
@@ -87,11 +88,13 @@ fun ResultScreenContent(
 ) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(),
+                .fillMaxSize()
+                .navigationBarsPadding(),
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -121,39 +124,48 @@ fun ResultScreenContent(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding())
-                    .verticalScroll(rememberScrollState())
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
+                        .fillMaxSize()
+                        .padding(bottom = innerPadding.calculateBottomPadding())
+                        .verticalScroll(rememberScrollState())
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
             ) {
-                GameResultAppBar(onCloseClicked = listener::onClickClose)
-
-                Spacer(modifier = Modifier.height(16.dp))
+                GameResultAppBar(
+                    gameType = state.gameType,
+                    onCloseClicked = listener::onClickClose
+                )
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 12.dp),
+                        .padding(start = 12.dp, end = 12.dp, top = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CompletionCard()
-                    Spacer(modifier = Modifier.height(8.dp))
+                    CompletionCard(isVictory = state.isVictory)
+
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth()
+                            .height(IntrinsicSize.Min),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         StatCard(
-                            modifier = Modifier.weight(1f),
-                            iconRes = com.amsterdam.designsystem.R.drawable.img_user_rating,
-                            label = "Points Achieved",
-                            value = "${state.points} Pts."
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
+                            iconRes = R.drawable.img_user_rating,
+                            label = stringResource(R.string.points_acheived),
+                            value = "${state.points} ${stringResource(R.string.points_as_pts)}"
                         )
 
                         StatCard(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
                             iconRes = R.drawable.img_user_history,
-                            label = "Total time",
-                            value = "${state.timeInSeconds} Sec."
+                            label = stringResource(R.string.total_time),
+                            value = "${state.timeInSeconds} ${stringResource(R.string.seconds_as_sec)}"
                         )
                     }
                 }

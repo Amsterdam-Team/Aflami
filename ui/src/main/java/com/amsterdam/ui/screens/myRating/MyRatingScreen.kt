@@ -34,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.TabsLayout
@@ -167,13 +167,14 @@ private fun MyRatingContent(
                                     safetyLevel = safetyLevel,
                                     onLoading = { ImageLoadingIndicator() },
                                     onError = { ImageErrorIndicator() },
+                                    isAdult = isAdult
                                 )
                             },
                             movieType = stringResource(R.string.movies),
                             movieYear = yearOfRelease,
                             movieTitle = name,
                             movieRating = rate,
-                            topIcon = painterResource(R.drawable.ic_star_off),
+                            topIcon = painterResource(com.amsterdam.designsystem.R.drawable.ic_star_off),
                             onTopIconClick = { interaction.onClickDeleteMyMovieRatingIcon(id) },
                             onClick = { interaction.onClickMovieCard(id) }
                         )
@@ -194,13 +195,14 @@ private fun MyRatingContent(
                                     model = posterImageUrl,
                                     onLoading = { ImageLoadingIndicator() },
                                     onError = { ImageErrorIndicator() },
+                                    isAdult = isAdult
                                 )
                             },
                             movieType = stringResource(R.string.tv_shows),
                             movieYear = yearOfRelease,
                             movieTitle = name,
                             movieRating = rate,
-                            topIcon = painterResource(R.drawable.ic_star_off),
+                            topIcon = painterResource(com.amsterdam.designsystem.R.drawable.ic_star_off),
                             onTopIconClick = { interaction.onClickDeleteMyTvShowRatingIcon(id) },
                             onClick = { interaction.onClickTvShowCard(id) }
                         )

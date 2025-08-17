@@ -110,11 +110,14 @@ fun LazyListScope.popularSection(
                             )
                         }
 
-                        DisplayMediaGenres(
-                            modifier = Modifier
-                                .zIndex(2f),
-                            mediaItem = state.mediaItems[pagerState.currentPage % state.mediaItems.size],
-                        )
+                        Crossfade(
+                            targetState = pagerState.currentPage,
+                            animationSpec = tween(500, easing = FastOutSlowInEasing)
+                        ) { page ->
+                            DisplayMediaGenres(
+                                mediaItem = state.mediaItems[page % state.mediaItems.size]
+                            )
+                        }
                     }
                 }
             }

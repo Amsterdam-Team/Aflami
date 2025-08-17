@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.LoadingContainer
@@ -71,7 +71,7 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavManager
-import com.amsterdam.ui.components.AddToListDialog
+import com.amsterdam.ui.screens.movieDetails.components.AddToListDialog
 import com.amsterdam.ui.components.CategoryChip
 import com.amsterdam.ui.components.CreateNewListDialog
 import com.amsterdam.ui.components.MustLoginDialog
@@ -100,7 +100,7 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsViewModel
-import com.amsterdam.viewmodel.movieDetails.UserListUiState
+import com.amsterdam.viewmodel.movieDetails.WishListUiState
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.shared.uiStates.MediaType
 import kotlinx.coroutines.delay
@@ -156,18 +156,18 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
                 is MovieDetailsEffect.LaunchMovieVideoEffect -> openYouTubeVideo(
                     context, effect.url
                 ) {
-                    SnackBarManager.showError(context.getString(com.amsterdam.ui.R.string.video_launch_error))
+                    SnackBarManager.showError(context.getString(R.string.video_launch_error))
                 }
 
                 MovieDetailsEffect.MovieAddedToListError -> {
                     SnackBarManager.showError(
-                        context.getString(com.amsterdam.ui.R.string.failed_to_add_to_list),
+                        context.getString(R.string.failed_to_add_to_list),
                     )
                 }
 
                 MovieDetailsEffect.MovieAddedToListSuccessfully -> {
                     SnackBarManager.showSuccess(
-                        context.getString(com.amsterdam.ui.R.string.added_to_list_successfully),
+                        context.getString(R.string.added_to_list_successfully),
                     )
                 }
 
@@ -198,7 +198,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel = hiltViewModel()) {
 fun MovieContent(
     state: MovieDetailsUiState,
     movieDetailsInteractionListener: MovieDetailsInteractionListener,
-    rateDialogInteractionListener: RateDialogInteractionListener
+    rateDialogInteractionListener: RateDialogInteractionListener,
 ) {
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
@@ -584,38 +584,24 @@ private fun SearchByActorContentPreview() {
                 override fun onClickShowAllCast() {}
                 override fun onClickBack() {}
                 override fun onClickRetryRequest() {}
-
                 override fun onClickAddToList() {}
-
-                override fun onSaveMovieToList(
-                    movieId: Long, listIds: List<Long>
-                ) {
-                }
-
+                override fun onSaveMovieToList(movieId: Long, listIds: List<Long>) {}
                 override fun onClickCreateList() {}
-
                 override fun onChangeListName(listName: String) {}
-
                 override fun onClickCreateNewList() {}
-
-                override fun onSelectedListChange(selectedLists: List<UserListUiState>) {}
-
+                override fun onSelectedListChange(selectedLists: List<WishListUiState>) {}
                 override fun onClickRate() {}
-
                 override fun onClickNavigateToLogin() {}
-
                 override fun onClickCancel() {}
                 override fun onClickSimilarMovie(movieId: Long) {}
                 override fun onDescriptionExpansionToggled() {}
                 override fun onReviewExpansionToggled(reviewId: String) {}
-
                 override fun onClickPlayVideo() {}
             },
             rateDialogInteractionListener = object : RateDialogInteractionListener {
                 override fun onClickCancelRateDialog() {}
                 override fun onClickSubmit() {}
                 override fun onChangeRating(newRate: Int) {}
-
             })
     }
 }

@@ -5,8 +5,8 @@ import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.remote.MovieItemRemoteDto
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun MovieLocalDto.toEntity(): Movie =
-    Movie(
+fun MovieLocalDto.toEntity(): Movie {
+    return Movie(
         id = movieId,
         name = name,
         description = description,
@@ -16,8 +16,10 @@ fun MovieLocalDto.toEntity(): Movie =
         categories = emptyList(),
         popularity = popularity,
         runTimeInMinutes = movieLength,
-        originCountry = originCountry
+        originCountry = originCountry,
+        isAdult = isAdult
     )
+}
 
 fun MovieItemRemoteDto.toEntity(
     isPoster: Boolean = true,
@@ -37,14 +39,14 @@ fun MovieItemRemoteDto.toEntity(
         popularity = popularity,
         originCountry = originCountry.firstOrNull() ?: "",
         runTimeInMinutes = runtime,
-        videoUrl = videoUrl
+        videoUrl = videoUrl,
+        isAdult = adult
     )
 }
 
-
-fun List<MovieItemRemoteDto>.toMovieEntityList(isPoster: Boolean = true): List<Movie> =
-    map { it.toEntity(isPoster) }
-
+fun List<MovieItemRemoteDto>.toMovieEntityList(isPoster: Boolean = true): List<Movie> {
+    return map { it.toEntity(isPoster) }
+}
 
 fun MovieItemRemoteDto.toLocalDto(isPoster: Boolean = true, storedLanguage: String): MovieLocalDto {
     val imageUrl = if (isPoster) fullPosterUrl else fullBackdropUrl
@@ -59,7 +61,8 @@ fun MovieItemRemoteDto.toLocalDto(isPoster: Boolean = true, storedLanguage: Stri
         rating = voteAverage.toFloat(),
         popularity = popularity,
         movieLength = runtime,
-        originCountry = originCountry.firstOrNull() ?: ""
+        originCountry = originCountry.firstOrNull() ?: "",
+        isAdult = adult
     )
 }
 

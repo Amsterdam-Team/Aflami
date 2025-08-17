@@ -2,7 +2,7 @@ package com.amsterdam.viewmodel.home
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.domain.models.Mood
+import com.amsterdam.domain.utils.Mood
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.shared.defaultMovieGenres
 import com.amsterdam.viewmodel.shared.uiStates.MediaType
@@ -70,6 +70,7 @@ data class HomeUiState(
         val posterUrl: String = "",
         val type: MediaType = MediaType.MOVIE,
         val categories: List<String> = emptyList(),
+        val isAdult: Boolean = false
     )
 
     data class TopRatedMoviesUiState(
@@ -78,7 +79,8 @@ data class HomeUiState(
         val posterImageUrl: String = "",
         val rate: String = "",
         val yearOfRelease: String = "",
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult: Boolean = false
     )
 
     data class UpcomingMoviesUiState(
@@ -87,7 +89,8 @@ data class HomeUiState(
         val posterImageUrl: String = "",
         val rate: String = "",
         val yearOfRelease: String = "",
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult: Boolean = false
     )
 
     data class MoodPickerItemUiState(
@@ -96,7 +99,8 @@ data class HomeUiState(
         val posterImageUrl: String = "",
         val rate: String = "",
         val yearOfRelease: String = "",
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult: Boolean = false
     )
 
     data class ContinueWatchingHomeItemUiState(
@@ -106,7 +110,8 @@ data class HomeUiState(
         val yearOfRelease: String = "",
         val rate: String = "",
         val dateAdded: Instant = Clock.System.now(),
-        val mediaType: MediaType = MediaType.MOVIE
+        val mediaType: MediaType = MediaType.MOVIE,
+        val isAdult: Boolean = false
     )
 
     sealed class HomeError {
@@ -115,7 +120,7 @@ data class HomeUiState(
 
         companion object {
             fun toHomeErrorUiState(exception: AflamiException): HomeError {
-                return when(exception){
+                return when (exception) {
                     is NetworkException -> NetworkError
                     else -> UnknownError
                 }

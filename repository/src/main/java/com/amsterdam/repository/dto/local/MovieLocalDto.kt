@@ -22,5 +22,6 @@ data class MovieLocalDto(
     val popularity: Double,
     val rating: Float,
     val originCountry: String,
-    val movieLength: Int
+    val movieLength: Int,
+    val isAdult: Boolean
 )

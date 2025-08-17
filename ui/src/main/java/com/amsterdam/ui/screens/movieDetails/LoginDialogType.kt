@@ -2,7 +2,7 @@ package com.amsterdam.ui.screens.movieDetails
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
 
 @Composable

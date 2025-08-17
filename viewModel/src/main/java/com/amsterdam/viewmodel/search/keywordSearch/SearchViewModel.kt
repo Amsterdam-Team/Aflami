@@ -30,12 +30,12 @@ import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,7 +71,13 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
-        updateState { it.copy(recentSearches = recentSearches, errorUiState = null, isLoading = false) }
+        updateState {
+            it.copy(
+                recentSearches = recentSearches,
+                errorUiState = null,
+                isLoading = false
+            )
+        }
     }
 
     private fun observeSearchKeywordChanges() {
@@ -93,7 +99,7 @@ class SearchViewModel @Inject constructor(
                     config = PagingConfig(pageSize = 20),
                     pagingSourceFactory = {
                         PagingSource { page ->
-                          getAndFilterMoviesByKeywordUseCase(
+                            getAndFilterMoviesByKeywordUseCase(
                                 keyword = keyword,
                                 page = page,
                                 rating = state.value.movieFilterItemUiState.selectedStarIndex,
@@ -209,7 +215,12 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onFetchError(exception: AflamiException) {
-        updateState { it.copy(errorUiState = SearchErrorState.toSearchErrorState(exception), isLoading = false) }
+        updateState {
+            it.copy(
+                errorUiState = SearchErrorState.toSearchErrorState(exception),
+                isLoading = false
+            )
+        }
     }
 
     private fun resetFilterState() {
@@ -228,7 +239,14 @@ class SearchViewModel @Inject constructor(
             _keyword.update { keyword }
         }
         if (keyword.isBlank()) {
-            updateState { it.copy(movies = emptyFlow(), tvShows = emptyFlow(), errorUiState = null, isLoading = false) }
+            updateState {
+                it.copy(
+                    movies = emptyFlow(),
+                    tvShows = emptyFlow(),
+                    errorUiState = null,
+                    isLoading = false
+                )
+            }
         }
         updateState { it.copy(keyword = keyword) }
     }
@@ -277,7 +295,7 @@ class SearchViewModel @Inject constructor(
     override fun onClickClearRecentSearch(keyword: String) {
         tryToExecute(
             action = { recentSearchesUseCase.deleteRecentSearch(searchKeyword = keyword) },
-            onSuccess = { fetchRecentSearches(startLoading = false)},
+            onSuccess = { fetchRecentSearches(startLoading = false) },
             onError = ::onFetchError,
         )
     }

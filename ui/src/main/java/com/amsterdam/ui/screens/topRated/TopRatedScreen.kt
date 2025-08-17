@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.theme.AppTheme
@@ -81,6 +81,15 @@ private fun TopRatedContent(
     interactionListener: TopRatedInteractionListener,
     mediaItems: LazyPagingItems<TopRatedMediaItemUiState>,
 ) {
+    AnimatedSectionVisibility(
+        visible = state.isLoading
+    ) {
+        LoadingContainer(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(10f)
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -115,16 +124,6 @@ private fun TopRatedContent(
                     .onSizeChanged { headerHeight = it.height.dp },
                 onNavigateBackClicked = interactionListener::onClickBack
             )
-
-            AnimatedSectionVisibility(
-                visible = state.isLoading
-            ) {
-                LoadingContainer(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(10f)
-                )
-            }
 
             AnimatedSectionVisibility(
                 visible = state.error == TopRatedUiState.TopRatedError.NetworkError

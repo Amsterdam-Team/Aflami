@@ -5,8 +5,8 @@ import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.remote.TvShowItemRemoteDto
 import com.amsterdam.repository.utils.toSafeLocalDate
 
-fun TvShowLocalDto.toEntity(): TvShow =
-    TvShow(
+fun TvShowLocalDto.toEntity(): TvShow {
+    return TvShow(
         id = tvShowId,
         name = name,
         description = description,
@@ -18,6 +18,7 @@ fun TvShowLocalDto.toEntity(): TvShow =
         seasonCount = seasonCount,
         originCountry = originCountry
     )
+}
 
 fun TvShowItemRemoteDto.toEntity(
     isPoster: Boolean = true
@@ -37,8 +38,9 @@ fun TvShowItemRemoteDto.toEntity(
     )
 }
 
-fun List<TvShowItemRemoteDto>.toEntityList(isPoster: Boolean = true): List<TvShow> =
-    map { it.toEntity(isPoster) }
+fun List<TvShowItemRemoteDto>.toEntityList(isPoster: Boolean = true): List<TvShow> {
+    return map { it.toEntity(isPoster) }
+}
 
 fun TvShowItemRemoteDto.toLocalDto(storedLanguage: String): TvShowLocalDto {
     return TvShowLocalDto(
@@ -55,5 +57,6 @@ fun TvShowItemRemoteDto.toLocalDto(storedLanguage: String): TvShowLocalDto {
     )
 }
 
-fun List<TvShowItemRemoteDto>.toLocalTvShowDtoList(storedLanguage: String) =
-    map { it.toLocalDto(storedLanguage) }
+fun List<TvShowItemRemoteDto>.toLocalTvShowDtoList(storedLanguage: String): List<TvShowLocalDto> {
+    return map { it.toLocalDto(storedLanguage) }
+}

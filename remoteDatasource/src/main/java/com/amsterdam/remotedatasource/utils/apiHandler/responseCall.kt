@@ -14,23 +14,9 @@ import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.net.ConnectException
 
-suspend inline fun <reified T> responseCall(crossinline execute: suspend () -> T): T =
-    try {
-        execute()
-    } catch (e: HttpException) {
-        e.printStackTrace()
-        throw ServerErrorException()
-    } catch (e: ConnectException) {
-        throw NoInternetException()
-    } catch (e: SerializationException) {
-        throw ServerErrorException()
-    } catch (e: Exception) {
-        throw NetworkException()
-    }
-
 suspend inline fun <reified T> responseCall(
     crossinline execute: suspend () -> T,
-    onHttpError: (String) -> Int,
+    onHttpError: (String) -> Int? = { null },
 ): T =
     try {
         execute()
@@ -49,7 +35,7 @@ suspend inline fun <reified T> responseCall(
         throw NetworkException()
     }
 
-fun mapHttpCodeToDomainException(code: Int): NetworkException =
+fun mapHttpCodeToDomainException(code: Int?): NetworkException =
     when (code) {
         3, 14, 30 -> InvalidCredentialsException()
         7, 10, 16, 17, 33, 35, 36 -> InvalidSessionException()

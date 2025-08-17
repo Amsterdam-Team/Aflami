@@ -18,6 +18,7 @@ data class WatchHistoryUiState(
         val posterImageUrl: String = "",
         val yearOfRelease: String = "",
         val rate: String = "",
+        val isAdult: Boolean = false
     )
 
     data class WatchHistoryTvShowUiState(
@@ -26,7 +27,9 @@ data class WatchHistoryUiState(
         val posterImageUrl: String = "",
         val yearOfRelease: String = "",
         val rate: String = "",
+        val isAdult: Boolean = false
     )
+
     sealed class WatchHistoryError {
         data object NetworkError : WatchHistoryError()
     }

@@ -2,6 +2,8 @@ package com.amsterdam.domain.useCase.game.guessByPoster
 
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 
 class SubmitGuessMovieByPosterAnswerUseCase(
@@ -10,12 +12,12 @@ class SubmitGuessMovieByPosterAnswerUseCase(
 ) {
 
     suspend operator fun invoke(
-        question: MoviePosterQuestion,
+        question: GameQuestion<String>,
         answer: String,
         difficultyType: GameDifficulty.DifficultyType
     ): AnswerResult {
         val gameDifficulty = getDifficulty(difficultyType)
-        val correct = question.correctMovieName == answer
+        val correct = question.correctChoice == answer
         var earnedPoints = 0
         if (correct) {
             updatePoints(gameDifficulty.pointsPerQuestion)
@@ -23,11 +25,6 @@ class SubmitGuessMovieByPosterAnswerUseCase(
 
         }
 
-        return AnswerResult(correct,earnedPoints)
+        return AnswerResult(correct, earnedPoints)
     }
-
-    data class AnswerResult(
-        val isCorrect: Boolean,
-        val earnedPoints: Int
-    )
 }

@@ -84,8 +84,7 @@ fun Chip(
             color = labelColor,
             style = AppTheme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            maxLines = 2,
-            minLines = 2,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
     }

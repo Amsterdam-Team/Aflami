@@ -92,6 +92,7 @@ private fun DialogContent(
                         modifier = Modifier.fillMaxSize(),
                         safetyLevel = safetyLevel,onLoading = { ImageLoadingIndicator() },
                         onError = { ImageErrorIndicator() },
+                        isAdult = movie.isAdult
                     )
                 },
                 movieType = stringResource(R.string.movie),

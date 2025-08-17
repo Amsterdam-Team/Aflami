@@ -48,7 +48,7 @@ fun ContinueWatchingMediaItemsGrid(
                 else stringResource(com.amsterdam.ui.R.string.tv)
 
             MediaCard(
-                movieImage = { MovieImage(item.posterImageUrl) },
+                movieImage = { MovieImage(item.posterImageUrl,item.isAdult) },
                 movieType = movieType,
                 movieYear = item.yearOfRelease,
                 movieTitle = item.name,

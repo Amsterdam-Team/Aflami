@@ -1,6 +1,6 @@
 package com.amsterdam.ui.screens.letsPlay
 
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState.DifficultyLevelUiState
 
 fun DifficultyLevelUiState.getDifficultyLevelTextId(): Int {

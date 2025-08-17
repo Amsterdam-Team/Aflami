@@ -10,4 +10,6 @@ fun TvShowItemRemoteDto.toTvShowUserRateEntity(dto: TvShowItemRemoteDto): UserRa
     )
 }
 
-fun List<TvShowItemRemoteDto>.toTvShowUserRateEntityList(): List<UserRatedTvShow> = map { it.toTvShowUserRateEntity(it)}
+fun List<TvShowItemRemoteDto>.toTvShowUserRateEntityList(): List<UserRatedTvShow> {
+    return map { it.toTvShowUserRateEntity(it) }
+}

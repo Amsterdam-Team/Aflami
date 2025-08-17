@@ -1,7 +1,7 @@
 package com.amsterdam.repository.dto.remote
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class VideoRemoteDto(
@@ -34,7 +34,7 @@ data class VideoRemoteDto(
 
     @SerialName("id")
     val id: String
-){
+) {
     val fullVideoUrl: String?
         get() = YOUTUBE_BASE_URL + key
 

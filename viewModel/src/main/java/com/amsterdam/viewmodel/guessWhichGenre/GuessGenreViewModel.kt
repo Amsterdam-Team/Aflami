@@ -3,16 +3,21 @@ package com.amsterdam.viewmodel.guessWhichGenre
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
-import com.amsterdam.domain.timer.TimerHandler
-import com.amsterdam.domain.useCase.game.whichGenre.GenerateMovieGenreQuestionsUseCase.MovieGenreQuestion
+import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
+import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
+import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
 import com.amsterdam.domain.useCase.game.whichGenre.GuessMovieGenreUseCase
-import com.amsterdam.domain.useCase.game.whichGenre.SubmitGuessMovieGenreAnswerUseCase
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty.DifficultyType
+import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
 import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,17 +25,18 @@ import javax.inject.Inject
 @HiltViewModel
 class GuessGenreViewModel @Inject constructor(
     private val guessMovieGenreUseCase: GuessMovieGenreUseCase,
+    private val createGameSessionIdUseCase: CreateGameSessionIdUseCase,
+    private val addPointsToGameUseCase: AddPointsToGameUseCase,
+    private val addSecondToGameTimeUseCase: AddSecondToGameTimeUseCase,
     private val timerHandler: TimerHandler,
     private val dispatcherProvider: DispatcherProvider,
     args: GameGenreArgs,
-): BaseViewModel<GenreGameUiState, GenreGameEffect>(
+) : BaseViewModel<GenreGameUiState, GenreGameEffect>(
     GenreGameUiState(),
     dispatcherProvider
 ), GenreGameInteractionListener {
 
     private val difficultyType = DifficultyType.valueOf(args.difficulty)
-    private var answersTotalTime: Int = 0
-    private var totalEarnedPoints: Int = 0
 
     init {
         fetchQuestions()
@@ -46,38 +52,42 @@ class GuessGenreViewModel @Inject constructor(
         )
     }
 
-    private suspend fun startTheGame(): List<MovieGenreQuestion> {
+    private suspend fun startTheGame(): List<GameQuestion<MovieGenre>> {
+        updateState { it.copy(gameSessionId = createGameSessionIdUseCase()) }
         return guessMovieGenreUseCase.startGame(difficultyType)
     }
 
-    private fun onSuccessGetQuestions(questions: List<MovieGenreQuestion>) {
+    private fun onSuccessGetQuestions(questions: List<GameQuestion<MovieGenre>>) {
         viewModelScope.launch {
             updateState { it.copy(questions = questions.map { it.toUiState() }) }
             startTheTimer()
         }
     }
 
-    private fun startTheTimer(){
+    private fun startTheTimer() {
         val currentQuestion =
             state.value.questions[state.value.currentQuestionIndex]
         viewModelScope.launch(dispatcherProvider.Default) {
-            timerHandler.startTimer( currentQuestion.questionTime, onTimerFinish = ::onMoveToNextQuestion)
-                .collect(::onTimerUpdate)
+            timerHandler.startTimer(
+                currentQuestion.questionTime,
+                onTimerFinish = ::onMoveToNextQuestion
+            )
+                    .collect(::onTimerUpdate)
         }
     }
 
     private fun onTimerUpdate(remainingSeconds: Int) {
-        answersTotalTime++
         updateState {
             it.copy(
                 timerUiState = state.value.timerUiState.copy(
                     currentTimerCount = remainingSeconds,
-                    currentTimerColor = if(remainingSeconds > 5) TimerUiState.TimerColor.GREEN
+                    currentTimerColor = if (remainingSeconds > 5) TimerUiState.TimerColor.GREEN
                     else TimerUiState.TimerColor.RED,
                     progress = remainingSeconds.toFloat() / it.questions[it.currentQuestionIndex].questionTime
                 )
             )
         }
+        increaseSpentTimeSecondsByOne()
     }
 
     private fun onCompletion() {
@@ -90,21 +100,23 @@ class GuessGenreViewModel @Inject constructor(
 
     override fun onChooseAnswerClick(answerIndex: Int) {
         timerHandler.stopTimer()
-        val currentQuestion =  state.value.questions[state.value.currentQuestionIndex]
+        val currentQuestion = state.value.questions[state.value.currentQuestionIndex]
         tryToExecute(
-            action = { guessMovieGenreUseCase.checkAnswer(
-                answer = currentQuestion.answers[answerIndex],
-                question = currentQuestion.toQuestion(),
-                difficultyType = difficultyType
-            ) },
+            action = {
+                guessMovieGenreUseCase.checkAnswer(
+                    answer = currentQuestion.answers[answerIndex],
+                    question = currentQuestion.toQuestion(),
+                    difficultyType = difficultyType
+                )
+            },
             onSuccess = { answer -> onAnswerCorrect(answer, answerIndex) },
-           onCompletion = timerHandler::stopTimer
+            onCompletion = timerHandler::stopTimer
 
         )
     }
 
     private fun onAnswerCorrect(
-        answerResult: SubmitGuessMovieGenreAnswerUseCase.AnswerResult,
+        answerResult: AnswerResult,
         answerIndex: Int
     ) {
         updateState {
@@ -115,7 +127,7 @@ class GuessGenreViewModel @Inject constructor(
                 isNotEnoughPointsDialogVisible = false
             )
         }
-        totalEarnedPoints += answerResult.earnedPoints
+        addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
     }
 
     override fun onUseHint() {
@@ -129,7 +141,7 @@ class GuessGenreViewModel @Inject constructor(
         )
     }
 
-    private fun onUseHintSuccess(newQuestions: MovieGenreQuestion) {
+    private fun onUseHintSuccess(newQuestions: GameQuestion<MovieGenre>) {
         val updatedQuestions = state.value.questions.toMutableList().apply {
             set(state.value.currentQuestionIndex, newQuestions.toUiState())
         }
@@ -159,12 +171,11 @@ class GuessGenreViewModel @Inject constructor(
             startTheTimer()
         } else {
             val resultData = ResultScreenData(
-                totalCollectedPoints = totalEarnedPoints,
-                totalSpentSeconds = answersTotalTime,
                 difficulty = difficultyType.name,
-                gameType = ResultSideEffect.GameType.GUESS_GENRE.name
+                gameType = Game.GameType.GUESS_GENRE.name,
+                gameSessionId = state.value.gameSessionId
             )
-            sendNewEffect(GenreGameEffect.GameOver(resultData))
+            sendNewNavigationEffect(GenreGameEffect.GameOver(resultData))
         }
     }
 
@@ -172,8 +183,12 @@ class GuessGenreViewModel @Inject constructor(
         updateState { it.copy(isNotEnoughPointsDialogVisible = false) }
     }
 
+    private fun increaseSpentTimeSecondsByOne() {
+        addSecondToGameTimeUseCase(state.value.gameSessionId)
+    }
+
     private fun onError(error: AflamiException) {
-        when(error){
+        when (error) {
             is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
         }
     }

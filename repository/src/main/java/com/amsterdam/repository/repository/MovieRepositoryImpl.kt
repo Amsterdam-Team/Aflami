@@ -7,7 +7,7 @@ import com.amsterdam.entity.Actor
 import com.amsterdam.entity.Country
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
@@ -22,11 +22,11 @@ import com.amsterdam.repository.dto.remote.MovieRemoteResponse
 import com.amsterdam.repository.mapper.toDto
 import com.amsterdam.repository.mapper.toDtoList
 import com.amsterdam.repository.mapper.toEntity
-import com.amsterdam.repository.mapper.toMovieEntityList
-import com.amsterdam.repository.mapper.toLocalTvShowDtoList
 import com.amsterdam.repository.mapper.toEntityList
 import com.amsterdam.repository.mapper.toLocalDto
 import com.amsterdam.repository.mapper.toLocalMovieDtoList
+import com.amsterdam.repository.mapper.toLocalTvShowDtoList
+import com.amsterdam.repository.mapper.toMovieEntityList
 import com.amsterdam.repository.mapper.toMovieItemDto
 import com.amsterdam.repository.mapper.toMovieUserRateEntityList
 import com.amsterdam.repository.utils.getCachedOrRemoteData
@@ -40,9 +40,8 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieLocalDataSource: MovieLocalDataSource,
     private val categoryRemoteDataSource: CategoryRemoteDataSource,
     private val movieRemoteDataSource: MovieRemoteDataSource,
-    private val preferences: AppPreferences,
+    private val preferences: AppLocalPreferences,
 ) : MovieRepository {
-
     override suspend fun getMoviesByKeyword(
         keyword: String,
         page: Int,
@@ -104,14 +103,15 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getTopRatedMovies(
         page: Int,
     ): List<Movie> {
-        return getCachedOrRemoteData<MovieLocalDto, MovieItemRemoteDto, Movie>(
-            deleteExpired = ::deleteExpiredTopRatedMovies,
-            getFromLocal = ::getTopRatedMoviesFromLocal,
-            getFromRemote = { getTopRatedMoviesFromRemote(page) },
-            saveRemoteToDatabase = ::saveTopRatedMovies,
-            mapFromLocalToEntity = MovieLocalDto::toEntity,
-            mapFromRemoteToEntity = { it.toEntity(isPoster = true) }
-        )
+        return if (page > 1) getTopRatedMoviesFromRemote(page).toMovieEntityList(isPoster = true)
+        else getCachedOrRemoteData<MovieLocalDto, MovieItemRemoteDto, Movie>(
+                deleteExpired = ::deleteExpiredTopRatedMovies,
+                getFromLocal = ::getTopRatedMoviesFromLocal,
+                getFromRemote = { getTopRatedMoviesFromRemote(page) },
+                saveRemoteToDatabase = ::saveTopRatedMovies,
+                mapFromLocalToEntity = MovieLocalDto::toEntity,
+                mapFromRemoteToEntity = { it.toEntity(isPoster = true) }
+            )
     }
 
     override suspend fun getMoviesByGenres(movieGenres: List<MovieGenre>, page: Int): List<Movie> {
@@ -268,12 +268,12 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun setMovieRate(rate: Int, movieId: Long) {
         movieRemoteDataSource.setMovieRate(
-            rate = rate.toFloat(), movieId = movieId
+            rate = rate.toFloat() * 2, movieId = movieId
         )
     }
 
     override suspend fun getUserRatedMovies(): List<UserRatedMovie> {
-        return movieRemoteDataSource.getRatedMovies().results.toMovieUserRateEntityList()
+        return movieRemoteDataSource.getRatedMovies().results.toMovieUserRateEntityList().map { UserRatedMovie(it.movie, it.userRate * 2) }
     }
 
     override suspend fun deleteMovieRate(movieId: Long) {
@@ -286,7 +286,7 @@ class MovieRepositoryImpl @Inject constructor(
             .map { movieLocalDataSource.incrementGenreInterest(it.toLong()) }
     }
 
-    suspend fun cacheMovieCategoriesIfNotCached() {
+    private suspend fun cacheMovieCategoriesIfNotCached() {
         getMovieCategoriesFromLocal().takeIf { it.isNotEmpty() }
             ?: saveMovieCategoriesToDatabase(categoryRemoteDataSource.getMovieCategories())
     }

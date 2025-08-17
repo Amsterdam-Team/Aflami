@@ -8,7 +8,7 @@ import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.repository.ProfileRepository
 import com.amsterdam.domain.repository.RecentSearchRepository
 import com.amsterdam.domain.repository.TvShowRepository
-import com.amsterdam.domain.repository.UserListRepository
+import com.amsterdam.domain.repository.WishListRepository
 import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.repository.repository.AppPreferencesRepositoryImpl
 import com.amsterdam.repository.repository.AuthenticationRepositoryImpl
@@ -18,7 +18,7 @@ import com.amsterdam.repository.repository.MovieRepositoryImpl
 import com.amsterdam.repository.repository.ProfileRepositoryImpl
 import com.amsterdam.repository.repository.RecentSearchRepositoryImpl
 import com.amsterdam.repository.repository.TvShowRepositoryImpl
-import com.amsterdam.repository.repository.UserListRepositoryImpl
+import com.amsterdam.repository.repository.WishListRepositoryImpl
 import com.amsterdam.repository.repository.WatchHistoryRepositoryImpl
 import com.amsterdam.repository.security.CryptoManager
 import com.amsterdam.repository.security.CryptoManagerImpl
@@ -84,8 +84,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserListRepository(
-        userListRepositoryImpl: UserListRepositoryImpl
-    ): UserListRepository
+        wishListRepositoryImpl: WishListRepositoryImpl
+    ): WishListRepository
 
     @Binds
     @Singleton

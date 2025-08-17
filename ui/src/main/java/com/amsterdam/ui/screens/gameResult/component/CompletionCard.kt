@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
@@ -27,7 +27,10 @@ import com.amsterdam.designsystem.theme.LocalIsDarkTheme
 import com.amsterdam.ui.R
 
 @Composable
-fun CompletionCard(modifier: Modifier = Modifier) {
+fun CompletionCard(
+    isVictory: Boolean,
+    modifier: Modifier = Modifier
+) {
     val isDarkTheme = LocalIsDarkTheme.current
 
     val beamImageRes = if (isDarkTheme) {
@@ -40,7 +43,7 @@ fun CompletionCard(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxWidth()
-            .height(176.dp)
+            .height(178.dp)
             .border(
                 border = BorderStroke(width = 1.dp, color = AppTheme.color.stroke),
                 shape = RoundedCornerShape(24.dp)
@@ -65,20 +68,33 @@ fun CompletionCard(modifier: Modifier = Modifier) {
         )
 
         Column(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.Center
         ) {
+            val resultImage = if (isVictory) {
+                R.drawable.img_cup
+            } else {
+                R.drawable.alert
+            }
+
+            val resultMessage = if (isVictory) {
+                stringResource(R.string.finish_game_message)
+            } else {
+                stringResource(R.string.lose_the_game_message)
+            }
             Image(
-                painter = painterResource(id = R.drawable.img_cup),
+                painter = painterResource(id = resultImage),
                 contentDescription = "Trophy",
-                modifier = Modifier
-                    .width(99.dp)
-                    .height(91.dp)
+                modifier = Modifier.height(91.dp),
+                contentScale = ContentScale.FillHeight
             )
             Text(
-                text = stringResource(R.string.finish_game_message),
+                modifier = Modifier.padding(top = 12.dp),
+                text = resultMessage,
                 color = AppTheme.color.title,
                 style = AppTheme.textStyle.title.medium,
+                textAlign = TextAlign.Center
             )
         }
     }

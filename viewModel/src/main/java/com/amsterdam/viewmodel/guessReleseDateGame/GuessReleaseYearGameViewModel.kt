@@ -3,16 +3,19 @@ package com.amsterdam.viewmodel.guessReleseDateGame
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
-import com.amsterdam.domain.timer.TimerHandler
-import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion
+import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
+import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
+import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
 import com.amsterdam.domain.useCase.game.releaseYear.GuessReleaseYearGameUseCase
-import com.amsterdam.domain.useCase.game.releaseYear.SubmitGuessReleaseYearAnswerUseCase.AnswerResult
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
-import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,16 +23,17 @@ import javax.inject.Inject
 @HiltViewModel
 class GuessReleaseYearGameViewModel @Inject constructor(
     private val guessReleaseYearForMovieGameUseCase: GuessReleaseYearGameUseCase,
-    args: GuessReleaseYearGameArgs,
+    private val createGameSessionIdUseCase: CreateGameSessionIdUseCase,
+    private val addPointsToGameUseCase: AddPointsToGameUseCase,
+    private val addSecondToGameTimeUseCase: AddSecondToGameTimeUseCase,
+    private val timerHandler: TimerHandler,
     private val dispatcherProvider: DispatcherProvider,
-    private val timerHandler: TimerHandler
+    args: GuessReleaseYearGameArgs
 ) : BaseViewModel<GuessReleaseYearUiState, GuessReleaseYearGameEffect>(
     GuessReleaseYearUiState(),
     dispatcherProvider
 ), GuessReleaseYearInteractionListener {
     private val difficultyType = DifficultyType.valueOf(args.difficulty)
-    private var spentTimeSeconds: Int = 0
-    private var totalCollectedPoints: Int = 0
 
     init {
         fetchQuestions()
@@ -45,11 +49,12 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         )
     }
 
-    private suspend fun startTheGame(): List<MovieReleasedDateQuestion> {
+    private suspend fun startTheGame(): List<GameQuestion<Int>> {
+        updateState { it.copy(gameSessionId = createGameSessionIdUseCase()) }
         return guessReleaseYearForMovieGameUseCase.startGame(difficultyType)
     }
 
-    private fun onSuccessGetQuestions(questions: List<MovieReleasedDateQuestion>) {
+    private fun onSuccessGetQuestions(questions: List<GameQuestion<Int>>) {
         viewModelScope.launch {
             updateState { it.copy(questions = questions.toQuestionsUiStateUiState()) }
             startTheTimer()
@@ -64,7 +69,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
                 currentQuestion.questionTimeSeconds,
                 onTimerFinish = ::onMoveToNextQuestion
             )
-                .collect(::onTimerUpdate)
+                    .collect(::onTimerUpdate)
         }
     }
 
@@ -114,7 +119,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     override fun onSelectAnswer(selectedAnswerIndex: Int) {
         val question =
             state.value.questions[state.value.currentQuestionIndex].toMovieReleasedDateQuestion()
-        val selectedAnswer = question.releaseYearChoices[selectedAnswerIndex]
+        val selectedAnswer = question.choices[selectedAnswerIndex]
         tryToExecute(
             action = {
                 guessReleaseYearForMovieGameUseCase.answer(
@@ -136,7 +141,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
                 selectedAnswerIndex = selectedAnswerIndex
             )
         }
-            totalCollectedPoints += answerResult.earnedPoints
+        addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
 
     }
 
@@ -156,10 +161,9 @@ class GuessReleaseYearGameViewModel @Inject constructor(
             startTheTimer()
         } else {
             val resultData = ResultScreenData(
-                totalCollectedPoints = totalCollectedPoints,
-                totalSpentSeconds = spentTimeSeconds,
                 difficulty = difficultyType.name,
-                gameType = ResultSideEffect.GameType.GUESS_RELEASE_YEAR.name
+                gameType = Game.GameType.GUESS_RELEASE_YEAR.name,
+                gameSessionId = state.value.gameSessionId
             )
             sendNewNavigationEffect(
                 GuessReleaseYearGameEffect.NavigateToGameResult(resultData)
@@ -168,7 +172,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     }
 
     private fun increaseSpentTimeSecondsByOne() {
-        spentTimeSeconds += 1
+        addSecondToGameTimeUseCase(state.value.gameSessionId)
     }
 
     override fun onCloseButtonClicked() {
@@ -184,7 +188,7 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     }
 
     private fun onError(error: AflamiException) {
-        when(error){
+        when (error) {
             is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
         }
     }

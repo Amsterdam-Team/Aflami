@@ -1,11 +1,8 @@
 package com.amsterdam.domain.logger
 
 interface Logger {
-    fun debug(message: Any, tag: String)
-
-    fun info(message: Any, tag: String)
-
-    fun warning(message: Any, tag: String)
-
-    fun error(message: String, tag: String, throwable: Throwable? = null)
+    fun debug(message: Any)
+    fun info(message: Any)
+    fun warning(message: Any)
+    fun error(message: String, throwable: Throwable? = null)
 }

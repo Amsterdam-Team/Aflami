@@ -16,7 +16,8 @@ fun Movie.toListDetailsItemUiState(): ListDetailsItemsUiState {
         yearOfRelease = releaseDate.toYearString(),
         posterImageUrl = posterUrl,
         rate = rating.toFormattedRating(),
-        mediaType = MediaType.MOVIE
+        mediaType = MediaType.MOVIE,
+        isAdult = isAdult
     )
 }
 
@@ -38,5 +39,4 @@ fun ListScreenDetailsMediaItems.toListDetailsItemUiState(): List<ListDetailsItem
         Movie::toListDetailsItemUiState,
         TvShow::toListDetailsItemUiState
     )
-
 }

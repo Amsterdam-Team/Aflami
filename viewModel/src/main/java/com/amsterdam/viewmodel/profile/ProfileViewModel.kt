@@ -5,11 +5,11 @@ import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.authentication.LogoutUseCase
+import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.useCase.preferences.ManageAppThemeUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageRestrictionLevelUseCase
 import com.amsterdam.domain.useCase.profile.GetAccountDetailsUseCase
-import com.amsterdam.domain.useCase.common.GetTotalUserPointsUseCase
 import com.amsterdam.domain.utils.AppVersionProvider
 import com.amsterdam.domain.utils.RestrictionLevel
 import com.amsterdam.domain.utils.SessionType
@@ -119,10 +119,10 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    private fun onError(aflamiException: AflamiException) {
+    private fun onError(exception: AflamiException) {
         updateState {
             it.copy(
-                profileErrorState = ProfileErrorState.toProfileErrorState(aflamiException)
+                profileErrorState = ProfileErrorState.toProfileErrorState(exception)
             )
         }
         sendNewEffect(ProfileEffect.ShowError)
@@ -133,7 +133,7 @@ class ProfileViewModel @Inject constructor(
             state.copy(
                 userInfo = state.userInfo.copy(
                     username = accountDetails.username,
-                    userAvatarUrl = accountDetails.avatarUrl
+                    userAvatarUrl = accountDetails.avatarUrl ?: ""
                 )
             )
         }
@@ -181,8 +181,8 @@ class ProfileViewModel @Inject constructor(
         updateState { state -> state.copy(updatedLanguage = state.language) }
         tryToExecute(
             action = { },
-            onSuccess = {sendNewEffect(ProfileEffect.LanguageChanged)},
-            onError = {sendNewEffect(ProfileEffect.LanguageChanged)}
+            onSuccess = { sendNewEffect(ProfileEffect.LanguageChanged) },
+            onError = { sendNewEffect(ProfileEffect.LanguageChanged) }
         )
     }
 
@@ -190,8 +190,8 @@ class ProfileViewModel @Inject constructor(
         updateState { state -> state.copy(showLanguageDialog = false) }
         tryToExecute(
             action = { },
-            onSuccess = {updateState { state -> state.copy(language = state.updatedLanguage) }},
-            onError = {updateState { state -> state.copy(language = state.updatedLanguage) }}
+            onSuccess = { updateState { state -> state.copy(language = state.updatedLanguage) } },
+            onError = { updateState { state -> state.copy(language = state.updatedLanguage) } }
         )
     }
 
@@ -226,8 +226,8 @@ class ProfileViewModel @Inject constructor(
         updateState { state -> state.copy(showThemeDialog = false) }
         tryToExecute(
             action = { },
-            onSuccess = {updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }},
-            onError = {updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) }}
+            onSuccess = { updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) } },
+            onError = { updateState { state -> state.copy(isDarkTheme = state.updatedIsDarkTheme) } }
         )
     }
 
@@ -238,7 +238,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    //region Settings
     override fun onClickSettings() {
         updateState {
             it.copy(
@@ -368,11 +367,11 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    private fun onSaveRestrictionLevelSuccess(unit: Unit){
+    private fun onSaveRestrictionLevelSuccess(unit: Unit) {
         sendNewEffect(ProfileEffect.ShowRestrictionLevelUpdateSuccessSnackBar)
     }
 
-    private fun onSaveRestrictionLevelError(exception: AflamiException){
+    private fun onSaveRestrictionLevelError(exception: AflamiException) {
         sendNewEffect(ProfileEffect.ShowRestrictionLevelUpdateErrorSnackBar)
     }
 
@@ -397,6 +396,4 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
-
-    //endregion
 }

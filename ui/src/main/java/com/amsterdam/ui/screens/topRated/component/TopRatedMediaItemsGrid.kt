@@ -49,7 +49,7 @@ fun TopRatedMediaItemsGrid(
                 MediaType.TV_SHOW -> stringResource(R.string.tv_shows)
             }
             MediaCard(
-                movieImage = { MovieImage(media.posterImageUrl) },
+                movieImage = { MovieImage(media.posterImageUrl,media.isAdult) },
                 movieType = mediaType,
                 movieYear = media.yearOfRelease,
                 movieTitle = media.name,

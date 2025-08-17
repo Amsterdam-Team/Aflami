@@ -8,8 +8,8 @@ fun CryptoManager.encryptString(input: String): String {
     return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
 }
 
-fun CryptoManager.decryptString(input: String): String? =
-    try {
+fun CryptoManager.decryptString(input: String): String? {
+    return try {
         val decodedBytes = Base64.decode(input, Base64.DEFAULT)
         val decryptedBytes = decrypt(decodedBytes)
         decryptedBytes?.toString(Charsets.UTF_8)
@@ -17,3 +17,4 @@ fun CryptoManager.decryptString(input: String): String? =
         e.printStackTrace()
         null
     }
+}

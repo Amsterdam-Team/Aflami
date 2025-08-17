@@ -1,14 +1,20 @@
 package com.amsterdam.viewmodel.gameResult
 
-import com.amsterdam.entity.GameDifficulty
+import com.amsterdam.domain.useCase.game.EvaluateWinConditionUseCase
+import com.amsterdam.domain.useCase.game.GetCollectedPointsUseCase
+import com.amsterdam.domain.useCase.game.GetSpentSecondsUseCase
+import com.amsterdam.entity.Game.GameType
+import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-
 @HiltViewModel
 class GameResultViewModel @Inject constructor(
+    checkGameWinUseCase: EvaluateWinConditionUseCase,
+    getCollectedPointsUseCase: GetCollectedPointsUseCase,
+    getSpentSecondsUseCase: GetSpentSecondsUseCase,
     gameResultArgs: GameResultArgs,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<ResultUiState, ResultSideEffect>(
@@ -16,49 +22,26 @@ class GameResultViewModel @Inject constructor(
     dispatcherProvider = dispatcherProvider
 ), ResultInteractionListener {
 
-    private val gameType = ResultSideEffect.GameType.valueOf(gameResultArgs.gameType)
-    private val difficultyType =
-        GameDifficulty.DifficultyType.valueOf(gameResultArgs.gameDifficulty)
+    private val gameType = GameType.valueOf(gameResultArgs.gameType)
+    private val difficultyType = DifficultyType.valueOf(gameResultArgs.gameDifficulty)
+    private val gameSessionId = gameResultArgs.gameSessionId
 
     init {
-        val points = gameResultArgs.totalCollectedPoints
-        val time = gameResultArgs.totalSpentSeconds
-
         updateState {
-            it.copy(points = points, timeInSeconds = time)
+            it.copy(
+                gameType = gameType,
+                points = getCollectedPointsUseCase(gameSessionId),
+                timeInSeconds = getSpentSecondsUseCase(gameSessionId),
+                isVictory = checkGameWinUseCase(gameSessionId)
+            )
         }
     }
 
     override fun onClickPlayAgain() {
-        val gameDifficulty = when (difficultyType) {
-            GameDifficulty.DifficultyType.EASY -> GameDifficulty(
-                totalQuestions = 10,
-                timeLimitSeconds = 60,
-                pointsPerQuestion = 10,
-                difficultyType = difficultyType
-            )
-
-            GameDifficulty.DifficultyType.MEDIUM -> GameDifficulty(
-                totalQuestions = 15,
-                timeLimitSeconds = 90,
-                pointsPerQuestion = 15,
-                difficultyType = difficultyType
-            )
-
-            GameDifficulty.DifficultyType.HARD -> GameDifficulty(
-                totalQuestions = 20,
-                timeLimitSeconds = 120,
-                pointsPerQuestion = 20,
-                difficultyType = difficultyType
-            )
-        }
-
         sendNewNavigationEffect(
             ResultSideEffect.NavigateToGame(
-                gameType = gameType,
-                difficulty = gameDifficulty,
-                totalCollectedPoints = 0,
-                totalSpentSeconds = 0
+                gameType,
+                difficultyType.name
             )
         )
     }

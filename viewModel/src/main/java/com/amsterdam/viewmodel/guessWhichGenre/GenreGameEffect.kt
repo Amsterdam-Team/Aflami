@@ -5,6 +5,6 @@ import com.amsterdam.viewmodel.gameResult.ResultScreenData
 sealed interface GenreGameEffect {
     data object CancelGame : GenreGameEffect
     data class GameOver(
-        val resultScreenData : ResultScreenData
+        val resultScreenData: ResultScreenData
     ) : GenreGameEffect
 }

@@ -32,6 +32,7 @@ fun Dialog(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     isDismissible: Boolean = true,
+    scrollable: Boolean = true,
     contentColor: Color = AppTheme.color.surface,
     dialogCornerShape: RoundedCornerShape = RoundedCornerShape(16.dp),
     contentPadding: PaddingValues = PaddingValues(16.dp),
@@ -55,6 +56,7 @@ fun Dialog(
             modifier = modifier
                 .wrapContentSize()
                 .surfaceWidthBasedOnDeviceMode(isLandscape)
+                .then(if (scrollable) Modifier.verticalScroll(rememberScrollState()) else Modifier)
         ) {
             Box(
                 modifier = Modifier
@@ -64,7 +66,7 @@ fun Dialog(
                         color = contentColor,
                         shape = dialogCornerShape,
                     ).align(Alignment.Center)
-                    .verticalScroll(rememberScrollState()),
+
             ) {
                 content()
             }
@@ -85,7 +87,7 @@ private fun Modifier.surfaceWidthBasedOnDeviceMode(isLandscape: Boolean) = if (i
 
 @Composable
 @ThemeAndLocalePreviews
-fun DialogPreview() {
+private fun DialogPreview() {
     AflamiTheme {
         Dialog(
             content = {},

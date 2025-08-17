@@ -30,21 +30,6 @@ object ButtonDefaults {
         )
 
     @Composable
-    fun brushColors(
-        startColor: Color = Color.Unspecified,
-        endColor: Color = Color.Unspecified,
-        secondaryColor: Color = Color.Unspecified,
-        negativeColor: Color = Color.Unspecified,
-        disableColor: Color = Color.Unspecified,
-    ) = ButtonBrushColor(
-        startColor = startColor,
-        endColor = endColor,
-        secondaryColor = secondaryColor,
-        negativeColor = negativeColor,
-        disableColor = disableColor,
-    )
-
-    @Composable
     fun textButtonColors() =
         ButtonColors(
             containerColor = AppTheme.color.primary,

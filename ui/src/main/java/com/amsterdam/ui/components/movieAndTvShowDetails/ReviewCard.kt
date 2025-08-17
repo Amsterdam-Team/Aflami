@@ -25,6 +25,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.ui.SafeImageView
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalRestrictionLevel
+import com.amsterdam.ui.components.ProfileImagePlaceholder
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.utils.toSafetyLevel
 
@@ -74,7 +75,7 @@ fun ReviewCard(
                 model = imageUrl ?: "android.resource://com.amsterdam.ui/${R.drawable.img_empty_user_pic}",
                 contentScale = ContentScale.Crop,
                 onLoading = { ImageLoadingIndicator() },
-                onError = { ImageErrorIndicator() },
+                onError = { ProfileImagePlaceholder() },
             )
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),

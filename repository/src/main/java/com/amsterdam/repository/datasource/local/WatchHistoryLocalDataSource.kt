@@ -10,5 +10,6 @@ interface WatchHistoryLocalDataSource {
     fun getMoviesWatchHistory(page: Int, pageSize: Int): Flow<List<MovieWatchHistoryDto>>
 
     suspend fun upsertTvShowToWatchHistory(tvShowWatchHistoryDto: TvShowWatchHistoryDto)
+
     fun getTvShowsWatchHistory(page: Int, pageSize: Int): Flow<List<TvShowWatchHistoryDto>>
 }

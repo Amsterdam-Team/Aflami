@@ -15,6 +15,7 @@ val movieLocalDto1 = MovieLocalDto(
     rating = 8.0f,
     originCountry = "USA",
     movieLength = 120,
+    isAdult = false
 )
 val movieLocalDto2 = MovieLocalDto(
     movieId = 2,
@@ -27,7 +28,7 @@ val movieLocalDto2 = MovieLocalDto(
     rating = 7.0f,
     originCountry = "UK",
     movieLength = 100,
-
+    isAdult = false
     )
 val movie1 = Movie(
     id = movieLocalDto1.movieId,

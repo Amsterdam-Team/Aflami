@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.amsterdam.designsystem.R
-import com.amsterdam.designsystem.components.IconButton
+import com.amsterdam.ui.R
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.Scaffold
 import com.amsterdam.designsystem.components.Text
@@ -43,9 +43,9 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.PageIndicator
-import com.amsterdam.ui.components.guessGame.AdaptiveAnswersColumn
-import com.amsterdam.ui.components.guessGame.GuessPicture
-import com.amsterdam.ui.components.guessGame.TimerComponent
+import com.amsterdam.ui.screens.games.component.AdaptiveAnswersColumn
+import com.amsterdam.ui.screens.games.component.GuessPicture
+import com.amsterdam.ui.screens.games.component.TimerComponent
 import com.amsterdam.ui.screens.games.component.NotEnoughPointsDialog
 import com.amsterdam.ui.screens.login.components.LoginBackground
 import com.amsterdam.viewmodel.guessMovieByPosterGame.GuessMovieByPosterGameEffect
@@ -74,10 +74,9 @@ fun GuessByPosterGameScreen(
                 is GuessMovieByPosterGameEffect.NavigateToGameResult -> {
                     val resultScreenData = effect.resultScreenData
                     navigationManager.toResultScreen(
-                        totalCollectedPoints = resultScreenData.totalCollectedPoints,
-                        totalSpentSeconds = resultScreenData.totalSpentSeconds,
                         gameType = resultScreenData.gameType,
-                        difficulty = resultScreenData.difficulty
+                        difficulty = resultScreenData.difficulty,
+                        gameSessionId = resultScreenData.gameSessionId
                     )
                 }
             }
@@ -99,7 +98,7 @@ private fun GuessByPosterContent(
 ) {
     val pagerState = rememberPagerState(pageCount = { state.questions.size })
     val scope = rememberCoroutineScope()
-    val topBarTitle = stringResource(com.amsterdam.ui.R.string.guess_by_poster)
+    val topBarTitle = stringResource(R.string.guess_by_poster)
 
     LaunchedEffect(state.currentQuestionIndex) {
         scope.launch { pagerState.animateScrollToPage(state.currentQuestionIndex) }
@@ -264,7 +263,7 @@ internal fun GameTopBar(
         },
         leadingIcon = {
             IconButton(
-                painter = painterResource(R.drawable.ic_cancel),
+                painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_cancel),
                 tint = AppTheme.color.title,
                 contentDescription = stringResource(R.string.back_to_menue),
                 onClick = onCancelGameClick,

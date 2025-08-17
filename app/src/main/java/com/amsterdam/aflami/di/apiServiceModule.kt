@@ -5,10 +5,10 @@ import com.amsterdam.remotedatasource.api.AuthenticationApiService
 import com.amsterdam.remotedatasource.api.CategoryApiService
 import com.amsterdam.remotedatasource.api.CountryApiService
 import com.amsterdam.remotedatasource.api.MovieApiService
-import com.amsterdam.remotedatasource.api.PeopleApiService
+import com.amsterdam.remotedatasource.api.CharacterApiService
 import com.amsterdam.remotedatasource.api.ProfileApiService
 import com.amsterdam.remotedatasource.api.TvShowsApiService
-import com.amsterdam.remotedatasource.api.UserListApiService
+import com.amsterdam.remotedatasource.api.WishListApiService
 import com.amsterdam.remotedatasource.client.RetrofitClient
 import com.amsterdam.repository.datasource.local.AuthenticationLocalDataSource
 import com.amsterdam.repository.security.CryptoManager
@@ -54,7 +54,7 @@ object ServiceProvidesModule {
 
     @Provides
     @Singleton
-    fun providePeopleApiService(retrofitClient: RetrofitClient): PeopleApiService =
+    fun providePeopleApiService(retrofitClient: RetrofitClient): CharacterApiService =
         retrofitClient.peopleApiService()
 
     @Provides
@@ -74,7 +74,7 @@ object ServiceProvidesModule {
 
     @Provides
     @Singleton
-    fun provideUserListApiService(retrofitClient: RetrofitClient): UserListApiService =
+    fun provideUserListApiService(retrofitClient: RetrofitClient): WishListApiService =
         retrofitClient.userListApiService()
 
     @Provides

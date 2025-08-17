@@ -9,24 +9,15 @@ interface MovieDetailsInteractionListener {
     fun onClickRetryRequest()
 
     fun onClickAddToList()
-
-    fun onSaveMovieToList(
-        movieId: Long,
-        listIds: List<Long>,
-    )
-
+    fun onSaveMovieToList(movieId: Long, listIds: List<Long>)
     fun onClickCreateList()
-
     fun onChangeListName(listName: String)
 
     fun onClickCreateNewList()
-
-    fun onSelectedListChange(selectedLists: List<UserListUiState>)
-
+    fun onSelectedListChange(selectedLists: List<WishListUiState>)
     fun onClickRate()
 
     fun onClickNavigateToLogin()
-
     fun onClickCancel()
     fun onClickSimilarMovie(movieId: Long)
     fun onDescriptionExpansionToggled()

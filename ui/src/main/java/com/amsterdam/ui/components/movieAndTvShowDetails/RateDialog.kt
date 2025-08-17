@@ -15,13 +15,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.amsterdam.designsystem.R
-import com.amsterdam.designsystem.components.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
+import com.amsterdam.ui.R
 import com.amsterdam.ui.components.RatingBar
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 
@@ -59,7 +59,7 @@ fun RateDialog(
                 )
 
                 IconButton(
-                    painter = painterResource(R.drawable.ic_cancel),
+                    painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_cancel),
                     contentDescription = "",
                     onClick = interaction::onClickCancelRateDialog,
                     tint = AppTheme.color.title,

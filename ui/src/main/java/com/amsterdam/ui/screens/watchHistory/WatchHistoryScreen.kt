@@ -1,6 +1,5 @@
 package com.amsterdam.ui.screens.watchHistory
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,20 +25,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.TabsLayout
+import com.amsterdam.ui.R
 import com.amsterdam.ui.R.drawable.no_saved_items
 import com.amsterdam.ui.R.string.no_items_here
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.NoDataContainer
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.components.grids.SuccessMovieMediaItemsSection
-import com.amsterdam.ui.components.grids.SuccessTvShowMediaItemsSection
 import com.amsterdam.ui.screens.home.sections.AnimatedSectionVisibility
+import com.amsterdam.ui.screens.watchHistory.sections.SuccessMovieMediaItemsSection
+import com.amsterdam.ui.screens.watchHistory.sections.SuccessTvShowMediaItemsSection
 import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.watchHistory.WatchHistoryEffect
 import com.amsterdam.viewmodel.watchHistory.WatchHistoryInteractionListener
@@ -51,7 +51,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun WatchHistoryScreen(viewModel: WatchHistoryViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navigationManager = LocalNavManager.current
+
     WatchHistoryContent(state, viewModel, viewModel::onClickTabOption)
+
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -77,10 +79,36 @@ fun WatchHistoryContent(
     interactionListener: WatchHistoryInteractionListener,
     onTabOptionClicked: (TabOption) -> Unit,
 ) {
-    val selectedMovies = state.movies.collectAsLazyPagingItems()
-    val selectedTvShows = state.tvShows.collectAsLazyPagingItems()
+    val moviesPaging =
+        state.movies.collectAsLazyPagingItems<WatchHistoryUiState.WatchHistoryMovieUiState>()
+    val tvShowsPaging =
+        state.tvShows.collectAsLazyPagingItems<WatchHistoryUiState.WatchHistoryTvShowUiState>()
 
     var headerHeight by remember { mutableStateOf(0.dp) }
+    var lastSelectedTab by remember { mutableStateOf(state.selectedTabOption) }
+
+    var moviesEmpty by remember { mutableStateOf<Boolean?>(null) }
+    var tvShowsEmpty by remember { mutableStateOf<Boolean?>(null) }
+    var moviesFirstLoadDone by remember { mutableStateOf(false) }
+    var tvShowsFirstLoadDone by remember { mutableStateOf(false) }
+
+    LaunchedEffect(moviesPaging.itemCount, moviesPaging.loadState.refresh) {
+        if (moviesPaging.loadState.refresh !is LoadState.Loading) {
+            moviesFirstLoadDone = true
+            if (moviesEmpty == null) {
+                moviesEmpty = moviesPaging.itemCount == 0
+            }
+        }
+    }
+
+    LaunchedEffect(tvShowsPaging.itemCount, tvShowsPaging.loadState.refresh) {
+        if (tvShowsPaging.loadState.refresh !is LoadState.Loading) {
+            tvShowsFirstLoadDone = true
+            if (tvShowsEmpty == null) {
+                tvShowsEmpty = tvShowsPaging.itemCount == 0
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -98,37 +126,72 @@ fun WatchHistoryContent(
                 title = stringResource(R.string.watch_history),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 5.dp),
                 onNavigateBackClicked = interactionListener::onClickBack
             )
 
             TabsLayout(
                 modifier = Modifier.fillMaxWidth(),
-                tabs =
-                    listOf(
-                        stringResource(R.string.movies),
-                        stringResource(R.string.tv_shows),
-                    ),
+                tabs = listOf(
+                    stringResource(R.string.movies),
+                    stringResource(R.string.tv_shows),
+                ),
                 selectedIndex = state.selectedTabOption.index,
-                onSelectTab = { index -> onTabOptionClicked(TabOption.entries[index]) },
+                onSelectTab = { index ->
+                    val newTab = TabOption.entries[index]
+                    if (newTab != lastSelectedTab) {
+                        lastSelectedTab = newTab
+                        onTabOptionClicked(newTab)
+                    }
+                },
             )
         }
 
-        AnimatedContent(state.selectedTabOption) { selectedTab ->
-            if (selectedTab == TabOption.MOVIES && selectedMovies.itemCount != 0) {
-                SuccessMovieMediaItemsSection(
-                    onMovieClicked = interactionListener::onClickMovieCard,
-                    selectedItems = selectedMovies
-                )
-            } else if (selectedTab == TabOption.TV_SHOWS && selectedTvShows.itemCount != 0) {
-                SuccessTvShowMediaItemsSection(
-                    onTvShowClicked = interactionListener::onClickTvShowCard,
-                    selectedItems = selectedTvShows
-                )
-            } else {
-                NoItemFoundContainer(
-                    headerHeight = headerHeight,
-                )
+        Box(modifier = Modifier.fillMaxSize()) {
+            AnimatedSectionVisibility(visible = state.selectedTabOption == TabOption.MOVIES) {
+                when {
+                    !moviesFirstLoadDone &&
+                            moviesPaging.loadState.refresh is LoadState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { LoadingContainer() }
+                    }
+
+                    moviesPaging.itemCount > 0 -> {
+                        SuccessMovieMediaItemsSection(
+                            onMovieClicked = interactionListener::onClickMovieCard,
+                            selectedItems = moviesPaging
+                        )
+                    }
+
+                    moviesEmpty == true -> {
+                        NoItemFoundContainer(headerHeight = headerHeight)
+                    }
+                }
+            }
+
+            AnimatedSectionVisibility(visible = state.selectedTabOption == TabOption.TV_SHOWS) {
+                when {
+                    !tvShowsFirstLoadDone &&
+                            tvShowsPaging.loadState.refresh is LoadState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { LoadingContainer() }
+                    }
+
+                    tvShowsPaging.itemCount > 0 -> {
+                        SuccessTvShowMediaItemsSection(
+                            onTvShowClicked = interactionListener::onClickTvShowCard,
+                            selectedItems = tvShowsPaging
+                        )
+                    }
+
+                    tvShowsEmpty == true -> {
+                        NoItemFoundContainer(headerHeight = headerHeight)
+                    }
+                }
             }
         }
 

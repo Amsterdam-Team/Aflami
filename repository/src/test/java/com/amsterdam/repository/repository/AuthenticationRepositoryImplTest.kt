@@ -8,6 +8,8 @@ import com.amsterdam.repository.datasource.local.ProfileLocalDataSource
 import com.amsterdam.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.amsterdam.repository.mapper.toLocalDto
 import com.amsterdam.repository.security.CryptoManager
+import com.amsterdam.repository.utils.decryptString
+import com.amsterdam.repository.utils.encryptString
 import com.google.common.truth.Truth.assertThat
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

@@ -1,7 +1,7 @@
 package com.amsterdam.domain.useCase.list
 
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.repository.UserListRepository
+import com.amsterdam.domain.repository.WishListRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -11,23 +11,23 @@ import org.junit.jupiter.api.assertThrows
 
 class DeleteListUseCaseTest {
 
-    private val userListRepository: UserListRepository = mockk()
+    private val wishListRepository: WishListRepository = mockk()
     private val deleteListUseCase by lazy {
-        DeleteListUseCase(userListRepository)
+        DeleteListUseCase(wishListRepository)
     }
 
     @Test
     fun `should call deleteList when invoked`() = runTest {
-        coEvery { userListRepository.deleteList(listId) } returns Unit
+        coEvery { wishListRepository.deleteList(listId) } returns Unit
 
         deleteListUseCase(listId)
 
-        coVerify(exactly = 1) { userListRepository.deleteList(listId) }
+        coVerify(exactly = 1) { wishListRepository.deleteList(listId) }
     }
 
     @Test
     fun `should throw exception when delete list failed`() = runTest {
-        coEvery { userListRepository.deleteList(listId) } throws AflamiException()
+        coEvery { wishListRepository.deleteList(listId) } throws AflamiException()
 
         assertThrows<AflamiException> { deleteListUseCase(listId) }
     }

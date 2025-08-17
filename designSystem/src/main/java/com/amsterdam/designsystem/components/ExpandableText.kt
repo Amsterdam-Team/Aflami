@@ -129,20 +129,7 @@ fun ExpandableText(
 
 @ThemeAndLocalePreviews
 @Composable
-fun ExpandableTextExpandedPreview() {
-    AflamiTheme {
-        ExpandableText(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor.",
-            minimizedMaxLines = 3,
-            isExpanded = true,
-            onToggleExpansion = {}
-        )
-    }
-}
-
-@ThemeAndLocalePreviews
-@Composable
-fun ExpandableTextPreview() {
+private fun ExpandableTextPreview() {
     AflamiTheme {
         ExpandableText(
             text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor.",

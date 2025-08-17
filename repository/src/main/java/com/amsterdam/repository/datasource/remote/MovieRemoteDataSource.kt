@@ -7,7 +7,6 @@ import com.amsterdam.repository.dto.remote.MovieRemoteResponse
 import com.amsterdam.repository.dto.remote.RatingRemoteResponse
 
 interface MovieRemoteDataSource {
-
     suspend fun getMoviesByKeyword(keyword: String, page: Int): MovieRemoteResponse
 
     suspend fun getMoviesByActorIds(actorIds: List<Int>, page: Int): MovieRemoteResponse
@@ -34,10 +33,9 @@ interface MovieRemoteDataSource {
 
     suspend fun getMoviesByGenreIds(genresIds: List<Long>, page: Int): MovieRemoteResponse
 
-    suspend fun getRandomMoviesWithNotNullDate(requiredMoviesNumber: Int): List<MovieItemRemoteDto>
+    suspend fun getRandomMoviesWithReleaseDate(requiredMoviesNumber: Int): List<MovieItemRemoteDto>
 
-    suspend fun getRandomMoviesWithNotNullPoster(requiredMoviesNumber: Int): List<MovieItemRemoteDto>
+    suspend fun getRandomMoviesWithPoster(requiredMoviesNumber: Int): List<MovieItemRemoteDto>
 
     suspend fun getMoviesByGenreId(genreId: Long, page: Int): MovieRemoteResponse
-
 }

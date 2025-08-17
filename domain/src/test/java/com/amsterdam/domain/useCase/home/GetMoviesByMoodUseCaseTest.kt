@@ -1,7 +1,7 @@
 package com.amsterdam.domain.useCase.home
 
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.models.Mood
+import com.amsterdam.domain.utils.Mood
 import com.amsterdam.domain.repository.MovieRepository
 import com.amsterdam.domain.useCase.utils.fakeMovieList
 import com.google.common.truth.Truth.assertThat

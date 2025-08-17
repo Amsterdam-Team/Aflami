@@ -12,4 +12,4 @@ fun SeasonRemoteDto.toEntity(): Season {
     )
 }
 
-fun List<SeasonRemoteDto>.toEntityList(): List<Season>  = map { it.toEntity() }
+fun List<SeasonRemoteDto>.toEntityList(): List<Season> = map { it.toEntity() }

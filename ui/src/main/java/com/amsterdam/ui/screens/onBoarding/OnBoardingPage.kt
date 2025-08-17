@@ -15,6 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +31,7 @@ fun OnboardingPage(
     @DrawableRes imageResId: Int,
     @StringRes titleResId: Int,
     @StringRes descriptionResId: Int,
+    titleCoordinates: (LayoutCoordinates) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -53,11 +57,14 @@ fun OnboardingPage(
                 )
         )
 
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+
         Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
-                .padding(bottom = 130.dp)
+                .padding(bottom = if (isLandscape) 64.dp else 80.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -71,8 +78,9 @@ fun OnboardingPage(
                     style = AppTheme.textStyle.headline.small,
                     color = AppTheme.color.onPrimary,
                     fontSize = 20.sp,
-                    maxLines = 2,
-                    minLines = 1
+                    maxLines = 1,
+                    minLines = 1,
+                    modifier = Modifier.onGloballyPositioned(titleCoordinates)
                 )
                 Text(
                     text = stringResource(id = descriptionResId),
@@ -82,7 +90,7 @@ fun OnboardingPage(
                     modifier = Modifier.padding(top = 12.dp),
                     textAlign = TextAlign.Start,
                     maxLines = 3,
-                    minLines = 2
+                    minLines = 3
                 )
             }
         }

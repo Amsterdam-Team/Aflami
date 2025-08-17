@@ -57,7 +57,12 @@ class MyRatingViewModel @Inject constructor(
     }
 
     private fun onGetRatedMediaError(exception: AflamiException) {
-        updateState { it.copy(error = MyRatingErrorState.mapToUiState(exception), isRetryLoading = false) }
+        updateState {
+            it.copy(
+                error = MyRatingErrorState.mapToUiState(exception),
+                isRetryLoading = false
+            )
+        }
     }
 
     private fun onCompletion() = updateState { it.copy(isLoading = false, isRetryLoading = false) }

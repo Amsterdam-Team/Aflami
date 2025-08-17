@@ -7,10 +7,8 @@ import kotlinx.serialization.Serializable
 data class CastAndCrewRemoteResponse(
     @SerialName("id")
     val id: Long? = null,
-
     @SerialName("cast")
     val cast: List<CastRemoteDto> = emptyList(),
-
     @SerialName("crew")
     val crew: List<CrewRemoteDto> = emptyList()
 )

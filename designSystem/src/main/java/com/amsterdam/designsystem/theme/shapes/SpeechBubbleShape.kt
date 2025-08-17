@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 
-class SpeechBubbleShape(
+internal class SpeechBubbleShape(
     private val cornerRadius: Dp,
     private val tailWidth: Dp,
     private val tailHeight: Dp,

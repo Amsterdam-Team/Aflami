@@ -1,24 +1,25 @@
 package com.amsterdam.viewmodel.guessReleseDateGame
 
-import com.amsterdam.domain.useCase.game.releaseYear.GenerateMovieReleaseYearQuestionsUseCase.MovieReleasedDateQuestion
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.viewmodel.guessReleseDateGame.GuessReleaseYearUiState.QuestionUiState
 
-fun MovieReleasedDateQuestion.toQuestionUiStateUiState(): QuestionUiState {
+fun GameQuestion<Int>.toQuestionUiStateUiState(): QuestionUiState {
     return QuestionUiState(
         movieName = this.question,
-        releaseYearAnswer = this.releaseYearChoices.map { it.toString()},
+        releaseYearAnswer = this.choices.map { it.toString() },
         correctAnswer = this.correctChoice.toString(),
-        questionTimeSeconds = questionTimeSeconds
+        questionTimeSeconds = questionTime
     )
 }
 
-fun QuestionUiState.toMovieReleasedDateQuestion(): MovieReleasedDateQuestion {
-    return MovieReleasedDateQuestion(
+fun QuestionUiState.toMovieReleasedDateQuestion(): GameQuestion<Int> {
+    return GameQuestion(
         question = this.movieName,
-        releaseYearChoices = this.releaseYearAnswer.map { it.toInt() },
+        choices = this.releaseYearAnswer.map { it.toInt() },
         correctChoice = this.correctAnswer.toInt(),
-        questionTimeSeconds = questionTimeSeconds
+        questionTime = questionTimeSeconds
     )
 }
 
-fun List<MovieReleasedDateQuestion>.toQuestionsUiStateUiState(): List<QuestionUiState>  = map { it.toQuestionUiStateUiState() }
+fun List<GameQuestion<Int>>.toQuestionsUiStateUiState(): List<QuestionUiState> =
+    map { it.toQuestionUiStateUiState() }

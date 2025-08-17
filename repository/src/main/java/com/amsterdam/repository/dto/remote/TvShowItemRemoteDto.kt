@@ -25,7 +25,7 @@ data class TvShowItemRemoteDto(
     @SerialName("number_of_seasons") val seasonCount: Int = 0,
     @SerialName("production_companies") val productionCompanies: List<ProductionCompanyRemoteDto> = emptyList(),
     @SerialName("rating") val rating: Float = 0f,
-){
+) {
     val fullPosterPath: String?
         get() = posterPath?.let { BASE_IMAGE_URL_W500 + it }
     val fullBackdropPath: String?

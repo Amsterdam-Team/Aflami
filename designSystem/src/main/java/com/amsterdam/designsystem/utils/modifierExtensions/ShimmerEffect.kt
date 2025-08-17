@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import com.amsterdam.designsystem.theme.AppTheme
 
-fun Modifier.shimmerEffect(): Modifier = composed {
+internal fun Modifier.shimmerEffect(): Modifier = composed {
     var size by remember { mutableStateOf(IntSize.Zero) }
 
     val transition = rememberInfiniteTransition()

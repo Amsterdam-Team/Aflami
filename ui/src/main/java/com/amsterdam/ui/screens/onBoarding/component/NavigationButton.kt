@@ -1,5 +1,6 @@
 package com.amsterdam.ui.screens.onBoarding.component
 
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -98,7 +99,6 @@ fun NavigationButton(
         }
     }
 }
-
 
 @ThemeAndLocalePreviews
 @Composable

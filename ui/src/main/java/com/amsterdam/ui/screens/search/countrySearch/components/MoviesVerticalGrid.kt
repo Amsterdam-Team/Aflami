@@ -18,7 +18,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.designsystem.components.LoadingIndicator
@@ -65,6 +65,7 @@ internal fun MoviesVerticalGrid(
                             contentScale = ContentScale.Crop,
                             onLoading = { ImageLoadingIndicator() },
                             onError = { ImageErrorIndicator() },
+                            isAdult = movie.isAdult
                         )
                     },
                     movieType = stringResource(R.string.movie),
@@ -112,7 +113,7 @@ internal fun MoviesVerticalGrid(
 private fun MoviesVerticalGridPreview() {
     AflamiTheme {
         MoviesVerticalGrid(
-            movies = emptyFlow<PagingData< SearchMediaItemUiState>>().collectAsLazyPagingItems(),
+            movies = emptyFlow<PagingData<SearchMediaItemUiState>>().collectAsLazyPagingItems(),
             isVisible = true,
             onMovieClicked = {}
         )

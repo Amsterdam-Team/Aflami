@@ -38,10 +38,12 @@ class ListDetailsViewModel @Inject constructor(
 ), ListDetailsInteractionListener {
 
     init {
-        updateState { it.copy(
-            listId = args.listId,
-            listName = args.listName
-        ) }
+        updateState {
+            it.copy(
+                listId = args.listId,
+                listName = args.listName
+            )
+        }
         manageLocaleLanguageUseCase.getAppLanguage()
             .onEach { loadListDetails() }
             .launchIn(viewModelScope)
@@ -49,7 +51,7 @@ class ListDetailsViewModel @Inject constructor(
         loadListDetails()
     }
 
-    private var currentPagingSource: PagingSource<ListDetailsItemsUiState>?  = null
+    private var currentPagingSource: PagingSource<ListDetailsItemsUiState>? = null
 
     private fun loadListDetails() {
         updateState { it.copy(isLoading = true) }
@@ -58,9 +60,9 @@ class ListDetailsViewModel @Inject constructor(
                 Pager(
                     config = PagingConfig(pageSize = 10),
                     pagingSourceFactory = {
-                        currentPagingSource =  PagingSource { page ->
-                           getListMediaItemsFromListUseCase(state.value.listId, page)
-                               .toListDetailsItemUiState()
+                        currentPagingSource = PagingSource { page ->
+                            getListMediaItemsFromListUseCase(state.value.listId, page)
+                                .toListDetailsItemUiState()
                         }
                         currentPagingSource!!
                     }
@@ -71,10 +73,12 @@ class ListDetailsViewModel @Inject constructor(
     }
 
     private fun onGetListDetailsSuccess(moviesPagingFlow: Flow<PagingData<ListDetailsItemsUiState>>) {
-        updateState { it.copy(
-            listItems = moviesPagingFlow,
-            error = null
-        ) }
+        updateState {
+            it.copy(
+                listItems = moviesPagingFlow,
+                error = null
+            )
+        }
     }
 
     override fun onClickMovie(movieId: Long) {
@@ -111,11 +115,13 @@ class ListDetailsViewModel @Inject constructor(
     }
 
     private fun onDeleteListSuccess() {
-        updateState { it.copy(
-            showDeleteListDialog = false,
-            isDeleteLoading = false,
-            error = null
-        ) }
+        updateState {
+            it.copy(
+                showDeleteListDialog = false,
+                isDeleteLoading = false,
+                error = null
+            )
+        }
         sendNewNavigationEffect(ListDetailsEffect.NavigateBack)
         sendNewEffect(ListDetailsEffect.ShowDeletionSuccessSnackBar)
     }
@@ -123,11 +129,13 @@ class ListDetailsViewModel @Inject constructor(
     private fun onDeleteListError(exception: AflamiException) {
         val error = ListDetailsError.toListDetailsError(exception)
         viewModelScope.launch {
-            updateState { it.copy(
-                error = error,
-                showDeleteListDialog = false,
-                isDeleteLoading = false
-            ) }
+            updateState {
+                it.copy(
+                    error = error,
+                    showDeleteListDialog = false,
+                    isDeleteLoading = false
+                )
+            }
             sendNewEffect(ListDetailsEffect.ShowErrorSnackbar(error = state.value.error))
         }
     }
@@ -149,11 +157,13 @@ class ListDetailsViewModel @Inject constructor(
     private fun onRemoveMovieError(exception: AflamiException) {
         val error = ListDetailsError.toListDetailsError(exception)
         viewModelScope.launch {
-            updateState { it.copy(
-                error = error,
-                showDeleteListDialog = false,
-                isDeleteLoading = false
-            ) }
+            updateState {
+                it.copy(
+                    error = error,
+                    showDeleteListDialog = false,
+                    isDeleteLoading = false
+                )
+            }
             sendNewEffect(ListDetailsEffect.ShowErrorSnackbar(error = state.value.error))
         }
     }

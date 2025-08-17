@@ -1,19 +1,18 @@
 package com.amsterdam.viewmodel.guessWhichGenre
 
-import com.amsterdam.domain.useCase.game.whichGenre.GenerateMovieGenreQuestionsUseCase.MovieGenreQuestion
+import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.category.MovieGenre
 
-fun GameQuestionUiState.toQuestion() = MovieGenreQuestion(
-    id = id,
+fun GameQuestionUiState.toQuestion() = GameQuestion(
     question = questionData,
-    genreChoices = answers,
+    choices = answers,
     correctChoice = correctAnswer,
     questionTime = questionTime
 )
 
-fun MovieGenreQuestion.toUiState() = GameQuestionUiState(
-    id = id,
+fun GameQuestion<MovieGenre>.toUiState() = GameQuestionUiState(
     questionData = question,
-    answers = genreChoices,
+    answers = choices,
     correctAnswer = correctChoice,
     questionTime = questionTime
 )

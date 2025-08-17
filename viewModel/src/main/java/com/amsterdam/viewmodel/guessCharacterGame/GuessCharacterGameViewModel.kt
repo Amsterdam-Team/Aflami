@@ -3,16 +3,19 @@ package com.amsterdam.viewmodel.guessCharacterGame
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NotEnoughPointsException
-import com.amsterdam.domain.timer.TimerHandler
-import com.amsterdam.domain.useCase.game.character.GenerateCharacterQuestionsUseCase.CharacterDataQuestion
+import com.amsterdam.domain.useCase.game.AddPointsToGameUseCase
+import com.amsterdam.domain.useCase.game.AddSecondToGameTimeUseCase
+import com.amsterdam.domain.useCase.game.CreateGameSessionIdUseCase
 import com.amsterdam.domain.useCase.game.character.GuessCharacterGameUseCase
-import com.amsterdam.domain.useCase.game.character.SubmitCharacterAnswerUseCase.AnswerResult
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
+import com.amsterdam.entity.Game
 import com.amsterdam.entity.GameDifficulty.DifficultyType
 import com.amsterdam.viewmodel.gameResult.ResultScreenData
-import com.amsterdam.viewmodel.gameResult.ResultSideEffect
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
+import com.amsterdam.viewmodel.utils.timer.TimerHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,22 +23,23 @@ import javax.inject.Inject
 @HiltViewModel
 class GuessCharacterGameViewModel @Inject constructor(
     private val guessCharacterGameUseCase: GuessCharacterGameUseCase,
-    args: GuessCharacterGameArgs,
+    private val createGameSessionIdUseCase: CreateGameSessionIdUseCase,
+    private val addPointsToGameUseCase: AddPointsToGameUseCase,
+    private val addSecondToGameTimeUseCase: AddSecondToGameTimeUseCase,
+    private val timerHandler: TimerHandler,
     private val dispatcherProvider: DispatcherProvider,
-    private val timerHandler: TimerHandler
+    args: GuessCharacterGameArgs
 ) : BaseViewModel<GuessCharacterUiState, GuessCharacterGameEffect>(
     GuessCharacterUiState(),
     dispatcherProvider
 ), GuessCharacterInteractionListener {
     private val difficultyType = DifficultyType.valueOf(args.difficulty)
-    private var spentTimeSeconds: Int = 0
-    private var totalCollectedPoints: Int = 0
 
     init {
-        fetchQuestions()
+        getQuestions()
     }
 
-    private fun fetchQuestions() {
+    private fun getQuestions() {
         updateState { it.copy(isLoading = true) }
         tryToExecute(
             action = ::startTheGame,
@@ -45,11 +49,12 @@ class GuessCharacterGameViewModel @Inject constructor(
         )
     }
 
-    private suspend fun startTheGame(): List<CharacterDataQuestion> {
+    private suspend fun startTheGame(): List<GameQuestion<String>> {
+        updateState { it.copy(gameSessionId = createGameSessionIdUseCase()) }
         return guessCharacterGameUseCase.startGame(difficultyType)
     }
 
-    private fun onSuccessGetQuestions(questions: List<CharacterDataQuestion>) {
+    private fun onSuccessGetQuestions(questions: List<GameQuestion<String>>) {
         viewModelScope.launch {
             updateState { it.copy(questions = questions.toQuestionsUiState()) }
             startTheTimer()
@@ -64,7 +69,7 @@ class GuessCharacterGameViewModel @Inject constructor(
                 currentQuestion.questionTimeSeconds,
                 onTimerFinish = ::onMoveToNextQuestion
             )
-                .collect(::onTimerUpdate)
+                    .collect(::onTimerUpdate)
         }
     }
 
@@ -136,7 +141,7 @@ class GuessCharacterGameViewModel @Inject constructor(
                 selectedAnswerIndex = selectedAnswerIndex
             )
         }
-            totalCollectedPoints += answerResult.earnedPoints
+        addPointsToGameUseCase(answerResult.earnedPoints, state.value.gameSessionId)
     }
 
     private fun onSubmitTheAnswerComplete() {
@@ -156,48 +161,54 @@ class GuessCharacterGameViewModel @Inject constructor(
     override fun onMoveToNextQuestion() {
         val currentQuestionIndex = state.value.currentQuestionIndex
         val nextQuestionIndex = currentQuestionIndex + 1
+
         if (nextQuestionIndex < state.value.questions.size) {
-            updateState {
-                it.copy(
-                    currentQuestionIndex = nextQuestionIndex,
-                    selectedAnswerIndex = null,
-                    isAnswerCorrect = null,
-                    isNextEnabled = false,
-                    isNotEnoughPointsDialogVisible = false
-                )
-            }
-            startTheTimer()
+            handleMoveToNextQuestion(nextQuestionIndex)
         } else {
-            val resultData = ResultScreenData(
-                totalCollectedPoints = totalCollectedPoints,
-                totalSpentSeconds = spentTimeSeconds,
-                difficulty = difficultyType.name,
-                gameType = ResultSideEffect.GameType.GUESS_CHARACTER.name
-            )
-            sendNewNavigationEffect(
-                GuessCharacterGameEffect.NavigateToGameResult(
-                    resultData
-                )
-            )
+            handleGameFinished()
         }
     }
-    override fun dismissNotEnoughPointsDialog() {
-        updateState { it.copy(isNotEnoughPointsDialogVisible = false) }
+
+    private fun handleMoveToNextQuestion(nextQuestionIndex: Int) {
+        updateState {
+            it.copy(
+                currentQuestionIndex = nextQuestionIndex,
+                selectedAnswerIndex = null,
+                isAnswerCorrect = null,
+                isNextEnabled = false,
+                isNotEnoughPointsDialogVisible = false
+            )
+        }
+        startTheTimer()
     }
 
-    private fun increaseSpentTimeSecondsByOne() {
-        spentTimeSeconds += 1
+    private fun handleGameFinished() {
+        val resultData = ResultScreenData(
+            difficulty = difficultyType.name,
+            gameType = Game.GameType.GUESS_CHARACTER.name,
+            gameSessionId = state.value.gameSessionId
+        )
+        sendNewNavigationEffect(
+            GuessCharacterGameEffect.NavigateToGameResult(resultData)
+        )
+    }
+
+    override fun dismissNotEnoughPointsDialog() {
+        updateState { it.copy(isNotEnoughPointsDialogVisible = false) }
     }
 
     override fun onCloseButtonClicked() {
         sendNewNavigationEffect(GuessCharacterGameEffect.NavigateBack)
     }
 
+    private fun increaseSpentTimeSecondsByOne() {
+        addSecondToGameTimeUseCase(state.value.gameSessionId)
+    }
+
     private fun onError(error: AflamiException) {
-        when(error){
+        when (error) {
             is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
 
         }
     }
-
 }

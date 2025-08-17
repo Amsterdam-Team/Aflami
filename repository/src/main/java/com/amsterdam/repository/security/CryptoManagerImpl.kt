@@ -31,8 +31,8 @@ class CryptoManagerImpl @Inject constructor() : CryptoManager {
         return existingKey?.secretKey ?: createKey()
     }
 
-    private fun createKey(): SecretKey =
-        KeyGenerator
+    private fun createKey(): SecretKey {
+        return KeyGenerator
             .getInstance(ALGORITHM)
             .apply {
                 init(
@@ -45,6 +45,7 @@ class CryptoManagerImpl @Inject constructor() : CryptoManager {
                         .build(),
                 )
             }.generateKey()
+    }
 
     override fun encrypt(bytes: ByteArray): ByteArray {
         cipher.init(Cipher.ENCRYPT_MODE, getKey())

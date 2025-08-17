@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,16 +19,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.designsystem.utils.modifierExtensions.dropShadow
 
 @Composable
-fun BoxScope.SnackBar(
+internal fun BoxScope.SnackBar(
     message: String,
     status: SnackBarStatus,
     modifier: Modifier = Modifier
@@ -82,7 +77,7 @@ private fun SnackBarSuccessPreview() {
     AflamiTheme {
         Box {
             SnackBar(
-                stringResource(R.string.list_added_success_message),
+                "list deleted",
                 SnackBarStatus.Success,
             )
         }
@@ -95,7 +90,7 @@ private fun SnackBarFailurePreview() {
     AflamiTheme {
         Box {
             SnackBar(
-                stringResource(R.string.general_error_message),
+                "list not deleted",
                 SnackBarStatus.Failure,
             )
         }

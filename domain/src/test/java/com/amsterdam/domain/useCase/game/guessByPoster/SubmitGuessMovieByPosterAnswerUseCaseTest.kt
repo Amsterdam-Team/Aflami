@@ -2,6 +2,8 @@ package com.amsterdam.domain.useCase.game.guessByPoster
 
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
 import com.amsterdam.domain.useCase.game.UpdateUserGamePointsUseCase
+import com.amsterdam.domain.utils.AnswerResult
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
@@ -40,12 +42,12 @@ class SubmitGuessMovieByPosterAnswerUseCaseTest {
 
     private val difficultyType = GameDifficulty.DifficultyType.EASY
     private val gameDifficulty = GameDifficulty(5, 30, 10, GameDifficulty.DifficultyType.EASY)
-    private val moviePosterQuestion = MoviePosterQuestion(
-        posterUrl = "Sample Movie",
-        movieNameChoices = listOf("spiderman", "batman", "superman"),
-        correctMovieName = "spiderman",
-        questionTimeSeconds = 30
+    private val moviePosterQuestion = GameQuestion(
+        question = "Sample Movie",
+        choices = listOf("spiderman", "batman", "superman"),
+        correctChoice = "spiderman",
+        questionTime = 30
     )
-    private val expectedCorrectResult = SubmitGuessMovieByPosterAnswerUseCase.AnswerResult(true, 10)
-    private val expectedIncorrectResult = SubmitGuessMovieByPosterAnswerUseCase.AnswerResult(false, 0)
+    private val expectedCorrectResult = AnswerResult(true, 10)
+    private val expectedIncorrectResult = AnswerResult(false, 0)
 }

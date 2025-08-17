@@ -51,6 +51,7 @@
     <string name="popular">رائج</string>
     <string name="movies_birthday">عيد ميلاد الأفلام</string>
     <string name="recently_watched">تمت مشاهدته مؤخرًا</string>
+    <string name="continue_watching">متابعة المشاهدة</string>
     <string name="top_rating">أعلى تقييم</string>
     <string name="celebrate_message">احتفل مع الأفلام التي صدرت في مثل هذا اليوم.</string>
     <!-- -   -->
@@ -112,13 +113,17 @@
     <string name="points_acheived">النقاط المحققة</string>
     <string name="total_time">الوقت الكلي</string>
     <string name="finish_game_message">لقد أنهيت اللعبة!</string>
+    <string name="lose_the_game_message">للأسف، لقد خسرت اللعبة!</string>
     <string name="not_enough_points">لا توجد نقاط كافية</string>
     <string name="not_enough_points_description">عذرا، ليس لديك نقاط كافية للحصول على تلميح</string>
     <string name="ok">حسنا</string>
     <string name="cd_cancel">يلغي</string>
+    <string name="points_as_pts">نقاط</string>
+    <string name="seconds_as_sec">ثواني</string>
+
     <!-- -   -->
     <!-- -  -->
-    <string name="loading">تحميل…</string>
+    <string name="loading">تحميل...</string>
     <string name="all">الكل</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>
@@ -136,7 +141,7 @@
     <string name="cast">الممثلون</string>
     <string name="search">بحث</string>
     <string name="game_settings">%1$d سؤال، %2$d ثانية، %3$d نقطة لكل سؤال</string>
-    <string name="search_hint">ابحث…</string>
+    <string name="search_hint">ابحث...</string>
     <string name="serach_suggestions_hub">مركز اقتراحات البحث</string>
     <string name="search_description">ابدأ الاستكشاف! ابحث عن أفلامك ومسلسلاتك وعروضك المفضلة</string>
     <string name="clear_all">مسح الكل</string>
@@ -179,6 +184,7 @@
     <string name="settings">الإعدادات</string>
     <string name="change_password">تغيير كلمة المرور</string>
     <string name="tired_of_watching">هل مللت من المشاهدة؟</string>
+    <string name="tired_to_watching">هل مللت من المشاهدة؟</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="logout_message">إذا مللت منا، فاعلم أننا لم نفعل، وسنبقى هنا.</string>
     <string name="login_message">الرجاء تسجيل الدخول للوصول إلى تفاصيل حسابك والميزات الأخرى!</string>
@@ -197,6 +203,7 @@
     <string name="gallary">المعرض</string>
     <string name="company_production">شركة الإنتاج</string>
     <string name="read_more">اقرأ المزيد</string>
+    <string name="read_less">اقرأ أقل</string>
     <string name="rate">تقييم</string>
     <string name="rate_title">قيمه</string>
     <string name="rate_message">اختر مدى إعجابك به</string>
@@ -228,10 +235,14 @@
     <string name="search_error_blank_query">يرجى إدخال شيء ما.</string>
     <string name="search_error_unknown">حدث خطأ غير متوقع.</string>
     <string name="there_is_no_production_company">لا توجد شركة إنتاج!</string>
+    <string name="there_is_no_seasons">يبدو أنه لم تصدر مواسم بعد</string>
+    <string name="added">مضاف</string>
     <string name="there_is_no_reviews">لا توجد مراجعات!</string>
+    <string name="there_are_no_lists">لا توجد قوائم، يمكنك إنشاء قائمة جديدة!</string>
     <string name="there_is_no_similar_content">لا يوجد محتوى مشابه!</string>
 
     <!-- - Home  -->
+    <string name="aflami_title">أفلامي</string>
     <string name="upcoming">القادمة</string>
     <string name="no_upcoming_movies_found_for_your_selection">لم يتم العثور على أفلام قادمة لاختيارك.</string>
     <string name="error_mood_movies_loading">عذرًا! لم نتمكن من العثور على أفلام تناسب مزاجك.</string>
@@ -242,7 +253,6 @@
     <string name="video_launch_error">خطأ في تشغيل الفيديو</string>
 
     <!-- List -->
-    <string name="remove_from_list">حذف عنصر</string>
     <string name="no_saved_items_here">لا توجد عناصر محفوظة</string>
     <string name="no_items_here">لا توجد عناصر هنا</string>
     <string name="confirm_delete">هل أنت متأكد من مواصلة الحذف؟</string>
@@ -277,5 +287,33 @@
     <string name="when_is_released">متي تم عرضه</string>
 
     <string name="oops_there_are_not_enough_points">لا توجد نقاط كافية</string>
+
+    <string name="minute">%1$s د</string>
+
+    <plurals name="season_count">
+        <item quantity="zero">لا مواسم</item>        <!-- 0 -->
+        <item quantity="one">%d موسم</item>          <!-- 1 -->
+        <item quantity="two">%d موسمان</item>        <!-- 2 -->
+        <item quantity="few">%d مواسم</item>         <!-- 3–10 -->
+        <item quantity="many">%d موسم</item>         <!-- 11–99 -->
+        <item quantity="other">%d موسم</item>        <!-- fallback -->
+    </plurals>
+
+    <string name="duration_hours_minutes">%1$s س %2$d د</string>
+    <string name="duration_hours">%1$s س</string>
+    <string name="duration_minutes">%1$s د</string>
+
+
+    <string name="no_rated_movies">لا توجد أفلام مقيمة بعد!</string>
+    <string name="no_rated_movies_description">افتح فيلمًا، قيّمه، وستظهر تقييماتك هنا.</string>
+    <string name="no_rated_tv_shows">لا توجد مسلسلات مقيمة بعد!</string>
+    <string name="no_rated_tv_shows_description">افتح مسلسلًا، قيّمه، وستظهر تقييماتك هنا.</string>
+    <string name="error_rated_media_title">عذرًا! لم نتمكن من تحميل تقييماتك</string>
+    <string name="error_rated_media_description">حدث خطأ أثناء جلب التقييمات الخاصة بك.</string>
+    <string name="select_how_much_you_like_it">حدد مقدار إعجابك!</string>
+    <string name="your_rating_has_been_saved">تم حفظ تقييمك!</string>
+    <string name="failed_to_save_your_rating">عذرًا! لم نتمكن من حفظ تقييمك</string>
+    <string name="failed_to_delete_your_rating">عذرًا! لم نتمكن من حذف تقييمك</string>
+    <string name="your_rate_deletion_has_been_saved">تم حذف تقييمك بنجاح</string>
 
 </resources>

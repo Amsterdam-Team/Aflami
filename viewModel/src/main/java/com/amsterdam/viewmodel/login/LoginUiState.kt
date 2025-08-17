@@ -16,14 +16,14 @@ data class LoginUiState(
 )
 
 sealed interface LoginErrorState {
-    data object InvalidCredentials: LoginErrorState
-    data object VerificationRequired: LoginErrorState
-    data object AccountDisabled: LoginErrorState
-    data object NoInternet: LoginErrorState
-    data object UnknownError: LoginErrorState
+    data object InvalidCredentials : LoginErrorState
+    data object VerificationRequired : LoginErrorState
+    data object AccountDisabled : LoginErrorState
+    data object NoInternet : LoginErrorState
+    data object UnknownError : LoginErrorState
 
-    companion object{
-        fun toLoginErrorState(exception: AflamiException): LoginErrorState{
+    companion object {
+        fun toLoginErrorState(exception: AflamiException): LoginErrorState {
             return when (exception) {
                 is InvalidCredentialsException -> InvalidCredentials
                 is VerificationRequiredException -> VerificationRequired

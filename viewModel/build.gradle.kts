@@ -94,7 +94,7 @@ kover.reports {
 
         // todo: remove the equivalent tests after increasing or fixing them
         classes(
-            "*guess*", "*game*", "*categories*"
+            "*guess*", "*game*", "*categories*", "*${'$'}${'$'}inlined${'$'}*"
         )
         packages(
             "*.application",

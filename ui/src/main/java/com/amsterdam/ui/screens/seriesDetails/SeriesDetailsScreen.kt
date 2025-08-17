@@ -11,8 +11,6 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +38,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,7 +61,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.ImageErrorIndicator
@@ -77,15 +74,15 @@ import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavManager
-import com.amsterdam.ui.components.EpisodeCard
+import com.amsterdam.ui.components.CategoryChip
+import com.amsterdam.ui.components.DottedSeparatedRow
+import com.amsterdam.ui.components.EmptyStateText
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
 import com.amsterdam.ui.components.appBar.DefaultAppBar
-import com.amsterdam.ui.components.movieAndTvShowDetails.DetailsPostersPager
-import com.amsterdam.ui.components.CategoryChip
 import com.amsterdam.ui.components.movieAndTvShowDetails.DescriptionSection
-import com.amsterdam.ui.components.EmptyStateText
+import com.amsterdam.ui.components.movieAndTvShowDetails.DetailsPostersPager
 import com.amsterdam.ui.components.movieAndTvShowDetails.PlayButton
 import com.amsterdam.ui.components.movieAndTvShowDetails.RateDialog
 import com.amsterdam.ui.screens.movieDetails.components.gallerySection
@@ -93,10 +90,14 @@ import com.amsterdam.ui.screens.movieDetails.getMovieAndSeriesDetailsDialogTitle
 import com.amsterdam.ui.screens.movieDetails.getSeriesExtrasSectionItemInfo
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getTvShowGenreLabel
+import com.amsterdam.ui.screens.seriesDetails.component.EpisodeCardPlaceholder
+import com.amsterdam.ui.screens.seriesDetails.component.EpisodeCard
 import com.amsterdam.ui.screens.seriesDetails.component.TvShowCastSection
 import com.amsterdam.ui.screens.seriesDetails.component.companyProductionTvShowSection
 import com.amsterdam.ui.screens.seriesDetails.component.moreTvShowLikeSection
 import com.amsterdam.ui.screens.seriesDetails.component.reviewTvShowSection
+import com.amsterdam.ui.screens.seriesDetails.mappers.formatSeasonText
+import com.amsterdam.ui.screens.seriesDetails.mappers.toLocalizedString
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
 import com.amsterdam.viewmodel.myRating.RateDialogInteractionListener
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsEffect
@@ -124,7 +125,12 @@ fun SeriesDetailsScreen(
     val successRateMessage = stringResource(R.string.your_rating_has_been_saved)
     val failedRateMessage = stringResource(R.string.failed_to_save_your_rating)
 
-    BackHandler { navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true) }
+    BackHandler {
+        navigationManager.navigateUpWithFlag(
+            flagName = REFRESH_AFTER_RATING,
+            value = true
+        )
+    }
 
     SeriesDetailsContent(
         state = state,
@@ -135,11 +141,17 @@ fun SeriesDetailsScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 SeriesDetailsEffect.NavigateBack -> {
-                    navigationManager.navigateUpWithFlag(flagName = REFRESH_AFTER_RATING, value = true)
+                    navigationManager.navigateUpWithFlag(
+                        flagName = REFRESH_AFTER_RATING,
+                        value = true
+                    )
                 }
 
                 SeriesDetailsEffect.NavigateToCastScreen -> {
-                    navigationManager.toCast(mediaType = MediaType.TV_SHOW.name, mediaId = state.tvShowId)
+                    navigationManager.toCast(
+                        mediaType = MediaType.TV_SHOW.name,
+                        mediaId = state.tvShowId
+                    )
                 }
 
                 SeriesDetailsEffect.NavigateToLoginScreenEffect -> navigationManager.toLogin()
@@ -149,13 +161,13 @@ fun SeriesDetailsScreen(
                 }
 
                 is SeriesDetailsEffect.ShowEpisodeTrailerNotFound -> {
-                    SnackBarManager.showError(context.getString(com.amsterdam.ui.R.string.video_launch_error))
+                    SnackBarManager.showError(context.getString(R.string.video_launch_error))
                 }
 
                 is SeriesDetailsEffect.LaunchSeriesVideoEffect -> openYouTubeVideo(
                     context, effect.url
                 ) {
-                    SnackBarManager.showError(context.getString(com.amsterdam.ui.R.string.video_launch_error))
+                    SnackBarManager.showError(context.getString(R.string.video_launch_error))
                 }
 
                 SeriesDetailsEffect.ShowRatingSuccessSnackBar -> SnackBarManager.showSuccess(message = successRateMessage)
@@ -383,13 +395,16 @@ fun SeriesDetailsContent(
                                 }
                             }
 
-                            SeriesInfoSection(
+                            DottedSeparatedRow(
+                                state.airDate,
+                                formatSeasonText(
+                                    context = LocalContext.current,
+                                    seasonCount = state.seasonCount
+                                ),
+                                state.originCountry,
                                 modifier = Modifier
                                     .padding(top = 8.dp)
                                     .padding(horizontal = 16.dp),
-                                airDate = state.airDate,
-                                seasonCount = state.seasonCount,
-                                originCountry = state.originCountry,
                             )
 
                             DescriptionSection(
@@ -475,7 +490,7 @@ fun SeriesDetailsContent(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .statusBarsPadding(),
-                firstOption = painterResource(R.drawable.ic_outlined_star),
+                firstOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_outlined_star),
                 onNavigateBackClicked = seriesDetailsInteractionListener::onNavigateBack,
                 onFirstOptionClicked = seriesDetailsInteractionListener::onClickRate,
             )
@@ -484,44 +499,6 @@ fun SeriesDetailsContent(
 
 
     }
-}
-
-@Composable
-private fun SeriesInfoSection(
-    modifier: Modifier = Modifier, airDate: String, seasonCount: String, originCountry: String
-) {
-    val items = listOf(airDate, seasonCount, originCountry)
-
-    if (!items.all { it.isEmpty() }) {
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items.forEachIndexed { index, item ->
-                AnimatedVisibility(
-                    visible = item.isNotEmpty(),
-                    enter = slideInVertically(),
-                    exit = slideOutVertically()
-                ) {
-                    Text(
-                        text = item,
-                        style = AppTheme.textStyle.label.small,
-                        color = AppTheme.color.hint
-                    )
-
-                    if (index < items.lastIndex) {
-                        Box(
-                            modifier = Modifier
-                                .size(4.dp)
-                                .background(AppTheme.color.stroke, shape = CircleShape)
-                        )
-                    }
-                }
-            }
-        }
-    }
-
 }
 
 @Composable
@@ -556,14 +533,23 @@ private fun LazyListScope.seasonsSection(
         seasons.forEachIndexed { index, season ->
             stickyHeader {
                 SeasonHeader(
-                    season = season, onClickSeasonMenu = { seasonNumber ->
+                    season = season,
+                    onClickSeasonMenu = { seasonNumber ->
                         interaction.onClickSeasonMenu(seasonNumber)
                     })
             }
+
             val episodes = if (season.isExpanded) season.episodes else emptyList()
-            items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
-                EpisodesMenu(season.seasonNumber, it, interaction::onPlayEpisodeClicked)
+
+            if (season.isLoading) {
+                item { EpisodeCardPlaceholder() }
+            } else {
+                items(episodes, key = { "${it.id}-${season.episodes.indexOf(it)}-${index}" }) {
+                    EpisodesMenu(season.seasonNumber, it, interaction::onPlayEpisodeClicked)
+                }
             }
+
+            if (index != seasons.lastIndex) item { HorizontalDivider(color = AppTheme.color.stroke) }
         }
     }
 }
@@ -599,8 +585,8 @@ private fun SeasonHeader(
             )
             Icon(
                 modifier = Modifier.size(20.dp),
-                painter = if (season.isExpanded) painterResource(R.drawable.ic_arrow_up) else painterResource(
-                    R.drawable.ic_arrow_down
+                painter = if (season.isExpanded) painterResource(com.amsterdam.designsystem.R.drawable.ic_arrow_up) else painterResource(
+                    com.amsterdam.designsystem.R.drawable.ic_arrow_down
                 ),
                 contentDescription = null,
                 tint = AppTheme.color.title,
@@ -621,10 +607,10 @@ private fun EpisodesMenu(
         episodeRate = episode.rating,
         episodeNumber = episode.number,
         episodeTitle = episode.title,
-        episodeTime = episode.duration,
+        episodeTime = episode.duration.toLocalizedString(),
         publishedAt = episode.airDate,
         episodeDescription = episode.description,
-        modifier = Modifier.padding(vertical = 12.dp),
+        modifier = Modifier.padding(top = 12.dp),
         onPlayEpisodeClick = {
             onPlayEpisodeClicked(seasonNumber, episode.number)
         },

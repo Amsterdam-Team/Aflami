@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ActorSearchPagingSource @Inject constructor(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase
-): BasePagingSource<Movie>() {
+) : BasePagingSource<Movie>() {
 
     private lateinit var query: String
 
@@ -19,7 +19,7 @@ class ActorSearchPagingSource @Inject constructor(
         return getMoviesByActorUseCase(query, page)
     }
 
-    fun getMovies(query: String): Flow<PagingData<Movie>>{
+    fun getMovies(query: String): Flow<PagingData<Movie>> {
         this.query = query
         return Pager(
             config = PagingConfig(

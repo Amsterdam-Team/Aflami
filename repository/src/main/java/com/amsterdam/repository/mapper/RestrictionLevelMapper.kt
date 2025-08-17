@@ -4,7 +4,6 @@ import com.amsterdam.domain.utils.RestrictionLevel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-
 fun RestrictionLevel.toLocalDto(): String {
     return when (this) {
         RestrictionLevel.STRICT -> "STRICT"

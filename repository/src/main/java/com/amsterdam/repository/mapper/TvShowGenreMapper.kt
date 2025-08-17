@@ -3,7 +3,6 @@ package com.amsterdam.repository.mapper
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
 
-
 fun TvShowCategoryLocalDto.toEntity(): TvShowGenre = when (categoryId) {
     28L -> TvShowGenre.ACTION_ADVENTURE
     16L -> TvShowGenre.ANIMATION

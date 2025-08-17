@@ -2,6 +2,7 @@ package com.amsterdam.domain.useCase.game.guessByPoster
 
 import com.amsterdam.domain.repository.GameRepository
 import com.amsterdam.domain.useCase.game.GetGameDifficultyByDifficultyTypeUseCase
+import com.amsterdam.domain.utils.GameQuestion
 import com.amsterdam.entity.GameDifficulty
 
 
@@ -10,10 +11,10 @@ class GenerateMoviePosterQuestionsUseCase(
     private val getGameDifficultyByDifficultyTypeUseCase: GetGameDifficultyByDifficultyTypeUseCase
 ) {
 
-    suspend operator fun invoke(difficultyType: GameDifficulty.DifficultyType): List<MoviePosterQuestion> {
+    suspend operator fun invoke(difficultyType: GameDifficulty.DifficultyType): List<GameQuestion<String>> {
         val gameDifficulty = getGameDifficultyByDifficultyTypeUseCase(difficultyType)
 
-        val movies = gameRepository.getRandomMoviesWithNotNullPoster(gameDifficulty.totalQuestions * 4)
+        val movies = gameRepository.getRandomMoviesWithPoster(gameDifficulty.totalQuestions * 4)
 
         return movies.chunked(4).map { group ->
             val correctMovie = group.random()
@@ -21,19 +22,12 @@ class GenerateMoviePosterQuestionsUseCase(
 
             val movieNameChoices = (wrongChoices + correctMovie.name).shuffled()
 
-            MoviePosterQuestion(
-                posterUrl = correctMovie.posterUrl,
-                movieNameChoices = movieNameChoices,
-                correctMovieName = correctMovie.name,
-                questionTimeSeconds = gameDifficulty.timeLimitSeconds
+            GameQuestion(
+                question = correctMovie.posterUrl,
+                choices = movieNameChoices,
+                correctChoice = correctMovie.name,
+                questionTime = gameDifficulty.timeLimitSeconds
             )
         }
     }
 }
-
-data class MoviePosterQuestion(
-    val posterUrl: String,
-    val movieNameChoices: List<String>,
-    val correctMovieName: String,
-    val questionTimeSeconds: Int
-)

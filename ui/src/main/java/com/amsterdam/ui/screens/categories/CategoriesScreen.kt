@@ -28,12 +28,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.TabsLayout
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.application.LocalNavManager
-import com.amsterdam.ui.components.CategoryCard
+import com.amsterdam.ui.screens.categories.components.CategoryCard
 import com.amsterdam.ui.screens.categoriesDetails.GenreMovieUiModel
 import com.amsterdam.ui.screens.categoriesDetails.GenreTvShowUiModel
 import com.amsterdam.viewmodel.categories.CategoriesInteractionListener

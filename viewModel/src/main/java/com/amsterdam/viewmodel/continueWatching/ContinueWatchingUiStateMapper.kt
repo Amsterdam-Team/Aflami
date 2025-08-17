@@ -11,11 +11,12 @@ fun MovieWatchHistory.toContinueWatchingItemUiState(): ContinueWatchingItemUiSta
         return ContinueWatchingItemUiState(
             id = id,
             name = name,
-            rate =  rating.toFormattedRating(),
+            rate = rating.toFormattedRating(),
             posterImageUrl = posterUrl,
             yearOfRelease = releaseDate?.year?.toString() ?: "",
             dateAdded = lastWatchedTime,
-            mediaType = MediaType.MOVIE
+            mediaType = MediaType.MOVIE,
+            isAdult = isAdult
         )
     }
 }
@@ -25,11 +26,12 @@ fun TvShowWatchHistory.toContinueWatchingItemUiState(): ContinueWatchingItemUiSt
         return ContinueWatchingItemUiState(
             id = id,
             name = name,
-            rate =  rating.toFormattedRating(),
+            rate = rating.toFormattedRating(),
             posterImageUrl = posterUrl,
             yearOfRelease = airDate?.year?.toString() ?: "",
             dateAdded = lastWatchedTime,
-            mediaType = MediaType.TV_SHOW
+            mediaType = MediaType.TV_SHOW,
+            isAdult = isAdult
         )
     }
 }

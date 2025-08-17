@@ -7,14 +7,16 @@ import com.amsterdam.domain.exceptions.NoInternetException
 import com.amsterdam.domain.useCase.authentication.GetsSessionType
 import com.amsterdam.domain.useCase.details.GetMovieDetailsUseCase
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
+import com.amsterdam.domain.useCase.list.CheckIsMovieInListUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
-import com.amsterdam.domain.useCase.list.GetUserListsUseCase
+import com.amsterdam.domain.useCase.list.GetWishListsUseCase
 import com.amsterdam.domain.useCase.myRating.movie.SetUserMovieRatingUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase.Language
 import com.amsterdam.domain.utils.SessionType
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.Review
+import com.amsterdam.entity.WishList
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.MovieExtras
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
@@ -31,7 +33,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toKotlinLocalDate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -42,10 +43,11 @@ class MovieDetailsViewModelTest {
     private val getsSessionType: GetsSessionType = mockk(relaxed = true)
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase = mockk(relaxed = true)
     private val addMovieToListUseCase: AddMovieToListUseCase = mockk(relaxed = true)
-    private val getUserListsUseCase: GetUserListsUseCase = mockk(relaxed = true)
+    private val getWishListsUseCase: GetWishListsUseCase = mockk(relaxed = true)
     private val createNewListUseCase: CreateNewListUseCase = mockk(relaxed = true)
     private val setUserMovieRatingUseCase: SetUserMovieRatingUseCase = mockk(relaxed = true)
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk(relaxed = true)
+    private val checkIsMovieInListUseCase: CheckIsMovieInListUseCase = mockk(relaxed = true)
     private var testArgs: MovieDetailsArgs = mockk(relaxed = true)
 
     private val viewModel by lazy {
@@ -53,11 +55,12 @@ class MovieDetailsViewModelTest {
             args = testArgs,
             getMovieDetailsUseCase = getMovieDetailsUseCase,
             addMovieToListUseCase = addMovieToListUseCase,
-            getUserListsUseCase = getUserListsUseCase,
+            getWishListsUseCase = getWishListsUseCase,
             createListUseCase = createNewListUseCase,
             getsSessionType = getsSessionType,
             setUserRatingUseCase = setUserMovieRatingUseCase,
             manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
+            checkIsMovieInListUseCase = checkIsMovieInListUseCase,
             dispatcherProvider = TestDispatcherProvider()
         )
     }
@@ -101,6 +104,33 @@ class MovieDetailsViewModelTest {
         assertThat(viewModel.state.value.isLoading).isFalse()
     }
 
+
+    @Test
+    fun `init should set isMovieInList to true when checkIsMovieInListUseCase returns true`() =
+        runTest {
+            coEvery { testArgs.movieId } returns movieId
+            coEvery { getWishListsUseCase() } returns listOf(wishList)
+            coEvery { checkIsMovieInListUseCase.invoke(movieId, listId) } returns true
+
+            viewModel
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.userLists.first().isMovieInList).isTrue()
+        }
+
+    @Test
+    fun `init should set isMovieInList to false when checkIsMovieInListUseCase returns false`() =
+        runTest {
+            coEvery { testArgs.movieId } returns movieId
+            coEvery { getWishListsUseCase() } returns listOf(wishList)
+            coEvery { checkIsMovieInListUseCase.invoke(movieId, listId) } returns false
+
+            viewModel
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.userLists.first().isMovieInList).isFalse()
+        }
+
     @Test
     fun `init should handle NetworkException`() = runTest {
         coEvery { getMovieDetailsUseCase.invoke(any()) } throws NetworkException()
@@ -112,6 +142,38 @@ class MovieDetailsViewModelTest {
     }
 
     //endregion
+
+
+    @Test
+    fun `onClickPlayVideo should send LaunchVideoEffect when called`() = runTest {
+        viewModel
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onClickPlayVideo()
+            assertThat(awaitItem()).isEqualTo(MovieDetailsEffect.LaunchMovieVideoEffect(""))
+        }
+    }
+
+    @Test
+    fun `onClick Retry Request should call loadMovieDetails`() = runTest {
+        viewModel
+        advanceUntilIdle()
+
+        viewModel.onClickRetryRequest()
+        coVerify(exactly = 1) { getMovieDetailsUseCase(any()) }
+    }
+
+
+    @Test
+    fun `onClickCancel should set dialog visibility to false`() = runTest {
+        viewModel
+        advanceUntilIdle()
+
+        viewModel.onClickCancel()
+
+        assertThat(viewModel.state.value.isAddToListDialogVisible).isFalse()
+    }
 
     @Test
     fun `onClickMovieExtras should update the state to be true for selected movie extras`() =
@@ -188,10 +250,39 @@ class MovieDetailsViewModelTest {
         assertThat(viewModel.state.value.isDescriptionExpanded).isTrue()
     }
 
+
+    @Test
+    fun `onReviewExpansionToggled should toggle isReviewExpanded to true when reviewId is equal selected review`() =
+        runTest {
+            coEvery { getMovieDetailsUseCase(movieId) } returns movieDetails
+            viewModel
+            advanceUntilIdle()
+            assertThat(viewModel.state.value.reviews.first().isExpanded).isFalse()
+
+            viewModel.onReviewExpansionToggled("me")
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.reviews.first().isExpanded).isTrue()
+        }
+
+    @Test
+    fun `onReviewExpansionToggled should toggle isReviewExpanded to false when reviewId is not equal selected review`() =
+        runTest {
+            coEvery { getMovieDetailsUseCase(movieId) } returns movieDetails
+            viewModel
+            advanceUntilIdle()
+            assertThat(viewModel.state.value.reviews.first().isExpanded).isFalse()
+
+            viewModel.onReviewExpansionToggled("notMe")
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.reviews.first().isExpanded).isFalse()
+        }
+
     @Test
     fun `onClickAddToList should show add to list dialog when user is logged in`() = runTest {
         coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
-        coEvery { getUserListsUseCase.invoke() } returns emptyList()
+        coEvery { getWishListsUseCase.invoke() } returns emptyList()
         viewModel
         advanceUntilIdle()
 
@@ -199,6 +290,18 @@ class MovieDetailsViewModelTest {
         advanceUntilIdle()
 
         assertThat(viewModel.state.value.isAddToListDialogVisible).isTrue()
+    }
+
+    @Test
+    fun `onClickAddToList should return early when screen is loading`() = runTest {
+        coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
+        coEvery { getWishListsUseCase() } returns emptyList()
+        viewModel
+
+        viewModel.onClickAddToList()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isAddToListDialogVisible).isFalse()
     }
 
     @Test
@@ -218,8 +321,18 @@ class MovieDetailsViewModelTest {
         coEvery { addMovieToListUseCase.invoke(any(), any()) } just Runs
 
         viewModel.effect.test {
-            viewModel.onSaveMovieToList(listId, movieId)
+            viewModel.onSaveMovieToList(listId, listIds = listOf(movieId))
             assertThat(awaitItem()).isEqualTo(MovieDetailsEffect.MovieAddedToListSuccessfully)
+        }
+    }
+
+    @Test
+    fun `onSaveMovieToList should send error effect when it fails`() = runTest {
+        coEvery { addMovieToListUseCase.invoke(any(), any()) } throws AflamiException()
+
+        viewModel.effect.test {
+            viewModel.onSaveMovieToList(listId, listIds = listOf(movieId))
+            assertThat(awaitItem()).isEqualTo(MovieDetailsEffect.MovieAddedToListError)
         }
     }
 
@@ -228,6 +341,28 @@ class MovieDetailsViewModelTest {
         coEvery { addMovieToListUseCase.invoke(any(), any()) } just Runs
 
         assertThat(viewModel.state.value.isAddToListDialogVisible).isFalse()
+    }
+
+    @Test
+    fun `onSaveMovieToList should increase item count in list if success`() = runTest {
+        coEvery { addMovieToListUseCase.invoke(any(), any()) } just Runs
+        coEvery { getWishListsUseCase() } returns wishLists
+
+        viewModel.onSaveMovieToList(movieId, listOf(1L, 2L))
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.userLists.first().itemCount).isEqualTo(2)
+    }
+
+    @Test
+    fun `onSaveMovieToList should not increase item count in list if not selected`() = runTest {
+        coEvery { addMovieToListUseCase.invoke(any(), any()) } just Runs
+        coEvery { getWishListsUseCase() } returns wishLists
+
+        viewModel.onSaveMovieToList(movieId, listOf(2L))
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.userLists.first().itemCount).isEqualTo(1)
     }
 
     @Test
@@ -333,10 +468,10 @@ class MovieDetailsViewModelTest {
         viewModel
         advanceUntilIdle()
 
-        viewModel.onSelectedListChange(selectedList)
+        viewModel.onSelectedListChange(listOf(selectedList))
         advanceUntilIdle()
 
-        assertThat(viewModel.state.value.selectedList).isEqualTo(selectedList)
+        assertThat(viewModel.state.value.selectedLists).isEqualTo(listOf(selectedList))
     }
 
     @Test
@@ -350,7 +485,48 @@ class MovieDetailsViewModelTest {
         }
     }
 
+    @Test
+    fun `onClickSubmit should call setUserRatingUseCase with zero when rate is null`() = runTest {
+        coEvery { setUserMovieRatingUseCase.setUserMovieRate(any(), any()) } returns Unit
+        viewModel
+
+        viewModel.onClickSubmit()
+        advanceUntilIdle()
+
+        coVerify { setUserMovieRatingUseCase.setUserMovieRate(0, any()) }
+    }
+
+
+    @Test
+    fun `onClickSubmit should call onSubmitRateError and send error effect when setUserMovieRate fails`() =
+        runTest {
+            coEvery {
+                setUserMovieRatingUseCase.setUserMovieRate(
+                    any(),
+                    any()
+                )
+            } throws AflamiException()
+
+            viewModel.effect.test {
+                viewModel.onChangeRating(newRate = 4)
+                viewModel.onClickSubmit()
+                assertThat(awaitItem()).isEqualTo(MovieDetailsEffect.ShowRatingErrorSnackBar)
+            }
+        }
+
     //region Rating Tests
+    @Test
+    fun `onClickCancelRateDialog should set dialog visible to false when called`() = runTest {
+        viewModel
+        advanceUntilIdle()
+
+        viewModel.onClickCancelRateDialog()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.rateDialogUiState.isVisible).isFalse()
+    }
+
+
     @Test
     fun `onClickRate should Set Rate Dialog Visible True When User Is LoggedIn`() = runTest {
         coEvery { getsSessionType.invoke() } returns SessionType.LOGGED_IN
@@ -397,10 +573,27 @@ class MovieDetailsViewModelTest {
 
         assertThat(viewModel.state.value.rateDialogUiState.isSubmittingEnabled).isTrue()
     }
+
+    @Test
+    fun `onChangeRating should Set Is Changed to false When Rating Does not change`() = runTest {
+        viewModel
+        advanceUntilIdle()
+
+        viewModel.onChangeRating(4)
+        advanceUntilIdle()
+
+        viewModel.onClickRate()
+        advanceUntilIdle()
+
+        viewModel.onChangeRating(4)
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.rateDialogUiState.isSubmittingEnabled).isFalse()
+    }
+
 //endregion
 
     private val movieId: Long = 1
-    private val reviewId = "1"
     private val similarMovieId: Long = 200
     private val newListName = "My New List"
 
@@ -417,7 +610,26 @@ class MovieDetailsViewModelTest {
             originCountry = "US",
             runTimeInMinutes = 120
         ),
-        reviews = emptyList(),
+        reviews = listOf(
+            Review(
+                id = 1L,
+                reviewerName = "me",
+                reviewerUsername = "me",
+                rating = 0F,
+                content = "",
+                date = LocalDate(2023, 1, 1),
+                imageUrl = ""
+            ),
+            Review(
+                id = 2L,
+                reviewerName = "notMe",
+                reviewerUsername = "notMe",
+                rating = 0F,
+                content = "",
+                date = LocalDate(2023, 1, 1),
+                imageUrl = ""
+            )
+        ),
         actors = emptyList(),
         similarMovies = emptyList(),
         movieGallery = emptyList(),
@@ -426,30 +638,17 @@ class MovieDetailsViewModelTest {
         userRate = null
     )
 
-    val reviewUsername = "user1"
-
-    val reviews = listOf(
-        Review(
-            id = 1L,
-            reviewerName = "Author 1",
-            reviewerUsername = reviewUsername,
-            rating = 8.5f,
-            content = "This is a great movie!",
-            date = java.time.LocalDate.of(2023, 1, 1).toKotlinLocalDate(),
-            imageUrl = "url1"
-        ),
-        Review(
-            id = 2L,
-            reviewerName = "Author 2",
-            reviewerUsername = "user2",
-            rating = 7.0f,
-            content = "It was okay.",
-            date = java.time.LocalDate.of(2023, 2, 1).toKotlinLocalDate(),
-            imageUrl = "url2"
-        )
+    private val selectedList = WishListUiState(id = 1L, name = "Test List")
+    private val wishList = WishList(
+        id = 1,
+        name = "Test List",
+        description = "",
+        itemCount = 1
     )
-
-    private val selectedList = UserListUiState(id = 1L, name = "Test List")
+    private val wishLists = listOf(
+        wishList,
+        wishList.copy(id = 2)
+    )
     private val newListId = 5
     private val listId = 1L
 

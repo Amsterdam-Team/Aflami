@@ -101,6 +101,7 @@ class LoginViewModel @Inject constructor(
             )
         }
     }
+
     fun onLoginErrorHandled() {
         updateState {
             it.copy(loginError = null)

@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.SectionTitle
 import com.amsterdam.ui.components.movieAndTvShowDetails.ActorCard
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ActorMovieUiState

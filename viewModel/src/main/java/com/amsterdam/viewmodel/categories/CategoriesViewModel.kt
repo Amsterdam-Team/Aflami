@@ -17,6 +17,7 @@ class CategoriesViewModel @Inject constructor(
             it.copy(selectedTabOption = tabOption)
         }
     }
+
     override fun onClickMovieGenreCard(
         genreName: String,
     ) {

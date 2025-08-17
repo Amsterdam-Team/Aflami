@@ -17,7 +17,7 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
-    snackbarHost: @Composable () -> Unit = {},
+    snackBarHost: @Composable () -> Unit = {},
     containerColor: Color = AppTheme.color.surface,
     contentColor: Color = Color.Unspecified,
     content: @Composable (PaddingValues) -> Unit
@@ -26,7 +26,7 @@ fun Scaffold(
         modifier = modifier,
         topBar = topBar,
         bottomBar = bottomBar,
-        snackbarHost = snackbarHost,
+        snackbarHost = snackBarHost,
         containerColor = containerColor,
         contentColor = contentColor,
         content = { content(it) },

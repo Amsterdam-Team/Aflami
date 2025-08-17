@@ -1,8 +1,9 @@
 package com.amsterdam.viewmodel.profile
 
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.utils.RestrictionLevel
+import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase.Language
+import com.amsterdam.domain.utils.RestrictionLevel
 
 data class ProfileUiState(
     val isUserLoggedIn: Boolean = false,
@@ -34,13 +35,13 @@ data class ProfileUiState(
     )
 }
 
-sealed interface ProfileErrorState{
-    data object UnknownError: ProfileErrorState
+sealed interface ProfileErrorState {
+    data object UnknownError : ProfileErrorState
 
-    companion object{
-        fun toProfileErrorState(exception: AflamiException): ProfileErrorState{
-            return when (exception){
-                is AflamiException -> UnknownError
+    companion object {
+        fun toProfileErrorState(exception: AflamiException): ProfileErrorState {
+            return when (exception) {
+                is NetworkException -> UnknownError
                 else -> UnknownError
             }
         }

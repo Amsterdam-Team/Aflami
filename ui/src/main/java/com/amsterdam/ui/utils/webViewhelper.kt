@@ -4,10 +4,6 @@ fun buildFormExistenceCheckScript(): String {
     return "(function() { return document.querySelector('form[action=\"/signup\"]') !== null; })();"
 }
 
-fun buildResetPasswordFormExistenceCheckScript(): String {
-    return "(function() { return document.querySelector('form[action=\"/reset-password\"]') !== null; })();"
-}
-
 fun createFormDetector(
     onFormSubmittingComplete: () -> Unit
 ): (isFormPresent: Boolean) -> Unit {

@@ -15,9 +15,10 @@ class CategoriesTvShowDetailsPagingSource @Inject constructor(
 ) : BasePagingSource<TvShow>() {
     private var genre: TvShowGenre? = null
     override suspend fun fetch(page: Int): List<TvShow> {
-     val safeGenre = genre ?: throw IllegalStateException("Genre must be set before fetching")
-        return getTvShowsByGenreUseCase(safeGenre,page)
+        val safeGenre = genre ?: throw IllegalStateException("Genre must be set before fetching")
+        return getTvShowsByGenreUseCase(safeGenre, page)
     }
+
     fun getTvShows(tvShowGenre: TvShowGenre): Flow<PagingData<TvShow>> {
         this.genre = tvShowGenre
         return Pager(

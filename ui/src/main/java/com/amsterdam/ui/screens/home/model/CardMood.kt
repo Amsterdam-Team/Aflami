@@ -10,13 +10,4 @@ enum class CardMood(@DrawableRes val iconResourceId: Int) {
     ANGRY(R.drawable.ic_mood_angry),
     DEPRESSED(R.drawable.ic_mood_unhappy),
     SAD_DIZZY(R.drawable.ic_mood_saddizzy);
-
-    companion object {
-        fun getModeByName(moodName: String): CardMood {
-            entries.forEach { mood ->
-                if (mood.name == moodName) return mood
-            }
-            return SAD
-        }
-    }
 }

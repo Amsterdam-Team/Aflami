@@ -3,7 +3,7 @@ package com.amsterdam.repository.repository
 import com.amsterdam.domain.repository.WatchHistoryRepository
 import com.amsterdam.entity.MovieWatchHistory
 import com.amsterdam.entity.TvShowWatchHistory
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
 import com.amsterdam.repository.datasource.local.WatchHistoryLocalDataSource
@@ -28,7 +28,7 @@ class WatchHistoryRepositoryImpl @Inject constructor(
     private val movieRemoteDataSource : MovieRemoteDataSource,
     private val tvShowLocalDataSource : TvShowLocalDataSource,
     private val tvShowRemoteSource : TvShowsRemoteDataSource,
-    private val preferences : AppPreferences,
+    private val preferences : AppLocalPreferences,
     private val localTvDataSource : TvShowLocalDataSource
 ) : WatchHistoryRepository {
 

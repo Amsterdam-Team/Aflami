@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.R
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -41,6 +42,7 @@ fun SectionTitle(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth(0.90f),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -48,6 +50,8 @@ fun SectionTitle(
                 text = title,
                 color = AppTheme.color.title,
                 style = AppTheme.textStyle.headline.small,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             icon?.let {
                 Icon(
@@ -80,7 +84,7 @@ fun SectionTitle(
 private fun SectionTitlePreview() {
     AflamiTheme {
         SectionTitle(
-            title = stringResource(R.string.movies_birthday),
+            title = "Movies Birthday",
             icon = painterResource(R.drawable.ic_birthday_cake),
             showAllLabel = true,
             tintColor = AppTheme.color.yellowAccent,

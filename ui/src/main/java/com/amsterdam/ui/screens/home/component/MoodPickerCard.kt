@@ -10,11 +10,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -26,6 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Icon
 import com.amsterdam.designsystem.components.Text
@@ -45,7 +49,7 @@ fun MoodPickerCard(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     onSelectMood: (CardMood) -> Unit = {},
-    onClickGetNow: () -> Unit = {},
+    onClickGetNow: () -> Unit = {}
 ) {
     Box(
         modifier =
@@ -61,42 +65,43 @@ fun MoodPickerCard(
                                 AppTheme.color.yellowAccent,
                             ),
                     ),
-                    alpha = 0.7f,
+                    alpha = 0.7f
                 )
-                .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp)),
+                .border(1.dp, AppTheme.color.stroke, RoundedCornerShape(24.dp))
     ) {
         Image(
+            modifier =
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp)
+                    .height(121.dp),
             painter = painterResource(R.drawable.img_mood_fun_clown),
             contentDescription = null,
-            contentScale = ContentScale.FillHeight,
-            modifier =
-                Modifier
-                    .padding(top = 8.dp)
-                    .align(Alignment.TopEnd)
-                    .height(121.dp),
+            contentScale = ContentScale.FillHeight
         )
 
-        Column {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
             BlurredBoxWithIcon()
             Text(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .fillMaxWidth(0.6f),
                 text = stringResource(R.string.mood_picker_title),
                 color = AppTheme.color.onPrimary,
-                style = AppTheme.textStyle.label.medium,
-                modifier = Modifier.padding(start = 12.dp),
+                style = AppTheme.textStyle.label.medium
+            )
+            MoodOptionsSection(
+                modifier = Modifier.padding(top = 10.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
+                cardMoods = cardMoods,
+                selectedMood = selectedMood,
+                isButtonEnabled = isButtonEnabled,
+                isLoading = isLoading,
+                onSelectMood = onSelectMood,
+                onClickGetNow = onClickGetNow
             )
         }
-
-        MoodOptionsSection(
-            cardMoods = cardMoods,
-            selectedMood = selectedMood,
-            isButtonEnabled = isButtonEnabled,
-            isLoading = isLoading,
-            modifier =
-                Modifier
-                    .padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
-            onSelectMood = onSelectMood,
-            onClickGetNow = onClickGetNow
-        )
     }
 }
 
@@ -111,7 +116,6 @@ private fun MoodOptionsSection(
     onSelectMood: (CardMood) -> Unit = {},
     onClickGetNow: () -> Unit = {},
 ) {
-    //var selectedIndex by remember { mutableIntStateOf(-1) }
     val selectedIndex = cardMoods.indexOfFirst { it.name == selectedMood?.name }
 
     Column(
@@ -128,13 +132,14 @@ private fun MoodOptionsSection(
             color = AppTheme.color.body,
             style = AppTheme.textStyle.body.small,
             modifier = Modifier.padding(12.dp),
+            textAlign = TextAlign.Center
         )
 
-        Row(
-            modifier = Modifier.padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            cardMoods.forEachIndexed { index, mood ->
+            itemsIndexed(items = cardMoods) { index, mood ->
                 MoodIcon(
                     iconRes = mood.iconResourceId,
                     isSelected = selectedIndex == index,

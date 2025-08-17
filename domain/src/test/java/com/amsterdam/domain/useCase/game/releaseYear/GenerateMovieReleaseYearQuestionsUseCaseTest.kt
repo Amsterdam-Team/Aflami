@@ -21,7 +21,7 @@ class GenerateMovieReleaseYearQuestionsUseCaseTest {
     @Test
     fun `should generate movie release date questions`() = runTest {
         every { getGameDifficultyUseCase(difficultyType) } returns gameDifficulty
-        coEvery { gameRepository.getRandomMoviesWithNotNullDate(gameDifficulty.totalQuestions) } returns generateFakeMoviesByCount(gameDifficulty.totalQuestions)
+        coEvery { gameRepository.getRandomMoviesWithReleaseDate(gameDifficulty.totalQuestions) } returns generateFakeMoviesByCount(gameDifficulty.totalQuestions)
 
         val result = generateMovieReleaseYearQuestionsUseCase(difficultyType)
 

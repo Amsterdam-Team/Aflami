@@ -1,6 +1,5 @@
 package com.amsterdam.designsystem.components.snackBar
 
-import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

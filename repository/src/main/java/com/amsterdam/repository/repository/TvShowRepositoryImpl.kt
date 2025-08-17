@@ -8,7 +8,7 @@ import com.amsterdam.entity.Episode
 import com.amsterdam.entity.Season
 import com.amsterdam.entity.TvShow
 import com.amsterdam.entity.category.TvShowGenre
-import com.amsterdam.repository.datasource.local.AppPreferences
+import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.CategoryLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource
 import com.amsterdam.repository.datasource.remote.CategoryRemoteDataSource
@@ -16,12 +16,12 @@ import com.amsterdam.repository.datasource.remote.TvShowsRemoteDataSource
 import com.amsterdam.repository.dto.local.TvShowCategoryLocalDto
 import com.amsterdam.repository.dto.local.TvShowLocalDto
 import com.amsterdam.repository.dto.local.relation.TvShowWithCategories
-import com.amsterdam.repository.dto.remote.EpisodeRemoteDto
 import com.amsterdam.repository.dto.remote.CategoryRemoteDto
 import com.amsterdam.repository.dto.remote.CategoryRemoteResponse
+import com.amsterdam.repository.dto.remote.EpisodeRemoteDto
+import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.dto.remote.TvShowItemRemoteDto
 import com.amsterdam.repository.dto.remote.TvShowRemoteResponse
-import com.amsterdam.repository.dto.remote.TvShowDetailsRemoteResponse
 import com.amsterdam.repository.mapper.toDto
 import com.amsterdam.repository.mapper.toEntity
 import com.amsterdam.repository.mapper.toEntityList
@@ -37,11 +37,10 @@ import kotlin.time.Duration.Companion.days
 class TvShowRepositoryImpl @Inject constructor(
     private val localTvDataSource: TvShowLocalDataSource,
     private val remoteTvDataSource: TvShowsRemoteDataSource,
-    private val preferences: AppPreferences,
+    private val preferences: AppLocalPreferences,
     private val categoryLocalDataSource: CategoryLocalDataSource,
     private val categoryRemoteDataSource: CategoryRemoteDataSource
 ) : TvShowRepository {
-
     override suspend fun getTvShowByKeyword(
         keyword: String,
         page: Int,
@@ -62,7 +61,8 @@ class TvShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTvShows(page: Int): List<TvShow> {
-        return getCachedOrRemoteData<TvShowLocalDto, TvShowItemRemoteDto, TvShow>(
+        return if (page > 1) getTopRatedTvShowsFromRemote(page).toEntityList()
+        else getCachedOrRemoteData<TvShowLocalDto, TvShowItemRemoteDto, TvShow>(
             deleteExpired = ::deleteExpiredTopRatedTvShows,
             getFromLocal = ::getTopRatedTvShowsFromLocal,
             getFromRemote = { getTopRatedTvShowsFromRemote(page) },
@@ -240,5 +240,4 @@ class TvShowRepositoryImpl @Inject constructor(
             )
         )
     }
-
 }

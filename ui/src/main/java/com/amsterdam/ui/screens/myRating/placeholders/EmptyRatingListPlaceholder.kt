@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.amsterdam.designsystem.R
+import com.amsterdam.ui.R
 import com.amsterdam.ui.components.NoDataContainer
 
 fun LazyGridScope.emptyRatingListPlaceholder(

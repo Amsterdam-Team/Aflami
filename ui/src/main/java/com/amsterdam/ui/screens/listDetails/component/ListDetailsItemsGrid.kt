@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
@@ -38,12 +39,12 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 internal fun ListDetailsItemsGrid(
     listMediaItems: LazyPagingItems<ListDetailsItemsUiState>,
+    gridState: LazyGridState,
     modifier: Modifier = Modifier,
     onClickMovie: (Long) -> Unit,
     onClickTvShow: (Long) -> Unit,
     onClickRemoveItem: (Long) -> Unit = {}
 ) {
-    val gridState = rememberLazyGridState()
     val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
@@ -62,12 +63,12 @@ internal fun ListDetailsItemsGrid(
             val (topIcon, movieType, onCardClick) = when (listMediaItem.mediaType) {
                 MediaType.MOVIE -> Triple(
                     painterResource(com.amsterdam.designsystem.R.drawable.ic_heart_remove),
-                    stringResource(com.amsterdam.designsystem.R.string.movies)
+                    stringResource(R.string.movies)
                 ) { onClickMovie(listMediaItem.id) }
 
                 else -> Triple(
                     null,
-                    stringResource(com.amsterdam.designsystem.R.string.tv_shows),
+                    stringResource(R.string.tv_shows),
                 ) { onClickTvShow(listMediaItem.id) }
             }
 
@@ -81,6 +82,7 @@ internal fun ListDetailsItemsGrid(
                         safetyLevel = safetyLevel,
                         onLoading = { ImageLoadingIndicator() },
                         onError = { ImageErrorIndicator() },
+                        isAdult = listMediaItem.isAdult
                     )
                 },
                 movieType = movieType,
@@ -95,7 +97,7 @@ internal fun ListDetailsItemsGrid(
 
         if (
             listMediaItems.loadState.append is LoadState.Loading
-                && listMediaItems.itemCount > 1
+            && listMediaItems.itemCount > 1
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 LoadingIndicator(
@@ -130,6 +132,7 @@ private fun MediaItemsGridPreview() {
     AflamiTheme {
         ListDetailsItemsGrid(
             listMediaItems = emptyFlow<PagingData<ListDetailsItemsUiState>>().collectAsLazyPagingItems(),
+            gridState = rememberLazyGridState(),
             onClickMovie = {},
             onClickTvShow = {},
             onClickRemoveItem = {}
