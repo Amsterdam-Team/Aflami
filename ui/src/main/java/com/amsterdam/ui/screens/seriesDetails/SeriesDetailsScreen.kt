@@ -488,7 +488,8 @@ fun SeriesDetailsContent(
                 .onSizeChanged { appBarHeight = with(density) { it.height.toDp() } }) {
             DefaultAppBar(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp)
                     .statusBarsPadding(),
                 firstOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_outlined_star),
                 onNavigateBackClicked = seriesDetailsInteractionListener::onNavigateBack,
