@@ -99,23 +99,16 @@ private fun GuessByPosterContent(
             .fillMaxSize()
             .navigationBarsPadding(),
         bottomBar = {
-            Box(
+            ConfirmButton(
+                title = stringResource(R.string.next),
+                onClick = interactionListener::onMoveToNextQuestion,
+                isEnabled = state.isNextEnabled,
+                isLoading = false,
+                isNegative = false,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                ConfirmButton(
-                    title = stringResource(R.string.next),
-                    onClick = interactionListener::onMoveToNextQuestion,
-                    isEnabled = state.isNextEnabled,
-                    isLoading = false,
-                    isNegative = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
+                    .padding(16.dp)
+            )
         }
     ) { innerPadding ->
 
