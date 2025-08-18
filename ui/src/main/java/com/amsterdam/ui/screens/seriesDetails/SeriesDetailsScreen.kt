@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
@@ -51,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
@@ -210,7 +212,8 @@ fun SeriesDetailsContent(
     }
 
     LaunchedEffect(childLazyListState.isScrollInProgress, !parentLazyListState.canScrollForward) {
-        canChildScroll = childLazyListState.canScrollBackward && !parentLazyListState.canScrollForward
+        canChildScroll =
+            childLazyListState.canScrollBackward && !parentLazyListState.canScrollForward
     }
 
     val screenWidthDp by remember { mutableStateOf(configuration.screenWidthDp.dp) }
@@ -585,16 +588,28 @@ private fun SeasonHeader(
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "${season.episodeCount} ${pluralStringResource(R.plurals.episodes, season.episodeCount)}",
+                text = "${season.episodeCount} ${
+                    pluralStringResource(
+                        R.plurals.episodes,
+                        season.episodeCount
+                    )
+                }",
                 color = AppTheme.color.hint,
                 style = AppTheme.textStyle.label.small,
                 modifier = Modifier.padding(end = 4.dp)
             )
+
+            val rotation by animateFloatAsState(
+                targetValue = if (season.isExpanded || season.isLoading) 180f else 0f,
+                animationSpec = tween(700),
+                label = "arrowRotation"
+            )
+
             Icon(
-                modifier = Modifier.size(20.dp),
-                painter = if (season.isExpanded || season.isLoading) painterResource(com.amsterdam.designsystem.R.drawable.ic_arrow_up) else painterResource(
-                    com.amsterdam.designsystem.R.drawable.ic_arrow_down
-                ),
+                modifier = Modifier
+                    .size(20.dp)
+                    .rotate(rotation),
+                painter = painterResource(com.amsterdam.designsystem.R.drawable.ic_arrow_down),
                 contentDescription = null,
                 tint = AppTheme.color.title,
             )
