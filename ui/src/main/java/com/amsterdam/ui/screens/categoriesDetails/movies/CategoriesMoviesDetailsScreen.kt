@@ -11,18 +11,16 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -93,26 +91,22 @@ private fun CategoriesMoviesDetailsContent(
     interaction: CategoriesMoviesDetailsInteractionListener,
     movies: LazyPagingItems<CategoriesMoviesDetailsUiState.MoviesUiState>
 ) {
-    var appBarHeight by remember { mutableIntStateOf(0) }
-
     Column(
         Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp)
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp)
     ) {
         DefaultAppBar(
-            modifier = Modifier
-                .onSizeChanged { appBarHeight = it.height },
             title = stringResource(R.string.movies),
             onNavigateBackClicked = interaction::onClickBack
         )
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-                .weight(1f),
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+                    .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
@@ -151,11 +145,13 @@ private fun CategoriesMoviesDetailsContent(
                 }
 
                 else -> {
-                    LazyColumn(
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(242.dp),
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                .fillMaxHeight()
+                                .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         items(movies.itemCount) { index ->
                             val movie = movies[index] ?: return@items
