@@ -41,7 +41,7 @@ class SeriesDetailsViewModel @Inject constructor(
 ), SeriesDetailsInteractionListener, RateDialogInteractionListener {
 
     init {
-        val tvShowId = args.tvShowId!!
+        val tvShowId = args.tvShowId
         updateState { it.copy(tvShowId = tvShowId, isLoading = true) }
 
         manageLocaleLanguageUseCase.getAppLanguage()
