@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -89,6 +90,7 @@ private fun SearchByCountryContent(
     movies: LazyPagingItems<SearchMediaItemUiState>,
     interactionListener: CountrySearchInteractionListener,
 ) {
+    val density = LocalDensity.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,7 +100,7 @@ private fun SearchByCountryContent(
         var headerHeight by remember { mutableStateOf(0.dp) }
         Column(
             Modifier
-                .onSizeChanged { headerHeight = it.height.dp }
+                .onSizeChanged { headerHeight = with(density) { it.height.dp } }
                 .padding(horizontal = 16.dp)
         ) {
             DefaultAppBar(

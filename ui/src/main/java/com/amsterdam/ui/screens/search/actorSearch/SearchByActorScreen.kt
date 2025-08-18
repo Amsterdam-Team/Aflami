@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -98,6 +99,7 @@ private fun SearchByActorContent(
     movies: LazyPagingItems<SearchMediaItemUiState>,
     modifier: Modifier = Modifier,
 ) {
+    val density = LocalDensity.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var headerHeight by remember { mutableStateOf(0.dp) }
     Column(
@@ -108,7 +110,7 @@ private fun SearchByActorContent(
     ) {
         Column(
             Modifier
-                .onSizeChanged { headerHeight = it.height.dp }
+                .onSizeChanged { headerHeight = with(density) { it.height.dp } }
                 .padding(horizontal = 16.dp)
         ) {
             DefaultAppBar(

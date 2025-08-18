@@ -1,5 +1,6 @@
 package com.amsterdam.designsystem.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -29,17 +31,17 @@ fun CenterOfScreenContainer(
     isNavigationBarTransparent: Boolean = false,
     content: @Composable () -> Unit,
 ) {
+    val density = LocalDensity.current
     var paddingValueDp by remember { mutableStateOf(0.dp) }
-    val screenHeight = getAvailableScreenHeight(isStatusBarTransparent, isNavigationBarTransparent)
-    val statusBarHeight = getStatusBarHeight()
-    val navigationBarHeight = getNavigationBarHeight()
+    val statusBarPadding = if (isStatusBarTransparent) 0.dp else getStatusBarHeight()
+    val navigationBarPadding = if (isNavigationBarTransparent) 0.dp else getNavigationBarHeight()
+    val screenHeight = getAvailableScreenHeight(statusBarPadding, navigationBarPadding)
     val headerHeight = getHeaderHeight(
         unneededSpace,
-        isStatusBarTransparent,
-        isNavigationBarTransparent,
-        statusBarHeight,
-        navigationBarHeight
+        statusBarPadding,
+        navigationBarPadding
     )
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -49,12 +51,11 @@ fun CenterOfScreenContainer(
         Box(
             modifier = Modifier
                 .onSizeChanged {
-                    paddingValueDp = getContainerSize(
+                    paddingValueDp = getPaddingValue(
+                        density,
                         it,
                         screenHeight,
                         headerHeight,
-                        if (isStatusBarTransparent) statusBarHeight else 0.dp,
-                        if (isNavigationBarTransparent) navigationBarHeight else 0.dp,
                     )
                 }
         ) {
@@ -66,35 +67,24 @@ fun CenterOfScreenContainer(
 @Composable
 private fun getHeaderHeight(
     unneededSpace: Dp,
-    isStatusBarTransparent: Boolean,
-    isNavigationBarTransparent: Boolean,
-    statusBarHeight: Dp,
-    navigationBarHeight: Dp
+    statusBarPadding: Dp,
+    navigationBarPadding: Dp
 ): Dp {
-    return unneededSpace + when {
-        isStatusBarTransparent && isNavigationBarTransparent -> statusBarHeight + navigationBarHeight
-        isStatusBarTransparent -> statusBarHeight
-        isNavigationBarTransparent -> navigationBarHeight
-        else -> 0.dp
-    }
+    return unneededSpace + statusBarPadding + navigationBarPadding
 }
 
 @Composable
 private fun getAvailableScreenHeight(
-    isStatusBarTransparent: Boolean,
-    isNavigationBarTransparent: Boolean
+    statusBarPadding: Dp,
+    navigationBarPadding: Dp
 ): Dp {
-    val fullScreenHeight = getScreenHeight()
-    val statusBarHeight = if (isStatusBarTransparent) 0.dp else getStatusBarHeight()
-    val navigationBarHeight = if (isNavigationBarTransparent) 0.dp else getNavigationBarHeight()
-
-    val screenHeight = remember { fullScreenHeight - statusBarHeight - navigationBarHeight }
-    return screenHeight
+    return getScreenHeight() - statusBarPadding - navigationBarPadding
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 private fun getScreenHeight(): Dp {
-    return LocalContext.current.resources.displayMetrics.heightPixels.dp
+    return LocalConfiguration.current.screenHeightDp.dp
 }
 
 @Composable
@@ -107,16 +97,15 @@ private fun getNavigationBarHeight(): Dp {
     return with(LocalDensity.current) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 }
 
-private fun getContainerSize(
+private fun getPaddingValue(
+    density: Density,
     size: IntSize,
     screenHeight: Dp,
     headerHeight: Dp,
-    statusBarHeight: Dp = 0.dp,
-    navigationBarHeight: Dp = 0.dp,
 ): Dp {
-    val containerHeight = size.height.dp
-    return if (screenHeight > headerHeight * 2 + containerHeight) {
-        (statusBarHeight + navigationBarHeight + headerHeight) / 2
+    val containerHeight = with(density) { size.height.toDp() }
+    return if (screenHeight > headerHeight + containerHeight) {
+        (headerHeight) / 2
     } else {
         0.dp
     }

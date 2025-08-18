@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -107,7 +108,7 @@ private fun ListDetailsContent(
     errorState: ErrorUiState?,
     listener: ListDetailsInteractionListener
 ) {
-
+    val density = LocalDensity.current
     val listMediaItems = state.listItems.collectAsLazyPagingItems()
     var headerHeight by remember { mutableStateOf(0.dp) }
 
@@ -128,7 +129,7 @@ private fun ListDetailsContent(
             title = shortenedTitle,
             modifier = Modifier
                 .fillMaxWidth()
-                .onSizeChanged { headerHeight = it.height.dp }
+                .onSizeChanged { headerHeight = with(density) { it.height.dp } }
                 .padding(start = 16.dp, end = 16.dp, top = 8.dp),
             lastOption = painterResource(com.amsterdam.designsystem.R.drawable.ic_delete),
             lastOptionIconTint = AppTheme.color.redAccent,
