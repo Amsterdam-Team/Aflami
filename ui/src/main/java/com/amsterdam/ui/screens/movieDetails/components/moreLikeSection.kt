@@ -7,16 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.EmptyStateText
-import com.amsterdam.ui.components.movieAndTvShowDetails.UpcomingCard
 import com.amsterdam.ui.components.adaptiveGrid
-import com.amsterdam.ui.utils.reverseDateFormat
-import com.amsterdam.ui.utils.toLocalizedNumbers
+import com.amsterdam.ui.components.movieAndTvShowDetails.UpcomingCard
 import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 
@@ -56,7 +54,7 @@ fun LazyListScope.moreLikeSection(
                 },
                 movieTitle = similarMovie.name,
                 movieType = stringResource(R.string.movie),
-                movieYear = similarMovie.productionYear.toLocalizedNumbers(),
+                movieYear = similarMovie.productionYear,
                 modifier = Modifier
                     .weight(1f),
                 movieRating = similarMovie.rate,
