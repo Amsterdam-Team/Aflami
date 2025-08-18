@@ -4,6 +4,8 @@ import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
+import com.amsterdam.viewmodel.shared.uiStates.DurationUiState
+import java.util.Locale
 
 data class SeriesDetailsUiState(
     val tvShowId: Long = 0,
@@ -32,7 +34,7 @@ data class SeriesDetailsUiState(
     val dialogType: MovieAndSeriesDetailsDialogType? = null,
     val rateDialogUiState: RateDialogUiState = RateDialogUiState(),
     val isDescriptionExpanded: Boolean = false,
-    val currentLanguage: String = "en"
+    val currentLanguage: String = Locale.getDefault().language
 ) {
     enum class SeriesExtras {
         SEASONS,
@@ -72,8 +74,6 @@ data class SeriesDetailsUiState(
             val airDate: String = "",
             val videoUrl: String = ""
         )
-
-        data class DurationUiState(val hour: Int = 0, val minute: Int = 0)
     }
 
     data class ActorTvShowUiState(

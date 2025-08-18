@@ -11,11 +11,12 @@ import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.ActorTvShowUiS
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.ProductionTvShowCompanyUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.ReviewTvShowUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState
-import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.DurationUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.EpisodeUiState
 import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SimilarTvShowUiState
 import com.amsterdam.viewmodel.shared.RateDialogUiState
+import com.amsterdam.viewmodel.shared.mappers.toDurationUiState
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
+import com.amsterdam.viewmodel.shared.uiStates.toLocalizedName
 import com.amsterdam.viewmodel.utils.toFormattedString
 import com.amsterdam.viewmodel.utils.toShortMonthString
 
@@ -31,7 +32,7 @@ fun TvShowDetails.toUiState(currentLanguage: String): SeriesDetailsUiState {
         airDate = tvShow.airDate.toFormattedString(),
         categories = tvShow.categories,
         seasonCount = seasons.size,
-        originCountry = tvShow.originCountry,
+        originCountry = tvShow.originCountry.toLocalizedName(language = currentLanguage),
         description = tvShow.description,
         cast = actors.toActorsUiState(),
         isRateDialogVisible = false,
@@ -101,13 +102,6 @@ private fun Episode.toUiState(currentLanguage: String): EpisodeUiState {
         description = description,
         duration = runTimeInMinutes.toDurationUiState(),
         airDate = airDate.toShortMonthString(language = currentLanguage)
-    )
-}
-
-fun Int.toDurationUiState(): DurationUiState {
-    return DurationUiState(
-        hour = this / 60,
-        minute = this % 60
     )
 }
 

@@ -70,6 +70,7 @@ import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.CategoryChip
 import com.amsterdam.ui.components.CreateNewListDialog
+import com.amsterdam.ui.components.DottedSeparatedRow
 import com.amsterdam.ui.components.MustLoginDialog
 import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.RatingChip
@@ -81,13 +82,13 @@ import com.amsterdam.ui.components.movieAndTvShowDetails.RateDialog
 import com.amsterdam.ui.screens.movieDetails.components.AddToListDialog
 import com.amsterdam.ui.screens.movieDetails.components.MovieCastSection
 import com.amsterdam.ui.screens.movieDetails.components.MovieExtrasSection
-import com.amsterdam.ui.screens.movieDetails.components.MovieInfoSection
 import com.amsterdam.ui.screens.movieDetails.components.companyProductionSection
 import com.amsterdam.ui.screens.movieDetails.components.gallerySection
 import com.amsterdam.ui.screens.movieDetails.components.moreLikeSection
 import com.amsterdam.ui.screens.movieDetails.components.reviewMovieSection
 import com.amsterdam.ui.screens.openYouTubeVideo
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreLabel
+import com.amsterdam.ui.screens.seriesDetails.mappers.toLocalizedString
 import com.amsterdam.ui.utils.SavedStateKeys.REFRESH_AFTER_RATING
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsEffect
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsInteractionListener
@@ -426,14 +427,14 @@ fun MovieContent(
                                     CategoryChip(categoryName = getMovieGenreLabel(it))
                                 }
                             }
-                            MovieInfoSection(
+
+                            DottedSeparatedRow(
+                                state.releaseDate, state.movieLength.toLocalizedString(), state.originCountry,
                                 modifier = Modifier
                                     .padding(top = 8.dp)
                                     .padding(horizontal = 16.dp),
-                                releaseDate = state.releaseDate,
-                                movieLength = state.movieLength,
-                                originCountry = state.originCountry,
                             )
+
                             DescriptionSection(
                                 modifier = Modifier
                                     .padding(top = 24.dp)

@@ -10,8 +10,9 @@ import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ProductionMovieC
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.ReviewMovieUiState
 import com.amsterdam.viewmodel.movieDetails.MovieDetailsUiState.SimilarMovieUiState
 import com.amsterdam.viewmodel.shared.RateDialogUiState
+import com.amsterdam.viewmodel.shared.mappers.toDurationUiState
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
-import com.amsterdam.viewmodel.utils.movieLengthToHourMinuteString
+import com.amsterdam.viewmodel.shared.uiStates.toLocalizedName
 import com.amsterdam.viewmodel.utils.toFormattedString
 
 fun MovieDetails.toUiState(uiState: MovieDetailsUiState): MovieDetailsUiState {
@@ -22,8 +23,8 @@ fun MovieDetails.toUiState(uiState: MovieDetailsUiState): MovieDetailsUiState {
         categories = movie.categories,
         moviePostersUrl = moviePosters,
         releaseDate = movie.releaseDate.toFormattedString(),
-        movieLength = movieLengthToHourMinuteString(movie.runTimeInMinutes),
-        originCountry = movie.originCountry,
+        movieLength = movie.runTimeInMinutes.toDurationUiState(),
+        originCountry = movie.originCountry.toLocalizedName(language = uiState.currentLanguage),
         description = movie.description,
         videoUrl = movie.videoUrl ?: "",
         actors = actors.toActorsMovieUiState(),

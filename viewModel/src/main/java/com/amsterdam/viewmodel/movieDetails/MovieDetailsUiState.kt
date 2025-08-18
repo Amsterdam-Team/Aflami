@@ -4,6 +4,8 @@ import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.Selectable
 import com.amsterdam.viewmodel.shared.movieAndSeriseDetails.MovieAndSeriesDetailsDialogType
+import com.amsterdam.viewmodel.shared.uiStates.DurationUiState
+import java.util.Locale
 
 data class MovieDetailsUiState(
     val movieId: Long = 0,
@@ -11,7 +13,7 @@ data class MovieDetailsUiState(
     val movieTitle: String = "",
     val categories: List<MovieGenre> = emptyList(),
     val releaseDate: String = "",
-    val movieLength: String = "",
+    val movieLength: DurationUiState = DurationUiState(),
     val originCountry: String = "",
     val description: String = "",
     val videoUrl: String = "",
@@ -36,6 +38,7 @@ data class MovieDetailsUiState(
     val isCreateListLoading: Boolean = false,
     val isAddMovieToListLoading: Boolean = false,
     val selectedLists: List<WishListUiState> = emptyList(),
+    val currentLanguage: String = Locale.getDefault().language
 ) {
     data class SimilarMovieUiState(
         val movieId: Long,

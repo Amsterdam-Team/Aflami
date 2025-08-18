@@ -47,7 +47,8 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(movieId = movieId) }
 
         manageLocaleLanguageUseCase.getAppLanguage()
-            .onEach {
+            .onEach { language ->
+                updateState { it.copy(currentLanguage = language.value) }
                 getMovieDetails()
                 loadWishLists()
             }.launchIn(viewModelScope)
