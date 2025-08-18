@@ -3,7 +3,7 @@ package com.amsterdam.ui.screens.seriesDetails.mappers
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.amsterdam.ui.R
-import com.amsterdam.viewmodel.seriesDetails.SeriesDetailsUiState.SeasonUiState.DurationUiState
+import com.amsterdam.viewmodel.shared.uiStates.DurationUiState
 
 @Composable
 fun DurationUiState.toLocalizedString(): String {
