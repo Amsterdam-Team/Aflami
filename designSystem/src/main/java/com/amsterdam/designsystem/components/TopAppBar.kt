@@ -45,7 +45,7 @@ fun TopAppBar(
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(IntrinsicSize.Min)
+            modifier = Modifier.weight(1f).height(IntrinsicSize.Min)
         ) {
             leadingIcon?.invoke()
             Column(
