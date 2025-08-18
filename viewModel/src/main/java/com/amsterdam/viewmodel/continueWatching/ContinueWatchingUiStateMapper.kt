@@ -1,7 +1,7 @@
 package com.amsterdam.viewmodel.continueWatching
 
-import com.amsterdam.entity.MovieWatchHistory
-import com.amsterdam.entity.TvShowWatchHistory
+import com.amsterdam.domain.utils.MovieWatchHistory
+import com.amsterdam.domain.utils.TvShowWatchHistory
 import com.amsterdam.viewmodel.continueWatching.ContinueWatchingUiState.ContinueWatchingItemUiState
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
 import com.amsterdam.viewmodel.shared.uiStates.MediaType

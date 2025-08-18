@@ -16,10 +16,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Icon
-import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.Text
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -32,8 +33,8 @@ fun OptionRow(
     modifier: Modifier = Modifier,
     leadingIcon: Painter,
     trailingContent: @Composable () -> Unit,
-    onClick: () -> Unit={}
-){
+    onClick: () -> Unit = {}
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -44,36 +45,34 @@ fun OptionRow(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                paddingValues = PaddingValues(8.dp),
-                painter = leadingIcon,
-                withBorder = true,
-                containerColor = AppTheme.color.surfaceHigh,
-                tint = AppTheme.color.hint,
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier.padding(start = 12.dp),
-                text = title,
-                color = AppTheme.color.body,
-                style = AppTheme.textStyle.title.small
-            )
-        }
+        IconButton(
+            paddingValues = PaddingValues(8.dp),
+            painter = leadingIcon,
+            withBorder = true,
+            containerColor = AppTheme.color.surfaceHigh,
+            tint = AppTheme.color.hint,
+            contentDescription = null
+        )
+
+        Text(
+            modifier = Modifier.weight(1f),
+            text = title,
+            color = AppTheme.color.body,
+            style = AppTheme.textStyle.title.small,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
         trailingContent()
     }
 }
 
 @ThemeAndLocalePreviews
 @Composable
-private fun OptionRowPreview(){
+private fun OptionRowPreview() {
     AflamiTheme {
         OptionRow(
             modifier = Modifier.padding(bottom = 12.dp),

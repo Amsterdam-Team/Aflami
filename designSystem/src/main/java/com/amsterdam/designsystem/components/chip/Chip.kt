@@ -38,6 +38,8 @@ fun Chip(
     label: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
+    labelMinLines: Int = 1,
+    labelMaxLines: Int = 1,
     colors: ChipColors = ChipDefaults.chipColors(),
     onClick: () -> Unit = {},
 ) {
@@ -84,7 +86,8 @@ fun Chip(
             color = labelColor,
             style = AppTheme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            maxLines = 1,
+            minLines = labelMinLines,
+            maxLines = labelMaxLines,
             overflow = TextOverflow.Ellipsis,
         )
     }

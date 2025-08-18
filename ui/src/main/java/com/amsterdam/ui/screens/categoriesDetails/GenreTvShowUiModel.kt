@@ -2,8 +2,6 @@ package com.amsterdam.ui.screens.categoriesDetails
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.amsterdam.entity.category.MovieGenre
-import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.ui.R
 
 enum class GenreTvShowUiModel (

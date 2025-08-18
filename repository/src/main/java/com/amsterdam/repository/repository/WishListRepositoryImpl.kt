@@ -39,13 +39,13 @@ class WishListRepositoryImpl @Inject constructor(
     override suspend fun getMoviesAndTvShowsFromList(
         listId: Long,
         page: Int
-    ): GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems {
+    ): GetListMediaItemsFromListUseCase.ListDetailsMediaItems {
         val items = wishListRemoteDataSource.getMoviesAndTvShowsFromList(listId, page).items
 
         val tvShows = items.filter { it.mediaType == "tv" }.map { it.toTvShowEntity() }
         val movies = items.filter { it.mediaType == "movie" }.map { it.toMovieEntity() }
 
-        return GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems(
+        return GetListMediaItemsFromListUseCase.ListDetailsMediaItems(
             listDetailsMovies = movies,
             listDetailsShows = tvShows
         )

@@ -8,5 +8,5 @@ import dagger.hilt.components.SingletonComponent
 @EntryPoint
 @InstallIn(SingletonComponent::class)
 interface InitializerEntryPoint {
-    fun getLoggerFactory(): @JvmSuppressWildcards (String) -> Logger
+    fun getLoggerFactory(): @JvmSuppressWildcards () -> Logger
 }

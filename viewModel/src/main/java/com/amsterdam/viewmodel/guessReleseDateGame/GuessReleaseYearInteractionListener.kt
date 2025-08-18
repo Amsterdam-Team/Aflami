@@ -7,4 +7,5 @@ interface GuessReleaseYearInteractionListener {
     fun onCloseButtonClicked()
     fun dismissNotEnoughPointsDialog()
     fun onClickClose()
+    fun onClickRetryLoading()
 }

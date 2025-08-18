@@ -6,4 +6,5 @@ interface GuessMovieByPosterInteractionListener {
     fun onMoveToNextQuestion()
     fun dismissNotEnoughPointsDialog()
     fun onCloseButtonClicked()
+    fun onClickRetryLoading()
 }

@@ -31,6 +31,7 @@ import com.amsterdam.designsystem.components.Scaffold
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
+import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.screens.games.component.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.screens.games.component.GameQuestionWithTitle
@@ -81,6 +82,8 @@ private fun GameContent(
     LaunchedEffect(state.currentQuestionIndex) {
         scope.launch { pagerState.animateScrollToPage(state.currentQuestionIndex) }
     }
+
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -98,6 +101,23 @@ private fun GameContent(
             )
         }
     ) { innerPadding ->
+
+        AnimatedVisibility(
+            state.isNetworkError,
+            enter = fadeIn(tween(1000)),
+            exit = fadeOut(tween(1000)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                NoNetworkContainer(
+                    onClickRetry = interactionListener::onClickRetryLoading,
+                )
+            }
+        }
+
         Box {
             LoginBackground()
             AnimatedVisibility(state.isNotEnoughPointsDialogVisible) {

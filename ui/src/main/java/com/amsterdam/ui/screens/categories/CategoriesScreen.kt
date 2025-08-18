@@ -53,7 +53,7 @@ fun CategoriesScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is CategoriesUiEffect.NavigateToCategoriesDetailsScreen -> {
+                is CategoriesUiEffect.NavigateToCategoriesMoviesDetailsScreen -> {
                     navigationManager.toCategoriesDetails(
                         genreName = effect.genreName
                     )

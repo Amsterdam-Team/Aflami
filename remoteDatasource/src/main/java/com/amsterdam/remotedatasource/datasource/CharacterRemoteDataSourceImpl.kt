@@ -15,16 +15,16 @@ class CharacterRemoteDataSourceImpl @Inject constructor(
         val totalPages = getTrendingCharacters(FIRST_PAGE).totalPages
 
         return (FIRST_PAGE..totalPages)
-                .shuffled()
-                .fold(emptyList()) { accumulatedCharacters, page ->
-                    accumulatedCharacters.takeIf { it.size >= requiredNumber }
+            .shuffled()
+            .fold(emptyList()) { accumulatedCharacters, page ->
+                accumulatedCharacters.takeIf { it.size >= requiredNumber }
                     ?: getTrendingCharacters(page).results
-                            .filter(::onFilterHighQualityCharacterData)
-                            .shuffled()
-                            .distinctBy(RemoteCharacterItemDto::id)
-                            .plus(accumulatedCharacters)
-                            .take(requiredNumber)
-                }
+                        .filter(::onFilterHighQualityCharacterData)
+                        .shuffled()
+                        .distinctBy(RemoteCharacterItemDto::id)
+                        .plus(accumulatedCharacters)
+                        .take(requiredNumber)
+            }
     }
 
     private fun onFilterHighQualityCharacterData(character: RemoteCharacterItemDto): Boolean {

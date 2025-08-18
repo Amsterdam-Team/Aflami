@@ -106,7 +106,14 @@
     <string name="and">و</string>
     <string name="sec">ثانية</string>
     <string name="point_per_question">نقطة لكل سؤال.</string>
-    <string name="hint">تلميح؟ %1$d نقاط.</string>
+    <plurals name="hint">
+        <item quantity="zero">تلميح؟ %1$s نقطة.</item>
+        <item quantity="one">تلميح؟ %1$s نقطة.</item>
+        <item quantity="two">تلميح؟ %1$s نقطتان.</item>
+        <item quantity="few">تلميح؟ %1$s نقاط.</item>
+        <item quantity="many">تلميح؟ %1$s نقطة.</item>
+        <item quantity="other">تلميح؟ %1$s نقطة.</item>
+    </plurals>
     <string name="next">التالي</string>
     <string name="back_to_menue">العودة للقائمة</string>
     <string name="play_again">العب مرة أخرى</string>
@@ -118,8 +125,22 @@
     <string name="not_enough_points_description">عذرا، ليس لديك نقاط كافية للحصول على تلميح</string>
     <string name="ok">حسنا</string>
     <string name="cd_cancel">يلغي</string>
-    <string name="points_as_pts">نقاط</string>
-    <string name="seconds_as_sec">ثواني</string>
+    <plurals name="points_as_pts">
+        <item quantity="zero">%1$s نقطة</item>
+        <item quantity="one">%1$s نقطة</item>
+        <item quantity="two">%1$s نقطتان</item>
+        <item quantity="few">%1$s نقاط</item>
+        <item quantity="many">%1$s نقطة</item>
+        <item quantity="other">%1$s نقطة</item>
+    </plurals>
+    <plurals name="seconds_as_sec">
+        <item quantity="zero">%s ثانية</item>
+        <item quantity="one">ثانية واحدة</item>
+        <item quantity="two">ثانيتان</item>
+        <item quantity="few">%s ثوان</item>
+        <item quantity="many">%s ثانية</item>
+        <item quantity="other">%s ثانية</item>
+    </plurals>
 
     <!-- -   -->
     <!-- -  -->
@@ -140,7 +161,37 @@
     <string name="description">الوصف</string>
     <string name="cast">الممثلون</string>
     <string name="search">بحث</string>
-    <string name="game_settings">%1$d سؤال، %2$d ثانية، %3$d نقطة لكل سؤال</string>
+    <string name="game_settings_format">%1$s، %2$s، %3$s لكل سؤال</string>
+
+    <!-- Plurals for the "questions" part (سؤال) -->
+    <plurals name="game_settings_questions">
+        <item quantity="zero">%1$d سؤال</item>
+        <item quantity="one">سؤال واحد</item>
+        <item quantity="two">سؤالان</item>
+        <item quantity="few">%1$d أسئلة</item>
+        <item quantity="many">%1$d سؤالاً</item>
+        <item quantity="other">%1$d سؤال</item>
+    </plurals>
+
+    <!-- Plurals for the "seconds" part (ثانية) -->
+    <plurals name="game_settings_seconds">
+        <item quantity="zero">%1$d ثانية</item>
+        <item quantity="one">ثانية واحدة</item>
+        <item quantity="two">ثانيتان</item>
+        <item quantity="few">%1$d ثوان</item>
+        <item quantity="many">%1$d ثانية</item>
+        <item quantity="other">%1$d ثانية</item>
+    </plurals>
+
+    <!-- Plurals for the "points" part (نقطة) -->
+    <plurals name="game_settings_points">
+        <item quantity="zero">%1$d نقطة</item>
+        <item quantity="one">نقطة واحدة</item>
+        <item quantity="two">نقطتان</item>
+        <item quantity="few">%1$d نقاط</item>
+        <item quantity="many">%1$d نقطة</item>
+        <item quantity="other">%1$d نقطة</item>
+    </plurals>
     <string name="search_hint">ابحث...</string>
     <string name="serach_suggestions_hub">مركز اقتراحات البحث</string>
     <string name="search_description">ابدأ الاستكشاف! ابحث عن أفلامك ومسلسلاتك وعروضك المفضلة</string>
@@ -165,7 +216,6 @@
     <string name="find_by_actor_description_hint">ابحث حسب ممثلك المفضل</string>
     <string name="find_by_actor_description">ابدأ باستكشاف أفلام ممثلك المفضل واستمتع بها.</string>
     <string name="find_by_actor_hint">اسم الممثل</string>
-    <string name="list_items">%1$d عنصر</string>
     <string name="delete_list">حذف القائمة</string>
     <string name="delete_list_message">هل أنت متأكد من المتابعة بالحذف؟</string>
     <string name="edit_list">تعديل القائمة</string>
@@ -176,7 +226,14 @@
     <string name="list_title_hint">عنوان القائمة</string>
     <string name="no_list_yet">لا توجد قوائم بعد!</string>
     <string name="no_list_description">عقلنا لا يزال فارغًا، اضغط على + وابدأ بحفظ عناصرك وعروضك المفضلة التي تحبها!</string>
-    <string name="points_format">%1$d نقطة</string>
+    <plurals name="points_format">
+        <item quantity="zero">%1$s نقطة</item>
+        <item quantity="one">%1$s نقطة</item>
+        <item quantity="two">%1$s نقطتان</item>
+        <item quantity="few">%1$s نقاط</item>
+        <item quantity="many">%1$s نقطة</item>
+        <item quantity="other">%1$s نقطة</item>
+    </plurals>
     <string name="watch_history">سجل المشاهدة</string>
     <string name="my_rating">تقييماتي</string>
     <string name="language">اللغة</string>
@@ -208,7 +265,14 @@
     <string name="rate_title">قيمه</string>
     <string name="rate_message">اختر مدى إعجابك به</string>
     <string name="add_to_list">أضف إلى قائمة</string>
-    <string name="episodes">حلقات</string>
+    <plurals name="episodes">
+        <item quantity="zero">لا توجد حلقات</item>
+        <item quantity="one">حلقة واحدة</item>
+        <item quantity="two">حلقتان</item>
+        <item quantity="few">حلقات</item>
+        <item quantity="many">حلقة</item>
+        <item quantity="other">حلقات</item>
+    </plurals>
     <string name="season">موسم</string>
     <string name="seasons">مواسم</string>
     <string name="country_tour_image_description">صورة جولة في البلد</string>
@@ -219,7 +283,7 @@
     <!-- - Negative messages   -->
     <string name="general_error_message">حدث خطأ ما، الرجاء المحاولة مرة أخرى.</string>
     <!-- -   -->
-    <string name="episode">الحلقه %1$d</string>
+    <string name="episode">الحلقه %1$s</string>
 
     <!-- - Cast  -->
     <string name="cast_not_available">"الممثلون غير متوفرين"</string>
@@ -274,11 +338,11 @@
         <item quantity="zero">لا عناصر</item>
         <item quantity="one">عنصر واحد</item>
         <item quantity="two">عنصران</item>
-        <item quantity="few">%d عناصر</item>
-        <item quantity="many">%d عنصراً</item>
-        <item quantity="other">%d عنصر</item>
+        <item quantity="few">%s عناصر</item>
+        <item quantity="many">%s عنصراً</item>
+        <item quantity="other">%s عنصر</item>
     </plurals>
-    <string name="second">%1$dث</string>
+    <string name="second">%1$sث</string>
 
     <string name="added_to_list_successfully">تمت الإضافة إلى القائمة بنجاح.</string>
     <string name="failed_to_add_to_list">فشل في الإضافة إلى القائمة.</string>
@@ -293,13 +357,13 @@
     <plurals name="season_count">
         <item quantity="zero">لا مواسم</item>        <!-- 0 -->
         <item quantity="one">%d موسم</item>          <!-- 1 -->
-        <item quantity="two">%d موسمان</item>        <!-- 2 -->
+        <item quantity="two">موسمان</item>        <!-- 2 -->
         <item quantity="few">%d مواسم</item>         <!-- 3–10 -->
         <item quantity="many">%d موسم</item>         <!-- 11–99 -->
         <item quantity="other">%d موسم</item>        <!-- fallback -->
     </plurals>
 
-    <string name="duration_hours_minutes">%1$s س %2$d د</string>
+    <string name="duration_hours_minutes">%1$s س %2$s د</string>
     <string name="duration_hours">%1$s س</string>
     <string name="duration_minutes">%1$s د</string>
 

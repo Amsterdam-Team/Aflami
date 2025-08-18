@@ -42,7 +42,7 @@ import com.amsterdam.designsystem.components.snackBar.SnackBarManager
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
-import com.amsterdam.domain.utils.Mood
+import com.amsterdam.domain.useCase.mood.GetMoviesByMoodUseCase.Mood
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
@@ -127,14 +127,18 @@ private fun HomeScreenContent(
         derivedStateOf { parentLazyListState.firstVisibleItemScrollOffset }
     }
 
+    LaunchedEffect(state.upcomingMoviesSectionUiState) {
+        childLazyListState.scrollToItem(0)
+        canChildScroll = !parentLazyListState.canScrollForward
+    }
+
     LaunchedEffect(parentLazyListState.isScrollInProgress) {
         canChildScroll = !parentLazyListState.canScrollForward
     }
 
-    LaunchedEffect(childLazyListState.isScrollInProgress) {
-        canChildScroll = childLazyListState.canScrollBackward
+    LaunchedEffect(childLazyListState.isScrollInProgress, !parentLazyListState.canScrollForward) {
+        canChildScroll = childLazyListState.canScrollBackward && !parentLazyListState.canScrollForward
     }
-
 
     val appBarColor by animateColorAsState(
         targetValue = if (scrollOffset > 8) AppTheme.color.surface else Color.Transparent,

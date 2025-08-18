@@ -70,7 +70,7 @@ fun LoggedInContent(
                 modifier = Modifier
                     .fillMaxSize(),
                 state = lazyListState,
-                contentPadding = PaddingValues(bottom = 12.dp)
+                contentPadding = PaddingValues(bottom = 40.dp)
             ) {
                 item { ProfileImageSection(state.userInfo.userAvatarUrl) }
                 item { ProfileInfoSection(state.userInfo.username, state.userInfo.userPoints) }
@@ -94,7 +94,7 @@ fun LoggedInContent(
                 visible = showVersion,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp),
+                    .padding(vertical = 12.dp),
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -102,8 +102,7 @@ fun LoggedInContent(
                     text = "v ${state.appVersion}",
                     style = AppTheme.textStyle.label.small,
                     color = AppTheme.color.hint,
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
             }
@@ -119,8 +118,7 @@ fun LoggedInContent(
                         .padding(horizontal = 16.dp, vertical = 13.dp)
                 )
             },
-            modifier = Modifier
-                .background(appBarColor)
+            modifier = Modifier.background(appBarColor)
         )
     }
 }
@@ -203,21 +201,13 @@ private fun LoggedInContentPreview() {
         LoggedInContent(
             ProfileUiState(), object : ProfileInteractionListener {
                 override fun onClickLogin() {}
-
                 override fun onClickLanguageSetting() {}
-
                 override fun onChangeLanguage(language: ManageLocaleLanguageUseCase.Language) {}
-
                 override fun onApplyLanguage() {}
-
                 override fun onDismissLanguageDialog() {}
-
                 override fun onClickThemeSetting() {}
-
                 override fun onChangeTheme(isDarkTheme: Boolean) {}
-
                 override fun onApplyTheme() {}
-
                 override fun onDismissThemeDialog() {}
                 override fun onClickSettings() {}
                 override fun onDismissSettingsDialog() {}

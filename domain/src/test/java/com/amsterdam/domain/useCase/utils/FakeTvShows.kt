@@ -85,7 +85,7 @@ val fakeTvShowListWithRatings =
             popularity = 10.0,
             seasonCount = 4,
             originCountry = "US",
-           
+
         ),
         TvShow(
             id = 2,
@@ -98,7 +98,7 @@ val fakeTvShowListWithRatings =
             popularity = 9.0,
             seasonCount = 4,
             originCountry = "US",
-           
+
         ),
         TvShow(
             id = 3,

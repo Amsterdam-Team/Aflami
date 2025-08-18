@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +35,7 @@ import com.amsterdam.ui.screens.gameResult.component.CompletionCard
 import com.amsterdam.ui.screens.gameResult.component.GameResultAppBar
 import com.amsterdam.ui.screens.gameResult.component.StatCard
 import com.amsterdam.ui.screens.login.components.LoginBackground
+import com.amsterdam.ui.utils.withEnglishDigits
 import com.amsterdam.viewmodel.gameResult.GameResultViewModel
 import com.amsterdam.viewmodel.gameResult.ResultInteractionListener
 import com.amsterdam.viewmodel.gameResult.ResultSideEffect
@@ -156,7 +158,7 @@ fun ResultScreenContent(
                                 .fillMaxHeight(),
                             iconRes = R.drawable.img_user_rating,
                             label = stringResource(R.string.points_acheived),
-                            value = "${state.points} ${stringResource(R.string.points_as_pts)}"
+                            value = pluralStringResource(R.plurals.points_as_pts, state.points, state.points).withEnglishDigits()
                         )
 
                         StatCard(
@@ -165,7 +167,7 @@ fun ResultScreenContent(
                                 .fillMaxHeight(),
                             iconRes = R.drawable.img_user_history,
                             label = stringResource(R.string.total_time),
-                            value = "${state.timeInSeconds} ${stringResource(R.string.seconds_as_sec)}"
+                            value = pluralStringResource(R.plurals.seconds_as_sec, state.timeInSeconds, state.timeInSeconds).withEnglishDigits()
                         )
                     }
                 }

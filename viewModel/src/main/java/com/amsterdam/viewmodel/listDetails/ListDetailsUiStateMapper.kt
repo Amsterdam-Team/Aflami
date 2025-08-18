@@ -1,6 +1,6 @@
 package com.amsterdam.viewmodel.listDetails
 
-import com.amsterdam.domain.useCase.list.GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems
+import com.amsterdam.domain.useCase.list.GetListMediaItemsFromListUseCase.ListDetailsMediaItems
 import com.amsterdam.entity.Movie
 import com.amsterdam.entity.TvShow
 import com.amsterdam.viewmodel.listDetails.ListDetailsUiState.ListDetailsItemsUiState
@@ -32,7 +32,7 @@ fun TvShow.toListDetailsItemUiState(): ListDetailsItemsUiState {
     )
 }
 
-fun ListScreenDetailsMediaItems.toListDetailsItemUiState(): List<ListDetailsItemsUiState> {
+fun ListDetailsMediaItems.toListDetailsItemUiState(): List<ListDetailsItemsUiState> {
     return getLinearItemsList(
         this.listDetailsMovies,
         this.listDetailsShows,

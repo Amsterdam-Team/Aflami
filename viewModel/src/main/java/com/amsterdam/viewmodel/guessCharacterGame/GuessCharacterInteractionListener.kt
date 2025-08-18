@@ -6,4 +6,5 @@ interface GuessCharacterInteractionListener {
     fun onMoveToNextQuestion()
     fun dismissNotEnoughPointsDialog()
     fun onCloseButtonClicked()
+    fun onClickRetryLoading()
 }

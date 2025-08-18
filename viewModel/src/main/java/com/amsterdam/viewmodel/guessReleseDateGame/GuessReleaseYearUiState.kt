@@ -16,7 +16,8 @@ data class GuessReleaseYearUiState(
     val isNextEnabled: Boolean = false,
     val questionsCounts: Int = 0,
     val currentQuestionIndex: Int = 0,
-    val timerUiState: TimerUiState = TimerUiState()
+    val timerUiState: TimerUiState = TimerUiState(),
+    val isNetworkError : Boolean = false
 ) {
     data class QuestionUiState(
         val movieName: String = "",

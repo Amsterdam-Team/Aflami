@@ -31,6 +31,7 @@ import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.Scaffold
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.ui.application.LocalNavManager
+import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.screens.games.component.GameTopBar
 import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.screens.games.component.GameQuestionWithTitle
@@ -83,30 +84,40 @@ private fun GameScreenContent(
     LaunchedEffect(state.currentQuestionIndex) {
         scope.launch { pagerState.animateScrollToPage(state.currentQuestionIndex) }
     }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding(),
         bottomBar = {
-            Box(
+            ConfirmButton(
+                title = stringResource(R.string.next),
+                onClick = interactionListener::onMoveToNextQuestion,
+                isEnabled = state.isNextEnabled,
+                isLoading = false,
+                isNegative = false,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+            )
+        }
+    ) { innerPadding ->
+
+        AnimatedVisibility(
+            state.isNetworkError,
+            enter = fadeIn(tween(1000)),
+            exit = fadeOut(tween(1000)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                ConfirmButton(
-                    title = stringResource(R.string.next),
-                    onClick = interactionListener::onMoveToNextQuestion,
-                    isEnabled = state.isNextEnabled,
-                    isLoading = false,
-                    isNegative = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                NoNetworkContainer(
+                    onClickRetry = interactionListener::onClickRetryLoading,
                 )
             }
         }
-    ) { innerPadding ->
+
         Box {
             LoginBackground()
             AnimatedVisibility(state.isNotEnoughPointsDialogVisible) {
@@ -131,7 +142,8 @@ private fun GameScreenContent(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize().statusBarsPadding()
+                        .fillMaxSize()
+                        .statusBarsPadding()
                         .padding(bottom = innerPadding.calculateBottomPadding())
                 ) {
                     item {

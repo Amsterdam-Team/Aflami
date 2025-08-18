@@ -10,6 +10,6 @@ interface WishListRepository {
     suspend fun checkIsMovieInList(movieId: Long, listId: Long): Boolean
 
     suspend fun addMovieToList(listId: Long, movieId: Long)
-    suspend fun getMoviesAndTvShowsFromList(listId: Long, page: Int): GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems
+    suspend fun getMoviesAndTvShowsFromList(listId: Long, page: Int): GetListMediaItemsFromListUseCase.ListDetailsMediaItems
     suspend fun removeMovieFromList(listId: Long, movieId: Long)
 }

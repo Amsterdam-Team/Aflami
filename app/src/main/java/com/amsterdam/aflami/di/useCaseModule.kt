@@ -44,17 +44,16 @@ import com.amsterdam.domain.useCase.game.whichGenre.DoGuessGenreGameHintUseCase
 import com.amsterdam.domain.useCase.game.whichGenre.GenerateMovieGenreQuestionsUseCase
 import com.amsterdam.domain.useCase.game.whichGenre.GuessMovieGenreUseCase
 import com.amsterdam.domain.useCase.game.whichGenre.SubmitGuessMovieGenreAnswerUseCase
-import com.amsterdam.domain.useCase.home.GetContinueWatchingMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetContinueWatchingTvShowsUseCase
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
-import com.amsterdam.domain.useCase.home.GetPopularMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetPopularTvShowsUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedMoviesUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetTopRatedTvShowsUseCase
-import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.continueWatching.GetContinueWatchingMoviesUseCase
+import com.amsterdam.domain.useCase.continueWatching.GetContinueWatchingDataUseCase
+import com.amsterdam.domain.useCase.continueWatching.GetContinueWatchingTvShowsUseCase
+import com.amsterdam.domain.useCase.mood.GetMoviesByMoodUseCase
+import com.amsterdam.domain.useCase.popular.GetPopularMoviesUseCase
+import com.amsterdam.domain.useCase.popular.GetPopularTvShowsUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedMoviesUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedDataUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedTvShowsUseCase
+import com.amsterdam.domain.useCase.upcoming.GetUpcomingMoviesUseCase
 import com.amsterdam.domain.useCase.list.AddMovieToListUseCase
 import com.amsterdam.domain.useCase.list.CreateNewListUseCase
 import com.amsterdam.domain.useCase.list.DeleteListUseCase
@@ -248,28 +247,13 @@ object UseCaseModule {
         wishListRepository: WishListRepository
     ): CheckIsMovieInListUseCase = CheckIsMovieInListUseCase(wishListRepository)
 
-    @Provides
-    fun provideGetHomeScreenDataUseCase(
-        getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-        getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase,
-        getPopularMoviesUseCase: GetPopularMoviesUseCase,
-        getPopularTvShowsUseCase: GetPopularTvShowsUseCase,
-        getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    ): GetHomeScreenDataUseCase =
-        GetHomeScreenDataUseCase(
-            getTopRatedMoviesUseCase,
-            getTopRatedTvShowsUseCase,
-            getPopularMoviesUseCase,
-            getPopularTvShowsUseCase,
-            getUpcomingMoviesUseCase
-        )
 
     @Provides
     fun provideGetContinueWatchingScreenDataUseCase(
         getContinueWatchingMoviesUseCase: GetContinueWatchingMoviesUseCase,
         getContinueWatchingTvShowsUseCase: GetContinueWatchingTvShowsUseCase,
-    ): GetContinueWatchingScreenDataUseCase =
-        GetContinueWatchingScreenDataUseCase(
+    ): GetContinueWatchingDataUseCase =
+        GetContinueWatchingDataUseCase(
             getContinueWatchingMoviesUseCase,
             getContinueWatchingTvShowsUseCase
         )
@@ -285,8 +269,8 @@ object UseCaseModule {
     fun provideGetTopRatedScreenDataUseCase(
         getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
         getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase,
-    ): GetTopRatedScreenDataUseCase =
-        GetTopRatedScreenDataUseCase(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase)
+    ): GetTopRatedDataUseCase =
+        GetTopRatedDataUseCase(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase)
 
     @Provides
     fun provideGetUserListsUseCase(

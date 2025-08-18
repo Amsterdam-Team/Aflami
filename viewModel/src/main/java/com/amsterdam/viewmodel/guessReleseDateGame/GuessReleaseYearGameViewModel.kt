@@ -36,11 +36,11 @@ class GuessReleaseYearGameViewModel @Inject constructor(
     private val difficultyType = DifficultyType.valueOf(args.difficulty)
 
     init {
-        fetchQuestions()
+        getQuestions()
     }
 
-    private fun fetchQuestions() {
-        updateState { it.copy(isLoading = true) }
+    private fun getQuestions() {
+        updateState { it.copy(isLoading = true, isNetworkError = false) }
         tryToExecute(
             action = ::startTheGame,
             onSuccess = ::onSuccessGetQuestions,
@@ -197,9 +197,14 @@ class GuessReleaseYearGameViewModel @Inject constructor(
         sendNewNavigationEffect(GuessReleaseYearGameEffect.NavigateBack)
     }
 
+    override fun onClickRetryLoading() {
+        getQuestions()
+    }
+
     private fun onError(error: AflamiException) {
         when (error) {
             is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
+            else -> updateState { it.copy(isNetworkError = true) }
         }
     }
 }

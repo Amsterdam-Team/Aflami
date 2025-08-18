@@ -13,6 +13,7 @@ data class GuessCharacterUiState(
     val isHintEnabled : Boolean = true,
     val isNotEnoughPointsDialogVisible: Boolean = false,
     val isNextEnabled : Boolean = false,
+    val isNetworkError : Boolean = false,
     val earnedPoints : Int? = null,
     val questionsCounts: Int = 0,
     val currentQuestionIndex: Int = 0,

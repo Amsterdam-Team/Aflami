@@ -6,4 +6,5 @@ interface GenreGameInteractionListener {
     fun onChooseAnswerClick(answerIndex: Int)
     fun dismissNotEnoughPointsDialog()
     fun onMoveToNextQuestion()
+    fun onClickRetryLoading()
 }

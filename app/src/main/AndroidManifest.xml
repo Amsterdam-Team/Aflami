@@ -19,6 +19,10 @@
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
         <activity
             android:name="com.amsterdam.ui.application.MainActivity"
             android:exported="true"

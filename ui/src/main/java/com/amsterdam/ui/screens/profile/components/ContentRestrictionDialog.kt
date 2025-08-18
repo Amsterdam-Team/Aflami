@@ -21,10 +21,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Dialog
-import com.amsterdam.designsystem.components.buttons.RadioButton
-import com.amsterdam.designsystem.components.buttons.RadioState
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
+import com.amsterdam.designsystem.components.buttons.RadioButton
+import com.amsterdam.designsystem.components.buttons.RadioState
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
@@ -106,6 +106,7 @@ private fun RestrictionSelection(
 
     Box(
         modifier = modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(bodyColor)
             .then(
@@ -126,9 +127,11 @@ private fun RestrictionSelection(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = title,
                     color = AppTheme.color.body,
@@ -140,6 +143,7 @@ private fun RestrictionSelection(
                     style = AppTheme.textStyle.label.small
                 )
             }
+
             RadioButton(
                 state = if (isSelected) RadioState.Selected else RadioState.Default,
                 onClick = onClick

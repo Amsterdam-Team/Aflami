@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -26,6 +27,7 @@ import com.amsterdam.designsystem.components.chip.GenreChip
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.ui.components.appBar.DefaultAppBar
 import com.amsterdam.ui.screens.letsPlay.getDifficultyLevelTextId
+import com.amsterdam.ui.utils.withEnglishDigits
 import com.amsterdam.viewmodel.letsPlay.LetsPlayUiState.GameDifficultyUiState
 
 @Composable
@@ -38,11 +40,12 @@ fun DifficultyLevelDialog(
     onClickStartGame: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Dialog(
         onDismiss = onCloseDialogClicked,
         modifier = modifier
     ) {
-        Column (modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             DefaultAppBar(
                 showNavigateBackButton = false,
                 title = stringResource(com.amsterdam.ui.R.string.choose_level),
@@ -50,7 +53,9 @@ fun DifficultyLevelDialog(
                 onLastOptionClicked = onCloseDialogClicked
             )
             Row(
-                modifier = Modifier.padding(top = 24.dp).zIndex(1f),
+                modifier = Modifier
+                    .padding(top = 24.dp)
+                    .zIndex(1f),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 difficulties.forEach {
@@ -62,17 +67,37 @@ fun DifficultyLevelDialog(
                 }
             }
 
-                AnimatedVisibility(
-                    visible = selectedDifficultyLevel != null,
-                    enter = slideInVertically(
-                        animationSpec = tween(600),
-                        initialOffsetY = { -it },
-                    ),
-                    modifier = Modifier.padding(top = 12.dp)
-                ) {
-                    selectedDifficultyLevel?.let { difficulty ->
+            AnimatedVisibility(
+                visible = selectedDifficultyLevel != null,
+                enter = slideInVertically(
+                    animationSpec = tween(600),
+                    initialOffsetY = { -it },
+                ),
+                modifier = Modifier.padding(top = 12.dp)
+            ) {
+                selectedDifficultyLevel?.let { difficulty ->
+                    val secondsPart = pluralStringResource(
+                        com.amsterdam.ui.R.plurals.game_settings_seconds,
+                        difficulty.timeLimitSeconds,
+                        difficulty.timeLimitSeconds
+                    ).withEnglishDigits()
+
+                    val totalQuestionsPart = pluralStringResource(
+                        com.amsterdam.ui.R.plurals.game_settings_questions,
+                        difficulty.totalQuestions,
+                        difficulty.totalQuestions
+                    ).withEnglishDigits()
+
+                    val pointsPerQuestionPart = pluralStringResource(
+                        com.amsterdam.ui.R.plurals.game_settings_points,
+                        difficulty.pointsPerQuestion,
+                        difficulty.pointsPerQuestion
+                    ).withEnglishDigits()
                     Row(
-                        modifier = Modifier.fillMaxWidth().background(AppTheme.color.surfaceHigh,RoundedCornerShape(12.dp)).padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AppTheme.color.surfaceHigh, RoundedCornerShape(12.dp))
+                            .padding(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -83,10 +108,10 @@ fun DifficultyLevelDialog(
                         )
                         Text(
                             text = stringResource(
-                                com.amsterdam.ui.R.string.game_settings,
-                                difficulty.totalQuestions,
-                                difficulty.timeLimitSeconds,
-                                difficulty.pointsPerQuestion
+                                com.amsterdam.ui.R.string.game_settings_format,
+                                totalQuestionsPart,
+                                secondsPart,
+                                pointsPerQuestionPart
                             ),
                             style = AppTheme.textStyle.label.small,
                             color = AppTheme.color.yellowAccent

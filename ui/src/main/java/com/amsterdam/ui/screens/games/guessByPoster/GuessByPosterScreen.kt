@@ -34,6 +34,7 @@ import com.amsterdam.designsystem.components.buttons.ConfirmButton
 import com.amsterdam.designsystem.theme.AflamiTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.ui.application.LocalNavManager
+import com.amsterdam.ui.components.NoNetworkContainer
 import com.amsterdam.ui.components.PageIndicator
 import com.amsterdam.ui.screens.games.component.GameQuestionWithImage
 import com.amsterdam.ui.screens.games.component.GameTopBar
@@ -99,25 +100,34 @@ private fun GuessByPosterContent(
             .fillMaxSize()
             .navigationBarsPadding(),
         bottomBar = {
-            Box(
+            ConfirmButton(
+                title = stringResource(R.string.next),
+                onClick = interactionListener::onMoveToNextQuestion,
+                isEnabled = state.isNextEnabled,
+                isLoading = false,
+                isNegative = false,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(16.dp)
+            )
+        }
+    ) { innerPadding ->
+
+        AnimatedVisibility(
+            state.isNetworkError,
+            enter = fadeIn(tween(1000)),
+            exit = fadeOut(tween(1000)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                ConfirmButton(
-                    title = stringResource(R.string.next),
-                    onClick = interactionListener::onMoveToNextQuestion,
-                    isEnabled = state.isNextEnabled,
-                    isLoading = false,
-                    isNegative = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                NoNetworkContainer(
+                    onClickRetry = interactionListener::onClickRetryLoading,
                 )
             }
         }
-    ) { innerPadding ->
 
         Box {
             LoginBackground()
@@ -132,7 +142,10 @@ private fun GuessByPosterContent(
                 enter = fadeIn(tween(600)),
                 exit = fadeOut(tween(100)),
             ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     LoadingContainer()
                 }
             }
@@ -152,7 +165,10 @@ private fun GuessByPosterContent(
                         GameTopBar(
                             title = topBarTitle,
                             timerUiState = state.timerUiState,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier.padding(
+                                horizontal = 16.dp,
+                                vertical = 8.dp
+                            ),
                             onCancelGameClick = interactionListener::onCloseButtonClicked
                         )
 
@@ -227,6 +243,7 @@ private fun GuessByPosterScreenPreview() {
             interactionListener =
                 object : GuessMovieByPosterInteractionListener {
                     override fun onCloseButtonClicked() {}
+                    override fun onClickRetryLoading() {}
                     override fun onHintClicked() {}
                     override fun onSelectAnswer(selectedAnswerIndex: Int) {}
                     override fun onMoveToNextQuestion() {}

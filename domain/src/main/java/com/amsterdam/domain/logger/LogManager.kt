@@ -1,20 +1,40 @@
 package com.amsterdam.domain.logger
 
-object LogManager {
-    private var factory: (String) -> Logger = { NoLogger() }
+/**
+ * Created by Thoraya.
+ * You can use this tag for filtering logs --> AflamiApp
+ * If you added a new tag the tag will be like that --> AflamiApp-yourTag
+ * Also, you can use your tag direct for filtering logs
+ */
 
-    fun initialize(factory: (String) -> Logger) {
+object LogManager : Logger {
+    private var factory: (() -> Logger?) = { null }
+
+    fun initialize(factory: () -> Logger?) {
         this.factory = factory
     }
 
-    fun getLogger(tag: String): Logger {
-        return factory(tag)
+    private fun getLogger(): Logger? {
+        return factory()
     }
-}
 
-private class NoLogger : Logger {
-    override fun debug(message: Any) {}
-    override fun info(message: Any) {}
-    override fun warning(message: Any) {}
-    override fun error(message: String, throwable: Throwable?) {}
+    override fun debug(tag: String, message: Any) {
+        getLogger()?.debug(tag, message)
+    }
+
+    override fun info(tag: String, message: Any) {
+        getLogger()?.info(tag, message)
+    }
+
+    override fun warning(tag: String, message: Any) {
+        getLogger()?.warning(tag, message)
+    }
+
+    override fun error(tag: String, message: String, throwable: Throwable?) {
+        getLogger()?.error(tag, message, throwable)
+    }
+
+    override fun errorWithCrashlytics(tag: String, message: String, throwable: Throwable) {
+        getLogger()?.errorWithCrashlytics(tag, message, throwable)
+    }
 }

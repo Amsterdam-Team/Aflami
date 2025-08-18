@@ -14,7 +14,7 @@ object LoggerModule {
 
     @Singleton
     @Provides
-    fun provideLoggerFactory(): (String) -> Logger {
-        return { tag: String -> AppLogger(tag) }
+    fun provideLoggerFactory(): () -> Logger {
+        return { AppLogger() }
     }
 }

@@ -105,9 +105,32 @@
     <string name="lets_start">Let’s start</string>
     <string name="and">And</string>
     <string name="sec">Sec</string>
-    <string name="game_settings">%1$d questions, %2$dsec, %3$d points per question.</string>
+    <!-- The formatter string that combines the parts -->
+    <string name="game_settings_format">%1$s, %2$s, %3$s per question</string>
+
+    <!-- Plurals for the "questions" part -->
+    <plurals name="game_settings_questions">
+        <item quantity="one">%1$d question</item>
+        <item quantity="other">%1$d questions</item>
+    </plurals>
+
+    <!-- Plurals for the "seconds" part -->
+    <plurals name="game_settings_seconds">
+        <item quantity="one">%1$d sec</item>
+        <item quantity="other">%1$d sec</item>
+    </plurals>
+
+    <!-- Plurals for the "points" part -->
+    <plurals name="game_settings_points">
+        <item quantity="one">%1$d point</item>
+        <item quantity="other">%1$d points</item>
+    </plurals>
+
     <string name="point_per_question">point per question.</string>
-    <string name="hint">hint? %1$d Pts.</string>
+    <plurals name="hint">
+        <item quantity="one">hint? %1$s Pts.</item>
+        <item quantity="other">hint? %1$s Pts.</item>
+    </plurals>
     <string name="next">Next</string>
     <string name="back_to_menue">Back to menu</string>
     <string name="play_again">Play again</string>
@@ -119,8 +142,14 @@
     <string name="not_enough_points_description">Sorry, you don’t have the enough points to have a hint</string>
     <string name="ok">OK</string>
     <string name="cd_cancel">Cancel</string>
-    <string name="points_as_pts">Pts.</string>
-    <string name="seconds_as_sec">Sec.</string>
+    <plurals name="points_as_pts">
+        <item quantity="one">%d Pts.</item>
+        <item quantity="other">%d Pts.</item>
+    </plurals>
+    <plurals name="seconds_as_sec">
+        <item quantity="one">%d Sec.</item>
+        <item quantity="other">%d Sec.</item>
+    </plurals>
 
     <!-- -   -->
     <!-- -   -->
@@ -165,7 +194,6 @@
     <string name="find_by_actor_description_hint">Search by favorite Actor</string>
     <string name="find_by_actor_description">Start exploring your favorite actor’s movies and enjoy it.</string>
     <string name="find_by_actor_hint">Actor name</string>
-    <string name="list_items">%1$d item</string>
     <string name="delete_list">Delete list</string>
     <string name="delete_list_message">Are you sure to continue deleting?</string>
     <string name="edit_list">Edit list</string>
@@ -176,7 +204,10 @@
     <string name="list_title_hint">List title</string>
     <string name="no_list_yet">No lists yet!</string>
     <string name="no_list_description">Our brain is still empty, Click on + and start saving your favorite items and shows you love!</string>
-    <string name="points_format">%1$d Pts.</string>
+    <plurals name="points_format">
+        <item quantity="one">%1$d Pts.</item>
+        <item quantity="other">%1$d Pts.</item>
+    </plurals>
     <string name="watch_history">Watch history</string>
     <string name="my_rating">My rating</string>
     <string name="language">Language</string>
@@ -208,7 +239,10 @@
     <string name="rate_title">Rate it</string>
     <string name="rate_message">Select how much you like it</string>
     <string name="add_to_list">Add to list</string>
-    <string name="episodes">episodes</string>
+    <plurals name="episodes">
+        <item quantity="one">%d episode</item>
+        <item quantity="other">%d episodes</item>
+    </plurals>
     <string name="season">Season</string>
     <string name="seasons">Seasons</string>
     <string name="country_tour_image_description">Country tour image</string>
@@ -272,7 +306,7 @@
         <item quantity="other">%d items</item>
     </plurals>
 
-    <string name="second">%1$dS</string>
+    <string name="second">%sS</string>
     <string name="added_to_list_successfully">Added to list successfully.</string>
     <string name="failed_to_add_to_list">Failed to add to list.</string>
     <string name="error_mood_movies_loading">Oops! We couldn’t find movies for that mood.</string>
@@ -290,7 +324,7 @@
     </plurals>
 
 
-    <string name="duration_hours_minutes">%1$s h %2$d m</string>
+    <string name="duration_hours_minutes">%1$s h %2$s m</string>
     <string name="duration_hours">%1$s h</string>
     <string name="duration_minutes">%1$s m</string>
 

@@ -15,18 +15,21 @@ class MovieRemoteDataSourceImpl @Inject constructor(
 ) : MovieRemoteDataSource {
 
     override suspend fun getMoviesByKeyword(keyword: String, page: Int): MovieRemoteResponse {
-        return responseCall(execute = { movieApiService.getMoviesByKeyword(keyword, page) })
+        return responseCall(
+            execute = { movieApiService.getMoviesByKeyword(keyword, page) })
     }
 
     override suspend fun getMoviesByActorIds(actorIds: List<Int>, page: Int): MovieRemoteResponse {
         val actorIdsAsString = actorIds.joinToString(separator = "|")
-        return responseCall(execute = { movieApiService.getMoviesByActorId(actorIdsAsString) })
+        return responseCall(
+            execute = { movieApiService.getMoviesByActorId(actorIdsAsString) })
     }
 
     override suspend fun getActorIdsByName(name: String, page: Int): List<Int> {
-        return responseCall(execute = { movieApiService.getActorIdByName(name, page) })
-                .actors
-                .map { it.id }
+        return responseCall(
+            execute = { movieApiService.getActorIdByName(name, page) })
+            .actors
+            .map { it.id }
     }
 
     override suspend fun getMoviesByCountryIsoCode(
@@ -42,11 +45,13 @@ class MovieRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getCastByMovieId(movieId: Long): CastAndCrewRemoteResponse {
-        return responseCall(execute = { movieApiService.getCastByMovieId(movieId) })
+        return responseCall(
+            execute = { movieApiService.getCastByMovieId(movieId) })
     }
 
     override suspend fun getMovieDetailsById(movieId: Long): MovieDetailsRemoteResponse {
-        return responseCall(execute = { movieApiService.getMovieDetailsById(movieId) })
+        return responseCall(
+            execute = { movieApiService.getMovieDetailsById(movieId) })
     }
 
     override suspend fun getPopularMovies(page: Int): MovieRemoteResponse {
@@ -65,7 +70,8 @@ class MovieRemoteDataSourceImpl @Inject constructor(
         genresIds: List<Long>,
         page: Int
     ): MovieRemoteResponse {
-        return responseCall(execute = { movieApiService.getMoviesByGenreIds(genresIds, page) })
+        return responseCall(
+            execute = { movieApiService.getMoviesByGenreIds(genresIds, page) })
     }
 
     override suspend fun getMoviesByGenreId(
@@ -94,7 +100,8 @@ class MovieRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteMovieRate(movieId: Long) {
-        responseCall(execute = { movieApiService.deleteMovieRate(movieId = movieId) })
+        responseCall(
+            execute = { movieApiService.deleteMovieRate(movieId = movieId) })
     }
 
     override suspend fun getRandomMoviesWithReleaseDate(requiredMoviesNumber: Int): List<MovieItemRemoteDto> {
@@ -118,16 +125,16 @@ class MovieRemoteDataSourceImpl @Inject constructor(
         val totalPages = 500
 
         return (FIRST_PAGE..totalPages)
-                .shuffled()
-                .fold(emptyList()) { accumulatedMovies, page ->
-                    accumulatedMovies.takeIf { it.size >= requiredMoviesNumber }
+            .shuffled()
+            .fold(emptyList()) { accumulatedMovies, page ->
+                accumulatedMovies.takeIf { it.size >= requiredMoviesNumber }
                     ?: getPopularMoviesByPage(page)
-                            .filter { movieDto -> onFilter(movieDto) }
-                            .shuffled()
-                            .distinctBy(MovieItemRemoteDto::id)
-                            .plus(accumulatedMovies)
-                            .take(requiredMoviesNumber)
-                }
+                        .filter { movieDto -> onFilter(movieDto) }
+                        .shuffled()
+                        .distinctBy(MovieItemRemoteDto::id)
+                        .plus(accumulatedMovies)
+                        .take(requiredMoviesNumber)
+            }
     }
 
     private suspend fun getPopularMoviesByPage(page: Int): List<MovieItemRemoteDto> {

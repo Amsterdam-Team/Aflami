@@ -1,7 +1,7 @@
 package com.amsterdam.domain.repository
 
-import com.amsterdam.entity.MovieWatchHistory
-import com.amsterdam.entity.TvShowWatchHistory
+import com.amsterdam.domain.utils.MovieWatchHistory
+import com.amsterdam.domain.utils.TvShowWatchHistory
 import kotlinx.coroutines.flow.Flow
 
 interface WatchHistoryRepository {

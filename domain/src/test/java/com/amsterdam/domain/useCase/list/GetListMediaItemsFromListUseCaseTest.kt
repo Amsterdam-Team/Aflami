@@ -54,11 +54,11 @@ class GetListMediaItemsFromListUseCaseTest {
 
     private val listId = 1L
     private val page = 1
-    private val emptyResult = GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems(
+    private val emptyResult = GetListMediaItemsFromListUseCase.ListDetailsMediaItems(
         emptyList(),
         emptyList()
     )
-    private val repositoryResult = GetListMediaItemsFromListUseCase.ListScreenDetailsMediaItems(
+    private val repositoryResult = GetListMediaItemsFromListUseCase.ListDetailsMediaItems(
         specificMovieList,
         emptyList()
     )

@@ -1,6 +1,5 @@
 package com.amsterdam.viewmodel.guessWhichGenre
 
-import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.sharedGame.TimerUiState
 
@@ -16,7 +15,7 @@ data class GenreGameUiState(
     val isNextEnabled: Boolean = false,
     val selectedAnswerIndex: Int? = null,
     val isAnswerCorrect: Boolean? = null,
-    val error: AflamiException? = null
+    val isNetworkError : Boolean = false
 )
 
 data class GameQuestionUiState(

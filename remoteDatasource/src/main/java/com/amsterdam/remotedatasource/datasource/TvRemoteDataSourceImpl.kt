@@ -21,19 +21,23 @@ class TvRemoteDataSourceImpl @Inject constructor(
     override suspend fun getTopRatedTvShows(
         page: Int
     ): TvShowRemoteResponse {
-        return responseCall(execute = { tvShowsApiService.getTopRatedTvShows(page) })
+        return responseCall(
+            execute = { tvShowsApiService.getTopRatedTvShows(page) })
     }
 
     override suspend fun getTvShowsByKeyword(keyword: String, page: Int): TvShowRemoteResponse {
-        return responseCall(execute = { tvShowsApiService.getTvShowsByKeyword(keyword, page) })
+        return responseCall(
+            execute = { tvShowsApiService.getTvShowsByKeyword(keyword, page) })
     }
 
     override suspend fun getTvShowDetailsById(tvShowId: Long): TvShowDetailsRemoteResponse {
-        return responseCall(execute = { tvShowsApiService.getTvShowDetailsById(tvShowId) })
+        return responseCall(
+            execute = { tvShowsApiService.getTvShowDetailsById(tvShowId) })
     }
 
     override suspend fun getTvShowCast(tvShowId: Long): CastAndCrewRemoteResponse {
-        return responseCall(execute = { tvShowsApiService.getTvShowCast(tvShowId) })
+        return responseCall(
+            execute = { tvShowsApiService.getTvShowCast(tvShowId) })
     }
 
     override suspend fun getEpisodesBySeasonNumber(
@@ -65,7 +69,8 @@ class TvRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteTvShowRate(tvShowId: Long) {
-        responseCall(execute = { tvShowsApiService.deleteTvRating(tvId = tvShowId) })
+        responseCall(
+            execute = { tvShowsApiService.deleteTvRating(tvId = tvShowId) })
     }
 
     override suspend fun getEpisodeVideos(

@@ -2,12 +2,14 @@ package com.amsterdam.viewmodel.home
 
 import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.domain.utils.Mood
-import com.amsterdam.domain.useCase.home.GetContinueWatchingScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetHomeScreenDataUseCase
-import com.amsterdam.domain.useCase.home.GetMoviesByMoodUseCase
-import com.amsterdam.domain.useCase.home.GetUpcomingMoviesUseCase
+import com.amsterdam.domain.useCase.continueWatching.GetContinueWatchingDataUseCase
+import com.amsterdam.domain.useCase.mood.GetMoviesByMoodUseCase
+import com.amsterdam.domain.useCase.popular.GetPopularMoviesUseCase
+import com.amsterdam.domain.useCase.popular.GetPopularTvShowsUseCase
 import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedMoviesUseCase
+import com.amsterdam.domain.useCase.topRated.GetTopRatedTvShowsUseCase
+import com.amsterdam.domain.useCase.upcoming.GetUpcomingMoviesUseCase
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.viewmodel.home.HomeEffect.NavigateToMovieDetailsEffect
 import com.amsterdam.viewmodel.home.HomeUiState.HomeError
@@ -39,14 +41,17 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
-    private val getHomeScreenDataUseCase: GetHomeScreenDataUseCase = mockk(relaxed = true)
     private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk(relaxed = true)
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase = mockk(relaxed = true)
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase = mockk(relaxed = true)
+    private val getTopRatedTvShowsUseCase: GetTopRatedTvShowsUseCase = mockk(relaxed = true)
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase = mockk(relaxed = true)
+    private val getPopularTvShowsUseCase: GetPopularTvShowsUseCase = mockk(relaxed = true)
     private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var viewModel: HomeViewModel
     private lateinit var testScope: TestScope
     private lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
-    private lateinit var getContinueWatchingScreenDataUseCase: GetContinueWatchingScreenDataUseCase
+    private lateinit var getContinueWatchingScreenDataUseCase: GetContinueWatchingDataUseCase
 
     @BeforeEach
     fun setUp() {
@@ -58,9 +63,12 @@ class HomeViewModelTest {
             getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
             dispatcherProvider = dispatcherProvider,
             getMoviesByMoodUseCase = getMoviesByMoodUseCase,
-            getHomeScreenDataUseCase = getHomeScreenDataUseCase,
             getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
             manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
+            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
+            getTopRatedTvShowsUseCase = getTopRatedTvShowsUseCase,
+            getPopularMoviesUseCase = getPopularMoviesUseCase,
+            getPopularTvShowsUseCase = getPopularTvShowsUseCase,
         )
         Dispatchers.setMain(dispatcherProvider.testDispatcher)
     }
@@ -82,13 +90,19 @@ class HomeViewModelTest {
                 getUpcomingMoviesUseCase = getUpcomingMoviesUseCase,
                 dispatcherProvider = dispatcherProvider,
                 getMoviesByMoodUseCase = getMoviesByMoodUseCase,
-                getHomeScreenDataUseCase = getHomeScreenDataUseCase,
                 getContinueWatchingScreenDataUseCase = getContinueWatchingScreenDataUseCase,
                 manageLocaleLanguageUseCase = manageLocaleLanguageUseCase,
+                getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
+                getTopRatedTvShowsUseCase = getTopRatedTvShowsUseCase,
+                getPopularMoviesUseCase = getPopularMoviesUseCase,
+                getPopularTvShowsUseCase = getPopularTvShowsUseCase,
             )
             advanceUntilIdle()
 
-            coVerify(exactly = 1) { getHomeScreenDataUseCase() }
+            coVerify(exactly = 1) { getTopRatedMoviesUseCase() }
+            coVerify(exactly = 1) { getTopRatedTvShowsUseCase() }
+            coVerify(exactly = 1) { getPopularMoviesUseCase() }
+            coVerify(exactly = 1) { getPopularTvShowsUseCase() }
             coVerify(exactly = 1) { getContinueWatchingScreenDataUseCase(pageSize = 10) }
         }
 
@@ -179,7 +193,7 @@ class HomeViewModelTest {
             clearAllMocks()
             coVerify(exactly = 0) { getUpcomingMoviesUseCase(MovieGenre.ACTION) }
             coVerify(exactly = 0) { getContinueWatchingScreenDataUseCase() }
-            coVerify(exactly = 0) { getHomeScreenDataUseCase() }
+            coVerify(exactly = 0) { getTopRatedMoviesUseCase() }
         }
 
 
@@ -432,7 +446,7 @@ class HomeViewModelTest {
 
     private val defaultMovieId = 101L
     private val defaultTvId = 101L
-    private val defaultSelectedMood = Mood.ROMANTIC
+    private val defaultSelectedMood = GetMoviesByMoodUseCase.Mood.ROMANTIC
     private val defaultComedyGenre = MovieGenre.COMEDY
     private val defaultActionGenre = MovieGenre.ACTION
 

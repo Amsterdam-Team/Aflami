@@ -40,7 +40,7 @@ class GuessCharacterGameViewModel @Inject constructor(
     }
 
     private fun getQuestions() {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(isLoading = true, isNetworkError = false) }
         tryToExecute(
             action = ::startTheGame,
             onSuccess = ::onSuccessGetQuestions,
@@ -203,6 +203,10 @@ class GuessCharacterGameViewModel @Inject constructor(
         sendNewNavigationEffect(GuessCharacterGameEffect.NavigateBack)
     }
 
+    override fun onClickRetryLoading() {
+        getQuestions()
+    }
+
     private fun increaseSpentTimeSecondsByOne() {
         addSecondToGameTimeUseCase(state.value.gameSessionId)
     }
@@ -210,7 +214,7 @@ class GuessCharacterGameViewModel @Inject constructor(
     private fun onError(error: AflamiException) {
         when (error) {
             is NotEnoughPointsException -> updateState { it.copy(isNotEnoughPointsDialogVisible = true) }
-
+            else ->  updateState { it.copy(isNetworkError = true) }
         }
     }
 }

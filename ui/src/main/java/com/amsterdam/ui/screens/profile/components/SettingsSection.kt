@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -117,6 +118,8 @@ private fun CustomSettingCard(
             text = startText,
             style = AppTheme.textStyle.label.large,
             color = AppTheme.color.title,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
@@ -127,6 +130,8 @@ private fun CustomSettingCard(
                 text = endText,
                 style = AppTheme.textStyle.label.small,
                 color = AppTheme.color.body,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
             )

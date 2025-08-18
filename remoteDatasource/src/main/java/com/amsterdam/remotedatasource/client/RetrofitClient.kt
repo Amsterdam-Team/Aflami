@@ -45,9 +45,7 @@ class RetrofitClient(
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(createAuthAndParamInterceptor())
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
+            .addInterceptor(provideLoggerInterceptor())
             .build()
     }
 
@@ -88,6 +86,16 @@ class RetrofitClient(
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
+    }
+
+    private fun provideLoggerInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            this.level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
     }
 
     fun authenticationApiService(): AuthenticationApiService =

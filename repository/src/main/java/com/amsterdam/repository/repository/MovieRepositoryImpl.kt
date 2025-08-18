@@ -268,12 +268,12 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun setMovieRate(rate: Int, movieId: Long) {
         movieRemoteDataSource.setMovieRate(
-            rate = rate.toFloat() * 2, movieId = movieId
+            rate = rate.toFloat(), movieId = movieId
         )
     }
 
     override suspend fun getUserRatedMovies(): List<UserRatedMovie> {
-        return movieRemoteDataSource.getRatedMovies().results.toMovieUserRateEntityList().map { UserRatedMovie(it.movie, it.userRate * 2) }
+        return movieRemoteDataSource.getRatedMovies().results.toMovieUserRateEntityList()
     }
 
     override suspend fun deleteMovieRate(movieId: Long) {

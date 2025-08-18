@@ -83,7 +83,7 @@ fun LanguageSelectionItem(
                 .padding(start = 8.dp)
         )
         RadioButton(
-            state = if (isSelected) RadioState.Selected else RadioState.Unselected,
+            state = if (isSelected) RadioState.Selected else RadioState.Default,
             onClick = onClick,
             modifier = Modifier,
         )
@@ -106,7 +106,7 @@ private fun SelectionFieldPreview() {
             )
             LanguageSelectionItem(
                 modifier = Modifier.padding(top = 24.dp),
-                isSelected = true,
+                isSelected = false,
                 onClick = { },
                 text = stringResource(Language.ARABIC.nameResourceId),
                 trailingText = stringResource(Language.ARABIC.exampleResourceId)

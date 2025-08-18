@@ -7,11 +7,11 @@ import com.amsterdam.entity.TvShow
 class GetListMediaItemsFromListUseCase(
     private val wishListRepository: WishListRepository
 ) {
-    suspend operator fun invoke(listId: Long, page: Int): ListScreenDetailsMediaItems {
+    suspend operator fun invoke(listId: Long, page: Int): ListDetailsMediaItems {
         return wishListRepository.getMoviesAndTvShowsFromList(listId, page)
     }
 
-    data class ListScreenDetailsMediaItems(
+    data class ListDetailsMediaItems(
         val listDetailsMovies: List<Movie>,
         val listDetailsShows: List<TvShow>
     )

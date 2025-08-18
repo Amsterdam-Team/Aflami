@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.CenterOfScreenContainer
 import com.amsterdam.designsystem.components.ImageErrorIndicator
 import com.amsterdam.designsystem.components.ImageLoadingIndicator
@@ -36,6 +35,7 @@ import com.amsterdam.designsystem.components.LoadingIndicator
 import com.amsterdam.designsystem.components.chip.Chip
 import com.amsterdam.entity.category.TvShowGenre
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.R
 import com.amsterdam.ui.application.LocalNavManager
 import com.amsterdam.ui.components.MediaCard
 import com.amsterdam.ui.components.NoNetworkContainer

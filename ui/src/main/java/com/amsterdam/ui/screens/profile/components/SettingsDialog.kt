@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Dialog
 import com.amsterdam.designsystem.components.Icon
@@ -78,6 +79,8 @@ fun SettingsDialog(
                         text = stringResource(R.string.logout),
                         style = AppTheme.textStyle.label.medium,
                         color = AppTheme.color.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 onClick = onLogoutClick

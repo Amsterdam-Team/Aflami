@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -43,6 +44,7 @@ fun GuessTitle(
                 text = title,
                 style = AppTheme.textStyle.title.large,
                 color = AppTheme.color.title,
+                textAlign = TextAlign.Center
             )
             AnimatedVisibility(
                 visible = earnedPoint != null && earnedPoint != 0,

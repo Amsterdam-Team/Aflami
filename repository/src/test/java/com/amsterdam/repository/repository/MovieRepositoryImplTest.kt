@@ -22,8 +22,7 @@ import kotlin.test.Test
 
 class MovieRepositoryImplTest {
     private val movieRemoteDataSource: MovieRemoteDataSource = mockk()
-
-    val movieRepository: MovieRepository by lazy {
+    private val movieRepository: MovieRepository by lazy {
         MovieRepositoryImpl(
             categoryLocalDataSource = mockk(),
             movieLocalDataSource = mockk(),
@@ -124,8 +123,21 @@ class MovieRepositoryImplTest {
         assertThat(result).isEqualTo(remoteMovieResponse.results.toMovieEntityList())
     }
 
-    private val expectedRemoteMovies = listOf(remoteMovieItemDto)
+    @Test
+    fun `getMoviesByGenreIds should return movies when remote returns results`() = runTest {
+        coEvery {
+            movieRemoteDataSource.getMoviesByGenreId(
+                any(),
+                any()
+            )
+        } returns remoteMovieResponse
 
+        val result = movieRepository.getMoviesByGenre(genre, page)
+
+        assertThat(result).isEqualTo(remoteMovieResponse.results.toMovieEntityList())
+    }
+
+    private val expectedRemoteMovies = listOf(remoteMovieItemDto)
     private val remoteMovieResponse = MovieRemoteResponse(
         page = 1,
         results = expectedRemoteMovies,
@@ -149,9 +161,9 @@ class MovieRepositoryImplTest {
             gender = Gender.Female
         )
     )
+    private val remoteMovies = listOf(remoteUserRatedMovie)
+    private val genres = listOf(MovieGenre.ALL, MovieGenre.ACTION, MovieGenre.ADVENTURE)
+    private val expectedDtoGenres = listOf(35L, 28L, 12L)
+    private val genre = MovieGenre.ADVENTURE
 
-    val remoteMovies = listOf(remoteUserRatedMovie)
-
-    val genres = listOf(MovieGenre.ALL, MovieGenre.ACTION, MovieGenre.ADVENTURE)
-    val expectedDtoGenres = listOf(35L, 28L, 12L)
 }

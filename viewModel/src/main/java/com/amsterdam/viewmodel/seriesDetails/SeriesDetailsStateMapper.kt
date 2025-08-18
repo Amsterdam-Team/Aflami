@@ -18,7 +18,6 @@ import com.amsterdam.viewmodel.shared.RateDialogUiState
 import com.amsterdam.viewmodel.shared.mappers.toFormattedRating
 import com.amsterdam.viewmodel.utils.toFormattedString
 import com.amsterdam.viewmodel.utils.toShortMonthString
-import kotlin.collections.map
 
 fun List<Episode>.toUiState(currentLanguage: String) = map { it.toUiState(currentLanguage) }
 

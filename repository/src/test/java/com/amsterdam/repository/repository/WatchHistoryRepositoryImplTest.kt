@@ -1,7 +1,7 @@
 package com.amsterdam.repository.repository
 
-import com.amsterdam.entity.MovieWatchHistory
-import com.amsterdam.entity.TvShowWatchHistory
+import com.amsterdam.domain.utils.MovieWatchHistory
+import com.amsterdam.domain.utils.TvShowWatchHistory
 import com.amsterdam.repository.datasource.local.AppLocalPreferences
 import com.amsterdam.repository.datasource.local.MovieLocalDataSource
 import com.amsterdam.repository.datasource.local.TvShowLocalDataSource

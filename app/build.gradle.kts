@@ -22,9 +22,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        ndk {
-            abiFilters.addAll(listOf("arm64-v8a", "armabi-v7a"))
-        }
     }
 
     buildTypes {
@@ -35,6 +32,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                abiFilters.addAll(listOf("arm64-v8a", "armabi-v7a"))
+            }
             signingConfig = signingConfigs.getByName("debug")
             manifestPlaceholders["crashlyticsCollectionEnabled"] = true
         }

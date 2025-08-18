@@ -18,7 +18,7 @@ class GetTvShowsByGenreUseCaseTest {
     }
 
     @Test
-    fun `should return tvShows from tvShowRepository when invoked`() =
+    fun `getTvShowsByGenreUseCase should return tvShows by genre when call getTvShowsByGenre from tvShowRepository`() =
         runTest {
             coEvery { tvShowRepository.getTvShowsByGenre(selectedGenre, page) } returns tvShows
 
@@ -28,7 +28,7 @@ class GetTvShowsByGenreUseCaseTest {
         }
 
     @Test
-    fun `should call getTvShowsByGenre from tvShowRepository when invoked`() =
+    fun `getTvShowsByGenreUseCase should call getTvShowsByGenre from tvShowRepository only once`() =
         runTest {
             coEvery { tvShowRepository.getTvShowsByGenre(selectedGenre, page) } returns mockk()
             getTvShowsByGenreUseCase(selectedGenre, page)

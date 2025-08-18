@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,16 +25,21 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -70,51 +74,72 @@ fun GameCard(
     isPlayable: Boolean = true,
     unlockPrice: String = "",
 ) {
+    var cardHeight by remember { mutableFloatStateOf(0f) }
+    var cardWidth by remember { mutableFloatStateOf(0f) }
+
     Column(
         modifier = modifier
+            .onSizeChanged {
+                cardHeight = it.height.toFloat()
+                cardWidth = it.width.toFloat()
+            }
             .fillMaxWidth()
             .dropShadow(
                 shape = RoundedCornerShape(16.dp),
                 color = shadowColor.copy(alpha = 0.12f),
                 offsetY = 4.dp,
-                blur = 6.dp,
+                blur = 12.dp,
             )
             .clip(RoundedCornerShape(16.dp))
             .background(color = containerColor, shape = RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                brush = Brush.horizontalGradient(colors = borderColors),
+                brush = Brush.linearGradient(
+                    colors = borderColors,
+                    start = Offset(0f, 0f),
+                    end = Offset(cardWidth, cardHeight)
+                ),
                 shape = RoundedCornerShape(16.dp),
             )
             .clickable(enabled = isPlayable) { onClick() },
-        verticalArrangement = Arrangement.Top,
     ) {
         UnlockPromptContainer(
             isVisible = !isPlayable,
             unlockPrice = unlockPrice,
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min),
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Box(
+            modifier = Modifier.fillMaxWidth()
         ) {
+            GameCardBackgroundShapes(
+                modifier = Modifier
+                    .height(116.dp)
+                    .fillMaxWidth(0.25f)
+                    .align(Alignment.CenterEnd),
+                circleColor = shadowColor
+            )
+            Box(
+                modifier = Modifier.align(Alignment.BottomEnd)
+            ) {
+                getGameCardImageContentByType(gameCardImageContentType, title).invoke(this)
+            }
+
             Column(
                 modifier = Modifier
-                    .weight(3f)
+                    .align(Alignment.TopStart)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.Start
             ) {
                 Text(
+                    modifier = Modifier,
                     text = title,
                     style = AppTheme.textStyle.title.small,
                     color = AppTheme.color.title,
                 )
 
                 Text(
-                    modifier = Modifier.fillMaxWidth(.7f),
+                    modifier = Modifier.fillMaxWidth(0.65f),
                     text = description,
                     minLines = 2,
                     maxLines = 2,
@@ -123,22 +148,13 @@ fun GameCard(
                     color = AppTheme.color.body,
                 )
 
-                Row(
-                    modifier = Modifier.weight(1f),
+                CircularButton(
+                    modifier = Modifier.padding(top = 4.dp),
+                    onClick = onClick,
+                    clickable = isPlayable
                 ) {
-                    CircularButton(
-                        onClick = onClick,
-                        clickable = isPlayable,
-                        modifier = Modifier.align(Alignment.Bottom)
-                    ) {
-                        if (isPlayable) PlayNowContent() else PlayLockContent()
-                    }
+                    if (isPlayable) PlayNowContent() else PlayLockContent()
                 }
-            }
-
-            Box(modifier = Modifier.weight(1f)) {
-                GameCardBackgroundShapes(circleColor = shadowColor)
-                getGameCardImageContentByType(gameCardImageContentType, title).invoke(this)
             }
         }
     }
@@ -200,11 +216,11 @@ private fun GameCardBackgroundShapes(
         BlurredContent(
             blurRadius = 5.dp,
             modifier = Modifier.graphicsLayer {
-                    rotationZ = if (isRtl) -48f else 48f
-                    translationX = if (isRtl) -160f else 150f
-                    scaleY = 2f
-                    scaleX = 1f
-                },
+                rotationZ = if (isRtl) -48f else 48f
+                translationX = if (isRtl) -160f else 150f
+                scaleY = 2f
+                scaleX = 1f
+            }
         ) { RectangleShapeSoftGlow(Modifier.width(52.dp)) }
     }
 }
@@ -223,11 +239,10 @@ private fun getGameCardImageContentByType(
             Image(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomEnd)
-                    .fillMaxHeight(.9f)
-                    .mirroredContent(LocalLayoutDirection.current)
-                    .graphicsLayer { translationX = -30f },
+                    .height(96.dp)
+                    .mirroredContent(LocalLayoutDirection.current),
                 painter = painterResource(R.drawable.img_game_funclown),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillHeight,
                 contentDescription = contentDescription,
             )
         }
@@ -236,9 +251,11 @@ private fun getGameCardImageContentByType(
 
         GameCardImageContentType.CALENDER -> {
             Image(
-                modifier = Modifier.align(alignment = Alignment.BottomCenter),
+                modifier = Modifier
+                    .align(alignment = Alignment.BottomEnd)
+                    .height(88.dp),
                 painter = painterResource(R.drawable.img_game_calender),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillHeight,
                 contentDescription = contentDescription,
             )
         }
@@ -246,10 +263,11 @@ private fun getGameCardImageContentByType(
         GameCardImageContentType.LAWN_CHAIR -> {
             Image(
                 modifier = Modifier
-                    .align(alignment = Alignment.BottomCenter)
+                    .align(alignment = Alignment.BottomEnd)
+                    .height(88.dp)
                     .mirroredContent(LocalLayoutDirection.current),
                 painter = painterResource(R.drawable.img_game_chair_with_popcorn),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillHeight,
                 contentDescription = contentDescription,
             )
         }

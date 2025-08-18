@@ -25,10 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.amsterdam.ui.R
-import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.buttons.ConfirmButton
+import com.amsterdam.designsystem.components.buttons.IconButton
 import com.amsterdam.designsystem.components.buttons.OutlinedButton
 import com.amsterdam.designsystem.components.chip.Chip
 import com.amsterdam.designsystem.theme.AflamiTheme
@@ -36,6 +35,7 @@ import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.designsystem.utils.ThemeAndLocalePreviews
 import com.amsterdam.entity.category.MovieGenre
 import com.amsterdam.entity.category.TvShowGenre
+import com.amsterdam.ui.R
 import com.amsterdam.ui.components.RatingBar
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.ScrollToGenreItem
 import com.amsterdam.ui.screens.search.keywordSearch.sections.filterDialog.genre.getMovieGenreIcon

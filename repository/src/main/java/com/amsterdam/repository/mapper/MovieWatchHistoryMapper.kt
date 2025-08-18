@@ -1,6 +1,6 @@
 package com.amsterdam.repository.mapper
 
-import com.amsterdam.entity.MovieWatchHistory
+import com.amsterdam.domain.utils.MovieWatchHistory
 import com.amsterdam.repository.dto.local.MovieLocalDto
 import com.amsterdam.repository.dto.local.MovieWatchHistoryDto
 
