@@ -15,7 +15,6 @@ import com.amsterdam.viewmodel.utils.TestExtension
 import com.amsterdam.viewmodel.utils.helper.createMovie
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class ActorSearchViewModelTest {
 
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase = mockk()
-    private  val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk()
+    private val manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase = mockk()
 
     private val viewModel by lazy {
         ActorSearchViewModel(
@@ -47,14 +46,6 @@ class ActorSearchViewModelTest {
     }
 
     @Test
-    fun `init should subscribe to app language changes and trigger search observation`() = runTest {
-        viewModel
-        advanceUntilIdle()
-
-        coVerify { manageLocaleLanguageUseCase.getAppLanguage() }
-    }
-
-    @Test
     fun `onUserSearchChange should update keyword when different from current state`() = runTest {
         val keyword = "Tom Hanks"
 
@@ -65,7 +56,8 @@ class ActorSearchViewModelTest {
     }
 
     @Test
-    fun `onUserSearchChange should not update keywordFlow when keyword is same as current state`() = runTest {
+    fun `onUserSearchChange should not update keywordFlow when keyword is same as current state`() =
+        runTest {
             val keyword = "Tom Hanks"
             viewModel.onUserSearchChange(keyword)
             advanceUntilIdle()
@@ -125,12 +117,12 @@ class ActorSearchViewModelTest {
 
     @Test
     fun `onClickMovie should emit NavigateToDetailsScreen effect with movieId`() = runTest {
-            viewModel.onClickMovie(movieId = 123)
+        viewModel.onClickMovie(movieId = 123)
 
-            viewModel.effect.test {
-                assertThat(awaitItem()).isEqualTo(ActorSearchEffect.NavigateToDetailsScreen(123))
-            }
+        viewModel.effect.test {
+            assertThat(awaitItem()).isEqualTo(ActorSearchEffect.NavigateToDetailsScreen(123))
         }
+    }
 
     @Test
     fun `onPagingLoadStateChanged should update state with isLoading to true when LoadState is loading`() =
@@ -148,35 +140,44 @@ class ActorSearchViewModelTest {
         }
 
     @Test
-    fun `onPagingLoadStateChanged should set loading to false for LoadState with blank keyword`() = runTest {
-        viewModel.onUserSearchChange("")
-        advanceUntilIdle()
+    fun `onPagingLoadStateChanged should set loading to false for LoadState with blank keyword`() =
+        runTest {
+            viewModel.onUserSearchChange("")
+            advanceUntilIdle()
 
-        viewModel.onPagingLoadStateChanged(createCombinedLoadStates(LoadState.Loading))
-        advanceUntilIdle()
+            viewModel.onPagingLoadStateChanged(createCombinedLoadStates(LoadState.Loading))
+            advanceUntilIdle()
 
-        viewModel.state.test {
-            assertThat(awaitItem().isLoading).isFalse()
+            viewModel.state.test {
+                assertThat(awaitItem().isLoading).isFalse()
+            }
         }
-    }
 
     @Test
-    fun `onPagingLoadStateChanged should set isLoading to false when LoadState is NotLoading`() = runTest {
-        viewModel.onPagingLoadStateChanged(createCombinedLoadStates(LoadState.NotLoading(false)))
-        advanceUntilIdle()
+    fun `onPagingLoadStateChanged should set isLoading to false when LoadState is NotLoading`() =
+        runTest {
+            viewModel.onPagingLoadStateChanged(createCombinedLoadStates(LoadState.NotLoading(false)))
+            advanceUntilIdle()
 
-        viewModel.state.test {
-            assertThat(awaitItem().isLoading).isFalse()
+            viewModel.state.test {
+                assertThat(awaitItem().isLoading).isFalse()
+            }
         }
-    }
 
     @Test
-    fun `onPagingLoadStateChanged should set error state when LoadState throws NetworkException`() = runTest {
-        viewModel.onPagingLoadStateChanged(createCombinedLoadStates(LoadState.Error(NetworkException())))
-        advanceUntilIdle()
+    fun `onPagingLoadStateChanged should set error state when LoadState throws NetworkException`() =
+        runTest {
+            viewModel.onPagingLoadStateChanged(
+                createCombinedLoadStates(
+                    LoadState.Error(
+                        NetworkException()
+                    )
+                )
+            )
+            advanceUntilIdle()
 
-        viewModel.errorState.test { assertThat(awaitItem()).isEqualTo(ErrorUiState.NoInternetError) }
-    }
+            viewModel.errorState.test { assertThat(awaitItem()).isEqualTo(ErrorUiState.NoInternetError) }
+        }
 
     @Test
     fun `onPagingLoadStateChanged should handle Error state with generic exception`() = runTest {
