@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -76,6 +77,7 @@ fun TextField(
     borderColor: Color = AppTheme.color.stroke,
     borderErrorColor: Color = AppTheme.color.redAccent,
     borderFocusedColor: Color = AppTheme.color.primary,
+    cursorColor: Color = AppTheme.color.primary,
     onValueChange: (String) -> Unit = {},
     imeAction: ImeAction = ImeAction.Default,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
@@ -143,6 +145,7 @@ fun TextField(
                         .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = AppTheme.color.title),
                 singleLine = true,
+                cursorBrush = SolidColor(cursorColor),
                 visualTransformation = if (isObscured) PasswordVisualTransformation('*') else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
