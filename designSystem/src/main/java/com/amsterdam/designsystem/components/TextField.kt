@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -76,6 +77,7 @@ fun TextField(
     borderColor: Color = AppTheme.color.stroke,
     borderErrorColor: Color = AppTheme.color.redAccent,
     borderFocusedColor: Color = AppTheme.color.primary,
+    cursorColor: Color = AppTheme.color.primary,
     onValueChange: (String) -> Unit = {},
     imeAction: ImeAction = ImeAction.Default,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
@@ -97,23 +99,22 @@ fun TextField(
     Column(modifier = modifier) {
         AnimatedErrorBox(isError, errorMessage, style)
         Row(
-            modifier =
-                Modifier
-                    .border(
-                        width = 1.dp,
-                        color = currentBorderColor,
-                        shape = RoundedCornerShape(16.dp),
-                    )
-                    .clip(shape = RoundedCornerShape(16.dp))
-                    .clipToBounds()
-                    .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
-                    .defaultMinSize(minHeight = 56.dp)
-                    .then(
-                        if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier,
-                    )
-                    .then(
-                        if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier,
-                    ),
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    color = currentBorderColor,
+                    shape = RoundedCornerShape(16.dp),
+                )
+                .clip(shape = RoundedCornerShape(16.dp))
+                .clipToBounds()
+                .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
+                .defaultMinSize(minHeight = 56.dp)
+                .then(
+                    if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier,
+                )
+                .then(
+                    if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier,
+                ),
             verticalAlignment = Alignment.Top,
         ) {
             if (leadingIcon != null) {
@@ -134,25 +135,24 @@ fun TextField(
                 },
                 maxLines = 1,
                 enabled = isEnabled,
-                modifier =
-                    Modifier
-                        .padding(horizontal = 12.dp)
-                        .weight(1f)
-                        .defaultMinSize(minHeight = 56.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .onFocusChanged { focusState -> isFocused = focusState.isFocused },
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .weight(1f)
+                    .defaultMinSize(minHeight = 56.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = AppTheme.color.title),
                 singleLine = true,
+                cursorBrush = SolidColor(cursorColor),
                 visualTransformation = if (isObscured) PasswordVisualTransformation('*') else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 },
                 keyboardActions = keyboardActions,
-                keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = keyboardType,
-                        imeAction = imeAction,
-                    ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = keyboardType,
+                    imeAction = imeAction,
+                ),
             )
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
@@ -178,10 +178,9 @@ private fun InnerTextFieldWithHint(
     style: TextStyle,
 ) {
     Box(
-        modifier =
-            Modifier
-                .padding(vertical = 5.dp)
-                .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
+        modifier = Modifier
+            .padding(vertical = 5.dp)
+            .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         innerTextField()
@@ -218,11 +217,10 @@ private fun LeadingIcon(
         contentDescription = null,
         colorFilter = ColorFilter.tint(imageColor),
         contentScale = ContentScale.Fit,
-        modifier =
-            Modifier
-                .padding(vertical = 16.dp)
-                .padding(start = 16.dp, end = 12.dp)
-                .size(24.dp),
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .padding(start = 16.dp, end = 12.dp)
+            .size(24.dp),
     )
 }
 
@@ -240,23 +238,22 @@ private fun TrailingIcon(
             contentDescription = null,
             colorFilter = ColorFilter.tint(imageColor),
             contentScale = ContentScale.Fit,
-            modifier =
-                Modifier
-                    .then(
-                        if (onClick != null) {
-                            Modifier.clickable(
-                                enabled = isClickEnabled,
-                                interactionSource = MutableInteractionSource(),
-                                indication = ripple(color = AppTheme.color.hint),
-                                onClick = onClick,
-                            )
-                        } else {
-                            Modifier
-                        },
-                    )
-                    .padding(vertical = 16.dp)
-                    .padding(start = 12.dp, end = 16.dp)
-                    .size(24.dp),
+            modifier = Modifier
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(
+                            enabled = isClickEnabled,
+                            interactionSource = MutableInteractionSource(),
+                            indication = ripple(color = AppTheme.color.hint),
+                            onClick = onClick,
+                        )
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(vertical = 16.dp)
+                .padding(start = 12.dp, end = 16.dp)
+                .size(24.dp),
         )
     }
 }
@@ -269,32 +266,29 @@ private fun ColumnScope.AnimatedErrorBox(
 ) {
     AnimatedVisibility(visible = isError) {
         Box(
-            modifier =
-                Modifier
-                    .padding(bottom = 4.dp)
-                    .wrapContentSize()
-                    .background(
-                        color = AppTheme.color.redAccent,
-                        shape =
-                            SpeechBubbleShape(
-                                cornerRadius = 8.dp,
-                                tailWidth = 8.dp,
-                                tailHeight = 4.dp,
-                                tailOffsetDp = 8.dp,
-                                isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl,
-                            ),
-                    )
-                    .padding(bottom = 4.dp),
+            modifier = Modifier
+                .padding(bottom = 4.dp)
+                .wrapContentSize()
+                .background(
+                    color = AppTheme.color.redAccent,
+                    shape = SpeechBubbleShape(
+                        cornerRadius = 8.dp,
+                        tailWidth = 8.dp,
+                        tailHeight = 4.dp,
+                        tailOffsetDp = 8.dp,
+                        isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl,
+                    ),
+                )
+                .padding(bottom = 4.dp),
         ) {
             Text(
                 text = message,
                 style = style,
                 color = AppTheme.color.onPrimary,
-                modifier =
-                    Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(vertical = 6.dp)
-                        .animateContentSize(),
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(vertical = 6.dp)
+                    .animateContentSize(),
             )
         }
     }
@@ -307,10 +301,9 @@ private fun AnimatedMaxCharacters(
     style: TextStyle,
 ) {
     Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
         horizontalArrangement = Arrangement.End,
     ) {
         AnimatedVisibility(visible = canShowMaxCharacters) {
@@ -319,11 +312,10 @@ private fun AnimatedMaxCharacters(
                 style = style,
                 fontSize = 12.sp,
                 color = AppTheme.color.title,
-                modifier =
-                    Modifier
-                        .padding(horizontal = 8.dp)
-                        .padding(top = 4.dp)
-                        .animateContentSize(),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 4.dp)
+                    .animateContentSize(),
             )
         }
     }
