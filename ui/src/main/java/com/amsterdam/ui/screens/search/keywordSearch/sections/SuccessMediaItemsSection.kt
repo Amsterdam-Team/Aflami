@@ -22,7 +22,9 @@ import com.amsterdam.designsystem.components.LoadingIndicator
 import com.amsterdam.designsystem.components.buttons.ButtonDefaults
 import com.amsterdam.designsystem.components.buttons.PlainTextButton
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
 import com.amsterdam.ui.components.MediaCard
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.viewmodel.search.uiState.SearchMediaItemUiState
 import com.amsterdam.viewmodel.shared.uiStates.MediaType
 
@@ -33,6 +35,7 @@ fun SuccessMediaItemsSection(
     onTvShowClicked: (tvShowId: Long) -> Unit,
     selectedItems: LazyPagingItems<SearchMediaItemUiState>
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -51,6 +54,7 @@ fun SuccessMediaItemsSection(
                                 modifier = Modifier.fillMaxSize(),
                                 contentDescription = mediaItem.name,
                                 model = mediaItem.posterImageUrl,
+                                safetyLevel = safetyLevel,
                                 contentScale = ContentScale.Crop,
                                 onLoading = { ImageLoadingIndicator() },
                                 onError = { ImageErrorIndicator() },
@@ -71,6 +75,7 @@ fun SuccessMediaItemsSection(
                             SafeImageView(
                                 modifier = Modifier.fillMaxSize(),
                                 contentDescription = mediaItem.name,
+                                safetyLevel = safetyLevel,
                                 model = mediaItem.posterImageUrl,
                                 contentScale = ContentScale.Crop,
                                 onLoading = { ImageLoadingIndicator() },

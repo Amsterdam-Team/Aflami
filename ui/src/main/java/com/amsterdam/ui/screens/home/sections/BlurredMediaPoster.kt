@@ -12,6 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.designsystem.theme.AppTheme
 import com.amsterdam.imageviewer.classification.SafetyLevel
 import com.amsterdam.imageviewer.ui.SafeImageView
+import com.amsterdam.ui.application.LocalRestrictionLevel
+import com.amsterdam.ui.utils.toSafetyLevel
 import com.amsterdam.ui.utils.topGradient
 import io.sifr.shaded.blurProcessor.BlurEdgeTreatment
 import io.sifr.shaded.modifiers.blur
@@ -21,6 +23,7 @@ fun BlurredMediaPoster(
     posterUrl: String,
     modifier: Modifier = Modifier
 ) {
+    val safetyLevel = LocalRestrictionLevel.current.toSafetyLevel()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -30,7 +33,7 @@ fun BlurredMediaPoster(
             model = posterUrl,
             contentDescription = null,
             onLoading = { },
-            safetyLevel = SafetyLevel.OFF,
+            safetyLevel = safetyLevel,
             onError = { },
             modifier = Modifier
                 .matchParentSize()

@@ -10,7 +10,7 @@ import com.amsterdam.imageviewer.util.OpenGLBlurProcessor
 
 internal class SafetyBlurTransformation(
     private val classifier: CustomImageClassifier,
-    private val blurRadius: Float = 25f,
+    private val blurRadius: Float = 50f,
     private val detectorRule: NsfwDetectorRule
 ) : Transformation {
 
@@ -44,7 +44,7 @@ internal class SafetyBlurTransformation(
         if (radius <= 0f) return source.config?.let { source.copy(it, true) }
         if (source.isRecycled) return null
 
-        val clampedRadius = radius.coerceIn(0.0f, 25.0f)
+        val clampedRadius = radius.coerceIn(0.0f, 50.0f)
         if (clampedRadius == 0.0f) return source.config?.let { source.copy(it, true) }
 
         val openGlInputBitmap = try {

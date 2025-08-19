@@ -254,11 +254,10 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun setListToAdded(listIds: List<Long>) {
-        val ids = listIds.toHashSet()
         updateState { state ->
             state.copy(
                 userLists = state.userLists.map { list ->
-                    if (list.id in ids) {
+                    if (list.id in listIds) {
                         list.copy(isMovieInList = true, itemCount = list.itemCount + 1)
                     } else {
                         list
@@ -291,6 +290,7 @@ class MovieDetailsViewModel @Inject constructor(
                 sendNewEffect(MovieDetailsEffect.ListCreatedSuccessfully)
                 onSaveMovieToList(state.value.movieId, listOf(listId.toLong()))
                 loadWishLists()
+                setListToAdded(listOf(listId.toLong()))
             },
             onError = {
                 sendNewEffect(MovieDetailsEffect.FailedToCreateList)

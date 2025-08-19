@@ -8,10 +8,10 @@ import android.opengl.EGLDisplay
 import android.opengl.EGLSurface
 import android.opengl.GLES20
 import android.opengl.GLUtils
-import androidx.core.graphics.createBitmap
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-
+import java.nio.FloatBuffer
+import androidx.core.graphics.createBitmap
 
 internal class OpenGLBlurProcessor {
 
@@ -22,15 +22,67 @@ internal class OpenGLBlurProcessor {
         }
     }
 
+
+
+    private var eglDisplay: EGLDisplay? = null
+    private var eglContext: EGLContext? = null
+    private var eglSurface: EGLSurface? = null
+
+    private var horizontalShaderProgram = 0
+    private var verticalShaderProgram = 0
+
+    private var framebuffer1 = 0
+    private var framebuffer2 = 0
+    private var fboTexture1 = 0
+    private var fboTexture2 = 0
+
+    private var quadVBO = 0
+    private lateinit var vertexBuffer: FloatBuffer
+
+    private var currentWidth = 0
+    private var currentHeight = 0
+    private var initialized = false
+
+
+
+
+
     private fun processBlur(inputBitmap: Bitmap, radius: Float): Bitmap? {
-        val eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
+        return try {
+            if (!setupEGL(inputBitmap.width, inputBitmap.height)) {
+                return null
+            }
+
+            initialize()
+            val result = performTwoPassBlur(inputBitmap, radius)
+            cleanup()
+            result
+        } catch (e: Exception) {
+            e.printStackTrace()
+            cleanup()
+            null
+        }
+    }
+
+    private fun initialize() {
+        if (initialized) return
+
+        compileShaders()
+        setupFullscreenQuad()
+        setupFramebuffers()
+
+        initialized = true
+    }
+
+    private fun setupEGL(width: Int, height: Int): Boolean {
+        eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
         if (eglDisplay == EGL14.EGL_NO_DISPLAY) {
-            return null
+            return false
         }
 
         val version = IntArray(2)
         if (!EGL14.eglInitialize(eglDisplay, version, 0, version, 1)) {
-            return null
+            return false
         }
 
         val configs = arrayOfNulls<EGLConfig>(1)
@@ -44,225 +96,374 @@ internal class OpenGLBlurProcessor {
             EGL14.EGL_NONE
         )
 
-        if (!EGL14.eglChooseConfig(
-                eglDisplay,
-                configAttribs,
-                0,
-                configs,
-                0,
-                configs.size,
-                numConfigs,
-                0
-            )
-        ) {
-            EGL14.eglTerminate(eglDisplay)
-            return null
+        if (!EGL14.eglChooseConfig(eglDisplay, configAttribs, 0, configs, 0, configs.size, numConfigs, 0)) {
+            cleanup()
+            return false
         }
 
-        val config = configs[0]
+        val config = configs[0] ?: return false
         val contextAttribs = intArrayOf(
             EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
             EGL14.EGL_NONE
         )
 
-        val eglContext =
-            EGL14.eglCreateContext(eglDisplay, config, EGL14.EGL_NO_CONTEXT, contextAttribs, 0)
+        eglContext = EGL14.eglCreateContext(eglDisplay, config, EGL14.EGL_NO_CONTEXT, contextAttribs, 0)
         if (eglContext == EGL14.EGL_NO_CONTEXT) {
-            EGL14.eglTerminate(eglDisplay)
-            return null
+            cleanup()
+            return false
         }
 
         val surfaceAttribs = intArrayOf(
-            EGL14.EGL_WIDTH, inputBitmap.width,
-            EGL14.EGL_HEIGHT, inputBitmap.height,
+            EGL14.EGL_WIDTH, width,
+            EGL14.EGL_HEIGHT, height,
             EGL14.EGL_NONE
         )
 
-        val eglSurface = EGL14.eglCreatePbufferSurface(eglDisplay, config, surfaceAttribs, 0)
+        eglSurface = EGL14.eglCreatePbufferSurface(eglDisplay, config, surfaceAttribs, 0)
         if (eglSurface == EGL14.EGL_NO_SURFACE) {
-            EGL14.eglDestroyContext(eglDisplay, eglContext)
-            EGL14.eglTerminate(eglDisplay)
-            return null
+            cleanup()
+            return false
         }
 
-        if (!EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
-            cleanup(eglDisplay, eglContext, eglSurface)
-            return null
-        }
-
-        try {
-            val result = performBlurOperation(inputBitmap, radius)
-
-            cleanup(eglDisplay, eglContext, eglSurface)
-
-            return result
-        } catch (e: Exception) {
-            e.printStackTrace()
-            cleanup(eglDisplay, eglContext, eglSurface)
-            return null
-        }
+        return EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
     }
 
-    private fun cleanup(eglDisplay: EGLDisplay, eglContext: EGLContext, eglSurface: EGLSurface) {
-        EGL14.eglMakeCurrent(
-            eglDisplay,
-            EGL14.EGL_NO_SURFACE,
-            EGL14.EGL_NO_SURFACE,
-            EGL14.EGL_NO_CONTEXT
-        )
-        EGL14.eglDestroySurface(eglDisplay, eglSurface)
-        EGL14.eglDestroyContext(eglDisplay, eglContext)
-        EGL14.eglTerminate(eglDisplay)
-    }
-
-    private fun performBlurOperation(inputBitmap: Bitmap, radius: Float): Bitmap? {
+    private fun performTwoPassBlur(inputBitmap: Bitmap, radius: Float): Bitmap? {
         val width = inputBitmap.width
         val height = inputBitmap.height
 
-        GLES20.glViewport(0, 0, width, height)
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-        GLES20.glEnable(GLES20.GL_BLEND)
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST)
+        val inputTextureId = uploadBitmapAsTexture(inputBitmap)
+        if (inputTextureId == 0) return null
 
-        val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
-        val fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
-
-        val program = GLES20.glCreateProgram()
-        GLES20.glAttachShader(program, vertexShader)
-        GLES20.glAttachShader(program, fragmentShader)
-        GLES20.glLinkProgram(program)
-
-        val linkStatus = IntArray(1)
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
-        if (linkStatus[0] != GLES20.GL_TRUE) {
-            val log = GLES20.glGetProgramInfoLog(program)
-            GLES20.glDeleteProgram(program)
-            throw RuntimeException("Program linking failed: $log")
+        if (radius <= 0.5f) {
+            return renderDirect(inputTextureId, width, height)
         }
 
-        // Setup vertex data
-        val quadCoords = floatArrayOf(
-            -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f
-        )
+        resizeFramebuffers(width, height)
 
-        val texCoords = floatArrayOf(
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 0.0f
-        )
+        renderHorizontalPass(inputTextureId, width, height, radius)
 
-        val vertexBuffer = ByteBuffer.allocateDirect(quadCoords.size * 4)
-            .order(ByteOrder.nativeOrder())
-            .asFloatBuffer()
-            .apply {
-                put(quadCoords)
-                position(0)
-            }
+        renderVerticalPass(width, height, radius)
 
-        val texCoordBuffer = ByteBuffer.allocateDirect(texCoords.size * 4)
-            .order(ByteOrder.nativeOrder())
-            .asFloatBuffer()
-            .apply {
-                put(texCoords)
-                position(0)
-            }
+        val result = readFBO(width, height)
 
+        GLES20.glDeleteTextures(1, intArrayOf(inputTextureId), 0)
+
+        return result
+    }
+
+    private fun uploadBitmapAsTexture(bitmap: Bitmap): Int {
         val textureHandle = IntArray(1)
         GLES20.glGenTextures(1, textureHandle, 0)
 
-        if (textureHandle[0] == 0) {
-            return null
-        }
+        if (textureHandle[0] == 0) return 0
 
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0])
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
-        GLES20.glTexParameteri(
-            GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_WRAP_S,
-            GLES20.GL_CLAMP_TO_EDGE
-        )
-        GLES20.glTexParameteri(
-            GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_WRAP_T,
-            GLES20.GL_CLAMP_TO_EDGE
-        )
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
 
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, inputBitmap, 0)
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
 
-        val positionHandle = GLES20.glGetAttribLocation(program, "vPosition")
-        val texCoordHandle = GLES20.glGetAttribLocation(program, "vTexCoord")
-        val textureUniformHandle = GLES20.glGetUniformLocation(program, "uTexture")
-        val radiusHandle = GLES20.glGetUniformLocation(program, "uRadius")
-        val textureSizeHandle = GLES20.glGetUniformLocation(program, "uTextureSize")
+        return textureHandle[0]
+    }
 
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        GLES20.glUseProgram(program)
+    private fun renderHorizontalPass(textureId: Int, width: Int, height: Int, radius: Float) {
+        GLES20.glUseProgram(horizontalShaderProgram)
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer1)
+        GLES20.glViewport(0, 0, width, height)
 
-        GLES20.glEnableVertexAttribArray(positionHandle)
-        GLES20.glEnableVertexAttribArray(texCoordHandle)
-
-        GLES20.glVertexAttribPointer(positionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer)
-        GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texCoordBuffer)
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(horizontalShaderProgram, "uRadius"), radius)
+        GLES20.glUniform2f(GLES20.glGetUniformLocation(horizontalShaderProgram, "uTextureSize"),
+            width.toFloat(), height.toFloat())
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0])
-        GLES20.glUniform1i(textureUniformHandle, 0)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId)
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(horizontalShaderProgram, "uTexture"), 0)
 
-        GLES20.glUniform1f(radiusHandle, radius)
-        GLES20.glUniform2f(textureSizeHandle, width.toFloat(), height.toFloat())
+        drawQuad(horizontalShaderProgram)
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+    }
+
+    private fun renderVerticalPass(width: Int, height: Int, radius: Float) {
+        GLES20.glUseProgram(verticalShaderProgram)
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer2)
+        GLES20.glViewport(0, 0, width, height)
+
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(verticalShaderProgram, "uRadius"), radius)
+        GLES20.glUniform2f(GLES20.glGetUniformLocation(verticalShaderProgram, "uTextureSize"),
+            width.toFloat(), height.toFloat())
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTexture1)
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(verticalShaderProgram, "uTexture"), 0)
+
+        drawQuad(verticalShaderProgram)
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+    }
+
+    private fun renderDirect(textureId: Int, width: Int, height: Int): Bitmap {
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer2)
+        GLES20.glViewport(0, 0, width, height)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+
+        GLES20.glUseProgram(verticalShaderProgram)
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(verticalShaderProgram, "uRadius"), 0.0f)
+        GLES20.glUniform2f(GLES20.glGetUniformLocation(verticalShaderProgram, "uTextureSize"),
+            width.toFloat(), height.toFloat())
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId)
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(verticalShaderProgram, "uTexture"), 0)
+
+        drawQuad(verticalShaderProgram)
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+
+        return readFBO(width, height)
+    }
+
+    private fun drawQuad(shaderProgram: Int) {
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, quadVBO)
+
+        val posLoc = GLES20.glGetAttribLocation(shaderProgram, "aPosition")
+        val texLoc = GLES20.glGetAttribLocation(shaderProgram, "aTexCoord")
+
+        GLES20.glEnableVertexAttribArray(posLoc)
+        GLES20.glVertexAttribPointer(posLoc, 2, GLES20.GL_FLOAT, false, 4 * 4, 0)
+
+        GLES20.glEnableVertexAttribArray(texLoc)
+        GLES20.glVertexAttribPointer(texLoc, 2, GLES20.GL_FLOAT, false, 4 * 4, 2 * 4)
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
 
-        GLES20.glDisableVertexAttribArray(positionHandle)
-        GLES20.glDisableVertexAttribArray(texCoordHandle)
+        GLES20.glDisableVertexAttribArray(posLoc)
+        GLES20.glDisableVertexAttribArray(texLoc)
+    }
+
+    private fun readFBO(width: Int, height: Int): Bitmap {
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer2)
 
         val pixelBuffer = ByteBuffer.allocateDirect(width * height * 4)
         pixelBuffer.order(ByteOrder.nativeOrder())
 
-        GLES20.glReadPixels(
-            0,
-            0,
-            width,
-            height,
-            GLES20.GL_RGBA,
-            GLES20.GL_UNSIGNED_BYTE,
-            pixelBuffer
-        )
+        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer)
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
 
         pixelBuffer.rewind()
         val tempBitmap = createBitmap(width, height)
         tempBitmap.copyPixelsFromBuffer(pixelBuffer)
 
-        val matrix = android.graphics.Matrix()
-        matrix.preScale(1.0f, -1.0f)
         val outputBitmap = Bitmap.createBitmap(
-            tempBitmap, 0, 0, width, height, matrix, false
+            tempBitmap, 0, 0, width, height
         )
 
         tempBitmap.recycle()
 
-        GLES20.glDeleteTextures(1, textureHandle, 0)
-        GLES20.glDeleteProgram(program)
-        GLES20.glDeleteShader(vertexShader)
-        GLES20.glDeleteShader(fragmentShader)
-
         return outputBitmap
     }
 
-    private fun loadShader(type: Int, shaderCode: String): Int {
+    private fun setupFullscreenQuad() {
+        val quadVertices = floatArrayOf(
+            -1.0f,  1.0f,   0.0f, 1.0f,
+            -1.0f, -1.0f,   0.0f, 0.0f,
+            1.0f,  1.0f,   1.0f, 1.0f,
+            1.0f, -1.0f,   1.0f, 0.0f
+        )
+
+        vertexBuffer = ByteBuffer.allocateDirect(quadVertices.size * 4)
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer()
+            .apply {
+                put(quadVertices)
+                position(0)
+            }
+
+        val vboArray = IntArray(1)
+        GLES20.glGenBuffers(1, vboArray, 0)
+        quadVBO = vboArray[0]
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, quadVBO)
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, quadVertices.size * 4, vertexBuffer, GLES20.GL_STATIC_DRAW)
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0)
+    }
+
+    private fun setupFramebuffers() {
+        val framebuffers = IntArray(2)
+        GLES20.glGenFramebuffers(2, framebuffers, 0)
+        framebuffer1 = framebuffers[0]
+        framebuffer2 = framebuffers[1]
+
+        val textures = IntArray(2)
+        GLES20.glGenTextures(2, textures, 0)
+        fboTexture1 = textures[0]
+        fboTexture2 = textures[1]
+
+        currentWidth = 0
+        currentHeight = 0
+    }
+
+    private fun resizeFramebuffers(width: Int, height: Int) {
+        if (currentWidth == width && currentHeight == height) {
+            return
+        }
+
+        currentWidth = width
+        currentHeight = height
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer1)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTexture1)
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
+            GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
+            GLES20.GL_TEXTURE_2D, fboTexture1, 0)
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, framebuffer2)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTexture2)
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
+            GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
+            GLES20.GL_TEXTURE_2D, fboTexture2, 0)
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+    }
+
+    private fun compileShaders() {
+        val vertexShaderSrc = """
+            attribute vec2 aPosition;
+            attribute vec2 aTexCoord;
+            varying vec2 vTexCoord;
+            void main() {
+                vTexCoord = aTexCoord;
+                gl_Position = vec4(aPosition, 0.0, 1.0);
+            }
+        """.trimIndent()
+
+        val horizontalFragmentShaderSrc = """
+            precision mediump float;
+            varying vec2 vTexCoord;
+            uniform sampler2D uTexture;
+            uniform float uRadius;
+            uniform vec2 uTextureSize;
+
+            void main() {
+                vec2 texelSize = 1.0 / uTextureSize;
+                vec4 color = vec4(0.0);
+
+                if (uRadius <= 0.5) {
+                    gl_FragColor = texture2D(uTexture, vTexCoord);
+                    return;
+                }
+
+                float sigma = uRadius / 2.0;
+                float twoSigmaSq = 2.0 * sigma * sigma;
+                float totalWeight = 0.0;
+                int iRadius = int(ceil(uRadius));
+
+                // Sample along horizontal axis only
+                for (int x = -iRadius; x <= iRadius; ++x) {
+                    float distance = abs(float(x));
+                    if (distance <= uRadius) {
+                        vec2 sampleCoord = vTexCoord + vec2(float(x) * texelSize.x, 0.0);
+                        sampleCoord = clamp(sampleCoord, vec2(0.0), vec2(1.0));
+
+                        float weight = exp(-(distance * distance) / twoSigmaSq);
+                        color += texture2D(uTexture, sampleCoord) * weight;
+                        totalWeight += weight;
+                    }
+                }
+
+                gl_FragColor = color / totalWeight;
+            }
+        """.trimIndent()
+
+        val verticalFragmentShaderSrc = """
+            precision mediump float;
+            varying vec2 vTexCoord;
+            uniform sampler2D uTexture;
+            uniform float uRadius;
+            uniform vec2 uTextureSize;
+
+            void main() {
+                vec2 texelSize = 1.0 / uTextureSize;
+                vec4 color = vec4(0.0);
+
+                if (uRadius <= 0.5) {
+                    gl_FragColor = texture2D(uTexture, vTexCoord);
+                    return;
+                }
+
+                float sigma = uRadius / 2.0;
+                float twoSigmaSq = 2.0 * sigma * sigma;
+                float totalWeight = 0.0;
+                int iRadius = int(ceil(uRadius));
+
+                // Sample along vertical axis only
+                for (int y = -iRadius; y <= iRadius; ++y) {
+                    float distance = abs(float(y));
+                    if (distance <= uRadius) {
+                        vec2 sampleCoord = vTexCoord + vec2(0.0, float(y) * texelSize.y);
+                        sampleCoord = clamp(sampleCoord, vec2(0.0), vec2(1.0));
+
+                        float weight = exp(-(distance * distance) / twoSigmaSq);
+                        color += texture2D(uTexture, sampleCoord) * weight;
+                        totalWeight += weight;
+                    }
+                }
+
+                gl_FragColor = color / totalWeight;
+            }
+        """.trimIndent()
+
+        val vertexShader = compileShader(GLES20.GL_VERTEX_SHADER, vertexShaderSrc)
+        val horizontalFragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER, horizontalFragmentShaderSrc)
+        val verticalFragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER, verticalFragmentShaderSrc)
+
+        horizontalShaderProgram = GLES20.glCreateProgram()
+        GLES20.glAttachShader(horizontalShaderProgram, vertexShader)
+        GLES20.glAttachShader(horizontalShaderProgram, horizontalFragmentShader)
+        GLES20.glLinkProgram(horizontalShaderProgram)
+
+        verticalShaderProgram = GLES20.glCreateProgram()
+        GLES20.glAttachShader(verticalShaderProgram, vertexShader)
+        GLES20.glAttachShader(verticalShaderProgram, verticalFragmentShader)
+        GLES20.glLinkProgram(verticalShaderProgram)
+
+        val linkStatus = IntArray(1)
+        GLES20.glGetProgramiv(horizontalShaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0)
+        if (linkStatus[0] != GLES20.GL_TRUE) {
+            val log = GLES20.glGetProgramInfoLog(horizontalShaderProgram)
+            throw RuntimeException("Horizontal program linking failed: $log")
+        }
+
+        GLES20.glGetProgramiv(verticalShaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0)
+        if (linkStatus[0] != GLES20.GL_TRUE) {
+            val log = GLES20.glGetProgramInfoLog(verticalShaderProgram)
+            throw RuntimeException("Vertical program linking failed: $log")
+        }
+
+        GLES20.glDeleteShader(vertexShader)
+        GLES20.glDeleteShader(horizontalFragmentShader)
+        GLES20.glDeleteShader(verticalFragmentShader)
+    }
+
+    private fun compileShader(type: Int, source: String): Int {
         val shader = GLES20.glCreateShader(type)
-        GLES20.glShaderSource(shader, shaderCode)
+        GLES20.glShaderSource(shader, source)
         GLES20.glCompileShader(shader)
 
         val compileStatus = IntArray(1)
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0)
-        if (compileStatus[0] == 0) {
+        if (compileStatus[0] != GLES20.GL_TRUE) {
             val log = GLES20.glGetShaderInfoLog(shader)
             GLES20.glDeleteShader(shader)
             throw RuntimeException("Shader compilation failed: $log")
@@ -271,70 +472,46 @@ internal class OpenGLBlurProcessor {
         return shader
     }
 
-    private val vertexShaderCode = """
-        attribute vec4 vPosition;
-        attribute vec2 vTexCoord;
-        varying vec2 fTexCoord;
-        
-        void main() {
-            gl_Position = vPosition;
-            fTexCoord = vTexCoord;
+    private fun cleanup() {
+        if (quadVBO != 0) {
+            GLES20.glDeleteBuffers(1, intArrayOf(quadVBO), 0)
+            quadVBO = 0
         }
-    """.trimIndent()
 
-    private val fragmentShaderCode = """
-        precision mediump float;
-        varying vec2 fTexCoord;
-        uniform sampler2D uTexture;
-        uniform float uRadius;
-        uniform vec2 uTextureSize;
-        
-        void main() {
-            vec2 texelSize = 1.0 / uTextureSize;
-            vec4 color = vec4(0.0);
-            float totalWeight = 0.0;
-            
-            // Convert radius to pixel units
-            float pixelRadius = uRadius;
-            
-            // Early exit for no blur
-            if (pixelRadius <= 0.5) {
-                gl_FragColor = texture2D(uTexture, fTexCoord);
-                return;
-            }
-            
-            // Calculate sigma for Gaussian
-            float sigma = pixelRadius / 2.0;
-            int iRadius = int(ceil(pixelRadius));
-            
-            // Sample in a circular pattern
-            for (int x = -iRadius; x <= iRadius; x++) {
-                for (int y = -iRadius; y <= iRadius; y++) {
-                    float dist = sqrt(float(x * x + y * y));
-                    
-                    // Only sample within the blur radius
-                    if (dist <= pixelRadius) {
-                        vec2 offset = vec2(float(x), float(y)) * texelSize;
-                        vec2 sampleCoord = fTexCoord + offset;
-                        
-                        // Clamp to texture bounds
-                        sampleCoord = clamp(sampleCoord, vec2(0.0), vec2(1.0));
-                        
-                        // Calculate Gaussian weight
-                        float weight = exp(-(dist * dist) / (2.0 * sigma * sigma));
-                        
-                        color += texture2D(uTexture, sampleCoord) * weight;
-                        totalWeight += weight;
-                    }
-                }
-            }
-            
-            // Normalize
-            if (totalWeight > 0.0) {
-                color /= totalWeight;
-            }
-            
-            gl_FragColor = color;
+        if (horizontalShaderProgram != 0) {
+            GLES20.glDeleteProgram(horizontalShaderProgram)
+            horizontalShaderProgram = 0
         }
-    """.trimIndent()
+
+        if (verticalShaderProgram != 0) {
+            GLES20.glDeleteProgram(verticalShaderProgram)
+            verticalShaderProgram = 0
+        }
+
+        if (framebuffer1 != 0 || framebuffer2 != 0) {
+            GLES20.glDeleteFramebuffers(2, intArrayOf(framebuffer1, framebuffer2), 0)
+            framebuffer1 = 0
+            framebuffer2 = 0
+        }
+
+        if (fboTexture1 != 0 || fboTexture2 != 0) {
+            GLES20.glDeleteTextures(2, intArrayOf(fboTexture1, fboTexture2), 0)
+            fboTexture1 = 0
+            fboTexture2 = 0
+        }
+
+        eglDisplay?.let { display ->
+            EGL14.eglMakeCurrent(display, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT)
+            eglSurface?.let { EGL14.eglDestroySurface(display, it) }
+            eglContext?.let { EGL14.eglDestroyContext(display, it) }
+            EGL14.eglTerminate(display)
+        }
+
+        eglDisplay = null
+        eglContext = null
+        eglSurface = null
+        initialized = false
+    }
+
+
 }
