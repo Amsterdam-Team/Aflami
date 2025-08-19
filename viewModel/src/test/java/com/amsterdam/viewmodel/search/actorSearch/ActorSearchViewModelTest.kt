@@ -19,7 +19,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -38,7 +37,6 @@ class ActorSearchViewModelTest {
     private val viewModel by lazy {
         ActorSearchViewModel(
             getMoviesByActorUseCase,
-            manageLocaleLanguageUseCase,
             TestDispatcherProvider()
         )
     }
