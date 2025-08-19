@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.amsterdam.domain.exceptions.AflamiException
-import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.entity.Country
@@ -98,7 +97,7 @@ class CountrySearchViewModel @Inject constructor(
                 selectedCountryIsoCode = country.countryIsoCode,
             )
         }
-        fetchMoviesByCountry(getSelectedCountry())
+        getMoviesByCountry(getSelectedCountry())
     }
 
     override fun onClickRetry() {
@@ -106,11 +105,11 @@ class CountrySearchViewModel @Inject constructor(
 
         when {
             !hasSelectedCountry -> getCountriesByKeyword(state.value.keyword)
-            hasSelectedCountry -> fetchMoviesByCountry(getSelectedCountry())
+            hasSelectedCountry -> getMoviesByCountry(getSelectedCountry())
         }
     }
 
-    private fun fetchMoviesByCountry(selectedCountry: Country) {
+    private fun getMoviesByCountry(selectedCountry: Country) {
         updateState { it.copy(isLoading = true, showSuggestedCountries = false) }
         tryToExecute(
             action = {
@@ -124,7 +123,7 @@ class CountrySearchViewModel @Inject constructor(
                     },
                 ).flow.cachedIn(viewModelScope)
             },
-            onSuccess = ::onFetchMoviesSuccess,
+            onSuccess = ::onGetMoviesSuccess,
         )
     }
 
@@ -159,7 +158,7 @@ class CountrySearchViewModel @Inject constructor(
         }.toCountry()
     }
 
-    private fun onFetchMoviesSuccess(movies: Flow<PagingData<SearchMediaItemUiState>>) {
+    private fun onGetMoviesSuccess(movies: Flow<PagingData<SearchMediaItemUiState>>) {
         updateState {
             it.copy(
                 movies = movies,
