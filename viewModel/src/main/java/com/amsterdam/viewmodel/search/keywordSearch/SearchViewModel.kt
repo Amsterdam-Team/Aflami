@@ -25,9 +25,7 @@ import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,16 +33,13 @@ class SearchViewModel @Inject constructor(
     private val getAndFilterMoviesByKeywordUseCase: GetAndFilterMoviesByKeywordUseCase,
     private val getAndFilterTvShowsByKeywordUseCase: GetAndFilterTvShowsByKeywordUseCase,
     private val recentSearchesUseCase: RecentSearchesUseCase,
-    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
     dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     SearchInteractionListener,
     FilterInteractionListener {
 
     init {
-        manageLocaleLanguageUseCase.getAppLanguage()
-            .onEach { observeKeywordFlow() }.launchIn(viewModelScope)
-
+        observeKeywordFlow()
         getRecentSearches()
         observeKeywordFlow()
     }
