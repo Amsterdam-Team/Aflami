@@ -27,30 +27,3 @@ class PagingSource<T : Any>(
         }
     }
 }
-
-// Temp, until replace all paging sources in all viewmodels
-abstract class BasePagingSource<T: Any>() : PagingSource<Int, T>() {
-
-    protected abstract suspend fun fetch(page: Int): List<T>
-
-    override fun getRefreshKey(state: PagingState<Int, T>): Int? = state.anchorPosition
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
-        val page = params.key ?: 1
-        return try {
-            val data = fetch(page)
-            LoadResult.Page(
-                data = data,
-                prevKey = (page - 1).takeIf { page != 1 },
-                nextKey = (page + 1).takeIf { data.isNotEmpty() }
-            )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
-        }
-    }
-
-    companion object {
-        const val PAGE_SIZE = 20
-        const val PREFETCH_DISTANCE = 5
-    }
-}
