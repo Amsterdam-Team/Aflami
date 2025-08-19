@@ -134,7 +134,7 @@ class CountrySearchViewModel @Inject constructor(
     }
 
     override fun onPagingLoadStateChanged(loadStates: CombinedLoadStates) {
-        when (loadStates.refresh) {
+        when (val refreshState = loadStates.refresh) {
             is LoadState.Loading -> {
                 resetErrorStateToNull()
                 if (state.value.selectedCountryIsoCode.isNotBlank()) {
@@ -148,7 +148,7 @@ class CountrySearchViewModel @Inject constructor(
 
             is LoadState.Error -> {
                 updateState { it.copy(isLoading = false) }
-                updateErrorStateByException(NetworkException())
+                updateErrorStateByException(refreshState.error as AflamiException?)
             }
         }
     }
