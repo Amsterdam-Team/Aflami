@@ -4,22 +4,25 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import app.cash.turbine.test
+import com.amsterdam.domain.exceptions.AflamiException
 import com.amsterdam.domain.exceptions.NetworkException
 import com.amsterdam.domain.exceptions.NoInternetException
+import com.amsterdam.domain.useCase.search.GetMoviesByCountryUseCase
 import com.amsterdam.domain.useCase.search.GetSuggestedCountriesUseCase
 import com.amsterdam.entity.Country
 import com.amsterdam.viewmodel.shared.errorUiState.ErrorUiState
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
 import com.amsterdam.viewmodel.utils.TestExtension
+import com.amsterdam.viewmodel.utils.helper.createPagingLoadStates
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -32,19 +35,23 @@ import org.junit.jupiter.params.provider.MethodSource
 class SearchByCountryViewModelTest {
 
     private val getSuggestedCountriesUseCase: GetSuggestedCountriesUseCase = mockk(relaxed = true)
-    private val countrySearchPagingSource: CountrySearchPagingSource = mockk(relaxed = true)
+    private val getMoviesByCountryUseCase: GetMoviesByCountryUseCase = mockk(relaxed = true)
+    private val dispatcherProvider = TestDispatcherProvider()
+    private lateinit var viewModel: CountrySearchViewModel
 
-    private val viewModel by lazy {
-        CountrySearchViewModel(
+    @BeforeEach
+    fun setUp() {
+        viewModel = CountrySearchViewModel(
             getSuggestedCountriesUseCase,
-            countrySearchPagingSource,
-            TestDispatcherProvider()
+            getMoviesByCountryUseCase,
+            dispatcherProvider
         )
     }
 
     @Test
     fun `should nav back when onNavigateBackClicked`() = runTest {
         viewModel.onClickNavigateBack()
+        advanceUntilIdle()
 
         viewModel.effect.test {
             assertThat(awaitItem()).isEqualTo(CountrySearchEffect.NavigateBack)
@@ -54,6 +61,7 @@ class SearchByCountryViewModelTest {
     @Test
     fun `should nav to movie details when onClickMovieCard`() = runTest {
         viewModel.onClickMovieCard(1L)
+        advanceUntilIdle()
 
         viewModel.effect.test {
             assertThat(awaitItem()).isEqualTo(CountrySearchEffect.NavigateToMovieDetails)
@@ -71,6 +79,7 @@ class SearchByCountryViewModelTest {
             assertThat(awaitItem().keyword).isEqualTo(keyword)
         }
     }
+
 
     @Test
     fun `should hide countries dropDown when call it with empty string`() = runTest {
@@ -145,22 +154,12 @@ class SearchByCountryViewModelTest {
     }
 
     @Test
-    fun `should call getMovies from countryPagingSource when country selected`() = runTest {
-        coEvery { countrySearchPagingSource.getMovies(any()) } returns emptyFlow()
-
-        viewModel.onSelectCountry(Country("Netherlands", "NL").toUiState())
-        advanceUntilIdle()
-
-        coVerify { countrySearchPagingSource.getMovies(any()) }
-    }
-
-    @Test
     fun `should set loading to true when pagination load changed to loading when selectedCountryIsoCode has value`() =
         runTest {
             viewModel.onSelectCountry(countryUiState)
             advanceUntilIdle()
 
-            viewModel.onPagingLoadStateChanged(createCombinedLoadState(LoadState.Loading))
+            viewModel.onPagingLoadStateChanged(expectedPagingLoadingState)
 
             viewModel.state.test {
                 assertThat(awaitItem().isLoading).isTrue()
@@ -169,7 +168,7 @@ class SearchByCountryViewModelTest {
 
     @Test
     fun `should set loading to false when pagination load changed to not loading`() = runTest {
-        viewModel.onPagingLoadStateChanged(createCombinedLoadState(LoadState.NotLoading(true)))
+        viewModel.onPagingLoadStateChanged(expectedPagingNotLoadingState)
 
         viewModel.state.test {
             assertThat(awaitItem().isLoading).isFalse()
@@ -178,10 +177,12 @@ class SearchByCountryViewModelTest {
 
     @Test
     fun `should set error ui state when pagination load changed to error`() = runTest {
-        viewModel.onPagingLoadStateChanged(createCombinedLoadState(LoadState.Error(NetworkException())))
+        viewModel.onPagingLoadStateChanged(expectedPagingNetworkErrorState)
         advanceUntilIdle()
 
-        viewModel.errorState.test { assertThat(awaitItem()).isEqualTo(ErrorUiState.NoInternetError) }
+        viewModel.errorState.test {
+            assertThat(awaitItem()).isEqualTo(ErrorUiState.NoInternetError)
+        }
     }
 
     @Test
@@ -231,13 +232,21 @@ class SearchByCountryViewModelTest {
             Arguments.of(Exception(), ErrorUiState.UnknownError)
         )
 
-        fun createCombinedLoadState(loadState: LoadState): CombinedLoadStates =
-            CombinedLoadStates(
-                refresh = loadState,
-                prepend = loadState,
-                append = loadState,
-                source = LoadStates(loadState, loadState, loadState),
-                mediator = LoadStates(loadState, loadState, loadState),
-            )
+        private val expectedPagingLoadingState = createPagingLoadStates(
+            state = LoadState.Loading
+        )
+
+        private val expectedPagingNotLoadingState = createPagingLoadStates(
+            state = LoadState.NotLoading(endOfPaginationReached = false)
+        )
+
+        private val expectedPagingNetworkErrorState = createPagingLoadStates(
+            state = LoadState.Error(error = NetworkException())
+        )
+
+        private val expectedPagingGeneralErrorState = createPagingLoadStates(
+            state = LoadState.Error(error = AflamiException())
+        )
+
     }
 }
