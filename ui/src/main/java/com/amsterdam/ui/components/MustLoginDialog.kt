@@ -105,7 +105,9 @@ fun MustLoginDialog(
 
             )
             OutlinedButton(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
                 title = stringResource(R.string.login),
                 onClick = { onClickLogin() },
                 isEnabled = true,
