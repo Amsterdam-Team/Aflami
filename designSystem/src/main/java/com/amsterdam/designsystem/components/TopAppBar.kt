@@ -58,8 +58,8 @@ fun TopAppBar(
                         if (subTitle == null) Modifier
                         else Modifier.fillMaxSize()
                     )
-                    .padding(top = 4.dp, bottom = 3.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
+                    .padding(vertical = 2.dp),
+                verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.Start
             ) {
                 title?.invoke()
