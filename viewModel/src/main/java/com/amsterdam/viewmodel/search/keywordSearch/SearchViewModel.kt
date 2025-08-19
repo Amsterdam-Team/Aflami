@@ -43,10 +43,10 @@ class SearchViewModel @Inject constructor(
 
     init {
         manageLocaleLanguageUseCase.getAppLanguage()
-            .onEach { observeSearchKeywordChanges() }.launchIn(viewModelScope)
+            .onEach { observeKeywordFlow() }.launchIn(viewModelScope)
 
         getRecentSearches()
-        observeSearchKeywordChanges()
+        observeKeywordFlow()
     }
 
     private fun getRecentSearches(startLoading: Boolean = true) {
@@ -67,9 +67,9 @@ class SearchViewModel @Inject constructor(
         updateState { it.copy(isLoading = false) }
     }
 
-    private fun observeSearchKeywordChanges() {
+    private fun observeKeywordFlow() {
         tryToExecute(
-            action = { state.map { it.keyword.trim() }.debounceSearch(::onSearchKeywordChanged) }
+            action = { state.map { it.keyword.trim() }.debounceSearch(::onSearchKeywordChanged) },
         )
     }
 
