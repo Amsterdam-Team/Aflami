@@ -24,12 +24,10 @@ import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,13 +40,10 @@ class SearchViewModel @Inject constructor(
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState(), dispatcherProvider),
     SearchInteractionListener,
     FilterInteractionListener {
-    private val _keyword = MutableStateFlow("")
 
     init {
         manageLocaleLanguageUseCase.getAppLanguage()
-                .onEach {
-                    observeSearchKeywordChanges()
-                }.launchIn(viewModelScope)
+            .onEach { observeSearchKeywordChanges() }.launchIn(viewModelScope)
 
         getRecentSearches()
         observeSearchKeywordChanges()
@@ -73,7 +68,9 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun observeSearchKeywordChanges() {
-        viewModelScope.launch { _keyword.debounceSearch(::onSearchKeywordChanged) }
+        tryToExecute(
+            action = { state.map { it.keyword.trim() }.debounceSearch(::onSearchKeywordChanged) }
+        )
     }
 
     private fun onSearchKeywordChanged(keyword: String) {
@@ -196,9 +193,6 @@ class SearchViewModel @Inject constructor(
     private fun startLoading(start: Boolean = true) = updateState { it.copy(isLoading = start) }
 
     override fun onChangeSearchKeyword(keyword: String) {
-        if (keyword.trim() != state.value.keyword.trim() && keyword.isNotBlank()) {
-            _keyword.update { keyword }
-        }
         if (keyword.isBlank()) {
             resetErrorStateToNull()
             updateState { it.copy(movies = emptyFlow(), tvShows = emptyFlow(), isLoading = false) }
@@ -233,7 +227,7 @@ class SearchViewModel @Inject constructor(
         sendNewNavigationEffect(SearchUiEffect.NavigateToActorSearch)
     }
 
-    override fun onClickRetryRequest() = onSearchKeywordChanged(_keyword.value)
+    override fun onClickRetryRequest() = onSearchKeywordChanged(state.value.keyword)
 
     override fun onClickTabOption(tabOption: TabOption) {
         updateState {
@@ -242,7 +236,7 @@ class SearchViewModel @Inject constructor(
                 isLoading = true,
             )
         }
-        onSearchKeywordChanged(_keyword.value)
+        onSearchKeywordChanged(state.value.keyword)
     }
 
     override fun onClickRecentSearch(keyword: String) = onChangeSearchKeyword(keyword)
@@ -269,7 +263,6 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onClickClearSearch() {
-        _keyword.value = ""
         updateState { currentState ->
             currentState.copy(
                 keyword = "",
