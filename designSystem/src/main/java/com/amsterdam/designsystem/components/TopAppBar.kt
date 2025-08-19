@@ -36,21 +36,28 @@ fun TopAppBar(
             modifier
                 .fillMaxWidth()
                 .clickable(enabled = false) { }
-                .background(
-                    color = containerColor,
-                ).padding(PaddingValues(vertical = 8.dp)),
+                .background(color = containerColor)
+                .padding(PaddingValues(vertical = 8.dp)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f).height(IntrinsicSize.Min)
+            modifier = Modifier
+                .weight(1f)
+                .then(
+                    if (subTitle == null) Modifier
+                    else Modifier.height(IntrinsicSize.Min)
+                )
         ) {
             leadingIcon?.invoke()
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .then(
+                        if (subTitle == null) Modifier
+                        else Modifier.fillMaxSize()
+                    )
                     .padding(vertical = 2.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.Start
