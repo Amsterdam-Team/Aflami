@@ -250,7 +250,7 @@ class ListDetailsViewModelTest {
         advanceUntilIdle()
 
         viewModel.errorState.test {
-            assertThat(awaitItem()).isEqualTo(ErrorUiState.UnknownError)
+            assertThat(awaitItem()).isEqualTo(ErrorUiState.NoInternetError)
         }
     }
 }
