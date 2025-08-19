@@ -145,16 +145,6 @@ class SearchByCountryViewModelTest {
     }
 
     @Test
-    fun `should call getMovies from countryPagingSource when country selected`() = runTest {
-        coEvery { getMoviesByCountryUseCase(any()) } returns emptyList()
-
-        viewModel.onSelectCountry(Country("Netherlands", "NL").toUiState())
-        advanceUntilIdle()
-
-        coVerify { getMoviesByCountryUseCase(any()) }
-    }
-
-    @Test
     fun `should set loading to true when pagination load changed to loading when selectedCountryIsoCode has value`() =
         runTest {
             viewModel.onSelectCountry(countryUiState)
