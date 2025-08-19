@@ -245,7 +245,10 @@ class SearchViewModel @Inject constructor(
         onSearchKeywordChanged(_keyword.value)
     }
 
-    override fun onClickRecentSearch(keyword: String) = onChangeSearchKeyword(keyword)
+    override fun onClickRecentSearch(keyword: String){
+        startLoading(true)
+        onChangeSearchKeyword(keyword)
+    }
 
     override fun onClickClearRecentSearch(keyword: String) {
         tryToExecute(
