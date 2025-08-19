@@ -22,29 +22,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.amsterdam.ui.R
 import com.amsterdam.designsystem.components.LoadingContainer
 import com.amsterdam.designsystem.components.Text
 import com.amsterdam.designsystem.components.divider.HorizontalDivider
 import com.amsterdam.designsystem.theme.AppTheme
-import com.amsterdam.viewmodel.search.keywordSearch.SearchUiState
+import com.amsterdam.ui.R
 
 @Composable
 internal fun RecentSearchesSection(
-    state: SearchUiState,
+    modifier: Modifier = Modifier,
+    recentSearches: List<String> = emptyList(),
+    keyword: String = "",
+    isLoading: Boolean = false,
     onAllRecentSearchesCleared: () -> Unit,
     onRecentSearchClicked: (String) -> Unit,
     onRecentSearchCleared: (String) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
-        targetState = state,
+        targetState = keyword,
         transitionSpec = {
             fadeIn(animationSpec = tween(1700)) togetherWith fadeOut(animationSpec = tween(1700))
         },
-    ) {
+    ) { searchKeyword ->
         when {
-            it.recentSearches.isNotEmpty() && it.keyword.isBlank() -> {
+            recentSearches.isNotEmpty() && searchKeyword.isBlank() -> {
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
@@ -78,19 +79,19 @@ internal fun RecentSearchesSection(
                             .fillMaxWidth()
                             .padding(top = 12.dp)
                     ) {
-                        it.recentSearches.map { recentSearchItem ->
+                        recentSearches.map { recentSearchItem ->
                             RecentSearchItem(
                                 title = recentSearchItem,
                                 onItemClick = onRecentSearchClicked,
                                 onCancelClick = onRecentSearchCleared,
                             )
-                            if (recentSearchItem != it.recentSearches.last()) HorizontalDivider()
+                            if (recentSearchItem != recentSearches.last()) HorizontalDivider()
                         }
                     }
                 }
             }
 
-            it.keyword.isBlank() && it.recentSearches.isEmpty() && !it.isLoading -> {
+            searchKeyword.isBlank() && recentSearches.isEmpty() && !isLoading -> {
                 val topPadding =
                     if (LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE) {
                         12.dp
@@ -104,10 +105,12 @@ internal fun RecentSearchesSection(
                 )
             }
 
-            it.isLoading -> {
-                LoadingContainer(modifier = modifier
-                    .fillMaxSize()
-                    .padding(top = 48.dp))
+            isLoading -> {
+                LoadingContainer(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(top = 48.dp)
+                )
             }
         }
     }

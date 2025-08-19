@@ -155,7 +155,9 @@ private fun SearchContent(
                     )
 
                     RecentSearchesSection(
-                        state = state,
+                        recentSearches = state.recentSearches,
+                        isLoading = state.isLoading,
+                        keyword = state.keyword.trim(),
                         onAllRecentSearchesCleared = interactionListener::onClickClearAllRecentSearches,
                         onRecentSearchClicked = interactionListener::onClickRecentSearch,
                         onRecentSearchCleared = interactionListener::onClickClearRecentSearch
