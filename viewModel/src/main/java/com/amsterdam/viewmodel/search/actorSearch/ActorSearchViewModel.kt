@@ -5,7 +5,6 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.amsterdam.domain.exceptions.NetworkException
-import com.amsterdam.domain.useCase.preferences.ManageLocaleLanguageUseCase
 import com.amsterdam.domain.useCase.search.GetMoviesByActorUseCase
 import com.amsterdam.paging.createPagingSource
 import com.amsterdam.viewmodel.search.mapper.toSearchMediaItemUiState
@@ -14,37 +13,31 @@ import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.debounceSearch
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
 class ActorSearchViewModel @Inject constructor(
     private val getMoviesByActorUseCase: GetMoviesByActorUseCase,
-    manageLocaleLanguageUseCase: ManageLocaleLanguageUseCase,
-    dispatcherProvider: DispatcherProvider,
+    private val dispatcherProvider: DispatcherProvider,
 ) : BaseViewModel<ActorSearchUiState, ActorSearchEffect>(
     ActorSearchUiState(),
     dispatcherProvider,
 ), ActorSearchInteractionListener {
-
-    private val keywordFlow = MutableStateFlow("")
-
     init {
-        manageLocaleLanguageUseCase.getAppLanguage()
-                .onEach {
-                    observeActorSearchQuery()
-                }.launchIn(viewModelScope)
-
-        observeActorSearchQuery()
+        observeKeywordFlow()
     }
 
-    private fun observeActorSearchQuery() {
-        viewModelScope.launch { keywordFlow.debounceSearch(::executeActorSearch) }
+    @OptIn(FlowPreview::class)
+    private fun observeKeywordFlow() {
+        tryToExecute(
+            action = {
+                state.map { it -> it.keyword.trim() }.debounceSearch(::executeActorSearch)
+            },
+            dispatcher = dispatcherProvider.IO
+        )
     }
 
     private fun executeActorSearch(query: String) {
@@ -52,8 +45,7 @@ class ActorSearchViewModel @Inject constructor(
         tryToExecute(
             action = {
                 createPagingSource(scope = viewModelScope) { page ->
-                    getMoviesByActorUseCase(query, page)
-                            .map { it.toSearchMediaItemUiState() }
+                    getMoviesByActorUseCase(query, page).map { it.toSearchMediaItemUiState() }
                 }
             },
             onSuccess = ::handleSearchResults
@@ -61,9 +53,6 @@ class ActorSearchViewModel @Inject constructor(
     }
 
     override fun onUserSearchChange(keyword: String) {
-        if (keyword.trim() != state.value.keyword.trim()) {
-            keywordFlow.update { keyword }
-        }
         updateState { it.copy(keyword = keyword) }
     }
 
