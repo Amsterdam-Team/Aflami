@@ -54,6 +54,7 @@ fun CreateNewListDialog(
                 isLoading = isCreateListLoading,
                 isNegative = false,
                 onClick = onCreateListClick,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

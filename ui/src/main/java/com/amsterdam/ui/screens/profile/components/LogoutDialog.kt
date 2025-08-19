@@ -3,6 +3,7 @@ package com.amsterdam.ui.screens.profile.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -67,7 +68,8 @@ fun LogoutDialog(
                 onClick = onLogoutClick,
                 isEnabled = true,
                 isLoading = isLogoutButtonLoading,
-                isNegative = true
+                isNegative = true,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

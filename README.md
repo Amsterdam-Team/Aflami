@@ -210,7 +210,6 @@
 >
 > - **Browse by Type:** Easily switch between dedicated "Movies" and "TV Shows" tabs to find exactly what you're looking for.
 > - **Rich Genre Selection:** Discover content across a wide array of genres, each represented by a unique, intuitive icon.
-> - **Image Viewer:** Ensuring a respectful viewing experience for all users, featuring intelligent content filtering using on-device machine learning to detect and automatically blur potentially inappropriate content according to Islamic cultural guidelines.
 > - **Instant Results:** Simply tap on any genre to see a curated list of titles from that category, complete with their poster, title, and rating.
 
 ## Profile Screen
@@ -247,6 +246,23 @@
 > 
 > - **Watch History:** Shows your recently watched movies and TV shows, allowing you to quickly revisit theme.
 > - **My Ratings:** View all movies and TV shows you’ve rated. Easily review, update, or manage your feedback to track your preferences.
+
+ ### Islamic Image Viewer
+> ***Ensuring a respectful viewing experience for all users, featuring intelligent content filtering using on-device machine learning to detect and automatically blur potentially inappropriate content according to Islamic cultural guidelines.***
+<table>
+  <tr>
+    <td><img width="400" height="762" alt="image" src="https://github.com/user-attachments/assets/07774693-5f5a-4e52-a80f-854e6ef8c60c" /></td>
+    <td><img width="400" height="762" alt="image" src="https://github.com/user-attachments/assets/238e4675-83b1-4131-a624-87b61b39d718" /></td>
+    <td><img width="400" height="762" alt="image" src="https://github.com/user-attachments/assets/bd1dc81b-4757-489b-89ef-dee741c9a643" /></td>
+  </tr>
+</table>
+
+> [!Note]
+> 
+> - AI-driven content detection aligned with Islamic guidelines
+> - Intelligent image blurring for sensitive material
+> - Coil-based image loading with customizable transformations
+> - Adjustable sensitivity settings
 
 # Installation
 

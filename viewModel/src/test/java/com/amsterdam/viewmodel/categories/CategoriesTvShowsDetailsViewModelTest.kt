@@ -3,13 +3,14 @@ package com.amsterdam.viewmodel.categories
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import app.cash.turbine.test
+import com.amsterdam.domain.useCase.details.GetTvShowsByGenreUseCase
 import com.amsterdam.entity.category.TvShowGenre
-import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowDetailsPagingSource
 import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsArgs
 import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsUiEffect
 import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsUiState
 import com.amsterdam.viewmodel.categoriesDetails.tvShow.CategoriesTvShowsDetailsViewModel
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
+import com.amsterdam.viewmodel.utils.TestExtension
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -19,13 +20,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MainDispatcherExtension::class)
+@ExtendWith(TestExtension::class)
 class CategoriesTvShowsDetailsViewModelTest {
-    private val categoriesTvShowDetailsPagingSource: CategoriesTvShowDetailsPagingSource = mockk(relaxed = true)
+    private val getTvShowsByGenreUseCase: GetTvShowsByGenreUseCase = mockk(relaxed = true)
     private val args: CategoriesTvShowsDetailsArgs = mockk(relaxed = true)
     private val viewModel by lazy {
         CategoriesTvShowsDetailsViewModel(
-            categoriesTvShowDetailsPagingSource,
+            getTvShowsByGenreUseCase,
             categoriesTvShowsDetailsArgs = args,
             dispatcherProvider = TestDispatcherProvider()
         )

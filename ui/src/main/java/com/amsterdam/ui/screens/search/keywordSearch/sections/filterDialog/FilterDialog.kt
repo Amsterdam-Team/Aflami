@@ -177,7 +177,7 @@ internal fun FilterDialog(
                 isEnabled = filterState.hasFilterData,
                 isLoading = filterState.isLoading,
                 isNegative = false,
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(12.dp).fillMaxWidth(),
             )
             OutlinedButton(
                 title = stringResource(R.string.clear),
@@ -188,9 +188,7 @@ internal fun FilterDialog(
                 isEnabled = true,
                 isLoading = false,
                 isNegative = false,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(horizontal = 12.dp).fillMaxWidth(),
             )
         }
     }

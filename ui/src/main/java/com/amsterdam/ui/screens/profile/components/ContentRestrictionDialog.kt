@@ -86,7 +86,8 @@ fun ContentRestrictionDialog(
                 onClick = onSaveClick,
                 isEnabled = true,
                 isLoading = isSaveButtonLoading,
-                isNegative = false
+                isNegative = false,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

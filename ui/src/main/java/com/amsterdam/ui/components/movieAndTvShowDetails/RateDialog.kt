@@ -85,6 +85,7 @@ fun RateDialog(
                 isEnabled = isSubmittingEnabled,
                 isLoading = isLoading,
                 isNegative = false,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

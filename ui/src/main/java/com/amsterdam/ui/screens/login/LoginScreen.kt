@@ -180,7 +180,7 @@ private fun LoginScreenContent(
                     isEnabled = state.isLoginButtonEnabled,
                     isLoading = state.isLoginButtonLoading,
                     isNegative = false,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
                 )
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),

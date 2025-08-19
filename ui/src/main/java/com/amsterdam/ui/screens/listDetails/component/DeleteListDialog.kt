@@ -62,7 +62,7 @@ internal fun DeleteListDialog(
             )
 
             ConfirmButton(
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier.padding(top = 24.dp).fillMaxWidth(),
                 title = stringResource(R.string.delete),
                 onClick = onConfirm,
                 isEnabled = true,

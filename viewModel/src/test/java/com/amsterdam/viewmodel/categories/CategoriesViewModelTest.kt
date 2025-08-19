@@ -3,13 +3,14 @@ package com.amsterdam.viewmodel.categories
 import app.cash.turbine.test
 import com.amsterdam.viewmodel.shared.TabOption
 import com.amsterdam.viewmodel.utils.TestDispatcherProvider
+import com.amsterdam.viewmodel.utils.TestExtension
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MainDispatcherExtension::class)
+@ExtendWith(TestExtension::class)
 class CategoriesViewModelTest {
 
     private val viewModel by lazy {

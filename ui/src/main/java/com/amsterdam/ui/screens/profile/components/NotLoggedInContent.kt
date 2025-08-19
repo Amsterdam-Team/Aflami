@@ -122,7 +122,8 @@ private fun LoginSection(
             )
 
             OutlinedButton(
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier
+                    .padding(top = 24.dp),
                 title = stringResource(R.string.login),
                 onClick = onClickLogin,
                 isEnabled = true,

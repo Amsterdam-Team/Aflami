@@ -3,21 +3,23 @@ package com.amsterdam.viewmodel.categoriesDetails.tvShow
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.amsterdam.domain.exceptions.AflamiException
+import com.amsterdam.domain.useCase.details.GetTvShowsByGenreUseCase
 import com.amsterdam.entity.category.TvShowGenre
+import com.amsterdam.paging.PagingSource
 import com.amsterdam.viewmodel.shared.BaseViewModel
 import com.amsterdam.viewmodel.utils.dispatcher.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 @HiltViewModel
 class CategoriesTvShowsDetailsViewModel @Inject constructor(
-    private val categoriesTvShowDetailsPagingSource: CategoriesTvShowDetailsPagingSource,
+    private val getTvShowsByGenreUseCase: GetTvShowsByGenreUseCase,
     private val categoriesTvShowsDetailsArgs: CategoriesTvShowsDetailsArgs,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel<CategoriesTvShowsDetailsUiState, CategoriesTvShowsDetailsUiEffect>(
@@ -57,6 +59,7 @@ class CategoriesTvShowsDetailsViewModel @Inject constructor(
                 resetErrorStateToNull()
                 updateState { it.copy(isLoading = true) }
             }
+
             is LoadState.NotLoading -> updateState { it.copy(isLoading = false) }
             is LoadState.Error -> {
                 updateState { it.copy(isLoading = false) }
@@ -88,9 +91,15 @@ class CategoriesTvShowsDetailsViewModel @Inject constructor(
         updateState { it.copy(isRetryLoading = true) }
         tryToExecute(
             action = {
-                categoriesTvShowDetailsPagingSource.getTvShows(state.value.selectedGenre)
-                    .map { pagingData -> pagingData.map { it.toTvShowUiState() } }
-                    .cachedIn(viewModelScope)
+                Pager(
+                    config = PagingConfig(pageSize = 20),
+                    pagingSourceFactory = {
+                        PagingSource { page ->
+                            getTvShowsByGenreUseCase(state.value.selectedGenre, page)
+                                    .map { it.toTvShowUiState() }
+                        }
+                    }
+                ).flow.cachedIn(viewModelScope)
             },
             onSuccess = ::onGetTvShowsByGenreSuccess,
             onCompletion = ::onCompletion
